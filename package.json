@@ -17,7 +17,11 @@
         "@terra-money/terra.js": "^1.8.0",
         "next": "10.2.3",
         "react": "17.0.2",
-        "react-dom": "17.0.2"
+        "react-dom": "17.0.2",
+        "react-redux": "^7.2.4",
+        "redux": "^4.1.0",
+        "redux-thunk": "^2.3.0",
+        "tailwindcss": "^2.1.4"
     },
     "devDependencies": {
         "@babel/preset-env": "^7.14.4",
@@ -39,8 +43,7 @@
         "jest": "^27.0.4",
         "lint-staged": "^11.0.0",
         "postcss": "^8.3.0",
-        "prettier": "^2.3.1",
-        "tailwindcss": "^2.1.4"
+        "prettier": "^2.3.1"
     },
     "eslintConfig": {
         "extends": [
