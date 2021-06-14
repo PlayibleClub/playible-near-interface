@@ -3,3 +3,4 @@ jest.config.js
 postcss.config.js
 tailwind.config.js
 /pages/_app.js
+tests/
