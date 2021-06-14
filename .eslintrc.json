@@ -27,6 +27,9 @@
     "plugins": ["react"],
     "rules": {
         "react/react-in-jsx-scope": "off",
-        "prettier/prettier": ["error", {}, { "usePrettierrc": true }]
+        "prettier/prettier": ["error", {}, { "usePrettierrc": true }],
+        "react/prop-types": "off",
+        "react/buttons-has-type": "off",
+        "react/jsx-filename-extension": "off"
     }
 }
