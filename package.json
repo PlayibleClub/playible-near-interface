@@ -54,7 +54,6 @@
     "lint-staged": {
         "./**/*.{js,jsx,ts,tsx}": [
             "eslint . --fix"
-        ],
-        "*.js": "eslint --cache --fix"
+        ]
     }
 }
