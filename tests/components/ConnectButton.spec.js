@@ -34,16 +34,14 @@ describe('Connect Button', () => {
   });
 
   it('should show class color for text color', () => {
-    const wrapper = shallow(<Button text-color="red">Test Letter</Button>)
+    const wrapper = shallow(<Button textColor="red">Test Letter</Button>)
     const component = findByTestAttr(wrapper, 'regular-button');
-
     expect(component.hasClass('text-red')).toBe(true);
   });
 
   it('should show class color for text color and text saturation', () => {
-    const wrapper = shallow(<Button text-color="red" text-saturation="100">Test Letter</Button>)
+    const wrapper = shallow(<Button textColor="red" textSaturation="100">Test Letter</Button>)
     const component = findByTestAttr(wrapper, 'regular-button');
-
     expect(component.hasClass('text-red-100')).toBe(true);
   });
 })

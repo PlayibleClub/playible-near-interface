@@ -3,7 +3,7 @@ const TestUtils = () => {
     return wrapper.find(`[data-test="${val}"]`)
   }
 
-  return findByTestAttr;
+  return {findByTestAttr};
 }
 
 export default TestUtils;

@@ -28,8 +28,8 @@
     "rules": {
         "react/react-in-jsx-scope": "off",
         "prettier/prettier": ["error", {}, { "usePrettierrc": true }],
-        "react/prop-types": "off",
         "react/button-has-type": "off",
-        "react/jsx-filename-extension": "off"
+        "react/jsx-filename-extension": "off",
+        "object-curly-newline": "off"
     }
 }
