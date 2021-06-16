@@ -23,7 +23,7 @@ describe('Connect Button', () => {
     const wrapper = shallow(<Button color="red">Test Letter</Button>)
     const component = findByTestAttr(wrapper, 'regular-button');
 
-    expect(component.hasClass('bg-red')).toBe(true);
+    expect(component.hasClass('bg-red-500')).toBe(true);
   });
 
   it('should show class of bg-red-100 with `color props is red and saturation props is 100`', () => {
@@ -36,7 +36,7 @@ describe('Connect Button', () => {
   it('should show class color for text color', () => {
     const wrapper = shallow(<Button textColor="red">Test Letter</Button>)
     const component = findByTestAttr(wrapper, 'regular-button');
-    expect(component.hasClass('text-red')).toBe(true);
+    expect(component.hasClass('text-red-100')).toBe(true);
   });
 
   it('should show class color for text color and text saturation', () => {

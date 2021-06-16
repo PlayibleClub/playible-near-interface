@@ -6,9 +6,7 @@ const Button = (props) => {
   return (
     <button
       data-test="regular-button"
-      className={`${color ? `bg-${color}` : ''}${saturation ? `-${saturation}` : ''} ${
-        textColor ? `text-${textColor}` : ''
-      }${textSaturation ? `-${textSaturation}` : ''}`}
+      className={`bg-${color}-${saturation} text-${textColor}-${textSaturation}`}
     >
       {children}
     </button>
@@ -16,11 +14,19 @@ const Button = (props) => {
 };
 
 Button.propTypes = {
-  children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]).isRequired,
-  color: PropTypes.string.isRequired,
-  saturation: PropTypes.string.isRequired,
-  textColor: PropTypes.string.isRequired,
-  textSaturation: PropTypes.string.isRequired,
+  children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
+  color: PropTypes.string,
+  saturation: PropTypes.string,
+  textColor: PropTypes.string,
+  textSaturation: PropTypes.string,
+};
+
+Button.defaultProps = {
+  children: '',
+  color: 'blue',
+  saturation: '500',
+  textColor: 'black',
+  textSaturation: '100',
 };
 
 export default Button;
