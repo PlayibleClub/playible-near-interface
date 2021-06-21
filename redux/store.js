@@ -3,7 +3,7 @@ no-underscore-dangle, no-shadow,
 import/prefer-default-export */
 
 import { createStore, applyMiddleware } from 'redux';
-import thunkMiddleWare from 'redux-thunk';
+import ReduxThunk from 'redux-thunk';
 import { composeWithDevTools } from 'remote-redux-devtools';
 import rootReducer from './reducers';
 
@@ -14,6 +14,8 @@ const composeEnhancers = composeWithDevTools({
   port: 8000,
 });
 
-const enhancedMiddleware = composeEnhancers(applyMiddleware(thunkMiddleWare));
+export const middlewares = [ReduxThunk];
 
-export const store = createStore(rootReducer, enhancedMiddleware);
+const enhancedMiddleware = composeEnhancers(applyMiddleware(...middlewares));
+
+export const store = createStore(rootReducer, {}, enhancedMiddleware);
