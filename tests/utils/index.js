@@ -11,7 +11,7 @@ const TestUtils = () => {
     return createStore(rootReducer, initialState, applyMiddleware(...middlewares));
   }
 
-  return {findByTestAttr, storeFactory};
+  return { findByTestAttr, storeFactory };
 }
 
 export default TestUtils;
