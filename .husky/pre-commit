@@ -1,9 +1,16 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-npm run check-lint ||
+npm run lint ||
 (
         echo '😤🏀👋😤 Get that weak code out of here! 😤🏀👋😤 
                 ESLint Check Failed. Make the required changes listed above, add changes and try to commit again.'
+        true; 
+)
+
+
+npm run lint:fix ||
+(
+        echo 'Reducing Lint Errors!'
         true; 
 )
