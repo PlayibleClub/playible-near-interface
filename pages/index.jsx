@@ -3,7 +3,7 @@ export default function Home() {
     <>
       <header>
         <div>
-          <p>Fantasy Investar</p>
+          <p>Fantasy  asdfasdInvestar</p>
         </div>
       </header>
     </>
