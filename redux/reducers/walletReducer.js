@@ -5,30 +5,53 @@ import TerraEnv from '../../utils/terra';
 const { terra } = TerraEnv();
 
 export const connectVerifyWallet = createAsyncThunk('connectVerifyWallet',
-  async (payload, _thunkAPI) => {
-    const result = await terra.auth.accountInfo(payload.wallet);
-    return {
-      result,
-    };
+  async (payload, { rejectWithValue }) => {
+    try {
+      const { account_number: accountNumber,
+        address, coins } = await terra.auth.accountInfo(payload.wallet);
+
+      return {
+        accountNumber,
+        address,
+        coins: coins.toData(),
+      };
+    } catch (err) {
+      return rejectWithValue(err.response.data);
+    }
   });
 
 const walletSlice = createSlice({
   name: 'wallet',
   initialState: {
     address: '',
-    accountNumber: null,
+    accountNumber: '',
     coins: [],
+    loading: true,
+    error: false,
+    errorMessage: '',
   },
   reducers: {},
   extraReducers: {
-    [connectVerifyWallet.fulfilled]: (state, action) => {
-      const { account_number: accountNumber, address, coins } = action.payload.result;
-      return { ...state,
-        accountNumber,
-        address,
-        coins: coins.toData(),
-      };
-    },
+    [connectVerifyWallet.pending]: (state) => ({ ...state,
+      accountNumber: '',
+      address: '',
+      coins: [],
+      loading: true,
+      error: false,
+      errorMessage: '',
+    }),
+    [connectVerifyWallet.fulfilled]: (state, action) => ({ ...state,
+      ...action.payload,
+      loading: false,
+    }),
+    [connectVerifyWallet.rejected]: (state, action) => ({ ...state,
+      accountNumber: '',
+      address: '',
+      coins: [],
+      loading: false,
+      error: true,
+      errorMessage: action.payload,
+    }),
   },
 });
 
