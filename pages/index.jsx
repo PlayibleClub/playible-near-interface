@@ -3,7 +3,7 @@ export default function Home() {
     <>
       <header>
         <div>
-          <p>Testing Terra Project</p>
+          <p>Fantasy Investar</p>
         </div>
       </header>
     </>
