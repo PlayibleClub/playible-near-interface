@@ -1,5 +1,5 @@
 export default function Home() {
-  const air
+  const earth
   return (
     <>
       <header>
