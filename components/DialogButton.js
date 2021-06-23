@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import Button from './Button';
 
 const DialogButton = (props) => {
-  const { isOpen, onClose } = props;
+  const { isOpen, onClose, content, closeBtnTitle, title } = props;
 
   return (
     <>
@@ -57,12 +57,19 @@ const DialogButton = (props) => {
                 <Dialog.Title
                   data-test="dialog-title"
                   as="h3"
-                />
-                <div data-test="dialog-content-container" className="mt-2 p-1" />
+                >
+                  {title}
+                </Dialog.Title>
+                <div data-test="dialog-content-container" className="mt-2 p-1">
+                  {content}
+                </div>
                 <div className="mt-4">
                   <Button
+                    onClick={onClose}
                     data-test="dialog-close-button"
-                  />
+                  >
+                    {closeBtnTitle}
+                  </Button>
                 </div>
               </div>
             </Transition.Child>
@@ -76,6 +83,9 @@ const DialogButton = (props) => {
 DialogButton.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
+  title: PropTypes.string.isRequired,
+  content: PropTypes.func.isRequired,
+  closeBtnTitle: PropTypes.string.isRequired,
 };
 
 export default DialogButton;
