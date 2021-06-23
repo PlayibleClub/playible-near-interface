@@ -5,8 +5,19 @@ import DialogButton from '../../components/DialogButton';
 
 const { findByTestAttr, checkProps } = TestUtils();
 
-const setup = () => {
-  return shallow(<DialogButton/>)
+const defaultProps = {
+  isOpen: false,
+  onClose: () => {},
+  title: "Sample",
+  content: () => {},
+  closeBtnTitle: "Close",
+  onOpen: () => {},
+  openBtnTitle: "Create"
+};
+
+const setup = (props={})  => {
+  const setupProps = {...defaultProps, ...props};
+  return shallow(<DialogButton {...setupProps} />)
 }
 
 // Appearance testing
@@ -56,7 +67,7 @@ describe("DialogButton", () => {
 
 test('does not throw warning with expected props', () => {
   checkProps(DialogButton, {
-    isOpen: 'false',
+    isOpen: false,
     onClose: () => {},
     title: "Sample Title",
     content: () => {},
