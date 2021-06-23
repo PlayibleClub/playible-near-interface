@@ -1,5 +1,11 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-npm test
-npm run lint
+npm test || (
+        echo '😆 Please redo you testing 😆'
+        false; 
+)
+npm run lint || (
+  echo '💢 Please fix your lint before doing commits 💢'
+  false;
+)

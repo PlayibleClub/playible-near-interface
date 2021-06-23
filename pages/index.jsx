@@ -1,10 +1,9 @@
 export default function Home() {
-  console.log("hello")
   return (
     <>
       <header>
         <div>
-          <p>Fantasy  asdfasdInvestar</p>
+          <p>Fantasy</p>
         </div>
       </header>
     </>
