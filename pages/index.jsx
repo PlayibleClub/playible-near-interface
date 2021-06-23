@@ -1,5 +1,5 @@
 export default function Home() {
-  const earth
+  console.log("hello")
   return (
     <>
       <header>
