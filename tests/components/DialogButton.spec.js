@@ -3,14 +3,14 @@ import { shallow } from 'enzyme';
 import TestUtils from '../utils';
 import DialogButton from '../../components/DialogButton';
 
-const { findByTestAttr } = TestUtils();
+const { findByTestAttr, checkProps } = TestUtils();
 
 const setup = () => {
   return shallow(<DialogButton/>)
 }
 
 // Appearance testing
-describe("ButtonDialog", () => {
+describe("DialogButton", () => {
   it("should detect presence and then render without errors", () => {
     const wrapper = setup();
     const component = findByTestAttr(wrapper, 'dialog')
@@ -52,4 +52,14 @@ describe("ButtonDialog", () => {
     const component = findByTestAttr(wrapper, 'dialog-center-tag')
     expect(component.length).toBe(1);
   })
+});
+
+test('does not throw warning with expected props', () => {
+  checkProps(DialogButton, {
+    isOpen: 'false',
+    onClose: () => {},
+    title: "Sample Title",
+    content: () => {},
+    closeBtnTitle: "Close"
+  });
 });
