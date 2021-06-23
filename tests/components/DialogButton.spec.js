@@ -60,6 +60,8 @@ test('does not throw warning with expected props', () => {
     onClose: () => {},
     title: "Sample Title",
     content: () => {},
-    closeBtnTitle: "Close"
+    closeBtnTitle: "Close",
+    onOpen: () => {},
+    openBtnTitle: "Open"
   });
 });
