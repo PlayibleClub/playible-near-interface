@@ -4,11 +4,18 @@ import PropTypes from 'prop-types';
 import Button from './Button';
 
 const DialogButton = (props) => {
-  const { isOpen, onClose, content, closeBtnTitle, title } = props;
+  const { isOpen, onOpen, onClose,
+    content, closeBtnTitle, openBtnTitle,
+    title } = props;
 
   return (
     <>
-      <Button data-test="dialog-button" />
+      <Button
+        onClick={onOpen}
+        data-test="dialog-button"
+      >
+        {openBtnTitle}
+      </Button>
       <Transition appear show={isOpen} as={Fragment}>
         <Dialog
           as="div"
@@ -86,6 +93,8 @@ DialogButton.propTypes = {
   title: PropTypes.string.isRequired,
   content: PropTypes.func.isRequired,
   closeBtnTitle: PropTypes.string.isRequired,
+  onOpen: PropTypes.func.isRequired,
+  openBtnTitle: PropTypes.string.isRequired,
 };
 
 export default DialogButton;
