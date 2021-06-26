@@ -9,7 +9,6 @@ const defaultProps = {
   isOpen: false,
   onClose: () => {},
   title: "Sample",
-  content: () => {},
   closeBtnTitle: "Close",
   onOpen: () => {},
   openBtnTitle: "Create"
@@ -17,7 +16,7 @@ const defaultProps = {
 
 const setup = (props={})  => {
   const setupProps = {...defaultProps, ...props};
-  return shallow(<DialogButton {...setupProps} />)
+  return shallow(<DialogButton {...setupProps}><div>Hello</div></DialogButton>)
 }
 
 // Appearance testing
@@ -70,7 +69,7 @@ test('does not throw warning with expected props', () => {
     isOpen: false,
     onClose: () => {},
     title: "Sample Title",
-    content: () => {},
+    children: <div>hello</div>,
     closeBtnTitle: "Close",
     onOpen: () => {},
     openBtnTitle: "Open"

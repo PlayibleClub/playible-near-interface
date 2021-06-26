@@ -5,7 +5,7 @@ import Button from './Button';
 
 const DialogButton = (props) => {
   const { isOpen, onOpen, onClose,
-    content, closeBtnTitle, openBtnTitle,
+    children, closeBtnTitle, openBtnTitle,
     title } = props;
 
   return (
@@ -20,7 +20,7 @@ const DialogButton = (props) => {
         <Dialog
           as="div"
           data-test="dialog"
-          className="fixed inset-0 z-10 overflow-y-auto"
+          className="fixed bg-gray-900 bg-opacity-60 inset-0 z-10 overflow-y-auto"
           onClose={onClose}
         >
           <div className="min-h-screen px-4 text-center">
@@ -68,7 +68,7 @@ const DialogButton = (props) => {
                   {title}
                 </Dialog.Title>
                 <div data-test="dialog-content-container" className="mt-2 p-1">
-                  {content}
+                  {children}
                 </div>
                 <div className="mt-4">
                   <Button
@@ -91,7 +91,7 @@ DialogButton.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired,
-  content: PropTypes.func.isRequired,
+  children: PropTypes.node.isRequired,
   closeBtnTitle: PropTypes.string.isRequired,
   onOpen: PropTypes.func.isRequired,
   openBtnTitle: PropTypes.string.isRequired,
