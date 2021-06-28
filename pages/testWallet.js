@@ -1,7 +1,7 @@
 import { useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { connectVerifyWallet } from '../redux/reducers/walletReducer';
-import Button from '../components/Button';
+import { Button } from '../components';
 
 const testWallet = () => {
   const dispatch = useDispatch();
