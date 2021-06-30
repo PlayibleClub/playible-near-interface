@@ -30,6 +30,7 @@
         "react/react-in-jsx-scope": "off",
         "react/button-has-type": "off",
         "react/jsx-filename-extension": "off",
-        "object-curly-newline": "off"
+        "object-curly-newline": "off",
+        "react/jsx-props-no-spreading": "off"
     }
 }
