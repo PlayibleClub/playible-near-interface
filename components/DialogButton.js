@@ -62,6 +62,7 @@ const DialogButton = (props) => {
               "
               >
                 <Dialog.Title
+                  className="text-gray-500 font-semibold"
                   data-test="dialog-title"
                   as="h3"
                 >
@@ -70,7 +71,7 @@ const DialogButton = (props) => {
                 <div data-test="dialog-content-container" className="mt-2 p-1">
                   {children}
                 </div>
-                <div className="mt-4">
+                <div className="flex flex-row justify-end mt-4">
                   <Button
                     onClick={onClose}
                     data-test="dialog-close-button"

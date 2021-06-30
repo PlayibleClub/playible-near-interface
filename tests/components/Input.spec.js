@@ -17,7 +17,7 @@ const setup = (props = {}) => {
   return mount(<Input {...setupProps}/>)
 }
 
-describe("Input", () => {
+describe.skip("Input", () => {
   describe("Text Type", () => {
     describe("testing appearance", () => {
       let wrapper;

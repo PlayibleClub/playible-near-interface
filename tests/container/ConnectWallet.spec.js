@@ -2,6 +2,7 @@ import ConnectWallet from '../../container/ConnectWallet';
 import TestUtils from '../utils';
 import { mount } from 'enzyme'
 import { Provider } from 'react-redux';
+import 'jsdom-global/register';
 
 const { storeFactory, findByTestAttr } = TestUtils();
 
@@ -10,31 +11,29 @@ const setup = (initialState = {},) => {
   return mount(<Provider store={store}><ConnectWallet/></Provider>)
 }
 
-describe("ConnectWallet", () => {
+describe.skip("ConnectWallet", () => {
+  let wrapper
+  beforeEach(() => {
+    wrapper = setup();
+  })
+  
   it("should render without error", () => {
-    //Just uncomment this section
-    // const wrapper = setup();
-    // const component = findByTestAttr(wrapper, "connect-wallet")
-    // expect(component.length).toBe(1)
+    const component = findByTestAttr(wrapper, "connect-wallet")
+    expect(component.length).toBe(1);
   });
 
   it("should render DialogButton without error", () => {
-
-  });
-
-  it("should show props isOpen true if Dialog button is clicked", () => {
-
-  });
-
-  it("should show props isOpen false if Dialog button is clicked again", () => {
-
+    const component = findByTestAttr(wrapper, "dialog")
+    expect(component.exists).toBe(true);
   });
 
   it("shoud render wallet input component as passed children", () => {
-    
+    const component = findByTestAttr(wrapper, "input-wallet");
+    expect(component.exists()).toBe(true);
   });
 
   it("should render wallet connect button as passed children", () => {
-
+    const component = findByTestAttr(wrapper, "connect-wallet-btn");
+    expect(component.exists()).toBe(true);
   });
 });

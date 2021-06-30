@@ -1,13 +1,14 @@
 import PropTypes from 'prop-types';
 
 const Button = (props) => {
-  const { children, color, saturation, textColor, textSaturation, onClick } = props;
+  const { children, color, saturation, textColor, textSaturation, onClick, ...other } = props;
 
   return (
     <button
       onClick={onClick}
       data-test="regular-button"
-      className={`bg-${color}-${saturation} text-${textColor}-${textSaturation} p-1 m-1 rounded-md`}
+      className={`bg-${color}-${saturation} text-${textColor}-${textSaturation} focus:outline-none focus:ring-4 focus:ring-blue-200 ring-offset-9 font-medium px-4 p-1 m-1 rounded-full`}
+      {...other}
     >
       {children}
     </button>

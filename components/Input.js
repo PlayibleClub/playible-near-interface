@@ -1,8 +1,18 @@
 /* eslint-disable react/forbid-prop-types, react/jsx-props-no-spreading */
 import PropTypes from 'prop-types';
+import React from 'react';
 
 const Input = (props) => {
-  const { name, placeHolder, label, type, ...other } = props;
+  const {
+    name,
+    placeHolder,
+    label,
+    type,
+    ref,
+    onChange,
+    onBlur,
+    errors,
+  } = props;
 
   const TypeText = () => (
     <div data-test="input-text" className="group flex flex-col gap-1 relative m-2">
@@ -20,11 +30,24 @@ const Input = (props) => {
         border-gray-400 rounded-full"
         type="text"
         id={name}
+        onChange={onChange}
+        onBlur={onBlur}
         placeholder={placeHolder}
         name={name}
-        {...other}
+        ref={ref}
       />
-      <span className="ml-5 text-xs text-red-400" data-test="error-container">Error message here</span>
+      {
+        errors
+        && (
+        <span
+          className="ml-5 text-xs text-red-400"
+          data-test="error-container"
+        >
+          {errors.message}
+        </span>
+        )
+      }
+
     </div>
   );
 
@@ -47,6 +70,15 @@ Input.propTypes = {
   placeHolder: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
+  onBlur: PropTypes.func.isRequired,
+  onChange: PropTypes.func.isRequired,
+  ref: PropTypes.any,
+  errors: PropTypes.object,
+};
+
+Input.defaultProps = {
+  ref: null,
+  errors: null,
 };
 
 export default Input;
