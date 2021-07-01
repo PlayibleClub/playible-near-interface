@@ -4,7 +4,7 @@ const Header = (props) => {
   const { children, color } = props;
 
   return (
-    <div data-test="header" className={`bg-${color}`}>
+    <div data-test="header" className={`bg-${color}-200 flex flex-row justify-between`}>
       {children}
     </div>
   );
