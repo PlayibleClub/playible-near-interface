@@ -14,13 +14,15 @@ Roundedinput.propTypes = {
   color: PropTypes.string,
   size: PropTypes.string,
   rounded: PropTypes.string,
-
+  name: PropTypes.string.isRequired,
+  type: PropTypes.string,
 };
 
 Roundedinput.defaultProps = {
   color: 'black',
   size: '3xl',
   rounded: 'rounded-sm',
+  type: 'text',
 };
 
 export default Roundedinput;
