@@ -23,7 +23,7 @@ describe('Header', () => {
     const wrapper = shallow(<Header color="blue"><div>Fantasy Investar</div></Header>);
     const component = findByTestAttr(wrapper, 'header');
 
-    expect(component.hasClass('bg-blue')).toBe(true);
+    expect(component.hasClass('bg-blue-200')).toBe(true);
   });
 
 

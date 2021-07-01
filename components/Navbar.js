@@ -1,24 +1,24 @@
 import PropTypes from 'prop-types';
 
-const Header = (props) => {
+const Navbar = (props) => {
   const { children, color } = props;
 
   return (
-    <div data-test="header" className={`bg-${color}-200 flex flex-row justify-between`}>
+    <div data-test="Navbar" className={`bg-${color}-100 flex flex-col w-1/6`}>
       {children}
     </div>
   );
 };
 
-Header.propTypes = {
+Navbar.propTypes = {
   color: PropTypes.string,
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
 };
 
-Header.defaultProps = {
+Navbar.defaultProps = {
   color: 'blue',
   // children: <div>Fantasy investr</div>
   children: <div />,
 };
 
-export default Header;
+export default Navbar;
