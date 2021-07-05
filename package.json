@@ -21,6 +21,7 @@
         "@heroicons/react": "^1.0.1",
         "@reduxjs/toolkit": "^1.6.0",
         "@terra-money/terra.js": "^1.8.0",
+        "@terra-money/wallet-provider": "^1.0.0-alpha.2",
         "axios": "^0.21.1",
         "next": "10.2.3",
         "prop-types": "^15.7.2",
