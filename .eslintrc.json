@@ -31,6 +31,7 @@
         "react/button-has-type": "off",
         "react/jsx-filename-extension": "off",
         "object-curly-newline": "off",
-        "react/jsx-props-no-spreading": "off"
+        "react/jsx-props-no-spreading": "off",
+        "global-require": "off"
     }
 }

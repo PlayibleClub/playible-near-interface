@@ -4,12 +4,32 @@ import Navbar from '../components/Navbar';
 import Main from '../components/Main';
 import Roundedinput from '../components/Roundedinput';
 
+let useWallet = {};
+if (typeof document !== 'undefined') {
+  useWallet = require('@terra-money/wallet-provider').useWallet;
+}
+
 export default function Home() {
+  let wallet = '';
+  if (typeof document !== 'undefined') {
+    wallet = useWallet();
+  }
+
+  const interactWallet = () => {
+    if (wallet.status === 'WALLET_CONNECTED') {
+      wallet.disconnect(wallet.availableConnectTypes[1]);
+    } else {
+      wallet.connect(wallet.availableConnectTypes[1]);
+    }
+  };
+
   return (
     <>
       <Header>
         <div className="flex flex-row">
-          <Button rounded="rounded-full  " size="py-1 px-6">Connect</Button>
+          <Button rounded="rounded-full  " onClick={interactWallet} size="py-1 px-6">
+            {wallet.status === 'WALLET_CONNECTED' ? 'Disconnect Wallet' : 'Connect Wallet'}
+          </Button>
           <Button rounded="rounded-full h-12 w-10 flex items-center justify-center" />
         </div>
 
