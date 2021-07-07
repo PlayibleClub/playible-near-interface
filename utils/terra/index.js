@@ -1,4 +1,9 @@
 import { LCDClient } from '@terra-money/terra.js';
+// import { MsgExecuteContract } from '@terra-money/terra.js'
+// let connectedWallet = {}
+// // if (typeof document !== 'undefined') {
+// //   connectedWallet = require('@terra-money/wallet-provider').useConnectedWallet();
+// // }
 
 const TerraEnv = () => {
   const terra = new LCDClient({

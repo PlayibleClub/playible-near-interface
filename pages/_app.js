@@ -1,11 +1,8 @@
 import '../styles/globals.css';
 import { Provider } from 'react-redux'
 import { store } from '../redux/store';
-let Wallet = {};
-if (typeof document !== 'undefined'){
-  Wallet = require("@terra-money/wallet-provider").WalletProvider
-}
-
+import { StaticWalletProvider, WalletProvider } from '@terra-money/wallet-provider';
+ 
 function MyApp({ Component, pageProps }) {
   const mainnet = {
     name: 'mainnet',
@@ -20,25 +17,48 @@ function MyApp({ Component, pageProps }) {
   };
 
 
-  if(typeof document !== 'undefined') {
-    return (
-        <Wallet
-          defaultNetwork={testnet} 
-          walletConnectChainIds={{
-            0: testnet,
-            1: mainnet,
-          }}
-        >
-          <Provider store={store}>
-            <Component {...pageProps} />
-          </Provider>
-        </Wallet>
-    )
-  } else {
-    return (
-      <Component {...pageProps} />
-    )
-  }
+  // if(typeof document !== 'undefined') {
+  //   return (
+  //       <WalletProvider
+  //         defaultNetwork={testnet} 
+  //         walletConnectChainIds={{
+  //           0: testnet,
+  //           1: mainnet,
+  //         }}
+  //       >
+  //         <Provider store={store}>
+  //           <Component {...pageProps} />
+  //         </Provider>
+  //       </WalletProvider>
+  //   )
+  // } else {
+  //   return (
+  //     <Provider store={store}>
+  //       <Component {...pageProps} />
+  //     </Provider>
+  //   )
+  // }
+  return process.browser ? (
+    <WalletProvider
+      defaultNetwork={testnet} 
+      walletConnectChainIds={{
+        0: testnet,
+        1: mainnet,
+      }}
+    >
+      <Provider store={store}>
+        <Component {...pageProps} />
+      </Provider>
+    </WalletProvider>
+  ) : (
+    <StaticWalletProvider
+      defaultNetwork={testnet} 
+    >
+      <Provider store={store}>
+        <Component {...pageProps} />
+      </Provider>
+    </StaticWalletProvider>
+  )
 }
 
 export default MyApp;
