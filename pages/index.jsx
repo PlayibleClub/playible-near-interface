@@ -1,25 +1,18 @@
+import { useWallet, WalletStatus } from '@terra-money/wallet-provider';
 import Header from '../components/Header';
 import Button from '../components/Button';
 import Navbar from '../components/Navbar';
 import Main from '../components/Main';
 import Roundedinput from '../components/Roundedinput';
 
-let useWallet = {};
-if (typeof document !== 'undefined') {
-  useWallet = require('@terra-money/wallet-provider').useWallet;
-}
-
 export default function Home() {
-  let wallet = '';
-  if (typeof document !== 'undefined') {
-    wallet = useWallet();
-  }
+  const { status, connect, disconnect, availableConnectTypes } = useWallet();
 
   const interactWallet = () => {
-    if (wallet.status === 'WALLET_CONNECTED') {
-      wallet.disconnect(wallet.availableConnectTypes[1]);
+    if (status === WalletStatus.WALLET_CONNECTED) {
+      disconnect();
     } else {
-      wallet.connect(wallet.availableConnectTypes[1]);
+      connect(availableConnectTypes[1]);
     }
   };
 
@@ -28,7 +21,7 @@ export default function Home() {
       <Header>
         <div className="flex flex-row">
           <Button rounded="rounded-full  " onClick={interactWallet} size="py-1 px-6">
-            {wallet.status === 'WALLET_CONNECTED' ? 'Disconnect Wallet' : 'Connect Wallet'}
+            { status === WalletStatus.WALLET_CONNECTED ? 'Disconnect Wallet' : 'Connect Wallet'}
           </Button>
           <Button rounded="rounded-full h-12 w-10 flex items-center justify-center" />
         </div>
@@ -49,7 +42,6 @@ export default function Home() {
           <Roundedinput rounded="rounded-full" />
         </Main>
       </div>
-
     </>
   );
 }
