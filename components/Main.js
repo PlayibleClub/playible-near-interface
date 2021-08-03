@@ -4,7 +4,7 @@ const Main = (props) => {
   const { children, color } = props;
 
   return (
-    <div data-test="Main" className={`bg-${color}-100 flex flex-col w-5/6`}>
+    <div data-test="Main" className={`bg-${color} flex flex-col w-full h-full`}>
       {children}
     </div>
   );

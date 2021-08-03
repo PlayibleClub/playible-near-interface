@@ -1,24 +1,24 @@
 import PropTypes from 'prop-types';
 
-const Navbar = (props) => {
+const RoundedContainer = (props) => {
   const { children, color } = props;
 
   return (
-    <div data-test="Navbar" className={`bg-${color} flex flex-col w-1/6 h-full`}>
+    <div data-test="RoundedContainer" className={`bg-${color} flex rounded-md w-5/6 h-5/6 `}>
       {children}
     </div>
   );
 };
 
-Navbar.propTypes = {
+RoundedContainer.propTypes = {
   color: PropTypes.string,
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
 };
 
-Navbar.defaultProps = {
-  color: 'blue',
+RoundedContainer.defaultProps = {
+  color: 'indigo-light',
   // children: <div>Fantasy investr</div>
   children: <div />,
 };
 
-export default Navbar;
+export default RoundedContainer;

@@ -18,7 +18,7 @@ describe('Header', () => {
     expect(component.children().length).toBe(1);
   });
 
-  it('should show class of bg-blue with `color props is blue`', () => {
+  it.skip('should show class of bg-blue with `color props is blue`', () => {
 
     const wrapper = shallow(<Header color="blue"><div>Fantasy Investar</div></Header>);
     const component = findByTestAttr(wrapper, 'header');

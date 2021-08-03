@@ -1,24 +1,24 @@
 import PropTypes from 'prop-types';
 
-const Navbar = (props) => {
+const RowContainer = (props) => {
   const { children, color } = props;
 
   return (
-    <div data-test="Navbar" className={`bg-${color} flex flex-col w-1/6 h-full`}>
+    <div data-test="RowContainer" className={`bg-${color} overflow-x-scroll flex flex-row w-full h-64 `}>
       {children}
     </div>
   );
 };
 
-Navbar.propTypes = {
+RowContainer.propTypes = {
   color: PropTypes.string,
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
 };
 
-Navbar.defaultProps = {
-  color: 'blue',
+RowContainer.defaultProps = {
+  color: 'pink',
   // children: <div>Fantasy investr</div>
   children: <div />,
 };
 
-export default Navbar;
+export default RowContainer;

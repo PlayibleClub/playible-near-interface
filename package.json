@@ -24,6 +24,7 @@
         "@terra-money/wallet-provider": "^1.2.0-alpha.1",
         "axios": "^0.21.1",
         "next": "10.2.3",
+        "next-images": "^1.8.1",
         "prop-types": "^15.7.2",
         "react": "17.0.2",
         "react-dom": "17.0.2",
@@ -51,6 +52,7 @@
         "eslint-plugin-react": "^7.24.0",
         "eslint-plugin-react-hooks": "^4.2.0",
         "husky": "^6.0.0",
+        "identity-obj-proxy": "^3.0.0",
         "jest": "^27.0.4",
         "jsdom": "16.6.0",
         "jsdom-global": "3.0.2",
@@ -75,5 +77,11 @@
         "./**/*.{js,jsx,ts,tsx}": [
             "eslint . --fix"
         ]
+    },
+    "jest": {
+        "moduleNameMapper": {
+            "\\.(jpg|ico|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.js",
+            "\\.(css|less)$": "<rootDir>/__mocks__/fileMock.js"
+        }
     }
 }

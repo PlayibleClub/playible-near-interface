@@ -4,10 +4,8 @@ const Header = (props) => {
   const { children, color } = props;
 
   return (
-    <div data-test="header" className={`bg-${color} relative  flex flex-row justify-around h-24`}>
-      <div className="w-full absolute bottom-0 flex flex-row justify-around ">
-        {children}
-      </div>
+    <div data-test="header" className={`bg-${color}-200 flex flex-row justify-between`}>
+      {children}
     </div>
   );
 };
@@ -18,7 +16,7 @@ Header.propTypes = {
 };
 
 Header.defaultProps = {
-  color: 'indigo-navy',
+  color: 'blue',
   // children: <div>Fantasy investr</div>
   children: <div />,
 };
