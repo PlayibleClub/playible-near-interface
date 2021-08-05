@@ -26,6 +26,8 @@ export default function Home() {
     } else {
       connect(availableConnectTypes[1]);
     }
+
+    console.log(status);
   };
   const animals = ['Dog', 'Bird', 'Cat', 'Mouse', 'Horse'];
 
