@@ -28,6 +28,7 @@ export default function Home() {
     }
   };
   const animals = ['Dog', 'Bird', 'Cat', 'Mouse', 'Horse'];
+  const positions = ['PG', 'SG', 'C']
 
   return (
     <>
@@ -90,7 +91,7 @@ export default function Home() {
 
               <TitledContainer align="justify-start" className=" flex w-1/2 justify-start" title="TOP PERFORMERS">
                 <AthleteGrid>
-                  <AthleteContainer AthleteName="STEPHEN CURRY" TeamName="GOLDEN STATE WARRIORS" CoinValue="420 UST" />
+                  <AthleteContainer AthleteName="STEPHEN CURRY" TeamName="GOLDEN STATE WARRIORS" CoinValue="420 UST" Positions={positions} />
                   <RoundedContainer>bant</RoundedContainer>
                   <RoundedContainer>bant</RoundedContainer>
                   <RoundedContainer>bant</RoundedContainer>
