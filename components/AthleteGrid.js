@@ -4,7 +4,7 @@ const AthleteGrid = (props) => {
   const { children, color } = props;
 
   return (
-    <div data-test="AthleteGrid" className={`bg-${color}-500 w-11/12  h-full `}>
+    <div data-test="AthleteGrid" className={`bg-${color}-500 w-11/12 grid gap-x-1 gap-y-2 grid-cols-2  h-full `}>
       {children}
     </div>
   );
