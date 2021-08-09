@@ -9,6 +9,7 @@ import RoundedContainer from '../components/RoundedContainer';
 import AthleteGrid from '../components/AthleteGrid';
 // import Roundedinput from '../components/Roundedinput';
 import AthleteContainer from '../components/AthleteContainer';
+import GameResultContainer from '../components/GameResultContainer';
 import RowContainer from '../components/RowContainer';
 // import fantasyLogo from '../public/fantasyinvestar.png';
 // import daily from '../public/daily.png';
@@ -69,7 +70,9 @@ export default function Home() {
 
               </TitledContainer>
 
-              <TitledContainer className=" flex w-1/2" title="GAME RESULTS">
+
+
+              <TitledContainer className=" flex " title="GAME RESULTS">
                 <RoundedContainer>
                   <select className="w-11/12 bg-indigo-light" name="games" id="cars">
                     <option value="All Games">All Games</option>
@@ -79,24 +82,44 @@ export default function Home() {
                   </select>
                 </RoundedContainer>
 
-                <RoundedContainer>
+                <div className="mt-2">
+                  <RoundedContainer >
 
-                  <ul>
-                    {animals.map((animal) => (
-                      <li>{animal}</li>
-                    ))}
-                  </ul>
-                </RoundedContainer>
+                    <ul>
+                      {animals.map((animal) => (
+                        <li><GameResultContainer></GameResultContainer></li>
+                      ))}
+                    </ul>
+                  </RoundedContainer>
+                </div>
+
               </TitledContainer>
 
-              <TitledContainer align="justify-start" className=" flex w-1/2 justify-start" title="TOP PERFORMERS">
+
+
+
+
+
+
+              <TitledContainer align="justify-start" className=" flex w-full justify-start" title="TOP PERFORMERS">
                 <AthleteGrid>
-                  <AthleteContainer AthleteName="STEPHEN CURRY" TeamName="GOLDEN STATE WARRIORS" CoinValue="420 UST" />
-                  <RoundedContainer>bant</RoundedContainer>
-                  <RoundedContainer>bant</RoundedContainer>
-                  <RoundedContainer>bant</RoundedContainer>
+                  <AthleteTokenContainer AthleteName="STEPHEN CURRY" CoinValue="54" />
+                  <AthleteTokenContainer AthleteName="STEPHEN CURRY" CoinValue="54" />
+                  <AthleteTokenContainer AthleteName="STEPHEN CURRY" CoinValue="54" />
+                  <AthleteTokenContainer AthleteName="STEPHEN CURRY" CoinValue="54" />
                 </AthleteGrid>
               </TitledContainer>
+
+
+              <TitledContainer title="PACKS">
+                <RowContainer>
+                  <AthleteTokenContainer AthleteName="STEPHEN CURRY" CoinValue="54" />
+                  <AthleteTokenContainer AthleteName="LEBRON JAMES" CoinValue="106" />
+
+                </RowContainer>
+              </TitledContainer>
+
+
             </div>
 
           </Main>
