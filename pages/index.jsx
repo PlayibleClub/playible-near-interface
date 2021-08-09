@@ -1,4 +1,4 @@
-import { useWallet, WalletStatus } from '@terra-money/wallet-provider';
+import { useWallet, useConnectedWallet, WalletStatus, ConnectType } from '@terra-money/wallet-provider';
 // import Image from 'next/image';
 import Header from '../components/Header';
 import Button from '../components/Button';
@@ -16,18 +16,106 @@ import RowContainer from '../components/RowContainer';
 // import seasonal from '../public/seasonal.png';
 // import wallet from '../public/wallet.png';
 import AthleteTokenContainer from '../components/AthleteTokenContainer';
+import axios from 'axios';
+
+
+import {
+  encodeRelayCandidateBlockInput,
+  encodeAppendSignatureInput,
+  encodeVerifyAndSaveResultInput,
+  encodeCalldata,
+} from '../utils/band';
+import { 
+  MsgExecuteContract, 
+  StdFee, 
+} from '@terra-money/terra.js';
 
 export default function Home() {
   const { status, connect, disconnect, availableConnectTypes } = useWallet();
+  const connectedWallet = useConnectedWallet();
 
   const interactWallet = () => {
     if (status === WalletStatus.WALLET_CONNECTED) {
       disconnect();
     } else {
-      connect(availableConnectTypes[1]);
+      connect(ConnectType.CHROME_EXTENSION);
     }
   };
+
+  // gas limit
+  const GAS = 2_000_000;
+
+  const bridgeAddress = "terra14kfq7r56ewrv4pk5fldy23mkg6xd9sq8ujgzcp";
+  const consumerAddress = "terra1r8yt89e77vdg7jlllazvkav3g2a2vhznusatnl";
   const animals = ['Dog', 'Bird', 'Cat', 'Mouse', 'Horse'];
+
+  const requestData = async () => {
+    try {
+      const result = await axios.get(
+        "https://laozi-testnet2.bandchain.org/oracle/proof/50"
+      );
+      console.log(result);
+      if (result.status == 200) {
+        relayAndVerify(result.data.result.proof);
+      }
+    } catch(err) {
+      if (err.isAxiosError && err.response && err.response.status !== 404) {
+        console.error(err.response.data);
+      } else if (!err.isAxiosError) {
+        console.error(err.message);
+      }
+    }
+  }
+
+  const relayAndVerify = async (proof) => {
+    console.log(proof);
+    console.log(connectedWallet);
+    console.log(status);
+    const encodedBlockHeader = encodeRelayCandidateBlockInput(proof);
+    const encodedSigs = encodeAppendSignatureInput(proof);
+    const encodeVerifyAndSaveResult = encodeVerifyAndSaveResultInput(proof);
+    console.log("Encoded Block Header: ", encodedBlockHeader);
+    console.log("Encoded Sigs: ", encodedSigs);
+    console.log("Encoded Verify And Save Result: ", encodeVerifyAndSaveResult);
+  
+    // create msgs
+    const msg1 = new MsgExecuteContract(connectedWallet.walletAddress, bridgeAddress, {
+      relay_candidate_block: { data: encodedBlockHeader },
+    });
+    const msg2 = new MsgExecuteContract(connectedWallet.walletAddress, bridgeAddress, {
+      append_signature: { data: encodedSigs },
+    });
+    const msg3 = new MsgExecuteContract(connectedWallet.walletAddress, bridgeAddress, {
+      verify_and_save_result: { data: encodeVerifyAndSaveResult },
+    });
+    const msg4 = new MsgExecuteContract(connectedWallet.walletAddress, consumerAddress, {
+      save_verified_result: { request_id: parseInt(proof.oracle_data_proof.result.request_id, 10) }
+    });
+  
+    console.log("executing");
+    // sign tx
+    const signedTx = await connectedWallet.post({
+      msgs: [ msg1 ],
+      gasPrices: new StdFee(10_000_000, { uusd: 2000000 }).gasPrices(),
+      gasAdjustment: 1.1,
+    }).then(e => {
+      console.log(e);
+    }).catch(e =>{
+      console.log(e);
+    });
+
+    console.log("executed contract");
+  
+    // broadcast tx
+    const { txhash } = await terra.tx.broadcastSync(signedTx);
+    console.log("broadcast tx to terra chain: ", txhash);
+  
+    const txResult = await validateTx(txhash);
+    console.log("\n");
+    if (!txResult) {
+      throw "Fail to get result from chain";
+    }
+  };
 
   return (
     <>
@@ -50,12 +138,15 @@ export default function Home() {
           </Header>
 
           <Main color="indigo-dark">
+            <Button rounded="rounded-full" onClick={requestData} size="py-1 px-6">
+              { 'band' }
+            </Button>
 
             <div className="flex flex-col  w-full h-full overflow-y-auto">
               <TitledContainer title="MARKETPLACE">
                 <RowContainer>
-                  <AthleteTokenContainer AthleteName="STEPHEN CURRY" CoinValue="54" />
-                  <AthleteTokenContainer AthleteName="LEBRON JAMES" CoinValue="106" />
+                  <AthleteTokenContainer AthleteName="STEPHEN CURRY" TeamName="GOLDEN STATE WARRIORS" CoinValue="54" />
+                  <AthleteTokenContainer AthleteName="LEBRON JAMES" TeamName="LOS ANGELES LAKERS" CoinValue="106" />
 
                 </RowContainer>
               </TitledContainer>

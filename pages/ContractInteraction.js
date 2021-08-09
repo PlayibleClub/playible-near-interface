@@ -7,14 +7,21 @@ import {
   TxUnspecifiedError,
   useConnectedWallet,
   UserDenied,
+  useWallet,
+  WalletStatus
 } from '@terra-money/wallet-provider';
+import { 
+  Client, 
+  Transaction, 
+  Message, 
+  Wallet 
+} from '@bandprotocol/bandchain.js';
 
 const ContractInteraction = () => {
   const [offeredCoin, setOfferedCoin] = useState('');
   const [memo, setMemo] = useState('');
   const [txResults, setTxResults] = useState(null);
   const [txError, setTxError] = useState(null);
-  const connectedWallet = useConnectedWallet();
 
   const send = useCallback(() => {
     setTxResults(null);
