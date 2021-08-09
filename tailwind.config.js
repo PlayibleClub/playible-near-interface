@@ -13,8 +13,10 @@ module.exports = {
                 light: '#2A2C42',
                 DEFAULT: '#5c6ac4',
                 dark: '#161623',
+                gray: '#212127',
                 navy: '#36384D',
-
+                blue: '#024799',
+                darkblue: '#81C4FF',
             },
             white: {
                 light: '#FFFFFF'

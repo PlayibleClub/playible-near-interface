@@ -92,7 +92,7 @@ export default function Home() {
 
               <TitledContainer align="justify-start" className=" flex w-1/2 justify-start" title="TOP PERFORMERS">
                 <AthleteGrid>
-                  <AthleteContainer AthleteName="STEPHEN CURRY" TeamName="GOLDEN STATE WARRIORS" CoinValue="420 UST" Positions={positions} />
+                  <AthleteContainer AthleteName="STEPHEN CURRY" TeamName="GOLDEN STATE WARRIORS" CoinValue="420 UST" Positions={positions} colorgrad1="indigo-blue" colorgrad2="indigo-darkblue" />
                   <RoundedContainer>bant</RoundedContainer>
                   <RoundedContainer>bant</RoundedContainer>
                   <RoundedContainer>bant</RoundedContainer>
