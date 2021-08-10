@@ -1,14 +1,17 @@
 import { useCallback, useState } from 'react';
 import { MsgExecuteContract, MsgInstantiateContract } from '@terra-money/terra.js';
 import {
+  useWallet, WalletStatus,
+  useConnectedWallet,
   CreateTxFailed,
   Timeout,
   TxFailed,
+  TxResult,
   TxUnspecifiedError,
-  useConnectedWallet,
   UserDenied,
-  useWallet, WalletStatus
 } from '@terra-money/wallet-provider';
+
+import TerraEnv from '../utils/terra';
 
 const ContractInteraction = () => {
   
@@ -23,20 +26,45 @@ const ContractInteraction = () => {
   const [txResults, setTxResults] = useState(null);
   const [txError, setTxError] = useState(null);
   
-  const { status, connect, disconnect, availableConnectTypes } = useWallet();
+  const {
+    status,
+    network,
+    wallets,
+    availableConnectTypes,
+    connect,
+    disconnect,
+  } = useWallet();
+
   const connectedWallet = useConnectedWallet();
+  const { terra } = TerraEnv();
 
   const interactWallet = () => {
-    if (status === WalletStatus.WALLET_CONNECTED) {
-      disconnect();
-    } else {
+    if (status === WalletStatus.WALLET_NOT_CONNECTED) {
       connect(availableConnectTypes[1]);
+    } else if (status === WalletStatus.WALLET_CONNECTED){
+      disconnect();
     }
-
-    console.log(status);
   };
 
-  const executeMsg = useCallback(() => {
+  const queryContract = async () => {
+    setTxResults(null);
+    setTxError(null);
+
+    try {
+      const result = await terra.wasm.contractQuery(
+        contractAddr,
+        JSON.parse(contractMsg),
+      );
+      setTxResults(result);
+    } catch (e) {
+      setTxError(e);
+      console.log("Fail to get latest result from consumer contract");
+      console.log(e);
+    }
+    return null;
+  };
+
+  const executeContract = useCallback(() => {
     setTxResults(null);
     setTxError(null);
 
@@ -46,10 +74,9 @@ const ContractInteraction = () => {
           connectedWallet.walletAddress,  // Wallet Address
           contractAddr,                   // Contract Address
           JSON.parse(contractMsg),        // ExecuteMsg
-          { uusd: parseFloat(offeredCoin) * 1000000 },
+          //{ uluna: parseFloat(offeredCoin) * 1000000 },
         ),
       ],
-      memo,
     }).then((result) => {
       setTxResults(result);
       setOfferedCoin('');
@@ -72,9 +99,14 @@ const ContractInteraction = () => {
         );
       }
     });
-  }, [offeredCoin, connectedWallet, memo]);
+  }, [/*offeredCoin,*/ connectedWallet]);
 
-  const instatiateContract = useCallback(() => {
+  const initContract = useCallback(() => {
+
+    if (!connectedWallet) {
+      return;
+    }
+
     setTxResults(null);
     setTxError(null);
 
@@ -115,11 +147,72 @@ const ContractInteraction = () => {
 
   return (
     <>
-      <h1>
-        Tx Sample
-      </h1>
+      <h1>Connect Sample</h1>
+      <section>
+        <pre>
+          {JSON.stringify(
+            {
+              status,
+              network,
+              wallets,
+              availableConnectTypes,
+            },
+            null,
+            2,
+          )}
+        </pre>
+      </section>
       <div className="flex flex-col p-4 max-w-md gap-1">
-        <button onClick={interactWallet}>Connect Wallet</button>
+        {status === WalletStatus.WALLET_NOT_CONNECTED && (
+          <button
+            key={'connect-' + availableConnectTypes[1]}
+            onClick={interactWallet}
+          >
+            Connect {availableConnectTypes[1]}
+          </button>
+        )}
+        {status === WalletStatus.WALLET_CONNECTED && (
+          <button onClick={interactWallet}>Disconnect</button>
+        )}
+
+        <div className="flex flex-col gap-2">
+          <label htmlFor="contractAddr">
+            <span>Contract Address: </span>
+            <input id="contractAddr" type="text" placeholder="Enter Contract Address here" value={contractAddr} onChange={(e) => setContractAddr(e.target.value)} />
+          </label>
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <label htmlFor="contractMsg">
+            <span>Query Message: </span>
+            <input id="contractMsg" type="text" placeholder="Enter Query Message here" value={contractMsg} onChange={(e) => setContractMsg(e.target.value)} />
+          </label>
+        </div>
+
+        <button onClick={queryContract}>Query Contract</button>
+
+        <div className="flex flex-col gap-2">
+          <label htmlFor="contractAddr">
+            <span>Contract Address: </span>
+            <input id="contractAddr" type="text" placeholder="Enter Contract Address here" value={contractAddr} onChange={(e) => setContractAddr(e.target.value)} />
+          </label>
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <label htmlFor="contractMsg">
+            <span>Execute Message: </span>
+            <input id="contractMsg" type="text" placeholder="Enter Execute Message here" value={contractMsg} onChange={(e) => setContractMsg(e.target.value)} />
+          </label>
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <label htmlFor="coins">
+            <span>Coins: </span>
+            <input id="coins" type="number" placeholder="Enter coins here" value={offeredCoin} onChange={(e) => setOfferedCoin(e.target.value)} />
+          </label>
+        </div>
+
+        <button onClick={executeContract}>Submit Contract</button>
 
         <div className="flex flex-col gap-2">
           <label htmlFor="codeID">
@@ -154,30 +247,7 @@ const ContractInteraction = () => {
           </label>
         </div>
 
-        <button onClick={instatiateContract}>Instantiate Contract</button>
-
-        <div className="flex flex-col gap-2">
-          <label htmlFor="contractAddr">
-            <span>Contract Address: </span>
-            <input id="contractAddr" type="text" placeholder="Enter Contract Address here" value={contractAddr} onChange={(e) => setContractAddr(e.target.value)} />
-          </label>
-        </div>
-
-        <div className="flex flex-col gap-2">
-          <label htmlFor="contractMsg">
-            <span>Execute Message: </span>
-            <input id="contractMsg" type="text" placeholder="Enter Execute Message here" value={contractMsg} onChange={(e) => setContractMsg(e.target.value)} />
-          </label>
-        </div>
-
-        <div className="flex flex-col gap-2">
-          <label htmlFor="coins">
-            <span>Coins: </span>
-            <input id="coins" type="number" placeholder="Enter coins here" value={offeredCoin} onChange={(e) => setOfferedCoin(e.target.value)} />
-          </label>
-        </div>
-
-        <button onClick={executeMsg}>Submit Contract</button>
+        <button onClick={initContract}>Instantiate Contract</button>
       </div>
       <div className="mt-2 p-4 max-w-md">
         <h1>
