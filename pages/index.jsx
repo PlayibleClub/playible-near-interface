@@ -29,6 +29,9 @@ import {
   MsgExecuteContract, 
   StdFee, 
 } from '@terra-money/terra.js';
+import TerraEnv from '../utils/terra';
+
+const { terra } = TerraEnv();
 
 export default function Home() {
   const { status, connect, disconnect, availableConnectTypes } = useWallet();
@@ -56,7 +59,16 @@ export default function Home() {
       );
       console.log(result);
       if (result.status == 200) {
-        relayAndVerify(result.data.result.proof);
+        await relayAndVerify(result.data.result.proof);
+        const currentRates = await getLatestSaveResultFromConsumer();
+          if (currentRates) {
+            console.log("latest saved result: ", JSON.stringify(currentRates));
+          } else {
+            throw "Fail to get current rates from std contract";
+          }
+          console.log(
+            "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-="
+          );
       }
     } catch(err) {
       if (err.isAxiosError && err.response && err.response.status !== 404) {
@@ -95,7 +107,7 @@ export default function Home() {
     console.log("executing");
     // sign tx
     const signedTx = await connectedWallet.post({
-      msgs: [ msg1 ],
+      msgs: [ msg1, msg2, msg3, msg4 ],
       gasPrices: new StdFee(10_000_000, { uusd: 2000000 }).gasPrices(),
       gasAdjustment: 1.1,
     }).then(e => {
@@ -107,14 +119,27 @@ export default function Home() {
     console.log("executed contract");
   
     // broadcast tx
-    const { txhash } = await terra.tx.broadcastSync(signedTx);
+    /*const { txhash } = await terra.tx.broadcastSync(signedTx);
     console.log("broadcast tx to terra chain: ", txhash);
   
     const txResult = await validateTx(txhash);
     console.log("\n");
     if (!txResult) {
       throw "Fail to get result from chain";
+    }*/
+  };
+
+  const getLatestSaveResultFromConsumer = async () => {
+    try {
+      const result = await terra.wasm.contractQuery(consumerAddress, {
+        latest_saved_result: {},
+      });
+      return result;
+    } catch (e) {
+      console.log("Fail to get latest result from consumer contract");
+      console.log(e);
     }
+    return null;
   };
 
   return (
