@@ -4,7 +4,7 @@ const AthleteContainer = (props) => {
   const { children, color, AthleteName, TeamName, CoinValue } = props;
 
   return (
-    <div data-test="AthleteContainer" className={`bg-${color} flex flex-col rounded-md w-5/6 h-full `}>
+    <div data-test="AthleteContainer" className={`bg-${color} flex flex-col rounded-md w-96 h-96 `}>
       <div className="flex flex-col h-1/2">
         {children}
         <div>{AthleteName}</div>

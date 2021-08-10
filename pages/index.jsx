@@ -9,6 +9,7 @@ import RoundedContainer from '../components/RoundedContainer';
 import AthleteGrid from '../components/AthleteGrid';
 // import Roundedinput from '../components/Roundedinput';
 import AthleteContainer from '../components/AthleteContainer';
+import PerformerContainer from '../components/PerformerContainer';
 import GameResultContainer from '../components/GameResultContainer';
 import RowContainer from '../components/RowContainer';
 // import fantasyLogo from '../public/fantasyinvestar.png';
@@ -57,7 +58,7 @@ export default function Home() {
                 <RowContainer>
                   <AthleteTokenContainer AthleteName="STEPHEN CURRY" CoinValue="54" />
                   <AthleteTokenContainer AthleteName="LEBRON JAMES" CoinValue="106" />
-
+                  <AthleteTokenContainer AthleteName="LEBRON JAMES" CoinValue="106" />
                 </RowContainer>
               </TitledContainer>
               <TitledContainer align="justify-center" title="PLAY">
@@ -69,6 +70,65 @@ export default function Home() {
                 </div>
 
               </TitledContainer>
+
+
+
+
+
+              <div
+                class="flex overflow-x-scroll pb-10 hide-scroll-bar"
+              >
+                <div
+                  class="flex flex-nowrap lg:ml-40 md:ml-20 ml-10 "
+                >
+                  <div class="inline-block px-3">
+                    <div
+                      class="w-64 h-64 max-w-xs overflow-hidden rounded-lg shadow-md bg-white hover:shadow-xl transition-shadow duration-300 ease-in-out"
+                    ></div>
+                  </div>
+                  <div class="inline-block px-3">
+                    <div
+                      class="w-64 h-64 max-w-xs overflow-hidden rounded-lg shadow-md bg-white hover:shadow-xl transition-shadow duration-300 ease-in-out"
+                    ></div>
+                  </div>
+                  <div class="inline-block px-3">
+                    <div
+                      class="w-64 h-64 max-w-xs overflow-hidden rounded-lg shadow-md bg-white hover:shadow-xl transition-shadow duration-300 ease-in-out"
+                    ></div>
+                  </div>
+                  <div class="inline-block px-3">
+                    <div
+                      class="w-64 h-64 max-w-xs overflow-hidden rounded-lg shadow-md bg-white hover:shadow-xl transition-shadow duration-300 ease-in-out"
+                    ></div>
+                  </div>
+                  <div class="inline-block px-3">
+                    <div
+                      class="w-64 h-64 max-w-xs overflow-hidden rounded-lg shadow-md bg-white hover:shadow-xl transition-shadow duration-300 ease-in-out"
+                    ></div>
+                  </div>
+                  <div class="inline-block px-3">
+                    <div
+                      class="w-64 h-64 max-w-xs overflow-hidden rounded-lg shadow-md bg-white hover:shadow-xl transition-shadow duration-300 ease-in-out"
+                    ></div>
+                  </div>
+                  <div class="inline-block px-3">
+                    <div
+                      class="w-64 h-64 max-w-xs overflow-hidden rounded-lg shadow-md bg-white hover:shadow-xl transition-shadow duration-300 ease-in-out"
+                    ></div>
+                  </div>
+                  <div class="inline-block px-3">
+                    <div
+                      class="w-64 h-64 max-w-xs overflow-hidden rounded-lg shadow-md bg-white hover:shadow-xl transition-shadow duration-300 ease-in-out"
+                    ></div>
+                  </div>
+                </div>
+              </div>
+
+
+
+
+
+
 
 
 
@@ -103,18 +163,18 @@ export default function Home() {
 
               <TitledContainer align="justify-start" className=" flex w-full justify-start" title="TOP PERFORMERS">
                 <AthleteGrid>
-                  <AthleteTokenContainer AthleteName="STEPHEN CURRY" CoinValue="54" />
-                  <AthleteTokenContainer AthleteName="STEPHEN CURRY" CoinValue="54" />
-                  <AthleteTokenContainer AthleteName="STEPHEN CURRY" CoinValue="54" />
-                  <AthleteTokenContainer AthleteName="STEPHEN CURRY" CoinValue="54" />
+                  <PerformerContainer AthleteName="STEPHEN CURRY" CoinValue="86.3" />
+                  <PerformerContainer AthleteName="LEBRON JAMES" CoinValue="96.0" />
+                  <PerformerContainer AthleteName="DEVIN BOOKER" CoinValue="76.8" />
+                  <PerformerContainer AthleteName="ARMONI BROOKS" CoinValue="83.0" />
                 </AthleteGrid>
               </TitledContainer>
 
 
               <TitledContainer title="PACKS">
                 <RowContainer>
-                  <AthleteTokenContainer AthleteName="STEPHEN CURRY" CoinValue="54" />
-                  <AthleteTokenContainer AthleteName="LEBRON JAMES" CoinValue="106" />
+                  <AthleteTokenContainer AthleteName="PREMIUM PACK" CoinValue="35 UST" />
+                  <AthleteTokenContainer AthleteName="PREMIUM PACK" CoinValue="106" />
 
                 </RowContainer>
               </TitledContainer>
