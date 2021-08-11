@@ -9,6 +9,8 @@ import RoundedContainer from '../components/RoundedContainer';
 import AthleteGrid from '../components/AthleteGrid';
 // import Roundedinput from '../components/Roundedinput';
 import AthleteContainer from '../components/AthleteContainer';
+import PerformerContainer from '../components/PerformerContainer';
+import GameResultContainer from '../components/GameResultContainer';
 import RowContainer from '../components/RowContainer';
 // import fantasyLogo from '../public/fantasyinvestar.png';
 // import daily from '../public/daily.png';
@@ -58,7 +60,7 @@ export default function Home() {
                 <RowContainer>
                   <AthleteTokenContainer AthleteName="STEPHEN CURRY" CoinValue="54" />
                   <AthleteTokenContainer AthleteName="LEBRON JAMES" CoinValue="106" />
-
+                  <AthleteTokenContainer AthleteName="LEBRON JAMES" CoinValue="106" />
                 </RowContainer>
               </TitledContainer>
               <TitledContainer align="justify-center" title="PLAY">
@@ -71,7 +73,68 @@ export default function Home() {
 
               </TitledContainer>
 
-              <TitledContainer className=" flex w-1/2" title="GAME RESULTS">
+
+
+
+
+              <div
+                class="flex overflow-x-scroll pb-10 hide-scroll-bar"
+              >
+                <div
+                  class="flex flex-nowrap lg:ml-40 md:ml-20 ml-10 "
+                >
+                  <div class="inline-block px-3">
+                    <div
+                      class="w-64 h-64 max-w-xs overflow-hidden rounded-lg shadow-md bg-white hover:shadow-xl transition-shadow duration-300 ease-in-out"
+                    ></div>
+                  </div>
+                  <div class="inline-block px-3">
+                    <div
+                      class="w-64 h-64 max-w-xs overflow-hidden rounded-lg shadow-md bg-white hover:shadow-xl transition-shadow duration-300 ease-in-out"
+                    ></div>
+                  </div>
+                  <div class="inline-block px-3">
+                    <div
+                      class="w-64 h-64 max-w-xs overflow-hidden rounded-lg shadow-md bg-white hover:shadow-xl transition-shadow duration-300 ease-in-out"
+                    ></div>
+                  </div>
+                  <div class="inline-block px-3">
+                    <div
+                      class="w-64 h-64 max-w-xs overflow-hidden rounded-lg shadow-md bg-white hover:shadow-xl transition-shadow duration-300 ease-in-out"
+                    ></div>
+                  </div>
+                  <div class="inline-block px-3">
+                    <div
+                      class="w-64 h-64 max-w-xs overflow-hidden rounded-lg shadow-md bg-white hover:shadow-xl transition-shadow duration-300 ease-in-out"
+                    ></div>
+                  </div>
+                  <div class="inline-block px-3">
+                    <div
+                      class="w-64 h-64 max-w-xs overflow-hidden rounded-lg shadow-md bg-white hover:shadow-xl transition-shadow duration-300 ease-in-out"
+                    ></div>
+                  </div>
+                  <div class="inline-block px-3">
+                    <div
+                      class="w-64 h-64 max-w-xs overflow-hidden rounded-lg shadow-md bg-white hover:shadow-xl transition-shadow duration-300 ease-in-out"
+                    ></div>
+                  </div>
+                  <div class="inline-block px-3">
+                    <div
+                      class="w-64 h-64 max-w-xs overflow-hidden rounded-lg shadow-md bg-white hover:shadow-xl transition-shadow duration-300 ease-in-out"
+                    ></div>
+                  </div>
+                </div>
+              </div>
+
+
+
+
+
+
+
+
+
+              <TitledContainer className=" flex " title="GAME RESULTS">
                 <RoundedContainer>
                   <select className="w-11/12 bg-indigo-light" name="games" id="cars">
                     <option value="All Games">All Games</option>
@@ -81,24 +144,44 @@ export default function Home() {
                   </select>
                 </RoundedContainer>
 
-                <RoundedContainer>
+                <div className="mt-2">
+                  <RoundedContainer >
 
-                  <ul>
-                    {animals.map((animal) => (
-                      <li>{animal}</li>
-                    ))}
-                  </ul>
-                </RoundedContainer>
+                    <ul>
+                      {animals.map((animal) => (
+                        <li><GameResultContainer></GameResultContainer></li>
+                      ))}
+                    </ul>
+                  </RoundedContainer>
+                </div>
+
               </TitledContainer>
 
-              <TitledContainer align="justify-start" className=" flex w-1/2 justify-start" title="TOP PERFORMERS">
+
+
+
+
+
+
+              <TitledContainer align="justify-start" className=" flex w-full justify-start" title="TOP PERFORMERS">
                 <AthleteGrid>
-                  <AthleteContainer AthleteName="STEPHEN CURRY" TeamName="GOLDEN STATE WARRIORS" CoinValue="420 UST" />
-                  <RoundedContainer>bant</RoundedContainer>
-                  <RoundedContainer>bant</RoundedContainer>
-                  <RoundedContainer>bant</RoundedContainer>
+                  <PerformerContainer AthleteName="STEPHEN CURRY" CoinValue="86.3" />
+                  <PerformerContainer AthleteName="LEBRON JAMES" CoinValue="96.0" />
+                  <PerformerContainer AthleteName="DEVIN BOOKER" CoinValue="76.8" />
+                  <PerformerContainer AthleteName="ARMONI BROOKS" CoinValue="83.0" />
                 </AthleteGrid>
               </TitledContainer>
+
+
+              <TitledContainer title="PACKS">
+                <RowContainer>
+                  <AthleteTokenContainer AthleteName="PREMIUM PACK" CoinValue="35 UST" />
+                  <AthleteTokenContainer AthleteName="PREMIUM PACK" CoinValue="106" />
+
+                </RowContainer>
+              </TitledContainer>
+
+
             </div>
 
           </Main>
