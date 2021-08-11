@@ -17,11 +17,11 @@ const ContractInteraction = () => {
   
   const [codeID, setCodeID] = useState('');
   const [contractAddr, setContractAddr] = useState('');
-  const [contractMsg, setContractMsg] = useState('');
-  const [migratable, setMigratable] = useState(false);
-
+  const [queryMsg, setQueryMsg] = useState('');
+  const [executeMsg, setExecuteMsg] = useState('');
   const [offeredCoin, setOfferedCoin] = useState('');
-  const [memo, setMemo] = useState('');
+  const [initMsg, setInitMsg] = useState('');
+  const [migratable, setMigratable] = useState(false);
 
   const [txResults, setTxResults] = useState(null);
   const [txError, setTxError] = useState(null);
@@ -53,7 +53,7 @@ const ContractInteraction = () => {
     try {
       const result = await terra.wasm.contractQuery(
         contractAddr,
-        JSON.parse(contractMsg),
+        JSON.parse(queryMsg),
       );
       setTxResults(result);
     } catch (e) {
@@ -73,10 +73,12 @@ const ContractInteraction = () => {
         new MsgExecuteContract(
           connectedWallet.walletAddress,  // Wallet Address
           contractAddr,                   // Contract Address
-          JSON.parse(contractMsg),        // ExecuteMsg
+          JSON.parse(executeMsg),         // ExecuteMsg
           //{ uluna: parseFloat(offeredCoin) * 1000000 },
-        ),
+        ),  
       ],
+      gasPrices: new StdFee(10_000_000, { uusd: 2000000 }).gasPrices(),
+      gasAdjustment: 1.1,
     }).then((result) => {
       setTxResults(result);
       setOfferedCoin('');
@@ -115,12 +117,13 @@ const ContractInteraction = () => {
         new MsgInstantiateContract(
           connectedWallet.walletAddress,  // Owner Address
           codeID,                         // Contract Code ID
-          JSON.parse(contractMsg),        // ExecuteMsg
-          { uusd: parseFloat(offeredCoin) * 1000000 },
+          JSON.parse(initMsg),        // ExecuteMsg
+          // { uusd: parseFloat(offeredCoin) * 1000000 },
           migratable,                     
         ),
       ],
-      memo,
+      gasPrices: new StdFee(10_000_000, { uusd: 2000000 }).gasPrices(),
+      gasAdjustment: 1.1,
     }).then((result) => {
       setTxResults(result);
       setOfferedCoin('');
@@ -143,7 +146,7 @@ const ContractInteraction = () => {
         );
       }
     });
-  }, [offeredCoin, connectedWallet, memo]);
+  }, [/*offeredCoin,*/ connectedWallet]);
 
   return (
     <>
@@ -183,9 +186,9 @@ const ContractInteraction = () => {
         </div>
 
         <div className="flex flex-col gap-2">
-          <label htmlFor="contractMsg">
+          <label htmlFor="queryMsg">
             <span>Query Message: </span>
-            <input id="contractMsg" type="text" placeholder="Enter Query Message here" value={contractMsg} onChange={(e) => setContractMsg(e.target.value)} />
+            <input id="queryMsg" type="text" placeholder="Enter Query Message here" value={queryMsg} onChange={(e) => setQueryMsg(e.target.value)} />
           </label>
         </div>
 
@@ -199,18 +202,18 @@ const ContractInteraction = () => {
         </div>
 
         <div className="flex flex-col gap-2">
-          <label htmlFor="contractMsg">
+          <label htmlFor="executeMsg">
             <span>Execute Message: </span>
-            <input id="contractMsg" type="text" placeholder="Enter Execute Message here" value={contractMsg} onChange={(e) => setContractMsg(e.target.value)} />
+            <input id="executeMsg" type="text" placeholder="Enter Execute Message here" value={executeMsg} onChange={(e) => setExecuteMsg(e.target.value)} />
           </label>
         </div>
 
-        <div className="flex flex-col gap-2">
+        {/* <div className="flex flex-col gap-2">
           <label htmlFor="coins">
             <span>Coins: </span>
             <input id="coins" type="number" placeholder="Enter coins here" value={offeredCoin} onChange={(e) => setOfferedCoin(e.target.value)} />
           </label>
-        </div>
+        </div> */}
 
         <button onClick={executeContract}>Submit Contract</button>
 
@@ -224,16 +227,15 @@ const ContractInteraction = () => {
         <div className="flex flex-col gap-2">
           <label htmlFor="initMsg">
             <span>Init Message: </span>
-            <input id="initMsg" type="text" placeholder="Enter Init Message here" value={contractMsg} onChange={(e) => setContractMsg(e.target.value)} />
           </label>
         </div>
 
-        <div className="flex flex-col gap-2">
+        {/* <div className="flex flex-col gap-2">
           <label htmlFor="initCoins">
             <span>Init Coins: </span>
             <input id="initCoins" type="number" placeholder="Enter coins here" value={offeredCoin} onChange={(e) => setOfferedCoin(e.target.value)} />
           </label>
-        </div>
+        </div> */}
 
         <div className="flex flex-col gap-2">
           <label htmlFor="migratable">
