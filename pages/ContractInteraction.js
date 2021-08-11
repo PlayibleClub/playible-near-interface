@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { MsgExecuteContract, MsgInstantiateContract } from '@terra-money/terra.js';
+import { MsgExecuteContract, MsgInstantiateContract, StdFee} from '@terra-money/terra.js';
 import {
   useWallet, WalletStatus,
   useConnectedWallet,
@@ -74,11 +74,11 @@ const ContractInteraction = () => {
           connectedWallet.walletAddress,  // Wallet Address
           contractAddr,                   // Contract Address
           JSON.parse(executeMsg),         // ExecuteMsg
-          //{ uluna: parseFloat(offeredCoin) * 1000000 },
+          { uluna: parseFloat(offeredCoin) * 1_000_000 },
         ),  
       ],
-      gasPrices: new StdFee(10_000_000, { uusd: 2000000 }).gasPrices(),
-      gasAdjustment: 1.1,
+      // gasPrices: new StdFee(10_000_000, { uluna: 2000000 }).gasPrices(),
+      // gasAdjustment: 1.1,
     }).then((result) => {
       setTxResults(result);
       setOfferedCoin('');
@@ -101,7 +101,7 @@ const ContractInteraction = () => {
         );
       }
     });
-  }, [/*offeredCoin,*/ connectedWallet]);
+  }, [offeredCoin, connectedWallet]);
 
   const initContract = useCallback(() => {
 
@@ -118,12 +118,12 @@ const ContractInteraction = () => {
           connectedWallet.walletAddress,  // Owner Address
           codeID,                         // Contract Code ID
           JSON.parse(initMsg),        // ExecuteMsg
-          // { uusd: parseFloat(offeredCoin) * 1000000 },
+          { uluna: parseFloat(offeredCoin) * 1000000 },
           migratable,                     
         ),
       ],
-      gasPrices: new StdFee(10_000_000, { uusd: 2000000 }).gasPrices(),
-      gasAdjustment: 1.1,
+      // gasPrices: new StdFee(10_000_000, { uusd: 2000000 }).gasPrices(),
+      // gasAdjustment: 1.1,
     }).then((result) => {
       setTxResults(result);
       setOfferedCoin('');
@@ -146,7 +146,7 @@ const ContractInteraction = () => {
         );
       }
     });
-  }, [/*offeredCoin,*/ connectedWallet]);
+  }, [offeredCoin, connectedWallet]);
 
   return (
     <>
@@ -208,12 +208,12 @@ const ContractInteraction = () => {
           </label>
         </div>
 
-        {/* <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2">
           <label htmlFor="coins">
             <span>Coins: </span>
             <input id="coins" type="number" placeholder="Enter coins here" value={offeredCoin} onChange={(e) => setOfferedCoin(e.target.value)} />
           </label>
-        </div> */}
+        </div>
 
         <button onClick={executeContract}>Submit Contract</button>
 
@@ -231,12 +231,12 @@ const ContractInteraction = () => {
           </label>
         </div>
 
-        {/* <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2">
           <label htmlFor="initCoins">
             <span>Init Coins: </span>
             <input id="initCoins" type="number" placeholder="Enter coins here" value={offeredCoin} onChange={(e) => setOfferedCoin(e.target.value)} />
           </label>
-        </div> */}
+        </div>
 
         <div className="flex flex-col gap-2">
           <label htmlFor="migratable">
