@@ -227,6 +227,7 @@ const ContractInteraction = () => {
         <div className="flex flex-col gap-2">
           <label htmlFor="initMsg">
             <span>Init Message: </span>
+            <input id="initMsg" type="text" placeholder="Enter Init Message here" value={initMsg} onChange={(e) => setInitMsg(e.target.value)} />
           </label>
         </div>
 
