@@ -37,7 +37,9 @@ export default function Home() {
   return (
     <>
       <link href="https://fonts.googleapis.com/css?family=Nunito:400,700&display=swap" rel="stylesheet"></link>
-      <div className=" h-screen">
+      <div className=" h-screen relative">
+
+      <Navbar></Navbar>
 
         <div className="flex flex-col w-full ">
           <Header>
@@ -64,15 +66,15 @@ export default function Home() {
           </Header>
 
 
-          <Navbar></Navbar>
 
 
 
 
 
-          <Main color="indigo-dark">
 
+          <Main color="indigo-dark ">
 
+            
 
 
             <div className="flex flex-col  w-full h-full overflow-y-auto">

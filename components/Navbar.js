@@ -4,8 +4,8 @@ const Navbar = (props) => {
   const { children, color } = props;
 
   return (
-    <div data-test="Navbar" className={`bg-${color} absolute top-0 left-0 text-white-light  w-3/6 h-full`}>
-      <div className="flex flex-col justify-center">
+    <div data-test="Navbar" className={`bg-${color} absolute z-50 top-0 left-0 text-white-light flex flex-row justify-center  w-4/6 h-screen`}>
+      <div className="flex flex-col h-1/2 w-1/2 justify-center">
         <Link href="/"><a>HOME</a></Link>
         <Link href="/ContractInteraction"><a>PORTFOLIO</a></Link>
         <Link href="/ContractInteraction"><a>PACKS</a></Link>
