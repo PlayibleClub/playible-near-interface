@@ -2,12 +2,12 @@ import sys
 import requests
 
 HEADERS = {"Content-Type": "application/json"}
-URL = "http://api.stats.com/v1/stats/basketball/nba/"
+BASE_URL = "http://api.stats.com/v1/stats/basketball/nba/"
 
 
 def main(path):
     result = requests.request(
-        "GET", (URL + path)
+        "GET", (BASE_URL + path)
     )
     print(result)
     json_result = result.json()
