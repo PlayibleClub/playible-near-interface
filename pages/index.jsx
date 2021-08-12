@@ -2,7 +2,7 @@ import { useWallet, WalletStatus } from '@terra-money/wallet-provider';
 // import Image from 'next/image';
 import Header from '../components/Header';
 import Button from '../components/Button';
-// import Navbar from '../components/Navbar';
+import Navbar from '../components/Navbar';
 import Main from '../components/Main';
 import TitledContainer from '../components/TitledContainer';
 import RoundedContainer from '../components/RoundedContainer';
@@ -12,6 +12,9 @@ import AthleteContainer from '../components/AthleteContainer';
 import PerformerContainer from '../components/PerformerContainer';
 import GameResultContainer from '../components/GameResultContainer';
 import RowContainer from '../components/RowContainer';
+import HorizontalScrollContainer from '../components/HorizontalScrollContainer';
+import HorizontalContainer from '../components/HorizontalContainer';
+import PackContainer from '../components/PackContainer';
 // import fantasyLogo from '../public/fantasyinvestar.png';
 // import daily from '../public/daily.png';
 // import weekly from '../public/weekly.png';
@@ -42,6 +45,15 @@ export default function Home() {
           <Header>
 
             <Button color="indigo-light" saturation="0" textColor="white-light" textSaturation="500" size="py-1 px-1">=</Button>
+
+
+
+
+
+
+
+
+
             <div className="text-white-light">
               {' '}
               <img src="images/fantasyinvestar.png" alt="Img" />
@@ -53,16 +65,35 @@ export default function Home() {
 
           </Header>
 
+
+          <Navbar></Navbar>
+
+
+
+
+
           <Main color="indigo-dark">
+
+
+
 
             <div className="flex flex-col  w-full h-full overflow-y-auto">
               <TitledContainer title="MARKETPLACE">
-                <RowContainer>
-                  <AthleteTokenContainer AthleteName="STEPHEN CURRY" CoinValue="54" />
-                  <AthleteTokenContainer AthleteName="LEBRON JAMES" CoinValue="106" />
-                  <AthleteTokenContainer AthleteName="LEBRON JAMES" CoinValue="106" />
-                </RowContainer>
+
+                <HorizontalScrollContainer>
+                  <HorizontalContainer> <AthleteTokenContainer AthleteName="STEPHEN CURRY" CoinValue="54" /></HorizontalContainer>
+                  <HorizontalContainer>  <AthleteTokenContainer AthleteName="LEBRON JAMES" CoinValue="43" /></HorizontalContainer>
+                  <HorizontalContainer>  <AthleteTokenContainer AthleteName="STEPHEN CURRY" CoinValue="54" /></HorizontalContainer>
+                  <HorizontalContainer>  <AthleteTokenContainer AthleteName="STEPHEN CURRY" CoinValue="54" /></HorizontalContainer>
+                </HorizontalScrollContainer>
               </TitledContainer>
+
+
+
+
+
+
+
               <TitledContainer align="justify-center" title="PLAY">
                 <div className="pl-2 w-5/6 grid gap-x-1 gap-y-2 grid-cols-2">
                   <div className="rounded-md  flex justify-center"><img className="rounded-md" src="images/daily.png" alt="Italian Trulli" /></div>
@@ -75,56 +106,6 @@ export default function Home() {
 
 
 
-
-
-              <div
-                class="flex overflow-x-scroll pb-10 hide-scroll-bar"
-              >
-                <div
-                  class="flex flex-nowrap lg:ml-40 md:ml-20 ml-10 "
-                >
-                  <div class="inline-block px-3">
-                    <div
-                      class="w-64 h-64 max-w-xs overflow-hidden rounded-lg shadow-md bg-white hover:shadow-xl transition-shadow duration-300 ease-in-out"
-                    ></div>
-                  </div>
-                  <div class="inline-block px-3">
-                    <div
-                      class="w-64 h-64 max-w-xs overflow-hidden rounded-lg shadow-md bg-white hover:shadow-xl transition-shadow duration-300 ease-in-out"
-                    ></div>
-                  </div>
-                  <div class="inline-block px-3">
-                    <div
-                      class="w-64 h-64 max-w-xs overflow-hidden rounded-lg shadow-md bg-white hover:shadow-xl transition-shadow duration-300 ease-in-out"
-                    ></div>
-                  </div>
-                  <div class="inline-block px-3">
-                    <div
-                      class="w-64 h-64 max-w-xs overflow-hidden rounded-lg shadow-md bg-white hover:shadow-xl transition-shadow duration-300 ease-in-out"
-                    ></div>
-                  </div>
-                  <div class="inline-block px-3">
-                    <div
-                      class="w-64 h-64 max-w-xs overflow-hidden rounded-lg shadow-md bg-white hover:shadow-xl transition-shadow duration-300 ease-in-out"
-                    ></div>
-                  </div>
-                  <div class="inline-block px-3">
-                    <div
-                      class="w-64 h-64 max-w-xs overflow-hidden rounded-lg shadow-md bg-white hover:shadow-xl transition-shadow duration-300 ease-in-out"
-                    ></div>
-                  </div>
-                  <div class="inline-block px-3">
-                    <div
-                      class="w-64 h-64 max-w-xs overflow-hidden rounded-lg shadow-md bg-white hover:shadow-xl transition-shadow duration-300 ease-in-out"
-                    ></div>
-                  </div>
-                  <div class="inline-block px-3">
-                    <div
-                      class="w-64 h-64 max-w-xs overflow-hidden rounded-lg shadow-md bg-white hover:shadow-xl transition-shadow duration-300 ease-in-out"
-                    ></div>
-                  </div>
-                </div>
-              </div>
 
 
 
@@ -163,6 +144,8 @@ export default function Home() {
 
 
 
+
+
               <TitledContainer align="justify-start" className=" flex w-full justify-start" title="TOP PERFORMERS">
                 <AthleteGrid>
                   <PerformerContainer AthleteName="STEPHEN CURRY" CoinValue="86.3" />
@@ -173,12 +156,19 @@ export default function Home() {
               </TitledContainer>
 
 
-              <TitledContainer title="PACKS">
-                <RowContainer>
-                  <AthleteTokenContainer AthleteName="PREMIUM PACK" CoinValue="35 UST" />
-                  <AthleteTokenContainer AthleteName="PREMIUM PACK" CoinValue="106" />
 
-                </RowContainer>
+
+
+
+
+
+              <TitledContainer title="PACKS">
+                <HorizontalScrollContainer>
+                  <HorizontalContainer> <PackContainer AthleteName="PREMIUM PACK" CoinValue="54" /></HorizontalContainer>
+                  <HorizontalContainer>  <PackContainer AthleteName="PREMIUM PACK" CoinValue="85" /></HorizontalContainer>
+                  <HorizontalContainer>  <PackContainer AthleteName="PREMIUM PACK" CoinValue="54" /></HorizontalContainer>
+                  <HorizontalContainer>  <PackContainer AthleteName="PREMIUM PACK" CoinValue="54" /></HorizontalContainer>
+                </HorizontalScrollContainer>
               </TitledContainer>
 
 

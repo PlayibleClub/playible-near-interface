@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
 
-const AthleteTokenContainer = (props) => {
+const PackContainer = (props) => {
   const { children, color, imagesrc, AthleteName, TeamName, CoinValue } = props;
 
   return (
-    <div data-test="AthleteTokenContainer" className={`bg-${color}  sx-${TeamName} w-full h-full overflow-hidden  flex flex-col  w-full h-full `}>
+    <div data-test="PackContainer" className={`bg-${color}  sx-${TeamName} w-full h-full overflow-hidden  flex flex-col  w-full h-full `}>
       <div className="flex flex-col h-2/3">
         <img src={imagesrc} alt="Img" />
 
@@ -25,7 +25,7 @@ const AthleteTokenContainer = (props) => {
   );
 };
 
-AthleteTokenContainer.propTypes = {
+PackContainer.propTypes = {
   color: PropTypes.string,
   AthleteName: PropTypes.string.isRequired,
   TeamName: PropTypes.string.isRequired,
@@ -34,11 +34,11 @@ AthleteTokenContainer.propTypes = {
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
 };
 
-AthleteTokenContainer.defaultProps = {
+PackContainer.defaultProps = {
   color: 'sds',
-  imagesrc: 'https://picsum.photos/100/100',
+  imagesrc: 'images/yellow.png',
   // children: <div>Fantasy investr</div>
   children: <div />,
 };
 
-export default AthleteTokenContainer;
+export default PackContainer;
