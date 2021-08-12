@@ -14,6 +14,7 @@ import GameResultContainer from '../components/GameResultContainer';
 import RowContainer from '../components/RowContainer';
 import HorizontalScrollContainer from '../components/HorizontalScrollContainer';
 import HorizontalContainer from '../components/HorizontalContainer';
+import PackContainer from '../components/PackContainer';
 // import fantasyLogo from '../public/fantasyinvestar.png';
 // import daily from '../public/daily.png';
 // import weekly from '../public/weekly.png';
@@ -160,11 +161,12 @@ export default function Home() {
 
 
               <TitledContainer title="PACKS">
-                <RowContainer>
-                  <AthleteTokenContainer AthleteName="PREMIUM PACK" CoinValue="35 UST" />
-                  <AthleteTokenContainer AthleteName="PREMIUM PACK" CoinValue="106" />
-
-                </RowContainer>
+                <HorizontalScrollContainer>
+                  <HorizontalContainer> <PackContainer AthleteName="PREMIUM PACK" CoinValue="54" /></HorizontalContainer>
+                  <HorizontalContainer>  <PackContainer AthleteName="PREMIUM PACK" CoinValue="85" /></HorizontalContainer>
+                  <HorizontalContainer>  <PackContainer AthleteName="PREMIUM PACK" CoinValue="54" /></HorizontalContainer>
+                  <HorizontalContainer>  <PackContainer AthleteName="PREMIUM PACK" CoinValue="54" /></HorizontalContainer>
+                </HorizontalScrollContainer>
               </TitledContainer>
 
 
