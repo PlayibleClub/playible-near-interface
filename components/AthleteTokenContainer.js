@@ -4,7 +4,7 @@ const AthleteTokenContainer = (props) => {
   const { children, color, imagesrc, AthleteName, TeamName, CoinValue } = props;
 
   return (
-    <div data-test="AthleteTokenContainer" className={`bg-${color}  sx-${TeamName} m-1 flex flex-col rounded-md w-5/6 h-full `}>
+    <div data-test="AthleteTokenContainer" className={`bg-${color}  sx-${TeamName} w-full h-full overflow-hidden  flex flex-col  w-full h-full `}>
       <div className="flex flex-col h-2/3">
         <img src={imagesrc} alt="Img" />
 

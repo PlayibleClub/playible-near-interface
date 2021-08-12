@@ -18,8 +18,10 @@ module.exports = {
             },
             white: {
                 light: '#FFFFFF'
-            }
-
+            },
+            black: {
+                dark: '#000000'
+            },
 
         }
     },
