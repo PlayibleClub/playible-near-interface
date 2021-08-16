@@ -7,7 +7,7 @@ const Navbar = (props) => {
     <div data-test="Navbar" className={`bg-${color} absolute z-50 top-0 left-0 text-white-light flex flex-row justify-center  w-4/6 h-screen`}>
       <div className="flex flex-col h-1/2 w-1/2 justify-center">
         <Link href="/"><a>HOME</a></Link>
-        <Link href="/ContractInteraction"><a>PORTFOLIO</a></Link>
+        <Link href="/Portfolio"><a>PORTFOLIO</a></Link>
         <Link href="/ContractInteraction"><a>PACKS</a></Link>
         <Link href="/ContractInteraction"><a>MARKETPLACE</a></Link>
         <Link href="/ContractInteraction"><a>PLAY</a></Link>
