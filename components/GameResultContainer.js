@@ -4,15 +4,23 @@ const GameResultContainer = (props) => {
   const { children, color, date, rank, points } = props;
 
   return (
-    <div data-test="GameResultContainer" className={`bg-${color} flex flex-row justify-between  w-full `}>
+    <div data-test="GameResultContainer" className={`bg-${color} mt-4 flex flex-col justify-center  w-full `}>
 
-      {children}
 
-      <div>{date}</div>
-      <div>{rank}</div>
-      <div>{points}</div>
+      <div className="  flex flex-row justify-between mb-4   w-full">
+        <div className="font-thin">{date}</div>
+        <div className="flex flex-col">
+          <p className="font-thin">RANK</p>
+          {rank}
+        </div>
+        <div className="flex flex-col">
+          <p className="font-thin">POINTS</p>
+          {points}
+        </div>
 
-      <br></br>
+
+      </div>
+      <hr className="w-5/6 " />
 
     </div>
   );

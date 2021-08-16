@@ -39,7 +39,7 @@ export default function Home() {
       <link href="https://fonts.googleapis.com/css?family=Nunito:400,700&display=swap" rel="stylesheet"></link>
       <div className=" h-screen relative">
 
-      <Navbar></Navbar>
+        <Navbar></Navbar>
 
         <div className="flex flex-col w-full ">
           <Header>
@@ -72,12 +72,12 @@ export default function Home() {
 
 
 
-          <Main color="indigo-dark ">
-
-            
+          <Main color="indigo-dark">
 
 
-            <div className="flex flex-col  w-full h-full overflow-y-auto">
+
+
+            <div className="flex flex-col  w-full h-full overflow-y-scroll overflow-x-hidden">
               <TitledContainer title="MARKETPLACE">
 
                 <HorizontalScrollContainer>
@@ -128,9 +128,10 @@ export default function Home() {
                 <div className="mt-2">
                   <RoundedContainer >
 
-                    <ul>
+                    <ul className="w-full">
                       {animals.map((animal) => (
                         <li><GameResultContainer></GameResultContainer></li>
+
                       ))}
                     </ul>
                   </RoundedContainer>
@@ -164,10 +165,10 @@ export default function Home() {
 
               <TitledContainer title="PACKS">
                 <HorizontalScrollContainer>
-                  <HorizontalContainer> <PackContainer AthleteName="PREMIUM PACK" CoinValue="54" /></HorizontalContainer>
-                  <HorizontalContainer>  <PackContainer AthleteName="PREMIUM PACK" CoinValue="85" /></HorizontalContainer>
-                  <HorizontalContainer>  <PackContainer AthleteName="PREMIUM PACK" CoinValue="54" /></HorizontalContainer>
-                  <HorizontalContainer>  <PackContainer AthleteName="PREMIUM PACK" CoinValue="54" /></HorizontalContainer>
+                  <HorizontalContainer> <PackContainer AthleteName="PREMIUM PACK" CoinValue="54" releaseValue="2" /></HorizontalContainer>
+                  <HorizontalContainer>  <PackContainer AthleteName="PREMIUM PACK" CoinValue="85" releaseValue="3" /></HorizontalContainer>
+                  <HorizontalContainer>  <PackContainer AthleteName="PREMIUM PACK" CoinValue="54" releaseValue="5" /></HorizontalContainer>
+                  <HorizontalContainer>  <PackContainer AthleteName="PREMIUM PACK" CoinValue="54" releaseValue="10" /></HorizontalContainer>
                 </HorizontalScrollContainer>
               </TitledContainer>
 
