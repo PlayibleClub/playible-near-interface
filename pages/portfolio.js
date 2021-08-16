@@ -56,7 +56,7 @@ const playerList = [
 
 export default function Portfolio(){
 
-    const [filterMode, setMode] = React.useState(true)
+    const [filterMode, setMode] = React.useState(false)
 
     return(
             <>
@@ -93,7 +93,7 @@ export default function Portfolio(){
                                     </>
                                     :
                                     <>
-                                        <div className="rounded-md bg-indigo-light mr-1 h-11 w-9/12 flex">
+                                        <div className="rounded-md bg-indigo-light mr-1 h-11 w-9/12 flex font-thin">
                                             <div className="text-lg ml-4 mt-2 w-9/12">
                                                 Filter by
                                             </div>
