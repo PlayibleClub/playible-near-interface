@@ -15,6 +15,8 @@
         "@terra-money/terra.js": "^1.8.0",
         "@terra-money/wallet-provider": "^1.2.0-alpha.1",
         "axios": "^0.21.1",
+        "crypto-js": "^4.1.1",
+        "moment": "^2.29.1",
         "next": "10.2.3",
         "next-images": "^1.8.1",
         "prop-types": "^15.7.2",
