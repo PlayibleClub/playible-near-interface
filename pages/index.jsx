@@ -33,7 +33,7 @@ export default function Home() {
   return (
     <>
       <link href="https://fonts.googleapis.com/css?family=Nunito:400,700&display=swap" rel="stylesheet"></link>
-      <div className=" h-screen">
+      <div className="h-screen">
 
         <div className="flex flex-col w-full ">
           <Header>
@@ -90,7 +90,7 @@ export default function Home() {
                 </RoundedContainer>
               </TitledContainer>
 
-              <TitledContainer align="justify-start" className=" flex w-1/2 justify-start" title="TOP PERFORMERS">
+              <TitledContainer align="justify-start" className="flex w-1/2 justify-start" title="TOP PERFORMERS">
                 <AthleteGrid>
                   <AthleteContainer AthleteName="STEPHEN CURRY" TeamName="GOLDEN STATE WARRIORS" CoinValue="420 UST" Positions={positions} colorgrad1="indigo-blue" colorgrad2="indigo-darkblue" />
                   <RoundedContainer>bant</RoundedContainer>

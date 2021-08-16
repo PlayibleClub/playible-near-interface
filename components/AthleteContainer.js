@@ -2,17 +2,17 @@ import PropTypes from 'prop-types';
 import warriorLogo from '../public/images/warriors.png';
 
 const AthleteContainer = (props) => {
-  const { children, colorgrad1, colorgrad2, AthleteName, TeamName, CoinValue, Positions } = props;
+  const { children, colorgrad1, colorgrad2, AthleteName, TeamName, CoinValue, Positions, Jersey, ID } = props;
   const pos = Positions;
 
   return (
     <div data-test="AthleteContainer" className={`bg-gradient-to-r from-${colorgrad1} to-${colorgrad2} flex flex-col rounded-md w-11/12 h-full`}>
       <div className="flex flex-col h-1/2">
         {children}
-        <div className="mt-4 ml-4 text-xs">#320/25000</div>
+        <div className="mt-4 ml-4 text-xs">#{ID}/25000</div>
         <div className="flow-root">
           <div className="mt-1 ml-4 text-2xl float-left">{AthleteName}</div>
-          <div className="mt-1 text-4xl mr-4 float-right">30</div>
+          <div className="mt-1 text-4xl mr-4 float-right">{Jersey}</div>
         </div>
         <div className="ml-4 text-xs">{TeamName}</div>
         <div className="flow-root">
