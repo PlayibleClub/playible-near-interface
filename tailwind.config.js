@@ -13,8 +13,14 @@ module.exports = {
                 light: '#2A2C42',
                 DEFAULT: '#5c6ac4',
                 dark: '#161623',
+                gray: '#212127',
                 navy: '#36384D',
-
+                blue: '#024799',
+                bluegrad: '#81C4FF',
+                purple: '#552583',
+                purplegrad: '#E3B2FF',
+                darkblue: '#1B155C',
+                darkbluegrad: '#8479FF',
             },
             white: {
                 light: '#FFFFFF'
