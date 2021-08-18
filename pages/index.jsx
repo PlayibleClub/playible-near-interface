@@ -52,7 +52,10 @@ export default function Home() {
       <div className=" h-screen relative">
 
 
-        {isClosed ? null : <Navbar></Navbar>}
+        {isClosed ? null : <div className="flex flex-row w-full absolute z-50 top-0 left-0 ">
+          <Navbar> </Navbar>
+          <div className="w-2/6 h-screen" onClick={() => setClosed(true)}></div>
+        </div>}
 
 
         <div className="flex flex-col w-full ">
