@@ -8,9 +8,10 @@ const Navbar = (props) => {
       <div className="flex flex-col h-1/2 w-1/2 justify-center">
         <Link href="/"><a>HOME</a></Link>
         <Link href="/Portfolio"><a>PORTFOLIO</a></Link>
-        <Link href="/ContractInteraction"><a>PACKS</a></Link>
-        <Link href="/ContractInteraction"><a>MARKETPLACE</a></Link>
-        <Link href="/ContractInteraction"><a>PLAY</a></Link>
+        <Link href="/Packs"><a>PACKS</a></Link>
+        <Link href="/Marketplace"><a>MARKETPLACE</a></Link>
+        <Link href="/Play"><a>PLAY</a></Link>
+        <Link href="/ContractInteraction"><a>(Contractinteraction)</a></Link>
       </div>
     </div>
   );
