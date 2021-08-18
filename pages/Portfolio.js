@@ -1,5 +1,9 @@
-import React, { Component, useState } from 'react'
+import React, { Component, useState, useEffect } from 'react'
 import { useWallet, WalletStatus } from '@terra-money/wallet-provider';
+
+import { useDispatch, useSelector } from 'react-redux';
+import { listPlayer } from '../redux/reducers/player';
+
 import Header from '../components/Header';
 import Button from '../components/Button';
 import Main from '../components/Main';
@@ -9,54 +13,67 @@ import AthleteGrid from '../components/AthleteGrid';
 import AthleteContainer from '../components/AthleteContainer';
 import RowContainer from '../components/RowContainer';
 import AthleteTokenContainer from '../components/AthleteTokenContainer';
-import filterIcon from '../public/images/filter.png'
-import searchIcon from '../public/images/search.png'
+import filterIcon from '../public/images/filter.png';
+import searchIcon from '../public/images/search.png';
 
-const playerList = [
-    {
-        name: 'STEPHEN CURRY',
-        team: 'Golden State Warriors',
-        id: '320',
-        cost: '420 UST',
-        jersey: '30',
-        positions: ['PG', 'SG'],
-        grad1: 'indigo-blue',
-        grad2: 'indigo-bluegrad',
-    },
-    {
-        name: 'LEBRON JAMES',
-        team: 'Los Angeles Lakers',
-        id: '25',
-        cost: '840 UST',
-        jersey: '23',
-        positions: ['PG', 'SG'],
-        grad1: 'indigo-purple',
-        grad2: 'indigo-purplegrad',
-    },
-    {
-        name: 'Devin Booker',
-        team: 'Phoenix Suns',
-        id: '16450',
-        cost: '21 UST',
-        jersey: '01',
-        positions: ['SF', 'C'],
-        grad1: 'indigo-darkblue',
-        grad2: 'indigo-darkbluegrad',
-    },
-    // {
-    //     name: '',
-    //     team: '',
-    //     cost: '',
-    //     jersey: '',
-    //     positions: [],
-    //     grad1: '',
-    //     grad2: '',
-    // },
-]
+const Portfolio = () => {
 
-export default function Portfolio(){
+    const [filterMode, setMode] = useState(false);
+    const { playerList: list } = useSelector((state) => state.player);
 
-    const [filterMode, setMode] = React.useState(false)
+    const playerList = [
+        {
+            name: 'STEPHEN CURRY',
+            team: 'Golden State Warriors',
+            id: '320',
+            cost: '420 UST',
+            jersey: '30',
+            positions: ['PG', 'SG'],
+            grad1: 'indigo-blue',
+            grad2: 'indigo-bluegrad',
+        },
+        {
+            name: 'LEBRON JAMES',
+            team: 'Los Angeles Lakers',
+            id: '25',
+            cost: '840 UST',
+            jersey: '23',
+            positions: ['PG', 'SG'],
+            grad1: 'indigo-purple',
+            grad2: 'indigo-purplegrad',
+        },
+        {
+            name: 'Devin Booker',
+            team: 'Phoenix Suns',
+            id: '16450',
+            cost: '21 UST',
+            jersey: '01',
+            positions: ['SF', 'C'],
+            grad1: 'indigo-darkblue',
+            grad2: 'indigo-darkbluegrad',
+        },
+        // {
+        //     name: '',
+        //     team: '',
+        //     cost: '',
+        //     jersey: '',
+        //     positions: [],
+        //     grad1: '',
+        //     grad2: '',
+        // },
+    ]
+
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(listPlayer()).then(() => {
+        });
+    
+        return function cleanup() {
+          isMounted.current = false;
+          dispatch(clearData());
+        };
+    }, [dispatch]);
 
     return(
             <>
@@ -135,3 +152,5 @@ export default function Portfolio(){
             </>
         )
 }
+
+export default Portfolio;

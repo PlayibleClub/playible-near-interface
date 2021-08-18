@@ -21,14 +21,9 @@ import PackContainer from '../components/PackContainer';
 // import seasonal from '../public/seasonal.png';
 // import wallet from '../public/wallet.png';
 import AthleteTokenContainer from '../components/AthleteTokenContainer';
-import { generateAuth } from '../utils/statsperform';
-
-import { useDispatch } from 'react-redux';
-import { listPlayer } from '../redux/reducers/player';
 
 export default function Home() {
   const { status, connect, disconnect, availableConnectTypes } = useWallet();
-  const dispatch = useDispatch();
 
   const interactWallet = () => {
     if (status === WalletStatus.WALLET_CONNECTED) {
@@ -143,7 +138,6 @@ export default function Home() {
                 </div>
 
               </TitledContainer>
-              <Button onClick={() => { dispatch(listPlayer())}}>Instantiate Contract</Button>
 
 
 
