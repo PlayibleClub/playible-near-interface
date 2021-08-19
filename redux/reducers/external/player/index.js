@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { axiosInstance, generateAuth } from '../../../utils/statsperform';
-import { checkResponseValidity } from '../../../utils/general';
+import { axiosInstance, generateAuth } from '../../../../utils/statsperform';
+import { checkResponseValidity } from '../../../../utils/general';
 
 export const listPlayer = createAsyncThunk('listPlayer', async (payload, thunkAPI) => {
   try {
