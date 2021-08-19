@@ -19,7 +19,7 @@ import searchIcon from '../public/images/search.png';
 const Portfolio = () => {
 
     const [filterMode, setMode] = useState(false);
-    const { playerList: list } = useSelector((state) => state.player);
+    const { playerList: list } = useSelector((state) => state.external.player);
 
     const playerList = [
         {
