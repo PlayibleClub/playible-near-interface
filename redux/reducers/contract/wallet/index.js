@@ -8,6 +8,8 @@ import {
   TxUnspecifiedError
 } from '@terra-money/wallet-provider';
 
+//TODO: Fix wallet connection problems to test contract execution functions with redux
+
 export const executeContract = (state, contractAddr, executeMsg) => {
   const connectedWallet = useConnectedWallet();
   const txResult = null;
