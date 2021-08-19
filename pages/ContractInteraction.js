@@ -11,7 +11,7 @@ import {
   UserDenied,
 } from '@terra-money/wallet-provider';
 
-import TerraEnv from '../utils/terra';
+import { terra } from '../utils/terra';
 
 const ContractInteraction = () => {
   
@@ -36,14 +36,15 @@ const ContractInteraction = () => {
   } = useWallet();
 
   const connectedWallet = useConnectedWallet();
-  const { terra } = TerraEnv();
 
   const interactWallet = () => {
+    console.log("CONNECT");
     if (status === WalletStatus.WALLET_NOT_CONNECTED) {
       connect(availableConnectTypes[1]);
     } else if (status === WalletStatus.WALLET_CONNECTED){
       disconnect();
     }
+    console.log("STATUS: ", status);
   };
 
   const queryContract = async () => {
