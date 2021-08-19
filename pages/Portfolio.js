@@ -2,7 +2,7 @@ import React, { Component, useState, useEffect } from 'react'
 import { useWallet, WalletStatus } from '@terra-money/wallet-provider';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { listPlayer } from '../redux/reducers/player';
+import { listPlayer } from '../redux/reducers/external/player';
 
 import Header from '../components/Header';
 import Button from '../components/Button';
