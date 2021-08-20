@@ -2,6 +2,7 @@ import { useWallet, WalletStatus } from '@terra-money/wallet-provider';
 // import Image from 'next/image';
 import * as React from 'react';
 import Header from '../components/Header';
+import HeaderBase from '../components/HeaderBase';
 import Button from '../components/Button';
 import Navbar from '../components/Navbar';
 import Main from '../components/Main';
@@ -54,33 +55,12 @@ export default function Home() {
 
         {isClosed ? null : <div className="flex flex-row w-full absolute z-50 top-0 left-0 ">
           <Navbar> </Navbar>
-          <div className="w-2/6 h-screen" onClick={() => setClosed(true)}></div>
+          <div className="w-2/6 h-screen" onMouseDown={() => setClosed(true)}></div>
         </div>}
 
 
         <div className="flex flex-col w-full ">
-          <Header>
-
-            <Button color="indigo-light" saturation="0" textColor="white-light" textSaturation="500" onClick={() => setClosed(false)} size="py-1 px-1">=</Button>
-
-
-
-
-
-
-
-
-
-            <div className="text-white-light">
-              {' '}
-              <img src="images/fantasyinvestar.png" alt="Img" />
-            </div>
-            <Button rounded="rounded-sm " textColor="white-light" color="null" onClick={interactWallet} size="py-1 px-1">
-              <img src="images/wallet.png" alt="Img" />
-              {status === WalletStatus.WALLET_CONNECTED ? '*' : '+'}
-            </Button>
-
-          </Header>
+          <HeaderBase></HeaderBase>
 
 
 
