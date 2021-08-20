@@ -1,5 +1,6 @@
 import { useWallet, WalletStatus } from '@terra-money/wallet-provider';
 // import Image from 'next/image';
+import * as React from 'react';
 import Header from '../components/Header';
 import Button from '../components/Button';
 import Navbar from '../components/Navbar';
@@ -22,6 +23,7 @@ import PackContainer from '../components/PackContainer';
 // import wallet from '../public/wallet.png';
 import AthleteTokenContainer from '../components/AthleteTokenContainer';
 
+
 export default function Home() {
   const { status, connect, disconnect, availableConnectTypes } = useWallet();
 
@@ -34,17 +36,32 @@ export default function Home() {
   };
   const animals = ['Dog', 'Bird', 'Cat', 'Mouse', 'Horse'];
 
+
+
+
+  const [isClosed, setClosed] = React.useState(true)
+
+
+
+
+
+
   return (
     <>
       <link href="https://fonts.googleapis.com/css?family=Nunito:400,700&display=swap" rel="stylesheet"></link>
       <div className=" h-screen relative">
 
-        <Navbar></Navbar>
+
+        {isClosed ? null : <div className="flex flex-row w-full absolute z-50 top-0 left-0 ">
+          <Navbar> </Navbar>
+          <div className="w-2/6 h-screen" onClick={() => setClosed(true)}></div>
+        </div>}
+
 
         <div className="flex flex-col w-full ">
           <Header>
 
-            <Button color="indigo-light" saturation="0" textColor="white-light" textSaturation="500" size="py-1 px-1">=</Button>
+            <Button color="indigo-light" saturation="0" textColor="white-light" textSaturation="500" onClick={() => setClosed(false)} size="py-1 px-1">=</Button>
 
 
 
