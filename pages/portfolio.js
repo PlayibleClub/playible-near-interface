@@ -1,14 +1,10 @@
 import React, { Component, useState } from 'react'
-import { useWallet, WalletStatus } from '@terra-money/wallet-provider';
 import Header from '../components/Header';
 import Button from '../components/Button';
 import Main from '../components/Main';
 import TitledContainer from '../components/TitledContainer';
-import RoundedContainer from '../components/RoundedContainer';
 import AthleteGrid from '../components/AthleteGrid';
 import AthleteContainer from '../components/AthleteContainer';
-import RowContainer from '../components/RowContainer';
-import AthleteTokenContainer from '../components/AthleteTokenContainer';
 import filterIcon from '../public/images/filter.png'
 import searchIcon from '../public/images/search.png'
 
@@ -54,9 +50,10 @@ const playerList = [
     // },
 ]
 
-export default function Portfolio(){
+export default function Portfolio() {
 
     const [filterMode, setMode] = React.useState(false)
+    const [searchInfo, setSearch] = React.useState()
 
     return(
             <>
@@ -87,8 +84,11 @@ export default function Portfolio(){
                                         </div>
 
                                         <div className="rounded-md bg-indigo-light ml-1 h-11 w-9/12 flex">
-                                            <input className="text-xl ml-4 appearance-none bg-indigo-light focus:outline-none w-10/12" type="text" placeholder="Search..." />
-                                            <img src={searchIcon} className="object-none w-2/12"/>
+                                            <input className="text-xl ml-4 appearance-none bg-indigo-light focus:outline-none w-10/12" type="text" placeholder="Search..." name="s" />
+                                            <button type="submit" className="w-2/12">
+                                                <img src={searchIcon} className="object-none ml-2.5"/>
+                                            </button>
+                                            
                                         </div>
                                     </>
                                     :

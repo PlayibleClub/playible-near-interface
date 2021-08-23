@@ -22,9 +22,11 @@
         "react-dom": "17.0.2",
         "react-hook-form": "^7.9.0",
         "react-redux": "^7.2.4",
+        "react-snap-scroll": "0.0.5",
         "redux": "^4.1.0",
         "redux-thunk": "^2.3.0",
-        "tailwindcss": "^2.1.4"
+        "tailwindcss": "^2.2.7",
+        "tailwindcss-scroll-snap": "^1.1.0"
     },
     "devDependencies": {
         "@babel/preset-env": "^7.14.4",
