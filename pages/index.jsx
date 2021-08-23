@@ -25,6 +25,7 @@ import PackContainer from '../components/PackContainer';
 // import seasonal from '../public/seasonal.png';
 // import wallet from '../public/wallet.png';
 import AthleteTokenContainer from '../components/AthleteTokenContainer';
+import Head from 'next/head';
 
 
 export default function Home() {
@@ -51,6 +52,15 @@ export default function Home() {
 
   return (
     <>
+
+      <Head>
+        <link
+          href="https://fonts.googleapis.com/css2?family=Inter"
+          rel="stylesheet"
+        />
+      </Head>
+
+
       <link href="https://fonts.googleapis.com/css?family=Nunito:400,700&display=swap" rel="stylesheet"></link>
       <div className=" h-screen relative">
 

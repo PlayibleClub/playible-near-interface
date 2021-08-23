@@ -16,7 +16,7 @@ const HeaderBack = (props) => {
   return (
     <Header>
 
-      <Button color="indigo-light" saturation="0" textColor="white-light" textSaturation="500" onClick={ } size="py-1 px-1">  Back</Button>
+      <Button color="indigo-light" saturation="0" textColor="white-light" textSaturation="500" size="py-1 px-1">  Back</Button>
 
 
 
