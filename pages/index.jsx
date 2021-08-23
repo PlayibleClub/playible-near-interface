@@ -72,7 +72,28 @@ export default function Home() {
 
 
         <div className="flex flex-col w-full ">
-          <HeaderBase></HeaderBase>
+          <Header>
+
+            <Button color="indigo-light" saturation="0" textColor="white-light" textSaturation="500" onClick={() => setClosed(false)} size="py-1 px-1">=</Button>
+
+
+
+
+
+
+
+
+
+            <div className="text-white-light">
+              {' '}
+              <img src="images/fantasyinvestar.png" alt="Img" />
+            </div>
+            <Button rounded="rounded-sm " textColor="white-light" color="null" onClick={interactWallet} size="py-1 px-1">
+              <img src="images/wallet.png" alt="Img" />
+              {status === WalletStatus.WALLET_CONNECTED ? '*' : '+'}
+            </Button>
+
+          </Header>
 
 
 
