@@ -14,6 +14,8 @@ const HeaderBase = (props) => {
       connect(availableConnectTypes[1]);
     }
   };
+
+
   const [isClosed, setClosed] = React.useState(true)
 
 

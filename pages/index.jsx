@@ -3,12 +3,14 @@ import { useWallet, WalletStatus } from '@terra-money/wallet-provider';
 import * as React from 'react';
 import Header from '../components/Header';
 import HeaderBase from '../components/HeaderBase';
+import HeaderBack from '../components/HeaderBack';
 import Button from '../components/Button';
 import Navbar from '../components/Navbar';
 import Main from '../components/Main';
 import TitledContainer from '../components/TitledContainer';
 import RoundedContainer from '../components/RoundedContainer';
 import AthleteGrid from '../components/AthleteGrid';
+import TokenGridCol2 from '../components/TokenGridCol2';
 // import Roundedinput from '../components/Roundedinput';
 import AthleteContainer from '../components/AthleteContainer';
 import PerformerContainer from '../components/PerformerContainer';
@@ -60,7 +62,7 @@ export default function Home() {
 
 
         <div className="flex flex-col w-full ">
-          <HeaderBase></HeaderBase>
+          <HeaderBack></HeaderBack>
 
 
 
@@ -145,12 +147,12 @@ export default function Home() {
 
 
               <TitledContainer align="justify-start" className=" flex w-full justify-start" title="TOP PERFORMERS">
-                <AthleteGrid>
+                <TokenGridCol2>
                   <PerformerContainer AthleteName="STEPHEN CURRY" CoinValue="86.3" />
                   <PerformerContainer AthleteName="LEBRON JAMES" CoinValue="96.0" />
                   <PerformerContainer AthleteName="DEVIN BOOKER" CoinValue="76.8" />
                   <PerformerContainer AthleteName="ARMONI BROOKS" CoinValue="83.0" />
-                </AthleteGrid>
+                </TokenGridCol2>
               </TitledContainer>
 
 
