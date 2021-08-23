@@ -34,7 +34,6 @@ const WalletHelper = () => {
   };
 
   const executeContract = async (contractAddr, executeMsg, coinAmount) => {
-    console.log("EXECUTING");
     const txResult = {
       txResult: null,
       txError: null
@@ -52,10 +51,8 @@ const WalletHelper = () => {
       // gasPrices: new StdFee(10_000_000, { uluna: 2000000 }).gasPrices(),
       // gasAdjustment: 1.1,
     }).then((result) => {
-      console.log("SUCCESS");
       txResult.txResult = result;
     }).catch((error) => {
-      console.log("FAIL");
       if (error instanceof UserDenied) {
         txResult.txError = 'User Denied';
       } else if (error instanceof CreateTxFailed) {
