@@ -50,7 +50,7 @@ const playerList = [
     // },
 ]
 
-export default function Portfolio() {
+const Portfolio = () => {
 
     const [filterMode, setMode] = React.useState(false)
     const [searchInfo, setSearch] = React.useState()
