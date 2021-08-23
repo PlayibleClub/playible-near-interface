@@ -72,7 +72,7 @@ export default function Home() {
 
 
         <div className="flex flex-col w-full ">
-          <HeaderBack></HeaderBack>
+          <HeaderBase></HeaderBase>
 
 
 
