@@ -1,79 +1,59 @@
-import React, { Component, useState, useEffect } from 'react'
-import { useWallet, WalletStatus } from '@terra-money/wallet-provider';
-
-import { useDispatch, useSelector } from 'react-redux';
-import { listPlayer } from '../redux/reducers/external/player';
-
+import React, { Component, useState } from 'react'
 import Header from '../components/Header';
 import Button from '../components/Button';
 import Main from '../components/Main';
 import TitledContainer from '../components/TitledContainer';
-import RoundedContainer from '../components/RoundedContainer';
 import AthleteGrid from '../components/AthleteGrid';
 import AthleteContainer from '../components/AthleteContainer';
-import RowContainer from '../components/RowContainer';
-import AthleteTokenContainer from '../components/AthleteTokenContainer';
-import filterIcon from '../public/images/filter.png';
-import searchIcon from '../public/images/search.png';
+import filterIcon from '../public/images/filter.png'
+import searchIcon from '../public/images/search.png'
 
-const Portfolio = () => {
+const playerList = [
+    {
+        name: 'STEPHEN CURRY',
+        team: 'Golden State Warriors',
+        id: '320',
+        cost: '420 UST',
+        jersey: '30',
+        positions: ['PG', 'SG'],
+        grad1: 'indigo-blue',
+        grad2: 'indigo-bluegrad',
+    },
+    {
+        name: 'LEBRON JAMES',
+        team: 'Los Angeles Lakers',
+        id: '25',
+        cost: '840 UST',
+        jersey: '23',
+        positions: ['PG', 'SG'],
+        grad1: 'indigo-purple',
+        grad2: 'indigo-purplegrad',
+    },
+    {
+        name: 'Devin Booker',
+        team: 'Phoenix Suns',
+        id: '16450',
+        cost: '21 UST',
+        jersey: '01',
+        positions: ['SF', 'C'],
+        grad1: 'indigo-darkblue',
+        grad2: 'indigo-darkbluegrad',
+    },
+    // {
+    //     name: '',
+    //     team: '',
+    //     cost: '',
+    //     jersey: '',
+    //     positions: [],
+    //     grad1: '',
+    //     grad2: '',
+    // },
+]
 
-    const [filterMode, setMode] = useState(false);
-    const { playerList: list } = useSelector((state) => state.external.player);
+export default function Portfolio() {
 
-    const playerList = [
-        {
-            name: 'STEPHEN CURRY',
-            team: 'Golden State Warriors',
-            id: '320',
-            cost: '420 UST',
-            jersey: '30',
-            positions: ['PG', 'SG'],
-            grad1: 'indigo-blue',
-            grad2: 'indigo-bluegrad',
-        },
-        {
-            name: 'LEBRON JAMES',
-            team: 'Los Angeles Lakers',
-            id: '25',
-            cost: '840 UST',
-            jersey: '23',
-            positions: ['PG', 'SG'],
-            grad1: 'indigo-purple',
-            grad2: 'indigo-purplegrad',
-        },
-        {
-            name: 'Devin Booker',
-            team: 'Phoenix Suns',
-            id: '16450',
-            cost: '21 UST',
-            jersey: '01',
-            positions: ['SF', 'C'],
-            grad1: 'indigo-darkblue',
-            grad2: 'indigo-darkbluegrad',
-        },
-        // {
-        //     name: '',
-        //     team: '',
-        //     cost: '',
-        //     jersey: '',
-        //     positions: [],
-        //     grad1: '',
-        //     grad2: '',
-        // },
-    ]
-
-    const dispatch = useDispatch();
-
-    useEffect(() => {
-        dispatch(listPlayer()).then(() => {
-        });
-    
-        return function cleanup() {
-          isMounted.current = false;
-          dispatch(clearData());
-        };
-    }, [dispatch]);
+    const [filterMode, setMode] = React.useState(false)
+    const [searchInfo, setSearch] = React.useState()
 
     return(
             <>
@@ -104,8 +84,11 @@ const Portfolio = () => {
                                         </div>
 
                                         <div className="rounded-md bg-indigo-light ml-1 h-11 w-9/12 flex">
-                                            <input className="text-xl ml-4 appearance-none bg-indigo-light focus:outline-none w-10/12" type="text" placeholder="Search..." />
-                                            <img src={searchIcon} className="object-none w-2/12"/>
+                                            <input className="text-xl ml-4 appearance-none bg-indigo-light focus:outline-none w-10/12" type="text" placeholder="Search..." name="s" />
+                                            <button type="submit" className="w-2/12">
+                                                <img src={searchIcon} className="object-none ml-2.5"/>
+                                            </button>
+                                            
                                         </div>
                                     </>
                                     :

@@ -1,12 +1,16 @@
 import { useWallet, WalletStatus } from '@terra-money/wallet-provider';
 // import Image from 'next/image';
+import * as React from 'react';
 import Header from '../components/Header';
+import HeaderBase from '../components/HeaderBase';
+import HeaderBack from '../components/HeaderBack';
 import Button from '../components/Button';
 import Navbar from '../components/Navbar';
 import Main from '../components/Main';
 import TitledContainer from '../components/TitledContainer';
 import RoundedContainer from '../components/RoundedContainer';
 import AthleteGrid from '../components/AthleteGrid';
+import TokenGridCol2 from '../components/TokenGridCol2';
 // import Roundedinput from '../components/Roundedinput';
 import AthleteContainer from '../components/AthleteContainer';
 import PerformerContainer from '../components/PerformerContainer';
@@ -21,6 +25,8 @@ import PackContainer from '../components/PackContainer';
 // import seasonal from '../public/seasonal.png';
 // import wallet from '../public/wallet.png';
 import AthleteTokenContainer from '../components/AthleteTokenContainer';
+import Head from 'next/head';
+
 
 export default function Home() {
   const { status, connect, disconnect, availableConnectTypes } = useWallet();
@@ -34,17 +40,41 @@ export default function Home() {
   };
   const animals = ['Dog', 'Bird', 'Cat', 'Mouse', 'Horse'];
 
+
+
+
+  const [isClosed, setClosed] = React.useState(true)
+
+
+
+
+
+
   return (
     <>
+
+      <Head>
+        <link
+          href="https://fonts.googleapis.com/css2?family=Inter"
+          rel="stylesheet"
+        />
+      </Head>
+
+
       <link href="https://fonts.googleapis.com/css?family=Nunito:400,700&display=swap" rel="stylesheet"></link>
       <div className=" h-screen relative">
 
-        <Navbar></Navbar>
+
+        {isClosed ? null : <div className="flex flex-row w-full absolute z-50 top-0 left-0 ">
+          <Navbar> </Navbar>
+          <div className="w-2/6 h-screen" onMouseDown={() => setClosed(true)}></div>
+        </div>}
+
 
         <div className="flex flex-col w-full ">
           <Header>
 
-            <Button color="indigo-light" saturation="0" textColor="white-light" textSaturation="500" size="py-1 px-1">=</Button>
+            <Button color="indigo-light" saturation="0" textColor="white-light" textSaturation="500" onClick={() => setClosed(false)} size="py-1 px-1">=</Button>
 
 
 
@@ -148,12 +178,12 @@ export default function Home() {
 
 
               <TitledContainer align="justify-start" className=" flex w-full justify-start" title="TOP PERFORMERS">
-                <AthleteGrid>
+                <TokenGridCol2>
                   <PerformerContainer AthleteName="STEPHEN CURRY" CoinValue="86.3" />
                   <PerformerContainer AthleteName="LEBRON JAMES" CoinValue="96.0" />
                   <PerformerContainer AthleteName="DEVIN BOOKER" CoinValue="76.8" />
                   <PerformerContainer AthleteName="ARMONI BROOKS" CoinValue="83.0" />
-                </AthleteGrid>
+                </TokenGridCol2>
               </TitledContainer>
 
 

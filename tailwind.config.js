@@ -21,6 +21,7 @@ module.exports = {
                 purplegrad: '#E3B2FF',
                 darkblue: '#1B155C',
                 darkbluegrad: '#8479FF',
+                buttonblue: '#3B62F6'
             },
             white: {
                 light: '#FFFFFF'
@@ -32,7 +33,8 @@ module.exports = {
         }
     },
     variants: {
-        extend: {}
+        extend: {},
+        scrollSnapType: ['responsive'],
     },
-    plugins: []
+    plugins: [require('tailwindcss-scroll-snap')],
 };

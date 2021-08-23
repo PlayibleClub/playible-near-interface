@@ -5,7 +5,7 @@ const PerformerContainer = (props) => {
 
   return (
     <div data-test="PerformerContainer" className={`bg-${color}  sx-${TeamName} m-1 flex flex-col rounded-md w-5/6 h-full `}>
-      <div className="flex flex-col h-2/3">
+      <div className="flex  h-2/3">
         <img src={imagesrc} alt="Img" />
 
       </div>
@@ -36,7 +36,7 @@ PerformerContainer.propTypes = {
 
 PerformerContainer.defaultProps = {
   color: 'sds',
-  imagesrc: 'https://picsum.photos/100/100',
+  imagesrc: 'images/token.png',
   // children: <div>Fantasy investr</div>
   children: <div />,
 };
