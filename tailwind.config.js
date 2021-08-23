@@ -28,6 +28,9 @@ module.exports = {
             black: {
                 dark: '#000000'
             },
+            fontFamily: {
+                monserat: ['Montserrat']
+            }
 
         }
     },
