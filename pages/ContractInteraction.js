@@ -32,13 +32,11 @@ const ContractInteraction = () => {
 
 
   const interactWallet = () => {
-    console.log("CONNECT");
     if (status === WalletStatus.WALLET_NOT_CONNECTED) {
       connect(availableConnectTypes[1]);
     } else if (status === WalletStatus.WALLET_CONNECTED){
       disconnect();
     }
-    console.log("STATUS: ", status);
   };
 
   const performQueryContract = async () => {
@@ -48,8 +46,6 @@ const ContractInteraction = () => {
 
   const performExecuteContract = async () => {
     const result = await executeContract(contractAddr, executeMsg, offeredCoin);
-    console.log(result);
-    console.log("RESULT: ", result.txError == null ? result.txResults : result.txError);
     setTxResults(result.txError == null ? result.txResults : result.txError);
     //dispatch(executeContract({contractAddr, executeMsg, connectedWallet}));
   }
