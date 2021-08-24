@@ -1,17 +1,12 @@
 import { useCallback, useState } from 'react';
-import { MsgExecuteContract, MsgInstantiateContract, StdFee} from '@terra-money/terra.js';
 import {
-  useWallet, WalletStatus,
-  useConnectedWallet,
-  CreateTxFailed,
-  Timeout,
-  TxFailed,
-  TxResult,
-  TxUnspecifiedError,
-  UserDenied,
+  useWallet, WalletStatus, useConnectedWallet
 } from '@terra-money/wallet-provider';
 
-import TerraEnv from '../utils/terra';
+import { useDispatch, useSelector } from 'react-redux';
+import { execute } from '../redux/reducers/contract/wallet';
+import WalletHelper from '../helpers/wallet-helper';
+
 
 const ContractInteraction = () => {
   
@@ -21,10 +16,10 @@ const ContractInteraction = () => {
   const [executeMsg, setExecuteMsg] = useState('');
   const [offeredCoin, setOfferedCoin] = useState('');
   const [initMsg, setInitMsg] = useState('');
-  const [migratable, setMigratable] = useState(false);
 
   const [txResults, setTxResults] = useState(null);
   const [txError, setTxError] = useState(null);
+  const { queryContract, executeContract } = WalletHelper();
   
   const {
     status,
@@ -35,8 +30,6 @@ const ContractInteraction = () => {
     disconnect,
   } = useWallet();
 
-  const connectedWallet = useConnectedWallet();
-  const { terra } = TerraEnv();
 
   const interactWallet = () => {
     if (status === WalletStatus.WALLET_NOT_CONNECTED) {
@@ -46,107 +39,16 @@ const ContractInteraction = () => {
     }
   };
 
-  const queryContract = async () => {
-    setTxResults(null);
-    setTxError(null);
+  const performQueryContract = async () => {
+    const result = await queryContract(contractAddr, queryMsg);
+    setTxResults(result);
+  }
 
-    try {
-      const result = await terra.wasm.contractQuery(
-        contractAddr,
-        JSON.parse(queryMsg),
-      );
-      setTxResults(result);
-    } catch (e) {
-      setTxError(e);
-      console.log("Fail to get latest result from consumer contract");
-      console.log(e);
-    }
-    return null;
-  };
-
-  const executeContract = useCallback(() => {
-    setTxResults(null);
-    setTxError(null);
-
-    connectedWallet.post({
-      msgs: [
-        new MsgExecuteContract(
-          connectedWallet.walletAddress,  // Wallet Address
-          contractAddr,                   // Contract Address
-          JSON.parse(executeMsg),         // ExecuteMsg
-          { uluna: parseFloat(offeredCoin) * 1_000_000 },
-        ),  
-      ],
-      // gasPrices: new StdFee(10_000_000, { uluna: 2000000 }).gasPrices(),
-      // gasAdjustment: 1.1,
-    }).then((result) => {
-      setTxResults(result);
-      setOfferedCoin('');
-      setMemo('');
-    }).catch((error) => {
-      if (error instanceof UserDenied) {
-        setTxError('User Denied');
-      } else if (error instanceof CreateTxFailed) {
-        setTxError(`Create Tx Failed: ${error.message}`);
-      } else if (error instanceof TxFailed) {
-        setTxError(`Tx Failed: ${error.message}`);
-      } else if (error instanceof Timeout) {
-        setTxError('Timeout');
-      } else if (error instanceof TxUnspecifiedError) {
-        setTxError(`Unspecified Error: ${error.message}`);
-      } else {
-        setTxError(
-          `Unknown Error: ${
-            error instanceof Error ? error.message : String(error)}`,
-        );
-      }
-    });
-  }, [offeredCoin, connectedWallet]);
-
-  const initContract = useCallback(() => {
-
-    if (!connectedWallet) {
-      return;
-    }
-
-    setTxResults(null);
-    setTxError(null);
-
-    connectedWallet.post({
-      msgs: [
-        new MsgInstantiateContract(
-          connectedWallet.walletAddress,  // Owner Address
-          codeID,                         // Contract Code ID
-          JSON.parse(initMsg),        // ExecuteMsg
-          { uluna: parseFloat(offeredCoin) * 1000000 },
-          migratable,                     
-        ),
-      ],
-      // gasPrices: new StdFee(10_000_000, { uusd: 2000000 }).gasPrices(),
-      // gasAdjustment: 1.1,
-    }).then((result) => {
-      setTxResults(result);
-      setOfferedCoin('');
-      setMemo('');
-    }).catch((error) => {
-      if (error instanceof UserDenied) {
-        setTxError('User Denied');
-      } else if (error instanceof CreateTxFailed) {
-        setTxError(`Create Tx Failed: ${error.message}`);
-      } else if (error instanceof TxFailed) {
-        setTxError(`Tx Failed: ${error.message}`);
-      } else if (error instanceof Timeout) {
-        setTxError('Timeout');
-      } else if (error instanceof TxUnspecifiedError) {
-        setTxError(`Unspecified Error: ${error.message}`);
-      } else {
-        setTxError(
-          `Unknown Error: ${
-            error instanceof Error ? error.message : String(error)}`,
-        );
-      }
-    });
-  }, [offeredCoin, connectedWallet]);
+  const performExecuteContract = async () => {
+    const result = await executeContract(contractAddr, executeMsg, offeredCoin);
+    result.txError == null ? setTxResults(result.txResult) : setTxResults(result.txError);
+    //dispatch(executeContract({contractAddr, executeMsg, connectedWallet}));
+  }
 
   return (
     <>
@@ -192,7 +94,7 @@ const ContractInteraction = () => {
           </label>
         </div>
 
-        <button onClick={queryContract}>Query Contract</button>
+        <button onClick={performQueryContract}>Query Contract</button>
 
         <div className="flex flex-col gap-2">
           <label htmlFor="contractAddr">
@@ -215,7 +117,7 @@ const ContractInteraction = () => {
           </label>
         </div>
 
-        <button onClick={executeContract}>Submit Contract</button>
+        <button onClick={performExecuteContract}>Submit Contract</button>
 
         <div className="flex flex-col gap-2">
           <label htmlFor="codeID">
@@ -249,8 +151,6 @@ const ContractInteraction = () => {
             </form>      
           </label>
         </div>
-
-        <button onClick={initContract}>Instantiate Contract</button>
       </div>
       <div className="mt-2 p-4 max-w-md">
         <h1>

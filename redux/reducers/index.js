@@ -1,6 +1,8 @@
 import { combineReducers } from 'redux';
-import wallet from './walletReducer';
+import external from './external';
+import contract from './contract';
 
 export default combineReducers({
-  wallet,
+  contract,
+  external
 });
