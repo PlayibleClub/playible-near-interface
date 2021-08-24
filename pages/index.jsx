@@ -25,7 +25,7 @@ import PackContainer from '../components/PackContainer';
 // import seasonal from '../public/seasonal.png';
 // import wallet from '../public/wallet.png';
 import AthleteTokenContainer from '../components/AthleteTokenContainer';
-import Head from 'next/head';
+
 
 
 export default function Home() {
@@ -53,16 +53,16 @@ export default function Home() {
   return (
     <>
 
-      <Head>
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter"
-          rel="stylesheet"
-        />
-      </Head>
 
 
-      <link href="https://fonts.googleapis.com/css?family=Nunito:400,700&display=swap" rel="stylesheet"></link>
-      <div className=" h-screen relative">
+
+
+      <div className={`font-montserrat h-screen relative ${isClosed ? "" : "overflow-y-hidden"}`}>
+
+
+
+
+
 
 
         {isClosed ? null : <div className="flex flex-row w-full absolute z-50 top-0 left-0 ">
@@ -72,42 +72,22 @@ export default function Home() {
 
 
         <div className="flex flex-col w-full ">
-          <Header>
-
-            <Button color="indigo-light" saturation="0" textColor="white-light" textSaturation="500" onClick={() => setClosed(false)} size="py-1 px-1">=</Button>
 
 
 
+          <HeaderBase isClosed={isClosed} setClosed={setClosed} ></HeaderBase>
 
 
 
 
 
-
-            <div className="text-white-light">
-              {' '}
-              <img src="images/fantasyinvestar.png" alt="Img" />
-            </div>
-            <Button rounded="rounded-sm " textColor="white-light" color="null" onClick={interactWallet} size="py-1 px-1">
-              <img src="images/wallet.png" alt="Img" />
-              {status === WalletStatus.WALLET_CONNECTED ? '*' : '+'}
-            </Button>
-
-          </Header>
+          <Main color="indigo-dark  overflow-y-scroll">
 
 
 
 
+            <div className="flex flex-col  w-full h-full overflow-x-hidden">
 
-
-
-
-          <Main color="indigo-dark">
-
-
-
-
-            <div className="flex flex-col  w-full h-full overflow-y-scroll overflow-x-hidden">
               <TitledContainer title="MARKETPLACE">
 
                 <HorizontalScrollContainer>
