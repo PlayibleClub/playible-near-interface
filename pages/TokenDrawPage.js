@@ -27,7 +27,7 @@ export default function TokenDrawPage() {
 
                         <Main color="indigo-dark">
                             <div className="flex flex-col overflow-y-auto overflow-x-hidden">
-                                <TitledContainer title="DRAW">
+                                <TitledContainer title="CONGRATULATIONS!">
                                     <div className="flex overflow-x-scroll pt-16 pb-32 hide-scroll-bar snap snap-x snap-mandatory">
                                         <div className="flex flex-nowrap ml-16 pt-16">
                                             {tokenList.map(function(list, i){
