@@ -68,7 +68,7 @@ export default function Portfolio() {
 
     return (
         <>
-            <div className={`font-montserrat  relative ${isClosed ? "" : "overflow-y-hidden"}`}>
+            <div className={`font-montserrat h-screen relative ${isClosed ? "" : "overflow-y-hidden"}`}>
 
                 {isClosed ? null : <div className="flex flex-row w-full absolute z-50 top-0 left-0 ">
                     <Navbar> </Navbar>
