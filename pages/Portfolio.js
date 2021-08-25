@@ -3,6 +3,8 @@ import { useWallet, WalletStatus } from '@terra-money/wallet-provider';
 import Header from '../components/Header';
 import Button from '../components/Button';
 import Main from '../components/Main';
+import HeaderBase from '../components/HeaderBase';
+import Navbar from '../components/Navbar';
 import TitledContainer from '../components/TitledContainer';
 import RoundedContainer from '../components/RoundedContainer';
 import AthleteGrid from '../components/AthleteGrid';
@@ -11,6 +13,9 @@ import RowContainer from '../components/RowContainer';
 import AthleteTokenContainer from '../components/AthleteTokenContainer';
 import filterIcon from '../public/images/filter.png'
 import searchIcon from '../public/images/search.png'
+
+
+
 
 const playerList = [
     {
@@ -54,41 +59,47 @@ const playerList = [
     // },
 ]
 
-export default function Portfolio(){
 
+
+
+export default function Portfolio() {
+    const [isClosed, setClosed] = React.useState(true)
     const [filterMode, setMode] = React.useState(false)
 
-    return(
-            <>
-                <div className="">
-                    <div className="flex flex-col w-full">
-                    <Header>
+    return (
+        <>
+            <div className={`font-montserrat  relative ${isClosed ? "" : "overflow-y-hidden"}`}>
 
-                    <Button color="indigo-light" saturation="0" textColor="white-light" textSaturation="500" size="py-1 px-1">=</Button>
-                        <div className="text-white-light">
-                        {' '}
-                        <img src="images/fantasyinvestar.png" alt="Img" />
-                    </div>
-                    </Header>
-                    </div>
+                {isClosed ? null : <div className="flex flex-row w-full absolute z-50 top-0 left-0 ">
+                    <Navbar> </Navbar>
+                    <div className="w-2/6 h-screen" onMouseDown={() => setClosed(true)}></div>
+                </div>}
 
-                    <Main color="indigo-dark">
+                <HeaderBase isClosed={isClosed} setClosed={setClosed} ></HeaderBase>
+
+                <div className="flex flex-col w-full">
+
+
+
+                </div>
+
+                <Main color="indigo-dark">
 
                     <div className="flex flex-col w-full overflow-y-auto">
                         <TitledContainer title="PORTFOLIO" className="flex w-1/2 justify-items-center">
 
                             <div className="flex w-11/12 mb-4 mt-4">
-                                { filterMode ?
+                                {filterMode ?
                                     <>
-                                        <div className="rounded-md bg-indigo-light mr-1 w-12 h-11" onClick={()=>setMode(false)}>
+                                        <div className="rounded-md bg-indigo-light mr-1 w-12 h-11" onClick={() => setMode(false)}>
                                             <div className="ml-3.5 mt-4">
-                                                <img src={filterIcon}/>
+                                                <img src={filterIcon} />
                                             </div>
                                         </div>
 
                                         <div className="rounded-md bg-indigo-light ml-1 h-11 w-9/12 flex">
                                             <input className="text-xl ml-4 appearance-none bg-indigo-light focus:outline-none w-10/12" type="text" placeholder="Search..." />
-                                            <img src={searchIcon} className="object-none w-2/12"/>
+                                            <img src={searchIcon} className="object-none w-2/12" />
                                         </div>
                                     </>
                                     :
@@ -97,12 +108,12 @@ export default function Portfolio(){
                                             <div className="text-lg ml-4 mt-2 w-9/12">
                                                 Filter by
                                             </div>
-                                            <img src={filterIcon} className="object-none w-3/12"/>
+                                            <img src={filterIcon} className="object-none w-3/12" />
                                         </div>
 
-                                        <div className="rounded-md bg-indigo-light ml-1 w-12 h-11" onClick={()=>setMode(true)}>
+                                        <div className="rounded-md bg-indigo-light ml-1 w-12 h-11" onClick={() => setMode(true)}>
                                             <div className="ml-4 mt-3">
-                                                <img src={searchIcon}/>
+                                                <img src={searchIcon} />
                                             </div>
                                         </div>
                                     </>
@@ -110,18 +121,18 @@ export default function Portfolio(){
                             </div>
 
                             <AthleteGrid>
-                                {playerList.map(function(player, i){
+                                {playerList.map(function (player, i) {
                                     return (
                                         <div className='mb-4' key={i}>
-                                            <AthleteContainer 
-                                                AthleteName={player.name} 
+                                            <AthleteContainer
+                                                AthleteName={player.name}
                                                 TeamName={player.team}
                                                 ID={player.id}
-                                                CoinValue={player.cost} 
-                                                Jersey={player.jersey} 
-                                                Positions={player.positions} 
-                                                colorgrad1={player.grad1} 
-                                                colorgrad2={player.grad2} 
+                                                CoinValue={player.cost}
+                                                Jersey={player.jersey}
+                                                Positions={player.positions}
+                                                colorgrad1={player.grad1}
+                                                colorgrad2={player.grad2}
                                             />
                                         </div>
                                     )
@@ -130,8 +141,8 @@ export default function Portfolio(){
                         </TitledContainer>
                     </div>
 
-                    </Main>
-                </div>
-            </>
-        )
+                </Main>
+            </div>
+        </>
+    )
 }
