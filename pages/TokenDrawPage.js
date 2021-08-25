@@ -1,14 +1,18 @@
-import React, { Component, useState } from 'react';
+import React, { useEffect } from 'react';
 import Header from '../components/Header';
 import Button from '../components/Button';
 import Main from '../components/Main';
 import TokenComponent from '../components/TokenComponent';
 import TitledContainer from '../components/TitledContainer';
-import Link from 'next/link'
+import Link from 'next/link';
 
-const tokenList = [1, 7, 12, 23, 30]
+import { useDispatch, useSelector } from 'react-redux';
+import { getDrawData } from '../redux/reducers/contract/pack';
 
-export default function TokenDrawPage() {
+
+const TokenDrawPage = () => {
+    const { drawList: tokenList } = useSelector((state) => state.contract.pack);
+    const dispatch = useDispatch()
 
     return(
         <>
@@ -40,6 +44,9 @@ export default function TokenDrawPage() {
                                         </div>
                                     </div>
 
+                                    
+                                    <button onClick={() => { dispatch(getDrawData())}}>Draw</button>
+
                                     <Link href="/portfolio">
                                         <div className="bg-indigo-buttonblue w-72 h-12 mb-20 text-center rounded-md text-lg ml-6">
                                             <div className="mt-2.5">
@@ -55,3 +62,5 @@ export default function TokenDrawPage() {
         </>
     )
 }
+
+export default TokenDrawPage
