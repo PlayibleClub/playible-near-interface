@@ -7,7 +7,7 @@ const GameResultContainer = (props) => {
     <div data-test="GameResultContainer" className={`bg-${color} mt-4 flex flex-col justify-center  w-full `}>
 
 
-      <div className="  flex flex-row justify-between mb-4   w-full">
+      <div className="  flex flex-row justify-between mb-4 self-center  w-4/5">
         <div className="font-thin">{date}</div>
         <div className="flex flex-col">
           <p className="font-thin">RANK</p>
@@ -20,7 +20,7 @@ const GameResultContainer = (props) => {
 
 
       </div>
-      <hr className="w-5/6 " />
+      <hr className="w-5/6 self-center" />
 
     </div>
   );
