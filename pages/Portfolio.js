@@ -246,7 +246,24 @@ export default function Portfolio() {
                                     console.log(posFilter)
                                     console.log(teamFilter)
                                     
-                                    if(posFilter !== null && teamFilter !== null){
+                                    if(posFilter === "" && teamFilter === ""){
+                                        console.log("no filter")
+                                        return(
+                                            <div className='mb-4' key={i}>
+                                                <AthleteContainer
+                                                    AthleteName={player.name} 
+                                                    TeamName={player.team}
+                                                    ID={player.id}
+                                                    CoinValue={player.cost} 
+                                                    Jersey={player.jersey} 
+                                                    Positions={player.positions} 
+                                                    colorgrad1={player.grad1} 
+                                                    colorgrad2={player.grad2} 
+                                                />
+                                            </div>
+                                        )
+                                    }    
+                                    else if(posFilter !== "" && teamFilter !== ""){
                                         console.log("pos and team code")
                                         if(player.positions.includes(posFilter) && toFindTeam.includes(teamFilter.toLowerCase()))
                                             return (
@@ -264,7 +281,7 @@ export default function Portfolio() {
                                                 </div>
                                             ) 
                                     }
-                                    else if(teamFilter !== null){ 
+                                    else if(teamFilter !== ""){ 
                                         console.log("team code")
                                         if(toFindTeam.includes(teamFilter.toLowerCase())){
                                             return (
@@ -283,8 +300,8 @@ export default function Portfolio() {
                                             ) 
                                         }
                                     }
-                                    else if(posFilter !== null){
-                                        console.log("posFilter code")
+                                    else if(posFilter !== ""){
+                                        // console.log("posFilter code")
                                         if(player.positions.includes(posFilter)){
                                             return (
                                                 <div className='mb-4' key={i}>
@@ -302,20 +319,6 @@ export default function Portfolio() {
                                             )    
                                         }
                                     }
-                                    else return(
-                                        <div className='mb-4' key={i}>
-                                            <AthleteContainer
-                                                AthleteName={player.name} 
-                                                TeamName={player.team}
-                                                ID={player.id}
-                                                CoinValue={player.cost} 
-                                                Jersey={player.jersey} 
-                                                Positions={player.positions} 
-                                                colorgrad1={player.grad1} 
-                                                colorgrad2={player.grad2} 
-                                            />
-                                        </div>
-                                    )
                                 })
                             }
                             </AthleteGrid>
