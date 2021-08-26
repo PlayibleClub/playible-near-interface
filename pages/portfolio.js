@@ -89,12 +89,27 @@ export default function Portfolio() {
 
     const { register, handleSubmit } = useForm()
     const [result, setResult] = useState("")
+    const [teamFilter, setTeamFilter] = useState("")
+    const [posFilter, setPosFilter] = useState("")
 
     const [filterMode, setMode] = React.useState(false)
     const [showFilter, setFilter] = React.useState(false)
 
-    const onSubmit = (data) => setResult(JSON.stringify(data))
+    const onSubmit = (data) => {
+        if(data.search)
+            setResult(data.search)
+        else setResult("")
 
+        if(data.teamName)
+            setTeamFilter(data.teamName)
+        else setTeamFilter("")
+
+        if(data.positions) 
+            setPosFilter(data.positions)
+        else setPosFilter("")
+
+        console.log(data)
+    }
     const key1 = 'team'
     const uniqueTeams = [...new Map(playerList.map(i => [i[key1], i])).values()]
 
@@ -162,7 +177,7 @@ export default function Portfolio() {
                                 }
                             </div>
 
-                            {/* <div>
+                            <div>
                                 { showFilter ?
                                     <>
                                         <form onSubmit={handleSubmit(onSubmit)}>
@@ -200,14 +215,17 @@ export default function Portfolio() {
                                     <>
                                     </>
                                 }
-                            </div> */}
+                            </div>
 
                             <AthleteGrid>
                                 {playerList.map(function(player, i){
                                     const toFindName = player.name.toLowerCase()
                                     const toFindTeam = player.team.toLowerCase()
-                                    const searchInfo = result.substring(11, result.length-2)
-                                    if(toFindName.includes(searchInfo.toLowerCase()) || toFindTeam.includes(searchInfo.toLowerCase()) || player.jersey.includes(searchInfo))
+                                    const searchInfo = result.toLowerCase()
+
+                                    if(toFindName.includes(searchInfo) || toFindTeam.includes(searchInfo) || player.jersey.includes(searchInfo) 
+                                        && (toFindTeam.includes(teamFilter.toLowerCase()) && player.positions.includes(posFilter))
+                                    )
                                         return (
                                             <div className='mb-4' key={i}>
                                                 <AthleteContainer 
@@ -221,7 +239,7 @@ export default function Portfolio() {
                                                     colorgrad2={player.grad2} 
                                                 />
                                             </div>
-                                        )
+                                        )                            
                                 })}
                             </AthleteGrid>
                         </TitledContainer>
