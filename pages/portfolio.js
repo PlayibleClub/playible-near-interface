@@ -218,29 +218,106 @@ export default function Portfolio() {
                             </div>
 
                             <AthleteGrid>
-                                {playerList.map(function(player, i){
-                                    const toFindName = player.name.toLowerCase()
-                                    const toFindTeam = player.team.toLowerCase()
-                                    const searchInfo = result.toLowerCase()
+                                {filterMode ?
+                                    playerList.map(function(player, i){
+                                        const toFindName = player.name.toLowerCase()
+                                        const toFindTeam = player.team.toLowerCase()
+                                        const searchInfo = result.toLowerCase()
 
-                                    if(toFindName.includes(searchInfo) || toFindTeam.includes(searchInfo) || player.jersey.includes(searchInfo) 
-                                        && (toFindTeam.includes(teamFilter.toLowerCase()) && player.positions.includes(posFilter))
+                                        if(toFindName.includes(searchInfo) || toFindTeam.includes(searchInfo) || player.jersey.includes(searchInfo))
+                                            return (
+                                                <div className='mb-4' key={i}>
+                                                    <AthleteContainer 
+                                                        AthleteName={player.name} 
+                                                        TeamName={player.team}
+                                                        ID={player.id}
+                                                        CoinValue={player.cost} 
+                                                        Jersey={player.jersey} 
+                                                        Positions={player.positions} 
+                                                        colorgrad1={player.grad1} 
+                                                        colorgrad2={player.grad2} 
+                                                    />
+                                                </div>
+                                            )                            
+                                    })
+                                :
+                                playerList.map(function(player, i){
+                                    const toFindTeam = player.team.toLowerCase()
+                                    console.log(posFilter)
+                                    console.log(teamFilter)
+                                    
+                                    if(posFilter !== null && teamFilter !== null){
+                                        console.log("pos and team code")
+                                        if(player.positions.includes(posFilter) && toFindTeam.includes(teamFilter.toLowerCase()))
+                                            return (
+                                                <div className='mb-4' key={i}>
+                                                    <AthleteContainer
+                                                        AthleteName={player.name} 
+                                                        TeamName={player.team}
+                                                        ID={player.id}
+                                                        CoinValue={player.cost} 
+                                                        Jersey={player.jersey} 
+                                                        Positions={player.positions} 
+                                                        colorgrad1={player.grad1} 
+                                                        colorgrad2={player.grad2} 
+                                                    />
+                                                </div>
+                                            ) 
+                                    }
+                                    else if(teamFilter !== null){ 
+                                        console.log("team code")
+                                        if(toFindTeam.includes(teamFilter.toLowerCase())){
+                                            return (
+                                                <div className='mb-4' key={i}>
+                                                    <AthleteContainer
+                                                        AthleteName={player.name} 
+                                                        TeamName={player.team}
+                                                        ID={player.id}
+                                                        CoinValue={player.cost} 
+                                                        Jersey={player.jersey} 
+                                                        Positions={player.positions} 
+                                                        colorgrad1={player.grad1} 
+                                                        colorgrad2={player.grad2} 
+                                                    />
+                                                </div>
+                                            ) 
+                                        }
+                                    }
+                                    else if(posFilter !== null){
+                                        console.log("posFilter code")
+                                        if(player.positions.includes(posFilter)){
+                                            return (
+                                                <div className='mb-4' key={i}>
+                                                    <AthleteContainer
+                                                        AthleteName={player.name} 
+                                                        TeamName={player.team}
+                                                        ID={player.id}
+                                                        CoinValue={player.cost} 
+                                                        Jersey={player.jersey} 
+                                                        Positions={player.positions} 
+                                                        colorgrad1={player.grad1} 
+                                                        colorgrad2={player.grad2} 
+                                                    />
+                                                </div>
+                                            )    
+                                        }
+                                    }
+                                    else return(
+                                        <div className='mb-4' key={i}>
+                                            <AthleteContainer
+                                                AthleteName={player.name} 
+                                                TeamName={player.team}
+                                                ID={player.id}
+                                                CoinValue={player.cost} 
+                                                Jersey={player.jersey} 
+                                                Positions={player.positions} 
+                                                colorgrad1={player.grad1} 
+                                                colorgrad2={player.grad2} 
+                                            />
+                                        </div>
                                     )
-                                        return (
-                                            <div className='mb-4' key={i}>
-                                                <AthleteContainer 
-                                                    AthleteName={player.name} 
-                                                    TeamName={player.team}
-                                                    ID={player.id}
-                                                    CoinValue={player.cost} 
-                                                    Jersey={player.jersey} 
-                                                    Positions={player.positions} 
-                                                    colorgrad1={player.grad1} 
-                                                    colorgrad2={player.grad2} 
-                                                />
-                                            </div>
-                                        )                            
-                                })}
+                                })
+                            }
                             </AthleteGrid>
                         </TitledContainer>
                     </div>
