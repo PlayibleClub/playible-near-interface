@@ -247,7 +247,7 @@ export default function Portfolio() {
                                     console.log(teamFilter)
                                     
                                     if(posFilter === "" && teamFilter === ""){
-                                        console.log("no filter")
+                                        // console.log("no filter")
                                         return(
                                             <div className='mb-4' key={i}>
                                                 <AthleteContainer
@@ -264,7 +264,7 @@ export default function Portfolio() {
                                         )
                                     }    
                                     else if(posFilter !== "" && teamFilter !== ""){
-                                        console.log("pos and team code")
+                                        // console.log("pos and team code")
                                         if(player.positions.includes(posFilter) && toFindTeam.includes(teamFilter.toLowerCase()))
                                             return (
                                                 <div className='mb-4' key={i}>
@@ -282,7 +282,7 @@ export default function Portfolio() {
                                             ) 
                                     }
                                     else if(teamFilter !== ""){ 
-                                        console.log("team code")
+                                        // console.log("team code")
                                         if(toFindTeam.includes(teamFilter.toLowerCase())){
                                             return (
                                                 <div className='mb-4' key={i}>
@@ -301,7 +301,7 @@ export default function Portfolio() {
                                         }
                                     }
                                     else if(posFilter !== ""){
-                                        // console.log("posFilter code")
+                                        console.log("posFilter code")
                                         if(player.positions.includes(posFilter)){
                                             return (
                                                 <div className='mb-4' key={i}>
