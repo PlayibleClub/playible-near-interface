@@ -19,7 +19,7 @@ export const getLastRound = createAsyncThunk('getLastRound', async (payload, thu
   }
 });
 
-export const getDrawData = createAsyncThunk('getLastRound', async (payload, thunkAPI) => {
+export const getDrawData = createAsyncThunk('getDrawData', async (payload, thunkAPI) => {
   try {
     const contractAddr = fantasyData.contract_addr;
     const queryMsg = `{"purchased_pack":{ "last_round": "lastRound" }}`;
