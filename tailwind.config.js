@@ -22,7 +22,11 @@ module.exports = {
                 purplegrad: '#E3B2FF',
                 darkblue: '#1B155C',
                 darkbluegrad: '#8479FF',
-                buttonblue: '#3B62F6'
+                buttonblue: '#3B62F6',
+                black: '#000000',
+                white: '#FFFFFF',
+                red: '#922020',
+
             },
             white: {
                 light: '#FFFFFF'
