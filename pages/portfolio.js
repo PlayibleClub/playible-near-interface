@@ -83,7 +83,7 @@ const playerList = [
     // },
 ]
 
-export default function Portfolio() {
+const Portfolio = () => {
 
     const [filterInfo, handleFilter] = React.useState(false)
 
@@ -330,3 +330,5 @@ export default function Portfolio() {
             </>
         )
 }
+
+export default Portfolio;

@@ -4,8 +4,8 @@ const AthleteTokenContainer = (props) => {
   const { children, color, imagesrc, AthleteName, TeamName, CoinValue } = props;
 
   return (
-    <div data-test="AthleteTokenContainer" className={`bg-${color}  sx-${TeamName} w-full h-full overflow-hidden  flex flex-col  w-full h-full `}>
-      <div className="flex flex-col h-2/3">
+    <div data-test="AthleteTokenContainer" className={`bg-${color}  sx-${TeamName} w-5/6 h-full overflow-hidden  flex flex-col   `}>
+      <div className="flex  h-2/3">
         <img src={imagesrc} alt="Img" />
 
       </div>
@@ -36,7 +36,7 @@ AthleteTokenContainer.propTypes = {
 
 AthleteTokenContainer.defaultProps = {
   color: 'sds',
-  imagesrc: 'https://picsum.photos/100/100',
+  imagesrc: 'images/token.png',
   // children: <div>Fantasy investr</div>
   children: <div />,
 };
