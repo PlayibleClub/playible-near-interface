@@ -4,7 +4,7 @@ import {
 } from '@terra-money/wallet-provider';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { execute } from '../redux/reducers/contract/wallet';
+import { getLastRound, getDrawData } from '../redux/reducers/contract/pack';
 import WalletHelper from '../helpers/wallet-helper';
 
 
@@ -20,6 +20,8 @@ const ContractInteraction = () => {
   const [txResults, setTxResults] = useState(null);
   const [txError, setTxError] = useState(null);
   const { queryContract, executeContract } = WalletHelper();
+
+  const dispatch = useDispatch();
   
   const {
     status,
@@ -42,6 +44,10 @@ const ContractInteraction = () => {
   const performQueryContract = async () => {
     const result = await queryContract(contractAddr, queryMsg);
     setTxResults(result);
+  }
+
+  const performGetLatestRound = async () => {
+    dispatch(getLastRound());
   }
 
   const performExecuteContract = async () => {
@@ -118,6 +124,8 @@ const ContractInteraction = () => {
         </div>
 
         <button onClick={performExecuteContract}>Submit Contract</button>
+        <button onClick={performGetLatestRound}>Get LatestRound</button>
+        <button onClick={() => { dispatch(getDrawData())}}>Get Draw Data</button>
 
         <div className="flex flex-col gap-2">
           <label htmlFor="codeID">
