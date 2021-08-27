@@ -14,7 +14,7 @@ export default function TokenDrawPage() {
         <>
             <div>
                 <div className="">
-                        <div className="flex flex-col w-full">
+                        <div className="flex flex-col w-full h-screen">
                         <Header>
 
                         <Button color="indigo-light" saturation="0" textColor="white-light" textSaturation="500" size="py-1 px-1">=</Button>
@@ -27,7 +27,7 @@ export default function TokenDrawPage() {
 
                         <Main color="indigo-dark">
                             <div className="flex flex-col overflow-y-auto overflow-x-hidden">
-                                <TitledContainer title="DRAW">
+                                <TitledContainer title="CONGRATULATIONS!">
                                     <div className="flex overflow-x-scroll pt-16 pb-32 hide-scroll-bar snap snap-x snap-mandatory">
                                         <div className="flex flex-nowrap ml-16 pt-16">
                                             {tokenList.map(function(list, i){

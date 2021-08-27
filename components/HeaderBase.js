@@ -4,7 +4,9 @@ import { useWallet, WalletStatus } from '@terra-money/wallet-provider';
 import Header from './Header.js';
 import Button from './Button.js';
 const HeaderBase = (props) => {
-  const { children, color } = props;
+  const { children, color, isClosed, setClosed } = props;
+
+
   const { status, connect, disconnect, availableConnectTypes } = useWallet();
 
   const interactWallet = () => {
@@ -16,7 +18,7 @@ const HeaderBase = (props) => {
   };
 
 
-  const [isClosed, setClosed] = React.useState(true)
+
 
 
   return (
@@ -47,6 +49,8 @@ const HeaderBase = (props) => {
 
 HeaderBase.propTypes = {
   color: PropTypes.string,
+  isClosed: PropTypes.bool,
+  setClosed: PropTypes.func,
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
 };
 
