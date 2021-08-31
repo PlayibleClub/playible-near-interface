@@ -7,12 +7,25 @@ import TitledContainer from '../components/TitledContainer';
 import Link from 'next/link';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { getDrawData } from '../redux/reducers/contract/pack';
+import { getLastRound, getRoundData } from '../redux/reducers/contract/pack';
+import WalletHelper from '../helpers/wallet-helper';
+import { fantasyData } from '../data';
 
 
 const TokenDrawPage = () => {
-    const { drawList: tokenList } = useSelector((state) => state.contract.pack);
-    const dispatch = useDispatch()
+    const { drawList: tokenList, latestRound } = useSelector((state) => state.contract.pack);
+    const dispatch = useDispatch();
+
+    const { executeContract } = WalletHelper();
+
+    const executePurchasePack = async () => {
+        const executeMsg = `{ "purchase_pack": {} }`;
+        const result = await executeContract(fantasyData.contract_addr, executeMsg);
+        dispatch(getLastRound()).then((response) => {
+            console.log(response);
+            dispatch(getRoundData({lastRound: response.payload}));
+        });
+    }
 
     return(
         <>
@@ -45,7 +58,7 @@ const TokenDrawPage = () => {
                                     </div>
 
                                     
-                                    <button onClick={() => { dispatch(getDrawData())}}>Draw</button>
+                                    <button onClick={executePurchasePack}>Draw</button>
 
                                     <Link href="/portfolio">
                                         <div className="bg-indigo-buttonblue w-72 h-12 mb-20 text-center rounded-md text-lg ml-6">

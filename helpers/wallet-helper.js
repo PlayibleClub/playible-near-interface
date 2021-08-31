@@ -9,6 +9,7 @@ import {
 import { MsgExecuteContract, LCDClient } from '@terra-money/terra.js';
 
 //TODO: Fix wallet connection problems to test contract execution functions with redux
+//TODO: Add dialog box for displaying the status of the transaction
 
 const WalletHelper = () => {
   const connectedWallet = useConnectedWallet();

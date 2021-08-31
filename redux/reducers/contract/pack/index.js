@@ -19,10 +19,12 @@ export const getLastRound = createAsyncThunk('getLastRound', async (payload, thu
   }
 });
 
-export const getDrawData = createAsyncThunk('getDrawData', async (payload, thunkAPI) => {
+export const getRoundData = createAsyncThunk('getRoundData', async (payload, thunkAPI) => {
   try {
+    const { lastRound } = payload;
+
     const contractAddr = fantasyData.contract_addr;
-    const queryMsg = `{"purchased_pack":{ "last_round": "lastRound" }}`;
+    const queryMsg = `{"purchased_pack":{ "last_round": "${lastRound}" }}`;
     const result = await queryContract(contractAddr, queryMsg);
     return result
   } catch (err) {
@@ -30,11 +32,11 @@ export const getDrawData = createAsyncThunk('getDrawData', async (payload, thunk
   }
 });
 
-const processDrawData = (data) => {
+const processRoundData = (data) => {
   const processedData = []
   if(data !== null && data.length > 0){
     data.forEach((item) => {
-      processedData.push(tokenData.find(token => token.terraID === item).id)
+      processedData.push(tokenData.find(token => token.symbol === item.slice(0, 3)).id)
     })
   }
 
@@ -64,20 +66,20 @@ const packSlice = createSlice({
         ...state,
       };
     },
-    [getDrawData.pending]: (state) => {
+    [getRoundData.pending]: (state) => {
       return {
         ...state,
       };
     },
-    [getDrawData.fulfilled]: (state, action) => {
+    [getRoundData.fulfilled]: (state, action) => {
       return {
         ...state,
-        //drawList: processDrawData(action.payload)
-        drawList: processDrawData(["0", "1", "2", "3", "4"]) //test data, syntax is not final
+        drawList: processRoundData(action.payload)
+        //drawList: processRoundData(["0", "1", "2", "3", "4"]) //test data, syntax is not final
         
       };
     },
-    [getDrawData.rejected]: (state) => {
+    [getRoundData.rejected]: (state) => {
       return {
         ...state,
       };

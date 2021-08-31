@@ -1,5 +1,5 @@
 export const fantasyData = {
-  contract_addr: "terra1emvptxedn9rg7stkemkvafq80pxxjpyvap72m7"
+  contract_addr: "terra1ktc92ew6p6pw6pa4zns63q33xrdjrcy534j4je"
 }
 
 export const tokenData = [
@@ -44,8 +44,8 @@ export const tokenData = [
     id: 23,
     terraID: "3",
     apiID: "0",
-    name: "Armoni Brooks",
-    symbol: "ARB",
+    name: "Lebron James",
+    symbol: "LBJ",
     contractAddr: "terra1jlazuamj9gcqfjw8dre8jc0rttxyswgjux8slt"
   },
   {
@@ -53,7 +53,7 @@ export const tokenData = [
     terraID: "4",
     apiID: "0",
     name: "Stephen Curry",
-    symbol: "STC",
+    symbol: "STP",
     contractAddr: "terra1jlazuamj9gcqfjw8dre8jc0rttxyswgjux8slt"
   },
 
