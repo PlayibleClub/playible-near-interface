@@ -83,15 +83,8 @@ const playerList = [ // player list for testing purposes
     // },
 ]
 
-const Portfolio = () => {
-
-    const [filterInfo, handleFilter] = React.useState(false)
-
-    const { register, handleSubmit } = useForm()
-    const [result, setResult] = useState("")
-    const [teamFilter, setTeamFilter] = useState("")
-    const [posFilter, setPosFilter] = useState("")
-
+export default function Portfolio() {
+    const [isClosed, setClosed] = React.useState(true)
     const [filterMode, setMode] = React.useState(false)
     const [showFilter, setFilter] = React.useState(false)
 
@@ -125,20 +118,25 @@ const Portfolio = () => {
                     }
 
                     <HeaderBase isClosed={isClosed} setClosed={setClosed} />
+                <div className="flex flex-col w-full">
 
-                    <Main color="indigo-dark">
+
+
+                </div>
+
+                <Main color="indigo-dark">
 
                     <div className="flex flex-col w-full overflow-x-hidden h-screen">
                         <TitledContainer title="PORTFOLIO" className="flex w-1/2">
 
                             <div className="flex w-11/12 mb-4 mt-4">
-                                { filterMode ?
+                                {filterMode ?
                                     <>
                                         <div className="rounded-md bg-indigo-light mr-1 w-12 h-11" onClick={()=>{
                                             setMode(false)
                                             setResult("")}}>
                                             <div className="ml-3.5 mt-4">
-                                                <img src={filterIcon}/>
+                                                <img src={filterIcon} />
                                             </div>
                                         </div>
 

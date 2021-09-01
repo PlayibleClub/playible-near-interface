@@ -1,21 +1,20 @@
 import PropTypes from 'prop-types';
 
-const GameResultContainer = (props) => {
+const MyactivityContainer = (props) => {
   const { children, color, date, rank, points } = props;
 
   return (
-    <div data-test="GameResultContainer" className={`bg-${color} mt-4 flex flex-col justify-center  w-full `}>
+    <div data-test="MyactivityContainer" className={`bg-${color} mt-4 flex flex-col justify-center  w-full `}>
 
 
-      <div className="  flex flex-row justify-between mb-8 self-center  w-4/5">
-        <img src="images/trophy.png" alt="Img" className="flex transform scale-x-75 scale-y-50 " />
-        <div className="text-xs font-thin">{date}</div>
+      <div className="  flex flex-row justify-between mb-4 self-center  w-4/5">
+        <div className="font-thin">{date}</div>
         <div className="flex flex-col">
-          <p className="font-thin text-xs">RANK</p>
+          <p className="font-thin">RANK</p>
           {rank}
         </div>
         <div className="flex flex-col">
-          <p className="font-thin text-xs">POINTS</p>
+          <p className="font-thin">POINTS</p>
           {points}
         </div>
 
@@ -27,7 +26,7 @@ const GameResultContainer = (props) => {
   );
 };
 
-GameResultContainer.propTypes = {
+MyactivityContainer.propTypes = {
   color: PropTypes.string,
   date: PropTypes.string,
   rank: PropTypes.string,
@@ -35,7 +34,7 @@ GameResultContainer.propTypes = {
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
 };
 
-GameResultContainer.defaultProps = {
+MyactivityContainer.defaultProps = {
 
   color: 'indigo-light',
   date: '07/12/21',
@@ -46,4 +45,4 @@ GameResultContainer.defaultProps = {
   children: <div />,
 };
 
-export default GameResultContainer;
+export default MyactivityContainer;
