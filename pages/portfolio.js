@@ -1,7 +1,7 @@
 import React, { Component, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import Header from '../components/Header'
-import Button from '../components/Button'
+import HeaderBase from '../components/HeaderBase';
+import Navbar from '../components/Navbar';
 import Main from '../components/Main'
 import TitledContainer from '../components/TitledContainer'
 import AthleteGrid from '../components/AthleteGrid'
@@ -10,7 +10,7 @@ import filterIcon from '../public/images/filter.png'
 import searchIcon from '../public/images/search.png'
 import { stubString } from 'lodash'
 
-const playerList = [
+const playerList = [ // player list for testing purposes
     {
         name: 'STEPHEN CURRY',
         team: 'Golden State Warriors',
@@ -112,25 +112,24 @@ const Portfolio = () => {
     }
     const key1 = 'team'
     const uniqueTeams = [...new Map(playerList.map(i => [i[key1], i])).values()]
+    const [isClosed, setClosed] = React.useState(true)
 
     return(
             <>
-                <div className="">
-                    <div className="flex flex-col w-full">
-                    <Header>
+                <div className={`font-montserrat h-screen relative ${isClosed ? "" : "overflow-y-hidden"}`}>
+                    {isClosed ? null : 
+                        <div className="flex flex-row w-full absolute z-50 top-0 left-0 ">
+                            <Navbar> </Navbar>
+                            <div className="w-2/6 h-screen" onMouseDown={() => setClosed(true)}/>
+                        </div>
+                    }
 
-                    <Button color="indigo-light" saturation="0" textColor="white-light" textSaturation="500" size="py-1 px-1">=</Button>
-                        <div className="text-white-light">
-                        {' '}
-                        <img src="images/fantasyinvestar.png" alt="Img" />
-                    </div>
-                    </Header>
-                    </div>
+                    <HeaderBase isClosed={isClosed} setClosed={setClosed} />
 
                     <Main color="indigo-dark">
 
-                    <div className="flex flex-col w-full overflow-y-auto overflow-x-hidden h-screen">
-                        <TitledContainer title="PORTFOLIO" className="flex w-1/2 justify-items-center">
+                    <div className="flex flex-col w-full overflow-x-hidden h-screen">
+                        <TitledContainer title="PORTFOLIO" className="flex w-1/2">
 
                             <div className="flex w-11/12 mb-4 mt-4">
                                 { filterMode ?
@@ -158,10 +157,10 @@ const Portfolio = () => {
                                     <>
                                         <div className="flex">
                                             <div className="rounded-md bg-indigo-light mr-1 h-11 w-9/12 flex font-thin" onClick={()=>setFilter(true)}>
-                                                <div className="text-lg ml-4 mt-2 mr-36 w-9/12">
+                                                <div className="text-lg ml-4 mt-2 mr-2 w-9/12">
                                                     Filter by
                                                 </div>
-                                                <img src={filterIcon} className="object-none w-3/12 mr-4"/>
+                                                <img src={filterIcon} className="object-none w-3/12 mr-5 ml-28"/>
                                             </div>
 
                                             <div className="rounded-md bg-indigo-light ml-1 w-12 h-11" onClick={()=>{
@@ -180,10 +179,12 @@ const Portfolio = () => {
                             <div>
                                 { showFilter ?
                                     <>
-                                        <form onSubmit={handleSubmit(onSubmit)}>
-                                            <div>
-                                                Team Name
-                                                <select {...register("teamName")}>
+                                        <form onSubmit={handleSubmit(onSubmit)} className="mb-4">
+                                            <div className="flex w-full">
+                                                <div className="mr-2">
+                                                    Team Name:
+                                                </div>
+                                                <select {...register("teamName")} className="bg-indigo-light rounded-md">
                                                     <option value="">Select...</option>
                                                     {uniqueTeams.map(function(team,i){
                                                             return (
@@ -194,9 +195,11 @@ const Portfolio = () => {
                                                 </select>
                                             </div>
                                             
-                                            <div>
-                                                Position
-                                                <select {...register("positions")}>
+                                            <div className="flex w-full">
+                                                <div className="mr-2">
+                                                    Position:
+                                                </div>
+                                                <select {...register("positions")} className="bg-indigo-light rounded-md">
                                                     <option value="">Select...</option>
                                                     <option value="PG">PG</option>
                                                     <option value="SG">SG</option>
@@ -206,9 +209,9 @@ const Portfolio = () => {
                                                 </select>
                                             </div>
                                             <div>
-                                                <input type="submit"/>
+                                                <input type="submit" className="bg-indigo-light p-1 rounded-md"/>
                                             </div>
-                                            {console.log(result)}
+                                            {/* {console.log(result)} */}
                                         </form>
                                     </>
                                     : 
@@ -217,17 +220,41 @@ const Portfolio = () => {
                                 }
                             </div>
 
-                            <AthleteGrid>
-                                {filterMode ?
-                                    playerList.map(function(player, i){
-                                        const toFindName = player.name.toLowerCase()
-                                        const toFindTeam = player.team.toLowerCase()
-                                        const searchInfo = result.toLowerCase()
+                            {/* <div className='flex justify-center'> */}
+                                <AthleteGrid>
+                                    {filterMode ?
+                                        playerList.map(function(player, i){
+                                            const toFindName = player.name.toLowerCase()
+                                            const toFindTeam = player.team.toLowerCase()
+                                            const searchInfo = result.toLowerCase()
 
-                                        if(toFindName.includes(searchInfo) || toFindTeam.includes(searchInfo) || player.jersey.includes(searchInfo))
-                                            return (
+                                            if(toFindName.includes(searchInfo) || toFindTeam.includes(searchInfo) || player.jersey.includes(searchInfo))
+                                                return (
+                                                    <div className='mb-4' key={i}>
+                                                        <AthleteContainer 
+                                                            AthleteName={player.name} 
+                                                            TeamName={player.team}
+                                                            ID={player.id}
+                                                            CoinValue={player.cost} 
+                                                            Jersey={player.jersey} 
+                                                            Positions={player.positions} 
+                                                            colorgrad1={player.grad1} 
+                                                            colorgrad2={player.grad2} 
+                                                        />
+                                                    </div>
+                                                )                            
+                                        })
+                                    :
+                                    playerList.map(function(player, i){
+                                        const toFindTeam = player.team.toLowerCase()
+                                        console.log(posFilter)
+                                        console.log(teamFilter)
+                                        
+                                        if(posFilter === "" && teamFilter === ""){
+                                            // console.log("no filter")
+                                            return(
                                                 <div className='mb-4' key={i}>
-                                                    <AthleteContainer 
+                                                    <AthleteContainer
                                                         AthleteName={player.name} 
                                                         TeamName={player.team}
                                                         ID={player.id}
@@ -238,90 +265,68 @@ const Portfolio = () => {
                                                         colorgrad2={player.grad2} 
                                                     />
                                                 </div>
-                                            )                            
+                                            )
+                                        }    
+                                        else if(posFilter !== "" && teamFilter !== ""){
+                                            // console.log("pos and team code")
+                                            if(player.positions.includes(posFilter) && toFindTeam.includes(teamFilter.toLowerCase()))
+                                                return (
+                                                    <div className='mb-4' key={i}>
+                                                        <AthleteContainer
+                                                            AthleteName={player.name} 
+                                                            TeamName={player.team}
+                                                            ID={player.id}
+                                                            CoinValue={player.cost} 
+                                                            Jersey={player.jersey} 
+                                                            Positions={player.positions} 
+                                                            colorgrad1={player.grad1} 
+                                                            colorgrad2={player.grad2} 
+                                                        />
+                                                    </div>
+                                                ) 
+                                        }
+                                        else if(teamFilter !== ""){ 
+                                            // console.log("team code")
+                                            if(toFindTeam.includes(teamFilter.toLowerCase())){
+                                                return (
+                                                    <div className='mb-4' key={i}>
+                                                        <AthleteContainer
+                                                            AthleteName={player.name} 
+                                                            TeamName={player.team}
+                                                            ID={player.id}
+                                                            CoinValue={player.cost} 
+                                                            Jersey={player.jersey} 
+                                                            Positions={player.positions} 
+                                                            colorgrad1={player.grad1} 
+                                                            colorgrad2={player.grad2} 
+                                                        />
+                                                    </div>
+                                                ) 
+                                            }
+                                        }
+                                        else if(posFilter !== ""){
+                                            console.log("posFilter code")
+                                            if(player.positions.includes(posFilter)){
+                                                return (
+                                                    <div className='mb-4' key={i}>
+                                                        <AthleteContainer
+                                                            AthleteName={player.name} 
+                                                            TeamName={player.team}
+                                                            ID={player.id}
+                                                            CoinValue={player.cost} 
+                                                            Jersey={player.jersey} 
+                                                            Positions={player.positions} 
+                                                            colorgrad1={player.grad1} 
+                                                            colorgrad2={player.grad2} 
+                                                        />
+                                                    </div>
+                                                )    
+                                            }
+                                        }
                                     })
-                                :
-                                playerList.map(function(player, i){
-                                    const toFindTeam = player.team.toLowerCase()
-                                    console.log(posFilter)
-                                    console.log(teamFilter)
-                                    
-                                    if(posFilter === "" && teamFilter === ""){
-                                        // console.log("no filter")
-                                        return(
-                                            <div className='mb-4' key={i}>
-                                                <AthleteContainer
-                                                    AthleteName={player.name} 
-                                                    TeamName={player.team}
-                                                    ID={player.id}
-                                                    CoinValue={player.cost} 
-                                                    Jersey={player.jersey} 
-                                                    Positions={player.positions} 
-                                                    colorgrad1={player.grad1} 
-                                                    colorgrad2={player.grad2} 
-                                                />
-                                            </div>
-                                        )
-                                    }    
-                                    else if(posFilter !== "" && teamFilter !== ""){
-                                        // console.log("pos and team code")
-                                        if(player.positions.includes(posFilter) && toFindTeam.includes(teamFilter.toLowerCase()))
-                                            return (
-                                                <div className='mb-4' key={i}>
-                                                    <AthleteContainer
-                                                        AthleteName={player.name} 
-                                                        TeamName={player.team}
-                                                        ID={player.id}
-                                                        CoinValue={player.cost} 
-                                                        Jersey={player.jersey} 
-                                                        Positions={player.positions} 
-                                                        colorgrad1={player.grad1} 
-                                                        colorgrad2={player.grad2} 
-                                                    />
-                                                </div>
-                                            ) 
-                                    }
-                                    else if(teamFilter !== ""){ 
-                                        // console.log("team code")
-                                        if(toFindTeam.includes(teamFilter.toLowerCase())){
-                                            return (
-                                                <div className='mb-4' key={i}>
-                                                    <AthleteContainer
-                                                        AthleteName={player.name} 
-                                                        TeamName={player.team}
-                                                        ID={player.id}
-                                                        CoinValue={player.cost} 
-                                                        Jersey={player.jersey} 
-                                                        Positions={player.positions} 
-                                                        colorgrad1={player.grad1} 
-                                                        colorgrad2={player.grad2} 
-                                                    />
-                                                </div>
-                                            ) 
-                                        }
-                                    }
-                                    else if(posFilter !== ""){
-                                        console.log("posFilter code")
-                                        if(player.positions.includes(posFilter)){
-                                            return (
-                                                <div className='mb-4' key={i}>
-                                                    <AthleteContainer
-                                                        AthleteName={player.name} 
-                                                        TeamName={player.team}
-                                                        ID={player.id}
-                                                        CoinValue={player.cost} 
-                                                        Jersey={player.jersey} 
-                                                        Positions={player.positions} 
-                                                        colorgrad1={player.grad1} 
-                                                        colorgrad2={player.grad2} 
-                                                    />
-                                                </div>
-                                            )    
-                                        }
-                                    }
-                                })
-                            }
-                            </AthleteGrid>
+                                }
+                                </AthleteGrid>
+                            {/* </div> */}
                         </TitledContainer>
                     </div>
 
