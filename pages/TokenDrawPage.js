@@ -36,13 +36,15 @@ export default function TokenDrawPage() {
                                         </div>
                                     </div>
 
-                                    <Link href="/portfolio">
-                                        <div className="bg-indigo-buttonblue w-72 h-12 mb-20 text-center rounded-md ml-10">
-                                            <div className="mt-2.5">
-                                                GO TO PORTFOLIO
+                                    <div className='flex justify-center'>
+                                        <Link href="/portfolio">
+                                            <div className="bg-indigo-buttonblue w-72 h-12 mb-20 text-center rounded-md">
+                                                <div className="mt-3">
+                                                    GO TO PORTFOLIO
+                                                </div>
                                             </div>
-                                        </div>
-                                    </Link>
+                                        </Link>
+                                    </div>
                             </div>
                         </Main>
                     </div>

@@ -23,18 +23,22 @@ export default function OpenPackPage() {
             <Main color="indigo-dark overflow-y-scroll">
                 <div className="flex flex-col overflow-y-auto overflow-x-hidden">
                     <TitledContainer title="CONGRATULATIONS!">
-                        <div className="flex overflow-x-scroll pt-16 pb-32 hide-scroll-bar snap snap-x snap-mandatory">
-                            <div className="flex flex-nowrap ml-10 pt-16">
-                                <PackComponent type="PremiumRelease3"/>
-                            </div>
-                        </div>            
+                        <div className='flex justify-center'>
+                            <div className="flex overflow-x-scroll pt-16 pb-32 hide-scroll-bar snap snap-x snap-mandatory">
+                                <div className="flex flex-nowrap pt-16">
+                                    <PackComponent type="PremiumRelease3"/>
+                                </div>
+                            </div>    
+                        </div>        
+                        <div className='flex justify-center'>
                         <Link href="/TokenDrawPage">
-                            <div className="bg-indigo-buttonblue w-72 h-12 mb-20 text-center rounded-md text-lg ml-6">
-                                <div className="mt-2.5">
+                            <div className="bg-indigo-buttonblue w-72 h-12 text-center rounded-md text-lg">
+                                <div className="pt-2.5">
                                     OPEN PACK
                                 </div>
                             </div>
                         </Link>
+                        </div>
                     </TitledContainer>
                 </div>
             </Main>

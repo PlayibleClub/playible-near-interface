@@ -87,6 +87,10 @@ export default function Portfolio() {
     const [isClosed, setClosed] = React.useState(true)
     const [filterMode, setMode] = React.useState(false)
     const [showFilter, setFilter] = React.useState(false)
+    const [result, setResult] = React.useState("")
+    const [teamFilter, setTeamFilter] = React.useState("")
+    const [posFilter, setPosFilter] = React.useState("")
+    const { register, handleSubmit } = useForm()
 
     const onSubmit = (data) => {
         if(data.search)
@@ -101,11 +105,10 @@ export default function Portfolio() {
             setPosFilter(data.positions)
         else setPosFilter("")
 
-        console.log(data)
+        // console.log(data)
     }
     const key1 = 'team'
     const uniqueTeams = [...new Map(playerList.map(i => [i[key1], i])).values()]
-    const [isClosed, setClosed] = React.useState(true)
 
     return(
             <>
@@ -129,7 +132,7 @@ export default function Portfolio() {
                     <div className="flex flex-col w-full overflow-x-hidden h-screen">
                         <TitledContainer title="PORTFOLIO" className="flex w-1/2">
 
-                            <div className="flex w-11/12 mb-4 mt-4">
+                            <div className="flex mb-4 mt-4 justify-center">
                                 {filterMode ?
                                     <>
                                         <div className="rounded-md bg-indigo-light mr-1 w-12 h-11" onClick={()=>{
@@ -140,10 +143,10 @@ export default function Portfolio() {
                                             </div>
                                         </div>
 
-                                        <div className="rounded-md bg-indigo-light ml-1 h-11 w-9/12 flex">
+                                        <div className="rounded-md bg-indigo-light ml-1 h-11 flex">
                                             <div className="ml-1 mt-2">
                                                 <form onSubmit={handleSubmit(onSubmit)}>
-                                                    <input {...register("search")} className="text-xl ml-3 appearance-none bg-indigo-light focus:outline-none w-10/12" placeholder="Search..." />
+                                                    <input {...register("search")} className="text-lg ml-3 appearance-none bg-indigo-light focus:outline-none w-10/12" placeholder="Search..." />
                                                     <button className="w-1/12">
                                                         <input type="image" src={searchIcon} className="object-none"/>
                                                     </button>
@@ -154,8 +157,8 @@ export default function Portfolio() {
                                     :
                                     <>
                                         <div className="flex">
-                                            <div className="rounded-md bg-indigo-light mr-1 h-11 w-9/12 flex font-thin" onClick={()=>setFilter(true)}>
-                                                <div className="text-lg ml-4 mt-2 mr-2 w-9/12">
+                                            <div className="rounded-md bg-indigo-light mr-1 h-11 flex font-thin" onClick={()=>setFilter(true)}>
+                                                <div className="text-sm ml-4 mt-3 mr-2 w-9/12">
                                                     Filter by
                                                 </div>
                                                 <img src={filterIcon} className="object-none w-3/12 mr-5 ml-28"/>
@@ -218,7 +221,7 @@ export default function Portfolio() {
                                 }
                             </div>
 
-                            {/* <div className='flex justify-center'> */}
+                            <div className='flex justify-center'>
                                 <AthleteGrid>
                                     {filterMode ?
                                         playerList.map(function(player, i){
@@ -245,8 +248,8 @@ export default function Portfolio() {
                                     :
                                     playerList.map(function(player, i){
                                         const toFindTeam = player.team.toLowerCase()
-                                        console.log(posFilter)
-                                        console.log(teamFilter)
+                                        // console.log(posFilter)
+                                        // console.log(teamFilter)
                                         
                                         if(posFilter === "" && teamFilter === ""){
                                             // console.log("no filter")
@@ -303,7 +306,7 @@ export default function Portfolio() {
                                             }
                                         }
                                         else if(posFilter !== ""){
-                                            console.log("posFilter code")
+                                            // console.log("posFilter code")
                                             if(player.positions.includes(posFilter)){
                                                 return (
                                                     <div className='mb-4' key={i}>
@@ -324,7 +327,7 @@ export default function Portfolio() {
                                     })
                                 }
                                 </AthleteGrid>
-                            {/* </div> */}
+                            </div>
                         </TitledContainer>
                     </div>
 
@@ -333,5 +336,3 @@ export default function Portfolio() {
             </>
         )
 }
-
-export default Portfolio;
