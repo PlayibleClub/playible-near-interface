@@ -4,10 +4,10 @@ const GameResultContainer = (props) => {
   const { children, color, date, rank, points } = props;
 
   return (
-    <div data-test="GameResultContainer" className={`bg-${color} mt-4 flex flex-col justify-center  w-full `}>
+    <div data-test="GameResultContainer" className={`bg-${color} flex flex-col justify-center mt-1 w-full`}>
 
 
-      <div className="  flex flex-row justify-between mb-8 self-center  w-4/5">
+      <div className="  flex flex-row justify-between mb-8 self-center  w-10/12">
         <img src="images/trophy.png" alt="Img" className="flex transform scale-x-75 scale-y-50 " />
         <div className="text-xs font-thin">{date}</div>
         <div className="flex flex-col">
@@ -21,7 +21,7 @@ const GameResultContainer = (props) => {
 
 
       </div>
-      <hr className="w-5/6 self-center" />
+      <hr className="w-10/12 self-center" />
 
     </div>
   );

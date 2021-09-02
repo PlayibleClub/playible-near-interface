@@ -6,11 +6,11 @@ const TitledContainer = (props) => {
 
   return (
     <div data-test="titledcontainer" className={`text-${textcolor} bg-${color} text-${size} font-bold ${align} m-1 ml-0  flex flex-col w-full `}>
-      <div className="pb-3 pt-6 flex justify-start text-2xl">
+      <div className="ml-4 pb-3 pt-6 flex justify-start text-2xl">
         {title}
         <img src={underlineIcon} className="object-none absolute mt-8 mb-4" />
       </div>
-      <div className="self-center w-5/6">
+      <div className="flex justify-center">
         {children}
       </div>
 
