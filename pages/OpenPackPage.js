@@ -1,16 +1,37 @@
-import React, { Component, useState } from 'react';
+import React, { useState } from 'react';
+import { useRouter } from 'next/router'
 import Main from '../components/Main';
 import HeaderBase from '../components/HeaderBase';
 import Navbar from '../components/Navbar';
 import PackComponent from '../components/PackComponent';
 import TitledContainer from '../components/TitledContainer';
-import Link from 'next/link'
+import Link from 'next/link';
+
+import { useDispatch } from 'react-redux';
+import { getLastRound, getRoundData } from '../redux/reducers/contract/pack';
+import WalletHelper from '../helpers/wallet-helper';
+import { fantasyData } from '../data';
 
 export default function OpenPackPage() {
+    const router = useRouter();
+    const dispatch = useDispatch();
+
+    const { executeContract } = WalletHelper();
+
+    const executePurchasePack = async () => {
+        const executeMsg = `{ "purchase_pack": {} }`;
+        const result = await executeContract(fantasyData.contract_addr, executeMsg);
+        dispatch(getLastRound()).then((response) => {
+            console.log(response);
+            dispatch(getRoundData({lastRound: response.payload})).then(() => {
+                router.push("/TokenDrawPage");
+            })
+        });
+    }
 
     const [isClosed, setClosed] = React.useState(true)
 
-    return(
+    return (
         <div className={`font-montserrat h-screen relative ${isClosed ? "" : "overflow-y-hidden"}`}>
             {isClosed ? null : 
                 <div className="flex flex-row w-full absolute z-50 top-0 left-0 ">
@@ -31,13 +52,11 @@ export default function OpenPackPage() {
                             </div>    
                         </div>        
                         <div className='flex justify-center'>
-                        <Link href="/TokenDrawPage">
-                            <div className="bg-indigo-buttonblue w-72 h-12 text-center rounded-md text-lg">
-                                <div className="pt-2.5">
-                                    OPEN PACK
-                                </div>
+                        <button onClick={executePurchasePack} className="bg-indigo-buttonblue w-72 h-12 text-center rounded-md text-lg">
+                            <div className="pt-2.5">
+                                OPEN PACK
                             </div>
-                        </Link>
+                        </button>
                         </div>
                     </TitledContainer>
                 </div>

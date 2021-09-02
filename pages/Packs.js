@@ -49,10 +49,6 @@ export default function Home() {
                     <Main color="indigo-dark">
                         <div className="flex flex-col  w-full h-full overflow-y-scroll overflow-x-hidden">
                             <TitledContainer title="PACKS">
-
-                                <PackContainer AthleteName="PREMIUM PACK" CoinValue="54" releaseValue="2" />
-                                <PackContainer AthleteName="PREMIUM PACK" CoinValue="54" releaseValue="2" />
-                                <PackContainer AthleteName="PREMIUM PACK" CoinValue="54" releaseValue="2" />
                                 <PackContainer AthleteName="PREMIUM PACK" CoinValue="54" releaseValue="2" />
                             </TitledContainer>
                         </div>
