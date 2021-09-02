@@ -10,7 +10,7 @@ import { getDrawData } from '../redux/reducers/contract/pack';
 
 const tokenList = [1, 7, 12, 23, 30] 
 
-const TokenDrawPage = () => {
+export default function TokenDrawPage() {
     const { drawList: tokenList } = useSelector((state) => state.contract.pack);
     const dispatch = useDispatch()
     const [isClosed, setClosed] = React.useState(true)
@@ -41,9 +41,10 @@ const TokenDrawPage = () => {
                                             </div>
                                         </div>
 
-                                        <div className='flex justify-center'>                                    
-                                            <button onClick={() => { dispatch(getDrawData())}}>Draw</button>
+                                                                           
+                                        <button onClick={() => { dispatch(getDrawData())}}>Draw</button>
 
+                                        <div className='flex justify-center'> 
                                             <Link href="/portfolio">
                                                 <div className="bg-indigo-buttonblue w-72 h-12 mb-20 text-center rounded-md">
                                                     <div className="mt-3">
@@ -51,7 +52,7 @@ const TokenDrawPage = () => {
                                                     </div>
                                                 </div>
                                             </Link>
-                                    </div>
+                                        </div>
                                 </div>
                             </Main>
                         </div>
@@ -59,5 +60,3 @@ const TokenDrawPage = () => {
             </>
     )
 }
-
-export default index;

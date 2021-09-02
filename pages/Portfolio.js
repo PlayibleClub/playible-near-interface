@@ -9,6 +9,7 @@ import AthleteContainer from '../components/AthleteContainer'
 import filterIcon from '../public/images/filter.png'
 import searchIcon from '../public/images/search.png'
 import { stubString } from 'lodash'
+import index from './TokenDrawPage';
 
 const playerList = [ // player list for testing purposes
     {
