@@ -2,19 +2,33 @@ import sys
 import requests
 
 HEADERS = {"Content-Type": "application/json"}
-BASE_URL = "http://api.stats.com/v1/stats/basketball/nba/"
+BASE_URL = "http://api.stats.com/v1/stats/basketball/nba/stats/players/"
 
 
-def main(path):
+def main(player_id, api_key, sig):
+    url = BASE_URL + player_id + "?api_key=" + api_key + "&sig=" + sig
     result = requests.request(
-        "GET", (BASE_URL + path)
+        "GET", (url)
     )
-    print(result)
     json_result = result.json()
 
     if "apiResults" in json_result:
-        final_value = json_result["apiResults"]
-        return final_value
+        data = json_result.get("apiResults")[0].get("league").get("players")[0]
+        season_data = data.get("seasons")[0]
+        player_data = season_data.get("eventType")[0].get("splits")[0].get("playerStats")
+
+        return_data = {
+            "id": data.get("playerId"),
+            "season": season_data.get("season"),
+            "points": player_data.get("points"),
+            "rebounds": player_data.get("rebounds").get("total"),
+            "assists": player_data.get("assists"),
+            "blocks": player_data.get("blockedShots"),
+            "steals": player_data.get("steals"),
+            "turnovers": player_data.get("turnovers")
+        }
+
+        return return_data
 
     raise ValueError('key "apiResults" not found')
 

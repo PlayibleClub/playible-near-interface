@@ -11,16 +11,9 @@ export const terra = new LCDClient({
 });
 
 export const queryContract = async (contractAddr, queryMsg) => {
-  try {
-    const result = await terra.wasm.contractQuery(
-      contractAddr,
-      JSON.parse(queryMsg),
-    );
-    return result;
-  } catch (e) {
-    return {
-      "error": e,
-      "message": "Failed to get latest result from consumer contract"
-    }
-  }
+  const result = await terra.wasm.contractQuery(
+    contractAddr,
+    JSON.parse(queryMsg),
+  );
+  return result;
 };
