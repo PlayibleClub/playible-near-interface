@@ -14,7 +14,7 @@ import TokenGridCol2 from '../components/TokenGridCol2';
 // import Roundedinput from '../components/Roundedinput';
 import AthleteContainer from '../components/AthleteContainer';
 import PerformerContainer from '../components/PerformerContainer';
-import GameResultContainer from '../components/GameResultContainer';
+import GameresultsComponent from '../components/GameresultsComponent';
 import RowContainer from '../components/RowContainer';
 import HorizontalScrollContainer from '../components/HorizontalScrollContainer';
 import HorizontalContainer from '../components/HorizontalContainer';
@@ -126,26 +126,7 @@ export default function Home() {
 
 
               <TitledContainer className=" flex " title="GAME RESULTS">
-                <RoundedContainer>
-                  <select className="w-11/12 bg-indigo-light" name="games" id="cars">
-                    <option value="All Games">All Games</option>
-                    <option value="Some games">Some Games</option>
-                    <option value="Games this week">Games this week</option>
-                    <option value="Games for the month">Games for the month</option>
-                  </select>
-                </RoundedContainer>
-
-                <div className="mt-2">
-                  <RoundedContainer >
-
-                    <ul className="w-full">
-                      {animals.map((animal) => (
-                        <li><GameResultContainer></GameResultContainer></li>
-
-                      ))}
-                    </ul>
-                  </RoundedContainer>
-                </div>
+                <GameresultsComponent></GameresultsComponent>
 
               </TitledContainer>
 

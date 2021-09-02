@@ -3,8 +3,9 @@ import PropTypes from 'prop-types';
 import { useWallet, WalletStatus } from '@terra-money/wallet-provider';
 import Header from './Header.js';
 import Button from './Button.js';
+import Link from 'next/link'
 const HeaderBack = (props) => {
-  const { children, color } = props;
+  const { link, color } = props;
   const { status, connect, disconnect, availableConnectTypes } = useWallet();
 
 
@@ -15,17 +16,17 @@ const HeaderBack = (props) => {
 
   return (
     <Header>
-
-      <Button color="indigo-light" saturation="0" textColor="white-light" textSaturation="500" size="py-1 px-1">  Back</Button>
-
-
-
+      <Link href={link}>
+        <Button color="clear" saturation="0" textColor="white-light" textSaturation="500" size="py-1 px-1"> &lt;  Back</Button>
+      </Link>
 
 
 
 
 
 
+
+      <div></div>
       <div></div>
       <div></div>
 
@@ -34,12 +35,12 @@ const HeaderBack = (props) => {
 };
 
 HeaderBack.propTypes = {
-  color: PropTypes.string,
+  link: PropTypes.string,
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
 };
 
 HeaderBack.defaultProps = {
-  color: 'indigo-navy',
+  link: '/',
   // children: <div>Fantasy investr</div>
   children: <div />,
 };
