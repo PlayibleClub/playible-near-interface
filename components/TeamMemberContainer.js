@@ -41,7 +41,7 @@ TeamMemberContainer.defaultProps = {
   color: 'sds',
   Averagescore: '-',
   AthleteName: '-',
-  imagesrc: 'images/token.png',
+  imagesrc: 'images/tokens/0.png',
   // children: <div>Fantasy investr</div>
   children: <div />,
 };
