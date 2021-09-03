@@ -10,14 +10,14 @@ const TeamMemberContainer = (props) => {
 
       </div>
       {children}
-      <div className="relative h-1/3 flex justify-center " >
-        <div className="absolute flex flex-col mt-4">
+      <div className="relative  flex justify-center " >
+        <div className="flex flex-col mt-4">
           <div className="  text-xs font-thin">#{rank}/25000</div>
           <div className="  pb-3 text-sm font-thick ">{AthleteName}</div>
           <div className="  text-xs font-thin">AVERAGE SCORE </div>
           <div className="  text-xs  font-thick">
             {Averagescore}
-            {' '}
+
 
           </div>
         </div>

@@ -43,6 +43,7 @@ export default function Home() {
             name: 'STEPHEN CURRY',
             team: 'Golden State Warriors',
             id: '320',
+            averageScore: '40',
             cost: '420 UST',
             jersey: '30',
             positions: ['PG', 'SG'],
@@ -53,6 +54,7 @@ export default function Home() {
             name: 'LEBRON JAMES',
             team: 'Los Angeles Lakers',
             id: '25',
+            averageScore: '25',
             cost: '840 UST',
             jersey: '23',
             positions: ['PG', 'SG'],
@@ -60,18 +62,43 @@ export default function Home() {
             grad2: 'indigo-purplegrad',
         },
         {
-            name: 'Devin Booker',
+            name: 'DEVIN BOOKER',
             team: 'Phoenix Suns',
             id: '16450',
+            averageScore: '27',
             cost: '21 UST',
             jersey: '01',
             positions: ['SF', 'C'],
             grad1: 'indigo-darkblue',
             grad2: 'indigo-darkbluegrad',
         },
+        {
+            name: 'KEVIN DURANT',
+            team: 'Brooklyn Nets',
+            id: '12300',
+            averageScore: '45',
+            cost: '180 UST',
+            jersey: '07',
+            positions: ['PG'],
+            grad1: 'indigo-black',
+            grad2: 'indigo-red',
+        },
+        {
+            name: 'BEN SIMMONS',
+            team: 'Philadelphia 76ers',
+            id: '21300',
+            averageScore: '27',
+            cost: '45.5 UST',
+            jersey: '25',
+            positions: ['SG', 'C'],
+            grad1: 'indigo-blue',
+            grad2: 'indigo-bluegrad',
+        },
+
         // {
         //     name: '',
         //     team: '',
+        //     id: '',
         //     cost: '',
         //     jersey: '',
         //     positions: [],
@@ -120,13 +147,13 @@ export default function Home() {
 
                                 <div className="flex flex-col">
 
-                                    <div className="font-thin mt-10 mb-10"> create your own Fantasy Team</div>
+                                    <div className="font-thin text-xs mt-10 mb-10 "> create your own Fantasy Team</div>
 
 
                                     <TokenGridCol2>
 
                                         {playerList.map((player) => (
-                                            <TeamMemberContainer AthleteName={player.name} Averagescore="54" />
+                                            <TeamMemberContainer rank={player.id} AthleteName={player.name} Averagescore={player.averageScore} />
 
                                         ))}
                                     </TokenGridCol2>
