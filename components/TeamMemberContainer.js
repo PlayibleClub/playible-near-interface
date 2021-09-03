@@ -5,7 +5,7 @@ const TeamMemberContainer = (props) => {
 
   return (
     <div data-test="TeamMemberContainer" className={`bg-${color}  sx-${TeamName} w-full h-full overflow-hidden  flex flex-col   `}>
-      <div className="flex  justify-center h-2/3">
+      <div className="flex  justify-center h-2/4">
         <img src={imagesrc} alt="Img" className="flex " />
 
       </div>
