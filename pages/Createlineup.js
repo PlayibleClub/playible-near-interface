@@ -38,6 +38,50 @@ export default function Home() {
     const animals = ['Dog', 'Bird', 'Cat', 'Mouse', 'Horse'];
 
 
+    const playerList = [
+        {
+            name: 'STEPHEN CURRY',
+            team: 'Golden State Warriors',
+            id: '320',
+            cost: '420 UST',
+            jersey: '30',
+            positions: ['PG', 'SG'],
+            grad1: 'indigo-blue',
+            grad2: 'indigo-bluegrad',
+        },
+        {
+            name: 'LEBRON JAMES',
+            team: 'Los Angeles Lakers',
+            id: '25',
+            cost: '840 UST',
+            jersey: '23',
+            positions: ['PG', 'SG'],
+            grad1: 'indigo-purple',
+            grad2: 'indigo-purplegrad',
+        },
+        {
+            name: 'Devin Booker',
+            team: 'Phoenix Suns',
+            id: '16450',
+            cost: '21 UST',
+            jersey: '01',
+            positions: ['SF', 'C'],
+            grad1: 'indigo-darkblue',
+            grad2: 'indigo-darkbluegrad',
+        },
+        // {
+        //     name: '',
+        //     team: '',
+        //     cost: '',
+        //     jersey: '',
+        //     positions: [],
+        //     grad1: '',
+        //     grad2: '',
+        // },
+    ]
+
+
+
 
 
     const [isClosed, setClosed] = React.useState(true)
@@ -71,20 +115,23 @@ export default function Home() {
 
 
 
-                        <div className="flex flex-col  w-full h-full overflow-y-scroll overflow-x-hidden">
+                        <div className="flex flex-col  w-full h-full overflow-y-scroll overflow-x-hidden pb-5">
                             <TitledContainer title="CREATE LINEUP">
 
-                                <div className="font-thin mb-12 mt-8"> create your own Fantasy Team</div>
+                                <div className="flex flex-col">
+
+                                    <div className="font-thin mt-10 mb-10"> create your own Fantasy Team</div>
 
 
-                                <TokenGridCol2>
-                                    <TeamMemberContainer AthleteName="STEPHEN CURRY" Averagescore="54" />
-                                    <TeamMemberContainer AthleteName="STEPHEN CURRY" Averagescore="54" />
-                                    <TeamMemberContainer AthleteName="STEPHEN CURRY" Averagescore="54" />
-                                    <TeamMemberContainer AthleteName="STEPHEN CURRY" Averagescore="54" />
-                                    <TeamMemberContainer AthleteName="STEPHEN CURRY" Averagescore="54" />
+                                    <TokenGridCol2>
 
-                                </TokenGridCol2>
+                                        {playerList.map((player) => (
+                                            <TeamMemberContainer AthleteName={player.name} Averagescore="54" />
+
+                                        ))}
+                                    </TokenGridCol2>
+
+                                </div>
 
                             </TitledContainer>
 
