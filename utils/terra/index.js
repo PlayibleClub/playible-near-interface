@@ -5,13 +5,15 @@ import { LCDClient } from '@terra-money/terra.js';
 // //   connectedWallet = require('@terra-money/wallet-provider').useConnectedWallet();
 // // }
 
-const TerraEnv = () => {
-  const terra = new LCDClient({
-    URL: 'https://tequila-lcd.terra.dev',
-    chainID: 'tequila-0004',
-  });
+export const terra = new LCDClient({
+  URL: 'https://tequila-lcd.terra.dev',
+  chainID: 'tequila-0004',
+});
 
-  return { terra };
+export const queryContract = async (contractAddr, queryMsg) => {
+  const result = await terra.wasm.contractQuery(
+    contractAddr,
+    JSON.parse(queryMsg),
+  );
+  return result;
 };
-
-export default TerraEnv;

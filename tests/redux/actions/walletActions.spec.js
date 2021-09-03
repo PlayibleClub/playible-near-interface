@@ -1,6 +1,6 @@
 import moxios from 'moxios';
 import TestUtils from '../../utils';
-import { connectVerifyWallet } from '../../../redux/reducers/walletReducer';
+import { connectVerifyWallet } from '../../../redux/reducers/contract/wallet';
 
 const { storeFactory } = TestUtils();
 
