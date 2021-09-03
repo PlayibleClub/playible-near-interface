@@ -1,7 +1,7 @@
 import React, { Component, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import Header from '../components/Header'
-import Button from '../components/Button'
+import HeaderBase from '../components/HeaderBase';
+import Navbar from '../components/Navbar';
 import Main from '../components/Main'
 import TitledContainer from '../components/TitledContainer'
 import AthleteGrid from '../components/AthleteGrid'
@@ -9,11 +9,9 @@ import AthleteContainer from '../components/AthleteContainer'
 import filterIcon from '../public/images/filter.png'
 import searchIcon from '../public/images/search.png'
 import { stubString } from 'lodash'
+import index from './TokenDrawPage';
 
-
-
-
-const playerList = [
+const playerList = [ // player list for testing purposes
     {
         name: 'STEPHEN CURRY',
         team: 'Golden State Warriors',
