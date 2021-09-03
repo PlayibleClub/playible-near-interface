@@ -24,7 +24,9 @@ const HeaderBase = (props) => {
   return (
     <Header>
 
-      <Button color="indigo-light" saturation="0" textColor="white-light" textSaturation="500" onClick={() => setClosed(false)} size="py-1 px-1">=</Button>
+      <Button color="clear" saturation="0" textColor="white-light" textSaturation="500" onClick={() => setClosed(false)} size="py-1 px-1">
+        <img src="images/Hamburger.png" alt="Img" />
+      </Button>
 
 
 

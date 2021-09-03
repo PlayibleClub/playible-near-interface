@@ -14,7 +14,7 @@ import TokenGridCol2 from '../components/TokenGridCol2';
 // import Roundedinput from '../components/Roundedinput';
 import AthleteContainer from '../components/AthleteContainer';
 import PerformerContainer from '../components/PerformerContainer';
-import GameResultContainer from '../components/GameResultContainer';
+import GameresultsComponent from '../components/GameresultsComponent';
 import RowContainer from '../components/RowContainer';
 import HorizontalScrollContainer from '../components/HorizontalScrollContainer';
 import HorizontalContainer from '../components/HorizontalContainer';
@@ -104,11 +104,13 @@ export default function Home() {
 
 
 
-              <TitledContainer align="justify-center" title="PLAY">
-                <div className="pl-2 w-5/6 grid gap-x-1 gap-y-2 grid-cols-2">
+              <TitledContainer title="PLAY">
+
+                <div className="p-10 w-full grid gap-x-0 gap-y-6 grid-cols-2 self-center">
                   <div className="rounded-md  flex justify-center"><img className="rounded-md" src="images/daily.png" alt="Italian Trulli" /></div>
                   <div className="rounded-md  flex justify-center"><img className="rounded-md" src="images/weekly.png" alt="Italian Trulli" /></div>
                   <div className="rounded-md  flex justify-center"><img className="rounded-md" src="images/seasonal.png" alt="Italian Trulli" /></div>
+
 
                 </div>
 
@@ -126,26 +128,8 @@ export default function Home() {
 
 
               <TitledContainer className=" flex " title="GAME RESULTS">
-                <RoundedContainer>
-                  <select className="w-11/12 bg-indigo-light" name="games" id="cars">
-                    <option value="All Games">All Games</option>
-                    <option value="Some games">Some Games</option>
-                    <option value="Games this week">Games this week</option>
-                    <option value="Games for the month">Games for the month</option>
-                  </select>
-                </RoundedContainer>
 
-                <div className="mt-2">
-                  <RoundedContainer >
-
-                    <ul className="w-full">
-                      {animals.map((animal) => (
-                        <li><GameResultContainer></GameResultContainer></li>
-
-                      ))}
-                    </ul>
-                  </RoundedContainer>
-                </div>
+                <GameresultsComponent></GameresultsComponent>
 
               </TitledContainer>
 
