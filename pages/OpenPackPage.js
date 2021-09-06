@@ -1,28 +1,27 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useRouter } from 'next/router'
 import Main from '../components/Main';
 import HeaderBase from '../components/HeaderBase';
 import Navbar from '../components/Navbar';
 import PackComponent from '../components/PackComponent';
 import TitledContainer from '../components/TitledContainer';
-import Link from 'next/link';
 
 import { useDispatch } from 'react-redux';
 import { getLastRound, getRoundData } from '../redux/reducers/contract/pack';
-import WalletHelper from '../helpers/wallet-helper';
 import { fantasyData } from '../data';
+import { executeContract } from '../utils/terra';
+import { useConnectedWallet } from '@terra-money/wallet-provider';
 
 export default function OpenPackPage() {
     const router = useRouter();
     const dispatch = useDispatch();
-
-    const { executeContract } = WalletHelper();
+    const connectedWallet = useConnectedWallet();
 
     const executePurchasePack = async () => {
         const executeMsg = `{ "purchase_pack": {} }`;
-        const result = await executeContract(fantasyData.contract_addr, executeMsg);
+        console.log(executeMsg)
+        await executeContract(connectedWallet, fantasyData.contract_addr, executeMsg);
         dispatch(getLastRound()).then((response) => {
-            console.log(response);
             dispatch(getRoundData({lastRound: response.payload})).then(() => {
                 router.push("/TokenDrawPage");
             })
@@ -44,20 +43,19 @@ export default function OpenPackPage() {
             <Main color="indigo-dark overflow-y-scroll">
                 <div className="flex flex-col overflow-y-auto overflow-x-hidden">
                     <TitledContainer title="CONGRATULATIONS!">
-                        <div className='flex justify-center'>
-                            <div className="flex overflow-x-scroll pt-16 pb-32 hide-scroll-bar snap snap-x snap-mandatory">
-                                <div className="flex flex-nowrap pt-16">
-                                    <PackComponent type="PremiumRelease3"/>
-                                </div>
+                        <div className='flex flex-col justify-center'>
+                            <div className="justify-center">
+                                <PackComponent type="PremiumRelease3"/>
                             </div>    
-                        </div>        
-                        <div className='flex justify-center'>
-                        <button onClick={executePurchasePack} className="bg-indigo-buttonblue w-72 h-12 text-center rounded-md text-lg">
-                            <div className="pt-2.5">
-                                OPEN PACK
+                            <div className=''>
+                            <button onClick={executePurchasePack} className="bg-indigo-buttonblue w-full h-12 text-center rounded-md text-lg">
+                                <div className="pt-2.5">
+                                    OPEN PACK
+                                </div>
+                            </button>
                             </div>
-                        </button>
-                        </div>
+                        </div>        
+                        
                     </TitledContainer>
                 </div>
             </Main>
