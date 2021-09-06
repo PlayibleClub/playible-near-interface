@@ -7,10 +7,10 @@ const GameResultsComponent = (props) => {
   const { children, color, date, rank, points } = props;
 
   return (
-    <div data-test="GameResultsComponent" className={``}>
+    <div data-test="GameResultsComponent" className={`w-9/12 mt-5`}>
 
       <RoundedContainer>
-        <select className="w-11/12 bg-indigo-light" name="games" id="cars">
+        <select className="w-5/6 bg-indigo-light p-2" name="games" id="cars">
           <option value="All Games">All Games</option>
           <option value="Some games">Some Games</option>
           <option value="Games this week">Games this week</option>
@@ -21,7 +21,7 @@ const GameResultsComponent = (props) => {
       <div className="mt-2">
         <RoundedContainer >
 
-          <ul className="w-full">
+          <ul className="w-11/12">
             {animals.map((animal) => (
               <li><GameResultContainer></GameResultContainer></li>
 
