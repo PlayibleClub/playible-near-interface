@@ -1,12 +1,23 @@
 /* eslint-disable no-unused-vars */
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { queryContract } from '../../../../utils/terra';
+import { executeContract, queryContract } from '../../../../utils/terra';
 import { fantasyData, tokenData } from '../../../../data';
 
 const initialState = {
   latestRound: null,
   drawList: []
 }
+
+export const purchasePack = createAsyncThunk('purchasePack', async (payload, thunkAPI) => {
+  try {
+    const {connectedWallet } = payload;
+    const executeMsg = `{ "purchase_pack": {} }`;
+    const result = await executeContract(connectedWallet, fantasyData.contract_addr, executeMsg);
+    return result
+  } catch (err) {
+    return thunkAPI.rejectWithValue({});
+  }
+});
 
 export const getLastRound = createAsyncThunk('getLastRound', async (payload, thunkAPI) => {
   try {
@@ -50,6 +61,21 @@ const packSlice = createSlice({
     clearData: () => initialState,
   },
   extraReducers: {
+    [purchasePack.pending]: (state) => {
+      return {
+        ...state,
+      };
+    },
+    [purchasePack.fulfilled]: (state, action) => {
+      return {
+        ...state,
+      };
+    },
+    [purchasePack.rejected]: (state) => {
+      return {
+        ...state,
+      };
+    },
     [getLastRound.pending]: (state) => {
       return {
         ...state,

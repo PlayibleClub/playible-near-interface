@@ -12,20 +12,10 @@ export const terra = new LCDClient({
 });
 
 export const queryContract = async (contractAddr, queryMsg) => {
-  const txResult = {
-    txResult: null,
-    txError: null
-  };
-  await terra.wasm.contractQuery(
+  return await terra.wasm.contractQuery(
     contractAddr,
     JSON.parse(queryMsg),
-  ).then((result) => {
-    txResult.txResult = result;
-  }).catch((error) => {
-    txResult.txError = error;
-  });
-  
-  return txResult
+  )
 };
 
 export const executeContract = async (connectedWallet, contractAddr, executeMsg, coinAmount) => {

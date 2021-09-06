@@ -7,8 +7,7 @@ import PackComponent from '../components/PackComponent';
 import TitledContainer from '../components/TitledContainer';
 
 import { useDispatch } from 'react-redux';
-import { getLastRound, getRoundData } from '../redux/reducers/contract/pack';
-import { fantasyData } from '../data';
+import { getLastRound, getRoundData, purchasePack } from '../redux/reducers/contract/pack';
 import { executeContract } from '../utils/terra';
 import { useConnectedWallet } from '@terra-money/wallet-provider';
 
@@ -18,14 +17,14 @@ export default function OpenPackPage() {
     const connectedWallet = useConnectedWallet();
 
     const executePurchasePack = async () => {
-        const executeMsg = `{ "purchase_pack": {} }`;
-        console.log(executeMsg)
-        await executeContract(connectedWallet, fantasyData.contract_addr, executeMsg);
-        dispatch(getLastRound()).then((response) => {
-            dispatch(getRoundData({lastRound: response.payload})).then(() => {
-                router.push("/TokenDrawPage");
-            })
-        });
+        dispatch(purchasePack({connectedWallet})).then(() => {
+            dispatch(getLastRound()).then((response) => {
+                dispatch(getRoundData({lastRound: response.payload})).then(() => {
+                    router.push("/TokenDrawPage");
+                });
+            });
+        })
+        
     }
 
     const [isClosed, setClosed] = React.useState(true)
