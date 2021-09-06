@@ -41,7 +41,6 @@ const ContractInteraction = () => {
 
   const performQueryContract = async () => {
     const result = await queryContract(contractAddr, queryMsg);
-    console.log(result)
     setTxResults(result);
   }
 
