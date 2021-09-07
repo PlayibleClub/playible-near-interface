@@ -11,7 +11,7 @@ import { getLastRound, getRoundData, purchasePack } from '../redux/reducers/cont
 import { executeContract } from '../utils/terra';
 import { useConnectedWallet } from '@terra-money/wallet-provider';
 
-export default function OpenPackPage() {
+const Purchase = () => {
     const router = useRouter();
     const dispatch = useDispatch();
     const connectedWallet = useConnectedWallet();
@@ -24,7 +24,6 @@ export default function OpenPackPage() {
                 });
             });
         })
-        
     }
 
     const [isClosed, setClosed] = React.useState(true)
@@ -41,7 +40,7 @@ export default function OpenPackPage() {
 
             <Main color="indigo-dark overflow-y-scroll">
                 <div className="flex flex-col overflow-y-auto overflow-x-hidden">
-                    <TitledContainer title="CONGRATULATIONS!">
+                    <TitledContainer title="PURCHASE PACK">
                         <div className='flex flex-col justify-center'>
                             <div className="justify-center">
                                 <PackComponent type="PremiumRelease3"/>
@@ -49,7 +48,7 @@ export default function OpenPackPage() {
                             <div className=''>
                             <button onClick={executePurchasePack} className="bg-indigo-buttonblue w-full h-12 text-center rounded-md text-lg">
                                 <div className="pt-2.5">
-                                    OPEN PACK
+                                    BUY PACK
                                 </div>
                             </button>
                             </div>
@@ -61,3 +60,4 @@ export default function OpenPackPage() {
         </div>
     )
 }
+export default Purchase

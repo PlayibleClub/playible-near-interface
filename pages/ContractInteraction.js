@@ -1,15 +1,14 @@
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import {
   useWallet, WalletStatus, useConnectedWallet
 } from '@terra-money/wallet-provider';
 
-import { useDispatch, useSelector } from 'react-redux';
-import { getLastRound, getDrawData } from '../redux/reducers/contract/pack';
-import WalletHelper from '../helpers/wallet-helper';
+import { useDispatch } from 'react-redux';
+import { queryContract, executeContract } from '../utils/terra';
 
 
 const ContractInteraction = () => {
-  
+  const connectedWallet = useConnectedWallet();
   const [codeID, setCodeID] = useState('');
   const [contractAddr, setContractAddr] = useState('');
   const [queryMsg, setQueryMsg] = useState('');
@@ -19,7 +18,6 @@ const ContractInteraction = () => {
 
   const [txResults, setTxResults] = useState(null);
   const [txError, setTxError] = useState(null);
-  const { queryContract, executeContract } = WalletHelper();
 
   const dispatch = useDispatch();
   
@@ -46,12 +44,8 @@ const ContractInteraction = () => {
     setTxResults(result);
   }
 
-  const performGetLatestRound = async () => {
-    dispatch(getLastRound());
-  }
-
   const performExecuteContract = async () => {
-    const result = await executeContract(contractAddr, executeMsg, offeredCoin);
+    const result = await executeContract(connectedWallet, contractAddr, executeMsg, offeredCoin);
     result.txError == null ? setTxResults(result.txResult) : setTxResults(result.txError);
     //dispatch(executeContract({contractAddr, executeMsg, connectedWallet}));
   }
@@ -124,8 +118,6 @@ const ContractInteraction = () => {
         </div>
 
         <button onClick={performExecuteContract}>Submit Contract</button>
-        <button onClick={performGetLatestRound}>Get LatestRound</button>
-        <button onClick={() => { dispatch(getDrawData())}}>Get Draw Data</button>
 
         <div className="flex flex-col gap-2">
           <label htmlFor="codeID">
