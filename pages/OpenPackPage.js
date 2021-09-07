@@ -3,7 +3,7 @@ import Main from '../components/Main';
 import HeaderBase from '../components/HeaderBase';
 import Navbar from '../components/Navbar';
 import PackComponent from '../components/PackComponent';
-import TitledContainer from '../components/TitledContainer';
+import PortfolioContainer from '../components/PortfolioContainer';
 import Link from 'next/link'
 
 export default function OpenPackPage() {
@@ -22,7 +22,7 @@ export default function OpenPackPage() {
 
             <Main color="indigo-dark overflow-y-scroll">
                 <div className="flex flex-col overflow-y-auto overflow-x-hidden">
-                    <TitledContainer title="CONGRATULATIONS!">
+                    <PortfolioContainer title="CONGRATULATIONS!">
                         <div className='flex justify-center'>
                             <div className="flex overflow-x-scroll pt-16 pb-32 hide-scroll-bar snap snap-x snap-mandatory">
                                 <div className="flex flex-nowrap pt-16">
@@ -39,7 +39,7 @@ export default function OpenPackPage() {
                             </div>
                         </Link>
                         </div>
-                    </TitledContainer>
+                    </PortfolioContainer>
                 </div>
             </Main>
         </div>
