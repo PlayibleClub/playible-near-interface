@@ -1,4 +1,4 @@
-import React, { Component, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import HeaderBase from '../components/HeaderBase';
 import Navbar from '../components/Navbar';
@@ -10,8 +10,11 @@ import filterIcon from '../public/images/filter.png'
 import searchIcon from '../public/images/search.png'
 import { stubString } from 'lodash'
 import index from './TokenDrawPage';
+import { useDispatch, useSelector } from 'react-redux';
+import { getPortfolio } from '../redux/reducers/contract/portfolio';
+import { useConnectedWallet } from '@terra-money/wallet-provider';
 
-const playerList = [ // player list for testing purposes
+/*const playerList = [ // player list for testing purposes
     {
         name: 'STEPHEN CURRY',
         team: 'Golden State Warriors',
@@ -83,18 +86,30 @@ const playerList = [ // player list for testing purposes
     //     grad2: '',
     // },
 ]
-
+*/
 const Portfolio = () => {
 
-    const [filterInfo, handleFilter] = React.useState(false)
+    const [filterInfo, handleFilter] = useState(false);
 
     const { register, handleSubmit } = useForm()
     const [result, setResult] = useState("")
     const [teamFilter, setTeamFilter] = useState("")
     const [posFilter, setPosFilter] = useState("")
-    const [isClosed, setClosed] = React.useState(true)
-    const [filterMode, setMode] = React.useState(false)
-    const [showFilter, setFilter] = React.useState(false)
+    const [isClosed, setClosed] = useState(true)
+    const [filterMode, setMode] = useState(false)
+    const [showFilter, setFilter] = useState(false)
+    
+    const { tokenList: playerList } = useSelector((state) => state.contract.portfolio);
+
+    const dispatch = useDispatch();
+    const connectedWallet = useConnectedWallet();
+
+
+    useEffect(() => {
+        dispatch(getPortfolio({walletAddr: connectedWallet.walletAddress}))
+    }, [])
+
+
 
     const onSubmit = (data) => {
         if (data.search)
@@ -236,7 +251,7 @@ const Portfolio = () => {
                                                     <AthleteContainer
                                                         AthleteName={player.name}
                                                         TeamName={player.team}
-                                                        ID={player.id}
+                                                        ID={player.tokenID}
                                                         CoinValue={player.cost}
                                                         Jersey={player.jersey}
                                                         Positions={player.positions}
@@ -249,8 +264,8 @@ const Portfolio = () => {
                                     :
                                     playerList.map(function (player, i) {
                                         const toFindTeam = player.team.toLowerCase()
-                                        console.log(posFilter)
-                                        console.log(teamFilter)
+                                        //console.log(posFilter)
+                                        //console.log(teamFilter)
 
                                         if (posFilter === "" && teamFilter === "") {
                                             // console.log("no filter")
@@ -259,7 +274,7 @@ const Portfolio = () => {
                                                     <AthleteContainer
                                                         AthleteName={player.name}
                                                         TeamName={player.team}
-                                                        ID={player.id}
+                                                        ID={player.tokenID}
                                                         CoinValue={player.cost}
                                                         Jersey={player.jersey}
                                                         Positions={player.positions}
@@ -277,7 +292,7 @@ const Portfolio = () => {
                                                         <AthleteContainer
                                                             AthleteName={player.name}
                                                             TeamName={player.team}
-                                                            ID={player.id}
+                                                            ID={player.tokenID}
                                                             CoinValue={player.cost}
                                                             Jersey={player.jersey}
                                                             Positions={player.positions}
@@ -295,7 +310,7 @@ const Portfolio = () => {
                                                         <AthleteContainer
                                                             AthleteName={player.name}
                                                             TeamName={player.team}
-                                                            ID={player.id}
+                                                            ID={player.tokenID}
                                                             CoinValue={player.cost}
                                                             Jersey={player.jersey}
                                                             Positions={player.positions}
@@ -314,7 +329,7 @@ const Portfolio = () => {
                                                         <AthleteContainer
                                                             AthleteName={player.name}
                                                             TeamName={player.team}
-                                                            ID={player.id}
+                                                            ID={player.tokenID}
                                                             CoinValue={player.cost}
                                                             Jersey={player.jersey}
                                                             Positions={player.positions}
