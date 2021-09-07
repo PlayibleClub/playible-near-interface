@@ -4,14 +4,14 @@ const PackContainer = (props) => {
   const { children, color, imagesrc, AthleteName, releaseValue, CoinValue } = props;
 
   return (
-    <div data-test="PackContainer" className={`bg-${color}   w-full h-full overflow-hidden  flex flex-col  w-full h-full `}>
-      <div className="flex flex-col h-2/3">
+    <div data-test="PackContainer" className={`bg-${color}   overflow-hidden  flex flex-col  w-full  `}>
+      <div className="flex">
         <img src={imagesrc} alt="Img" />
 
       </div>
       {children}
-      <div className="relative h-1/2">
-        <div className="absolute flex flex-col bottom-0 left-1">
+      <div className="flex ">
+        <div className=" flex flex-col">
           <div className="  pb-3 text-sm font-medium ">{AthleteName}</div>
           <div className="  text-xs font-thin">Release {releaseValue}</div>
           <div className="  text-xs font-bold">
