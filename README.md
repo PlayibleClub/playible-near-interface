@@ -1,33 +1,16 @@
-# README
+# Overview
 
-Hi changes here!
+Fantasy Investar will combine fantasy sports, NFT technology and Anchor Protocol, to make sports investing possible.
 
-## Getting Started
+## Brief Description
 
-First, run the development server:
+Fantasy Investar will provide the 50+ million fantasy sports users around the world the ability to invest into athletes, sharing in their athletes’ success as they benefit from on-field performances. This will be achieved by allowing users to invest into NFT athlete tokens, providing users a sense of ownership of their athletes’ successes. We will be continually increasing the utility of these tokens to further enhance their value, as well as the engagement users will have with their chosen sport and athletes.
 
-```bash
-npm run dev
-# or
-yarn dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
-
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
-
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+Our approach will integrate a fantasy sports scoring model to distribute rewards to the best performing athletes, as well as rewarding individual achievements \(MVP, ROTY etc\). Users will be able to use their tokens to form teams to compete in daily, weekly and seasonal challenges to win prize pools. Fantasy Investar will enable sports fans to become their own player scout, assessing prospects and investing early to sell for a profit as demand increases.
 
 ## Learn More
 
-To learn more about Next.js, take a look at the following resources:
-
-* [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-* [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+Fantasy Investar will be built on the Terra blockchain, integrating Anchor Protocol as a key component to the success of the business model. Funds generated within Fantasy Investar will be deposited into Anchor Protocol, generating yield to be distributed amongst users, in the form of rewards. UST will be the currency used within the Fantasy Investar platform, users will need to create and connect their Terra wallet on the platform in order to use Fantasy Investar
 
 ## Deploy on Vercel
 
