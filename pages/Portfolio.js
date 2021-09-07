@@ -106,8 +106,9 @@ const Portfolio = () => {
 
 
     useEffect(() => {
+        if(typeof connectedWallet !== 'undefined')
         dispatch(getPortfolio({walletAddr: connectedWallet.walletAddress}))
-    }, [])
+    }, [connectedWallet])
 
 
 
