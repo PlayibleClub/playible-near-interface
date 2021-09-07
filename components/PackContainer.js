@@ -5,7 +5,7 @@ const PackContainer = (props) => {
   const { children, color, imagesrc, AthleteName, releaseValue, CoinValue } = props;
 
   return (
-    <Link href="/OpenPackPage">
+    <Link href="/Purchase">
       <div data-test="PackContainer" className={`bg-${color}   w-full h-full overflow-hidden  flex flex-col  w-full h-full `}>
         <div className="flex flex-col h-2/3">
           <img src={imagesrc} alt="Img" />
