@@ -1,12 +1,23 @@
 /* eslint-disable no-unused-vars */
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { queryContract } from '../../../../utils/terra';
+import { executeContract, queryContract } from '../../../../utils/terra';
 import { fantasyData, tokenData } from '../../../../data';
 
 const initialState = {
   latestRound: null,
   drawList: []
 }
+
+export const purchasePack = createAsyncThunk('purchasePack', async (payload, thunkAPI) => {
+  try {
+    const {connectedWallet } = payload;
+    const executeMsg = `{ "purchase_pack": {} }`;
+    const result = await executeContract(connectedWallet, fantasyData.contract_addr, executeMsg);
+    return result
+  } catch (err) {
+    return thunkAPI.rejectWithValue({});
+  }
+});
 
 export const getLastRound = createAsyncThunk('getLastRound', async (payload, thunkAPI) => {
   try {
@@ -19,10 +30,12 @@ export const getLastRound = createAsyncThunk('getLastRound', async (payload, thu
   }
 });
 
-export const getDrawData = createAsyncThunk('getDrawData', async (payload, thunkAPI) => {
+export const getRoundData = createAsyncThunk('getRoundData', async (payload, thunkAPI) => {
   try {
+    const { lastRound } = payload;
+
     const contractAddr = fantasyData.contract_addr;
-    const queryMsg = `{"purchased_pack":{ "last_round": "lastRound" }}`;
+    const queryMsg = `{"purchased_pack":{ "last_round": "${lastRound}" }}`;
     const result = await queryContract(contractAddr, queryMsg);
     return result
   } catch (err) {
@@ -30,11 +43,11 @@ export const getDrawData = createAsyncThunk('getDrawData', async (payload, thunk
   }
 });
 
-const processDrawData = (data) => {
+const processRoundData = (data) => {
   const processedData = []
   if(data !== null && data.length > 0){
     data.forEach((item) => {
-      processedData.push(tokenData.find(token => token.terraID === item).id)
+      processedData.push(tokenData.find(token => token.symbol === item.slice(0, 3)).id)
     })
   }
 
@@ -48,6 +61,21 @@ const packSlice = createSlice({
     clearData: () => initialState,
   },
   extraReducers: {
+    [purchasePack.pending]: (state) => {
+      return {
+        ...state,
+      };
+    },
+    [purchasePack.fulfilled]: (state, action) => {
+      return {
+        ...state,
+      };
+    },
+    [purchasePack.rejected]: (state) => {
+      return {
+        ...state,
+      };
+    },
     [getLastRound.pending]: (state) => {
       return {
         ...state,
@@ -64,20 +92,20 @@ const packSlice = createSlice({
         ...state,
       };
     },
-    [getDrawData.pending]: (state) => {
+    [getRoundData.pending]: (state) => {
       return {
         ...state,
       };
     },
-    [getDrawData.fulfilled]: (state, action) => {
+    [getRoundData.fulfilled]: (state, action) => {
       return {
         ...state,
-        //drawList: processDrawData(action.payload)
-        drawList: processDrawData(["0", "1", "2", "3", "4"]) //test data, syntax is not final
+        drawList: processRoundData(action.payload)
+        //drawList: processRoundData(["0", "1", "2", "3", "4"]) //test data, syntax is not final
         
       };
     },
-    [getDrawData.rejected]: (state) => {
+    [getRoundData.rejected]: (state) => {
       return {
         ...state,
       };

@@ -1,21 +1,16 @@
-import React, { useEffect } from 'react';
+import React, { useState } from 'react';
 import Main from '../components/Main';
 import TokenComponent from '../components/TokenComponent';
 import Link from 'next/link';
 import HeaderBase from '../components/HeaderBase';
 import Navbar from '../components/Navbar';
 
-import { useDispatch, useSelector } from 'react-redux';
-import { getDrawData } from '../redux/reducers/contract/pack';
-
-const tokenList = [1, 7, 12, 23, 30] 
-
-export default function TokenDrawPage() {
+import { useSelector } from 'react-redux';
+const TokenDrawPage = () => {
+    const [isClosed, setClosed] = useState(true)
     const { drawList: tokenList } = useSelector((state) => state.contract.pack);
-    const dispatch = useDispatch()
-    const [isClosed, setClosed] = React.useState(true)
 
-    return(
+    return (
             <>
                 <div>
                     <div className={`font-montserrat h-screen relative ${isClosed ? "" : "overflow-y-hidden"}`}>
@@ -41,9 +36,6 @@ export default function TokenDrawPage() {
                                             </div>
                                         </div>
 
-                                                                           
-                                        <button onClick={() => { dispatch(getDrawData())}}>Draw</button>
-
                                         <div className='flex justify-center'> 
                                             <Link href="/portfolio">
                                                 <div className="bg-indigo-buttonblue w-72 h-12 mb-20 text-center rounded-md">
@@ -60,3 +52,5 @@ export default function TokenDrawPage() {
             </>
     )
 }
+
+export default TokenDrawPage
