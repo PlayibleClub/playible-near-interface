@@ -152,7 +152,7 @@ const Portfolio = () => {
                     <div className="flex flex-col w-full overflow-y-auto overflow-x-hidden h-screen">
                         <TitledContainer title="PORTFOLIO" className="flex w-1/2 justify-items-center">
                             <div className='flex flex-col justify-center'>
-                            <div className="flex w-11/12 mb-4 mt-4">
+                            <div className="flex w-full mb-4 mt-4">
                                 {filterMode ?
                                     <>
                                         <div className="rounded-md bg-indigo-light mr-1 w-12 h-11" onClick={() => {
