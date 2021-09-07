@@ -129,8 +129,8 @@ export default function Portfolio() {
                 <Main color="indigo-dark">
                     <div className="flex w-full overflow-y-auto overflow-x-hidden h-screen">
                         <PortfolioContainer title="PORTFOLIO" className="flex">
-                            <div className="flex justify-center flex-col">
-                                <div className="flex w-11/12 mb-4 mt-4 self-center">
+                            <div className="flex flex-col">
+                                <div className="flex w-11/12 mb-4 mt-4 self-center justify-center md:ml-8">
                                     {filterMode ?
                                         <>
                                             <div className="rounded-md bg-indigo-light mr-1 w-12 h-11" onClick={() => {
@@ -142,12 +142,12 @@ export default function Portfolio() {
                                                 </div>
                                             </div>
 
-                                            <div className="rounded-md bg-indigo-light ml-1 h-11 w-9/12 flex">
+                                            <div className="rounded-md bg-indigo-light ml-1 h-11 w-10/12 flex md:w-80">
                                                 <div className="ml-1 mt-2">
                                                     <form onSubmit={handleSubmit(onSubmit)}>
                                                         <input {...register("search")} className="text-xl ml-3 appearance-none bg-indigo-light focus:outline-none w-10/12" placeholder="Search..." />
-                                                        <button className="w-1/12">
-                                                            <input type="image" src={searchIcon} className="object-none" />
+                                                        <button className="w-1/12 md:w-9">
+                                                            <input type="image" src={searchIcon} className="object-none md:ml-3 md:mt-1" />
                                                         </button>
                                                     </form>
                                                 </div>
@@ -156,7 +156,7 @@ export default function Portfolio() {
                                         :
                                         <>
                                             <div className="flex">
-                                                <div className="rounded-md bg-indigo-light mr-1 h-11 w-9/12 flex font-thin" onClick={() => setFilter(true)}>
+                                                <div className="rounded-md bg-indigo-light mr-1 h-11 w-10/12 flex font-thin md:w-80" onClick={() => setFilter(true)}>
                                                     <div className="text-lg ml-4 mt-2 mr-36 w-9/12">
                                                         Filter by
                                                     </div>
@@ -177,13 +177,13 @@ export default function Portfolio() {
                                     }
                                 </div>
 
-                                <div>
+                                <div className="justify-center flex mb-2 md:text-lg">
                                     {showFilter ?
                                         <>
                                             <form onSubmit={handleSubmit(onSubmit)}>
                                                 <div>
-                                                    Team Name
-                                                    <select {...register("teamName")}>
+                                                    Team Name: 
+                                                    <select {...register("teamName")} className="bg-indigo-light">
                                                         <option value="">Select...</option>
                                                         {uniqueTeams.map(function (team, i) {
                                                             return (
@@ -195,8 +195,8 @@ export default function Portfolio() {
                                                 </div>
 
                                                 <div>
-                                                    Position
-                                                    <select {...register("positions")}>
+                                                    Position: 
+                                                    <select {...register("positions")} className="bg-indigo-light">
                                                         <option value="">Select...</option>
                                                         <option value="PG">PG</option>
                                                         <option value="SG">SG</option>
@@ -206,7 +206,7 @@ export default function Portfolio() {
                                                     </select>
                                                 </div>
                                                 <div>
-                                                    <input type="submit" />
+                                                    <input type="submit" className="rounded-md p-1 bg-indigo-light pl-2 pr-2"/>
                                                 </div>
                                                 {/* {console.log(result)} */}
                                             </form>
@@ -218,7 +218,7 @@ export default function Portfolio() {
                                 </div>
                             </div>
 
-                            <div className="justify-center flex">
+                            <div className="justify-center flex md:self-center">
                                 <AthleteGrid>
                                     {filterMode ?
                                         playerList.map(function (player, i) {
