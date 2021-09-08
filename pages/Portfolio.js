@@ -183,7 +183,7 @@ export default function Portfolio() {
                                             <form onSubmit={handleSubmit(onSubmit)}>
                                                 <div>
                                                     Team Name: 
-                                                    <select {...register("teamName")} className="bg-indigo-light">
+                                                    <select {...register("teamName")} className="bg-indigo-light ml-1">
                                                         <option value="">Select...</option>
                                                         {uniqueTeams.map(function (team, i) {
                                                             return (
@@ -196,7 +196,7 @@ export default function Portfolio() {
 
                                                 <div>
                                                     Position: 
-                                                    <select {...register("positions")} className="bg-indigo-light">
+                                                    <select {...register("positions")} className="bg-indigo-light ml-1">
                                                         <option value="">Select...</option>
                                                         <option value="PG">PG</option>
                                                         <option value="SG">SG</option>
