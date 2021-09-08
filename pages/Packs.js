@@ -1,6 +1,8 @@
 import { useWallet, WalletStatus } from '@terra-money/wallet-provider';
 // import Image from 'next/image';
-import * as React from 'react';
+
+import React, { Component, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import Header from '../components/Header';
 import HeaderBase from '../components/HeaderBase';
 import Button from '../components/Button';
@@ -37,6 +39,13 @@ export default function Home() {
 
 
 
+
+    const [filterInfo, handleFilter] = React.useState(false)
+
+    const { register, handleSubmit } = useForm()
+    const [result, setResult] = useState("")
+    const [teamFilter, setTeamFilter] = useState("")
+    const [posFilter, setPosFilter] = useState("")
     const [isClosed, setClosed] = React.useState(true)
     const [filterMode, setMode] = React.useState(false)
     const [showFilter, setFilter] = React.useState(false)
@@ -145,58 +154,41 @@ export default function Home() {
 
 
                             <TitledContainer title="PACKS">
+
                                 <div>
 
-
-
-                                    <div className="flex w-11/12 mb-4 mt-4">
-                                        {filterMode ?
-                                            <>
-                                                <div className="rounded-md bg-indigo-light mr-1 w-12 h-11" onClick={() => {
-                                                    setMode(false)
-                                                    setResult("")
-                                                }}>
-                                                    <div className="ml-3.5 mt-4">
-                                                        <img src={filterIcon} />
-                                                    </div>
-                                                </div>
-
-                                                <div className="rounded-md bg-indigo-light ml-1 h-11 w-9/12 flex">
-                                                    <div className="ml-1 mt-2">
-                                                        <form onSubmit={handleSubmit(onSubmit)}>
-                                                            <input {...register("search")} className="text-xl ml-3 appearance-none bg-indigo-light focus:outline-none w-10/12" placeholder="Search..." />
-                                                            <button className="w-1/12">
-                                                                <input type="image" src={searchIcon} className="object-none" />
-                                                            </button>
-                                                        </form>
-                                                    </div>
-                                                </div>
-                                            </>
-                                            :
-                                            <>
-                                                <div className="flex">
-                                                    <div className="rounded-md bg-indigo-light mr-1 h-11 w-9/12 flex font-thin" onClick={() => setFilter(true)}>
-                                                        <div className="text-lg ml-4 mt-2 mr-36 w-9/12">
-                                                            Filter by
-                                                        </div>
-                                                        <img src={filterIcon} className="object-none w-3/12 mr-4" />
-                                                    </div>
-
-                                                    <div className="rounded-md bg-indigo-light ml-1 w-12 h-11" onClick={() => {
-                                                        setMode(true)
-                                                        setFilter(false)
-                                                        setResult("")
-                                                    }}>
-                                                        <div className="ml-4 mt-3">
-                                                            <img src={searchIcon} />
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </>
-                                        }
+                                    <div className="rounded-md bg-indigo-light ml-1 h-11 w-9/12 flex justify-center">
+                                        <div className="ml-1 mt-2">
+                                            <form onSubmit={handleSubmit(onSubmit)}>
+                                                <input {...register("search")} className="text-xl ml-3 appearance-none bg-indigo-light focus:outline-none w-10/12" placeholder="Search..." />
+                                                <button className="w-1/12">
+                                                    <input type="image" src={searchIcon} className="object-none" />
+                                                </button>
+                                            </form>
+                                        </div>
                                     </div>
 
 
+                                    {
+                                        packList.map(function (pack, i) {
+                                            const toFindName = pack.name.toLowerCase()
+
+                                            const searchInfo = result.toLowerCase()
+
+                                            if (toFindName.includes(searchInfo))
+                                                return (
+                                                    <div className='mb-4' key={i}>
+                                                        <LargePackContainer
+                                                            PackName={pack.name}
+                                                            CoinValue={pack.price}
+                                                            releaseValue={pack.release}
+                                                            imagesrc={pack.image} />
+                                                    </div>
+                                                )
+                                        })
+
+
+                                    }
 
 
 
@@ -204,12 +196,9 @@ export default function Home() {
 
 
 
-                                    {packList.map((pack) => (
-                                        <LargePackContainer PackName={pack.name} CoinValue={pack.price} releaseValue={pack.release} imagesrc={pack.image} />
-
-                                    ))}
 
                                 </div>
+
 
                             </TitledContainer>
 
