@@ -9,7 +9,7 @@ const TokenComponent = (props) =>{
     const tokenType = "/../public/images/packimages/"+type+".png"
 
     return (
-        <div className="w-64 h-72 overflow-hidden ease-in-out">
+        <div className="overflow-hidden ease-in-out">
                 <Image
                     src={tokenType}
                     width={300}
