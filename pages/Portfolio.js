@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form'
 import HeaderBase from '../components/HeaderBase';
 import Navbar from '../components/Navbar';
 import Main from '../components/Main'
-import TitledContainer from '../components/TitledContainer'
+import PortfolioContainer from '../components/PortfolioContainer'
 import AthleteGrid from '../components/AthleteGrid'
 import AthleteContainer from '../components/AthleteContainer'
 import filterIcon from '../public/images/filter.png'
@@ -84,7 +84,7 @@ const playerList = [ // player list for testing purposes
     // },
 ]
 
-const Portfolio = () => {
+export default function Portfolio() {
 
     const [filterInfo, handleFilter] = React.useState(false)
 
@@ -93,54 +93,44 @@ const Portfolio = () => {
     const [teamFilter, setTeamFilter] = useState("")
     const [posFilter, setPosFilter] = useState("")
 
+    const [isClosed, setClosed] = React.useState(true)
+    const [filterMode, setMode] = React.useState(false)
+    const [showFilter, setFilter] = React.useState(false)
 
+    const onSubmit = (data) => {
+        if (data.search)
+            setResult(data.search)
+        else setResult("")
 
-    export default function Portfolio() {
-        const [isClosed, setClosed] = React.useState(true)
-        const [filterMode, setMode] = React.useState(false)
-        const [showFilter, setFilter] = React.useState(false)
+        if (data.teamName)
+            setTeamFilter(data.teamName)
+        else setTeamFilter("")
 
-        const onSubmit = (data) => {
-            if (data.search)
-                setResult(data.search)
-            else setResult("")
+        if (data.positions)
+            setPosFilter(data.positions)
+        else setPosFilter("")
 
-            if (data.teamName)
-                setTeamFilter(data.teamName)
-            else setTeamFilter("")
+        // console.log(data)
+    }
 
-            if (data.positions)
-                setPosFilter(data.positions)
-            else setPosFilter("")
+    const key1 = 'team'
+    const uniqueTeams = [...new Map(playerList.map(i => [i[key1], i])).values()]
 
-            console.log(data)
-        }
-        const key1 = 'team'
-        const uniqueTeams = [...new Map(playerList.map(i => [i[key1], i])).values()]
+    return (
+        <>
+            <div className={`font-montserrat h-screen relative ${isClosed ? "" : "overflow-y-hidden"}`}>
+                {isClosed ? null : <div className="flex flex-row w-full absolute z-50 top-0 left-0 ">
+                    <Navbar/>
+                    <div className="w-2/6 h-screen" onMouseDown={() => setClosed(true)}></div>
+                </div>}
 
-        return (
-            <>
-                <div className={`font-montserrat h-screen relative ${isClosed ? "" : "overflow-y-hidden"}`}>
+                <HeaderBase isClosed={isClosed} setClosed={setClosed}/>
 
-                    {isClosed ? null : <div className="flex flex-row w-full absolute z-50 top-0 left-0 ">
-                        <Navbar> </Navbar>
-                        <div className="w-2/6 h-screen" onMouseDown={() => setClosed(true)}></div>
-                    </div>}
-
-                    <HeaderBase isClosed={isClosed} setClosed={setClosed} ></HeaderBase>
-
-                    <div className="flex flex-col w-full">
-
-
-
-                    </div>
-
-                    <Main color="indigo-dark">
-
-                        <div className="flex flex-col w-full overflow-y-auto overflow-x-hidden h-screen">
-                            <TitledContainer title="PORTFOLIO" className="flex w-1/2 justify-items-center">
-
-                                <div className="flex w-11/12 mb-4 mt-4">
+                <Main color="indigo-dark">
+                    <div className="flex w-full overflow-y-auto overflow-x-hidden h-screen">
+                        <PortfolioContainer title="PORTFOLIO" className="flex">
+                            <div className="flex flex-col">
+                                <div className="flex w-11/12 mb-4 mt-4 self-center justify-center md:ml-8">
                                     {filterMode ?
                                         <>
                                             <div className="rounded-md bg-indigo-light mr-1 w-12 h-11" onClick={() => {
@@ -152,12 +142,12 @@ const Portfolio = () => {
                                                 </div>
                                             </div>
 
-                                            <div className="rounded-md bg-indigo-light ml-1 h-11 w-9/12 flex">
+                                            <div className="rounded-md bg-indigo-light ml-1 h-11 w-10/12 flex md:w-80">
                                                 <div className="ml-1 mt-2">
                                                     <form onSubmit={handleSubmit(onSubmit)}>
                                                         <input {...register("search")} className="text-xl ml-3 appearance-none bg-indigo-light focus:outline-none w-10/12" placeholder="Search..." />
-                                                        <button className="w-1/12">
-                                                            <input type="image" src={searchIcon} className="object-none" />
+                                                        <button className="w-1/12 md:w-9">
+                                                            <input type="image" src={searchIcon} className="object-none md:ml-3 md:mt-1" />
                                                         </button>
                                                     </form>
                                                 </div>
@@ -166,7 +156,7 @@ const Portfolio = () => {
                                         :
                                         <>
                                             <div className="flex">
-                                                <div className="rounded-md bg-indigo-light mr-1 h-11 w-9/12 flex font-thin" onClick={() => setFilter(true)}>
+                                                <div className="rounded-md bg-indigo-light mr-1 h-11 w-10/12 flex font-thin md:w-80" onClick={() => setFilter(true)}>
                                                     <div className="text-lg ml-4 mt-2 mr-36 w-9/12">
                                                         Filter by
                                                     </div>
@@ -187,13 +177,13 @@ const Portfolio = () => {
                                     }
                                 </div>
 
-                                <div>
+                                <div className="justify-center flex mb-2 md:text-lg">
                                     {showFilter ?
                                         <>
                                             <form onSubmit={handleSubmit(onSubmit)}>
                                                 <div>
-                                                    Team Name
-                                                    <select {...register("teamName")}>
+                                                    Team Name: 
+                                                    <select {...register("teamName")} className="bg-indigo-light">
                                                         <option value="">Select...</option>
                                                         {uniqueTeams.map(function (team, i) {
                                                             return (
@@ -205,8 +195,8 @@ const Portfolio = () => {
                                                 </div>
 
                                                 <div>
-                                                    Position
-                                                    <select {...register("positions")}>
+                                                    Position: 
+                                                    <select {...register("positions")} className="bg-indigo-light">
                                                         <option value="">Select...</option>
                                                         <option value="PG">PG</option>
                                                         <option value="SG">SG</option>
@@ -216,9 +206,9 @@ const Portfolio = () => {
                                                     </select>
                                                 </div>
                                                 <div>
-                                                    <input type="submit" />
+                                                    <input type="submit" className="rounded-md p-1 bg-indigo-light pl-2 pr-2"/>
                                                 </div>
-                                                {console.log(result)}
+                                                {/* {console.log(result)} */}
                                             </form>
                                         </>
                                         :
@@ -226,14 +216,15 @@ const Portfolio = () => {
                                         </>
                                     }
                                 </div>
+                            </div>
 
+                            <div className="justify-center flex md:self-center">
                                 <AthleteGrid>
                                     {filterMode ?
                                         playerList.map(function (player, i) {
                                             const toFindName = player.name.toLowerCase()
                                             const toFindTeam = player.team.toLowerCase()
                                             const searchInfo = result.toLowerCase()
-
                                             if (toFindName.includes(searchInfo) || toFindTeam.includes(searchInfo) || player.jersey.includes(searchInfo))
                                                 return (
                                                     <div className='mb-4' key={i}>
@@ -248,14 +239,13 @@ const Portfolio = () => {
                                                             colorgrad2={player.grad2}
                                                         />
                                                     </div>
-                                                )
+                                            )
                                         })
                                         :
                                         playerList.map(function (player, i) {
                                             const toFindTeam = player.team.toLowerCase()
-                                            console.log(posFilter)
-                                            console.log(teamFilter)
-
+                                                // console.log(posFilter)
+                                                // console.log(teamFilter)
                                             if (posFilter === "" && teamFilter === "") {
                                                 // console.log("no filter")
                                                 return (
@@ -311,7 +301,7 @@ const Portfolio = () => {
                                                 }
                                             }
                                             else if (posFilter !== "") {
-                                                console.log("posFilter code")
+                                                // console.log("posFilter code")
                                                 if (player.positions.includes(posFilter)) {
                                                     return (
                                                         <div className='mb-4' key={i}>
@@ -332,13 +322,11 @@ const Portfolio = () => {
                                         })
                                     }
                                 </AthleteGrid>
-                            </TitledContainer>
-                        </div>
-
-                    </Main>
-                </div>
-            </>
-        )
-    }
+                            </div>
+                        </PortfolioContainer>
+                    </div>
+                </Main>
+            </div>
+        </>
+    )
 }
-export default Portfolio;

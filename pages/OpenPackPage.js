@@ -4,6 +4,8 @@ import Main from '../components/Main';
 import HeaderBase from '../components/HeaderBase';
 import Navbar from '../components/Navbar';
 import PackComponent from '../components/PackComponent';
+import PortfolioContainer from '../components/PortfolioContainer';
+import Link from 'next/link'
 import TitledContainer from '../components/TitledContainer';
 
 import { useDispatch } from 'react-redux';
@@ -41,21 +43,22 @@ export default function OpenPackPage() {
 
             <Main color="indigo-dark overflow-y-scroll">
                 <div className="flex flex-col overflow-y-auto overflow-x-hidden">
-                    <TitledContainer title="CONGRATULATIONS!">
-                        <div className='flex flex-col justify-center'>
-                            <div className="justify-center">
-                                <PackComponent type="PremiumRelease3"/>
-                            </div>    
-                            <div className=''>
-                            <button onClick={executePurchasePack} className="bg-indigo-buttonblue w-full h-12 text-center rounded-md text-lg">
-                                <div className="pt-2.5">
-                                    OPEN PACK
+                    <PortfolioContainer title="CONGRATULATIONS!">
+                        <div className='flex flex-col'>
+                            <div className="flex overflow-x-scroll pt-16 pb-24 hide-scroll-bar snap snap-x snap-mandatory self-center">
+                                <div className="flex flex-nowrap pt-16">
+                                    <PackComponent type="PremiumRelease3"/>
                                 </div>
-                            </button>
+                            </div>    
+                            <div className='flex justify-center'>
+                                <button onClick={executePurchasePack} className="bg-indigo-buttonblue w-1/2 h-12 text-center rounded-md text-lg">
+                                    <div className="pt-1">
+                                        OPEN PACK
+                                    </div>
+                                </button>
                             </div>
-                        </div>        
-                        
-                    </TitledContainer>
+                        </div>
+                    </PortfolioContainer>
                 </div>
             </Main>
         </div>
