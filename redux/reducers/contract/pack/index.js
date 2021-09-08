@@ -45,14 +45,9 @@ export const getRoundData = createAsyncThunk('getRoundData', async (payload, thu
 
 const processRoundData = (data) => {
   const processedData = []
-  let i = 0
   if(data !== null && data.length > 0){
     data.forEach((item) => {
-      const token = tokenData.find(token => token.symbol === item.slice(0, 3))
-      if(typeof token !== 'undefined' && i >= data.length - 6){
-        processedData.push(token.id)
-      }
-      i++
+      processedData.push(tokenData.find(token => token.symbol === item.slice(0, 3)).id)
     })
   }
 

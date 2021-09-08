@@ -1,5 +1,5 @@
 export const fantasyData = {
-  contract_addr: "terra19d8n0hf8qcxhtt5aprlegsz94enf9h2mf96pv4"
+  contract_addr: "terra1ktc92ew6p6pw6pa4zns63q33xrdjrcy534j4je"
 }
 
 export const tokenData = [
@@ -21,14 +21,8 @@ export const tokenData = [
     terraID: "0",
     apiID: "0",
     name: "Devin Booker",
-    symbol: "BKR",
-    contractAddr: "terra1jlazuamj9gcqfjw8dre8jc0rttxyswgjux8slt",
-    team: 'Phoenix Suns',
-    cost: '21 UST',
-    jersey: '01',
-    positions: ['SF', 'C'],
-    grad1: 'indigo-darkblue',
-    grad2: 'indigo-darkbluegrad',
+    symbol: "DVB",
+    contractAddr: "terra1jlazuamj9gcqfjw8dre8jc0rttxyswgjux8slt"
   },
   {
     id: 7,
@@ -52,13 +46,7 @@ export const tokenData = [
     apiID: "0",
     name: "Lebron James",
     symbol: "LBJ",
-    contractAddr: "terra1jlazuamj9gcqfjw8dre8jc0rttxyswgjux8slt",
-    team: 'Los Angeles Lakers',
-    cost: '840 UST',
-    jersey: '23',
-    positions: ['PG', 'SG'],
-    grad1: 'indigo-purple',
-    grad2: 'indigo-purplegrad',
+    contractAddr: "terra1jlazuamj9gcqfjw8dre8jc0rttxyswgjux8slt"
   },
   {
     id: 30,
@@ -66,13 +54,7 @@ export const tokenData = [
     apiID: "0",
     name: "Stephen Curry",
     symbol: "STP",
-    contractAddr: "terra1jlazuamj9gcqfjw8dre8jc0rttxyswgjux8slt",
-    team: 'Golden State Warriors',
-    cost: '420 UST',
-    jersey: '30',
-    positions: ['PG', 'SG'],
-    grad1: 'indigo-blue',
-    grad2: 'indigo-bluegrad',
+    contractAddr: "terra1jlazuamj9gcqfjw8dre8jc0rttxyswgjux8slt"
   },
 
 ]

@@ -37,7 +37,7 @@ const TokenDrawPage = () => {
                                         </div>
 
                                         <div className='flex justify-center'> 
-                                            <Link href="/Portfolio">
+                                            <Link href="/portfolio">
                                                 <div className="bg-indigo-buttonblue w-72 h-12 mb-20 text-center rounded-md">
                                                     <div className="mt-3">
                                                         GO TO PORTFOLIO
