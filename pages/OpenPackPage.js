@@ -6,12 +6,6 @@ import Navbar from '../components/Navbar';
 import PackComponent from '../components/PackComponent';
 import PortfolioContainer from '../components/PortfolioContainer';
 import Link from 'next/link'
-import TitledContainer from '../components/TitledContainer';
-
-import { useDispatch } from 'react-redux';
-import { getLastRound, getRoundData, purchasePack } from '../redux/reducers/contract/pack';
-import { executeContract } from '../utils/terra';
-import { useConnectedWallet } from '@terra-money/wallet-provider';
 
 export default function OpenPackPage() {
     const router = useRouter();
@@ -44,19 +38,20 @@ export default function OpenPackPage() {
             <Main color="indigo-dark overflow-y-scroll">
                 <div className="flex flex-col overflow-y-auto overflow-x-hidden">
                     <PortfolioContainer title="CONGRATULATIONS!">
-                        <div className='flex flex-col'>
-                            <div className="flex overflow-x-scroll pt-16 pb-24 hide-scroll-bar snap snap-x snap-mandatory self-center">
+                        <div className='flex justify-center'>
+                            <div className="flex overflow-x-scroll pt-16 pb-32 hide-scroll-bar snap snap-x snap-mandatory">
                                 <div className="flex flex-nowrap pt-16">
                                     <PackComponent type="PremiumRelease3"/>
                                 </div>
                             </div>    
-                            <div className='flex justify-center'>
-                                <button onClick={executePurchasePack} className="bg-indigo-buttonblue w-1/2 h-12 text-center rounded-md text-lg">
-                                    <div className="pt-1">
-                                        OPEN PACK
-                                    </div>
-                                </button>
+                            <div className=''>
+                            <button onClick={executePurchasePack} className="bg-indigo-buttonblue w-full h-12 text-center rounded-md text-lg">
+                                <div className="pt-2.5">
+                                    OPEN PACK
+                                </div>
+                            </button>
                             </div>
+                        </Link>
                         </div>
                     </PortfolioContainer>
                 </div>
