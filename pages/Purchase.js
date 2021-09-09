@@ -19,7 +19,6 @@ const Purchase = () => {
 
     const executePurchasePack = async () => {
         dispatch(purchasePack({connectedWallet})).then((response1) => {
-            console.log(response1);
             const onSuccess = () => {
                 dispatch(getLastRound()).then((response2) => {
                     dispatch(getRoundData({lastRound: response2.payload})).then(() => {
