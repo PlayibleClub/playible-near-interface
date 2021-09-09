@@ -162,12 +162,18 @@ export default function Home() {
                                             <div className="mt-2">
                                                 <form onSubmit={handleSubmit(onSubmit)}>
                                                     <input {...register("search")} className="text-xl ml-3 appearance-none bg-indigo-light focus:outline-none w-10/12" placeholder="Search..." />
-                                                    <button className="w-1/12">
-                                                        <input type="image" src={searchIcon} className="object-none" />
-                                                    </button>
+
                                                 </form>
                                             </div>
                                         </div>
+                                        <div className="rounded-md bg-indigo-light ml-1 w-12 h-11" onClick={() => {
+                                            console.log("wap")
+                                        }}>
+                                            <div className="ml-4 mt-3">
+                                                <img src={searchIcon} />
+                                            </div>
+                                        </div>
+
                                     </div>
 
                                     {
