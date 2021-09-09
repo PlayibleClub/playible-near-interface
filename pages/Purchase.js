@@ -9,6 +9,7 @@ import TitledContainer from '../components/TitledContainer';
 import { useDispatch } from 'react-redux';
 import { getLastRound, getRoundData, purchasePack } from '../redux/reducers/contract/pack';
 import { executeContract } from '../utils/terra';
+import { handleRequestResponse } from '../utils/general';
 import { useConnectedWallet } from '@terra-money/wallet-provider';
 
 const Purchase = () => {
@@ -17,12 +18,17 @@ const Purchase = () => {
     const connectedWallet = useConnectedWallet();
 
     const executePurchasePack = async () => {
-        dispatch(purchasePack({connectedWallet})).then(() => {
-            dispatch(getLastRound()).then((response) => {
-                dispatch(getRoundData({lastRound: response.payload})).then(() => {
-                    router.push("/TokenDrawPage");
+        dispatch(purchasePack({connectedWallet})).then((response1) => {
+            console.log(response1);
+            const onSuccess = () => {
+                dispatch(getLastRound()).then((response2) => {
+                    dispatch(getRoundData({lastRound: response2.payload})).then(() => {
+                        router.push("/TokenDrawPage");
+                    });
                 });
-            });
+            }
+            handleRequestResponse([response1], onSuccess, () => {})
+            
         })
     }
 

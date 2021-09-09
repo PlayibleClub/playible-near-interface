@@ -15,3 +15,21 @@ export const checkResponseValidity = (response) => {
     response.statusText = 'failed. An error has occured';
     return { response, valid: false };
 };
+
+export const handleRequestResponse = (responseList, onSuccess, onFail) => {
+  let hasFailed = false;
+  responseList.forEach((response) => {
+    if (Object.prototype.hasOwnProperty.call(response, 'error') && !hasFailed) {
+      hasFailed = true;
+      if (typeof onFail === 'function') {
+        onFail();
+      } 
+    }
+  });
+
+  if (!hasFailed) {
+    if (onSuccess !== null) {
+      onSuccess();
+    }
+  }
+}
