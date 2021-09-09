@@ -46,8 +46,8 @@ const Purchase = () => {
                                 <PackComponent type="PremiumRelease3"/>
                             </div>    
                             <div className=''>
-                            <button onClick={executePurchasePack} className="bg-indigo-buttonblue w-full h-12 text-center rounded-md text-lg">
-                                <div className="pt-2.5">
+                            <button onClick={executePurchasePack} className="bg-indigo-buttonblue w-full h-12 text-center rounded-md text-lg mt-8">
+                                <div className="">
                                     BUY PACK
                                 </div>
                             </button>
