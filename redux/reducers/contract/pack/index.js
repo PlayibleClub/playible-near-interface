@@ -10,12 +10,12 @@ const initialState = {
 
 export const purchasePack = createAsyncThunk('purchasePack', async (payload, thunkAPI) => {
   try {
-    const {connectedWallet } = payload;
+    const { connectedWallet } = payload;
     const executeMsg = `{ "purchase_pack": {} }`;
     const result = await executeContract(connectedWallet, fantasyData.contract_addr, executeMsg);
     return result
   } catch (err) {
-    return thunkAPI.rejectWithValue({});
+    return thunkAPI.rejectWithValue({err});
   }
 });
 
@@ -26,7 +26,7 @@ export const getLastRound = createAsyncThunk('getLastRound', async (payload, thu
     const result = await queryContract(contractAddr, queryMsg);
     return result
   } catch (err) {
-    return thunkAPI.rejectWithValue({});
+    return thunkAPI.rejectWithValue({err});
   }
 });
 
@@ -39,7 +39,7 @@ export const getRoundData = createAsyncThunk('getRoundData', async (payload, thu
     const result = await queryContract(contractAddr, queryMsg);
     return result
   } catch (err) {
-    return thunkAPI.rejectWithValue({});
+    return thunkAPI.rejectWithValue({err});
   }
 });
 
