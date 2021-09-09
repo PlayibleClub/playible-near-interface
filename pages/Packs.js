@@ -157,17 +157,18 @@ export default function Home() {
 
                                 <div>
 
-                                    <div className="rounded-md bg-indigo-light ml-1 h-11 w-9/12 flex justify-center">
-                                        <div className="ml-1 mt-2">
-                                            <form onSubmit={handleSubmit(onSubmit)}>
-                                                <input {...register("search")} className="text-xl ml-3 appearance-none bg-indigo-light focus:outline-none w-10/12" placeholder="Search..." />
-                                                <button className="w-1/12">
-                                                    <input type="image" src={searchIcon} className="object-none" />
-                                                </button>
-                                            </form>
+                                    <div className="w-full flex justify-center">
+                                        <div className="rounded-md bg-indigo-light ml-1 h-11 w-9/12 flex justify-center">
+                                            <div className="mt-2">
+                                                <form onSubmit={handleSubmit(onSubmit)}>
+                                                    <input {...register("search")} className="text-xl ml-3 appearance-none bg-indigo-light focus:outline-none w-10/12" placeholder="Search..." />
+                                                    <button className="w-1/12">
+                                                        <input type="image" src={searchIcon} className="object-none" />
+                                                    </button>
+                                                </form>
+                                            </div>
                                         </div>
                                     </div>
-
 
                                     {
                                         packList.map(function (pack, i) {

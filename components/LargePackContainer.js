@@ -13,8 +13,8 @@ const LargePackContainer = (props) => {
       <div className="flex w-full justify-center">
         <div className=" flex flex-col w-4/5">
           <div className="flex flex-row justify-between w-full">
-            <div className="  pb-3 text-sm font-medium ">{PackName}</div>
-            <div>{CoinValue} UST</div>
+            <div className="  pb-3  ">{PackName}</div>
+            <div>{CoinValue}</div>
           </div>
           <div className="  text-md font-light">Release {releaseValue}</div>
           <div className="  text-xs font-bold">
