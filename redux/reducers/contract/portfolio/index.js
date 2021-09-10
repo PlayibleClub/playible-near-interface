@@ -2,9 +2,12 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { executeContract, queryContract } from '../../../../utils/terra';
 import { fantasyData, tokenData } from '../../../../data';
+import * as statusCode from '../../../../data/constants/status';
 
 const initialState = {
-  tokenList: []
+  tokenList: [],
+  status: statusCode.PENDING,
+  action: ''
 }
 
 export const getPortfolio = createAsyncThunk('getPortfolio', async (payload, thunkAPI) => {
@@ -18,9 +21,25 @@ export const getPortfolio = createAsyncThunk('getPortfolio', async (payload, thu
         }
       }`;
     const result = await queryContract(contractAddr, queryMsg);
-    return result
+    console.log(result)
+    if(result.length === 0){
+      return thunkAPI.rejectWithValue({
+        response: "This wallet does not hold any athlete tokens yet",
+        status: statusCode.WARNING
+      });
+    }
+    else {
+      return {
+        response: result,
+        status: statusCode.SUCCESS
+      }
+    }
+
   } catch (err) {
-    return thunkAPI.rejectWithValue({err});
+    return thunkAPI.rejectWithValue({
+      response: err,
+      status: statusCode.ERROR
+    });
   }
 });
 
@@ -51,17 +70,23 @@ const packSlice = createSlice({
     [getPortfolio.pending]: (state) => {
       return {
         ...state,
+        status: statusCode.PENDING,
+        action: actionType.GET
       };
     },
     [getPortfolio.fulfilled]: (state, action) => {
       return {
         ...state,
-        tokenList: processPortfolioData(action.payload)
+        tokenList: processPortfolioData(action.payload.response),
+        status: action.payload.status,
+        action: actionType.GET
       };
     },
-    [getPortfolio.rejected]: (state) => {
+    [getPortfolio.rejected]: (state, action) => {
       return {
         ...state,
+        status: action.payload.status,
+        action: actionType.GET
       };
     },
   },

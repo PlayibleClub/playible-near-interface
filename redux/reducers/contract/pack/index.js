@@ -2,10 +2,15 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { executeContract, queryContract } from '../../../../utils/terra';
 import { fantasyData, tokenData } from '../../../../data';
+import * as statusCode from '../../../../data/constants/status';
+import * as actionType from '../../../../data/constants/actions';
 
 const initialState = {
   latestRound: null,
-  drawList: []
+  drawList: [],
+  txInfo: null,
+  status: statusCode.PENDING,
+  action: ''
 }
 
 export const purchasePack = createAsyncThunk('purchasePack', async (payload, thunkAPI) => {
@@ -13,9 +18,15 @@ export const purchasePack = createAsyncThunk('purchasePack', async (payload, thu
     const { connectedWallet } = payload;
     const executeMsg = `{ "purchase_pack": {} }`;
     const result = await executeContract(connectedWallet, fantasyData.contract_addr, executeMsg);
-    return result
+    return {
+      response: result,
+      status: statusCode.SUCCESS
+    }
   } catch (err) {
-    return thunkAPI.rejectWithValue({err});
+    return thunkAPI.rejectWithValue({
+      response: err,
+      status: statusCode.ERROR
+    });
   }
 });
 
@@ -24,9 +35,15 @@ export const getLastRound = createAsyncThunk('getLastRound', async (payload, thu
     const contractAddr = fantasyData.contract_addr;
     const queryMsg = `{"last_round":{}}`;
     const result = await queryContract(contractAddr, queryMsg);
-    return result
+    return {
+      response: result,
+      status: statusCode.SUCCESS
+    }
   } catch (err) {
-    return thunkAPI.rejectWithValue({err});
+    return thunkAPI.rejectWithValue({
+      response: err,
+      status: statusCode.ERROR
+    });
   }
 });
 
@@ -37,7 +54,10 @@ export const getRoundData = createAsyncThunk('getRoundData', async (payload, thu
     const contractAddr = fantasyData.contract_addr;
     const queryMsg = `{"purchased_pack":{ "last_round": "${lastRound}" }}`;
     const result = await queryContract(contractAddr, queryMsg);
-    return result
+    return {
+      response: result,
+      status: statusCode.SUCCESS
+    }
   } catch (err) {
     return thunkAPI.rejectWithValue({err});
   }
@@ -69,50 +89,68 @@ const packSlice = createSlice({
     [purchasePack.pending]: (state) => {
       return {
         ...state,
+        status: statusCode.PENDING,
+        action: actionType.EXECUTE
       };
     },
     [purchasePack.fulfilled]: (state, action) => {
       return {
         ...state,
+        txInfo: action.payload.response,
+        status: action.payload.status,
+        action: actionType.EXECUTE
       };
     },
-    [purchasePack.rejected]: (state) => {
+    [purchasePack.rejected]: (state, action) => {
       return {
         ...state,
+        status: action.payload.status,
+        action: actionType.EXECUTE
       };
     },
     [getLastRound.pending]: (state) => {
       return {
         ...state,
+        status: statusCode.PENDING,
+        action: actionType.GET
       };
     },
     [getLastRound.fulfilled]: (state, action) => {
       return {
         ...state,
-        latestRound: action.payload
+        latestRound: action.payload.response,
+        status: action.payload.status,
+        action: actionType.GET
       };
     },
-    [getLastRound.rejected]: (state) => {
+    [getLastRound.rejected]: (state, action) => {
       return {
         ...state,
+        status: action.payload.status,
+        action: actionType.GET
       };
     },
     [getRoundData.pending]: (state) => {
       return {
         ...state,
+        status: statusCode.PENDING,
+        action: actionType.GET
       };
     },
     [getRoundData.fulfilled]: (state, action) => {
       return {
         ...state,
-        drawList: processRoundData(action.payload)
-        //drawList: processRoundData(["0", "1", "2", "3", "4"]) //test data, syntax is not final
+        drawList: processRoundData(action.payload.response),
+        status: action.payload.status,
+        action: actionType.GET
         
       };
     },
-    [getRoundData.rejected]: (state) => {
+    [getRoundData.rejected]: (state, action) => {
       return {
         ...state,
+        status: action.payload.status,
+        action: actionType.GET
       };
     },
   },

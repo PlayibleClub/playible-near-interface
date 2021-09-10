@@ -1,3 +1,5 @@
+import * as statusCode from '../../data/constants/status';
+
 export const checkResponseValidity = (response) => {
     if (response.status >= 300) {
       response.statusText = 'failed. An error has occurred';
@@ -19,7 +21,7 @@ export const checkResponseValidity = (response) => {
 export const handleRequestResponse = (responseList, onSuccess, onFail) => {
   let hasFailed = false;
   responseList.forEach((response) => {
-    if (Object.prototype.hasOwnProperty.call(response, 'error') && !hasFailed) {
+    if (response?.payload?.status === statusCode.ERROR ?? true) {
       hasFailed = true;
       if (typeof onFail === 'function') {
         onFail();
