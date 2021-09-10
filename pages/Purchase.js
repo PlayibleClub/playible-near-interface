@@ -9,7 +9,7 @@ import TitledContainer from '../components/TitledContainer';
 import { useDispatch, useSelector } from 'react-redux';
 import { getLastRound, getRoundData, purchasePack } from '../redux/reducers/contract/pack';
 import { useConnectedWallet } from '@terra-money/wallet-provider';
-import SuccessDialog from '../components/dialogs/SuccessDialog';
+import BaseDialog from '../components/dialogs/BaseDialog';
 import * as statusCode from '../data/constants/status'
 import * as actionType from '../data/constants/actions'
 
@@ -21,14 +21,21 @@ const Purchase = () => {
     const { txInfo, status, action } = useSelector((state) => state.contract.pack);
 
     const [isClosed, setClosed] = useState(true)
+    const [displayModal, setDisplayModal] = useState(false)
+    const [modalMessage, setModalMessage] = useState("")
 
     useEffect(() => {
         if(status === statusCode.SUCCESS && action === actionType.EXECUTE){
-            console.log("SUCCESS")
+            setDisplayModal(false)
             router.push("/TokenDrawPage");
         }
+        else if (status === statusCode.PENDING && action === actionType.EXECUTE) {
+            setModalMessage("PENDING")
+            setDisplayModal(true)
+        }
         else if (status === statusCode.ERROR && action === actionType.EXECUTE) {
-            console.log("ERROR")
+            setModalMessage("ERROR")
+            setDisplayModal(true)
         }
     }, [connectedWallet, status, action])
 
@@ -56,7 +63,11 @@ const Purchase = () => {
                     </div>
                 }
                 <HeaderBase isClosed={isClosed} setClosed={setClosed}/>
-
+                <BaseDialog 
+                    title={"Purchase"}
+                    visible={displayModal}
+                    children={modalMessage}
+                />
                 <Main color="indigo-dark overflow-y-scroll">
                     <div className="flex flex-col overflow-y-auto overflow-x-hidden">
                         <TitledContainer title="PURCHASE PACK">
