@@ -3,12 +3,14 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { executeContract, queryContract } from '../../../../utils/terra';
 import { fantasyData, tokenData } from '../../../../data';
 import * as statusCode from '../../../../data/constants/status';
+import * as statusMessage from '../../../../data/constants/statusMessage';
 import * as actionType from '../../../../data/constants/actions';
 
 const initialState = {
   latestRound: null,
   drawList: [],
   txInfo: null,
+  message: '',
   status: statusCode.PENDING,
   action: ''
 }
@@ -90,7 +92,8 @@ const packSlice = createSlice({
       return {
         ...state,
         status: statusCode.PENDING,
-        action: actionType.EXECUTE
+        action: actionType.EXECUTE,
+        message: statusMessage.EXECUTE_MESSAGE_PENDING
       };
     },
     [purchasePack.fulfilled]: (state, action) => {
@@ -98,14 +101,16 @@ const packSlice = createSlice({
         ...state,
         txInfo: action.payload.response,
         status: action.payload.status,
-        action: actionType.EXECUTE
+        action: actionType.EXECUTE,
+        message: statusMessage.EXECUTE_MESSAGE_SUCCESS
       };
     },
     [purchasePack.rejected]: (state, action) => {
       return {
         ...state,
         status: action.payload.status,
-        action: actionType.EXECUTE
+        action: actionType.EXECUTE,
+        message: action.payload.response
       };
     },
     [getLastRound.pending]: (state) => {

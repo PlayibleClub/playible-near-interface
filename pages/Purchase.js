@@ -18,7 +18,7 @@ const Purchase = () => {
     const dispatch = useDispatch();
     const connectedWallet = useConnectedWallet();
 
-    const { txInfo, status, action } = useSelector((state) => state.contract.pack);
+    const { txInfo, status, message, action } = useSelector((state) => state.contract.pack);
 
     const [isClosed, setClosed] = useState(true)
     const [displayModal, setDisplayModal] = useState(false)
@@ -27,17 +27,20 @@ const Purchase = () => {
     useEffect(() => {
         if(status === statusCode.SUCCESS && action === actionType.EXECUTE){
             setDisplayModal(false)
+            setModalMessage(message)
             router.push("/TokenDrawPage");
         }
         else if (status === statusCode.PENDING && action === actionType.EXECUTE) {
             setModalMessage("PENDING")
+            setModalMessage(message)
             setDisplayModal(true)
         }
         else if (status === statusCode.ERROR && action === actionType.EXECUTE) {
             setModalMessage("ERROR")
+            setModalMessage(message)
             setDisplayModal(true)
         }
-    }, [connectedWallet, status, action])
+    }, [connectedWallet, status, message, action])
 
     /*const executePurchasePack = async () => {
         dispatch(purchasePack({connectedWallet})).then((response1) => {
@@ -51,6 +54,10 @@ const Purchase = () => {
             handleRequestResponse([response1], onSuccess, () => {})
         })
     }*/
+
+    const closeModal = () => {
+        setDisplayModal(false)
+    }
 
 
     return (
@@ -67,6 +74,7 @@ const Purchase = () => {
                     title={"Purchase"}
                     visible={displayModal}
                     children={modalMessage}
+                    closeModal={closeModal}
                 />
                 <Main color="indigo-dark overflow-y-scroll">
                     <div className="flex flex-col overflow-y-auto overflow-x-hidden">
