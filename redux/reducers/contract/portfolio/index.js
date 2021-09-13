@@ -3,6 +3,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { executeContract, queryContract } from '../../../../utils/terra';
 import { fantasyData, tokenData } from '../../../../data';
 import * as statusCode from '../../../../data/constants/status';
+import * as actionType from '../../../../data/constants/actions';
 
 const initialState = {
   tokenList: [],
