@@ -42,19 +42,6 @@ const Purchase = () => {
         }
     }, [connectedWallet, status, message, action])
 
-    /*const executePurchasePack = async () => {
-        dispatch(purchasePack({connectedWallet})).then((response1) => {
-            const onSuccess = () => {
-                dispatch(getLastRound()).then((response2) => {
-                    dispatch(getRoundData({lastRound: response2.payload})).then(() => {
-                        router.push("/TokenDrawPage");
-                    });
-                });
-            }
-            handleRequestResponse([response1], onSuccess, () => {})
-        })
-    }*/
-
     const closeModal = () => {
         setDisplayModal(false)
     }
