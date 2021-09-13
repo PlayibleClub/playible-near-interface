@@ -26,6 +26,7 @@ module.exports = {
                 black: '#000000',
                 white: '#FFFFFF',
                 red: '#922020',
+                green: '#61CD73',
 
             },
             white: {

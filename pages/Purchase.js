@@ -71,7 +71,7 @@ const Purchase = () => {
                                     <PackComponent type="PremiumRelease3"/>
                                 </div>
                                 <div className=''>
-                                <button onClick={() => dispatch(purchasePack({connectedWallet}))} className="bg-indigo-buttonblue w-full h-12 text-center rounded-md text-lg">
+                                <button onClick={() => dispatch(purchasePack({connectedWallet}))} className="bg-indigo-buttonblue w-full h-12 text-center rounded-md text-lg mt-8">
                                     <div className="pt-2.5">
                                         BUY PACK
                                     </div>
