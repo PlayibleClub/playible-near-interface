@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
 import PortfolioContainer from '../components/PortfolioContainer'
 import Main from '../components/Main';
 import HeaderBase from '../components/HeaderBase';
@@ -19,7 +20,7 @@ const player =
 
 const playerdata = [
     {
-        key: 'Last 7 days',
+        key: 'sevendays',
         points: {
             score: 35,
             pos: "3rd",
@@ -42,10 +43,10 @@ const playerdata = [
         },
     },
     {
-        key: 'Last month',
+        key: 'month',
         points: {
             score: 50,
-            pointspos: "2nd",
+            pos: "2nd",
         },
         rebounds: {
             score: 9,
@@ -64,12 +65,39 @@ const playerdata = [
             pos: "7th",
         },
     },
+    {
+        key: 'year',
+        points: {
+            score: 86,
+            pos: "1st",
+        },
+        rebounds: {
+            score: 19,
+            pos: "37th",
+        },
+        assists: {
+            score: 68,
+            pos: "16th",
+        },
+        blocks: {
+            score: 32,
+            pos: "5th",
+        },
+        steals: {
+            score: 23,
+            pos: "3rd",
+        },
+    },
 ]
 
 const PlayerDetails = () => {
+    const { handleSubmit } = useForm()
     const [isClosed, setClosed] = useState(true)
-    const [filter, handleFilter] = useState("Last 7 days")
-    const list = playerdata[0]
+    const [statfilter, setFilter] = useState("sevendays")
+
+    const handleFilter = (event) => {
+        setFilter(event.target.value)
+    }
 
     return(
         <>
@@ -153,18 +181,22 @@ const PlayerDetails = () => {
                                 <div className="flex flex-col justify-center self-center">
                                     <div className="rounded-md bg-indigo-light mr-1 h-11 w-80 flex justify-between self-center font-thin md:w-80 mt-6">
                                         <div className="text-lg ml-4 mt-2">
-                                            {/* <select className='filter-select' onChange={handleFilter()}>
-                                                <option value="Last 7 days">Last 7 days</option>
-                                                <option value="Last month">Last month</option>
-                                                <option value="Last year">Last year</option>
-                                            </select> */}
-                                            Last 7 days
+                                            <form onSubmit={handleSubmit(handleFilter)}>
+                                                <select value={statfilter} className='filter-select bg-indigo-light' onChange={handleFilter}>
+                                                    <option name="sevendays" value="sevendays">Last 7 days</option>
+                                                    <option name="month" value="month">Last month</option>
+                                                    <option name="year" value="year">Last year</option>
+                                                </select>
+                                            </form>
                                         </div>
                                         <img src={filterIcon} className="object-none w-4 mr-4" />
                                     </div>
 
                                     <div className="mt-8 mb-6 flex justify-center">
-                                        <PlayerStats player={list}/>
+                                        {playerdata.map(function(data, i){
+                                            if(statfilter === data.key)
+                                                return <PlayerStats player={data} key={i}/>
+                                        })}
                                     </div>
                                 </div>
                             </PortfolioContainer>

@@ -37,7 +37,7 @@ PortfolioContainer.propTypes = {
   size: PropTypes.string,
   align: PropTypes.string,
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
-  stats: PropTypes.string,
+  stats: PropTypes.number,
 };
 
 PortfolioContainer.defaultProps = {

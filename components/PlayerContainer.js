@@ -19,7 +19,7 @@ const PlayerContainer = (props) =>{
 }
 
 PlayerContainer.propTypes = {
-    playerID: PropTypes.string.isRequired,
+    playerID: PropTypes.number.isRequired,
     children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
   };
 

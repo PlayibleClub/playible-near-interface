@@ -12,7 +12,7 @@ const PlayerStats = (props) =>{
                 <div className="w-36 font-thin">
                     <div>POINTS</div>
                 </div>
-                <div className="mr-2 w-24">
+                <div className=" w-24">
                     <div>{player.points.score}</div> 
                 </div>
                 <div className="font-thin">
@@ -68,7 +68,7 @@ const PlayerStats = (props) =>{
 }
 
 PlayerStats.propTypes = {
-    player: PropTypes.string.isRequired,
+    player: PropTypes.object.isRequired,
     children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
   };
 
