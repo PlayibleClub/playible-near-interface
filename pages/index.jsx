@@ -1,6 +1,7 @@
 import { useWallet, WalletStatus } from '@terra-money/wallet-provider';
 // import Image from 'next/image';
-import * as React from 'react';
+
+import React, { useEffect, useState } from 'react'
 import Header from '../components/Header';
 import HeaderBase from '../components/HeaderBase';
 import HeaderBack from '../components/HeaderBack';
@@ -38,7 +39,9 @@ export default function Home() {
       connect(availableConnectTypes[1]);
     }
   };
-  const animals = ['Dog', 'Bird', 'Cat', 'Mouse', 'Horse'];
+
+
+
 
 
 
@@ -46,134 +49,170 @@ export default function Home() {
   const [isClosed, setClosed] = React.useState(true)
 
 
+  const [isNarrowScreen, setIsNarrowScreen] = useState(false);
 
+  useEffect(() => {
+    // set initial value
+    const mediaWatcher = window.matchMedia("(max-width: 500px)")
 
 
+    //watch for updates
+    function updateIsNarrowScreen(e) {
+      setIsNarrowScreen(e.matches);
+    }
+    mediaWatcher.addEventListener('change', updateIsNarrowScreen)
 
-  return (
-    <>
+    // clean up after ourselves
+    return function cleanup() {
+      mediaWatcher.removeEventListener('change', updateIsNarrowScreen)
+    }
+  }
 
 
+  )
+  if (isNarrowScreen) {
 
 
 
-      <div className={`font-montserrat h-screen relative ${isClosed ? "" : "overflow-y-hidden"}`}>
 
+    return (
+      <>
 
 
 
 
 
+        <div className={`font-montserrat h-screen relative ${isClosed ? "" : "overflow-y-hidden"}`}>
 
-        {isClosed ? null : <div className="flex flex-row w-full absolute z-50 top-0 left-0 ">
-          <Navbar> </Navbar>
-          <div className="w-2/6 h-screen" onMouseDown={() => setClosed(true)}></div>
-        </div>}
 
 
-        <div className="flex flex-col w-full ">
 
 
 
-          <HeaderBase isClosed={isClosed} setClosed={setClosed} ></HeaderBase>
 
+          {isClosed ? null : <div className="flex flex-row w-full absolute z-50 top-0 left-0 ">
+            <Navbar> </Navbar>
+            <div className="w-2/6 h-screen" onMouseDown={() => setClosed(true)}></div>
+          </div>}
 
 
+          <div className="flex flex-col w-full ">
 
 
-          <Main color="indigo-dark  overflow-y-scroll">
 
+            <HeaderBase isClosed={isClosed} setClosed={setClosed} ></HeaderBase>
 
 
 
-            <div className="flex flex-col  w-full h-full overflow-x-hidden">
 
-              <TitledContainer title="MARKETPLACE">
 
-                <HorizontalScrollContainer>
-                  <HorizontalContainer> <AthleteTokenContainer AthleteName="STEPHEN CURRY" CoinValue="54" /></HorizontalContainer>
-                  <HorizontalContainer>  <AthleteTokenContainer AthleteName="LEBRON JAMES" CoinValue="43" /></HorizontalContainer>
-                  <HorizontalContainer>  <AthleteTokenContainer AthleteName="STEPHEN CURRY" CoinValue="54" /></HorizontalContainer>
-                  <HorizontalContainer>  <AthleteTokenContainer AthleteName="STEPHEN CURRY" CoinValue="54" /></HorizontalContainer>
-                </HorizontalScrollContainer>
-              </TitledContainer>
+            <Main color="indigo-dark  overflow-y-scroll">
 
 
 
 
+              <div className="flex flex-col  w-full h-full overflow-x-hidden">
 
+                <TitledContainer title="MARKETPLACE">
 
+                  <HorizontalScrollContainer>
+                    <HorizontalContainer> <AthleteTokenContainer AthleteName="STEPHEN CURRY" CoinValue="54" /></HorizontalContainer>
+                    <HorizontalContainer>  <AthleteTokenContainer AthleteName="LEBRON JAMES" CoinValue="43" /></HorizontalContainer>
+                    <HorizontalContainer>  <AthleteTokenContainer AthleteName="STEPHEN CURRY" CoinValue="54" /></HorizontalContainer>
+                    <HorizontalContainer>  <AthleteTokenContainer AthleteName="STEPHEN CURRY" CoinValue="54" /></HorizontalContainer>
+                  </HorizontalScrollContainer>
+                </TitledContainer>
 
-              <TitledContainer title="PLAY">
 
-                <div className="p-10 w-full grid gap-x-0 gap-y-6 grid-cols-2 self-center">
-                  <div className="rounded-md  flex justify-center"><img className="rounded-md" src="images/daily.png" alt="Italian Trulli" /></div>
-                  <div className="rounded-md  flex justify-center"><img className="rounded-md" src="images/weekly.png" alt="Italian Trulli" /></div>
-                  <div className="rounded-md  flex justify-center"><img className="rounded-md" src="images/seasonal.png" alt="Italian Trulli" /></div>
 
 
-                </div>
 
-              </TitledContainer>
 
 
+                <TitledContainer title="PLAY">
 
+                  <div className="p-10 w-full grid gap-x-0 gap-y-6 grid-cols-2 self-center">
+                    <div className="rounded-md  flex justify-center"><img className="rounded-md" src="images/daily.png" alt="Italian Trulli" /></div>
+                    <div className="rounded-md  flex justify-center"><img className="rounded-md" src="images/weekly.png" alt="Italian Trulli" /></div>
+                    <div className="rounded-md  flex justify-center"><img className="rounded-md" src="images/seasonal.png" alt="Italian Trulli" /></div>
 
 
+                  </div>
 
+                </TitledContainer>
 
 
 
 
 
 
-              <TitledContainer className=" flex " title="GAME RESULTS">
 
-                <GameresultsComponent></GameresultsComponent>
 
-              </TitledContainer>
 
 
 
 
+                <TitledContainer className=" flex " title="GAME RESULTS">
 
+                  <GameresultsComponent></GameresultsComponent>
 
+                </TitledContainer>
 
 
 
-              <TitledContainer align="justify-start" className=" flex w-full justify-start" title="TOP PERFORMERS">
-                <TokenGridCol2>
-                  <PerformerContainer AthleteName="STEPHEN CURRY" CoinValue="86.3" />
-                  <PerformerContainer AthleteName="LEBRON JAMES" CoinValue="96.0" />
-                  <PerformerContainer AthleteName="DEVIN BOOKER" CoinValue="76.8" />
-                  <PerformerContainer AthleteName="ARMONI BROOKS" CoinValue="83.0" />
-                </TokenGridCol2>
-              </TitledContainer>
 
 
 
 
 
 
+                <TitledContainer align="justify-start" className=" flex w-full justify-start" title="TOP PERFORMERS">
+                  <TokenGridCol2>
+                    <PerformerContainer AthleteName="STEPHEN CURRY" CoinValue="86.3" />
+                    <PerformerContainer AthleteName="LEBRON JAMES" CoinValue="96.0" />
+                    <PerformerContainer AthleteName="DEVIN BOOKER" CoinValue="76.8" />
+                    <PerformerContainer AthleteName="ARMONI BROOKS" CoinValue="83.0" />
+                  </TokenGridCol2>
+                </TitledContainer>
 
 
-              <TitledContainer title="PACKS">
-                <HorizontalScrollContainer>
-                  <HorizontalContainer> <PackContainer AthleteName="PREMIUM PACK" CoinValue="54" releaseValue="2" /></HorizontalContainer>
-                  <HorizontalContainer>  <PackContainer AthleteName="PREMIUM PACK" CoinValue="85" releaseValue="3" /></HorizontalContainer>
-                  <HorizontalContainer>  <PackContainer AthleteName="PREMIUM PACK" CoinValue="54" releaseValue="5" /></HorizontalContainer>
-                  <HorizontalContainer>  <PackContainer AthleteName="PREMIUM PACK" CoinValue="54" releaseValue="10" /></HorizontalContainer>
-                </HorizontalScrollContainer>
-              </TitledContainer>
 
 
-            </div>
 
-          </Main>
+
+
+
+                <TitledContainer title="PACKS">
+                  <HorizontalScrollContainer>
+                    <HorizontalContainer> <PackContainer AthleteName="PREMIUM PACK" CoinValue="54" releaseValue="2" /></HorizontalContainer>
+                    <HorizontalContainer>  <PackContainer AthleteName="PREMIUM PACK" CoinValue="85" releaseValue="3" /></HorizontalContainer>
+                    <HorizontalContainer>  <PackContainer AthleteName="PREMIUM PACK" CoinValue="54" releaseValue="5" /></HorizontalContainer>
+                    <HorizontalContainer>  <PackContainer AthleteName="PREMIUM PACK" CoinValue="54" releaseValue="10" /></HorizontalContainer>
+                  </HorizontalScrollContainer>
+                </TitledContainer>
+
+
+              </div>
+
+            </Main>
+
+          </div>
 
         </div>
+      </>
+    );
 
-      </div>
-    </>
-  );
+
+
+  } else {
+    return (<div>This is what you see on desktop!</div>);
+  }
+
+
 }
+
+
+
+
+
+
