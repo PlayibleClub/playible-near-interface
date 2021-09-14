@@ -36,7 +36,7 @@ Button.propTypes = {
 
 Button.defaultProps = {
   children: '',
-  color: '',
+  color: 'white-light',
   saturation: '500',
   textColor: 'gray',
   textSaturation: '100',

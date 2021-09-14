@@ -10,7 +10,7 @@ import Navbar from '../components/Navbar';
 import Main from '../components/Main';
 import TitledContainer from '../components/TitledContainer';
 import RoundedContainer from '../components/RoundedContainer';
-import AthleteGrid from '../components/AthleteGrid';
+import DesktopDashboard from '../components/DesktopDashboard';
 import TokenGridCol2 from '../components/TokenGridCol2';
 // import Roundedinput from '../components/Roundedinput';
 import AthleteContainer from '../components/AthleteContainer';
@@ -205,7 +205,7 @@ export default function Home() {
 
 
   } else {
-    return (<div>This is what you see on desktop!</div>);
+    return (<DesktopDashboard></DesktopDashboard>);
   }
 
 
