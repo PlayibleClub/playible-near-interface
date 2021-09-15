@@ -17,6 +17,8 @@ import AthleteGrid from './AthleteGrid';
 import AthleteContainer from './AthleteContainer';
 import PerformerContainer from './PerformerContainer';
 import GameResultContainer from './GameResultContainer';
+import GameresultsComponent from '../components/GameresultsComponent';
+
 import RowContainer from './RowContainer';
 import HorizontalScrollContainer from './HorizontalScrollContainer';
 import HorizontalContainer from './HorizontalContainer';
@@ -94,9 +96,53 @@ export default function Home() {
 
                 <DesktopNavbar> </DesktopNavbar>
 
-                <DesktopHeaderBase></DesktopHeaderBase>
+                <div className="w-full flex flex-col">
+                    <DesktopHeaderBase></DesktopHeaderBase>
+
+                    <div className="flex flex-row h-full w-full">
+                        <div className="flex flex-col h-full w-1/2">
+                            <div className="h-1/2">
+                                <TitledContainer title="MARKETPLACE">
+
+                                    <GameresultsComponent></GameresultsComponent>
+                                </TitledContainer>
+                            </div>
+                            <div className="h-1/2">
+                                <TitledContainer title="MARKETPLACE">
+
+                                    <GameresultsComponent></GameresultsComponent>
+                                </TitledContainer>
+                            </div>
+
+                        </div>
 
 
+                        <div className="flex flex-col h-full w-1/2">
+                            <div className="h-1/2">
+                                <TitledContainer title="MARKETPLACE">
+
+                                    <GameresultsComponent></GameresultsComponent>
+                                </TitledContainer>
+                            </div>
+                            <div className="h-1/2">
+                                <TitledContainer title="MARKETPLACE">
+
+                                    <GameresultsComponent></GameresultsComponent>
+                                </TitledContainer>
+                            </div>
+
+                        </div>
+
+
+
+
+
+                    </div>
+
+
+
+
+                </div>
 
 
 
