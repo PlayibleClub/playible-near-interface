@@ -15,7 +15,7 @@ const Button = (props) => {
     <button
       onClick={onClick}
       data-test="regular-button"
-      className={`bg-${color} text-${textColor} ${rounded} ${size}  focus:bg-indigo-light ring-offset-9 font-medium px-4 p-1 m-1`}
+      className={`bg-${color} text-${textColor} ${rounded} ${size}  focus:bg-indigo-light ring-offset-9 font-medium px-4 p-1 `}
       {...other}
     >
       {children}
