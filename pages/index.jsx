@@ -25,6 +25,7 @@ import PackContainer from '../components/PackContainer';
 // import weekly from '../public/weekly.png';
 // import seasonal from '../public/seasonal.png';
 // import wallet from '../public/wallet.png';
+import filterIcon from '../public/images/filter.png'
 import AthleteTokenContainer from '../components/AthleteTokenContainer';
 
 const marketplaceList = [
@@ -49,19 +50,23 @@ const marketplaceList = [
 const topPerformerList = [
   {
     name: "STEPHEN CURRY",
-    value: "86.3",
+    avgscore: "86.3",
+    id: "320",
   },
   {
     name: "LEBRON JAMES",
-    value: "96.0",
+    avgscore: "96.0",
+    id: "25",
   },
   {
     name: "DEVIN BOOKER",
-    value: "76.8",
+    avgscore: "76.8",
+    id: "16450",
   },
   {
     name: "ARMONI BROOKS",
-    value: "83.0",
+    avgscore: "83.0",
+    id: "21300",
   },
 ]
 
@@ -159,11 +164,29 @@ export default function Home() {
                   <GameresultsComponent/>
                 </TitledContainer>
 
-                <TitledContainer align="justify-start" className=" flex w-full justify-start" title="TOP PERFORMERS">
+                <TitledContainer align="justify-start" className="flex flex-col w-full justify-start" title="TOP PERFORMERS">
+                  {/* <div className="flex flex-col justify-center self-center">
+                    <div className="rounded-md bg-indigo-light mr-1 h-11 w-80 flex justify-between self-center font-thin md:w-80 mt-6">
+                        <div className="text-lg ml-4 mt-2">
+                            <form onSubmit={handleSubmit(handleFilter)}>
+                                <select value={statfilter} className='filter-select bg-indigo-light' onChange={handleFilter}>
+                                <select className='filter-select bg-indigo-light' >
+                                    <option name="sevendays" value="sevendays">Last 7 days</option>
+                                    <option name="month" value="month">Last month</option>
+                                    <option name="year" value="year">Last year</option>
+                                </select>
+                            </form>
+                        </div>
+                        <img src={filterIcon} className="object-none w-4 mr-4" />
+                    </div>
+                  </div> */}
+
                   <TokenGridCol2>
                     {topPerformerList.map(function(data, i){
                       return (
-                        <PerformerContainer AthleteName={data.name} CoinValue={data.value} />
+                        <div className="mt-2 mb-4">
+                          <PerformerContainer AthleteName={data.name} CoinValue={data.value} id={data.id} AvgScore={data.avgscore}/>
+                        </div>
                       )
                     })}
                   </TokenGridCol2>
@@ -173,7 +196,7 @@ export default function Home() {
                   <HorizontalScrollContainer>
                     {packList.map(function(data, i){
                       return(
-                        <HorizontalContainer><PackContainer AthleteName={data.name} CoinValue={data.value} releaseValue={data.release} /></HorizontalContainer>
+                        <HorizontalContainer><PackContainer AthleteName={data.name} releaseValue={data.release} CoinValue={data.value}/></HorizontalContainer>
                       )
                     })}
                   </HorizontalScrollContainer>

@@ -50,6 +50,10 @@ module.exports = {
             '135': '135deg',
             '180': '180deg',
             '270': '270deg',
+        },
+        screens: {
+            'iphone5': '320px',
+            'iphoneX' : '375px',
         }
     },
     variants: {
