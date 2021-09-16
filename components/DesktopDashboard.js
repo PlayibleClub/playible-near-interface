@@ -149,8 +149,39 @@ export default function Home() {
                         <div className="flex flex-col h-full w-1/2">
                             <div className="h-1/2">
                                 <TitledContainer title="DASHBOARD">
-                                    <div className="w-11/12">
-                                        <RoundedContainer>contents</RoundedContainer>
+                                    <div className="w-11/12 h-4/5">
+                                        <RoundedContainer className="">
+
+                                            <div className="flex flex-row">
+                                                <img className="h-40 w-40 mt-5 mb-5" src="images/PieChart.png" alt="Img" />
+
+
+
+
+                                                <div className="h-2/4">
+                                                    <div data-test="TokenGridCol2" className={` grid  gap-x-1 gap-y-0 grid-cols-2 `}>
+                                                        <div className="flex flex-row">
+                                                            <img className="h-3 w-3 mr-2" src="images/Ellipse.png" alt="Img" />
+                                                            <div className="mb-20">Lakers</div>
+                                                        </div>
+
+                                                        <div className="flex flex-row">
+                                                            <img className="h-3 w-3 mr-2" src="images/Ellipse.png" alt="Img" />
+                                                            <div className="mb-20">Rockets</div>
+                                                        </div>
+                                                        <div className="flex flex-row">
+                                                            <img className="h-3 w-3 mr-2" src="images/Ellipse.png" alt="Img" />
+                                                            <div className="mb-20">Warriors</div>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </RoundedContainer>
+
+
+
                                     </div>
                                 </TitledContainer>
                             </div>
