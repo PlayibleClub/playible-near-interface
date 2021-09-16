@@ -12,12 +12,13 @@ import DesktopNavbar from './DesktopNavbar';
 import Main from './Main';
 import TitledContainer from './TitledContainer';
 import RoundedContainer from './RoundedContainer';
-import AthleteGrid from './AthleteGrid';
+import TokenGridCol2 from './TokenGridCol2';
 // import Roundedinput from '../components/Roundedinput';
 import AthleteContainer from './AthleteContainer';
 import PerformerContainer from './PerformerContainer';
 import GameResultContainer from './GameResultContainer';
 import GameresultsComponent from '../components/GameresultsComponent';
+
 
 import RowContainer from './RowContainer';
 import HorizontalScrollContainer from './HorizontalScrollContainer';
@@ -73,7 +74,52 @@ export default function Home() {
 
 
 
-
+    const playerList = [
+        {
+            name: 'STEPHEN CURRY',
+            team: 'Golden State Warriors',
+            id: '320',
+            averageScore: '40',
+            cost: '420 UST',
+            jersey: '30',
+            positions: ['PG', 'SG'],
+            grad1: 'indigo-blue',
+            grad2: 'indigo-bluegrad',
+        },
+        {
+            name: 'LEBRON JAMES',
+            team: 'Los Angeles Lakers',
+            id: '25',
+            averageScore: '25',
+            cost: '840 UST',
+            jersey: '23',
+            positions: ['PG', 'SG'],
+            grad1: 'indigo-purple',
+            grad2: 'indigo-purplegrad',
+        },
+        {
+            name: 'DEVIN BOOKER',
+            team: 'Phoenix Suns',
+            id: '16450',
+            averageScore: '27',
+            cost: '21 UST',
+            jersey: '01',
+            positions: ['SF', 'C'],
+            grad1: 'indigo-darkblue',
+            grad2: 'indigo-darkbluegrad',
+        },
+        {
+            name: 'KEVIN DURANT',
+            team: 'Brooklyn Nets',
+            id: '12300',
+            averageScore: '45',
+            cost: '180 UST',
+            jersey: '07',
+            positions: ['PG'],
+            grad1: 'indigo-black',
+            grad2: 'indigo-red',
+        },
+    ]
 
 
 
@@ -102,13 +148,14 @@ export default function Home() {
                     <div className="flex flex-row h-full w-full">
                         <div className="flex flex-col h-full w-1/2">
                             <div className="h-1/2">
-                                <TitledContainer title="MARKETPLACE">
-
-                                    <GameresultsComponent></GameresultsComponent>
+                                <TitledContainer title="DASHBOARD">
+                                    <div className="w-11/12">
+                                        <RoundedContainer>contents</RoundedContainer>
+                                    </div>
                                 </TitledContainer>
                             </div>
                             <div className="h-1/2">
-                                <TitledContainer title="MARKETPLACE">
+                                <TitledContainer title="GAME RESULTS">
 
                                     <GameresultsComponent></GameresultsComponent>
                                 </TitledContainer>
@@ -119,15 +166,37 @@ export default function Home() {
 
                         <div className="flex flex-col h-full w-1/2">
                             <div className="h-1/2">
-                                <TitledContainer title="MARKETPLACE">
+                                <TitledContainer title="WALLET">
 
-                                    <GameresultsComponent></GameresultsComponent>
+                                    <div className="w-11/12">
+                                        <RoundedContainer>contents</RoundedContainer>
+                                    </div>
                                 </TitledContainer>
                             </div>
                             <div className="h-1/2">
-                                <TitledContainer title="MARKETPLACE">
+                                <TitledContainer title="TOP PERFORMERS">
 
-                                    <GameresultsComponent></GameresultsComponent>
+                                    <TokenGridCol2>
+
+                                        {playerList.map((player) => (
+
+
+
+                                            <AthleteContainer
+                                                AthleteName={player.name}
+                                                TeamName={player.team}
+                                                ID={player.id}
+                                                CoinValue={player.cost}
+                                                Jersey={player.jersey}
+                                                Positions={player.positions}
+                                                colorgrad1={player.grad1}
+                                                colorgrad2={player.grad2}
+                                            />
+
+                                        ))}
+
+                                    </TokenGridCol2>
+
                                 </TitledContainer>
                             </div>
 

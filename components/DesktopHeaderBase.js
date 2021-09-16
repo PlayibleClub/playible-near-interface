@@ -27,9 +27,9 @@ const DesktopHeaderBase = (props) => {
 
       <Button rounded="rounded-sm " textColor="white-light" color="indigo-light" onClick={interactWallet} size="py-1 px-1 h-full" >
 
-        <div className="flex flex-row ">
-          Connect Wallet
-          <img src="images/wallet.png" alt="Img" />
+        <div className="flex flex-row text-sm">
+          <div> Connect Wallet </div>
+          <img className="ml-2 h-4/5" src="images/wallet.png" alt="Img" />
           {status === WalletStatus.WALLET_CONNECTED ? '*' : '+'}
         </div>
       </Button>

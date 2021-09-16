@@ -1,21 +1,25 @@
 import PropTypes from 'prop-types';
 import Link from 'next/link'
+import NavButtonContainer from './NavButtonContainer.js';
 const DesktopNavbar = (props) => {
   const { children, color } = props;
 
   return (
-    <div data-test="DesktopNavbar" className={`bg-${color}  text-white-light flex flex-col   w-2/6 h-screen`}>
+    <div data-test="DesktopNavbar" className={`bg-${color}  text-white-light flex flex-col   w-3/12 h-screen`}>
       <div className="flex justify-center">
 
-        <img className="w-5/6" src="images/fantasyinvestar.png" alt="Img" />
+        <img className="w-5/6 h-full" src="images/fantasylogo.png" alt="Img" />
       </div>
-      <div className="flex justify-center">
-        <div className="flex flex-col h-1/5 w-5/6">
+      <div className="flex justify-center mt-2">
+        <div className="flex flex-col h-1/5 w-4/6">
 
-          <Link href="/"><div className="flex flex-row"><img className="h-5 w-5" src="images/navicons/icon_home.png" alt="Img" /><a>Dashboard</a></div></Link>
-          <Link href="/"><div className="flex flex-row"><img className="h-5 w-5" src="images/navicons/icon_portfolio.png" alt="Img" /><a>Portfolio</a></div></Link>
-          <Link href="/"><div className="flex flex-row"><img className="h-5 w-5" src="images/navicons/icon_packs.png" alt="Img" /><a>Packs</a></div></Link>
-          <Link href="/"><div className="flex flex-row"><img className="h-5 w-5" src="images/navicons/icon_marketplace.png" alt="Img" /><a>Marketplace</a></div></Link>
+
+          <NavButtonContainer imagesrc="images/navicons/icon_home.png" Title="Dashboard"></NavButtonContainer>
+          <NavButtonContainer imagesrc="images/navicons/icon_portfolio.png" Title="Portfolio"></NavButtonContainer>
+          <NavButtonContainer imagesrc="images/navicons/icon_packs.png" Title="Packs"></NavButtonContainer>
+          <NavButtonContainer imagesrc="images/navicons/icon_marketplace.png" Title="Marketplace"></NavButtonContainer>
+
+
         </div>
       </div>
     </div>
