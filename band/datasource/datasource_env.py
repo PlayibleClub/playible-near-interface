@@ -2,16 +2,24 @@ import sys
 import requests
 import os
 from dotenv import load_dotenv
+import datetime
+import hashlib
+import re
+import time
 
 HEADERS = {"Content-Type": "application/json"}
 BASE_URL = "http://api.stats.com/v1/stats/basketball/nba/stats/players/"
 load_dotenv()
+PUBLIC_KEY = os.environ.get('PUBLIC_KEY', '')
+PRIVATE_KEY = os.environ.get('PRIVATE_KEY', '')
 
 
-def main(player_id, api_key, sig):
-    PUBLIC_KEY = os.environ.get('PUBLIC_KEY', "GG")
-    print(PUBLIC_KEY)
-    url = BASE_URL + player_id + "?api_key=" + api_key + "&sig=" + sig
+def main(player_id):
+    timestamp = repr(int(time.time()))
+    all = str.encode(PUBLIC_KEY + PRIVATE_KEY + timestamp)
+    signature = hashlib.sha256(all).hexdigest()
+
+    url = BASE_URL + player_id + "?api_key=" + PUBLIC_KEY + "&sig=" + signature
     result = requests.request(
         "GET", (url)
     )
