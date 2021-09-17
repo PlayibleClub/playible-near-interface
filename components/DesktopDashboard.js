@@ -152,30 +152,37 @@ export default function Home() {
                                     <div className="w-11/12 h-4/5">
                                         <RoundedContainer className="">
 
-                                            <div className="flex flex-row">
-                                                <img className="h-40 w-40 mt-5 mb-5" src="images/PieChart.png" alt="Img" />
-
-
-
-
-                                                <div className="h-2/4">
-                                                    <div data-test="TokenGridCol2" className={` grid  gap-x-1 gap-y-0 grid-cols-2 `}>
-                                                        <div className="flex flex-row">
-                                                            <img className="h-3 w-3 mr-2" src="images/Ellipse.png" alt="Img" />
-                                                            <div className="mb-20">Lakers</div>
-                                                        </div>
-
-                                                        <div className="flex flex-row">
-                                                            <img className="h-3 w-3 mr-2" src="images/Ellipse.png" alt="Img" />
-                                                            <div className="mb-20">Rockets</div>
-                                                        </div>
-                                                        <div className="flex flex-row">
-                                                            <img className="h-3 w-3 mr-2" src="images/Ellipse.png" alt="Img" />
-                                                            <div className="mb-20">Warriors</div>
-                                                        </div>
-
+                                            <div className="flex flex-row  text-xs">
+                                                <div className="relative">
+                                                    <img className="h-40 w-40 mt-5 mb-3" src="images/PieChart.png" alt="Img" />
+                                                    <div className="absolute left-1/2 top-1/2  transform -translate-x-1/2 -translate-y-1/2 flex flex-col justify-center">
+                                                        <div className="font-normal">Net Worth</div>
+                                                        <div >$44,023.00</div>
                                                     </div>
                                                 </div>
+
+
+                                                <div className="h-full flex justify-center items-center">
+                                                    <div className="h-1/4 ">
+                                                        <div data-test="TokenGridCol2" className={`font-extralight grid  gap-x-1 gap-y-0 grid-cols-2 `}>
+                                                            <div className="flex flex-row">
+                                                                <img className="h-3 w-3 mr-2" src="images/Ellipse.png" alt="Img" />
+                                                                <div className="mb-5">Lakers</div>
+                                                            </div>
+
+                                                            <div className="flex flex-row">
+                                                                <img className="h-3 w-3 mr-2" src="images/Ellipse.png" alt="Img" />
+                                                                <div className="mb-5">Rockets</div>
+                                                            </div>
+                                                            <div className="flex flex-row">
+                                                                <img className="h-3 w-3 mr-2" src="images/Ellipse.png" alt="Img" />
+                                                                <div className="mb-5">Warriors</div>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+
 
                                             </div>
                                         </RoundedContainer>
@@ -200,7 +207,17 @@ export default function Home() {
                                 <TitledContainer title="WALLET">
 
                                     <div className="w-11/12">
-                                        <RoundedContainer>contents</RoundedContainer>
+                                        <RoundedContainer>
+                                            <div className="flex flex-col h-48 w-1/2">
+                                                <div>998 UST
+                                                </div>
+                                            </div>
+                                            <div className="relative h-11/12 w-3/12">
+                                                <img className="absolute right-0 top-0 h-40 w-40 mr-2" src="images/terra-logo.png" alt="Img" />
+                                            </div>
+
+
+                                        </RoundedContainer>
                                     </div>
                                 </TitledContainer>
                             </div>
