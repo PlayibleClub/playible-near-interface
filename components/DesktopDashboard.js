@@ -208,22 +208,22 @@ export default function Home() {
 
                                     <div className="w-11/12">
                                         <RoundedContainer>
-                                            <div className="relative flex flex-col h-48 w-full">
-                                                <div>
-                                                    <div>
+                                            <div className="relative flex flex-col h-48 w-full ml-4">
+                                                <div className="mt-10">
+                                                    <div className="text-md font-medium">
                                                         998 UST
                                                     </div>
-                                                    <div>
+                                                    <div className="text-xs font-thin">
                                                         994USD
                                                     </div>
                                                 </div>
 
-                                                <div className="flex flex-row">
+                                                <div className="flex flex-row mt-8">
                                                     <Button rounded="rounded-full " textColor="white-light" color="green-pastel" size="py-1 px-1">
                                                         Deposit
                                                     </Button>
                                                     <Button rounded="rounded-full " textColor="white-light" color="red-pastel" size="py-1 px-1">
-                                                        widraw
+                                                        Widraw
                                                     </Button>
 
                                                 </div>
