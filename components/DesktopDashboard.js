@@ -208,11 +208,28 @@ export default function Home() {
 
                                     <div className="w-11/12">
                                         <RoundedContainer>
-                                            <div className="flex flex-col h-48 w-1/2">
-                                                <div>998 UST
+                                            <div className="relative flex flex-col h-48 w-full">
+                                                <div>
+                                                    <div>
+                                                        998 UST
+                                                    </div>
+                                                    <div>
+                                                        994USD
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div className="relative h-11/12 w-3/12">
+
+                                                <div className="flex flex-row">
+                                                    <Button rounded="rounded-full " textColor="white-light" color="green-pastel" size="py-1 px-1">
+                                                        Deposit
+                                                    </Button>
+                                                    <Button rounded="rounded-full " textColor="white-light" color="red-pastel" size="py-1 px-1">
+                                                        widraw
+                                                    </Button>
+
+                                                </div>
+
+
+
                                                 <img className="absolute right-0 top-0 h-40 w-40 mr-2" src="images/terra-logo.png" alt="Img" />
                                             </div>
 
