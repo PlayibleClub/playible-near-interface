@@ -218,19 +218,19 @@ export default function Home() {
                                                     </div>
                                                 </div>
 
-                                                <div className="flex flex-row mt-8">
+                                                <div className="flex flex-row mt-8 justify-between w-7/12">
                                                     <Button rounded="rounded-full " textColor="white-light" color="green-pastel" size="py-1 px-1">
-                                                        Deposit
+                                                        <p className="text-xs font-thin ml-3 mr-3">Deposit</p>
                                                     </Button>
                                                     <Button rounded="rounded-full " textColor="white-light" color="red-pastel" size="py-1 px-1">
-                                                        Widraw
+                                                        <p className="text-xs font-thin ml-3 mr-3">Widraw</p>
                                                     </Button>
 
                                                 </div>
 
 
 
-                                                <img className="absolute right-0 top-0 h-40 w-40 mr-2" src="images/terra-logo.png" alt="Img" />
+                                                <img className="absolute right-0 top-0 h-40 w-40 mr-2 z-0" src="images/terra-logo.png" alt="Img" />
                                             </div>
 
 
