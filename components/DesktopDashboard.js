@@ -241,7 +241,7 @@ export default function Home() {
                             <div className="h-5/12">
                                 <TitledContainer title="TOP PERFORMERS">
                                     <div className="h-10/12">
-                                        <div data-test="TokenGridCol2" className={` grid  gap-x-1 gap-y-0 grid-cols-2 `}>
+                                        <div data-test="TokenGridCol2" className={`h-10/12 grid  gap-x-1 gap-y-0 grid-cols-2 `}>
 
                                             {playerList.map((player) => (
 
