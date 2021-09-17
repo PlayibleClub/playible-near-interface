@@ -4,7 +4,7 @@ const HorizontalContainer = (props) => {
   const { children, color, imagesrc, AthleteName, TeamName, CoinValue } = props;
 
   return (
-    <div class="inline-block px-3">
+    <div class="inline-block">
       <div class="w-48 h-64 max-w-xs overflow-hidden  shadow-md bg-white hover:shadow-xl transition-shadow duration-300 ease-in-out">
         <div className="h-full w-full">
           {children}

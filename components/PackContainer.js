@@ -6,17 +6,16 @@ const PackContainer = (props) => {
 
   return (
     <Link href="/Purchase">
-      <div data-test="PackContainer" className={`bg-${color}   w-full h-full overflow-hidden  flex flex-col  w-full h-full `}>
-        <div className="flex flex-col h-2/3">
+      <div data-test="PackContainer" className={`bg-${color} w-full h-full overflow-hidden flex flex-col w-full h-full`}>
+        <div className="flex flex-col h-2/3 ml-4">
           <img src={imagesrc} alt="Img" />
-
         </div>
         {children}
-        <div className="relative h-1/2">
-          <div className="absolute flex flex-col bottom-0 left-1">
-            <div className="  pb-3 text-sm font-medium ">{AthleteName}</div>
-            <div className="  text-xs font-thin">Release {releaseValue}</div>
-            <div className="  text-xs font-bold">
+        <div className="relative h-1/2 ml-6">
+          <div className="absolute flex flex-col bottom-0">
+            <div className="pb-3 text-sm font-medium">{AthleteName}</div>
+            <div className="text-xs font-thin">Release {releaseValue}</div>
+            <div className="text-xs font-bold">
               {CoinValue}
               {' '}
               UST

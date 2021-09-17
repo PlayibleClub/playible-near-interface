@@ -1,13 +1,45 @@
 import PropTypes from 'prop-types';
 import RoundedContainer from './RoundedContainer';
 import GameResultContainer from './GameResultContainer';
-const animals = ['Dog', 'Bird', 'Cat', 'Mouse', 'Horse'];
+
+const list = [
+  {
+    win: 'yes',
+    date: '07/12/21',
+    rank: '02',
+    points: '96.5',
+  },
+  {
+    win: 'no',
+    date: '07/05/21',
+    rank: '07',
+    points: '78.4',
+  },
+  {
+    win: 'yes',
+    date: '06/28/21',
+    rank: '01',
+    points: '98.7',
+  },
+  {
+    win: 'no',
+    date: '07/05/21',
+    rank: '09',
+    points: '55.0',
+  },
+  {
+    win: 'no',
+    date: '07/13/21',
+    rank: '03',
+    points: '23.0',
+  },
+]
 
 const GameResultsComponent = (props) => {
   const { children, color, date, rank, points } = props;
 
   return (
-    <div data-test="GameResultsComponent" className={`w-9/12 mt-5`}>
+    <div data-test="GameResultsComponent" className={`w-10/12 mt-5`}>
 
       <RoundedContainer>
         <select className="w-5/6 bg-indigo-light p-2" name="games" id="cars">
@@ -18,13 +50,12 @@ const GameResultsComponent = (props) => {
         </select>
       </RoundedContainer>
 
-      <div className="mt-2">
+      <div className="mt-6">
         <RoundedContainer >
 
           <ul className="w-11/12">
-            {animals.map((animal) => (
-              <li><GameResultContainer></GameResultContainer></li>
-
+            {list.map((data) => (
+              <li><GameResultContainer date={data.date} rank={data.rank} points={data.points} win={data.win}></GameResultContainer></li>
             ))}
           </ul>
         </RoundedContainer>
