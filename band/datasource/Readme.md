@@ -34,4 +34,4 @@ Note that the signature expires after a few minutes. A new one should ideally ge
 # Alternative run command to use keys stored in .env file
 ``` python datasource_env.py 214152 ```
 
-Don't forget to install requirements.txt
+Don't forget to install requirements.txt and to setup the .env file. Use .env.sample for reference.
