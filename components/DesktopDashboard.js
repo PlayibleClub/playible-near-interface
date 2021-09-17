@@ -147,7 +147,7 @@ export default function Home() {
 
                     <div className="flex flex-row h-full w-full">
                         <div className="flex flex-col h-full w-1/2">
-                            <div className="h-1/2">
+                            <div className="h-5/12">
                                 <TitledContainer title="DASHBOARD">
                                     <div className="w-11/12 h-4/5">
                                         <RoundedContainer className="">
@@ -203,7 +203,7 @@ export default function Home() {
 
 
                         <div className="flex flex-col h-full w-1/2">
-                            <div className="h-1/2">
+                            <div className="h-5/12">
                                 <TitledContainer title="WALLET">
 
                                     <div className="w-11/12">
@@ -238,29 +238,30 @@ export default function Home() {
                                     </div>
                                 </TitledContainer>
                             </div>
-                            <div className="h-1/2">
+                            <div className="h-5/12">
                                 <TitledContainer title="TOP PERFORMERS">
+                                    <div className="h-10/12">
+                                        <div data-test="TokenGridCol2" className={` grid  gap-x-1 gap-y-0 grid-cols-2 `}>
 
-                                    <TokenGridCol2>
-
-                                        {playerList.map((player) => (
+                                            {playerList.map((player) => (
 
 
 
-                                            <AthleteContainer
-                                                AthleteName={player.name}
-                                                TeamName={player.team}
-                                                ID={player.id}
-                                                CoinValue={player.cost}
-                                                Jersey={player.jersey}
-                                                Positions={player.positions}
-                                                colorgrad1={player.grad1}
-                                                colorgrad2={player.grad2}
-                                            />
+                                                <AthleteContainer
+                                                    AthleteName={player.name}
+                                                    TeamName={player.team}
+                                                    ID={player.id}
+                                                    CoinValue={player.cost}
+                                                    Jersey={player.jersey}
+                                                    Positions={player.positions}
+                                                    colorgrad1={player.grad1}
+                                                    colorgrad2={player.grad2}
+                                                />
 
-                                        ))}
+                                            ))}
 
-                                    </TokenGridCol2>
+                                        </div>
+                                    </div>
 
                                 </TitledContainer>
                             </div>
