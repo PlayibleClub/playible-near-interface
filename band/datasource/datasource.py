@@ -1,16 +1,11 @@
 import sys
 import requests
-import os
-from dotenv import load_dotenv
 
 HEADERS = {"Content-Type": "application/json"}
 BASE_URL = "http://api.stats.com/v1/stats/basketball/nba/stats/players/"
-load_dotenv()
 
 
 def main(player_id, api_key, sig):
-    PUBLIC_KEY = os.environ.get('PUBLIC_KEY', "GG")
-    print(PUBLIC_KEY)
     url = BASE_URL + player_id + "?api_key=" + api_key + "&sig=" + sig
     result = requests.request(
         "GET", (url)

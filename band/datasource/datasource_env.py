@@ -23,6 +23,7 @@ def main(player_id):
     result = requests.request(
         "GET", (url)
     )
+    result.raise_for_status()
     json_result = result.json()
 
     if "apiResults" in json_result:
