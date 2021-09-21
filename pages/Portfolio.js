@@ -9,12 +9,12 @@ import AthleteContainer from '../components/AthleteContainer'
 import PerformerContainer from '../components/PerformerContainer';
 import filterIcon from '../public/images/filter.png'
 import searchIcon from '../public/images/search.png'
-import { stubString } from 'lodash'
-import index from './TokenDrawPage';
 import { useDispatch, useSelector } from 'react-redux';
-import { getPortfolio } from '../redux/reducers/contract/portfolio';
+import { getPortfolio, clearData } from '../redux/reducers/contract/portfolio';
 import { useConnectedWallet } from '@terra-money/wallet-provider';
 import TokenGridCol2 from '../components/TokenGridCol2';
+import Loading from '../components/Loading';
+import * as statusCode from '../data/constants/status'
 
 // const playerList = [ // player list for testing purposes
 //     {
@@ -115,17 +115,34 @@ const Portfolio = () => {
     const [isClosed, setClosed] = useState(true)
     const [filterMode, setMode] = useState(false)
     const [showFilter, setFilter] = useState(false)
+    const [loading, setLoading] = useState(true);
     
-    const { tokenList: playerList } = useSelector((state) => state.contract.portfolio);
+    const { tokenList: playerList, status } = useSelector((state) => state.contract.portfolio);
 
     const dispatch = useDispatch();
     const connectedWallet = useConnectedWallet();
 
 
     useEffect(() => {
-        if(typeof connectedWallet !== 'undefined')
-        dispatch(getPortfolio({walletAddr: connectedWallet.walletAddress}))
-    }, [connectedWallet])
+        if (typeof connectedWallet !== 'undefined') {
+            dispatch(getPortfolio({walletAddr: connectedWallet.walletAddress}))
+        }
+        return function cleanup() {
+            dispatch(clearData());
+        };
+    }, [dispatch, connectedWallet])
+
+    useEffect(() => {
+        if (typeof connectedWallet === 'undefined' ) {
+            setLoading(false)
+        }
+        else if(status === statusCode.PENDING){
+            setLoading(true)
+        }
+        else {
+            setLoading(false)
+        }
+    }, [connectedWallet, status])
 
     const onSubmit = (data) => {
         if (data.search)
@@ -139,8 +156,6 @@ const Portfolio = () => {
         if (data.positions)
             setPosFilter(data.positions)
         else setPosFilter("")
-
-        console.log(data)
     }
 
     const key1 = 'team'
@@ -176,6 +191,10 @@ const Portfolio = () => {
                 <HeaderBase isClosed={isClosed} setClosed={setClosed}/>
 
                 <Main color="indigo-dark">
+                    
+                    {loading ? (
+                        <Loading/>
+                    ) : (
                     <div className="flex w-full overflow-y-auto overflow-x-hidden h-screen">
                         <PortfolioContainer title="PORTFOLIO" className="flex">
                             <div className="flex flex-col justify-center self-center">
@@ -374,6 +393,7 @@ const Portfolio = () => {
                             </div>
                         </PortfolioContainer>
                     </div>
+                    )}
                 </Main>
             </div>
         </>
