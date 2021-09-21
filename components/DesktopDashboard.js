@@ -228,17 +228,23 @@ export default function Home() {
                             <div className="h-1/2">
                                 <TitledContainer title="GAME RESULTS">
                                     <div className="ml-6 h-64 w-11/12">
-                                        <RoundedContainer >
+                                        <div className=" flex justify-center relative rounded-md w-full h-full bg-indigo-light">
 
                                             <ul className="w-11/12">
                                                 {resultlist.map((data) => (
                                                     <li>
-                                                        <GameResultContainer date={data.date} rank={data.rank} points={data.points} win={data.win}></GameResultContainer>
+                                                        <div>
+                                                            <div className="flex flex col justify-between w-full text-xs font-thin mb-3 mt-5">
+                                                                <div>{data.date}</div>
+                                                                <div> {data.points}</div>
 
+                                                            </div>
+                                                            <hr className="w-full self-center opacity-25 mb-4" />
+                                                        </div>
                                                     </li>
                                                 ))}
                                             </ul>
-                                        </RoundedContainer>
+                                        </div>
                                     </div>
                                 </TitledContainer>
                             </div>
