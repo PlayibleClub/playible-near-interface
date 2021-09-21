@@ -6,11 +6,11 @@ const DesktopNavbar = (props) => {
 
   return (
     <div data-test="DesktopNavbar" className={`bg-${color}  text-white-light flex flex-col   w-3/12 h-screen`}>
-      <div className="flex justify-center">
+      <div className="flex justify-center h-16">
 
-        <img className="w-5/6 h-full" src="images/fantasylogo.png" alt="Img" />
+        <img className="object-none mt-4" src="images/fantasylogo.png" alt="Img" />
       </div>
-      <div className="flex justify-center mt-2">
+      <div className="flex justify-center mt-10">
         <div className="flex flex-col h-1/5 w-4/6">
 
 

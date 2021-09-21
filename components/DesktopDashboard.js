@@ -74,6 +74,39 @@ export default function Home() {
 
 
 
+    const resultlist = [
+        {
+            win: 'yes',
+            date: '07/12/21',
+            rank: '02',
+            points: '96.5',
+        },
+        {
+            win: 'no',
+            date: '07/05/21',
+            rank: '07',
+            points: '78.4',
+        },
+        {
+            win: 'yes',
+            date: '06/28/21',
+            rank: '01',
+            points: '98.7',
+        },
+        {
+            win: 'no',
+            date: '07/05/21',
+            rank: '09',
+            points: '55.0',
+        },
+        {
+            win: 'no',
+            date: '07/13/21',
+            rank: '03',
+            points: '23.0',
+        },
+    ]
+
     const playerList = [
         {
             name: 'STEPHEN CURRY',
@@ -146,15 +179,15 @@ export default function Home() {
                     <DesktopHeaderBase></DesktopHeaderBase>
 
                     <div className="flex flex-row h-full w-full">
-                        <div className="flex flex-col h-full w-1/2">
+                        <div className="flex flex-col h-full w-5/12">
                             <div className="h-5/12">
                                 <TitledContainer title="DASHBOARD">
                                     <div className="w-11/12 h-4/5">
-                                        <RoundedContainer className="">
+                                        <div className="ml-3 flex justify-center relative rounded-md w-full bg-indigo-light">
 
-                                            <div className="flex flex-row  text-xs">
-                                                <div className="relative">
-                                                    <img className="h-40 w-40 mt-5 mb-3" src="images/PieChart.png" alt="Img" />
+                                            <div className="flex flex-row  text-xs h-48 ">
+                                                <div className="relative mr-2">
+                                                    <img className="h-35 w-35 mt-5 mb-3" src="images/PieChart.png" alt="Img" />
                                                     <div className="absolute left-1/2 top-1/2  transform -translate-x-1/2 -translate-y-1/2 flex flex-col justify-center">
                                                         <div className="font-normal">Net Worth</div>
                                                         <div >$44,023.00</div>
@@ -164,19 +197,19 @@ export default function Home() {
 
                                                 <div className="h-full flex justify-center items-center">
                                                     <div className="h-1/4 ">
-                                                        <div data-test="TokenGridCol2" className={`font-extralight grid  gap-x-1 gap-y-0 grid-cols-2 `}>
+                                                        <div data-test="TokenGridCol2" className={`font-extralight text-xs grid  gap-x-3 gap-y-1 grid-cols-2 `}>
                                                             <div className="flex flex-row">
-                                                                <img className="h-3 w-3 mr-2" src="images/Ellipse.png" alt="Img" />
-                                                                <div className="mb-5">Lakers</div>
+                                                                <img className="h-3 w-3 mr-1 place-self-center" src="images/Ellipse.png" alt="Img" />
+                                                                <div className=" place-self-center">Lakers</div>
                                                             </div>
 
                                                             <div className="flex flex-row">
-                                                                <img className="h-3 w-3 mr-2" src="images/Ellipse.png" alt="Img" />
-                                                                <div className="mb-5">Rockets</div>
+                                                                <img className="h-3 w-3 mr-1 place-self-center" src="images/Ellipse.png" alt="Img" />
+                                                                <div className=" place-self-center">Warriors</div>
                                                             </div>
                                                             <div className="flex flex-row">
-                                                                <img className="h-3 w-3 mr-2" src="images/Ellipse.png" alt="Img" />
-                                                                <div className="mb-5">Warriors</div>
+                                                                <img className="h-3 w-3 mr-1 place-self-center" src="images/Ellipse.png" alt="Img" />
+                                                                <div className=" place-self-center">Rockets</div>
                                                             </div>
 
                                                         </div>
@@ -185,7 +218,7 @@ export default function Home() {
 
 
                                             </div>
-                                        </RoundedContainer>
+                                        </div>
 
 
 
@@ -194,31 +227,44 @@ export default function Home() {
                             </div>
                             <div className="h-1/2">
                                 <TitledContainer title="GAME RESULTS">
+                                    <div className="ml-6 h-64 w-11/12">
+                                        <RoundedContainer >
 
-                                    <GameresultsComponent></GameresultsComponent>
+                                            <ul className="w-11/12">
+                                                {resultlist.map((data) => (
+                                                    <li>
+                                                        <GameResultContainer date={data.date} rank={data.rank} points={data.points} win={data.win}></GameResultContainer>
+
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </RoundedContainer>
+                                    </div>
                                 </TitledContainer>
                             </div>
 
                         </div>
 
 
-                        <div className="flex flex-col h-full w-1/2">
+                        <div className="flex flex-col h-full w-7/12">
                             <div className="h-5/12">
                                 <TitledContainer title="WALLET">
 
-                                    <div className="w-11/12">
-                                        <RoundedContainer>
+                                    <div className="w-full flex justify-left">
+                                        <div className="ml-6 flex justify-center relative rounded-md w-8/12 bg-indigo-light">
+                                            <img className="object-none absolute right-0 top-0  w-full m-0 pr-0 z-0 " src="images/terra-maskgroup.png" alt="Img" />
                                             <div className="relative flex flex-col h-48 w-full ml-4">
+
                                                 <div className="mt-10">
-                                                    <div className="text-md font-medium">
+                                                    <div className="text-2xl font-medium">
                                                         998 UST
                                                     </div>
-                                                    <div className="text-xs font-thin">
-                                                        994USD
+                                                    <div className="mt-2 text-xs font-thin">
+                                                        994 USD
                                                     </div>
                                                 </div>
 
-                                                <div className="flex flex-row mt-8 justify-between w-7/12">
+                                                <div className="flex flex-row mt-8 justify-around w-8/12">
                                                     <Button rounded="rounded-full " textColor="white-light" color="green-pastel" size="py-1 px-1">
                                                         <p className="text-xs font-thin ml-3 mr-3">Deposit</p>
                                                     </Button>
@@ -230,37 +276,45 @@ export default function Home() {
 
 
 
-                                                <img className="absolute right-0 top-0 h-40 w-40 mr-2 z-0" src="images/terra-logo.png" alt="Img" />
                                             </div>
 
 
-                                        </RoundedContainer>
+                                        </div>
                                     </div>
+
+
+
                                 </TitledContainer>
                             </div>
                             <div className="h-5/12">
                                 <TitledContainer title="TOP PERFORMERS">
-                                    <div className="h-10/12">
-                                        <div data-test="TokenGridCol2" className={`h-10/12 grid  gap-x-1 gap-y-0 grid-cols-2 `}>
-
-                                            {playerList.map((player) => (
+                                    <div className="ml-2 h-64 w-11/12">
 
 
 
-                                                <AthleteContainer
-                                                    AthleteName={player.name}
-                                                    TeamName={player.team}
-                                                    ID={player.id}
-                                                    CoinValue={player.cost}
-                                                    Jersey={player.jersey}
-                                                    Positions={player.positions}
-                                                    colorgrad1={player.grad1}
-                                                    colorgrad2={player.grad2}
-                                                />
+                                        <div className="bg-clear h-full w-130">
+                                            <div data-test="2columngrid" className={`h-full grid  gap-x-2 gap-y-2 grid-cols-2 `}>
 
-                                            ))}
+                                                {playerList.map((player) => (
+                                                    <div className="h-32">
+                                                        <AthleteContainer
+                                                            AthleteName={player.name}
+                                                            TeamName={player.team}
+                                                            ID={player.id}
+                                                            CoinValue={player.cost}
+                                                            Jersey={player.jersey}
+                                                            Positions={player.positions}
+                                                            colorgrad1={player.grad1}
+                                                            colorgrad2={player.grad2}
+                                                        />
+                                                    </div>
+                                                ))}
+
+                                            </div>
+
 
                                         </div>
+
                                     </div>
 
                                 </TitledContainer>
