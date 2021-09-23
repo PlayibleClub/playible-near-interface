@@ -15,7 +15,7 @@ const DesktopNavbar = (props) => {
 
 
           <NavButtonContainer imagesrc="images/navicons/icon_home.png" Title="Dashboard"></NavButtonContainer>
-          <NavButtonContainer imagesrc="images/navicons/icon_portfolio.png" Title="Portfolio"></NavButtonContainer>
+          <NavButtonContainer imagesrc="images/navicons/icon_portfolio.png" hreflink="Portfolio" Title="Portfolio"></NavButtonContainer>
           <NavButtonContainer imagesrc="images/navicons/icon_packs.png" Title="Packs"></NavButtonContainer>
           <NavButtonContainer imagesrc="images/navicons/icon_marketplace.png" Title="Marketplace"></NavButtonContainer>
 
