@@ -1,6 +1,6 @@
 import { useWallet, WalletStatus } from '@terra-money/wallet-provider';
 import React, { useEffect, useState } from 'react'
-import HeaderBase from '../components/HeaderBase';
+import HeaderBack from '../components/HeaderBack';
 import Navbar from '../components/Navbar';
 import Main from '../components/Main';
 import PortfolioContainer from '../components/PortfolioContainer';
@@ -149,7 +149,7 @@ export default function History(props) {
                     <div className="w-2/6 h-screen" onMouseDown={() => setClosed(true)}></div>
                 </div>}
 
-                <HeaderBase isClosed={isClosed} setClosed={setClosed}/>
+                <HeaderBack link="/Play"/>
 
                 <div className="flex flex-col w-full h-screen">
                     <Main color="indigo-dark">

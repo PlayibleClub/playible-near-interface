@@ -1,11 +1,11 @@
-import { useWallet, WalletStatus } from '@terra-money/wallet-provider';
 // import Image from 'next/image';
-import * as React from 'react';
+import React from 'react';
 import HeaderBack from '../components/HeaderBack';
 import Main from '../components/Main';
-import TitledContainer from '../components/TitledContainer';
+import PortfolioContainer from '../components/PortfolioContainer';
 import TokenGridCol2 from '../components/TokenGridCol2';
 import TeamMemberContainer from '../components/TeamMemberContainer';
+import Link from 'next/link';
 
 const playerList = [
     {
@@ -76,35 +76,71 @@ const playerList = [
     // },
 ]
 
-export default function CreateLineup() {
-    const { status, connect, disconnect, availableConnectTypes } = useWallet();
+const playerLineup = [
+    {
+        userid: '',
+        shootingGuard: '',
+        pointGuard: '',
+        shortForward: '',
+        pointForward: '',
+        center: ''
+    }
+]
 
-    const interactWallet = () => {
-        if (status === WalletStatus.WALLET_CONNECTED) {
-            disconnect();
-        } else {
-            connect(availableConnectTypes[1]);
-        }
-    };
-
+export default function CreateLineup() { 
     return (
         <>
             <div className={`font-montserrat h-screen relative `}>
                 <div className="flex flex-col w-full ">
-                    <HeaderBack link="/Play" ></HeaderBack>
+                    <HeaderBack link="/Play"/>
                     <Main color="indigo-dark">
-                        <div className="flex flex-col  w-full h-full overflow-y-scroll overflow-x-hidden pb-5">
-                            <TitledContainer title="CREATE LINEUP">
+                        <div className="flex flex-col w-full h-full overflow-y-scroll overflow-x-hidden">
+                            <PortfolioContainer title="CREATE LINEUP">
                                 <div className="flex flex-col">
-                                    <div className="font-thin text-xs mt-10 mb-10 "> create your own Fantasy Team</div>
+                                    <div className="font-thin text-sm mt-8 mb-10 ml-6">Create your own Fantasy Team</div>
                                     <TokenGridCol2>
-                                        {playerList.map((player) => (
-                                            <TeamMemberContainer rank={player.id} AthleteName={player.name} Averagescore={player.averageScore} />
+                                        <Link href="/EnterPlayers?pos=SF">
+                                            <div>
+                                                <TeamMemberContainer pos="SF" />
+                                            </div>
+                                        </Link>
 
-                                        ))}
+                                        <Link href="/EnterPlayers?pos=PF">
+                                            <div>
+                                                <TeamMemberContainer pos="PF"/>
+                                            </div>
+                                        </Link>
+
+                                        <Link href="/EnterPlayers?pos=SG">
+                                            <div>
+                                                <TeamMemberContainer pos="SG"/>
+                                            </div>
+                                        </Link>
+
+                                        <Link href="/EnterPlayers?pos=PG">
+                                            <div>
+                                                <TeamMemberContainer pos="PG"/>
+                                            </div>
+                                        </Link>
+
+                                        <Link href="/EnterPlayers?pos=C">
+                                            <div>
+                                                <TeamMemberContainer pos="C"/>
+                                            </div>
+                                        </Link>
                                     </TokenGridCol2>
                                 </div>
-                            </TitledContainer>
+                            </PortfolioContainer>
+                        </div>
+
+                        <div className='flex justify-center'> 
+                            <Link href="/Play">
+                                <div className="bg-indigo-lightgray w-80 h-12 mb-20 text-center rounded-md">
+                                    <div className="mt-3 text-indigo-white font-black">
+                                        PROCEED
+                                    </div>
+                                </div>
+                            </Link>
                         </div>
                     </Main>
                 </div>
