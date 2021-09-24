@@ -149,11 +149,14 @@ export default function Home() {
                 <div className="w-full flex flex-col">
                     <DesktopHeaderBase></DesktopHeaderBase>
 
-                    <div data-test="titledcontainer" className={`text-white-light bg-white text-1x1 font-bold justify-start flex flex-col w-full h-full `}>
+                    <div data-test="titledcontainer" className={`text-white-light bg-white text-1x1 font-bold justify-start flex flex-col w-full h-full mt-5 `}>
                         <div className="flex flex-row justify-between">
-                            <div className="pb-3 pt-6 ml-7 justify-start sm:text-2xl md:text-base">
-                                PORTFOLIO
-                                <img src="images/underline.png" className="sm:object-none md:w-6" />
+
+                            <div className=" ml-7 justify-start sm:text-2xl md:text-base h-full">
+                                <div className="place-self-center mt-3">
+                                    PORTFOLIO
+                                    <img src="images/underline.png" className="sm:object-none md:w-6" />
+                                </div>
                             </div>
 
                             <div className="place-self-center">
@@ -162,8 +165,8 @@ export default function Home() {
                                 <div className="flex">
 
 
-                                    <div className="rounded-md bg-indigo-light mr-1 h-11 flex font-thin w-9/12" onClick={() => setFilter(true)}>
-                                        <div className="text-lg ml-4 mt-2 mr-36 w-9/12">
+                                    <div className="rounded-lg bg-indigo-light mr-1 h-11 flex font-thin w-48" onClick={() => setFilter(true)}>
+                                        <div className="text-xs ml-4   w-9/12 place-self-center">
                                             Filter by
                                         </div>
                                         <img src={filterIcon} className="object-none w-3/12 mr-4" />
@@ -172,13 +175,19 @@ export default function Home() {
 
 
 
-                                    <div className="rounded-md bg-indigo-light ml-1 h-11 w-9/12 flex justify-center">
+                                    <div className="rounded-lg bg-indigo-light ml-1 mr-10 h-11 w-48 flex justify-center">
                                         <div className="mt-2">
                                             <form onSubmit={handleSubmit(onSubmit)}>
-                                                <input {...register("search")} className="text-xl ml-3 appearance-none bg-indigo-light focus:outline-none w-10/12" placeholder="Search..." />
-                                                <button className="w-1/12 md:w-9">
-                                                    <input type="image" src={searchIcon} className="object-none md:ml-3 md:mt-1" />
-                                                </button>
+                                                <div className="flex flex-row">
+                                                    <div className="place-self-center  w-10/12">
+                                                        <input {...register("search")} className="text-xs ml-3 appearance-none bg-indigo-light focus:outline-none" placeholder="Search..." />
+
+                                                    </div>
+                                                    <button className="w-1/12">
+                                                        <input type="image" src={searchIcon} className="object-none  mt-1" />
+                                                    </button>
+                                                </div>
+
                                             </form>
                                         </div>
                                     </div>
@@ -202,8 +211,8 @@ export default function Home() {
 
 
 
-                            <div className="bg-clear h-full w-11/12 mt-10">
-                                <div data-test="2columngrid" className={`h-full grid  gap-x-5 gap-y-3 grid-cols-3 `}>
+                            <div className="bg-clear h-full w-10/12 mt-10">
+                                <div data-test="2columngrid" className={`h-full grid  gap-x-10 gap-y-3 grid-cols-3 `}>
 
                                     {playerList.map(function (player, i) {
                                         const toFindName = player.name.toLowerCase()
