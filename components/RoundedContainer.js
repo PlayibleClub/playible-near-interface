@@ -4,7 +4,7 @@ const RoundedContainer = (props) => {
   const { children, color } = props;
 
   return (
-    <div data-test="RoundedContainer" className={`bg-${color} flex justify-center rounded-md w-full  `}>
+    <div data-test="RoundedContainer" className={`bg-${color} flex justify-center relative rounded-md w-full  `}>
       {children}
     </div>
   );

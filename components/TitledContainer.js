@@ -5,10 +5,10 @@ const TitledContainer = (props) => {
   const { color, textcolor, size, title, children, align } = props;
 
   return (
-    <div data-test="titledcontainer" className={`text-${textcolor} bg-${color} text-${size} font-bold ${align}  flex flex-col w-full `}>
-      <div className="pb-3 pt-6 ml-7 justify-start text-2xl">
+    <div data-test="titledcontainer" className={`text-${textcolor} bg-${color} text-${size} font-bold ${align} flex flex-col w-full h-full `}>
+      <div className="pb-3 pt-6 ml-7 justify-start sm:text-2xl md:text-base">
         {title}
-        <img src={underlineIcon} className="object-none" />
+        <img src={underlineIcon} className="sm:object-none md:w-6" />
       </div>
       <div className="flex justify-center">
         {children}
