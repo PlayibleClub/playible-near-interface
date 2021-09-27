@@ -42,7 +42,7 @@ const TokenDrawPage = () => {
     return (
             <>
                 <div>
-                    <div className={`font-montserrat h-screen relative ${isClosed ? "" : "overflow-y-hidden"}`}>
+                    <div className={`font-montserrat h-screen relative `}>
                         <Navbar/>
                         <HeaderBase/>
 
@@ -51,7 +51,7 @@ const TokenDrawPage = () => {
                             {loading ? (
                                 <Loading/>
                             ) : (
-                                <div className="flex flex-col overflow-y-auto overflow-x-hidden">
+                                <div className="flex flex-col overflow-y-auto overflow-x-hidden mt-24">
                                         <div className="flex overflow-x-scroll pt-16 pb-32 hide-scroll-bar snap snap-x snap-mandatory">
                                             <div className="flex flex-nowrap ml-16 pt-16">
                                                 {tokenList.map(function(list, i){

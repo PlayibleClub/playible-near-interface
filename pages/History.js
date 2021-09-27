@@ -143,17 +143,12 @@ export default function History(props) {
     
     return (
         <>
-            <div className={`font-montserrat h-screen relative ${isClosed ? "" : "overflow-y-hidden"}`}>
-                {isClosed ? null : <div className="flex flex-row w-full absolute z-50 top-0 left-0 ">
-                    <Navbar/>
-                    <div className="w-2/6 h-screen" onMouseDown={() => setClosed(true)}></div>
-                </div>}
-
+            <div className={`font-montserrat h-screen relative`}>
                 <HeaderBack link="/Play"/>
 
                 <div className="flex flex-col w-full h-screen">
                     <Main color="indigo-dark">
-                        <div className="flex flex-col  w-full h-full overflow-y-scroll overflow-x-hidden">
+                        <div className="flex flex-col  w-full h-full overflow-y-scroll overflow-x-hidden mt-24">
                             <PortfolioContainer align="justify-center" title="ENTRY SUMMARY">
                                 {gameInfo.map(function(data,i){
                                     if(query.id === data.id){

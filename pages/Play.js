@@ -162,28 +162,26 @@ const Play = () => {
         if(typeof connectedWallet !== 'undefined')
         dispatch(getPortfolio({walletAddr: connectedWallet.walletAddress}))
     }, [connectedWallet])
-
-    const [isClosed, setClosed] = useState(true)
     
     return (
         <>
             <div className={`font-montserrat h-screen relative`}>
                 <Navbar/>
-                <HeaderBase isClosed={isClosed} setClosed={setClosed}/>
+                <HeaderBase/>
 
                 <div className="flex flex-col w-full h-screen">
                     <Main color="indigo-dark">
 
-                        <div className="flex flex-col  w-full h-full overflow-y-scroll overflow-x-hidden">
+                        <div className="flex flex-col w-full h-full overflow-y-scroll overflow-x-hidden mt-24">
 
-                            <TitledContainer align="justify-center" title="PLAY">
+                            <PortfolioContainer align="justify-center" title="PLAY">
                                 <div className="pl-2 w-5/6 grid gap-x-1 gap-y-2 grid-cols-2">
                                     <div className="rounded-md  flex justify-center"><img className="rounded-md" src="images/daily.png" alt="Italian Trulli" /></div>
                                     <div className="rounded-md  flex justify-center"><img className="rounded-md" src="images/weekly.png" alt="Italian Trulli" /></div>
                                     <div className="rounded-md  flex justify-center"><img className="rounded-md" src="images/seasonal.png" alt="Italian Trulli" /></div>
                                 </div>
 
-                            </TitledContainer>
+                            </PortfolioContainer>
 
                             <PortfolioContainer className="flex" title="MY ACTIVITY">
                                 <div className="flex flex-col justify-center self-center">
