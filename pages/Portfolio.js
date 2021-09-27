@@ -182,13 +182,9 @@ const Portfolio = () => {
     if (!isNarrowScreen) {
     return (
         <>
-            <div className={`font-montserrat h-screen relative ${isClosed ? "" : "overflow-y-hidden"}`}>
-                {isClosed ? null : <div className="flex flex-row w-full absolute z-50 top-0 left-0 ">
-                    <Navbar/>
-                    <div className="w-2/6 h-screen" onMouseDown={() => setClosed(true)}></div>
-                </div>}
-
-                <HeaderBase isClosed={isClosed} setClosed={setClosed}/>
+            <div className={`font-montserrat h-screen relative`}>
+                <Navbar/>
+                <HeaderBase/>
 
                 <Main color="indigo-dark">
                     

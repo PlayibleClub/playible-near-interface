@@ -8,28 +8,15 @@ const HeaderBack = (props) => {
   const { link, color } = props;
   const { status, connect, disconnect, availableConnectTypes } = useWallet();
 
-
-
-
-
-
-
   return (
     <Header>
-      <Link href={link}>
-        <Button color="clear" saturation="0" textColor="white-light" textSaturation="500" size="py-1 px-1"> &lt;  Back</Button>
-      </Link>
-
-
-
-
-
-
-
-      <div></div>
-      <div></div>
-      <div></div>
-
+      <div className="w-full">
+        <div className="mb-3 ml-3 float-left">
+          <Link href={link}>
+            <Button color="clear" saturation="0" textColor="white-light" textSaturation="500"> &lt; Back</Button>
+          </Link>
+        </div>
+      </div>
     </Header>
   );
 };
@@ -41,7 +28,6 @@ HeaderBack.propTypes = {
 
 HeaderBack.defaultProps = {
   link: '/',
-  // children: <div>Fantasy investr</div>
   children: <div />,
 };
 

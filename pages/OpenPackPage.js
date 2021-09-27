@@ -27,13 +27,8 @@ export default function OpenPackPage() {
 
     return (
         <div className={`font-montserrat h-screen relative ${isClosed ? "" : "overflow-y-hidden"}`}>
-            {isClosed ? null : 
-                <div className="flex flex-row w-full absolute z-50 top-0 left-0 ">
-                    <Navbar> </Navbar>
-                    <div className="w-2/6 h-screen" onMouseDown={() => setClosed(true)}/>
-                </div>
-            }
-            <HeaderBase isClosed={isClosed} setClosed={setClosed}/>
+            <Navbar/>
+            <HeaderBase/>
 
             <Main color="indigo-dark overflow-y-scroll">
                 <div className="flex flex-col overflow-y-auto overflow-x-hidden">
@@ -51,7 +46,6 @@ export default function OpenPackPage() {
                                 </div>
                             </button>
                             </div>
-                        </Link>
                         </div>
                     </PortfolioContainer>
                 </div>
