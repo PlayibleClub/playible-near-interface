@@ -1,23 +1,28 @@
 import PropTypes from 'prop-types';
+import Image from 'next/image'
 
 const PerformerContainer = (props) => {
-  const { children, color, imagesrc, AthleteName, TeamName, CoinValue } = props;
+  const { children, color, imagesrc, AthleteName, TeamName, CoinValue, AvgScore, id } = props;
+  const picLink = "/../public/images/tokens/"+id+".png"
 
   return (
-    <div data-test="PerformerContainer" className={`bg-${color}  sx-${TeamName} justify-items-center flex flex-col w-full h-full `}>
-      <div className="flex justify-center   h-2/3">
-        <img src={imagesrc} alt="Img" className="" />
+    <div data-test="PerformerContainer" className={`bg-${color} sx-${TeamName} justify-items-center flex flex-col w-full h-full`}>
+      <div className="flex justify-center h-2/3">
+        <Image
+          src={picLink}
+          width={120}
+          height={220}
+        />
 
       </div>
       {children}
       <div className="relative h-1/2 flex justify-center mb-4">
-        <div className="absolute flex  flex-col  mt-4">
-          <div className="pb-3 text-sm font-medium ">{AthleteName}</div>
-          <div className="text-xs font-thin">AVERAGE SCORE </div>
+        <div className="absolute flex flex-col mt-4">
+          <div className="text-sm font-thin">#{id}/25000</div>
+          <div className="text-xs font-med">{AthleteName}</div>
+          <div className="mt-3 text-xs font-thin">AVERAGE SCORE</div>
           <div className="text-xs font-bold">
-            {CoinValue}
-
-
+            {AvgScore}
           </div>
         </div>
       </div>
@@ -27,10 +32,11 @@ const PerformerContainer = (props) => {
 
 PerformerContainer.propTypes = {
   color: PropTypes.string,
-  AthleteName: PropTypes.string.isRequired,
-  TeamName: PropTypes.string.isRequired,
-  CoinValue: PropTypes.string.isRequired,
+  AthleteName: PropTypes.string,
+  TeamName: PropTypes.string,
+  CoinValue: PropTypes.string,
   imagesrc: PropTypes.string,
+  id: PropTypes.string,
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
 };
 

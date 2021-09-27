@@ -15,6 +15,7 @@ module.exports = {
                 DEFAULT: '#5c6ac4',
                 dark: '#161623',
                 gray: '#212127',
+                lightgray: '#808394',
                 navy: '#36384D',
                 blue: '#024799',
                 bluegrad: '#81C4FF',
@@ -56,6 +57,10 @@ module.exports = {
             '135': '135deg',
             '180': '180deg',
             '270': '270deg',
+        },
+        screens: {
+            'iphone5': '320px',
+            'iphoneX' : '375px',
         }
     },
     variants: {

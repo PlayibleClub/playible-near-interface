@@ -7,11 +7,13 @@ import PortfolioContainer from '../components/PortfolioContainer'
 import PortfolioDashboard from '../components/PortfolioDashboard'
 import AthleteGrid from '../components/AthleteGrid'
 import AthleteContainer from '../components/AthleteContainer'
+import PerformerContainer from '../components/PerformerContainer';
 import filterIcon from '../public/images/filter.png'
 import searchIcon from '../public/images/search.png'
 import { useDispatch, useSelector } from 'react-redux';
 import { getPortfolio, clearData } from '../redux/reducers/contract/portfolio';
 import { useConnectedWallet } from '@terra-money/wallet-provider';
+import TokenGridCol2 from '../components/TokenGridCol2';
 import Loading from '../components/Loading';
 import * as statusCode from '../data/constants/status'
 
@@ -23,8 +25,20 @@ import * as statusCode from '../data/constants/status'
 //         cost: '420 UST',
 //         jersey: '30',
 //         positions: ['PG', 'SG'],
+//         avgscore: '86.3',
 //         grad1: 'indigo-blue',
 //         grad2: 'indigo-bluegrad',
+//     },
+//     {
+//         name: 'TAUREAN PRINCE',
+//         team: 'Minnesota Timberwolves',
+//         id: '14450',
+//         cost: '41 UST',
+//         jersey: '12',
+//         positions: ['PG'],
+//         avgscore: '66.5',
+//         grad1: 'indigo-purple',
+//         grad2: 'indigo-purplegrad',
 //     },
 //     {
 //         name: 'LEBRON JAMES',
@@ -33,6 +47,7 @@ import * as statusCode from '../data/constants/status'
 //         cost: '840 UST',
 //         jersey: '23',
 //         positions: ['PG', 'SG'],
+//         avgscore: '96.0',
 //         grad1: 'indigo-purple',
 //         grad2: 'indigo-purplegrad',
 //     },
@@ -43,8 +58,20 @@ import * as statusCode from '../data/constants/status'
 //         cost: '21 UST',
 //         jersey: '01',
 //         positions: ['SF', 'C'],
+//         avgscore: '76.8',
 //         grad1: 'indigo-darkblue',
 //         grad2: 'indigo-darkbluegrad',
+//     },
+//     {
+//         name: 'ARMONI BROOKS',
+//         team: 'Houston Rockets',
+//         id: '21300',
+//         cost: '45.5 UST',
+//         jersey: '23',
+//         positions: ['SG', 'C'],
+//         avgscore: '81.0',
+//         grad1: 'indigo-blue',
+//         grad2: 'indigo-bluegrad',
 //     },
 //     {
 //         name: 'KEVIN DURANT',
@@ -53,18 +80,9 @@ import * as statusCode from '../data/constants/status'
 //         cost: '180 UST',
 //         jersey: '07',
 //         positions: ['PG'],
+//         avgscore: '83.0',
 //         grad1: 'indigo-black',
 //         grad2: 'indigo-red',
-//     },
-//     {
-//         name: 'BEN SIMMONS',
-//         team: 'Philadelphia 76ers',
-//         id: '21300',
-//         cost: '45.5 UST',
-//         jersey: '25',
-//         positions: ['SG', 'C'],
-//         grad1: 'indigo-blue',
-//         grad2: 'indigo-bluegrad',
 //     },
 //     {
 //         name: 'KOBE BRYANT',
@@ -73,6 +91,7 @@ import * as statusCode from '../data/constants/status'
 //         cost: '999 UST',
 //         jersey: '24',
 //         positions: ['SG'],
+//         avgscore: '96.0',
 //         grad1: 'indigo-purple',
 //         grad2: 'indigo-purplegrad',
 //     },
