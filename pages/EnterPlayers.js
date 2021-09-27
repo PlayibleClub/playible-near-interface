@@ -64,8 +64,8 @@ export default function EnterPlayers(props) {
     return (
         <>
             <div className={`font-montserrat h-screen relative `}>
+                <HeaderBack link="/CreateLineup"/>
                 <div className="flex flex-col w-full ">
-                    <HeaderBack link="/CreateLineup"/>
                     <Main color="indigo-dark">
                         <div className="flex flex-col w-full h-screen overflow-y-scroll overflow-x-hidden mb-6">
                             <PortfolioContainer title={`

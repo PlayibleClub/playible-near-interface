@@ -135,7 +135,7 @@ export default function CreateLineup() {
 
                         <div className='flex justify-center'> 
                             <Link href="/Play">
-                                <div className="bg-indigo-lightgray w-80 h-12 mb-20 text-center rounded-md">
+                                <div className="bg-indigo-lightgray w-80 h-12 mb-16 text-center rounded-md">
                                     <div className="mt-3 text-indigo-white font-black">
                                         PROCEED
                                     </div>

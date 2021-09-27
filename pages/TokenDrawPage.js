@@ -42,7 +42,7 @@ const TokenDrawPage = () => {
     return (
             <>
                 <div>
-                    <div className={`font-montserrat h-screen relative ${isClosed ? "" : "overflow-y-hidden"}`}>
+                    <div className={`font-montserrat h-screen relative `}>
                         <Navbar/>
                         <HeaderBase/>
 

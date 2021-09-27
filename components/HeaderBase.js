@@ -21,7 +21,7 @@ const HeaderBase = (props) => {
     <Header>
       <div className="mr-16"/>
       
-      <div className="text-white-light">
+      <div className="text-white-light mb-4">
         {' '}
         <img src="images/fantasyinvestar.png" alt="Img" />
       </div>
