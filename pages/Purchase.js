@@ -59,7 +59,7 @@ const Purchase = () => {
                     closeModal={closeModal}
                 />
                 <Main color="indigo-dark overflow-y-scroll">
-                    <div className="flex flex-col overflow-y-auto overflow-x-hidden mt-24">
+                    <div className="flex flex-col overflow-y-auto overflow-x-hidden">
                         <TitledContainer title="PURCHASE PACK">
                             <div className='flex flex-col justify-center'>
                                 <div className="justify-center">

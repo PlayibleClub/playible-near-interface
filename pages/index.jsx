@@ -131,7 +131,7 @@ export default function Home() {
           <HeaderBase/>
           <div className="flex flex-col w-full ">
             <Main color="indigo-dark overflow-y-scroll">
-              <div className="flex flex-col w-full h-full overflow-x-hidden mt-24">
+              <div className="flex flex-col w-full h-full overflow-x-hidden">
                 <TitledContainer title="MARKETPLACE">
                     <HorizontalScrollContainer>
                       <div className="ml-3 mt-4 flex">

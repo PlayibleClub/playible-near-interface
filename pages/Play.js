@@ -172,7 +172,7 @@ const Play = () => {
                 <div className="flex flex-col w-full h-screen">
                     <Main color="indigo-dark">
 
-                        <div className="flex flex-col w-full h-full overflow-y-scroll overflow-x-hidden mt-24">
+                        <div className="flex flex-col w-full h-full overflow-y-scroll overflow-x-hidden">
 
                             <PortfolioContainer align="justify-center" title="PLAY">
                                 <div className="pl-2 w-5/6 grid gap-x-1 gap-y-2 grid-cols-2">

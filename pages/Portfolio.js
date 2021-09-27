@@ -191,7 +191,7 @@ const Portfolio = () => {
                     {loading ? (
                         <Loading/>
                     ) : (
-                    <div className="flex w-full overflow-y-auto overflow-x-hidden h-screen mt-24">
+                    <div className="flex w-full overflow-y-auto overflow-x-hidden h-screen">
                         <PortfolioContainer title="PORTFOLIO" className="flex">
                             <div className="flex flex-col justify-center self-center">
                                 <div className="flex w-full mb-4 mt-4">

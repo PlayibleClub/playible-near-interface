@@ -106,7 +106,7 @@ const PlayerDetails = () => {
                 <HeaderBase/>
 
                 <Main color="indigo-dark overflow-y-scroll">
-                    <div className="flex flex-col overflow-y-auto overflow-x-hidden mt-24">
+                    <div className="flex flex-col overflow-y-auto overflow-x-hidden">
                         <div className="mt-8 ml-8">
                             <PlayerContainer playerID={player.id}/>
                         </div>

@@ -94,7 +94,7 @@ export default function CreateLineup() {
                 <div className="flex flex-col w-full ">
                     <HeaderBack link="/Play"/>
                     <Main color="indigo-dark">
-                        <div className="flex flex-col w-full h-full overflow-y-scroll overflow-x-hidden mt-24">
+                        <div className="flex flex-col w-full h-full overflow-y-scroll overflow-x-hidden">
                             <PortfolioContainer title="CREATE LINEUP">
                                 <div className="flex flex-col">
                                     <div className="font-thin text-sm mt-8 mb-10 ml-6">Create your own Fantasy Team</div>

@@ -17,7 +17,7 @@ const Payment = () => {
                 <HeaderBase/>
 
                 <Main color="indigo-dark overflow-y-scroll">
-                    <div className="flex flex-col overflow-y-auto overflow-x-hidden mt-24">
+                    <div className="flex flex-col overflow-y-auto overflow-x-hidden">
                         <PortfolioContainer title="PAYMENT METHOD">
                             <div className='flex flex-col self-center justify-center mt-8'>
                                 <div className="ml-4">

@@ -67,7 +67,7 @@ export default function EnterPlayers(props) {
                 <HeaderBack link="/CreateLineup"/>
                 <div className="flex flex-col w-full ">
                     <Main color="indigo-dark">
-                        <div className="flex flex-col w-full h-screen overflow-y-scroll overflow-x-hidden mb-6 mt-24">
+                        <div className="flex flex-col w-full h-screen overflow-y-scroll overflow-x-hidden mb-6">
                             <PortfolioContainer title={`
                                 ${PlayerPosition === "SF" ? "SMALL FORWARD" : ""} 
                                 ${PlayerPosition === "PF" ? "POWER FORWARD" : ""}
