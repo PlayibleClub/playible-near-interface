@@ -221,7 +221,7 @@ export default function Home() {
 
                                         if (toFindName.includes(searchInfo))
                                             return (
-                                                <div className="h-32">
+                                                <div className="h-36">
                                                     <AthleteContainer
                                                         AthleteName={player.name}
                                                         TeamName={player.team}

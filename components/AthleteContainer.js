@@ -5,23 +5,37 @@ const AthleteContainer = (props) => {
   const { children, colorgrad1, colorgrad2, AthleteName, TeamName, CoinValue, Positions, Jersey, ID } = props;
   const pos = Positions;
 
+
+  function getLastWord(words) {
+    var n = words.split(" ");
+    return n[n.length - 1];
+
+  }
+
   return (
     <div data-test="AthleteContainer" className={`bg-gradient-to-r from-${colorgrad1} to-${colorgrad2} flex flex-col rounded-md h-full`}>
-      <div className="flex flex-col h-1/2">
+      <div className="flex flex-col h-10/12">
         {children}
         <div className="mt-4 ml-4 text-xs">#{ID}/25000</div>
         <div className="flow-root">
-          <div className="mt-1 ml-4 text-xl float-left">{AthleteName}</div>
-          <div className="mt-1 text-3xl mr-4 float-right">{Jersey}</div>
+          <div className=" mt-1 ml-4 text-lg float-left">{AthleteName}</div>
+          <div className=" text-3xl mr-4 float-right">{Jersey}</div>
         </div>
         <div className="ml-4 text-xs">{TeamName}</div>
-        <div className="flow-root">
-          <div className="mt-3 mr-2 float-right"><img src={warriorLogo}/></div>
+        <div className="float-right">
+
+
+          <svg viewBox="-250 0 500 50">
+
+            <text y="50">{getLastWord(TeamName)}</text>
+
+          </svg>
+
         </div>
       </div>
-      <div className="relative h-1/2 bg-indigo-gray rounded-br-md rounded-bl-md">
+      <div className="relative h-2/12 bg-indigo-gray rounded-br-md rounded-bl-md">
         <div className="flex ml-2 mb-2 mt-2">
-          {pos.map(function(position, i){
+          {pos.map(function (position, i) {
             return <div className="ml-2 mr-1 w-8 h-8 rounded-full text-center bg-indigo-navy" key={i}>
               <div className="mt-1">
                 {position}
@@ -29,7 +43,7 @@ const AthleteContainer = (props) => {
             </div>
           })}
         </div>
-        <div className="absolute bottom-3 right-4">{CoinValue}</div>
+        <div className="absolute bottom-3 right-4 text-xs font-thin">{CoinValue}</div>
       </div>
     </div>
   );
