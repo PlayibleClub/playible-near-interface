@@ -32,9 +32,9 @@ const PerformerContainer = (props) => {
 
 PerformerContainer.propTypes = {
   color: PropTypes.string,
-  AthleteName: PropTypes.string.isRequired,
-  TeamName: PropTypes.string.isRequired,
-  CoinValue: PropTypes.string.isRequired,
+  AthleteName: PropTypes.string,
+  TeamName: PropTypes.string,
+  CoinValue: PropTypes.string,
   imagesrc: PropTypes.string,
   id: PropTypes.string,
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
