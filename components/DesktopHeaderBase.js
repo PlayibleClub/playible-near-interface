@@ -25,6 +25,9 @@ const DesktopHeaderBase = (props) => {
     <DesktopHeader>
 
 
+
+
+
       <Button rounded="rounded-sm " textColor="white-light" color="indigo-light" onClick={interactWallet} size="py-1 px-1 h-full" >
 
         <div className="flex flex-row text-sm h-12">

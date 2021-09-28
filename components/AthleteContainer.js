@@ -25,7 +25,7 @@ const AthleteContainer = (props) => {
         <div className="float-right">
 
 
-          <svg viewBox="-250 0 500 50">
+          <svg viewBox="0 0 500 50">
 
             <text y="50">{getLastWord(TeamName)}</text>
 

@@ -10,6 +10,12 @@ module.exports = {
         },
         extend: {}
         , colors: {
+            light: {
+                defaultcolor1: '#8160EF',
+            },
+            dark: {
+                defaultcolor1: '#2A2C42',
+            },
             indigo: {
                 light: '#2A2C42',
                 DEFAULT: '#5c6ac4',
@@ -60,7 +66,7 @@ module.exports = {
         },
         screens: {
             'iphone5': '320px',
-            'iphoneX' : '375px',
+            'iphoneX': '375px',
         }
     },
     variants: {

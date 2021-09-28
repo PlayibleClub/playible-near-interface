@@ -54,6 +54,7 @@ export default function Home() {
     const [isClosed, setClosed] = React.useState(true)
     const [filterMode, setMode] = React.useState(false)
     const [showFilter, setFilter] = React.useState(false)
+    const [darkMode, setDark] = React.useState(true)
 
     const onSubmit = (data) => {
         if (data.search)
