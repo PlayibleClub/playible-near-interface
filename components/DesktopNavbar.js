@@ -4,10 +4,9 @@ import Link from 'next/link'
 import NavButtonContainer from './NavButtonContainer.js';
 import Button from './Button.js';
 const DesktopNavbar = (props) => {
-  const { children, color } = props;
+  const { children, color, colormode, setColor } = props;
 
 
-  const [colormode, setColor] = useState("light");
 
 
 
@@ -43,6 +42,8 @@ const DesktopNavbar = (props) => {
 
 DesktopNavbar.propTypes = {
   color: PropTypes.string,
+  colormode: PropTypes.string,
+  setColor: PropTypes.func,
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
 };
 

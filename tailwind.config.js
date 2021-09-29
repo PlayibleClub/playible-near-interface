@@ -12,9 +12,14 @@ module.exports = {
         , colors: {
             light: {
                 defaultcolor1: '#8160EF',
+                defaultcolor2: '#FFFFFF',
+                defaultcolor3: '#F7FAFF',
+
             },
             dark: {
                 defaultcolor1: '#2A2C42',
+                defaultcolor2: '#36384D',
+                defaultcolor3: '#161623',
             },
             indigo: {
                 light: '#2A2C42',

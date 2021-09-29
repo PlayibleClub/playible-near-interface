@@ -54,6 +54,8 @@ export default function Home() {
     const [isClosed, setClosed] = React.useState(true)
     const [filterMode, setMode] = React.useState(false)
     const [showFilter, setFilter] = React.useState(false)
+    const [colormode, setColor] = useState("light");
+
 
     const onSubmit = (data) => {
         if (data.search)
@@ -170,13 +172,13 @@ export default function Home() {
     return (
         <>
 
-            <div className="font-montserrat h-screen relative bg-indigo-dark flex flex-row">
+            <div className={`font-montserrat h-screen relative bg-${colormode}-defaultcolor3 flex flex-row`}>
 
 
-                <DesktopNavbar> </DesktopNavbar>
+                <DesktopNavbar colormode={colormode} setColor={setColor}> </DesktopNavbar>
 
                 <div className="w-full flex flex-col">
-                    <DesktopHeaderBase></DesktopHeaderBase>
+                    <DesktopHeaderBase color={`${colormode}-defaultcolor2`} buttoncolor={`${colormode}-defaultcolor1`} ></DesktopHeaderBase>
 
                     <div className="flex flex-row h-full w-full">
                         <div className="flex flex-col h-full w-5/12">
