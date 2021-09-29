@@ -29,27 +29,28 @@ export default function OpenPackPage() {
         <div className={`font-montserrat h-screen relative ${isClosed ? "" : "overflow-y-hidden"}`}>
             <Navbar/>
             <HeaderBase/>
-
-            <Main color="indigo-dark overflow-y-scroll">
-                <div className="flex flex-col overflow-y-auto overflow-x-hidden">
-                    <PortfolioContainer title="CONGRATULATIONS!">
-                        <div className='flex justify-center'>
-                            <div className="flex overflow-x-scroll pt-16 pb-32 hide-scroll-bar snap snap-x snap-mandatory">
-                                <div className="flex flex-nowrap pt-16">
-                                    <PackComponent type="PremiumRelease3"/>
+            <div className="flex flex-col w-full h-screen">
+                <Main color="indigo-dark overflow-y-scroll">
+                    <div className="flex flex-col overflow-y-auto overflow-x-hidden">
+                        <PortfolioContainer title="CONGRATULATIONS!">
+                            <div className='flex justify-center'>
+                                <div className="flex overflow-x-scroll pt-16 pb-32 hide-scroll-bar snap snap-x snap-mandatory">
+                                    <div className="flex flex-nowrap pt-16">
+                                        <PackComponent type="PremiumRelease3"/>
+                                    </div>
+                                </div>    
+                                <div className=''>
+                                <button onClick={executePurchasePack} className="bg-indigo-buttonblue w-full h-12 text-center rounded-md text-lg">
+                                    <div className="pt-2.5">
+                                        OPEN PACK
+                                    </div>
+                                </button>
                                 </div>
-                            </div>    
-                            <div className=''>
-                            <button onClick={executePurchasePack} className="bg-indigo-buttonblue w-full h-12 text-center rounded-md text-lg">
-                                <div className="pt-2.5">
-                                    OPEN PACK
-                                </div>
-                            </button>
                             </div>
-                        </div>
-                    </PortfolioContainer>
-                </div>
-            </Main>
+                        </PortfolioContainer>
+                    </div>
+                </Main>
+            </div>
         </div>
     )
 }

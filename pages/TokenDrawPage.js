@@ -46,36 +46,38 @@ const TokenDrawPage = () => {
                         <Navbar/>
                         <HeaderBase/>
 
-                        <Main color="indigo-dark">
-                            
-                            {loading ? (
-                                <Loading/>
-                            ) : (
-                                <div className="flex flex-col overflow-y-auto overflow-x-hidden">
-                                        <div className="flex overflow-x-scroll pt-16 pb-32 hide-scroll-bar snap snap-x snap-mandatory">
-                                            <div className="flex flex-nowrap ml-16 pt-16">
-                                                {tokenList.map(function(list, i){
-                                                    return (
-                                                        <div className="inline-block px-3 ml-2.5" key={i}>
-                                                            <TokenComponent playerID={tokenList[i]}/>
-                                                        </div>
-                                                    )
-                                                })}
-                                            </div>
-                                        </div>
-
-                                        <div className='flex justify-center'> 
-                                            <Link href="/Portfolio">
-                                                <div className="bg-indigo-buttonblue w-72 h-12 mb-20 text-center rounded-md">
-                                                    <div className="mt-3">
-                                                        GO TO PORTFOLIO
-                                                    </div>
+                        <div className="flex flex-col w-full h-screen">
+                            <Main color="indigo-dark">
+                                
+                                {loading ? (
+                                    <Loading/>
+                                ) : (
+                                    <div className="flex flex-col overflow-y-auto overflow-x-hidden">
+                                            <div className="flex overflow-x-scroll pt-16 pb-32 hide-scroll-bar snap snap-x snap-mandatory">
+                                                <div className="flex flex-nowrap ml-16 pt-16">
+                                                    {tokenList.map(function(list, i){
+                                                        return (
+                                                            <div className="inline-block px-3 ml-2.5" key={i}>
+                                                                <TokenComponent playerID={tokenList[i]}/>
+                                                            </div>
+                                                        )
+                                                    })}
                                                 </div>
-                                            </Link>
-                                        </div>
-                                </div>
-                            )}
-                        </Main>
+                                            </div>
+
+                                            <div className='flex justify-center'> 
+                                                <Link href="/Portfolio">
+                                                    <div className="bg-indigo-buttonblue w-72 h-12 mb-20 text-center rounded-md">
+                                                        <div className="mt-3">
+                                                            GO TO PORTFOLIO
+                                                        </div>
+                                                    </div>
+                                                </Link>
+                                            </div>
+                                    </div>
+                                )}
+                            </Main>
+                        </div>
                     </div>
                 </div>
             </>

@@ -129,7 +129,8 @@ export default function Home() {
         <div className={`font-montserrat h-screen relative`}>
           <Navbar/>
           <HeaderBase/>
-          <div className="flex flex-col w-full ">
+          <div className="flex flex-col w-full">
+            
             <Main color="indigo-dark overflow-y-scroll">
               <div className="flex flex-col w-full h-full overflow-x-hidden">
                 <TitledContainer title="MARKETPLACE">
