@@ -58,24 +58,26 @@ const Purchase = () => {
                     children={modalMessage}
                     closeModal={closeModal}
                 />
-                <Main color="indigo-dark overflow-y-scroll">
-                    <div className="flex flex-col overflow-y-auto overflow-x-hidden">
-                        <TitledContainer title="PURCHASE PACK">
-                            <div className='flex flex-col justify-center'>
-                                <div className="justify-center">
-                                    <PackComponent type="PremiumRelease3"/>
-                                </div>
-                                <div className=''>
-                                <button onClick={() => dispatch(purchasePack({connectedWallet}))} className="bg-indigo-buttonblue w-full h-12 text-center rounded-md text-lg mt-8">
-                                    <div className="pt-2.5">
-                                        BUY PACK
+                <div className="flex flex-col w-full h-screen">
+                    <Main color="indigo-dark overflow-y-scroll">
+                        <div className="flex flex-col overflow-y-auto overflow-x-hidden">
+                            <TitledContainer title="PURCHASE PACK">
+                                <div className='flex flex-col justify-center'>
+                                    <div className="justify-center">
+                                        <PackComponent type="PremiumRelease3"/>
                                     </div>
-                                </button>
+                                    <div className=''>
+                                    <button onClick={() => dispatch(purchasePack({connectedWallet}))} className="bg-indigo-buttonblue w-full h-12 text-center rounded-md text-lg mt-8">
+                                        <div className="pt-2.5">
+                                            BUY PACK
+                                        </div>
+                                    </button>
+                                    </div>
                                 </div>
-                            </div>
-                        </TitledContainer>
-                    </div>
-                </Main>
+                            </TitledContainer>
+                        </div>
+                    </Main>
+                </div>
             </div>
         </>
     )

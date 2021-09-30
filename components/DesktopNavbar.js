@@ -5,7 +5,7 @@ const DesktopNavbar = (props) => {
   const { children, color } = props;
 
   return (
-    <div data-test="DesktopNavbar" className={`bg-${color}  text-white-light flex flex-col   w-3/12 h-screen`}>
+    <div data-test="DesktopNavbar" className={`bg-${color}  text-white-light flex flex-col w-3/12 h-screen`}>
       <div className="flex justify-center h-16">
 
         <img className="object-none mt-4" src="images/fantasylogo.png" alt="Img" />
@@ -13,12 +13,10 @@ const DesktopNavbar = (props) => {
       <div className="flex justify-center mt-10">
         <div className="flex flex-col h-1/5 w-4/6">
 
-
           <NavButtonContainer imagesrc="images/navicons/icon_home.png" Title="Dashboard"></NavButtonContainer>
           <NavButtonContainer imagesrc="images/navicons/icon_portfolio.png" Title="Portfolio"></NavButtonContainer>
           <NavButtonContainer imagesrc="images/navicons/icon_packs.png" Title="Packs"></NavButtonContainer>
           <NavButtonContainer imagesrc="images/navicons/icon_marketplace.png" Title="Marketplace"></NavButtonContainer>
-
 
         </div>
       </div>
