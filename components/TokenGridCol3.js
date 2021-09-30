@@ -1,24 +1,24 @@
 import PropTypes from 'prop-types';
 
-const Main = (props) => {
+const TokenGridCol3 = (props) => {
   const { children, color } = props;
 
   return (
-    <div data-test="Main" className={`bg-${color} flex flex-col w-full h-full iphone5:overflow-y-scroll lg:overflow-y-auto order-last iphone5:mt-24 md:mt-0 z-0`}>
+    <div data-test="TokenGridCol3" className={`bg-${color} grid justify-items-center gap-x-1 gap-y-2 grid-cols-3 w-full h-full`}>
       {children}
     </div>
   );
 };
 
-Main.propTypes = {
+TokenGridCol3.propTypes = {
   color: PropTypes.string,
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
 };
 
-Main.defaultProps = {
-  color: 'blue',
+TokenGridCol3.defaultProps = {
+  color: 'pink',
   // children: <div>Fantasy investr</div>
   children: <div />,
 };
 
-export default Main;
+export default TokenGridCol3;

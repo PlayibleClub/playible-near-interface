@@ -153,7 +153,7 @@ export default function Packs() {
                     <DesktopNavbar/>
                     <div className="flex flex-col w-full">
                         <Main color="indigo-dark">
-                            <div className="flex flex-col w-full h-full overflow-y-scroll overflow-x-hidden">
+                            <div className="flex flex-col w-full h-full overflow-x-hidden">
                                 <PortfolioContainer title="PACKS">
                                     <div className="flex float-left mt-12 lg:ml-12 md:ml-2 md:mt-4">
                                         {

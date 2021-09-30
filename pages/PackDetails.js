@@ -5,6 +5,8 @@ import TitledContainer from '../components/TitledContainer';
 import { useRouter } from 'next/router';
 import Image from 'next/image'
 import HeaderBack from '../components/HeaderBack';
+import underlineIcon from '../public/images/blackunderline.png'
+import Link from 'next/link';
 
 const packList = [
     {
@@ -36,6 +38,7 @@ export default function PackDetails(props) {
 
     const [isNarrowScreen, setIsNarrowScreen] = useState(false);
     const { query } = useRouter();
+    const [displayModal, setModal] = useState(false);
 
     useEffect(() => {
         // set initial value
@@ -56,7 +59,7 @@ export default function PackDetails(props) {
     if (isNarrowScreen) {
         return (
             <>
-            <div className="font-montserrat h-screen relative bg-indigo-dark">
+                <div className="font-montserrat h-screen relative bg-indigo-dark">
                     <HeaderBack link="/Packs"/>
                     <div className="flex">
                         <div className="w-full">
@@ -119,11 +122,58 @@ export default function PackDetails(props) {
     } else return (
             <>
                 <div className="font-montserrat h-screen relative bg-indigo-dark">
+                    { displayModal ?
+                        <>
+                            <div className="fixed w-screen h-screen bg-opacity-70 z-50 overflow-auto bg-indigo-gray flex">
+                                <div className="relative p-8 bg-indigo-white w-80 h-96 m-auto flex-col flex rounded-lg">
+                                    <button onClick={()=>{setModal(false)}}>
+                                        <div className="absolute top-0 right-0 p-4 font-black">
+                                            X
+                                        </div>
+                                    </button>
+
+                                    <div className="font-bold flex flex-col">
+                                        CONGRATULATIONS!
+                                        <img src={underlineIcon} className="sm:object-none md:w-6" />
+                                    </div>
+
+                                    {packList.map(function(data,i){
+                                        if(query.id === data.key){
+                                            return (
+                                                <div className="flex flex-col" key={i}>
+                                                    <img src={data.image}/>
+
+                                                    <div className="flex flex-col text-center">
+                                                        <div className="font-bold">
+                                                            {data.name}
+                                                        </div>
+                                                        <div className="font-thin text-sm mb-4">
+                                                            Release {data.release}
+                                                        </div>
+
+                                                        <Link href="/TokenDrawPage">
+                                                            <button className="bg-indigo-buttonblue w-60 h-10 text-center rounded-md text-md self-center text-indigo-white font-black">
+                                                                <div className="">
+                                                                    OPEN PACK
+                                                                </div>
+                                                            </button>
+                                                        </Link>
+                                                    </div>
+                                                </div>
+                                            )
+                                        }
+                                    })}
+                                </div>
+                            </div>
+                        </>
+                    :
+                        <></>
+                    }
                     <div className="flex">
                         <DesktopNavbar/>
                         <div className="w-full">
                             <Main color="indigo-dark">
-                                <div className="flex flex-col w-full h-full overflow-y-scroll overflow-x-hidden">
+                                <div className="flex flex-col w-full h-full overflow-y-hidden overflow-x-hidden">
                                     <div className="mt-20 ml-24">
                                         <TitledContainer title={`
                                             ${query.id.includes("prem") ? "PREMIUM PACK" : ""} 
@@ -154,7 +204,7 @@ export default function PackDetails(props) {
                                                                 </div>
 
                                                                 <button className="bg-indigo-buttonblue w-72 h-10 text-center rounded-md text-md mt-12">
-                                                                    <div className="">
+                                                                    <div className="" onClick={()=>{setModal(true)}}>
                                                                         BUY NOW
                                                                     </div>
                                                                 </button>
