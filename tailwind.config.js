@@ -41,6 +41,10 @@ module.exports = {
                 green: '#61CD73',
 
             },
+            navbarblend: {
+                color1: '#5927FF',
+                color2: '#8160EF',
+            },
             white: {
                 light: '#FFFFFF'
             },

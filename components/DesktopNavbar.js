@@ -13,7 +13,7 @@ const DesktopNavbar = (props) => {
 
 
   return (
-    <div data-test="DesktopNavbar" className={`bg-${colormode}-defaultcolor1  text-white-light flex flex-col   w-3/12 h-screen`}>
+    <div data-test="DesktopNavbar" className={`  ${colormode == 'light' ? 'bg-gradient-to-t from-navbarblend-color1 to-navbarblend-color2' : 'bg-dark-defaultcolor1'}  text-white-light flex flex-col   w-3/12 h-screen`}>
       <div className="flex justify-center h-16">
 
         <img className="object-none mt-4" src="images/fantasylogo.png" alt="Img" />
