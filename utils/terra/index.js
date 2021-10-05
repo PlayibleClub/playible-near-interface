@@ -7,8 +7,8 @@ import {
 import { MsgExecuteContract, LCDClient } from '@terra-money/terra.js';
 
 export const terra = new LCDClient({
-  URL: 'https://tequila-lcd.terra.dev',
-  chainID: 'tequila-0004',
+  URL: 'https://bombay-lcd.terra.dev',
+  chainID: 'bombay-12',
 });
 
 export const queryContract = async (contractAddr, queryMsg) => {
@@ -54,6 +54,7 @@ export const executeContract = async (connectedWallet, contractAddr, executeMsg,
       }
   })
   } catch (error){
+    console.log(error)
     throw `Failed to connect to wallet`
   }
   return txResult
