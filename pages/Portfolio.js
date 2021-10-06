@@ -15,96 +15,98 @@ import { useConnectedWallet } from '@terra-money/wallet-provider';
 import TokenGridCol2 from '../components/TokenGridCol2';
 import Loading from '../components/Loading';
 import * as statusCode from '../data/constants/status'
+import Link from 'next/link'
+import DesktopNavbar from '../components/DesktopNavbar';
 
-// const playerList = [ // player list for testing purposes
-//     {
-//         name: 'STEPHEN CURRY',
-//         team: 'Golden State Warriors',
-//         id: '320',
-//         cost: '420 UST',
-//         jersey: '30',
-//         positions: ['PG', 'SG'],
-//         avgscore: '86.3',
-//         grad1: 'indigo-blue',
-//         grad2: 'indigo-bluegrad',
-//     },
-//     {
-//         name: 'TAUREAN PRINCE',
-//         team: 'Minnesota Timberwolves',
-//         id: '14450',
-//         cost: '41 UST',
-//         jersey: '12',
-//         positions: ['PG'],
-//         avgscore: '66.5',
-//         grad1: 'indigo-purple',
-//         grad2: 'indigo-purplegrad',
-//     },
-//     {
-//         name: 'LEBRON JAMES',
-//         team: 'Los Angeles Lakers',
-//         id: '25',
-//         cost: '840 UST',
-//         jersey: '23',
-//         positions: ['PG', 'SG'],
-//         avgscore: '96.0',
-//         grad1: 'indigo-purple',
-//         grad2: 'indigo-purplegrad',
-//     },
-//     {
-//         name: 'DEVIN BOOKER',
-//         team: 'Phoenix Suns',
-//         id: '16450',
-//         cost: '21 UST',
-//         jersey: '01',
-//         positions: ['SF', 'C'],
-//         avgscore: '76.8',
-//         grad1: 'indigo-darkblue',
-//         grad2: 'indigo-darkbluegrad',
-//     },
-//     {
-//         name: 'ARMONI BROOKS',
-//         team: 'Houston Rockets',
-//         id: '21300',
-//         cost: '45.5 UST',
-//         jersey: '23',
-//         positions: ['SG', 'C'],
-//         avgscore: '81.0',
-//         grad1: 'indigo-blue',
-//         grad2: 'indigo-bluegrad',
-//     },
-//     {
-//         name: 'KEVIN DURANT',
-//         team: 'Brooklyn Nets',
-//         id: '12300',
-//         cost: '180 UST',
-//         jersey: '07',
-//         positions: ['PG'],
-//         avgscore: '83.0',
-//         grad1: 'indigo-black',
-//         grad2: 'indigo-red',
-//     },
-//     {
-//         name: 'KOBE BRYANT',
-//         team: 'Los Angeles Lakers',
-//         id: '999',
-//         cost: '999 UST',
-//         jersey: '24',
-//         positions: ['SG'],
-//         avgscore: '96.0',
-//         grad1: 'indigo-purple',
-//         grad2: 'indigo-purplegrad',
-//     },
-//     // {
-//     //     name: '',
-//     //     team: '',
-//     //     id: '',
-//     //     cost: '',
-//     //     jersey: '',
-//     //     positions: [],
-//     //     grad1: '',
-//     //     grad2: '',
-//     // },
-// ]
+const playerList = [ // player list for testing purposes
+    {
+        name: 'STEPHEN CURRY',
+        team: 'Golden State Warriors',
+        id: '320',
+        cost: '420 UST',
+        jersey: '30',
+        positions: ['PG', 'SG'],
+        avgscore: '86.3',
+        grad1: 'indigo-blue',
+        grad2: 'indigo-bluegrad',
+    },
+    {
+        name: 'TAUREAN PRINCE',
+        team: 'Minnesota Timberwolves',
+        id: '14450',
+        cost: '41 UST',
+        jersey: '12',
+        positions: ['PG'],
+        avgscore: '66.5',
+        grad1: 'indigo-purple',
+        grad2: 'indigo-purplegrad',
+    },
+    {
+        name: 'LEBRON JAMES',
+        team: 'Los Angeles Lakers',
+        id: '25',
+        cost: '840 UST',
+        jersey: '23',
+        positions: ['PG', 'SG'],
+        avgscore: '96.0',
+        grad1: 'indigo-purple',
+        grad2: 'indigo-purplegrad',
+    },
+    {
+        name: 'DEVIN BOOKER',
+        team: 'Phoenix Suns',
+        id: '16450',
+        cost: '21 UST',
+        jersey: '01',
+        positions: ['SF', 'C'],
+        avgscore: '76.8',
+        grad1: 'indigo-darkblue',
+        grad2: 'indigo-darkbluegrad',
+    },
+    {
+        name: 'ARMONI BROOKS',
+        team: 'Houston Rockets',
+        id: '21300',
+        cost: '45.5 UST',
+        jersey: '23',
+        positions: ['SG', 'C'],
+        avgscore: '81.0',
+        grad1: 'indigo-blue',
+        grad2: 'indigo-bluegrad',
+    },
+    {
+        name: 'KEVIN DURANT',
+        team: 'Brooklyn Nets',
+        id: '12300',
+        cost: '180 UST',
+        jersey: '07',
+        positions: ['PG'],
+        avgscore: '83.0',
+        grad1: 'indigo-black',
+        grad2: 'indigo-red',
+    },
+    {
+        name: 'KOBE BRYANT',
+        team: 'Los Angeles Lakers',
+        id: '999',
+        cost: '999 UST',
+        jersey: '24',
+        positions: ['SG'],
+        avgscore: '96.0',
+        grad1: 'indigo-purple',
+        grad2: 'indigo-purplegrad',
+    },
+    // {
+    //     name: '',
+    //     team: '',
+    //     id: '',
+    //     cost: '',
+    //     jersey: '',
+    //     positions: [],
+    //     grad1: '',
+    //     grad2: '',
+    // },
+]
 
 const Portfolio = () => {
 
@@ -117,7 +119,7 @@ const Portfolio = () => {
     const [showFilter, setFilter] = useState(false)
     const [loading, setLoading] = useState(true);
     
-    const { tokenList: playerList, status } = useSelector((state) => state.contract.portfolio);
+    // const { tokenList: playerList, status } = useSelector((state) => state.contract.portfolio);
 
     const dispatch = useDispatch();
     const connectedWallet = useConnectedWallet();
@@ -182,9 +184,8 @@ const Portfolio = () => {
     if (!isNarrowScreen) {
     return (
         <>
-            <div className={`font-montserrat h-screen relative`}>
-                <Navbar/>
-                <HeaderBase/>
+            <div className={`font-montserrat h-screen relative flex`}>
+                <DesktopNavbar/>
 
                 <div className="flex flex-col w-full h-screen">
                 <Main color="indigo-dark">
@@ -292,18 +293,20 @@ const Portfolio = () => {
                                             const searchInfo = result.toLowerCase()
                                             if (toFindName.includes(searchInfo) || toFindTeam.includes(searchInfo) || player.jersey.includes(searchInfo))
                                                 return (
-                                                    <div className='mb-4' key={i}>
-                                                        <AthleteContainer
-                                                            AthleteName={player.name}
-                                                            TeamName={player.team}
-                                                            ID={player.id}
-                                                            CoinValue={player.cost}
-                                                            Jersey={player.jersey}
-                                                            Positions={player.positions}
-                                                            colorgrad1={player.grad1}
-                                                            colorgrad2={player.grad2}
-                                                        />
-                                                    </div>
+                                                    <Link href={`/PlayerDetails?id=${player.id}`}>
+                                                        <div className='mb-4' key={i}>
+                                                            <AthleteContainer
+                                                                AthleteName={player.name}
+                                                                TeamName={player.team}
+                                                                ID={player.id}
+                                                                CoinValue={player.cost}
+                                                                Jersey={player.jersey}
+                                                                Positions={player.positions}
+                                                                colorgrad1={player.grad1}
+                                                                colorgrad2={player.grad2}
+                                                            />
+                                                        </div>
+                                                    </Link>
                                             )
                                         })
                                         :
@@ -314,54 +317,60 @@ const Portfolio = () => {
                                             if (posFilter === "" && teamFilter === "") {
                                                 // console.log("no filter")
                                                 return (
-                                                    <div className='mb-4' key={i}>
-                                                        <AthleteContainer
-                                                            AthleteName={player.name}
-                                                            TeamName={player.team}
-                                                            ID={player.id}
-                                                            CoinValue={player.cost}
-                                                            Jersey={player.jersey}
-                                                            Positions={player.positions}
-                                                            colorgrad1={player.grad1}
-                                                            colorgrad2={player.grad2}
-                                                        />
-                                                    </div>
+                                                    <Link href={`/PlayerDetails?id=${player.id}`}>
+                                                        <div className='mb-4' key={i}>
+                                                            <AthleteContainer
+                                                                AthleteName={player.name}
+                                                                TeamName={player.team}
+                                                                ID={player.id}
+                                                                CoinValue={player.cost}
+                                                                Jersey={player.jersey}
+                                                                Positions={player.positions}
+                                                                colorgrad1={player.grad1}
+                                                                colorgrad2={player.grad2}
+                                                            />
+                                                        </div>
+                                                    </Link>
                                                 )
                                             }
                                             else if (posFilter !== "" && teamFilter !== "") {
                                                 // console.log("pos and team code")
                                                 if (player.positions.includes(posFilter) && toFindTeam.includes(teamFilter.toLowerCase()))
                                                     return (
-                                                        <div className='mb-4' key={i}>
-                                                            <AthleteContainer
-                                                                AthleteName={player.name}
-                                                                TeamName={player.team}
-                                                                ID={player.id}
-                                                                CoinValue={player.cost}
-                                                                Jersey={player.jersey}
-                                                                Positions={player.positions}
-                                                                colorgrad1={player.grad1}
-                                                                colorgrad2={player.grad2}
-                                                            />
-                                                        </div>
+                                                        <Link href={`/PlayerDetails?id=${player.id}`}>
+                                                            <div className='mb-4' key={i}>
+                                                                <AthleteContainer
+                                                                    AthleteName={player.name}
+                                                                    TeamName={player.team}
+                                                                    ID={player.id}
+                                                                    CoinValue={player.cost}
+                                                                    Jersey={player.jersey}
+                                                                    Positions={player.positions}
+                                                                    colorgrad1={player.grad1}
+                                                                    colorgrad2={player.grad2}
+                                                                />
+                                                            </div>
+                                                        </Link>
                                                     )
                                             }
                                             else if (teamFilter !== "") {
                                                 // console.log("team code")
                                                 if (toFindTeam.includes(teamFilter.toLowerCase())) {
                                                     return (
-                                                        <div className='mb-4' key={i}>
-                                                            <AthleteContainer
-                                                                AthleteName={player.name}
-                                                                TeamName={player.team}
-                                                                ID={player.id}
-                                                                CoinValue={player.cost}
-                                                                Jersey={player.jersey}
-                                                                Positions={player.positions}
-                                                                colorgrad1={player.grad1}
-                                                                colorgrad2={player.grad2}
-                                                            />
-                                                        </div>
+                                                        <Link href={`/PlayerDetails?id=${player.id}`}>
+                                                            <div className='mb-4' key={i}>
+                                                                <AthleteContainer
+                                                                    AthleteName={player.name}
+                                                                    TeamName={player.team}
+                                                                    ID={player.id}
+                                                                    CoinValue={player.cost}
+                                                                    Jersey={player.jersey}
+                                                                    Positions={player.positions}
+                                                                    colorgrad1={player.grad1}
+                                                                    colorgrad2={player.grad2}
+                                                                />
+                                                            </div>
+                                                        </Link>
                                                     )
                                                 }
                                             }
@@ -369,18 +378,20 @@ const Portfolio = () => {
                                                 // console.log("posFilter code")
                                                 if (player.positions.includes(posFilter)) {
                                                     return (
-                                                        <div className='mb-4' key={i}>
-                                                            <AthleteContainer
-                                                                AthleteName={player.name}
-                                                                TeamName={player.team}
-                                                                ID={player.id}
-                                                                CoinValue={player.cost}
-                                                                Jersey={player.jersey}
-                                                                Positions={player.positions}
-                                                                colorgrad1={player.grad1}
-                                                                colorgrad2={player.grad2}
-                                                            />
-                                                        </div>
+                                                        <Link href={`/PlayerDetails?id=${player.id}`}>
+                                                            <div className='mb-4' key={i}>
+                                                                <AthleteContainer
+                                                                    AthleteName={player.name}
+                                                                    TeamName={player.team}
+                                                                    ID={player.id}
+                                                                    CoinValue={player.cost}
+                                                                    Jersey={player.jersey}
+                                                                    Positions={player.positions}
+                                                                    colorgrad1={player.grad1}
+                                                                    colorgrad2={player.grad2}
+                                                                />
+                                                            </div>
+                                                        </Link>
                                                     )
                                                 }
                                             }
@@ -504,9 +515,11 @@ const Portfolio = () => {
                                             const searchInfo = result.toLowerCase()
                                             if (toFindName.includes(searchInfo) || toFindTeam.includes(searchInfo) || player.jersey.includes(searchInfo))
                                                 return (
-                                                    <div className='mb-8' key={i}>
-                                                        <PerformerContainer AthleteName={player.name} AvgScore={player.avgscore} id={player.id}/>
-                                                    </div>
+                                                    <Link href={`/PlayerDetails?id=${player.id}`}>
+                                                        <div className='mb-8' key={i}>
+                                                            <PerformerContainer AthleteName={player.name} AvgScore={player.avgscore} id={player.id}/>
+                                                        </div>
+                                                    </Link>
                                             )
                                         })
                                         :
@@ -517,27 +530,33 @@ const Portfolio = () => {
                                             if (posFilter === "" && teamFilter === "") {
                                                 // console.log("no filter")
                                                 return (
-                                                    <div className='mb-8' key={i}>
-                                                        <PerformerContainer AthleteName={player.name} AvgScore={player.avgscore} id={player.id}/>
-                                                    </div>
+                                                    <Link href={`/PlayerDetails?id=${player.id}`}>
+                                                        <div className='mb-8' key={i}>
+                                                            <PerformerContainer AthleteName={player.name} AvgScore={player.avgscore} id={player.id}/>
+                                                        </div>
+                                                    </Link>
                                                 )
                                             }
                                             else if (posFilter !== "" && teamFilter !== "") {
                                                 // console.log("pos and team code")
                                                 if (player.positions.includes(posFilter) && toFindTeam.includes(teamFilter.toLowerCase()))
                                                     return (
-                                                        <div className='mb-8' key={i}>
-                                                            <PerformerContainer AthleteName={player.name} AvgScore={player.avgscore} id={player.id}/>
-                                                        </div>
+                                                        <Link href={`/PlayerDetails?id=${player.id}`}>
+                                                            <div className='mb-8' key={i}>
+                                                                <PerformerContainer AthleteName={player.name} AvgScore={player.avgscore} id={player.id}/>
+                                                            </div>
+                                                        </Link>
                                                     )
                                             }
                                             else if (teamFilter !== "") {
                                                 // console.log("team code")
                                                 if (toFindTeam.includes(teamFilter.toLowerCase())) {
                                                     return (
-                                                        <div className='mb-12' key={i}>
-                                                            <PerformerContainer AthleteName={player.name} AvgScore={player.avgscore} id={player.id}/>
-                                                        </div>
+                                                        <Link href={`/PlayerDetails?id=${player.id}`}>
+                                                            <div className='mb-12' key={i}>
+                                                                <PerformerContainer AthleteName={player.name} AvgScore={player.avgscore} id={player.id}/>
+                                                            </div>
+                                                        </Link>
                                                     )
                                                 }
                                             }
@@ -545,9 +564,11 @@ const Portfolio = () => {
                                                 // console.log("posFilter code")
                                                 if (player.positions.includes(posFilter)) {
                                                     return (
-                                                        <div className='mb-8' key={i}>
-                                                            <PerformerContainer AthleteName={player.name} AvgScore={player.avgscore} id={player.id}/>
-                                                        </div>
+                                                        <Link href={`/PlayerDetails?id=${player.id}`}>
+                                                            <div className='mb-8' key={i}>
+                                                                <PerformerContainer AthleteName={player.name} AvgScore={player.avgscore} id={player.id}/>
+                                                            </div>
+                                                        </Link>
                                                     )
                                                 }
                                             }
