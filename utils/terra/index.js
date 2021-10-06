@@ -22,9 +22,10 @@ export const queryContract = async (contractAddr, queryMsg) => {
 export const executeContract = async (connectedWallet, contractAddr, executeMsg, coins={}) => {
   const txResult = {
     txResult: null,
+    txInfo: null,
     txError: null
   };
-  
+
   const executeContractMsg = [
     new MsgExecuteContract(
       connectedWallet.walletAddress,  // Wallet Address
@@ -41,8 +42,19 @@ export const executeContract = async (connectedWallet, contractAddr, executeMsg,
       msgs: executeContractMsg,
       fee: estimatedFee
       // gasAdjustment: 1.1,
-    }).then((result) => {
+    }).then(async (result) => {
+      let hasRetrievedTxHash = true;
       txResult.txResult = result;
+      while(hasRetrievedTxHash){
+        //try to query transaction info every 2 seconds until the transaction is reflected in the block
+        await terra.tx.txInfo(result.result.txhash).then((result) => {
+          txResult.txInfo = result;
+          hasRetrievedTxHash = false;
+        }).catch(async () => {
+          await new Promise(resolve => setTimeout(resolve, 2000));
+        })
+      }
+
     }).catch((error) => {
       if (error instanceof UserDenied) {
         throw 'User Denied';
@@ -62,5 +74,7 @@ export const executeContract = async (connectedWallet, contractAddr, executeMsg,
     console.log(error)
     throw `Failed to connect to wallet`
   }
+
+  
   return txResult
 }
