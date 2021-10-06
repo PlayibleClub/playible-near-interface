@@ -45,7 +45,7 @@ const ContractInteraction = () => {
   }
 
   const performExecuteContract = async () => {
-    const result = await executeContract(connectedWallet, contractAddr, executeMsg, offeredCoin);
+    const result = await executeContract(connectedWallet, contractAddr, executeMsg);
     result.txError == null ? setTxResults(result.txResult) : setTxResults(result.txError);
     //dispatch(executeContract({contractAddr, executeMsg, connectedWallet}));
   }

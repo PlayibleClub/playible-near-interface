@@ -1,10 +1,11 @@
 import {
   UserDenied,
   CreateTxFailed,
+  TxFailed,
   Timeout,
   TxUnspecifiedError
 } from '@terra-money/wallet-provider';
-import { MsgExecuteContract, LCDClient } from '@terra-money/terra.js';
+import { MsgExecuteContract, LCDClient, StdFee, Coins } from '@terra-money/terra.js';
 
 export const terra = new LCDClient({
   URL: 'https://bombay-lcd.terra.dev',
@@ -18,23 +19,27 @@ export const queryContract = async (contractAddr, queryMsg) => {
   )
 };
 
-export const executeContract = async (connectedWallet, contractAddr, executeMsg, coinAmount) => {
+export const executeContract = async (connectedWallet, contractAddr, executeMsg, coins={}) => {
   const txResult = {
     txResult: null,
     txError: null
   };
-  const parsedAmount = (Number.isNaN(parseFloat(coinAmount))) ? 2 : parseFloat(coinAmount);
+  
+  const executeContractMsg = [
+    new MsgExecuteContract(
+      connectedWallet.walletAddress,  // Wallet Address
+      contractAddr,                   // Contract Address
+      JSON.parse(executeMsg),         // ExecuteMsg
+      coins
+    ),  
+  ]
+
+  const estimatedFee = await terra.tx.estimateFee(connectedWallet.walletAddress, executeContractMsg)
+
   try {
     await connectedWallet.post({
-      msgs: [
-        new MsgExecuteContract(
-          connectedWallet.walletAddress,  // Wallet Address
-          contractAddr,                   // Contract Address
-          JSON.parse(executeMsg),         // ExecuteMsg
-          { uluna: parsedAmount * 1_000_000 },
-        ),  
-      ],
-      // gasPrices: new StdFee(10_000_000, { uluna: 2000000 }).gasPrices(),
+      msgs: executeContractMsg,
+      fee: estimatedFee
       // gasAdjustment: 1.1,
     }).then((result) => {
       txResult.txResult = result;
