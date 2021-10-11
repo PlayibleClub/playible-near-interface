@@ -11,6 +11,7 @@ import Main from '../components/Main';
 import TitledContainer from '../components/TitledContainer';
 import RoundedContainer from '../components/RoundedContainer';
 import DesktopDashboard from '../components/DesktopDashboard';
+import DesktopDashboard2 from '../components/DesktopDashboard2';
 import TokenGridCol2 from '../components/TokenGridCol2';
 // import Roundedinput from '../components/Roundedinput';
 import AthleteContainer from '../components/AthleteContainer';
@@ -138,17 +139,17 @@ export default function Home() {
             <Main color="indigo-dark overflow-y-scroll">
               <div className="flex flex-col w-full h-full overflow-x-hidden">
                 <TitledContainer title="MARKETPLACE">
-                    <HorizontalScrollContainer>
-                      <div className="ml-3 mt-4 flex">
-                        {marketplaceList.map(function(data, i){
-                          return (
-                              <HorizontalContainer> 
-                                <AthleteTokenContainer AthleteName={data.name} CoinValue={data.value} />
-                              </HorizontalContainer>
-                          )
-                        })}
-                      </div>
-                    </HorizontalScrollContainer>
+                  <HorizontalScrollContainer>
+                    <div className="ml-3 mt-4 flex">
+                      {marketplaceList.map(function (data, i) {
+                        return (
+                          <HorizontalContainer>
+                            <AthleteTokenContainer AthleteName={data.name} CoinValue={data.value} />
+                          </HorizontalContainer>
+                        )
+                      })}
+                    </div>
+                  </HorizontalScrollContainer>
                 </TitledContainer>
 
                 <TitledContainer title="PLAY">
@@ -161,7 +162,7 @@ export default function Home() {
                 </TitledContainer>
 
                 <TitledContainer className="flex" title="GAME RESULTS">
-                  <GameresultsComponent/>
+                  <GameresultsComponent />
                 </TitledContainer>
 
                 <TitledContainer align="justify-start" className="flex flex-col w-full justify-start" title="TOP PERFORMERS">
@@ -182,10 +183,10 @@ export default function Home() {
                   </div> */}
 
                   <TokenGridCol2>
-                    {topPerformerList.map(function(data, i){
+                    {topPerformerList.map(function (data, i) {
                       return (
                         <div className="mt-2 mb-4">
-                          <PerformerContainer AthleteName={data.name} CoinValue={data.value} id={data.id} AvgScore={data.avgscore}/>
+                          <PerformerContainer AthleteName={data.name} CoinValue={data.value} id={data.id} AvgScore={data.avgscore} />
                         </div>
                       )
                     })}
@@ -194,9 +195,9 @@ export default function Home() {
 
                 <TitledContainer title="PACKS">
                   <HorizontalScrollContainer>
-                    {packList.map(function(data, i){
-                      return(
-                        <HorizontalContainer><PackContainer AthleteName={data.name} releaseValue={data.release} CoinValue={data.value}/></HorizontalContainer>
+                    {packList.map(function (data, i) {
+                      return (
+                        <HorizontalContainer><PackContainer AthleteName={data.name} releaseValue={data.release} CoinValue={data.value} /></HorizontalContainer>
                       )
                     })}
                   </HorizontalScrollContainer>
@@ -211,7 +212,7 @@ export default function Home() {
 
 
   } else {
-    return (<DesktopDashboard></DesktopDashboard>);
+    return (<DesktopDashboard2></DesktopDashboard2>);
   }
 
 
