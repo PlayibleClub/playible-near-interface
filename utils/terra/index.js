@@ -41,6 +41,7 @@ export const executeContract = async (connectedWallet, contractAddr, executeMsg,
     await connectedWallet.post({
       msgs: executeContractMsg,
       fee: estimatedFee
+      //fee: new StdFee(600_000, { uusd: 90000 }) 
       // gasAdjustment: 1.1,
     }).then(async (result) => {
       let hasRetrievedTxHash = true;
