@@ -7,7 +7,7 @@ const GameResultContainer = (props) => {
     <div data-test="GameResultContainer" className={`bg-${color} flex flex-col justify-center w-full`}>
 
 
-      <div className="flex flex-row justify-between mb-8 mt-8 self-center w-11/12">
+      <div className="flex flex-row justify-between mb-4 mt-3 self-center w-11/12">
         <img src="images/trophy.png" alt="Img" className="flex transform scale-x-75 scale-y-50" />
         <div className="text-xs font-thin">{date}</div>
         <div className="flex flex-col">
@@ -21,7 +21,7 @@ const GameResultContainer = (props) => {
 
 
       </div>
-      <hr className="w-10/12 self-center opacity-25"/>
+      <hr className="w-10/12 self-center opacity-25" />
     </div>
   );
 };
@@ -37,7 +37,7 @@ GameResultContainer.propTypes = {
 
 GameResultContainer.defaultProps = {
 
-  color: 'indigo-light',
+  color: 'indigo-x',
   date: '07/12/21',
   rank: '07',
   points: '78.4',

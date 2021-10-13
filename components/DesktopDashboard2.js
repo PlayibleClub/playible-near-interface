@@ -18,7 +18,7 @@ import Roundedinput from '../components/Roundedinput';
 import AthleteContainer from './AthleteContainer';
 import PerformerContainer from './PerformerContainer';
 import GameResultContainer from './GameResultContainer';
-import GameresultsComponent from './GameresultsComponent';
+import GameresultsComponentDesktop from './GameresultsComponentDesktop';
 import PackContainer from './PackContainer';
 
 
@@ -30,7 +30,7 @@ import filterIcon from '../public/images/filter.png'
 import searchIcon from '../public/images/search.png'
 
 import AthleteTokenContainer from './AthleteTokenContainer';
-
+import AthleteTokenContainerDesktop from './AthleteTokenContainerDesktop';
 
 export default function Home() {
     const { status, connect, disconnect, availableConnectTypes } = useWallet();
@@ -215,7 +215,7 @@ export default function Home() {
 
 
                                                     {playerList.map((player) => (
-                                                        <AthleteTokenContainer AthleteName={player.name} CoinValue={player.cost} />
+                                                        <AthleteTokenContainerDesktop AthleteName={player.name} CoinValue={player.cost} />
 
 
                                                     ))}
@@ -255,16 +255,18 @@ export default function Home() {
                             <div className="">
 
                                 <DashboardRoundedContainer margin="ml-6" colormode={colormode} title="PACKS">
-                                    <div className=" h-52 flex justify-center mt-10">
-                                        <HorizontalScrollContainer>
+
+                                    <HorizontalScrollContainer>
+                                        <div className="flex mt-1">
                                             {packList.map(function (data, i) {
                                                 return (
                                                     <HorizontalContainer><PackContainer AthleteName={data.name} releaseValue={data.release} CoinValue={data.value} /></HorizontalContainer>
                                                 )
                                             })}
-                                        </HorizontalScrollContainer>
+                                        </div>
+                                    </HorizontalScrollContainer>
 
-                                    </div>
+
                                 </DashboardRoundedContainer>
 
 
@@ -276,27 +278,15 @@ export default function Home() {
                         <div className="flex flex-col h-full w-5/12">
 
                             <DashboardRoundedContainer margin="ml-1" colormode={colormode} title="GAME RESULTS">
-                                <div className=" h-80 flex justify-center mt-10">
-                                    <ul className="w-11/12">
-                                        {resultlist.map((data) => (
-                                            <li>
-                                                <div>
-                                                    <div className="flex flex col justify-between w-full text-xs font-thin mb-3 mt-5">
-                                                        <div>{data.date}</div>
-                                                        <div> {data.points}</div>
-
-                                                    </div>
-                                                    <hr className="w-full self-center opacity-25 mb-4" />
-                                                </div>
-                                            </li>
-                                        ))}
-                                    </ul>
+                                <div className="flex justify-center mt-4 h-auto w-full">
+                                    <GameresultsComponentDesktop></GameresultsComponentDesktop>
 
                                 </div>
+
                             </DashboardRoundedContainer>
                             <div className=" h-auto">
                                 <DashboardRoundedContainer margin="ml-1" colormode={colormode} title="TOP PERFORMERS">
-                                    <div className=" flex justify-center mt-10">
+                                    <div className=" flex flex-col justify-center mt-10 ">
                                         <div data-test="2columngrid" className={`h-full grid  gap-x-2 gap-y-2 grid-cols-2 `}>
 
                                             {playerList.map((player) => (
@@ -307,6 +297,8 @@ export default function Home() {
                                             ))}
 
                                         </div>
+
+                                        <div className="h-24"></div>
 
                                     </div>
                                 </DashboardRoundedContainer>
