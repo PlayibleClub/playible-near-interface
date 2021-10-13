@@ -31,7 +31,7 @@ export const estimateFee = async (walletAddress, executeContractMsg, gasPrices =
   return estimatedFee
 }
 
-export const executeContract = async (connectedWallet, contractAddr, executeMsg, estimatedFee = null, coins={ uusd: 100_000_000 }) => {
+export const executeContract = async (connectedWallet, contractAddr, executeMsg, estimatedFee = null, coins={}) => {
   const txResult = {
     txResult: null,
     txInfo: null,
