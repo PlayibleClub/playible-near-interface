@@ -190,7 +190,7 @@ export default function Home() {
     return (
         <>
 
-            <div className={`font-montserrat h-screen relative bg-${colormode}-defaultcolor3 flex flex-row`}>
+            <div className={`font-montserrat h-screen pb-2 relative bg-${colormode}-defaultcolor3 flex flex-row`}>
 
 
                 <DesktopNavbar colormode={colormode} setColor={setColor}> </DesktopNavbar>
