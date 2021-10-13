@@ -19,7 +19,19 @@ export const queryContract = async (contractAddr, queryMsg) => {
   )
 };
 
-export const executeContract = async (connectedWallet, contractAddr, executeMsg, coins={}) => {
+export const estimateFee = async (walletAddress, executeContractMsg, gasPrices = { uusd: 0.456 }, feeDenoms = ["uusd"]) => {
+  const estimatedFee = await terra.tx.estimateFee(
+    walletAddress, 
+    executeContractMsg, 
+    { gasPrices: gasPrices, feeDenoms: feeDenoms } //use UST as gas by default
+  )
+  .catch((error) => {
+    throw `Estimate Fee Error: ${error instanceof Error ? error.message : String(error)}`;
+  })
+  return estimatedFee
+}
+
+export const executeContract = async (connectedWallet, contractAddr, executeMsg, estimatedFee = null, coins={ uusd: 100_000_000 }) => {
   const txResult = {
     txResult: null,
     txInfo: null,
@@ -34,14 +46,16 @@ export const executeContract = async (connectedWallet, contractAddr, executeMsg,
       coins
     ),  
   ]
-
-  const estimatedFee = await terra.tx.estimateFee(connectedWallet.walletAddress, executeContractMsg)
+  if(estimatedFee == null){
+    estimatedFee = await estimateFee(connectedWallet.walletAddress, executeContractMsg)
+  }
+  
 
   try {
     await connectedWallet.post({
       msgs: executeContractMsg,
       fee: estimatedFee
-      //fee: new StdFee(600_000, { uusd: 90000 }) 
+      //fee: new StdFee(1_000_000, { uusd: 90_000_000 }) 
       // gasAdjustment: 1.1,
     }).then(async (result) => {
       let hasRetrievedTxHash = true;
@@ -72,7 +86,6 @@ export const executeContract = async (connectedWallet, contractAddr, executeMsg,
       }
   })
   } catch (error){
-    console.log(error)
     throw `Failed to connect to wallet`
   }
 
