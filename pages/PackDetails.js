@@ -8,6 +8,13 @@ import HeaderBack from '../components/HeaderBack';
 import underlineIcon from '../public/images/blackunderline.png'
 import Link from 'next/link';
 
+import { useConnectedWallet } from '@terra-money/wallet-provider';
+import { estimateFee } from '../utils/terra/index';
+import { fantasyData } from '../data';
+import { useDispatch, useSelector } from 'react-redux';
+import { getPackPrice } from '../redux/reducers/contract/pack';
+import { MsgExecuteContract } from '@terra-money/terra.js';
+
 const packList = [
     {
         name: 'PREMIUM PACK',
@@ -36,25 +43,53 @@ const packList = [
 
 export default function PackDetails(props) {
 
-    const [isNarrowScreen, setIsNarrowScreen] = useState(false);
+    const dispatch = useDispatch()
     const { query } = useRouter();
+    const connectedWallet = useConnectedWallet();
+
+    const [isNarrowScreen, setIsNarrowScreen] = useState(false);
     const [displayModal, setModal] = useState(false);
+    const [price, setPrice] = useState(0);
+    const [txFee, setTxFee] = useState(0);
+
+    const { packPrice } = useSelector((state) => state.contract.pack);
 
     useEffect(() => {
-        // set initial value
+        //screen setup
         const mediaWatcher = window.matchMedia("(max-width: 500px)")
-    
-        //watch for updates
+
         function updateIsNarrowScreen(e) {
           setIsNarrowScreen(e.matches);
         }
         mediaWatcher.addEventListener('change', updateIsNarrowScreen)
+
+        //compute tx fee
+        dispatch(getPackPrice())
+
     
-        // clean up after ourselves
         return function cleanup() {
           mediaWatcher.removeEventListener('change', updateIsNarrowScreen)
         }
-      })
+    }, [])
+
+    useEffect(() => {
+        if(packPrice != null) {
+            setPrice(packPrice / 1_000_000);
+            const executeContractMsg = [
+                new MsgExecuteContract(
+                    connectedWallet.walletAddress,  // Wallet Address
+                    fantasyData.contractAddr,       // Contract Address
+                    JSON.parse(`{ "purchase_pack": {} }`),         // ExecuteMsg
+                    { uust: packPrice }
+                ),  
+            ]
+
+            estimateFee(connectedWallet.walletAddress, executeContractMsg).then((response) => {
+                console.log(response)
+            })
+        }
+        
+    }, [packPrice])
     
     if (isNarrowScreen) {
         return (
@@ -84,7 +119,7 @@ export default function PackDetails(props) {
                                                                 Release {data.release}
                                                             </div>
                                                             <div className="mt-1 text-lg">
-                                                                {data.price}
+                                                                {price}
                                                             </div>
                                                             <div className="font-thin text-sm">
                                                                 PRICE
@@ -200,7 +235,13 @@ export default function PackDetails(props) {
                                                                     PRICE
                                                                 </div>
                                                                 <div>
-                                                                    {data.price}
+                                                                    {`${price} UST`}
+                                                                </div>
+                                                                <div className="font-thin mt-4 text-xs">
+                                                                    Tx Fee
+                                                                </div>
+                                                                <div className="text-xs">
+                                                                    {`${txFee} UST`}
                                                                 </div>
 
                                                                 <button className="bg-indigo-buttonblue w-72 h-10 text-center rounded-md text-md mt-12">
