@@ -16,9 +16,9 @@ const NavButtonContainer = (props) => {
 NavButtonContainer.propTypes = {
   color: PropTypes.string,
   hreflink: PropTypes.string,
-  Title: PropTypes.string.isRequired,
-  TeamName: PropTypes.string.isRequired,
-  CoinValue: PropTypes.string.isRequired,
+  Title: PropTypes.string,
+  TeamName: PropTypes.string,
+  CoinValue: PropTypes.string,
   imagesrc: PropTypes.string,
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
 };

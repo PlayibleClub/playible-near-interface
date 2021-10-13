@@ -1,14 +1,15 @@
 import {
   UserDenied,
   CreateTxFailed,
+  TxFailed,
   Timeout,
   TxUnspecifiedError
 } from '@terra-money/wallet-provider';
-import { MsgExecuteContract, LCDClient } from '@terra-money/terra.js';
+import { MsgExecuteContract, LCDClient, StdFee, Coins } from '@terra-money/terra.js';
 
 export const terra = new LCDClient({
-  URL: 'https://tequila-lcd.terra.dev',
-  chainID: 'tequila-0004',
+  URL: 'https://bombay-lcd.terra.dev',
+  chainID: 'bombay-12',
 });
 
 export const queryContract = async (contractAddr, queryMsg) => {
@@ -18,26 +19,42 @@ export const queryContract = async (contractAddr, queryMsg) => {
   )
 };
 
-export const executeContract = async (connectedWallet, contractAddr, executeMsg, coinAmount) => {
+export const executeContract = async (connectedWallet, contractAddr, executeMsg, coins={}) => {
   const txResult = {
     txResult: null,
+    txInfo: null,
     txError: null
   };
-  const parsedAmount = (Number.isNaN(parseFloat(coinAmount))) ? 2 : parseFloat(coinAmount);
+
+  const executeContractMsg = [
+    new MsgExecuteContract(
+      connectedWallet.walletAddress,  // Wallet Address
+      contractAddr,                   // Contract Address
+      JSON.parse(executeMsg),         // ExecuteMsg
+      coins
+    ),  
+  ]
+
+  const estimatedFee = await terra.tx.estimateFee(connectedWallet.walletAddress, executeContractMsg)
+
   try {
     await connectedWallet.post({
-      msgs: [
-        new MsgExecuteContract(
-          connectedWallet.walletAddress,  // Wallet Address
-          contractAddr,                   // Contract Address
-          JSON.parse(executeMsg),         // ExecuteMsg
-          { uluna: parsedAmount * 1_000_000 },
-        ),  
-      ],
-      // gasPrices: new StdFee(10_000_000, { uluna: 2000000 }).gasPrices(),
+      msgs: executeContractMsg,
+      fee: estimatedFee
       // gasAdjustment: 1.1,
-    }).then((result) => {
+    }).then(async (result) => {
+      let hasRetrievedTxHash = true;
       txResult.txResult = result;
+      while(hasRetrievedTxHash){
+        //try to query transaction info every 2 seconds until the transaction is reflected in the block
+        await terra.tx.txInfo(result.result.txhash).then((result) => {
+          txResult.txInfo = result;
+          hasRetrievedTxHash = false;
+        }).catch(async () => {
+          await new Promise(resolve => setTimeout(resolve, 2000));
+        })
+      }
+
     }).catch((error) => {
       if (error instanceof UserDenied) {
         throw 'User Denied';
@@ -54,7 +71,10 @@ export const executeContract = async (connectedWallet, contractAddr, executeMsg,
       }
   })
   } catch (error){
+    console.log(error)
     throw `Failed to connect to wallet`
   }
+
+  
   return txResult
 }

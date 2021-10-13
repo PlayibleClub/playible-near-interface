@@ -127,15 +127,11 @@ export default function Home() {
   if (isNarrowScreen) {
     return (
       <>
-        <div className={`font-montserrat h-screen relative ${isClosed ? "" : "overflow-y-hidden"}`}>
-          {isClosed ? null : <div className="flex flex-row w-full absolute z-50 top-0 left-0 ">
-            <Navbar> </Navbar>
-            <div className="w-2/6 h-screen" onMouseDown={() => setClosed(true)}></div>
-          </div>}
-
-          <div className="flex flex-col w-full ">
-            <HeaderBase isClosed={isClosed} setClosed={setClosed} />
-
+        <div className={`font-montserrat h-screen relative`}>
+          <Navbar/>
+          <HeaderBase/>
+          <div className="flex flex-col w-full">
+            
             <Main color="indigo-dark overflow-y-scroll">
               <div className="flex flex-col w-full h-full overflow-x-hidden">
                 <TitledContainer title="MARKETPLACE">

@@ -21,7 +21,7 @@ const TeamMemberContainer = (props) => {
 
       </div>
       {children}
-      <div className="relative flex justify-center" >
+      <div className="flex justify-center" >
         <div className="flex flex-col mt-4">
           <div className="text-xs font-thin">#{id}/25000</div>
           <div className="mb-5 text-sm ">{AthleteName}</div>

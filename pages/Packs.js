@@ -1,31 +1,17 @@
 import { useWallet, WalletStatus } from '@terra-money/wallet-provider';
-// import Image from 'next/image';
-
-import React, { Component, useState } from 'react';
+import React, { Component, useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import Header from '../components/Header';
 import HeaderBase from '../components/HeaderBase';
-import Button from '../components/Button';
 import Navbar from '../components/Navbar';
 import Main from '../components/Main';
 import TitledContainer from '../components/TitledContainer';
-import RoundedContainer from '../components/RoundedContainer';
-import AthleteGrid from '../components/AthleteGrid';
-// import Roundedinput from '../components/Roundedinput';
-import AthleteContainer from '../components/AthleteContainer';
-import PerformerContainer from '../components/PerformerContainer';
-import GameResultContainer from '../components/GameResultContainer';
-import RowContainer from '../components/RowContainer';
-import HorizontalScrollContainer from '../components/HorizontalScrollContainer';
-import HorizontalContainer from '../components/HorizontalContainer';
+import PortfolioContainer from '../components/PortfolioContainer';
 import LargePackContainer from '../components/LargePackContainer';
-import filterIcon from '../public/images/filter.png'
 import searchIcon from '../public/images/search.png'
+import DesktopNavbar from '../components/DesktopNavbar';
+import Link from 'next/link';
 
-import AthleteTokenContainer from '../components/AthleteTokenContainer';
-
-
-export default function Home() {
+export default function Packs() {
     const { status, connect, disconnect, availableConnectTypes } = useWallet();
 
     const interactWallet = () => {
@@ -36,12 +22,7 @@ export default function Home() {
         }
     };
 
-
-
-
-
     const [filterInfo, handleFilter] = React.useState(false)
-
     const { register, handleSubmit } = useForm()
     const [result, setResult] = useState("")
     const [teamFilter, setTeamFilter] = useState("")
@@ -67,156 +48,140 @@ export default function Home() {
     }
     const key1 = 'team'
 
-
-
-
-
-
-
     const packList = [
         {
             name: 'PREMIUM PACK',
+            key: 'prem2',
             release: '2',
             price: '20 UST',
-            image: 'images/packimages/PremiumRelease2.png',
+            image: '/images/packimages/PremiumRelease2.png',
 
         },
         {
             name: 'PREMIUM PACK',
+            key: 'prem3',
             release: '3',
             price: '35 UST',
-            image: 'images/packimages/PremiumRelease3.png',
+            image: '/images/packimages/PremiumRelease3.png',
 
         },
         {
             name: 'BASE PACK',
+            key: 'base2',
             release: '2',
             price: '20 UST',
-            image: 'images/packimages/BaseRelease1.png',
+            image: '/images/packimages/BaseRelease1.png',
         },
-
-
-
     ]
 
+    const [isNarrowScreen, setIsNarrowScreen] = useState(false);
 
+    useEffect(() => {
+        // set initial value
+        const mediaWatcher = window.matchMedia("(max-width: 500px)")
+    
+        //watch for updates
+        function updateIsNarrowScreen(e) {
+          setIsNarrowScreen(e.matches);
+        }
+        mediaWatcher.addEventListener('change', updateIsNarrowScreen)
+    
+        // clean up after ourselves
+        return function cleanup() {
+          mediaWatcher.removeEventListener('change', updateIsNarrowScreen)
+        }
+      })
+    
+    if (isNarrowScreen) {
+        return (
+            <>
+                <div className="font-montserrat h-screen relative bg-indigo-dark">
+                    <Navbar/>
+                    <HeaderBase/>
+                    <div className="flex flex-col w-full">
+                        <Main color="indigo-dark">
 
+                            <div className="flex flex-col w-full h-full overflow-y-scroll overflow-x-hidden">
+                                <TitledContainer title="PACKS">
+                                    <div>
+                                        <div className="w-full flex justify-center">
+                                            <div className="rounded-md bg-indigo-light ml-1 h-11 w-9/12 flex justify-center">
+                                                <div className="mt-2">
+                                                    <form onSubmit={handleSubmit(onSubmit)}>
+                                                        <input {...register("search")} className="text-xl ml-3 appearance-none bg-indigo-light focus:outline-none w-10/12" placeholder="Search..." />
 
-
-
-
-
-
-
-    return (
-        <>
-
-            <div className="font-montserrat h-screen relative bg-indigo-dark">
-
-
-                {isClosed ? null : <div className="flex flex-row w-full absolute z-50 top-0 left-0 ">
-                    <Navbar> </Navbar>
-                    <div className="w-2/6 h-screen" onClick={() => setClosed(true)}></div>
-                </div>}
-
-                <HeaderBase isClosed={isClosed} setClosed={setClosed} ></HeaderBase>
-                <div className="flex flex-col w-full ">
-
-
-
-
-
-
-
-
-
-                    <Main color="indigo-dark">
-
-
-
-
-                        <div className="flex flex-col  w-full h-full overflow-y-scroll overflow-x-hidden">
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                            <TitledContainer title="PACKS">
-
-                                <div>
-
-                                    <div className="w-full flex justify-center">
-                                        <div className="rounded-md bg-indigo-light ml-1 h-11 w-9/12 flex justify-center">
-                                            <div className="mt-2">
-                                                <form onSubmit={handleSubmit(onSubmit)}>
-                                                    <input {...register("search")} className="text-xl ml-3 appearance-none bg-indigo-light focus:outline-none w-10/12" placeholder="Search..." />
-
-                                                </form>
+                                                    </form>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div className="rounded-md bg-indigo-light ml-1 w-12 h-11" onClick={() => {
-                                            console.log("wap")
-                                        }}>
-                                            <div className="ml-4 mt-3">
-                                                <img src={searchIcon} />
+                                            <div className="rounded-md bg-indigo-light ml-1 w-12 h-11" onClick={() => {
+                                                console.log("wap")
+                                            }}>
+                                                <div className="ml-4 mt-3">
+                                                    <img src={searchIcon} />
+                                                </div>
                                             </div>
-                                        </div>
 
+                                        </div>
+                                        {
+                                            packList.map(function (pack, i) {
+                                                const toFindName = pack.name.toLowerCase()
+                                                const searchInfo = result.toLowerCase()
+                                                if (toFindName.includes(searchInfo))
+                                                    return (
+                                                        <div className='mb-4' key={i}>
+                                                            <LargePackContainer
+                                                                PackName={pack.name}
+                                                                CoinValue={pack.price}
+                                                                releaseValue={pack.release}
+                                                                imagesrc={pack.image} />
+                                                        </div>
+                                                    )
+                                            })
+                                        }
                                     </div>
-
-                                    {
-                                        packList.map(function (pack, i) {
-                                            const toFindName = pack.name.toLowerCase()
-
-                                            const searchInfo = result.toLowerCase()
-
-                                            if (toFindName.includes(searchInfo))
-                                                return (
-                                                    <div className='mb-4' key={i}>
-                                                        <LargePackContainer
-                                                            PackName={pack.name}
-                                                            CoinValue={pack.price}
-                                                            releaseValue={pack.release}
-                                                            imagesrc={pack.image} />
-                                                    </div>
-                                                )
-                                        })
-
-
-                                    }
-
-
-
-
-
-
-
-
-                                </div>
-
-
-                            </TitledContainer>
-
-
-                        </div>
-
-                    </Main>
-
+                                </TitledContainer>
+                            </div>
+                        </Main>
+                    </div>
                 </div>
-
-            </div>
-        </>
-    );
+            </>
+        )
+    } else {
+        return (
+            <>
+                <div className="font-montserrat h-screen relative bg-indigo-dark flex">
+                    <DesktopNavbar/>
+                    <div className="flex flex-col w-full">
+                        <Main color="indigo-dark">
+                            <div className="flex flex-col w-full h-full overflow-x-hidden">
+                                <PortfolioContainer title="PACKS">
+                                    <div className="flex float-left mt-12 lg:ml-12 md:ml-2 md:mt-4">
+                                        {
+                                            packList.map(function (pack, i) {
+                                                const toFindName = pack.name.toLowerCase()
+                                                const searchInfo = result.toLowerCase()
+                                                if (toFindName.includes(searchInfo))
+                                                    return (
+                                                        <Link href={`/PackDetails?id=${pack.key}`}>
+                                                            <div className='' key={i}>
+                                                                <LargePackContainer
+                                                                    PackName={pack.name}
+                                                                    CoinValue={pack.price}
+                                                                    releaseValue={pack.release}
+                                                                    imagesrc={pack.image} />
+                                                            </div>
+                                                        </Link>
+                                                    )
+                                                }
+                                            )
+                                        }
+                                    </div>
+                                </PortfolioContainer>
+                            </div>
+                        </Main>
+                    </div>
+                </div>
+            </>
+        )
+    }
 }

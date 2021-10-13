@@ -21,7 +21,6 @@ const DesktopNavbar = (props) => {
       <div className="flex justify-center mt-10">
         <div className="flex flex-col h-1/5 w-4/6">
 
-
           <NavButtonContainer imagesrc="images/navicons/icon_home.png" Title="Dashboard"></NavButtonContainer>
           <NavButtonContainer imagesrc="images/navicons/icon_portfolio.png" hreflink="Portfolio" Title="Portfolio"></NavButtonContainer>
           <NavButtonContainer imagesrc="images/navicons/icon_packs.png" Title="Packs"></NavButtonContainer>

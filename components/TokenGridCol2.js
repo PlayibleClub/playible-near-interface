@@ -4,7 +4,7 @@ const TokenGridCol2 = (props) => {
   const { children, color } = props;
 
   return (
-    <div data-test="TokenGridCol2" className={`bg-${color} grid justify-items-center  gap-x-1 gap-y-2 grid-cols-2 w-full h-full `}>
+    <div data-test="TokenGridCol2" className={`bg-${color} grid justify-items-center  gap-x-1 gap-y-2 grid-cols-2 w-full h-full`}>
       {children}
     </div>
   );

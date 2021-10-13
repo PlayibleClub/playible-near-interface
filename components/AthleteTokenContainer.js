@@ -10,9 +10,9 @@ const AthleteTokenContainer = (props) => {
 
       </div>
       {children}
-      <div className=" h-1/3 ml-4">
-        <div className=" flex flex-col ">
-          <div className="pb-3 text-sm font-medium ">{AthleteName}</div>
+      <div className="h-1/3 ml-4">
+        <div className="flex flex-col ">
+          <div className="mt-4 mb-3 text-sm font-medium ">{AthleteName}</div>
           <div className="text-xs font-thin">LOWEST ASK </div>
           <div className="text-xs font-bold">
             {CoinValue}

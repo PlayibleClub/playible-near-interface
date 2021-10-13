@@ -49,38 +49,35 @@ const Purchase = () => {
 
     return (
         <>
-            <div className={`font-montserrat h-screen relative ${isClosed ? "" : "overflow-y-hidden"}`}>
-                {isClosed ? null : 
-                    <div className="flex flex-row w-full absolute z-50 top-0 left-0 ">
-                        <Navbar/>
-                        <div className="w-2/6 h-screen" onMouseDown={() => setClosed(true)}/>
-                    </div>
-                }
-                <HeaderBase isClosed={isClosed} setClosed={setClosed}/>
+            <div className={`font-montserrat h-screen relative`}>
+                <Navbar/>
+                <HeaderBase />
                 <BaseDialog 
                     title={"Purchase"}
                     visible={displayModal}
                     children={modalMessage}
                     closeModal={closeModal}
                 />
-                <Main color="indigo-dark overflow-y-scroll">
-                    <div className="flex flex-col overflow-y-auto overflow-x-hidden">
-                        <TitledContainer title="PURCHASE PACK">
-                            <div className='flex flex-col justify-center'>
-                                <div className="justify-center">
-                                    <PackComponent type="PremiumRelease3"/>
-                                </div>
-                                <div className=''>
-                                <button onClick={() => dispatch(purchasePack({connectedWallet}))} className="bg-indigo-buttonblue w-full h-12 text-center rounded-md text-lg mt-8">
-                                    <div className="pt-2.5">
-                                        BUY PACK
+                <div className="flex flex-col w-full h-screen">
+                    <Main color="indigo-dark overflow-y-scroll">
+                        <div className="flex flex-col overflow-y-auto overflow-x-hidden">
+                            <TitledContainer title="PURCHASE PACK">
+                                <div className='flex flex-col justify-center'>
+                                    <div className="justify-center">
+                                        <PackComponent type="PremiumRelease3"/>
                                     </div>
-                                </button>
+                                    <div className=''>
+                                    <button onClick={() => dispatch(purchasePack({connectedWallet}))} className="bg-indigo-buttonblue w-full h-12 text-center rounded-md text-lg mt-8">
+                                        <div className="pt-2.5">
+                                            BUY PACK
+                                        </div>
+                                    </button>
+                                    </div>
                                 </div>
-                            </div>
-                        </TitledContainer>
-                    </div>
-                </Main>
+                            </TitledContainer>
+                        </div>
+                    </Main>
+                </div>
             </div>
         </>
     )

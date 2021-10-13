@@ -9,11 +9,11 @@ const TokenComponent = (props) =>{
     const picLink = "/../public/images/tokens/"+playerID+".png"
 
     return (
-        <div className="w-64 h-64 overflow-hidden ease-in-out">
+        <div className="w-32 h-48 overflow-hidden ease-in-out">
                 <Image
                     src={picLink}
-                    width={200}
-                    height={250}
+                    width={150}
+                    height={200}
                 />
         </div>
     )
