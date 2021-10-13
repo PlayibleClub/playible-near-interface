@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
 import Link from 'next/link'
 const NavButtonContainer = (props) => {
-  const { children, color, imagesrc, Title, TeamName, CoinValue } = props;
+  const { children, color, imagesrc, Title, TeamName, CoinValue, path } = props;
 
   return (
-    <Link href="/">
+    <Link href={path}>
       <div data-test="NavButtonContainer" className="text-sm font-thin flex flex-row justify-left mt-4">
         <img className="h-3 w-3 mr-5 place-self-center" src={imagesrc} alt="Img" />
         <a>{Title}</a>
