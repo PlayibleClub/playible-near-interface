@@ -12,7 +12,7 @@ const initialState = {
   txInfo: null,
   message: '',
   packPrice: null,
-  status: statusCode.PENDING,
+  status: statusCode.IDLE,
   action: ''
 }
 
@@ -28,8 +28,12 @@ export const purchasePack = createAsyncThunk('purchasePack', async (payload, thu
     }
     const executeMsg = `{ "purchase_pack": {} }`;
     const coins = {
-      uust: packPrice
+      uusd: packPrice
     }
+    console.log(connectedWallet);
+    console.log(fantasyData.contract_addr);
+    console.log(executeMsg);
+    console.log(coins);
     const result = await executeContract(connectedWallet, fantasyData.contract_addr, executeMsg, coins);
     return {
       response: result,

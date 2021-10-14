@@ -5,7 +5,9 @@ import HeaderBase from '../components/HeaderBase';
 import Navbar from '../components/Navbar';
 import PackComponent from '../components/PackComponent';
 import PortfolioContainer from '../components/PortfolioContainer';
-import Link from 'next/link'
+import { useDispatch } from 'react-redux';
+import { useConnectedWallet } from '@terra-money/wallet-provider';
+import { getPackPrice, purchasePack, getLastRound, getRoundData } from '../redux/reducers/contract/pack';
 
 export default function OpenPackPage() {
     const router = useRouter();
@@ -13,12 +15,14 @@ export default function OpenPackPage() {
     const connectedWallet = useConnectedWallet();
 
     const executePurchasePack = async () => {
-        dispatch(purchasePack({connectedWallet})).then(() => {
-            dispatch(getLastRound()).then((response) => {
-                dispatch(getRoundData({lastRound: response.payload})).then(() => {
-                    router.push("/TokenDrawPage");
+        dispatch(getPackPrice()).then((response) => {
+            dispatch(purchasePack({connectedWallet})).then(() => {
+                dispatch(getLastRound()).then((response) => {
+                    dispatch(getRoundData({lastRound: response.payload})).then(() => {
+                        router.push("/TokenDrawPage");
+                    });
                 });
-            });
+            })
         })
         
     }

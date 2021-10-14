@@ -31,7 +31,20 @@ export const estimateFee = async (walletAddress, executeContractMsg, gasPrices =
   return estimatedFee
 }
 
-export const executeContract = async (connectedWallet, contractAddr, executeMsg, estimatedFee = null, coins={}) => {
+export const retrieveTxInfo = async (txHash) => {
+    let hasTxInfo = false
+    while(!hasTxInfo){
+      //try to query transaction info every 2 seconds until the transaction is reflected in the block
+      await terra.tx.txInfo(txHash).then((result) => {
+        hasTxInfo = true
+        return result
+      }).catch(async () => {
+        await new Promise(resolve => setTimeout(resolve, 2000));
+      })
+    }
+}
+
+export const executeContract = async (connectedWallet, contractAddr, executeMsg, coins={uusd: 100000000}, estimatedFee = null) => {
   const txResult = {
     txResult: null,
     txInfo: null,
@@ -58,17 +71,8 @@ export const executeContract = async (connectedWallet, contractAddr, executeMsg,
       //fee: new StdFee(1_000_000, { uusd: 90_000_000 }) 
       // gasAdjustment: 1.1,
     }).then(async (result) => {
-      let hasRetrievedTxHash = true;
-      txResult.txResult = result;
-      while(hasRetrievedTxHash){
-        //try to query transaction info every 2 seconds until the transaction is reflected in the block
-        await terra.tx.txInfo(result.result.txhash).then((result) => {
-          txResult.txInfo = result;
-          hasRetrievedTxHash = false;
-        }).catch(async () => {
-          await new Promise(resolve => setTimeout(resolve, 2000));
-        })
-      }
+      txResult.txResult = result
+      //txResult.txInfo = await retrieveTxInfo(result.result.txhash)
 
     }).catch((error) => {
       if (error instanceof UserDenied) {
