@@ -15,6 +15,8 @@ import emptyToken from '../public/images/emptyToken.png'
 import emptyGoldToken from '../public/images/emptyGoldToken.png'
 import tokenOutline from '../public/images/tokenOutline.png'
 import { useRouter } from 'next/router';
+import Link from 'next/link';
+import {BrowserView, MobileView} from 'react-device-detect';
 
 const playerdata = [
     {
@@ -267,32 +269,33 @@ const PlayerDetails = () => {
 
     const [isNarrowScreen, setIsNarrowScreen] = useState(false);
 
-    useEffect(() => {
-      // set initial value
-      const mediaWatcher = window.matchMedia("(max-width: 500px)")
+    // useEffect(() => {
+    //   // set initial value
+    //   const mediaWatcher = window.matchMedia("(max-width: 500px)")
   
-      //watch for updates
-      function updateIsNarrowScreen(e) {
-        setIsNarrowScreen(e.matches);
-      }
-      mediaWatcher.addEventListener('change', updateIsNarrowScreen)
+    //   //watch for updates
+    //   function updateIsNarrowScreen(e) {
+    //     setIsNarrowScreen(e.matches);
+    //   }
+    //   mediaWatcher.addEventListener('change', updateIsNarrowScreen)
   
-      // clean up after ourselves
-      return function cleanup() {
-        mediaWatcher.removeEventListener('change', updateIsNarrowScreen)
-      }
-    })
+    //   // clean up after ourselves
+    //   return function cleanup() {
+    //     mediaWatcher.removeEventListener('change', updateIsNarrowScreen)
+    //   }
+    // })
   
-    if (isNarrowScreen) {
+    // if (isNarrowScreen) {
         return (
             <>
+            <MobileView>
                 <div className={`font-montserrat h-screen relative`}>
                     <Navbar/>
                     <HeaderBase/>
 
                     <div className="flex flex-col w-full h-screen">
                         <Main color="indigo-dark">
-                            <div className="flex flex-col overflow-y-auto overflow-x-hidden">
+                            <div className="flex flex-col overflow-y-auto overflow-x-hidden self-center">
                                 <div className="mt-8 ml-8">
                                     <PlayerContainer playerID={playerToFind.id}/>
                                 </div>
@@ -316,12 +319,13 @@ const PlayerDetails = () => {
                                             </div>
                                         </div>
                                         
-
-                                        <button className="bg-indigo-buttonblue w-72 h-12 text-center rounded-md text-lg mt-12">
-                                            <div className="pt-1">
-                                                UPGRADE
-                                            </div>
-                                        </button>
+                                        <Link href={`MintScreenMobile?id=${query.id}`}>
+                                            <button className="bg-indigo-buttonblue w-72 h-12 text-center rounded-md text-lg mt-12">
+                                                <div className="pt-1">
+                                                    UPGRADE
+                                                </div>
+                                            </button>
+                                        </Link>
 
                                         <div className="flex justify-center self-center mt-8">
                                             <div className="flex flex-col mr-4">
@@ -335,7 +339,7 @@ const PlayerDetails = () => {
                                                     SILVER
                                                 </div> 
                                                 <div className="mt-4">
-                                                    {playerToFind.silvercost} UST
+                                                    {playerToFind.silvercost}
                                                 </div>
                                             </div>
 
@@ -350,7 +354,7 @@ const PlayerDetails = () => {
                                                     GOLD
                                                 </div> 
                                                 <div className="mt-4">
-                                                    {playerToFind.goldcost} UST
+                                                    {playerToFind.goldcost}
                                                 </div>
                                             </div>
                                         </div>
@@ -387,11 +391,9 @@ const PlayerDetails = () => {
                     </div>
 
                 </div>
-            </>
-        )
-    } else {
-        return (
-            <>
+            </MobileView>
+
+            <BrowserView>
                 <div className={`font-montserrat h-screen relative`}>
                 { congratsModal ?
                     <div className="fixed w-screen h-screen bg-opacity-70 z-50 overflow-auto bg-indigo-gray flex">
@@ -697,9 +699,321 @@ const PlayerDetails = () => {
                         </div>
                     </div>
                 </div>
+            </BrowserView>
             </>
         )
-    }
+    // } 
+    // else {
+    //     return (
+    //         <>
+    //             <div className={`font-montserrat h-screen relative`}>
+    //             { congratsModal ?
+    //                 <div className="fixed w-screen h-screen bg-opacity-70 z-50 overflow-auto bg-indigo-gray flex">
+    //                     <div className="relative p-8 bg-indigo-white w-60 h-24 m-auto flex-col flex rounded-lg items-center">
+    //                         <button onClick={()=>{displayCongrats(false)}}>
+    //                             <div className="absolute top-0 right-0 p-4 font-black">
+    //                                 X
+    //                             </div>
+    //                         </button>
+
+    //                         <div className="font-bold flex flex-col">
+    //                             CONGRATULATIONS!
+    //                             <img src={underlineIcon} className="sm:object-none md:w-6" />
+    //                         </div>
+    //                     </div>
+    //                 </div>
+    //             :
+    //                 <></>
+    //             }
+    //             { displayModal ?
+    //                     <>
+    //                         <div className="fixed w-screen h-screen bg-opacity-70 z-50 overflow-auto bg-indigo-gray flex">
+    //                             <div className="relative p-8 bg-indigo-white w-1/2 h-3/5 m-auto flex-col flex rounded-lg items-center">
+    //                                 <button onClick={()=>{setModal(false)}}>
+    //                                     <div className="absolute top-0 right-0 p-4 font-black">
+    //                                         X
+    //                                     </div>
+    //                                 </button>
+
+    //                                 <div className="flex justify-center">
+    //                                     <div className="flex flex-col mt-4">
+    //                                         <div className="mr-12">
+    //                                             <PlayerContainer playerID={playerToFind.id}/>
+    //                                         </div>
+    //                                         <div>
+    //                                             <div>
+    //                                                 <div className="font-thin text-xs mt-4">
+    //                                                     #{playerToFind.id}/25000
+    //                                                 </div>
+
+    //                                                 <div className="text-sm font-bold">
+    //                                                     {playerToFind.name}
+    //                                                 </div>
+
+    //                                                 <div className="font-thin mt-4 text-xs">
+    //                                                     AVERAGE SCORE
+    //                                                 </div>
+
+    //                                                 <div className="text-sm font-bold">
+    //                                                     {playerToFind.avgscore}
+    //                                                 </div>
+    //                                             </div>
+    //                                         </div>
+    //                                     </div>
+                                        
+
+    //                                     <div className="mt-2">
+    //                                         <div className="font-bold flex flex-col">
+    //                                             UPGRADE TOKEN
+    //                                             <img src={underlineIcon} className="sm:object-none md:w-6" />
+    //                                         </div>
+
+    //                                         <div className="mt-6 mb-6">
+    //                                             { silverDropdown ?
+    //                                                 <div onClick={()=>displaySilver(false)} className="flex flex-col w-72">
+    //                                                     <div className="flex justify-between items-center">
+    //                                                         <div>
+    //                                                             <img src={emptyToken} />
+    //                                                         </div>
+    //                                                         <div className="font-bold">
+    //                                                             Upgrade to Silver
+    //                                                         </div>
+    //                                                         <div className="font-bold text-xl">&#x5e;</div>
+    //                                                     </div>
+
+    //                                                     {baseTokenCount > 2 && baseFilteredList.length > 0 ?
+    //                                                         <>
+    //                                                             <div className="flex items-center self-center mt-4">
+    //                                                                 {[...Array(3)].map((element, i)=>{
+    //                                                                     return (
+    //                                                                         <img src={emptyToken} className="w-10 mr-2" key={i}/>
+    //                                                                     )
+    //                                                                 })}
+    //                                                             </div>
+
+    //                                                             <button className="bg-indigo-buttonblue w-72 h-10 text-center font-bold rounded-md text-sm mt-4 self-center">
+    //                                                                 <div className="text-indigo-white" onClick={()=>{setModal(false);displayCongrats(true)}}>
+    //                                                                     MINT BLACK COIN
+    //                                                                 </div>
+    //                                                             </button>
+    //                                                         </>
+                                                        
+    //                                                     :
+    //                                                         <>
+    //                                                             <div className="flex items-center self-center mt-4">
+    //                                                                 {[...Array(baseTokenCount)].map((element, i)=>{
+    //                                                                     return(
+    //                                                                         <img src={emptyToken} className="w-10 mr-2" key={i}/>
+    //                                                                     )
+    //                                                                 })}
+    //                                                                 <img src={tokenOutline} className="w-10 ml-2"/>
+    //                                                             </div>
+
+    //                                                             <button className="bg-indigo-lightgray w-72 h-10 text-center font-bold rounded-md text-sm mt-4 self-center">
+    //                                                                 <div className="text-indigo-white">
+    //                                                                     MINT BLACK COIN
+    //                                                                 </div>
+    //                                                             </button>
+    //                                                         </>
+    //                                                     }
+    //                                                 </div>
+    //                                             :
+    //                                                 <div onClick={()=>{displaySilver(true);displayGold(false)}} className="flex justify-between items-center w-72">
+    //                                                     <div>
+    //                                                         <img src={emptyToken} />
+    //                                                     </div>
+    //                                                     <div className="font-bold">
+    //                                                         Upgrade to Silver
+    //                                                     </div>
+    //                                                     <div className="font-bold">v</div>
+    //                                                 </div>
+    //                                             }
+    //                                         </div>
+
+    //                                         <hr className="opacity-25"/>
+
+    //                                         <div className="mt-6">
+    //                                             { goldDropdown ?
+    //                                                 <div onClick={()=>displayGold(false)} className="flex flex-col w-72">
+    //                                                 <div className="flex justify-between items-center">
+    //                                                     <div>
+    //                                                         <img src={emptyGoldToken} />
+    //                                                     </div>
+    //                                                     <div className="font-bold">
+    //                                                         Upgrade to Gold
+    //                                                     </div>
+    //                                                     <div className="font-bold text-xl">&#x5e;</div>
+    //                                                 </div>
+
+    //                                                 {silverTokenCount > 2 && silverFilteredList.length > 0 ?
+    //                                                         <>
+    //                                                             <div className="flex items-center self-center mt-4">
+    //                                                                 {[...Array(3)].map((element, i)=>{
+    //                                                                     return (
+    //                                                                         <img src={emptyToken} className="w-10 mr-2" key={i}/>
+    //                                                                     )
+    //                                                                 })}
+    //                                                             </div>
+
+    //                                                             <button className="bg-indigo-buttonblue w-72 h-10 text-center font-bold rounded-md text-sm mt-4 self-center">
+    //                                                                 <div className="text-indigo-white" onClick={()=>{setModal(false);displayCongrats(true)}}>
+    //                                                                     MINT SILVER COIN
+    //                                                                 </div>
+    //                                                             </button>
+    //                                                         </>
+                                                        
+    //                                                     :
+    //                                                         <>
+    //                                                             <div className="flex items-center self-center mt-4">
+    //                                                                 {[...Array(silverTokenCount)].map((element, i)=>{
+    //                                                                     return(
+    //                                                                         <img src={emptyToken} className="w-10 mr-2" key={i}/>
+    //                                                                     )
+    //                                                                 })}
+    //                                                                 <img src={tokenOutline} className="w-10 ml-2"/>
+    //                                                             </div>
+
+    //                                                             <button className="bg-indigo-lightgray w-72 h-10 text-center font-bold rounded-md text-sm mt-4 self-center">
+    //                                                                 <div className="text-indigo-white">
+    //                                                                     MINT SILVER COIN
+    //                                                                 </div>
+    //                                                             </button>
+    //                                                         </>
+    //                                                     }
+    //                                             </div>
+    //                                             :
+    //                                                 <div onClick={()=>{displayGold(true);displaySilver(false)}} className="flex justify-between items-center w-72">
+    //                                                     <div>
+    //                                                         <img src={emptyGoldToken} />
+    //                                                     </div>
+    //                                                     <div className="font-bold">
+    //                                                         Upgrade to Gold
+    //                                                     </div>
+    //                                                     <div className="font-bold">v</div>
+    //                                                 </div>
+    //                                             }
+    //                                         </div>
+    //                                     </div>
+    //                                 </div>
+    //                             </div>
+    //                         </div>
+    //                     </>
+    //                 :
+    //                     <></>
+    //                 }
+    //                 <div className="flex">
+    //                     <DesktopNavbar/>
+    //                     <div className="flex flex-col w-full h-screen">
+    //                         <Main color="indigo-dark">
+    //                             <div className="flex flex-col overflow-y-auto overflow-x-hidden">
+    //                                 <div className="mt-20 ml-24">
+    //                                     <PortfolioContainer title="PLAYER DETAILS">
+    //                                         <div className="flex flex-col justify-center self-center mb-12">
+    //                                             <div className="flex mt-8">
+    //                                                 <div>
+    //                                                     <div className="mr-12">
+    //                                                         <PlayerContainer playerID={playerToFind.id}/>
+    //                                                     </div>
+    //                                                 </div>
+    //                                                 <div>
+    //                                                     <div>
+    //                                                         <div className="font-thin text-sm">
+    //                                                             #{playerToFind.id}/25000
+    //                                                         </div>
+
+    //                                                         <div className="text-sm">
+    //                                                             {playerToFind.name}
+    //                                                         </div>
+
+    //                                                         <div className="font-thin mt-4 text-sm">
+    //                                                             AVERAGE SCORE
+    //                                                         </div>
+
+    //                                                         <div className="text-sm">
+    //                                                             {playerToFind.avgscore}
+    //                                                         </div>
+    //                                                     </div>
+                                                    
+
+    //                                                     <button className="bg-indigo-buttonblue w-60 h-10 text-center font-bold rounded-md text-md mt-4">
+    //                                                         <div className="" onClick={()=>{setModal(true)}}>
+    //                                                             UPGRADE
+    //                                                         </div>
+    //                                                     </button>
+    //                                                 </div>
+    //                                             </div>
+    //                                         </div>
+    //                                     </PortfolioContainer>
+
+    //                                     <PortfolioContainer title="TOKEN DETAILS">
+    //                                         <div className="flex mt-8 ml-8">
+    //                                             <div className="flex flex-col mr-4">
+    //                                                 <div>
+    //                                                     <PlayerContainer playerID={playerToFind.id}/>
+    //                                                 </div>
+    //                                                 <div className="text-sm mt-2">
+    //                                                     {playerToFind.name}
+    //                                                 </div>
+    //                                                 <div className="font-thin text-xs">
+    //                                                     SILVER
+    //                                                 </div> 
+    //                                                 <div className="mt-4">
+    //                                                     {playerToFind.silvercost}
+    //                                                 </div>
+    //                                             </div>
+                                            
+
+    //                                             <div className="flex flex-col ml-4">
+    //                                                 <div>
+    //                                                     <PlayerContainer playerID={playerToFind.id}/>
+    //                                                 </div>
+    //                                                 <div className="text-sm mt-2">
+    //                                                     {playerToFind.name}
+    //                                                 </div>
+    //                                                 <div className="font-thin text-xs">
+    //                                                     GOLD
+    //                                                 </div> 
+    //                                                 <div className="mt-4">
+    //                                                     {playerToFind.goldcost}
+    //                                                 </div>
+    //                                             </div>
+    //                                         </div>
+    //                                     </PortfolioContainer>
+
+    //                                     <div className="mt-12 flex">
+    //                                         <PortfolioContainer title="PLAYER STATS" stats={playerToFind.stats}/>
+    //                                         <div className="inline-block align-top mr-24">
+    //                                             <div className="rounded-md bg-indigo-light mr-7 h-11 w-80 flex justify-between self-center font-thin md:w-72 mt-6">
+    //                                                 <div className="text-lg ml-4 mt-2 text-indigo-white">
+    //                                                     <form onSubmit={handleSubmit(handleFilter)}>
+    //                                                         <select value={statfilter} className='filter-select bg-indigo-light' onChange={handleFilter}>
+    //                                                             <option name="sevendays" value="sevendays">Last 7 days</option>
+    //                                                             <option name="month" value="month">Last month</option>
+    //                                                             <option name="year" value="year">Last year</option>
+    //                                                         </select>
+    //                                                     </form>
+    //                                                 </div>
+    //                                                 <img src={filterIcon} className="object-none w-4 mr-4" />
+    //                                             </div>
+    //                                         </div>
+    //                                     </div>
+    //                                     <div className="flex flex-col justify-center self-center text-indigo-white mr-24 mb-8">
+    //                                         <div className="mt-8 mb-6 flex justify-center">
+    //                                             {playerToFind.data.map(function(data, i){
+    //                                                 if(statfilter === data.key)
+    //                                                     return <PlayerStats player={data} key={i} isNarrowScreen={isNarrowScreen}/>
+    //                                             })}
+    //                                         </div>
+    //                                     </div>
+    //                                 </div>
+    //                             </div>
+    //                         </Main>
+    //                     </div>
+    //                 </div>
+    //             </div>
+    //         </>
+    //     )
+    // }
 }
 
 export default PlayerDetails;

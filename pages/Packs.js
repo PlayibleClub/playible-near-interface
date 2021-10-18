@@ -10,6 +10,7 @@ import LargePackContainer from '../components/LargePackContainer';
 import searchIcon from '../public/images/search.png'
 import DesktopNavbar from '../components/DesktopNavbar';
 import Link from 'next/link';
+import {BrowserView, MobileView} from 'react-device-detect'
 
 export default function Packs() {
     const { status, connect, disconnect, availableConnectTypes } = useWallet();
@@ -76,31 +77,32 @@ export default function Packs() {
 
     const [isNarrowScreen, setIsNarrowScreen] = useState(false);
 
-    useEffect(() => {
-        // set initial value
-        const mediaWatcher = window.matchMedia("(max-width: 500px)")
+    // useEffect(() => {
+    //     // set initial value
+    //     const mediaWatcher = window.matchMedia("(max-width: 500px)")
     
-        //watch for updates
-        function updateIsNarrowScreen(e) {
-          setIsNarrowScreen(e.matches);
-        }
-        mediaWatcher.addEventListener('change', updateIsNarrowScreen)
+    //     //watch for updates
+    //     function updateIsNarrowScreen(e) {
+    //       setIsNarrowScreen(e.matches);
+    //     }
+    //     mediaWatcher.addEventListener('change', updateIsNarrowScreen)
     
-        // clean up after ourselves
-        return function cleanup() {
-          mediaWatcher.removeEventListener('change', updateIsNarrowScreen)
-        }
-      })
+    //     // clean up after ourselves
+    //     return function cleanup() {
+    //       mediaWatcher.removeEventListener('change', updateIsNarrowScreen)
+    //     }
+    //   })
     
-    if (isNarrowScreen) {
+    // if (isNarrowScreen) {
         return (
             <>
-                <div className="font-montserrat h-screen relative bg-indigo-dark">
+            <MobileView>
+                <div className={`font-montserrat h-screen relative`}>
                     <Navbar/>
                     <HeaderBase/>
-                    <div className="flex flex-col w-full">
-                        <Main color="indigo-dark">
 
+                    <div className="flex flex-col w-full h-screen">
+                        <Main color="indigo-dark">
                             <div className="flex flex-col w-full h-full overflow-y-scroll overflow-x-hidden">
                                 <TitledContainer title="PACKS">
                                     <div>
@@ -113,9 +115,7 @@ export default function Packs() {
                                                     </form>
                                                 </div>
                                             </div>
-                                            <div className="rounded-md bg-indigo-light ml-1 w-12 h-11" onClick={() => {
-                                                console.log("wap")
-                                            }}>
+                                            <div className="rounded-md bg-indigo-light ml-1 w-12 h-11">
                                                 <div className="ml-4 mt-3">
                                                     <img src={searchIcon} />
                                                 </div>
@@ -128,13 +128,15 @@ export default function Packs() {
                                                 const searchInfo = result.toLowerCase()
                                                 if (toFindName.includes(searchInfo))
                                                     return (
-                                                        <div className='mb-4' key={i}>
-                                                            <LargePackContainer
-                                                                PackName={pack.name}
-                                                                CoinValue={pack.price}
-                                                                releaseValue={pack.release}
-                                                                imagesrc={pack.image} />
-                                                        </div>
+                                                        <Link href={`/PackDetails?id=${pack.key}`}>
+                                                            <div className='mb-4' key={i}>
+                                                                <LargePackContainer
+                                                                    PackName={pack.name}
+                                                                    CoinValue={pack.price}
+                                                                    releaseValue={pack.release}
+                                                                    imagesrc={pack.image} />
+                                                            </div>
+                                                        </Link>
                                                     )
                                             })
                                         }
@@ -144,11 +146,8 @@ export default function Packs() {
                         </Main>
                     </div>
                 </div>
-            </>
-        )
-    } else {
-        return (
-            <>
+            </MobileView>
+            <BrowserView>
                 <div className="font-montserrat h-screen relative bg-indigo-dark flex">
                     <DesktopNavbar/>
                     <div className="flex flex-col w-full">
@@ -181,7 +180,7 @@ export default function Packs() {
                         </Main>
                     </div>
                 </div>
-            </>
-        )
-    }
+            </BrowserView>
+        </>
+    )
 }

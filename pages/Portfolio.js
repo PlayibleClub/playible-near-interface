@@ -17,6 +17,7 @@ import Loading from '../components/Loading';
 import * as statusCode from '../data/constants/status'
 import Link from 'next/link'
 import DesktopNavbar from '../components/DesktopNavbar';
+import {BrowserView, MobileView} from 'react-device-detect'
 
 const playerList = [ // player list for testing purposes
     {
@@ -165,25 +166,26 @@ const Portfolio = () => {
 
     const [isNarrowScreen, setIsNarrowScreen] = useState(false);
 
-    useEffect(() => {
-      // set initial value
-      const mediaWatcher = window.matchMedia("(max-width: 500px)")
+    // useEffect(() => {
+    //   // set initial value
+    //   const mediaWatcher = window.matchMedia("(max-width: 500px)")
   
-      //watch for updates
-      function updateIsNarrowScreen(e) {
-        setIsNarrowScreen(e.matches);
-      }
-      mediaWatcher.addEventListener('change', updateIsNarrowScreen)
+    //   //watch for updates
+    //   function updateIsNarrowScreen(e) {
+    //     setIsNarrowScreen(e.matches);
+    //   }
+    //   mediaWatcher.addEventListener('change', updateIsNarrowScreen)
   
-      // clean up after ourselves
-      return function cleanup() {
-        mediaWatcher.removeEventListener('change', updateIsNarrowScreen)
-      }
-    })
+    //   // clean up after ourselves
+    //   return function cleanup() {
+    //     mediaWatcher.removeEventListener('change', updateIsNarrowScreen)
+    //   }
+    // })
   
-    if (!isNarrowScreen) {
+    // if (!isNarrowScreen) {
     return (
         <>
+        <BrowserView>
             <div className={`font-montserrat h-screen relative flex`}>
                 <DesktopNavbar/>
 
@@ -193,7 +195,7 @@ const Portfolio = () => {
                     {loading ? (
                         <Loading/>
                     ) : (
-                    <div className="flex w-full overflow-y-auto overflow-x-hidden h-screen">
+                    <div className="flex w-full overflow-y-auto overflow-x-hidden h-screen self-center justify-center">
                         <PortfolioContainer title="PORTFOLIO" className="flex">
                             <div className="flex flex-col justify-center self-center">
                                 <div className="flex w-full mb-4 mt-4">
@@ -405,18 +407,15 @@ const Portfolio = () => {
                 </Main>
                 </div>
             </div>
-        </>
-    )}
-    else {
-        return(
-            <>
+        </BrowserView>
+        <MobileView>
                 <div className={`font-montserrat h-screen relative`}>
                 <Navbar/>
                 <HeaderBase/>
                 
                 <div className="flex flex-col w-full h-screen">
                 <Main color="indigo-dark">
-                    <div className="flex w-full overflow-y-auto overflow-x-hidden h-screen">
+                    <div className="flex w-full overflow-y-auto overflow-x-hidden h-screen justify-center">
                         <PortfolioContainer title="PORTFOLIO" className="flex">
                             <div className="flex flex-col justify-center self-center">
                                 <div className="flex w-full mb-4 mt-4">
@@ -581,8 +580,8 @@ const Portfolio = () => {
                     </Main>
                     </div>
                 </div>
-            </>
-        )
-    }
+            </MobileView>
+        </>
+    )
 }
 export default Portfolio;

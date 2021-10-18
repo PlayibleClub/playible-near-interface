@@ -7,6 +7,7 @@ import Image from 'next/image'
 import HeaderBack from '../components/HeaderBack';
 import underlineIcon from '../public/images/blackunderline.png'
 import Link from 'next/link';
+import {BrowserView, MobileView} from 'react-device-detect'
 
 const packList = [
     {
@@ -23,7 +24,6 @@ const packList = [
         release: '3',
         price: '35 UST',
         image: '/images/packimages/PremiumRelease3.png',
-
     },
     {
         name: 'BASE PACK',
@@ -35,31 +35,60 @@ const packList = [
 ]
 
 export default function PackDetails(props) {
-
-    const [isNarrowScreen, setIsNarrowScreen] = useState(false);
     const { query } = useRouter();
     const [displayModal, setModal] = useState(false);
 
-    useEffect(() => {
-        // set initial value
-        const mediaWatcher = window.matchMedia("(max-width: 500px)")
-    
-        //watch for updates
-        function updateIsNarrowScreen(e) {
-          setIsNarrowScreen(e.matches);
-        }
-        mediaWatcher.addEventListener('change', updateIsNarrowScreen)
-    
-        // clean up after ourselves
-        return function cleanup() {
-          mediaWatcher.removeEventListener('change', updateIsNarrowScreen)
-        }
-      })
-    
-    if (isNarrowScreen) {
-        return (
-            <>
+    return (
+        <>
+            <MobileView>
                 <div className="font-montserrat h-screen relative bg-indigo-dark">
+                    { displayModal ?
+                        <>
+                            <div className="fixed w-screen h-screen bg-opacity-70 z-50 overflow-auto bg-indigo-gray flex">
+                                <div className="relative p-8 bg-indigo-white w-80 h-96 m-auto flex-col flex rounded-lg">
+                                    <button onClick={()=>{setModal(false)}}>
+                                        <div className="absolute top-0 right-0 p-4 font-black">
+                                            X
+                                        </div>
+                                    </button>
+
+                                    <div className="font-bold flex flex-col">
+                                        CONGRATULATIONS!
+                                        <img src={underlineIcon} className="w-6" />
+                                    </div>
+
+                                    {packList.map(function(data,i){
+                                        if(query.id === data.key){
+                                            return (
+                                                <div className="flex flex-col" key={i}>
+                                                    <img src={data.image}/>
+
+                                                    <div className="flex flex-col text-center">
+                                                        <div className="font-bold">
+                                                            {data.name}
+                                                        </div>
+                                                        <div className="font-thin text-sm mb-4">
+                                                            Release {data.release}
+                                                        </div>
+
+                                                        <Link href="/TokenDrawPage">
+                                                            <button className="bg-indigo-buttonblue w-60 h-10 text-center rounded-md text-md self-center text-indigo-white font-black">
+                                                                <div className="">
+                                                                    OPEN PACK
+                                                                </div>
+                                                            </button>
+                                                        </Link>
+                                                    </div>
+                                                </div>
+                                            )
+                                        }
+                                    })}
+                                </div>
+                            </div>
+                        </>
+                    :
+                        <></>
+                    }
                     <HeaderBack link="/Packs"/>
                     <div className="flex">
                         <div className="w-full">
@@ -93,7 +122,7 @@ export default function PackDetails(props) {
                                                         
 
                                                         <button className="bg-indigo-buttonblue w-80 h-12 text-center rounded-md text-md mt-4 mb-8 self-center">
-                                                            <div className="">
+                                                            <div className="" onClick={()=>{setModal(true)}}>
                                                                 BUY NOW
                                                             </div>
                                                         </button>
@@ -117,10 +146,8 @@ export default function PackDetails(props) {
                         </div>
                     </div>
                 </div>
-            </>
-        )
-    } else return (
-            <>
+            </MobileView>
+            <BrowserView>
                 <div className="font-montserrat h-screen relative bg-indigo-dark">
                     { displayModal ?
                         <>
@@ -230,6 +257,7 @@ export default function PackDetails(props) {
                         </div>
                     </div>
                 </div>
-            </>
+            </BrowserView>
+        </>
     )
 }
