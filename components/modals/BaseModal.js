@@ -1,7 +1,7 @@
 import { Dialog, Transition } from '@headlessui/react'
-import { Fragment, useState } from 'react'
+import { Fragment } from 'react'
 
-const BaseDialog = (props) => {
+const BaseModal = (props) => {
   const { title, children, visible, closeModal } = props
 
   return (
@@ -67,4 +67,4 @@ const BaseDialog = (props) => {
   )
 }
 
-export default BaseDialog
+export default BaseModal

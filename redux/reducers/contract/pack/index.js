@@ -10,16 +10,45 @@ const initialState = {
   latestRound: null,
   drawList: [],
   txInfo: null,
+  txResponse: null,
   message: '',
-  status: statusCode.PENDING,
+  packPrice: null,
+  status: statusCode.IDLE,
   action: ''
 }
 
 export const purchasePack = createAsyncThunk('purchasePack', async (payload, thunkAPI) => {
   try {
     const { connectedWallet } = payload;
+    const packPrice = thunkAPI.getState().contract.pack.packPrice;
+    if(packPrice == null){
+      return thunkAPI.rejectWithValue({
+        response: "Pack Price cannot be null. Please query the pack price from the smart contract.",
+        status: statusCode.ERROR
+      });
+    }
     const executeMsg = `{ "purchase_pack": {} }`;
-    const result = await executeContract(connectedWallet, fantasyData.contract_addr, executeMsg);
+    const coins = {
+      uusd: packPrice
+    }
+    const result = await executeContract(connectedWallet, fantasyData.contract_addr, executeMsg, coins);
+    return {
+      response: result,
+      status: statusCode.SUCCESS
+    }
+  } catch (err) {
+    return thunkAPI.rejectWithValue({
+      response: err,
+      status: statusCode.ERROR
+    });
+  }
+});
+
+export const getPackPrice = createAsyncThunk('getPackPrice', async (payload, thunkAPI) => {
+  try {
+    const contractAddr = fantasyData.contract_addr;
+    const queryMsg = `{"pack_price":{}}`;
+    const result = await queryContract(contractAddr, queryMsg);
     return {
       response: result,
       status: statusCode.SUCCESS
@@ -111,6 +140,28 @@ const packSlice = createSlice({
         status: action.payload.status,
         action: actionType.EXECUTE,
         message: action.payload.response
+      };
+    },
+    [getPackPrice.pending]: (state) => {
+      return {
+        ...state,
+        status: statusCode.PENDING,
+        action: actionType.GET
+      };
+    },
+    [getPackPrice.fulfilled]: (state, action) => {
+      return {
+        ...state,
+        packPrice: action.payload.response,
+        status: action.payload.status,
+        action: actionType.GET
+      };
+    },
+    [getPackPrice.rejected]: (state, action) => {
+      return {
+        ...state,
+        status: action.payload.status,
+        action: actionType.GET
       };
     },
     [getLastRound.pending]: (state) => {
