@@ -120,7 +120,7 @@ const Portfolio = () => {
     const [showFilter, setFilter] = useState(false)
     const [loading, setLoading] = useState(true);
     
-    // const { tokenList: playerList, status } = useSelector((state) => state.contract.portfolio);
+    const { tokenList: playerList, status } = useSelector((state) => state.contract.portfolio);
 
     const dispatch = useDispatch();
     const connectedWallet = useConnectedWallet();
