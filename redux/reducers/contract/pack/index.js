@@ -10,6 +10,7 @@ const initialState = {
   latestRound: null,
   drawList: [],
   txInfo: null,
+  txResponse: null,
   message: '',
   packPrice: null,
   status: statusCode.IDLE,
@@ -30,10 +31,6 @@ export const purchasePack = createAsyncThunk('purchasePack', async (payload, thu
     const coins = {
       uusd: packPrice
     }
-    console.log(connectedWallet);
-    console.log(fantasyData.contract_addr);
-    console.log(executeMsg);
-    console.log(coins);
     const result = await executeContract(connectedWallet, fantasyData.contract_addr, executeMsg, coins);
     return {
       response: result,

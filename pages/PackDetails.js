@@ -3,18 +3,17 @@ import DesktopNavbar from '../components/DesktopNavbar';
 import HeaderBack from '../components/HeaderBack';
 import TitledContainer from '../components/TitledContainer';
 import Main from '../components/Main';
-import LoadingModal from '../components/loading/LoadingModal';
+import LoadingPageDark from '../components/loading/LoadingPageDark';
 import TransactionModal from '../components/modals/TransactionModal';
 
 import { useRouter } from 'next/router';
-import Image from 'next/image'
-import underlineIcon from '../public/images/blackunderline.png'
-import Link from 'next/link';
+import Image from 'next/image';
 
 
-import { estimateFee } from '../utils/terra/index';
+import { estimateFee, retrieveTxInfo } from '../utils/terra/index';
 import { fantasyData } from '../data';
 import * as statusCode from '../data/constants/status';
+import * as actionType from '../data/constants/actions';
 
 import { useConnectedWallet } from '@terra-money/wallet-provider';
 import { useDispatch, useSelector } from 'react-redux';
@@ -59,9 +58,10 @@ export default function PackDetails() {
 	const [price, setPrice] = useState(0);
 	const [txFee, setTxFee] = useState(0);
 	const [modalHeader, setModalHeader] = useState("");
+	const [modalData, setModalData] = useState([]);
 	const [modalStatus, setModalStatus] = useState(statusCode.IDLE);
 
-	const { packPrice, status } = useSelector((state) => state.contract.pack);
+	const { packPrice, status, txInfo, action } = useSelector((state) => state.contract.pack);
 
 	useEffect(() => {
 		//screen setup
@@ -73,9 +73,7 @@ export default function PackDetails() {
 		mediaWatcher.addEventListener('change', updateIsNarrowScreen)
 
 		//compute tx fee
-		dispatch(getPackPrice()).then(()=> {
-			setLoading(false);
-		})
+		dispatch(getPackPrice())
 
 		return function cleanup() {
 		mediaWatcher.removeEventListener('change', updateIsNarrowScreen)
@@ -97,99 +95,143 @@ export default function PackDetails() {
 			estimateFee(connectedWallet.walletAddress, executeContractMsg).then((response) => {
 				const amount = response.amount._coins.uusd.amount;
 				setTxFee(amount.d / 10**amount.e)
+			  setLoading(false);
 			})
 		}
 			
 	}, [packPrice])
 
-	useEffect(() => {
-		if(status == statusCode.PENDING){
+	useEffect(async () => {
+		if(action == actionType.EXECUTE && status == statusCode.PENDING){
 			setModalHeader("Waiting for Approval...")
+		  setModalStatus(status);
 		}
-		else if(status == statusCode.SUCCESS){
+		else if(action == actionType.EXECUTE && status == statusCode.SUCCESS){
 			setModalHeader("Waiting for Receipt...")
+      setModalData([
+        {
+          name: "Tx Hash",
+          value: txInfo.txHash
+        }
+      ])
+		  setModalStatus(status)
+      const txResponse = await retrieveTxInfo(txInfo.txHash)
+      //TODO: redux handler for purchase pack response data
+      const amount = txResponse.tx.fee.amount._coins.uusd.amount;
+      const txFeeResponse = amount.d / 10**amount.e
+      console.log(txResponse)
+			setModalHeader("Transaction Complete")
+      setModalData([
+        {
+          name: "Tx Hash",
+          value: txInfo.txHash
+        },
+        {
+          name: "Tx Fee",
+          value: txFeeResponse
+        }
+      ])
+      setModalStatus(statusCode.CONFIRMED)
 		}
-		setModalStatus(status);
-	}, [status])
+		else if(action == actionType.EXECUTE && status == statusCode.ERROR){
+			setModalHeader("Transaction Failed")
+      //TODO: Proper error handling an display on redux
+      setModalData([
+        {
+          name: "Error",
+          value: "An Error has occured"
+        }
+      ])
+		  setModalStatus(status)
+		}
+    else {
+		  setModalStatus(statusCode.IDLE);
+    }
+	}, [status, action, txInfo])
 
 	const executePurchasePack = () => {
 		setModal(true)
 		dispatch(purchasePack({connectedWallet}))
 	}
 
-	const renderModalContent = () => {
-		if(modalStatus == statusCode.PENDING){
-			return (
-				<LoadingModal/>
-			)
-		}
-	}
-
 	return (
+    
 		<>
-      {isNarrowScreen ? (
-        <div className="font-montserrat h-screen relative bg-indigo-dark">
-          <HeaderBack link="/Packs"/>
-          <div className="flex">
-            <div className="w-full">
-              <Main color="indigo-dark">
-                <div className="flex flex-col w-full h-full overflow-y-scroll overflow-x-hidden text-indigo-white font-bold">
-                    {packList.map(function(data,i){
-                      if(query.id === data.key){
-                        return (
-                          <div className="flex flex-col" key={i}>
-                            <Image
-                              src={data.image}
-                              width={300}
-                              height={300}
-                            />
+      {loading ? (
+          <LoadingPageDark/>
+        ) : (
+          <>
+            {isNarrowScreen ? (
+            <div className="font-montserrat h-screen relative bg-indigo-dark">
+              <HeaderBack link="/Packs"/>
+              <div className="flex">
+                <div className="w-full">
+                  <Main color="indigo-dark">
+                    <div className="flex flex-col w-full h-full overflow-y-scroll overflow-x-hidden text-indigo-white font-bold">
+                        {packList.map(function(data,i){
+                          if(query.id === data.key){
+                            return (
+                              <div className="flex flex-col" key={i}>
+                                <Image
+                                  src={data.image}
+                                  width={300}
+                                  height={300}
+                                />
 
-                            <div className="flex flex-col">
-                              <div className="ml-10">
-                                <div className="">
-                                  {data.name}
+                                <div className="flex flex-col">
+                                  <div className="ml-10">
+                                    <div className="">
+                                      {data.name}
+                                    </div>
+                                    <div className="font-thin text-sm mb-4">
+                                      Release {data.release}
+                                    </div>
+                                    <div className="mt-1 text-lg">
+                                      {price}
+                                    </div>
+                                    <div className="font-thin text-sm">
+                                      PRICE
+                                    </div>
+                                  </div>
+                                  
+                                  <button className="bg-indigo-buttonblue w-80 h-12 text-center rounded-md text-md mt-4 mb-8 self-center">
+                                    <div className="">
+                                      BUY NOW
+                                    </div>
+                                  </button>
                                 </div>
-                                <div className="font-thin text-sm mb-4">
-                                  Release {data.release}
-                                </div>
-                                <div className="mt-1 text-lg">
-                                  {price}
-                                </div>
-                                <div className="font-thin text-sm">
-                                  PRICE
-                                </div>
+
                               </div>
-                              
-                              <button className="bg-indigo-buttonblue w-80 h-12 text-center rounded-md text-md mt-4 mb-8 self-center">
-                                <div className="">
-                                  BUY NOW
-                                </div>
-                              </button>
+                            )
+                          }
+                        })}
+
+                          <TitledContainer title="PACK DETAILS">
+                            <div className="flex w-full">
+                              <div className="font-thin justify-start ml-7">
+                                Each pack contains 5 cards.
+                              </div>
                             </div>
-
-                          </div>
-                        )
-                      }
-                    })}
-
-                      <TitledContainer title="PACK DETAILS">
-                        <div className="flex w-full">
-                          <div className="font-thin justify-start ml-7">
-                            Each pack contains 5 cards.
-                          </div>
-                        </div>
-                      </TitledContainer>
+                          </TitledContainer>
+                    </div>
+                  </Main>
                 </div>
-              </Main>
+              </div>
             </div>
-          </div>
-        </div>
-      ) : (
-        <div className="font-montserrat h-screen relative bg-indigo-dark">
-            { displayModal &&
-                <TransactionModal title={modalHeader} visible={displayModal}>
+          ) : (
+            <div className="font-montserrat h-screen relative bg-indigo-dark">
+                { displayModal &&
+                    <TransactionModal 
+                      title={modalHeader} 
+                      visible={displayModal}
+                      modalData={modalData}
+                      modalStatus={modalStatus}
+                      onClose={() => {
+                        setModal(false)
+                      }}
+                    />
 
-                    {/*<div className="fixed w-screen h-screen bg-opacity-70 z-50 overflow-auto bg-indigo-gray flex">
+                    /*<div className="fixed w-screen h-screen bg-opacity-70 z-50 overflow-auto bg-indigo-gray flex">
                         <div className="relative p-8 bg-indigo-white w-80 h-96 m-auto flex-col flex rounded-lg">
                             <button onClick={()=>{setModal(false)}}>
                                 <div className="absolute top-0 right-0 p-4 font-black">
@@ -229,74 +271,76 @@ export default function PackDetails() {
                                 }
                             })}
                         </div>
-                        </div>*/}
-                        {renderModalContent()}
-                </TransactionModal>
-            }
-            <div className="flex">
-              <DesktopNavbar/>
-              <div className="w-full">
-                <Main color="indigo-dark">
-                  <div className="flex flex-col w-full h-full overflow-y-hidden overflow-x-hidden">
-                    <div className="mt-20 ml-24">
-                      <TitledContainer title={`
-                        ${query.id.includes("prem") ? "PREMIUM PACK" : ""} 
-                        ${query.id.includes("base") ? "BASE PACK" : ""}`}>
+                        </div>*/
+                }
+                <div className="flex">
+                  <DesktopNavbar/>
+                  <div className="w-full">
+                    <Main color="indigo-dark">
+                      <div className="flex flex-col w-full h-full overflow-y-hidden overflow-x-hidden">
+                        <div className="mt-20 ml-24">
+                          <TitledContainer title={`
+                            ${query.id.includes("prem") ? "PREMIUM PACK" : ""} 
+                            ${query.id.includes("base") ? "BASE PACK" : ""}`}>
 
-                        {packList.map(function(data, i){
-                          if(query.id === data.key){
-                            return (
-                              <div className="flex" key={i}>
-                                <Image
-                                  src={data.image}
-                                  width={350}
-                                  height={300}
-                                />
+                            {packList.map(function(data, i){
+                              if(query.id === data.key){
+                                return (
+                                  <div className="flex" key={i}>
+                                    <Image
+                                      src={data.image}
+                                      width={350}
+                                      height={300}
+                                    />
 
-                                <div className="flex flex-col">
-                                  <div className="mt-12">
-                                    {data.name}
-                                  </div>
-                                  <div className="font-thin text-sm mb-4">
-                                    Release {data.release}
-                                  </div>
-                                  <div className="font-thin mt-4 text-sm">
-                                    PRICE
-                                  </div>
-                                  <div>
-                                    {`${price} UST`}
-                                  </div>
-                                  <div className="font-thin mt-4 text-xs">
-                                    Tx Fee
-                                  </div>
-                                  <div className="text-xs">
-                                    {`${txFee} UST`}
-                                  </div>
+                                    <div className="flex flex-col">
+                                      <div className="mt-12">
+                                        {data.name}
+                                      </div>
+                                      <div className="font-thin text-sm mb-4">
+                                        Release {data.release}
+                                      </div>
+                                      <div className="font-thin mt-4 text-sm">
+                                        PRICE
+                                      </div>
+                                      <div>
+                                        {`${price} UST`}
+                                      </div>
+                                      <div className="font-thin mt-4 text-xs">
+                                        Tx Fee
+                                      </div>
+                                      <div className="text-xs">
+                                        {`${txFee} UST`}
+                                      </div>
 
-                                  <button className="bg-indigo-buttonblue w-72 h-10 text-center rounded-md text-md mt-12" onClick={() => {executePurchasePack()}}>
-                                    BUY NOW
-                                  </button>
-                                </div>
-                              </div>
-                            )
-                          }
-                        })}
-                      </TitledContainer>
+                                      <button className="bg-indigo-buttonblue w-72 h-10 text-center rounded-md text-md mt-12" onClick={() => {executePurchasePack()}}>
+                                        BUY NOW
+                                      </button>
+                                    </div>
+                                  </div>
+                                )
+                              }
+                            })}
+                          </TitledContainer>
 
-                    <TitledContainer title="PACK DETAILS">
-                      <div className="flex w-full">
-                        <div className="font-thin justify-start ml-7">
-                          Each pack contains 5 cards.
-                        </div>
+                        <TitledContainer title="PACK DETAILS">
+                          <div className="flex w-full">
+                            <div className="font-thin justify-start ml-7">
+                              Each pack contains 5 cards.
+                            </div>
+                          </div>
+                        </TitledContainer>
                       </div>
-                    </TitledContainer>
-                  </div>
+                    </div>
+                  </Main>
                 </div>
-              </Main>
+              </div>
             </div>
-          </div>
-        </div>
-      )}
+          
+          )}
+        </>
+        )
+      }
 		</>
 	)
 }

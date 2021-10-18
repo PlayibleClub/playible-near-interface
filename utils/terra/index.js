@@ -33,21 +33,23 @@ export const estimateFee = async (walletAddress, executeContractMsg, gasPrices =
 
 export const retrieveTxInfo = async (txHash) => {
     let hasTxInfo = false
+    let txInfo = null
     while(!hasTxInfo){
       //try to query transaction info every 2 seconds until the transaction is reflected in the block
-      await terra.tx.txInfo(txHash).then((result) => {
+      await terra.tx.txInfo(txHash).then((result) => { 
         hasTxInfo = true
-        return result
+        txInfo = result
       }).catch(async () => {
         await new Promise(resolve => setTimeout(resolve, 2000));
       })
     }
+  return txInfo
 }
 
-export const executeContract = async (connectedWallet, contractAddr, executeMsg, coins={uusd: 100000000}, estimatedFee = null) => {
+export const executeContract = async (connectedWallet, contractAddr, executeMsg, coins={}, estimatedFee = null) => {
   const txResult = {
     txResult: null,
-    txInfo: null,
+    txHash: null,
     txError: null
   };
 
@@ -63,35 +65,31 @@ export const executeContract = async (connectedWallet, contractAddr, executeMsg,
     estimatedFee = await estimateFee(connectedWallet.walletAddress, executeContractMsg)
   }
   
+  await connectedWallet.post({
+    msgs: executeContractMsg,
+    fee: estimatedFee
+    //fee: new StdFee(1_000_000, { uusd: 90_000_000 }) 
+    // gasAdjustment: 1.1,
+  }).then(async (result) => {
+    txResult.txResult = result
+    txResult.txHash = result.result.txhash
+    //txResult.txInfo = await retrieveTxInfo(result.result.txhash)
 
-  try {
-    await connectedWallet.post({
-      msgs: executeContractMsg,
-      fee: estimatedFee
-      //fee: new StdFee(1_000_000, { uusd: 90_000_000 }) 
-      // gasAdjustment: 1.1,
-    }).then(async (result) => {
-      txResult.txResult = result
-      //txResult.txInfo = await retrieveTxInfo(result.result.txhash)
-
-    }).catch((error) => {
-      if (error instanceof UserDenied) {
-        throw 'User Denied';
-      } else if (error instanceof CreateTxFailed) {
-        throw `Create Tx Failed: ${error.message}`;
-      } else if (error instanceof TxFailed) {
-        throw `Tx Failed: ${error.message}`;
-      } else if (error instanceof Timeout) {
-        throw 'Timeout';
-      } else if (error instanceof TxUnspecifiedError) {
-        throw `Unspecified Error: ${error.message}`;
-      } else {
-        throw `Unknown Error: ${error instanceof Error ? error.message : String(error)}`;
-      }
+  }).catch((error) => {
+    if (error instanceof UserDenied) {
+      throw 'User Denied';
+    } else if (error instanceof CreateTxFailed) {
+      throw `Create Tx Failed: ${error.message}`;
+    } else if (error instanceof TxFailed) {
+      throw `Tx Failed: ${error.message}`;
+    } else if (error instanceof Timeout) {
+      throw 'Timeout';
+    } else if (error instanceof TxUnspecifiedError) {
+      throw `Unspecified Error: ${error.message}`;
+    } else {
+      throw `Unknown Error: ${error instanceof Error ? error.message : String(error)}`;
+    }
   })
-  } catch (error){
-    throw `Failed to connect to wallet`
-  }
 
   
   return txResult
