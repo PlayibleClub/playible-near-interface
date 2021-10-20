@@ -34,9 +34,7 @@ const TransactionModal = (props) => {
 		if(modalStatus == statusCode.ERROR){
 			return (
 				<>
-          {modalData.forEach((data) => {
-            return `${data.name}: ${data.value}`
-          })}
+          {modalData.map((data) => `${data.value}`)}
         </>
 			)
 		}

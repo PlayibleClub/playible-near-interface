@@ -18,7 +18,7 @@ import * as actionType from '../data/constants/actions';
 
 import { useConnectedWallet } from '@terra-money/wallet-provider';
 import { useDispatch, useSelector } from 'react-redux';
-import { getPackPrice, purchasePack } from '../redux/reducers/contract/pack';
+import { getPackPrice, purchasePack, getPurchasePackResponse } from '../redux/reducers/contract/pack';
 import { MsgExecuteContract } from '@terra-money/terra.js';
 
 const packList = [
@@ -62,7 +62,7 @@ export default function PackDetails() {
 	const [modalData, setModalData] = useState([]);
 	const [modalStatus, setModalStatus] = useState(statusCode.IDLE);
 
-	const { packPrice, status, txInfo, action } = useSelector((state) => state.contract.pack);
+	const { packPrice, status, txInfo, action, message } = useSelector((state) => state.contract.pack);
 
 	useEffect(() => {
 		//screen setup
@@ -107,28 +107,19 @@ export default function PackDetails() {
 			
 	}, [packPrice])
 
+  //TODO: Handle status mix ups when transactions are executed simultaneously.
 	useEffect(async () => {
 		if(action == actionType.EXECUTE && status == statusCode.PENDING){
       setModal(true)
-			setModalHeader("Waiting for Approval...")
+			setModalHeader(message)
 		  setModalStatus(status)
 		}
 		else if(action == actionType.EXECUTE && status == statusCode.SUCCESS){
       setModal(true)
-			setModalHeader("Waiting for Receipt...")
-      setModalData([
-        {
-          name: "Tx Hash",
-          value: txInfo.txHash
-        }
-      ])
-		  setModalStatus(status)
-      const txResponse = await retrieveTxInfo(txInfo.txHash)
-      //TODO: redux handler for purchase pack response data
-      const amount = txResponse.tx.fee.amount._coins.uusd.amount;
+			setModalHeader(message)
+      const amount = txInfo.txResult.fee.amount._coins.uusd.amount;
+      //const amount = txResponse.tx.fee.amount._coins.uusd.amount;
       const txFeeResponse = amount.d / 10**amount.e
-      console.log(txResponse)
-			setModalHeader("Transaction Complete")
       setModalData([
         {
           name: "Tx Hash",
@@ -139,7 +130,8 @@ export default function PackDetails() {
           value: txFeeResponse
         }
       ])
-      setModalStatus(statusCode.CONFIRMED)
+		  setModalStatus(status)
+      dispatch(getPurchasePackResponse())
 		}
 		else if(action == actionType.EXECUTE && status == statusCode.ERROR){
       setModal(true)
@@ -148,15 +140,15 @@ export default function PackDetails() {
       setModalData([
         {
           name: "Error",
-          value: "An Error has occured"
+          value: message
         }
       ])
 		  setModalStatus(status)
 		}
-    else {
+    else if(status != statusCode.CONFIRMED){
 		  setModalStatus(statusCode.IDLE);
     }
-	}, [status, action, txInfo])
+	}, [status, action, txInfo, message])
 
 	const executePurchasePack = () => {
 		dispatch(purchasePack({connectedWallet}))
