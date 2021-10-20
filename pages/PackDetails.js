@@ -5,6 +5,7 @@ import TitledContainer from '../components/TitledContainer';
 import Main from '../components/Main';
 import LoadingPageDark from '../components/loading/LoadingPageDark';
 import TransactionModal from '../components/modals/TransactionModal';
+import Button from '../components/Button';
 
 import { useRouter } from 'next/router';
 import Image from 'next/image';
@@ -86,27 +87,34 @@ export default function PackDetails() {
 			const executeContractMsg = [
 				new MsgExecuteContract(
 					connectedWallet.walletAddress,         // Wallet Address
-					fantasyData.contract_addr,              // Contract Address
+					fantasyData.contract_addr,             // Contract Address
 					JSON.parse(`{ "purchase_pack": {} }`), // ExecuteMsg
 					{ uusd: packPrice }
 				),  
 			]
 
-			estimateFee(connectedWallet.walletAddress, executeContractMsg).then((response) => {
-				const amount = response.amount._coins.uusd.amount;
+			estimateFee(connectedWallet.walletAddress, executeContractMsg)
+      .then((response) => {
+				const amount = response.amount._coins.uusd.amount
 				setTxFee(amount.d / 10**amount.e)
-			  setLoading(false);
+			  setLoading(false)
 			})
+      .catch((error) => {
+				setTxFee(0)
+			  setLoading(false)
+      })
 		}
 			
 	}, [packPrice])
 
 	useEffect(async () => {
 		if(action == actionType.EXECUTE && status == statusCode.PENDING){
+      setModal(true)
 			setModalHeader("Waiting for Approval...")
-		  setModalStatus(status);
+		  setModalStatus(status)
 		}
 		else if(action == actionType.EXECUTE && status == statusCode.SUCCESS){
+      setModal(true)
 			setModalHeader("Waiting for Receipt...")
       setModalData([
         {
@@ -134,6 +142,7 @@ export default function PackDetails() {
       setModalStatus(statusCode.CONFIRMED)
 		}
 		else if(action == actionType.EXECUTE && status == statusCode.ERROR){
+      setModal(true)
 			setModalHeader("Transaction Failed")
       //TODO: Proper error handling an display on redux
       setModalData([
@@ -150,7 +159,6 @@ export default function PackDetails() {
 	}, [status, action, txInfo])
 
 	const executePurchasePack = () => {
-		setModal(true)
 		dispatch(purchasePack({connectedWallet}))
 	}
 
@@ -313,9 +321,13 @@ export default function PackDetails() {
                                         {`${txFee} UST`}
                                       </div>
 
-                                      <button className="bg-indigo-buttonblue w-72 h-10 text-center rounded-md text-md mt-12" onClick={() => {executePurchasePack()}}>
+                                      <Button rounded="rounded-md " textColor="white-light" color="indigo-buttonblue" onClick={() => {executePurchasePack()}} size="py-1 px-1 h-full" >
                                         BUY NOW
-                                      </button>
+                                      </Button>
+
+                                      {/*<button className="bg-indigo-buttonblue w-72 h-10 text-center rounded-md text-md mt-12" onClick={() => {executePurchasePack()}}>
+                                        
+                                      </button>*/}
                                     </div>
                                   </div>
                                 )

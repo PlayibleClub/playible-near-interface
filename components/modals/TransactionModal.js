@@ -12,20 +12,15 @@ const TransactionModal = (props) => {
   const renderModalContent = () => {
 		if(modalStatus == statusCode.PENDING){
 			return (
-				<LoadingModal/>
+        <>
+          <LoadingModal/>
+        </>
 			)
 		}
 		if(modalStatus == statusCode.SUCCESS){
 			return (
 				<>
           {modalData.map((data) => `${data.name}: ${data.value}`)}
-          <button
-            type="button"
-            className="inline-flex justify-center px-4 py-2 text-sm font-medium text-blue-900 bg-blue-100 border border-transparent rounded-md hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500"
-            onClick={() => onClose()}
-          >
-            Close
-          </button>
         </>
 			)
 		}
@@ -33,13 +28,6 @@ const TransactionModal = (props) => {
 			return (
 				<>
           {modalData.map((data) => `${data.name}: ${data.value}`)}
-          <button
-            type="button"
-            className="inline-flex justify-center px-4 py-2 text-sm font-medium text-blue-900 bg-blue-100 border border-transparent rounded-md hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500"
-            onClick={() => onClose()}
-          >
-            Close
-          </button>
         </>
 			)
 		}
@@ -49,13 +37,6 @@ const TransactionModal = (props) => {
           {modalData.forEach((data) => {
             return `${data.name}: ${data.value}`
           })}
-          <button
-            type="button"
-            className="inline-flex justify-center px-4 py-2 text-sm font-medium text-blue-900 bg-blue-100 border border-transparent rounded-md hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500"
-            onClick={() => onClose()}
-          >
-            Close
-          </button>
         </>
 			)
 		}
@@ -106,6 +87,13 @@ const TransactionModal = (props) => {
                   {title}
                 </Dialog.Title>
                 {renderModalContent()}
+                <button
+                  type="button"
+                  className="inline-flex justify-center px-4 py-2 text-sm font-medium text-blue-900 bg-blue-100 border border-transparent rounded-md hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500"
+                  onClick={() => onClose()}
+                >
+                  Close
+                </button>
               </div>
             </Transition.Child>
           </div>
