@@ -13,7 +13,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getPortfolio, clearData } from '../redux/reducers/contract/portfolio';
 import { useConnectedWallet } from '@terra-money/wallet-provider';
 import TokenGridCol2 from '../components/TokenGridCol2';
-import Loading from '../components/Loading';
+import LoadingPageDark from '../components/LoadingPageDark';
 import * as statusCode from '../data/constants/status'
 import Link from 'next/link'
 import DesktopNavbar from '../components/DesktopNavbar';
@@ -193,7 +193,7 @@ const Portfolio = () => {
                 <Main color="indigo-dark">
                     
                     {loading ? (
-                        <Loading/>
+                        <LoadingPageDark/>
                     ) : (
                     <div className="flex w-full overflow-y-auto overflow-x-hidden h-screen self-center justify-center">
                         <PortfolioContainer title="PORTFOLIO" className="flex">
