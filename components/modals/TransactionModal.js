@@ -39,7 +39,7 @@ const TransactionModal = (props) => {
 			)
 		}
 	}
-
+  //TODO: Make the modal more presentable
   return (
     <>
       <Transition appear show={visible} as={Fragment}>
