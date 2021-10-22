@@ -10,7 +10,6 @@ import LargePackContainer from '../components/LargePackContainer';
 import searchIcon from '../public/images/search.png'
 import DesktopNavbar from '../components/DesktopNavbar';
 import Link from 'next/link';
-import Container from '../components/Container';
 
 export default function Packs() {
     const { status, connect, disconnect, availableConnectTypes } = useWallet();
@@ -149,31 +148,40 @@ export default function Packs() {
         )
     } else {
         return (
-            <Container>
-                <PortfolioContainer title="PACKS">
-                    <div className="flex float-left mt-12 lg:ml-12 md:ml-2 md:mt-4">
-                        {
-                            packList.map(function (pack, i) {
-                                const toFindName = pack.name.toLowerCase()
-                                const searchInfo = result.toLowerCase()
-                                if (toFindName.includes(searchInfo))
-                                    return (
-                                        <Link href={`/PackDetails?id=${pack.key}`}>
-                                            <div className='' key={i}>
-                                                <LargePackContainer
-                                                    PackName={pack.name}
-                                                    CoinValue={pack.price}
-                                                    releaseValue={pack.release}
-                                                    imagesrc={pack.image} />
-                                            </div>
-                                        </Link>
-                                    )
-                                }
-                            )
-                        }
+            <>
+                <div className="font-montserrat h-screen relative bg-indigo-dark flex">
+                    <DesktopNavbar/>
+                    <div className="flex flex-col w-full">
+                        <Main color="indigo-dark">
+                            <div className="flex flex-col w-full h-full overflow-x-hidden">
+                                <PortfolioContainer title="PACKS">
+                                    <div className="flex float-left mt-12 lg:ml-12 md:ml-2 md:mt-4">
+                                        {
+                                            packList.map(function (pack, i) {
+                                                const toFindName = pack.name.toLowerCase()
+                                                const searchInfo = result.toLowerCase()
+                                                if (toFindName.includes(searchInfo))
+                                                    return (
+                                                        <Link href={`/PackDetails?id=${pack.key}`}>
+                                                            <div className='' key={i}>
+                                                                <LargePackContainer
+                                                                    PackName={pack.name}
+                                                                    CoinValue={pack.price}
+                                                                    releaseValue={pack.release}
+                                                                    imagesrc={pack.image} />
+                                                            </div>
+                                                        </Link>
+                                                    )
+                                                }
+                                            )
+                                        }
+                                    </div>
+                                </PortfolioContainer>
+                            </div>
+                        </Main>
                     </div>
-                </PortfolioContainer>
-            </Container>
+                </div>
+            </>
         )
     }
 }
