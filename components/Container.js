@@ -1,41 +1,32 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import {BrowserView, MobileView} from 'react-device-detect';
 import DesktopNavbar from '../components/DesktopNavbar';
 import DesktopHeaderBase from '../components/DesktopHeaderBase';
-import TransactionModal from '../components/modals/TransactionModal';
+import Navbar from './Navbar';
+import HeaderBase from './HeaderBase';
+import Main from './Main';
 
 const Container = (props) => {
   const { children } = props
-	const [isNarrowScreen, setIsNarrowScreen] = useState(false);
-
-  useEffect(() => {
-		//screen setup
-		const mediaWatcher = window.matchMedia("(max-width: 500px)")
-
-		function updateIsNarrowScreen(e) {
-			setIsNarrowScreen(e.matches);
-		}
-		mediaWatcher.addEventListener('change', updateIsNarrowScreen)
-
-		return function cleanup() {
-		mediaWatcher.removeEventListener('change', updateIsNarrowScreen)
-		}
-	}, [])
 
   return (
     <div className="font-montserrat h-screen relative bg-indigo-dark">
-      {
-        isNarrowScreen ? (
+      <BrowserView>
+        <Navbar/>
+        <HeaderBase/>
+        <div className="bg-indigo-dark flex flex-col w-full indigo-dark overflow-y-auto overflow-x-hidden overscroll-contain">
+          {children}
+        </div>
+      </BrowserView>
+      <MobileView>
+        <div className="flex bg-indigo-dark">
           <DesktopNavbar/>
-        ) : (
-          <div className="flex bg-indigo-dark">
-            <DesktopNavbar/>
-            <div className="flex flex-col w-full h-full overflow-y-hidden overflow-x-hidden">
-              <DesktopHeaderBase/>
-              {children}
-            </div>
+          <div className="flex flex-col w-full h-full overflow-y-hidden overflow-x-hidden">
+            <DesktopHeaderBase/>
+            {children}
           </div>
-        )
-      }
+        </div>
+      </MobileView>
     </div>
   );
 };

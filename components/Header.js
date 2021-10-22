@@ -10,12 +10,8 @@ const Header = (props) => {
   const { children, color } = props;
 
   return (
-    <div className="fixed w-full z-40">
-      <div data-test="header" className={`bg-${color} relative flex flex-row justify-around h-24`} style={header}>
-        <div className="w-full absolute bottom-0 flex flex-row justify-around ">
-          {children}
-        </div>
-      </div>
+    <div data-test="header" className={`bg-${color} w-full h-24 flex flex-row justify-around fixed z-50`} style={header}>
+      {children}
     </div>
   );
 };
