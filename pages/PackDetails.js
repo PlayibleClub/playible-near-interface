@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import DesktopNavbar from '../components/DesktopNavbar';
 import HeaderBack from '../components/HeaderBack';
 import TitledContainer from '../components/TitledContainer';
 import Main from '../components/Main';
 import LoadingPageDark from '../components/loading/LoadingPageDark';
+import Button from '../components/Button';
+import Container from '../components/Container';
 import TransactionModal from '../components/modals/TransactionModal';
 
 import { useRouter } from 'next/router';
@@ -17,7 +18,7 @@ import * as actionType from '../data/constants/actions';
 
 import { useConnectedWallet } from '@terra-money/wallet-provider';
 import { useDispatch, useSelector } from 'react-redux';
-import { getPackPrice, purchasePack } from '../redux/reducers/contract/pack';
+import { getPackPrice, purchasePack, getPurchasePackResponse } from '../redux/reducers/contract/pack';
 import { MsgExecuteContract } from '@terra-money/terra.js';
 
 const packList = [
@@ -49,10 +50,11 @@ const packList = [
 export default function PackDetails() {
 
 	const dispatch = useDispatch();
-	const { query } = useRouter();
+	const router = useRouter();
 	const connectedWallet = useConnectedWallet();
 
 	const [loading, setLoading] = useState(true);
+  const [loadingMessage, setLoadingMessage] = useState("")
 	const [isNarrowScreen, setIsNarrowScreen] = useState(false);
 	const [displayModal, setModal] = useState(false);
 	const [price, setPrice] = useState(0);
@@ -61,7 +63,7 @@ export default function PackDetails() {
 	const [modalData, setModalData] = useState([]);
 	const [modalStatus, setModalStatus] = useState(statusCode.IDLE);
 
-	const { packPrice, status, txInfo, action } = useSelector((state) => state.contract.pack);
+	const { packPrice, status, txInfo, action, message } = useSelector((state) => state.contract.pack);
 
 	useEffect(() => {
 		//screen setup
@@ -81,46 +83,47 @@ export default function PackDetails() {
 	}, [])
 
 	useEffect(() => {
-		if(packPrice != null) {
+    if(typeof(connectedWallet) == 'undefined' || connectedWallet == null){
+      router.push("/")
+    }
+		else if(packPrice != null) {
 			setPrice(packPrice / 1_000_000);
 			const executeContractMsg = [
 				new MsgExecuteContract(
 					connectedWallet.walletAddress,         // Wallet Address
-					fantasyData.contract_addr,              // Contract Address
+					fantasyData.contract_addr,             // Contract Address
 					JSON.parse(`{ "purchase_pack": {} }`), // ExecuteMsg
 					{ uusd: packPrice }
 				),  
 			]
 
-			estimateFee(connectedWallet.walletAddress, executeContractMsg).then((response) => {
-				const amount = response.amount._coins.uusd.amount;
+			estimateFee(connectedWallet.walletAddress, executeContractMsg)
+      .then((response) => {
+				const amount = response.amount._coins.uusd.amount
 				setTxFee(amount.d / 10**amount.e)
-			  setLoading(false);
+			  setLoading(false)
 			})
+      .catch((error) => {
+				setTxFee(0)
+			  setLoading(false)
+      })
 		}
 			
 	}, [packPrice])
 
+  //TODO: Handle status mix ups when transactions are executed simultaneously.
 	useEffect(async () => {
 		if(action == actionType.EXECUTE && status == statusCode.PENDING){
-			setModalHeader("Waiting for Approval...")
-		  setModalStatus(status);
+      setModal(true)
+			setModalHeader(message)
+		  setModalStatus(status)
 		}
 		else if(action == actionType.EXECUTE && status == statusCode.SUCCESS){
-			setModalHeader("Waiting for Receipt...")
-      setModalData([
-        {
-          name: "Tx Hash",
-          value: txInfo.txHash
-        }
-      ])
-		  setModalStatus(status)
-      const txResponse = await retrieveTxInfo(txInfo.txHash)
-      //TODO: redux handler for purchase pack response data
-      const amount = txResponse.tx.fee.amount._coins.uusd.amount;
+      setModal(true)
+			setModalHeader(message)
+      const amount = txInfo.txResult.fee.amount._coins.uusd.amount;
+      //const amount = txResponse.tx.fee.amount._coins.uusd.amount;
       const txFeeResponse = amount.d / 10**amount.e
-      console.log(txResponse)
-			setModalHeader("Transaction Complete")
       setModalData([
         {
           name: "Tx Hash",
@@ -131,34 +134,50 @@ export default function PackDetails() {
           value: txFeeResponse
         }
       ])
-      setModalStatus(statusCode.CONFIRMED)
+		  setModalStatus(status)
+      setLoading(true)
+      setLoadingMessage("Retrieving Draw Results...")
+      dispatch(getPurchasePackResponse()).then(() => {
+        router.push("/TokenDrawPage")
+      })
 		}
 		else if(action == actionType.EXECUTE && status == statusCode.ERROR){
+      setModal(true)
 			setModalHeader("Transaction Failed")
       //TODO: Proper error handling an display on redux
       setModalData([
         {
           name: "Error",
-          value: "An Error has occured"
+          value: message
         }
       ])
 		  setModalStatus(status)
 		}
-    else {
+    else if(status != statusCode.CONFIRMED){
 		  setModalStatus(statusCode.IDLE);
     }
-	}, [status, action, txInfo])
+	}, [status, action, txInfo, message])
 
 	const executePurchasePack = () => {
-		setModal(true)
 		dispatch(purchasePack({connectedWallet}))
 	}
 
 	return (
     
-		<>
+		<Container>
+      {displayModal &&
+        <TransactionModal 
+          title={modalHeader} 
+          visible={displayModal}
+          modalData={modalData}
+          modalStatus={modalStatus}
+          onClose={() => {
+            setModal(false)
+          }}
+        />
+      }
       {loading ? (
-          <LoadingPageDark/>
+            <LoadingPageDark message={loadingMessage}/>
         ) : (
           <>
             {isNarrowScreen ? (
@@ -169,7 +188,7 @@ export default function PackDetails() {
                   <Main color="indigo-dark">
                     <div className="flex flex-col w-full h-full overflow-y-scroll overflow-x-hidden text-indigo-white font-bold">
                         {packList.map(function(data,i){
-                          if(query.id === data.key){
+                          if(router.query.id === data.key){
                             return (
                               <div className="flex flex-col" key={i}>
                                 <Image
@@ -219,128 +238,68 @@ export default function PackDetails() {
               </div>
             </div>
           ) : (
-            <div className="font-montserrat h-screen relative bg-indigo-dark">
-                { displayModal &&
-                    <TransactionModal 
-                      title={modalHeader} 
-                      visible={displayModal}
-                      modalData={modalData}
-                      modalStatus={modalStatus}
-                      onClose={() => {
-                        setModal(false)
-                      }}
-                    />
+            <>
+              <TitledContainer className="mt-20 ml-24" title={`
+                ${router.query.id.includes("prem") ? "PREMIUM PACK" : ""} 
+                ${router.query.id.includes("base") ? "BASE PACK" : ""}`}
+              >
 
-                    /*<div className="fixed w-screen h-screen bg-opacity-70 z-50 overflow-auto bg-indigo-gray flex">
-                        <div className="relative p-8 bg-indigo-white w-80 h-96 m-auto flex-col flex rounded-lg">
-                            <button onClick={()=>{setModal(false)}}>
-                                <div className="absolute top-0 right-0 p-4 font-black">
-                                    X
-                                </div>
-                            </button>
+                {packList.map(function(data, i){
+                  if(router.query.id === data.key){
+                    return (
+                      <div className="flex" key={i}>
+                        <Image
+                          src={data.image}
+                          width={350}
+                          height={300}
+                        />
 
-                            <div className="font-bold flex flex-col">
-                                {modalHeader}
-                                <img src={underlineIcon} className="sm:object-none md:w-6" />
-                            </div>
-
-                            {packList.map(function(data,i){
-                                if(query.id === data.key){
-                                    return (
-                                        <div className="flex flex-col" key={i}>
-                                            <img src={data.image}/>
-
-                                            <div className="flex flex-col text-center">
-                                                <div className="font-bold">
-                                                    {data.name}
-                                                </div>
-                                                <div className="font-thin text-sm mb-4">
-                                                    Release {data.release}
-                                                </div>
-
-                                                <Link href="/TokenDrawPage">
-                                                    <button className="bg-indigo-buttonblue w-60 h-10 text-center rounded-md text-md self-center text-indigo-white font-black">
-                                                        <div className="">
-                                                            OPEN PACK
-                                                        </div>
-                                                    </button>
-                                                </Link>
-                                            </div>
-                                        </div>
-                                    )
-                                }
-                            })}
-                        </div>
-                        </div>*/
-                }
-                <div className="flex">
-                  <DesktopNavbar/>
-                  <div className="w-full">
-                    <Main color="indigo-dark">
-                      <div className="flex flex-col w-full h-full overflow-y-hidden overflow-x-hidden">
-                        <div className="mt-20 ml-24">
-                          <TitledContainer title={`
-                            ${query.id.includes("prem") ? "PREMIUM PACK" : ""} 
-                            ${query.id.includes("base") ? "BASE PACK" : ""}`}>
-
-                            {packList.map(function(data, i){
-                              if(query.id === data.key){
-                                return (
-                                  <div className="flex" key={i}>
-                                    <Image
-                                      src={data.image}
-                                      width={350}
-                                      height={300}
-                                    />
-
-                                    <div className="flex flex-col">
-                                      <div className="mt-12">
-                                        {data.name}
-                                      </div>
-                                      <div className="font-thin text-sm mb-4">
-                                        Release {data.release}
-                                      </div>
-                                      <div className="font-thin mt-4 text-sm">
-                                        PRICE
-                                      </div>
-                                      <div>
-                                        {`${price} UST`}
-                                      </div>
-                                      <div className="font-thin mt-4 text-xs">
-                                        Tx Fee
-                                      </div>
-                                      <div className="text-xs">
-                                        {`${txFee} UST`}
-                                      </div>
-
-                                      <button className="bg-indigo-buttonblue w-72 h-10 text-center rounded-md text-md mt-12" onClick={() => {executePurchasePack()}}>
-                                        BUY NOW
-                                      </button>
-                                    </div>
-                                  </div>
-                                )
-                              }
-                            })}
-                          </TitledContainer>
-
-                        <TitledContainer title="PACK DETAILS">
-                          <div className="flex w-full">
-                            <div className="font-thin justify-start ml-7">
-                              Each pack contains 5 cards.
-                            </div>
+                        <div className="flex flex-col">
+                          <div className="mt-12">
+                            {data.name}
                           </div>
-                        </TitledContainer>
+                          <div className="font-thin text-sm mb-4">
+                            Release {data.release}
+                          </div>
+                          <div className="font-thin mt-4 text-sm">
+                            PRICE
+                          </div>
+                          <div>
+                            {`${price} UST`}
+                          </div>
+                          <div className="font-thin mt-4 text-xs">
+                            Tx Fee
+                          </div>
+                          <div className="text-xs">
+                            {`${txFee} UST`}
+                          </div>
+
+                          <Button rounded="rounded-md " textColor="white-light" color="indigo-buttonblue" onClick={() => {executePurchasePack()}} size="py-1 px-1 h-full" >
+                            BUY NOW
+                          </Button>
+
+                          {/*<button className="bg-indigo-buttonblue w-72 h-10 text-center rounded-md text-md mt-12" onClick={() => {executePurchasePack()}}>
+                            
+                          </button>*/}
+                        </div>
                       </div>
-                    </div>
-                  </Main>
+                    )
+                  }
+                })}
+              </TitledContainer>
+
+              <TitledContainer className="ml-24" title="PACK DETAILS">
+                <div className="flex w-full">
+                  <div className="font-thin justify-start ml-7">
+                    Each pack contains 5 cards.
+                  </div>
                 </div>
-              </div>
-            </div>
-          
+              </TitledContainer>
+            </>
           )}
         </>
         )
       }
-		</>
+		</Container>
 	)
 }
