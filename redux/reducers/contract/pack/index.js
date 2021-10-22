@@ -169,7 +169,7 @@ const packSlice = createSlice({
       return {
         ...state,
         txResponse: action.payload.response,
-        drawList: action.payload.drawList,
+        drawList: processRoundData(action.payload.drawList),
         status: action.payload.status,
         action: actionType.EXECUTE,
         message: statusMessage.EXECUTE_MESSAGE_SUCCESS
