@@ -2,10 +2,10 @@ import PropTypes from 'prop-types';
 import underlineIcon from '../public/images/underline.png'
 
 const TitledContainer = (props) => {
-  const { color, textcolor, size, title, children, align, className } = props;
+  const { color, textcolor, size, title, children, align } = props;
 
   return (
-    <div data-test="titledcontainer" className={`text-${textcolor} bg-${color} text-${size} font-bold ${align} flex flex-col w-full h-full ${className} `}>
+    <div data-test="titledcontainer" className={`text-${textcolor} bg-${color} text-${size} font-bold ${align} flex flex-col w-full h-full `}>
       <div className="pb-3 pt-6 ml-7 justify-start sm:text-2xl md:text-base">
         {title}
         <img src={underlineIcon} className="sm:object-none md:w-6" />

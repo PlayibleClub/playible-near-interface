@@ -1,13 +1,7 @@
 //loading component for pages in dark mode
-const LoadingPageDark = (props) => {
-
-  const { message } = props
-
+const LoadingPageDark = () => {
   return (
-    <div className="p-4 max-w-sm w-full m-8">
-      <div className="text-white-light text-1xl">
-      { message }
-      </div>
+    <div className="p-4 max-w-sm w-full mx-auto">
       <div className="animate-pulse flex space-x-4">
         <div className="flex-1 space-y-4 py-1">
           <div className="space-y-3">

@@ -1,2 +1,2 @@
-export const EXECUTE_MESSAGE_PENDING = 'Waiting for Approval';
+export const EXECUTE_MESSAGE_PENDING = 'Waiting for Terra Station';
 export const EXECUTE_MESSAGE_SUCCESS = 'Success';
