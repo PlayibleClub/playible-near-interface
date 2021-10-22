@@ -2,31 +2,14 @@ import PropTypes from 'prop-types';
 import Link from 'next/link'
 import React, { Component, useState, useEffect } from 'react';
 import Image from 'next/image'
+import {BrowserView, MobileView} from 'react-device-detect'
 
 const LargePackContainer = (props) => {
   const { children, color, imagesrc, PackName, releaseValue, CoinValue } = props;
-
-  const [isNarrowScreen, setIsNarrowScreen] = useState(false);
-
-  useEffect(() => {
-      // set initial value
-      const mediaWatcher = window.matchMedia("(max-width: 500px)")
   
-      //watch for updates
-      function updateIsNarrowScreen(e) {
-        setIsNarrowScreen(e.matches);
-      }
-      mediaWatcher.addEventListener('change', updateIsNarrowScreen)
-  
-      // clean up after ourselves
-      return function cleanup() {
-        mediaWatcher.removeEventListener('change', updateIsNarrowScreen)
-      }
-    })
-  
-  if (isNarrowScreen) {
     return (
-      <Link href="/Purchase">
+      <>
+      <MobileView>
         <div data-test="LargePackContainer" className={`bg-${color} overflow-hidden flex flex-col w-full `}>
           <div className="flex">
             <img src={imagesrc} alt="Img" />
@@ -36,11 +19,11 @@ const LargePackContainer = (props) => {
           <div className="flex w-full justify-center">
             <div className=" flex flex-col w-4/5">
               <div className="flex flex-row justify-between w-full">
-                <div className="mb-3">{PackName}</div>
-                <div>{CoinValue}</div>
+                <div className="mb-3 font-bold">{PackName}</div>
+                <div className="font-bold">{CoinValue}</div>
               </div>
-              <div className="  text-md font-light">Release {releaseValue}</div>
-              <div className="  text-xs font-bold">
+              <div className="text-md font-light">Release {releaseValue}</div>
+              <div className="text-xs font-bold">
 
                 {' '}
 
@@ -48,10 +31,8 @@ const LargePackContainer = (props) => {
             </div>
           </div>
         </div>
-      </Link>
-    )
-  } else {
-      return (
+      </MobileView>
+      <BrowserView>
         <div data-test="LargePackContainer" className={`bg-${color} overflow-hidden w-full flex flex-col`}>
           <div className="">
             <Image
@@ -75,8 +56,9 @@ const LargePackContainer = (props) => {
             </div>
           </div>
         </div>
+        </BrowserView>
+      </>
     )
-  }
 };
 
 LargePackContainer.propTypes = {

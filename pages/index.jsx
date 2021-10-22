@@ -27,6 +27,7 @@ import PackContainer from '../components/PackContainer';
 // import wallet from '../public/wallet.png';
 import filterIcon from '../public/images/filter.png'
 import AthleteTokenContainer from '../components/AthleteTokenContainer';
+import {BrowserView, MobileView} from 'react-device-detect';
 
 const marketplaceList = [
   {
@@ -105,27 +106,28 @@ export default function Home() {
   };
 
   const [isClosed, setClosed] = React.useState(true)
-  const [isNarrowScreen, setIsNarrowScreen] = useState(false);
+  // const [isNarrowScreen, setIsNarrowScreen] = useState(false);
 
-  useEffect(() => {
-    // set initial value
-    const mediaWatcher = window.matchMedia("(max-width: 500px)")
+  // useEffect(() => {
+  //   // set initial value
+  //   const mediaWatcher = window.matchMedia("(max-width: 500px)")
 
-    //watch for updates
-    function updateIsNarrowScreen(e) {
-      setIsNarrowScreen(e.matches);
-    }
-    mediaWatcher.addEventListener('change', updateIsNarrowScreen)
+  //   //watch for updates
+  //   function updateIsNarrowScreen(e) {
+  //     setIsNarrowScreen(e.matches);
+  //   }
+  //   mediaWatcher.addEventListener('change', updateIsNarrowScreen)
 
-    // clean up after ourselves
-    return function cleanup() {
-      mediaWatcher.removeEventListener('change', updateIsNarrowScreen)
-    }
-  })
+  //   // clean up after ourselves
+  //   return function cleanup() {
+  //     mediaWatcher.removeEventListener('change', updateIsNarrowScreen)
+  //   }
+  // })
 
-  if (isNarrowScreen) {
+  // if (isNarrowScreen) {
     return (
       <>
+      <MobileView>
         <div className={`font-montserrat h-screen relative`}>
           <Navbar/>
           <HeaderBase/>
@@ -201,14 +203,19 @@ export default function Home() {
             </Main>
           </div>
         </div>
+      </MobileView>
+
+      <BrowserView>
+        <DesktopDashboard/>
+      </BrowserView>
       </>
     );
 
 
 
-  } else {
-    return (<DesktopDashboard></DesktopDashboard>);
-  }
+  // } else {
+  //   return (<DesktopDashboard></DesktopDashboard>);
+  // }
 
 
 }

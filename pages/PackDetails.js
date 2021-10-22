@@ -5,16 +5,15 @@ import TitledContainer from '../components/TitledContainer';
 import Main from '../components/Main';
 import LoadingPageDark from '../components/loading/LoadingPageDark';
 import TransactionModal from '../components/modals/TransactionModal';
-
 import { useRouter } from 'next/router';
-import Image from 'next/image';
-
-
+import Image from 'next/image'
+import underlineIcon from '../public/images/blackunderline.png'
+import Link from 'next/link';
+import {BrowserView, MobileView} from 'react-device-detect'
 import { estimateFee, retrieveTxInfo } from '../utils/terra/index';
 import { fantasyData } from '../data';
 import * as statusCode from '../data/constants/status';
 import * as actionType from '../data/constants/actions';
-
 import { useConnectedWallet } from '@terra-money/wallet-provider';
 import { useDispatch, useSelector } from 'react-redux';
 import { getPackPrice, purchasePack } from '../redux/reducers/contract/pack';
@@ -155,13 +154,23 @@ export default function PackDetails() {
 	}
 
 	return (
-    
 		<>
-      {loading ? (
+            {loading ? (
           <LoadingPageDark/>
-        ) : (
+            ) : (
           <>
-            {isNarrowScreen ? (
+            <MobileView>
+            { displayModal &&
+                <TransactionModal 
+                    title={modalHeader} 
+                    visible={displayModal}
+                    modalData={modalData}
+                    modalStatus={modalStatus}
+                    onClose={() => {
+                    setModal(false)
+                    }}
+                />
+            }
             <div className="font-montserrat h-screen relative bg-indigo-dark">
               <HeaderBack link="/Packs"/>
               <div className="flex">
@@ -216,10 +225,11 @@ export default function PackDetails() {
                     </div>
                   </Main>
                 </div>
-              </div>
             </div>
-          ) : (
-            <div className="font-montserrat h-screen relative bg-indigo-dark">
+            </div>
+            </MobileView>
+            <BrowserView>
+                <div className="font-montserrat h-screen relative bg-indigo-dark">
                 { displayModal &&
                     <TransactionModal 
                       title={modalHeader} 
@@ -230,48 +240,6 @@ export default function PackDetails() {
                         setModal(false)
                       }}
                     />
-
-                    /*<div className="fixed w-screen h-screen bg-opacity-70 z-50 overflow-auto bg-indigo-gray flex">
-                        <div className="relative p-8 bg-indigo-white w-80 h-96 m-auto flex-col flex rounded-lg">
-                            <button onClick={()=>{setModal(false)}}>
-                                <div className="absolute top-0 right-0 p-4 font-black">
-                                    X
-                                </div>
-                            </button>
-
-                            <div className="font-bold flex flex-col">
-                                {modalHeader}
-                                <img src={underlineIcon} className="sm:object-none md:w-6" />
-                            </div>
-
-                            {packList.map(function(data,i){
-                                if(query.id === data.key){
-                                    return (
-                                        <div className="flex flex-col" key={i}>
-                                            <img src={data.image}/>
-
-                                            <div className="flex flex-col text-center">
-                                                <div className="font-bold">
-                                                    {data.name}
-                                                </div>
-                                                <div className="font-thin text-sm mb-4">
-                                                    Release {data.release}
-                                                </div>
-
-                                                <Link href="/TokenDrawPage">
-                                                    <button className="bg-indigo-buttonblue w-60 h-10 text-center rounded-md text-md self-center text-indigo-white font-black">
-                                                        <div className="">
-                                                            OPEN PACK
-                                                        </div>
-                                                    </button>
-                                                </Link>
-                                            </div>
-                                        </div>
-                                    )
-                                }
-                            })}
-                        </div>
-                        </div>*/
                 }
                 <div className="flex">
                   <DesktopNavbar/>
@@ -334,13 +302,11 @@ export default function PackDetails() {
                     </div>
                   </Main>
                 </div>
-              </div>
-            </div>
-          
-          )}
+                </div>
+                </div>
+            </BrowserView>
         </>
-        )
-      }
-		</>
-	)
+        )}
+        </>
+    )
 }
