@@ -20,7 +20,7 @@ const Container = (props) => {
       </MobileView>
       <BrowserView>
         <div className="flex bg-indigo-dark">
-          <DesktopNavbar/>
+          <DesktopNavbar color="indigo-navbargrad2" secondcolor="indigo-navbargrad1"/>
           <div className="flex flex-col w-full h-full overflow-y-hidden overflow-x-hidden">
             <DesktopHeaderBase/>
             {children}
