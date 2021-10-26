@@ -218,11 +218,11 @@ export default function PackDetails() {
                                       <div className="font-thin text-sm">
                                         PRICE
                                       </div>
-                                      <div className="font-thin mt-4 text-xs">
-                                        Tx Fee
-                                      </div>
                                       <div className="text-xs">
                                         {`${txFee} UST`}
+                                      </div>
+                                      <div className="font-thin mt-4 text-xs">
+                                        Tx Fee
                                       </div>
                                     </div>
                                     
