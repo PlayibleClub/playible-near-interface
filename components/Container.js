@@ -11,14 +11,14 @@ const Container = (props) => {
 
   return (
     <div className="font-montserrat h-screen relative bg-indigo-dark">
-      <BrowserView>
+      <MobileView>
         <Navbar/>
         <HeaderBase/>
         <div className="bg-indigo-dark flex flex-col w-full indigo-dark overflow-y-auto overflow-x-hidden overscroll-contain">
           {children}
         </div>
-      </BrowserView>
-      <MobileView>
+      </MobileView>
+      <BrowserView>
         <div className="flex bg-indigo-dark">
           <DesktopNavbar/>
           <div className="flex flex-col w-full h-full overflow-y-hidden overflow-x-hidden">
@@ -26,7 +26,7 @@ const Container = (props) => {
             {children}
           </div>
         </div>
-      </MobileView>
+      </BrowserView>
     </div>
   );
 };

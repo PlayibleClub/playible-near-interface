@@ -170,7 +170,7 @@ export default function Home() {
   };
     return (
       <Container>
-        <BrowserView>
+        <MobileView>
           <TitledContainer title="MARKETPLACE">
               <HorizontalScrollContainer>
                 <div className="ml-3 mt-4 flex">
@@ -235,9 +235,9 @@ export default function Home() {
               })}
             </HorizontalScrollContainer>
           </TitledContainer>
-        </BrowserView>
+        </MobileView>
 
-      {/*<BrowserView>
+      <BrowserView>
         <Container>
           <div className="flex flex-row h-full w-full">
               <div className="flex flex-col h-full w-5/12">
@@ -387,7 +387,7 @@ export default function Home() {
               </div>
           </div>
         </Container>
-        </BrowserView>*/}
+      </BrowserView>
       </Container>
     );
 }

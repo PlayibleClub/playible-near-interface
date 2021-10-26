@@ -12,6 +12,7 @@ import underlineIcon from '../public/images/blackunderline.png'
 import Link from 'next/link';
 import {BrowserView, MobileView} from 'react-device-detect'
 import { estimateFee, retrieveTxInfo } from '../utils/terra/index';
+import { handleRequestResponse } from '../utils/general/index';
 import { fantasyData } from '../data';
 import * as statusCode from '../data/constants/status';
 import * as actionType from '../data/constants/actions';
@@ -74,7 +75,14 @@ export default function PackDetails() {
 		mediaWatcher.addEventListener('change', updateIsNarrowScreen)
 
 		//compute tx fee
-		dispatch(getPackPrice())
+		dispatch(getPackPrice()).then((response) => {
+      const onFail = () => {
+        //TODO: Add modal on error
+        setLoading(false)
+        //router.push("/")
+      }
+      handleRequestResponse([response], () => {}, onFail)
+    })
 
 		return function cleanup() {
 		mediaWatcher.removeEventListener('change', updateIsNarrowScreen)
@@ -181,7 +189,7 @@ export default function PackDetails() {
           <>
             <MobileView>
               <div className="font-montserrat h-screen relative bg-indigo-dark">
-                <HeaderBack link="/Packs"/>
+                {/*<HeaderBack link="/Packs"/>*/}
                 <div className="flex">
                   <div className="w-full">
                     <Main color="indigo-dark">
@@ -289,7 +297,7 @@ export default function PackDetails() {
                 </div>
               </div>
             </TitledContainer>
-            </BrowserView>
+          </BrowserView>
         </>
       )}
 		</Container>
