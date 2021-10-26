@@ -10,6 +10,7 @@ import HorizontalScrollContainer from '../components/HorizontalScrollContainer';
 import HorizontalContainer from '../components/HorizontalContainer';
 import PackContainer from '../components/PackContainer';
 import AthleteTokenContainer from '../components/AthleteTokenContainer';
+import Button from '../components/Button';
 import {BrowserView, MobileView} from 'react-device-detect';
 
 const marketplaceList = [
