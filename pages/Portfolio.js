@@ -148,7 +148,7 @@ const Portfolio = () => {
     const [displayMode, setDisplay] = useState(true)
     const [loading, setLoading] = useState(true)
     
-    const { tokenList: playerList, status } = useSelector((state) => state.contract.portfolio);
+    // const { tokenList: playerList, status } = useSelector((state) => state.contract.portfolio);
 
     const dispatch = useDispatch();
     const connectedWallet = useConnectedWallet();
@@ -215,7 +215,14 @@ const Portfolio = () => {
         <>
         <BrowserView>
             <div className={`font-montserrat h-screen relative flex`}>
-                <DesktopNavbar/>
+                <div className="invisible w-0 md:visible md:w-1/4">
+                    <DesktopNavbar/>
+                </div>
+
+                <div className="visible md:invisible">
+                    <Navbar/>
+                    <HeaderBase/>
+                </div>
 
                 <div className="flex flex-col w-full h-screen">
                 <Main color="indigo-dark">
@@ -224,29 +231,80 @@ const Portfolio = () => {
                         <LoadingPageDark/>
                     ) : (
                     <div className="flex flex-col w-full overflow-y-auto overflow-x-hidden h-screen self-center text-white-light">
-                        <div className="flex justify-between">
+                        <div className="flex flex-col md:flex-row md:justify-between">
                             <PortfolioContainer title="SQUAD"/>
-                            <div className="flex mt-5 mr-6">
-                                <div className="bg-indigo-light mr-1 h-11 w-60 flex font-thin" onClick={() => {if(showFilter) setFilter(false) 
-                                                                                                                            else setFilter(true)}}>
-                                    <div className="text-lg ml-4 mt-2 w-full">
-                                        {showFilter ?
-                                        <>Close filter options</>:
-                                        <>Filter by</>}
+                            <div>
+                                <div className="flex md:mt-5 md:mr-6 invisible md:visible">
+                                    <div className="bg-indigo-light mr-1 h-11 w-60 flex font-thin" onClick={() => {if(showFilter) setFilter(false) 
+                                                                                                                                else setFilter(true)}}>
+                                        <div className="text-lg ml-4 mt-2 w-full">
+                                            {showFilter ?
+                                            <>Close filter options</>:
+                                            <>Filter by</>}
+                                        </div>
+                                        <img src={filterIcon} className="object-none w-3/12" />
                                     </div>
-                                    <img src={filterIcon} className="object-none w-3/12" />
+                                    <div className="bg-indigo-light ml-1 h-11 w-60" onClick={() => setFilter(false)}>
+                                        <div className="ml-1 mt-2">
+                                            <form onSubmit={handleSubmit(onSubmit)}>
+                                                <input {...register("search")} className="text-xl ml-3 appearance-none bg-indigo-light focus:outline-none w-40" placeholder="Search..." />
+                                                <button className="">
+                                                    <input type="image" src={searchIcon} className="object-none ml-8 mt-1" />
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className="bg-indigo-light ml-1 h-11 w-60" onClick={() => setFilter(false)}>
-                                    <div className="ml-1 mt-2">
-                                        <form onSubmit={handleSubmit(onSubmit)}>
-                                            <input {...register("search")} className="text-xl ml-3 appearance-none bg-indigo-light focus:outline-none w-40" placeholder="Search..." />
-                                            <button className="">
-                                                <input type="image" src={searchIcon} className="object-none ml-8 mt-1" />
-                                            </button>
-                                        </form>
-                                    </div>
+
+                                <div className="flex w-full mb-4 self-center justify-center md:invisible">
+                                    {filterMode ?
+                                        <>
+                                            <div className="rounded-md bg-indigo-light mr-1 w-12 h-11" onClick={() => {
+                                                setMode(false)
+                                                setResult("")
+                                            }}>
+                                                <div className="ml-3.5 mt-4">
+                                                    <img src={filterIcon} />
+                                                </div>
+                                            </div>
+
+                                            <div className="rounded-md bg-indigo-light ml-1 h-11 w-10/12 flex iphone5:w-56 iphoneX:w-64 md:w-80">
+                                                <div className="ml-1 mt-2">
+                                                    <form onSubmit={handleSubmit(onSubmit)}>
+                                                        <input {...register("search")} className="text-xl ml-2 appearance-none bg-indigo-light focus:outline-none w-10/12" placeholder="Search..." />
+                                                        <button className="w-1/12 md:w-9">
+                                                            <input type="image" src={searchIcon} className="object-none md:ml-3 md:mt-1 iphone5:mt-1" />
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </>
+                                        :
+                                        <>
+                                            <div className="flex">
+                                                <div className="rounded-md bg-indigo-light mr-1 h-11 w-72 flex font-thin iphone5:w-56 iphoneX:w-64 md:w-80" onClick={() => {if(showFilter) setFilter(false) 
+                                                                                                                                                                            else setFilter(true)}}>
+                                                    <div className="text-lg ml-4 mt-2 mr-24 w-10/12">
+                                                        Filter by
+                                                    </div>
+                                                    <img src={filterIcon} className="object-none w-3/12 mr-4" />
+                                                </div>
+
+                                                <div className="rounded-md bg-indigo-light ml-1 w-12 h-11" onClick={() => {
+                                                    setMode(true)
+                                                    setFilter(false)
+                                                    setResult("")
+                                                }}>
+                                                    <div className="ml-4 mt-3">
+                                                        <img src={searchIcon} />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </>
+                                    }
                                 </div>
                             </div>
+
                         </div>
                         <div className="flex flex-col w-full">
                             <div className="flex flex-col justify-center self-center">
@@ -335,11 +393,11 @@ const Portfolio = () => {
                                 </div>
                             </div>
 
-                            <div className="justify-center self-center w-full mt-6">
+                            <div className="justify-center self-center w-full mt-4">
                                 {displayMode ?
                                     <>
-                                        <div className="flex ml-4 font-bold">
-                                            <div className="mr-6 ml-4 border-b-8 pb-2 border-indigo-buttonblue">
+                                        <div className="flex md:ml-4 font-bold ml-8 md:ml-0">
+                                            <div className="mr-6 md:ml-4 border-b-8 pb-2 border-indigo-buttonblue">
                                                 ATHLETES
                                             </div>
 
@@ -349,7 +407,8 @@ const Portfolio = () => {
                                                 PACKS
                                             </div>
                                         </div>
-                                        <div className="grid grid-cols-4 mt-12">
+                                        <hr className="visible opacity-50 md:invisible"/>
+                                        <div className="grid grid-cols-2 md:grid-cols-4 mt-12">
                                             {filterMode ?
                                                 playerList.map(function (player, i) {
                                                     const toFindName = player.name.toLowerCase()
@@ -430,8 +489,8 @@ const Portfolio = () => {
                                     </>
                                 :
                                 <>
-                                    <div className="flex ml-4 font-bold">
-                                        <div className="ml-4 mr-6" onClick={() => {
+                                    <div className="flex md:ml-4 font-bold ml-8 md:ml-0">
+                                        <div className="md:ml-4 mr-6" onClick={() => {
                                             setDisplay(true)
                                         }}>
                                             ATHLETES
@@ -441,7 +500,8 @@ const Portfolio = () => {
                                             PACKS
                                         </div>
                                     </div>
-                                    <div className="ml-16 grid grid-cols-4 mt-12">
+                                    <hr className="visible opacity-50 md:invisible"/>
+                                    <div className="md:ml-16 grid grid-cols-0 md:grid-cols-4 mt-12 justify-center">
                                         {packList.map(function(data,i){
                                             return(
                                                 <div className='' key={i}>
