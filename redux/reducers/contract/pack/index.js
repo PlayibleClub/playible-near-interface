@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { executeContract, queryContract } from '../../../../utils/terra';
+import { executeContract, queryContract, retrieveTxInfo } from '../../../../utils/terra';
 import { fantasyData, tokenData } from '../../../../data';
 import * as statusCode from '../../../../data/constants/status';
 import * as statusMessage from '../../../../data/constants/statusMessage';
@@ -35,6 +35,23 @@ export const purchasePack = createAsyncThunk('purchasePack', async (payload, thu
     return {
       response: result,
       status: statusCode.SUCCESS
+    }
+  } catch (err) {
+    return thunkAPI.rejectWithValue({
+      response: err,
+      status: statusCode.ERROR
+    });
+  }
+});
+
+export const getPurchasePackResponse = createAsyncThunk('getPurchasePackResponse', async (payload, thunkAPI) => {
+  try {
+    const txInfo = thunkAPI.getState().contract.pack.txInfo;
+    const txResponse = await retrieveTxInfo(txInfo.txHash)
+    return {
+      response: txResponse.logs[0],
+      drawList: txResponse.logs[0].eventsByType.wasm.token_id,
+      status: statusCode.CONFIRMED
     }
   } catch (err) {
     return thunkAPI.rejectWithValue({
@@ -115,6 +132,7 @@ const packSlice = createSlice({
   initialState: initialState,
   reducers: {
     clearData: () => initialState,
+    
   },
   extraReducers: {
     [purchasePack.pending]: (state) => {
@@ -135,6 +153,29 @@ const packSlice = createSlice({
       };
     },
     [purchasePack.rejected]: (state, action) => {
+      return {
+        ...state,
+        status: action.payload.status,
+        action: actionType.EXECUTE,
+        message: action.payload.response
+      };
+    },
+    [getPurchasePackResponse.pending]: (state) => {
+      return {
+        ...state,
+      };
+    },
+    [getPurchasePackResponse.fulfilled]: (state, action) => {
+      return {
+        ...state,
+        txResponse: action.payload.response,
+        drawList: processRoundData(action.payload.drawList),
+        status: action.payload.status,
+        action: actionType.EXECUTE,
+        message: statusMessage.EXECUTE_MESSAGE_SUCCESS
+      };
+    },
+    [getPurchasePackResponse.rejected]: (state, action) => {
       return {
         ...state,
         status: action.payload.status,
