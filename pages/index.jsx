@@ -11,6 +11,7 @@ import HorizontalContainer from '../components/HorizontalContainer';
 import PackContainer from '../components/PackContainer';
 import AthleteTokenContainer from '../components/AthleteTokenContainer';
 import Button from '../components/Button';
+import AthleteContainer from '../components/AthleteContainer';
 import {BrowserView, MobileView} from 'react-device-detect';
 
 const marketplaceList = [
@@ -239,7 +240,6 @@ export default function Home() {
         </MobileView>
 
       <BrowserView>
-        <Container>
           <div className="flex flex-row h-full w-full">
               <div className="flex flex-col h-full w-5/12">
                   <div className="h-5/12">
@@ -387,7 +387,6 @@ export default function Home() {
 
               </div>
           </div>
-        </Container>
       </BrowserView>
       </Container>
     );
