@@ -220,10 +220,8 @@ export default function PackDetails() {
                                       </div>
                                     </div>
                                     
-                                    <button className="bg-indigo-buttonblue w-80 h-12 text-center rounded-md text-md mt-4 mb-8 self-center">
-                                      <div className="">
+                                    <button className="bg-indigo-buttonblue w-80 h-12 text-center rounded-md text-md mt-4 mb-8 self-center" onClick={() => {executePurchasePack()}}>
                                         BUY NOW
-                                      </div>
                                     </button>
                                   </div>
 
