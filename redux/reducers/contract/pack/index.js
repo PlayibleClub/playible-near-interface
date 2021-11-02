@@ -21,13 +21,25 @@ export const purchasePack = createAsyncThunk('purchasePack', async (payload, thu
   try {
     const { connectedWallet } = payload;
     const packPrice = thunkAPI.getState().contract.pack.packPrice;
+
+    //generate seed. Pack length is hardcoded since this is supposed to be used to testing purposes only.
+    const packLength = 5
+    let seed = ' ';
+    //use lowercase chars and numbers
+    const characters ='abcdefghijklmnopqrstuvwxyz0123456789'; 
+    const charactersLength = characters.length;
+    //
+    for ( let i = 0; i < (packLength * 3); i++ ) {
+      seed += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+
     if(packPrice == null){
       return thunkAPI.rejectWithValue({
         response: "Pack Price cannot be null. Please query the pack price from the smart contract.",
         status: statusCode.ERROR
       });
     }
-    const executeMsg = `{ "purchase_pack": {} }`;
+    const executeMsg = `{ "purchase_pack": { "rand_seed": "${seed}" } }`;
     const coins = {
       uusd: packPrice
     }
