@@ -376,7 +376,7 @@ const Portfolio = () => {
                                         <div className="md:ml-4 mr-6" onClick={() => {
                                             setDisplay(true)
                                         }}>
-                                            ATHLETES
+                                            ATHLETESs
                                         </div>
 
                                         <div className="border-b-8 pb-2 border-indigo-buttonblue">
