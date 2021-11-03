@@ -23,7 +23,7 @@ const HeaderBase = (props) => {
       
       <div className="text-white-light mt-8">
         {' '}
-        <img src="images/fantasyinvestar.png" alt="Img" />
+        <img src="images/playibleheader.png" alt="Img" />
       </div>
       {/* </div> */}
 
