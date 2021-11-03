@@ -2,7 +2,7 @@ import { Dialog, Transition } from '@headlessui/react'
 import { Fragment } from 'react'
 
 const BaseModal = (props) => {
-  const { title, children, visible, closeModal } = props
+  const { title, children, visible, onClose } = props
 
   return (
     <>
@@ -10,7 +10,7 @@ const BaseModal = (props) => {
         <Dialog
           as="div"
           className="fixed inset-0 z-10 overflow-y-auto"
-          onClose={() => {}}
+          onClose={() => {onClose()}}
         >
           <div className="min-h-screen px-4 text-center">
             <Transition.Child
@@ -50,13 +50,6 @@ const BaseModal = (props) => {
                 </Dialog.Title>
                 {children}
                 <div className="mt-4">
-                  <button
-                    type="button"
-                    className="inline-flex justify-center px-4 py-2 text-sm font-medium text-blue-900 bg-blue-100 border border-transparent rounded-md hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500"
-                    onClick={closeModal}
-                  >
-                    Close
-                  </button>
                 </div>
               </div>
             </Transition.Child>

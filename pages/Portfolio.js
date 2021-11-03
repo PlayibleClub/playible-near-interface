@@ -170,7 +170,7 @@ const Portfolio = () => {
         };
     }, [dispatch, connectedWallet])
 
-    useEffect(() => {
+    /*useEffect(() => {
         if (typeof connectedWallet === 'undefined' ) {
             setLoading(false)
         }
@@ -180,7 +180,7 @@ const Portfolio = () => {
         else {
             setLoading(false)
         }
-    }, [connectedWallet, status])
+    }, [connectedWallet, status])*/
 
     const onSubmit = (data) => {
         if (data.search)
