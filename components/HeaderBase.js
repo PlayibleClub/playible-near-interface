@@ -21,16 +21,18 @@ const HeaderBase = (props) => {
     <Header>
       <div className="mr-16"/>
       
-      <div className="text-white-light mb-4">
+      <div className="text-white-light mt-8">
         {' '}
-        <img src="images/fantasyinvestar.png" alt="Img" />
+        <img src="images/playibleheader.png" alt="Img" />
       </div>
       {/* </div> */}
 
-      <Button rounded="rounded-sm " textColor="white-light" color="null" onClick={interactWallet} size="py-1 px-1">
-        <img src="images/wallet.png" alt="Img"/>
-        {status === WalletStatus.WALLET_CONNECTED ? '*' : '+'}
-      </Button>
+      <div className="mt-10">
+        <Button rounded="rounded-sm " textColor="white-light" color="null" onClick={interactWallet} size="py-1 px-1">
+          <img src="images/wallet.png" alt="Img"/>
+          {status === WalletStatus.WALLET_CONNECTED ? '*' : '+'}
+        </Button>
+      </div>
 
     </Header>
   );

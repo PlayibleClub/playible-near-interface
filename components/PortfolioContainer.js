@@ -34,7 +34,7 @@ const PortfolioContainer = (props) => {
     <BrowserView>
     <div data-test="portfoliocontainer" className={`text-${textcolor} bg-${color} text-${size} font-bold ${align} flex flex-col w-full `}>
       <div className="flex">
-        <div className="pb-3 pt-6 ml-7 justify-start text-xl">
+        <div className="pb-3 pt-6 ml-7 justify-start text-2xl">
           {title}
           <img src={underlineIcon} className="object-none" />
         </div>
