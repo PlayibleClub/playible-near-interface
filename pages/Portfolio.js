@@ -13,10 +13,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getPortfolio, clearData } from '../redux/reducers/contract/portfolio';
 import { useConnectedWallet } from '@terra-money/wallet-provider';
 import TokenGridCol2 from '../components/TokenGridCol2';
-import LoadingPageDark from '../components/LoadingPageDark';
+import LoadingPageDark from '../components/loading/LoadingPageDark';
 import * as statusCode from '../data/constants/status'
 import Link from 'next/link'
 import DesktopNavbar from '../components/DesktopNavbar';
+import SquadPackComponent from '../components/SquadPackComponent'
 import {BrowserView, MobileView} from 'react-device-detect'
 
 const playerList = [ // player list for testing purposes
@@ -30,6 +31,7 @@ const playerList = [ // player list for testing purposes
         avgscore: '86.3',
         grad1: 'indigo-blue',
         grad2: 'indigo-bluegrad',
+        listing: 'July 22, 2018 07:22:13'
     },
     {
         name: 'TAUREAN PRINCE',
@@ -41,6 +43,7 @@ const playerList = [ // player list for testing purposes
         avgscore: '66.5',
         grad1: 'indigo-purple',
         grad2: 'indigo-purplegrad',
+        listing: 'July 21, 2021 07:22:14',
     },
     {
         name: 'LEBRON JAMES',
@@ -52,6 +55,7 @@ const playerList = [ // player list for testing purposes
         avgscore: '96.0',
         grad1: 'indigo-purple',
         grad2: 'indigo-purplegrad',
+        listing: 'August 22, 2021 07:22:13'
     },
     {
         name: 'DEVIN BOOKER',
@@ -63,6 +67,7 @@ const playerList = [ // player list for testing purposes
         avgscore: '76.8',
         grad1: 'indigo-darkblue',
         grad2: 'indigo-darkbluegrad',
+        listing: 'July 22, 2022 08:22:13'
     },
     {
         name: 'ARMONI BROOKS',
@@ -74,6 +79,7 @@ const playerList = [ // player list for testing purposes
         avgscore: '81.0',
         grad1: 'indigo-blue',
         grad2: 'indigo-bluegrad',
+        listing: 'January 3, 2019 07:24:13'
     },
     {
         name: 'KEVIN DURANT',
@@ -85,6 +91,7 @@ const playerList = [ // player list for testing purposes
         avgscore: '83.0',
         grad1: 'indigo-black',
         grad2: 'indigo-red',
+        listing: 'July 22, 2018 07:22:14'
     },
     {
         name: 'KOBE BRYANT',
@@ -96,6 +103,7 @@ const playerList = [ // player list for testing purposes
         avgscore: '96.0',
         grad1: 'indigo-purple',
         grad2: 'indigo-purplegrad',
+        listing: 'December 22, 2022 11:20:23'
     },
     // {
     //     name: '',
@@ -109,18 +117,45 @@ const playerList = [ // player list for testing purposes
     // },
 ]
 
+const packList = [
+    {
+        name: 'PREMIUM PACK',
+        key: 'prem2',
+        release: '2',
+        price: '20 UST',
+        image: '/images/packimages/packs1.png',
+
+    },
+    {
+        name: 'PREMIUM PACK',
+        key: 'prem3',
+        release: '3',
+        price: '35 UST',
+        image: '/images/packimages/packs1.png',
+
+    },
+    {
+        name: 'BASE PACK',
+        key: 'base2',
+        release: '2',
+        price: '20 UST',
+        image: '/images/packimages/packs1.png',
+    },
+]
+
 const Portfolio = () => {
 
     const { register, handleSubmit } = useForm()
     const [result, setResult] = useState("")
     const [teamFilter, setTeamFilter] = useState("")
     const [posFilter, setPosFilter] = useState("")
-    const [isClosed, setClosed] = useState(true)
     const [filterMode, setMode] = useState(false)
+    const [sortMode, setSort] = useState("")
     const [showFilter, setFilter] = useState(false)
-    const [loading, setLoading] = useState(true);
+    const [displayMode, setDisplay] = useState(true)
+    const [loading, setLoading] = useState(true)
     
-    const { tokenList: playerList, status } = useSelector((state) => state.contract.portfolio);
+    // const { tokenList: playerList, status } = useSelector((state) => state.contract.portfolio);
 
     const dispatch = useDispatch();
     const connectedWallet = useConnectedWallet();
@@ -135,7 +170,7 @@ const Portfolio = () => {
         };
     }, [dispatch, connectedWallet])
 
-    useEffect(() => {
+    /*useEffect(() => {
         if (typeof connectedWallet === 'undefined' ) {
             setLoading(false)
         }
@@ -145,49 +180,43 @@ const Portfolio = () => {
         else {
             setLoading(false)
         }
-    }, [connectedWallet, status])
+    }, [connectedWallet, status])*/
 
     const onSubmit = (data) => {
         if (data.search)
             setResult(data.search)
         else setResult("")
 
-        if (data.teamName)
-            setTeamFilter(data.teamName)
-        else setTeamFilter("")
+        // if (data.teamName)
+        //     setTeamFilter(data.teamName)
+        // else setTeamFilter("")
 
-        if (data.positions)
-            setPosFilter(data.positions)
-        else setPosFilter("")
+        // if (data.positions)
+        //     setPosFilter(data.positions)
+        // else setPosFilter("")
+    }
+
+    const handleSort = (event) => {
+        setSort(event.target.value)
     }
 
     const key1 = 'team'
     const uniqueTeams = [...new Map(playerList.map(i => [i[key1], i])).values()]
 
-    const [isNarrowScreen, setIsNarrowScreen] = useState(false);
+    const uniquePlayers = [...new Set(playerList.map(i => i.name))];
+    console.log("unique list: " + uniquePlayers);
 
-    // useEffect(() => {
-    //   // set initial value
-    //   const mediaWatcher = window.matchMedia("(max-width: 500px)")
-  
-    //   //watch for updates
-    //   function updateIsNarrowScreen(e) {
-    //     setIsNarrowScreen(e.matches);
-    //   }
-    //   mediaWatcher.addEventListener('change', updateIsNarrowScreen)
-  
-    //   // clean up after ourselves
-    //   return function cleanup() {
-    //     mediaWatcher.removeEventListener('change', updateIsNarrowScreen)
-    //   }
-    // })
-  
-    // if (!isNarrowScreen) {
     return (
         <>
-        <BrowserView>
             <div className={`font-montserrat h-screen relative flex`}>
-                <DesktopNavbar/>
+                <div className="invisible w-0 md:visible md:w-1/4">
+                    <DesktopNavbar/>
+                </div>
+
+                <div className="visible md:invisible">
+                    <Navbar/>
+                    <HeaderBase/>
+                </div>
 
                 <div className="flex flex-col w-full h-screen">
                 <Main color="indigo-dark">
@@ -195,230 +224,40 @@ const Portfolio = () => {
                     {loading ? (
                         <LoadingPageDark/>
                     ) : (
-                    <div className="flex w-full overflow-y-auto overflow-x-hidden h-screen self-center justify-center">
-                        <PortfolioContainer title="PORTFOLIO" className="flex">
-                            <div className="flex flex-col justify-center self-center">
-                                <div className="flex w-full mb-4 mt-4">
-                                    {filterMode ?
-                                        <>
-                                            <div className="rounded-md bg-indigo-light mr-1 w-12 h-11" onClick={() => {
-                                                setMode(false)
-                                                setResult("")
-                                            }}>
-                                                <div className="ml-3.5 mt-4">
-                                                    <img src={filterIcon} />
-                                                </div>
-                                            </div>
-
-                                            <div className="rounded-md bg-indigo-light ml-1 h-11 w-10/12 flex md:w-80">
-                                                <div className="ml-1 mt-2">
-                                                    <form onSubmit={handleSubmit(onSubmit)}>
-                                                        <input {...register("search")} className="text-xl ml-3 appearance-none bg-indigo-light focus:outline-none w-10/12" placeholder="Search..." />
-                                                        <button className="w-1/12 md:w-9">
-                                                            <input type="image" src={searchIcon} className="object-none md:ml-3 md:mt-1" />
-                                                        </button>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </>
-                                        :
-                                        <>
-                                            <div className="flex">
-                                                <div className="rounded-md bg-indigo-light mr-1 h-11 w-72 flex font-thin md:w-80" onClick={() => setFilter(true)}>
-                                                    <div className="text-lg ml-4 mt-2 mr-36 w-9/12">
-                                                        Filter by
-                                                    </div>
-                                                    <img src={filterIcon} className="object-none w-3/12 mr-4" />
-                                                </div>
-
-                                                <div className="rounded-md bg-indigo-light ml-1 w-12 h-11" onClick={() => {
-                                                    setMode(true)
-                                                    setFilter(false)
-                                                    setResult("")
-                                                }}>
-                                                    <div className="ml-4 mt-3">
-                                                        <img src={searchIcon} />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </>
-                                    }
-                                </div>
-
-                                <div className="justify-center flex mb-2 md:text-lg">
-                                    {showFilter ?
-                                        <>
-                                            <form onSubmit={handleSubmit(onSubmit)}>
+                    <div className="flex flex-col w-full overflow-y-auto overflow-x-hidden h-screen self-center text-white-light">
+                        <div className="flex flex-col md:flex-row md:justify-between">
+                            <PortfolioContainer title="SQUAD"/>
+                            <div>
+                                <div className="flex md:mt-5 md:mr-6 invisible md:visible">
+                                    <div className="bg-indigo-light mr-1 h-11 w-64 flex font-thin">
+                                            <form onSubmit={handleSubmit(handleSort)}>
                                                 <div>
-                                                    Team Name: 
-                                                    <select {...register("teamName")} className="bg-indigo-light ml-1">
-                                                        <option value="">Select...</option>
-                                                        {uniqueTeams.map(function (team, i) {
-                                                            return (
-                                                                <option value={team.team} key={i}>{team.team}</option>
-                                                            )
-                                                        }
-                                                        )}
+                                                    <select value={sortMode} className="bg-indigo-light ml-3 mt-2 text-lg" onChange={handleSort}>
+                                                        <option value="">Sort by</option>
+                                                        <option value="lowserial">Lowest Serial Number</option>
+                                                        <option value="highserial">Highest Serial Number</option>
+                                                        <option value="newlisting">Newest Listing</option>
+                                                        <option value="oldlisting">Oldest Listing</option>
+                                                        <option value="team">Team</option>
                                                     </select>
                                                 </div>
-
-                                                <div>
-                                                    Position: 
-                                                    <select {...register("positions")} className="bg-indigo-light ml-1">
-                                                        <option value="">Select...</option>
-                                                        <option value="PG">PG</option>
-                                                        <option value="SG">SG</option>
-                                                        <option value="PF">PF</option>
-                                                        <option value="SF">SF</option>
-                                                        <option value="C">C</option>
-                                                    </select>
-                                                </div>
-                                                <div>
-                                                    <input type="submit" className="rounded-md p-1 bg-indigo-light pl-2 pr-2"/>
-                                                </div>
-                                                {/* {console.log(result)} */}
                                             </form>
-                                        </>
-                                        :
-                                        <>
-                                        </>
-                                    }
+                                        {/* </div> */}
+                                        <img src={filterIcon} className="object-none w-3/12 mr-4" />
+                                    </div>
+                                    <div className="bg-indigo-light ml-1 h-11 w-60" onClick={() => setFilter(false)}>
+                                        <div className="ml-1 mt-2">
+                                            <form onSubmit={handleSubmit(onSubmit)}>
+                                                <input {...register("search")} className="text-xl ml-3 appearance-none bg-indigo-light focus:outline-none w-40" placeholder="Search..." />
+                                                <button className="">
+                                                    <input type="image" src={searchIcon} className="object-none ml-8 mt-1" />
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div className="justify-center flex md:w-96 md:self-center">
-                                <AthleteGrid>
-                                    {filterMode ?
-                                        playerList.map(function (player, i) {
-                                            const toFindName = player.name.toLowerCase()
-                                            const toFindTeam = player.team.toLowerCase()
-                                            const searchInfo = result.toLowerCase()
-                                            if (toFindName.includes(searchInfo) || toFindTeam.includes(searchInfo) || player.jersey.includes(searchInfo))
-                                                return (
-                                                    <Link href={`/PlayerDetails?id=${player.id}`}>
-                                                        <div className='mb-4' key={i}>
-                                                            <AthleteContainer
-                                                                AthleteName={player.name}
-                                                                TeamName={player.team}
-                                                                ID={player.id}
-                                                                CoinValue={player.cost}
-                                                                Jersey={player.jersey}
-                                                                Positions={player.positions}
-                                                                colorgrad1={player.grad1}
-                                                                colorgrad2={player.grad2}
-                                                            />
-                                                        </div>
-                                                    </Link>
-                                            )
-                                        })
-                                        :
-                                        playerList.map(function (player, i) {
-                                            const toFindTeam = player.team.toLowerCase()
-                                                // console.log(posFilter)
-                                                // console.log(teamFilter)
-                                            if (posFilter === "" && teamFilter === "") {
-                                                // console.log("no filter")
-                                                return (
-                                                    <Link href={`/PlayerDetails?id=${player.id}`}>
-                                                        <div className='mb-4' key={i}>
-                                                            <AthleteContainer
-                                                                AthleteName={player.name}
-                                                                TeamName={player.team}
-                                                                ID={player.id}
-                                                                CoinValue={player.cost}
-                                                                Jersey={player.jersey}
-                                                                Positions={player.positions}
-                                                                colorgrad1={player.grad1}
-                                                                colorgrad2={player.grad2}
-                                                            />
-                                                        </div>
-                                                    </Link>
-                                                )
-                                            }
-                                            else if (posFilter !== "" && teamFilter !== "") {
-                                                // console.log("pos and team code")
-                                                if (player.positions.includes(posFilter) && toFindTeam.includes(teamFilter.toLowerCase()))
-                                                    return (
-                                                        <Link href={`/PlayerDetails?id=${player.id}`}>
-                                                            <div className='mb-4' key={i}>
-                                                                <AthleteContainer
-                                                                    AthleteName={player.name}
-                                                                    TeamName={player.team}
-                                                                    ID={player.id}
-                                                                    CoinValue={player.cost}
-                                                                    Jersey={player.jersey}
-                                                                    Positions={player.positions}
-                                                                    colorgrad1={player.grad1}
-                                                                    colorgrad2={player.grad2}
-                                                                />
-                                                            </div>
-                                                        </Link>
-                                                    )
-                                            }
-                                            else if (teamFilter !== "") {
-                                                // console.log("team code")
-                                                if (toFindTeam.includes(teamFilter.toLowerCase())) {
-                                                    return (
-                                                        <Link href={`/PlayerDetails?id=${player.id}`}>
-                                                            <div className='mb-4' key={i}>
-                                                                <AthleteContainer
-                                                                    AthleteName={player.name}
-                                                                    TeamName={player.team}
-                                                                    ID={player.id}
-                                                                    CoinValue={player.cost}
-                                                                    Jersey={player.jersey}
-                                                                    Positions={player.positions}
-                                                                    colorgrad1={player.grad1}
-                                                                    colorgrad2={player.grad2}
-                                                                />
-                                                            </div>
-                                                        </Link>
-                                                    )
-                                                }
-                                            }
-                                            else if (posFilter !== "") {
-                                                // console.log("posFilter code")
-                                                if (player.positions.includes(posFilter)) {
-                                                    return (
-                                                        <Link href={`/PlayerDetails?id=${player.id}`}>
-                                                            <div className='mb-4' key={i}>
-                                                                <AthleteContainer
-                                                                    AthleteName={player.name}
-                                                                    TeamName={player.team}
-                                                                    ID={player.id}
-                                                                    CoinValue={player.cost}
-                                                                    Jersey={player.jersey}
-                                                                    Positions={player.positions}
-                                                                    colorgrad1={player.grad1}
-                                                                    colorgrad2={player.grad2}
-                                                                />
-                                                            </div>
-                                                        </Link>
-                                                    )
-                                                }
-                                            }
-                                        })
-                                    }
-                                </AthleteGrid>
-                            </div>
-                        </PortfolioContainer>
-                    </div>
-                    )}
-                </Main>
-                </div>
-            </div>
-        </BrowserView>
-        <MobileView>
-                <div className={`font-montserrat h-screen relative`}>
-                <Navbar/>
-                <HeaderBase/>
-                
-                <div className="flex flex-col w-full h-screen">
-                <Main color="indigo-dark">
-                    <div className="flex w-full overflow-y-auto overflow-x-hidden h-screen justify-center">
-                        <PortfolioContainer title="PORTFOLIO" className="flex">
-                            <div className="flex flex-col justify-center self-center">
-                                <div className="flex w-full mb-4 mt-4">
+                                <div className="flex w-full mb-4 self-center justify-center md:invisible">
                                     {filterMode ?
                                         <>
                                             <div className="rounded-md bg-indigo-light mr-1 w-12 h-11" onClick={() => {
@@ -444,10 +283,24 @@ const Portfolio = () => {
                                         :
                                         <>
                                             <div className="flex">
-                                                <div className="rounded-md bg-indigo-light mr-1 h-11 w-72 flex font-thin iphone5:w-56 iphoneX:w-64 md:w-80" onClick={() => setFilter(true)}>
-                                                    <div className="text-lg ml-4 mt-2 mr-24 w-10/12">
-                                                        Filter by
-                                                    </div>
+                                                <div className="rounded-md bg-indigo-light mr-1 h-11 w-72 flex font-thin iphone5:w-56 iphoneX:w-64 md:w-80" 
+                                                // onClick={() => {if(showFilter) setFilter(false) 
+                                                //     else setFilter(true)}}
+                                                >
+                                                    {/* <div className="text-lg ml-4 mt-2 mr-24 w-10/12"> */}
+                                                        <form onSubmit={handleSubmit(handleSort)}>
+                                                            <div>
+                                                                <select value={sortMode} className="bg-indigo-light ml-3 mt-2 text-lg" onChange={handleSort}>
+                                                                    <option value="">Sort by</option>
+                                                                    <option value="lowserial">Lowest Serial Number</option>
+                                                                    <option value="highserial">Highest Serial Number</option>
+                                                                    <option value="newlisting">Newest Listing</option>
+                                                                    <option value="oldlisting">Oldest Listing</option>
+                                                                    <option value="team">Team</option>
+                                                                </select>
+                                                            </div>
+                                                        </form>
+                                                    {/* </div> */}
                                                     <img src={filterIcon} className="object-none w-3/12 mr-4" />
                                                 </div>
 
@@ -464,123 +317,97 @@ const Portfolio = () => {
                                         </>
                                     }
                                 </div>
-
-                                <div className="justify-center flex mb-2 md:text-lg">
-                                    {showFilter ?
-                                        <>
-                                            <form onSubmit={handleSubmit(onSubmit)}>
-                                                <div>
-                                                    Team Name: 
-                                                    <select {...register("teamName")} className="bg-indigo-light ml-1">
-                                                        <option value="">Select...</option>
-                                                        {uniqueTeams.map(function (team, i) {
-                                                            return (
-                                                                <option value={team.team} key={i}>{team.team}</option>
-                                                            )
-                                                        }
-                                                        )}
-                                                    </select>
-                                                </div>
-
-                                                <div>
-                                                    Position: 
-                                                    <select {...register("positions")} className="bg-indigo-light ml-1">
-                                                        <option value="">Select...</option>
-                                                        <option value="PG">PG</option>
-                                                        <option value="SG">SG</option>
-                                                        <option value="PF">PF</option>
-                                                        <option value="SF">SF</option>
-                                                        <option value="C">C</option>
-                                                    </select>
-                                                </div>
-                                                <div>
-                                                    <input type="submit" className="rounded-md p-1 bg-indigo-light pl-2 pr-2"/>
-                                                </div>
-                                                {/* {console.log(result)} */}
-                                            </form>
-                                        </>
-                                        :
-                                        <>
-                                        </>
-                                    }
-                                </div>
                             </div>
-                            <div className="justify-center flex md:w-96 md:self-center mt-2">
-                                <TokenGridCol2>
-                                    {filterMode ?
-                                        playerList.map(function (player, i) {
-                                            const toFindName = player.name.toLowerCase()
-                                            const toFindTeam = player.team.toLowerCase()
-                                            const searchInfo = result.toLowerCase()
-                                            if (toFindName.includes(searchInfo) || toFindTeam.includes(searchInfo) || player.jersey.includes(searchInfo))
-                                                return (
-                                                    <Link href={`/PlayerDetails?id=${player.id}`}>
-                                                        <div className='mb-8' key={i}>
-                                                            <PerformerContainer AthleteName={player.name} AvgScore={player.avgscore} id={player.id}/>
-                                                        </div>
-                                                    </Link>
-                                            )
-                                        })
-                                        :
-                                        playerList.map(function (player, i) {
-                                            const toFindTeam = player.team.toLowerCase()
-                                                // console.log(posFilter)
-                                                // console.log(teamFilter)
-                                            if (posFilter === "" && teamFilter === "") {
-                                                // console.log("no filter")
-                                                return (
-                                                    <Link href={`/PlayerDetails?id=${player.id}`}>
-                                                        <div className='mb-8' key={i}>
-                                                            <PerformerContainer AthleteName={player.name} AvgScore={player.avgscore} id={player.id}/>
-                                                        </div>
-                                                    </Link>
-                                                )
-                                            }
-                                            else if (posFilter !== "" && teamFilter !== "") {
-                                                // console.log("pos and team code")
-                                                if (player.positions.includes(posFilter) && toFindTeam.includes(teamFilter.toLowerCase()))
-                                                    return (
-                                                        <Link href={`/PlayerDetails?id=${player.id}`}>
-                                                            <div className='mb-8' key={i}>
-                                                                <PerformerContainer AthleteName={player.name} AvgScore={player.avgscore} id={player.id}/>
-                                                            </div>
-                                                        </Link>
-                                                    )
-                                            }
-                                            else if (teamFilter !== "") {
-                                                // console.log("team code")
-                                                if (toFindTeam.includes(teamFilter.toLowerCase())) {
-                                                    return (
-                                                        <Link href={`/PlayerDetails?id=${player.id}`}>
-                                                            <div className='mb-12' key={i}>
-                                                                <PerformerContainer AthleteName={player.name} AvgScore={player.avgscore} id={player.id}/>
-                                                            </div>
-                                                        </Link>
-                                                    )
-                                                }
-                                            }
-                                            else if (posFilter !== "") {
-                                                // console.log("posFilter code")
-                                                if (player.positions.includes(posFilter)) {
-                                                    return (
-                                                        <Link href={`/PlayerDetails?id=${player.id}`}>
-                                                            <div className='mb-8' key={i}>
-                                                                <PerformerContainer AthleteName={player.name} AvgScore={player.avgscore} id={player.id}/>
-                                                            </div>
-                                                        </Link>
-                                                    )
-                                                }
-                                            }
-                                        })
-                                    }
-                                </TokenGridCol2>
-                            </div>
-                        </PortfolioContainer>
                         </div>
-                    </Main>
+
+                        <div className="flex flex-col w-full">
+                            <div className="justify-center self-center w-full mt-4">
+                                {displayMode ?
+                                    <>
+                                        <div className="flex md:ml-4 font-bold ml-8 md:ml-0">
+                                            <div className="mr-6 md:ml-4 border-b-8 pb-2 border-indigo-buttonblue">
+                                                ATHLETES
+                                            </div>
+
+                                            <div className="" onClick={() => {
+                                                setDisplay(false)
+                                            }}>
+                                                PACKS
+                                            </div>
+                                        </div>
+                                        <hr className="visible opacity-50 md:invisible"/>
+                                        <div className="grid grid-cols-2 md:grid-cols-4 mt-12">
+                                            {filterMode ?
+                                                playerList.map(function (player, i) {
+                                                    const toFindName = player.name.toLowerCase()
+                                                    const toFindTeam = player.team.toLowerCase()
+                                                    const searchInfo = result.toLowerCase()
+                                                    if (toFindName.includes(searchInfo) || toFindTeam.includes(searchInfo) || player.jersey.includes(searchInfo))
+                                                        return (
+                                                            <Link href={`/PlayerDetails?id=${player.id}`}>
+                                                                <div className='mb-4' key={i}>
+                                                                    <PerformerContainer AthleteName={player.name} AvgScore={player.avgscore} id={player.id}/>
+                                                                </div>
+                                                            </Link>
+                                                    )
+                                                })
+                                                :
+                                                playerList.map(function (player, i) {
+                                                    // const toFindTeam = player.team.toLowerCase()
+                                                    if (sortMode === "") {
+                                                        // console.log("no sort")
+                                                        return (
+                                                            <Link href={`/PlayerDetails?id=${player.id}`}>
+                                                                <div className='mb-4' key={i}>
+                                                                    <PerformerContainer AthleteName={player.name} AvgScore={player.avgscore} id={player.id}/>
+                                                                </div>
+                                                            </Link>
+                                                        )
+                                                    } else if (sortMode === "lowserial"){
+
+                                                    }
+                                                })
+                                            }
+                                        </div>
+                                    </>
+                                :
+                                <>
+                                    <div className="flex md:ml-4 font-bold ml-8 md:ml-0">
+                                        <div className="md:ml-4 mr-6" onClick={() => {
+                                            setDisplay(true)
+                                        }}>
+                                            ATHLETESs
+                                        </div>
+
+                                        <div className="border-b-8 pb-2 border-indigo-buttonblue">
+                                            PACKS
+                                        </div>
+                                    </div>
+                                    <hr className="visible opacity-50 md:invisible"/>
+                                    <div className="md:ml-16 grid grid-cols-0 md:grid-cols-4 mt-12 justify-center">
+                                        {packList.map(function(data,i){
+                                            return(
+                                                <div className='' key={i}>
+                                                    <SquadPackComponent
+                                                        imagesrc={data.image}
+                                                        packName={data.name}
+                                                        releaseValue={data.release}
+                                                        link={data.key}
+                                                    />
+                                                </div>
+                                            )
+                                        })}
+                                    </div>
+                                </>
+                                }
+                            </div>
+                        {/* </PortfolioContainer> */}
+                        </div>
                     </div>
+                    )}
+                </Main>
                 </div>
-            </MobileView>
+            </div>
         </>
     )
 }

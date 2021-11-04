@@ -28,6 +28,8 @@ module.exports = {
                 white: '#FFFFFF',
                 red: '#922020',
                 green: '#61CD73',
+                navbargrad1: '#4DBEEE',
+                navbargrad2: '#5556A5'
 
             },
             white: {

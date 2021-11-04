@@ -2,10 +2,10 @@ import PropTypes from 'prop-types';
 import Link from 'next/link'
 import NavButtonContainer from './NavButtonContainer.js';
 const DesktopNavbar = (props) => {
-  const { children, color } = props;
+  const { children, color, secondcolor } = props;
 
   return (
-    <div data-test="DesktopNavbar" className={`bg-${color}  text-white-light flex flex-col w-3/12 h-screen`}>
+    <div data-test="DesktopNavbar" className={`bg-gradient-to-b from-${color} to-${secondcolor} text-white-light flex flex-col w-full h-screen`}>
       <div className="flex justify-center h-16">
 
         <img className="object-none mt-4" src="images/fantasylogo.png" alt="Img" />
@@ -26,11 +26,13 @@ const DesktopNavbar = (props) => {
 
 DesktopNavbar.propTypes = {
   color: PropTypes.string,
+  secondcolor: PropTypes.string,
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
 };
 
 DesktopNavbar.defaultProps = {
   color: 'indigo-light',
+  secondcolor: 'indigo-light',
   // children: <div>Fantasy investr</div>
   children: <div />,
 };
