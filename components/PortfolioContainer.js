@@ -5,6 +5,8 @@ import {BrowserView, MobileView} from 'react-device-detect'
 
 const PortfolioContainer = (props) => {
   const { color, textcolor, size, title, children, align, stats } = props;
+  const avgicon = "/../public/images/avgscore.png"
+
   return (
       <>
     <MobileView>
@@ -33,20 +35,29 @@ const PortfolioContainer = (props) => {
     </MobileView>
     <BrowserView>
     <div data-test="portfoliocontainer" className={`text-${textcolor} bg-${color} text-${size} font-bold ${align} flex flex-col w-full `}>
-      <div className="flex">
-        <div className="pb-3 pt-6 ml-7 justify-start text-2xl">
-          {title}
-          <img src={underlineIcon} className="object-none" />
-        </div>
+      <div className="flex justify-between">
         {stats ?
           <>
-            <div className="px-2 py-1 w-16 text-lg rounded-md bg-indigo-green text-center self-center content-center mt-2 ml-12">
-              {stats}
+          <div className="pb-3 pt-20 md:pt-14 ml-7 justify-start align-center text-2xl">
+            {title}
+            <img src={underlineIcon} className="object-none" />
+          </div>
+            <div className="w-32 h-32" style={{
+              backgroundImage: `url('/images/avgscore.png')`,
+              backgroundRepeat: 'no-repeat',
+              width: '135px',
+              height: '135px'
+            }}>
+              <div className="text-center text-2xl w-full mt-14">
+                {stats}
+              </div>
             </div>
           </>
           :
-          <>
-          </>
+          <div className="pb-3 pt-6 ml-7 justify-start align-center text-2xl">
+            {title}
+            <img src={underlineIcon} className="object-none" />
+          </div>
         }
       </div>
       <div className="flex justify-center flex-col">

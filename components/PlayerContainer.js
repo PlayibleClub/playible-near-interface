@@ -4,16 +4,33 @@ import Image from 'next/image'
 
 
 const PlayerContainer = (props) =>{
-    const {playerID, children} = props;
-    const picLink = "/../public/images/tokens/"+playerID+".png"
+    const {playerID, children, rarity} = props;
 
     return (
         <div className="overflow-hidden ease-in-out">
+            {rarity === 'gold' && 
                 <Image
-                    src={picLink}
+                    src={"/../public/images/tokens/"+playerID+"g.png"}
                     width={125}
                     height={160}
                 />
+            }
+
+            {rarity === 'silver' && 
+                <Image
+                    src={"/../public/images/tokens/"+playerID+"s.png"}
+                    width={125}
+                    height={160}
+                />
+            }
+
+            {rarity === 'base' && 
+                <Image
+                    src={"/../public/images/tokens/"+playerID+".png"}
+                    width={125}
+                    height={160}
+                />
+            }
         </div>
     )
 }

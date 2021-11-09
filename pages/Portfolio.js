@@ -23,7 +23,7 @@ import {BrowserView, MobileView} from 'react-device-detect'
 const playerList = [ // player list for testing purposes
     {
         name: 'STEPHEN CURRY',
-        team: 'Golden State Warriors',
+        team: 'Golden State Warriors', //2
         id: '320',
         cost: '420 UST',
         jersey: '30',
@@ -31,11 +31,12 @@ const playerList = [ // player list for testing purposes
         avgscore: '86.3',
         grad1: 'indigo-blue',
         grad2: 'indigo-bluegrad',
-        listing: 'July 22, 2018 07:22:13'
+        listing: '12/12/2024', //4
+        rarity: 'base',
     },
     {
         name: 'TAUREAN PRINCE',
-        team: 'Minnesota Timberwolves',
+        team: 'Minnesota Timberwolves', //6
         id: '14450',
         cost: '41 UST',
         jersey: '12',
@@ -43,11 +44,12 @@ const playerList = [ // player list for testing purposes
         avgscore: '66.5',
         grad1: 'indigo-purple',
         grad2: 'indigo-purplegrad',
-        listing: 'July 21, 2021 07:22:14',
+        listing: '12/12/2021', //3
+        rarity: 'silver'
     },
     {
         name: 'LEBRON JAMES',
-        team: 'Los Angeles Lakers',
+        team: 'Los Angeles Lakers', //5
         id: '25',
         cost: '840 UST',
         jersey: '23',
@@ -55,11 +57,12 @@ const playerList = [ // player list for testing purposes
         avgscore: '96.0',
         grad1: 'indigo-purple',
         grad2: 'indigo-purplegrad',
-        listing: 'August 22, 2021 07:22:13'
+        listing: '11/12/2025', //6
+        rarity: 'gold'
     },
     {
         name: 'DEVIN BOOKER',
-        team: 'Phoenix Suns',
+        team: 'Phoenix Suns', //7
         id: '16450',
         cost: '21 UST',
         jersey: '01',
@@ -67,11 +70,12 @@ const playerList = [ // player list for testing purposes
         avgscore: '76.8',
         grad1: 'indigo-darkblue',
         grad2: 'indigo-darkbluegrad',
-        listing: 'July 22, 2022 08:22:13'
+        listing: '12/11/2025', //5
+        rarity: 'silver'
     },
     {
         name: 'ARMONI BROOKS',
-        team: 'Houston Rockets',
+        team: 'Houston Rockets', //3
         id: '21300',
         cost: '45.5 UST',
         jersey: '23',
@@ -79,11 +83,12 @@ const playerList = [ // player list for testing purposes
         avgscore: '81.0',
         grad1: 'indigo-blue',
         grad2: 'indigo-bluegrad',
-        listing: 'January 3, 2019 07:24:13'
+        listing: '12/12/2001', //1
+        rarity: 'silver'
     },
     {
         name: 'KEVIN DURANT',
-        team: 'Brooklyn Nets',
+        team: 'Brooklyn Nets', //1
         id: '12300',
         cost: '180 UST',
         jersey: '07',
@@ -91,11 +96,12 @@ const playerList = [ // player list for testing purposes
         avgscore: '83.0',
         grad1: 'indigo-black',
         grad2: 'indigo-red',
-        listing: 'July 22, 2018 07:22:14'
+        listing: '10/12/2004', //2
+        rarity: 'gold'
     },
     {
         name: 'KOBE BRYANT',
-        team: 'Los Angeles Lakers',
+        team: 'Los Angeles Lakers', //4
         id: '999',
         cost: '999 UST',
         jersey: '24',
@@ -103,7 +109,8 @@ const playerList = [ // player list for testing purposes
         avgscore: '96.0',
         grad1: 'indigo-purple',
         grad2: 'indigo-purplegrad',
-        listing: 'December 22, 2022 11:20:23'
+        listing: '12/12/2025', //7
+        rarity: 'silver'
     },
     // {
     //     name: '',
@@ -159,6 +166,7 @@ const Portfolio = () => {
 
     const dispatch = useDispatch();
     const connectedWallet = useConnectedWallet();
+    const [sortedList, setList] = useState(playerList);
 
 
     useEffect(() => {
@@ -198,13 +206,47 @@ const Portfolio = () => {
 
     const handleSort = (event) => {
         setSort(event.target.value)
+        console.log(sortMode)
+
+        console.log("pre-sort list: "+ sortedList[0].name)
+        const tempList = sortedList;
+
+        if(sortMode === "")
+            setList([...tempList])
+        else if (sortMode === "lowserial"){
+            tempList.sort((a,b) => a.id - b.id)
+            setList([...tempList])
+            console.log("low serial player list: " + sortedList[0].name)
+        }
+        else if (sortMode === "highserial"){
+            tempList.sort((a,b) => b.id - a.id)
+            setList([...tempList])
+            console.log("high serial player list: " + sortedList[0].name)
+        }
+        else if (sortMode === "oldlisting"){
+            [...tempList].sort((a,b) => new Date(...a.listing.split('/').reverse()) - new Date(...b.listing.split('/').reverse()))
+            setList([...tempList])
+            console.log("old list player list: " + sortedList[0].name)
+        }
+        else if (sortMode === "newlisting"){
+            [...tempList].sort((a,b) => new Date(...b.listing.split('/').reverse()) - new Date(...a.listing.split('/').reverse()))
+            setList([...tempList])
+            console.log("new list player list: " + sortedList[0].name)
+        }
+        else if (sortMode === "team"){
+            tempList.sort((a,b) => a.team.localeCompare(b.team))
+            setList([...tempList])
+        }
+
+        // console.log("sorted list: "+ sortedList[0].name)
     }
 
-    const key1 = 'team'
-    const uniqueTeams = [...new Map(playerList.map(i => [i[key1], i])).values()]
+    // const key1 = 'team'
+    // const uniqueTeams = [...new Map(playerList.map(i => [i[key1], i])).values()]
 
-    const uniquePlayers = [...new Set(playerList.map(i => i.name))];
-    console.log("unique list: " + uniquePlayers);
+    useEffect(() => {
+        console.log("hello")
+    }, [sortedList]);
 
     return (
         <>
@@ -225,7 +267,7 @@ const Portfolio = () => {
                         <LoadingPageDark/>
                     ) : (
                     <div className="flex flex-col w-full overflow-y-auto overflow-x-hidden h-screen self-center text-white-light">
-                        <div className="flex flex-col md:flex-row md:justify-between">
+                        <div className="ml-6 flex flex-col md:flex-row md:justify-between">
                             <PortfolioContainer title="SQUAD"/>
                             <div>
                                 <div className="flex md:mt-5 md:mr-6 invisible md:visible">
@@ -242,7 +284,7 @@ const Portfolio = () => {
                                                     </select>
                                                 </div>
                                             </form>
-                                        {/* </div> */}
+                                            {/* {console.log("sort: "+sortMode)} */}
                                         <img src={filterIcon} className="object-none w-3/12 mr-4" />
                                     </div>
                                     <div className="bg-indigo-light ml-1 h-11 w-60" onClick={() => setFilter(false)}>
@@ -337,35 +379,18 @@ const Portfolio = () => {
                                         </div>
                                         <hr className="visible opacity-50 md:invisible"/>
                                         <div className="grid grid-cols-2 md:grid-cols-4 mt-12">
-                                            {filterMode ?
-                                                playerList.map(function (player, i) {
-                                                    const toFindName = player.name.toLowerCase()
-                                                    const toFindTeam = player.team.toLowerCase()
-                                                    const searchInfo = result.toLowerCase()
-                                                    if (toFindName.includes(searchInfo) || toFindTeam.includes(searchInfo) || player.jersey.includes(searchInfo))
-                                                        return (
-                                                            <Link href={`/PlayerDetails?id=${player.id}`}>
-                                                                <div className='mb-4' key={i}>
-                                                                    <PerformerContainer AthleteName={player.name} AvgScore={player.avgscore} id={player.id}/>
-                                                                </div>
-                                                            </Link>
+                                            {sortedList.map(function (player, i) {
+                                                const toFindName = player.name.toLowerCase()
+                                                // const toFindTeam = player.team.toLowerCase()
+                                                const searchInfo = result.toLowerCase()
+                                                if (toFindName.includes(searchInfo) || player.jersey.includes(searchInfo))
+                                                    return (
+                                                        <Link href={`/PlayerDetails?id=${player.id}`}>
+                                                            <div className='mb-4' key={i}>
+                                                                <PerformerContainer AthleteName={player.name} AvgScore={player.avgscore} id={player.id} rarity={player.rarity}/>
+                                                            </div>
+                                                        </Link>
                                                     )
-                                                })
-                                                :
-                                                playerList.map(function (player, i) {
-                                                    // const toFindTeam = player.team.toLowerCase()
-                                                    if (sortMode === "") {
-                                                        // console.log("no sort")
-                                                        return (
-                                                            <Link href={`/PlayerDetails?id=${player.id}`}>
-                                                                <div className='mb-4' key={i}>
-                                                                    <PerformerContainer AthleteName={player.name} AvgScore={player.avgscore} id={player.id}/>
-                                                                </div>
-                                                            </Link>
-                                                        )
-                                                    } else if (sortMode === "lowserial"){
-
-                                                    }
                                                 })
                                             }
                                         </div>
@@ -376,7 +401,7 @@ const Portfolio = () => {
                                         <div className="md:ml-4 mr-6" onClick={() => {
                                             setDisplay(true)
                                         }}>
-                                            ATHLETESs
+                                            ATHLETES
                                         </div>
 
                                         <div className="border-b-8 pb-2 border-indigo-buttonblue">

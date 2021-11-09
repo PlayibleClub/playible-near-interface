@@ -2,18 +2,34 @@ import PropTypes from 'prop-types';
 import Image from 'next/image'
 
 const PerformerContainer = (props) => {
-  const { children, color, imagesrc, AthleteName, TeamName, CoinValue, AvgScore, id } = props;
-  const picLink = "/../public/images/tokens/"+id+".png"
+  const { children, color, imagesrc, AthleteName, TeamName, CoinValue, AvgScore, id, rarity } = props;
 
   return (
     <div data-test="PerformerContainer" className={`justify-center flex flex-col w-full h-full`}>
       <div className="flex justify-center h-2/3">
-        <Image
-          src={picLink}
-          width={120}
-          height={160}
-        />
+        {rarity === 'gold' && 
+          <Image
+            src={"/../public/images/tokens/"+id+"g.png"}
+            width={120}
+            height={160}
+          />
+        }
 
+        {rarity === 'silver' && 
+          <Image
+            src={"/../public/images/tokens/"+id+"s.png"}
+            width={120}
+            height={160}
+          />
+        }
+
+        {rarity === 'base' && 
+          <Image
+            src={"/../public/images/tokens/"+id+".png"}
+            width={120}
+            height={160}
+          />
+        }
       </div>
       {children}
       <div className="h-1/2 flex justify-center mb-6">
