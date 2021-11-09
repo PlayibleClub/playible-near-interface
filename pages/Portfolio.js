@@ -31,7 +31,8 @@ const playerList = [ // player list for testing purposes
         avgscore: '86.3',
         grad1: 'indigo-blue',
         grad2: 'indigo-bluegrad',
-        listing: '12/12/2024' //4
+        listing: '12/12/2024', //4
+        rarity: 'base',
     },
     {
         name: 'TAUREAN PRINCE',
@@ -44,6 +45,7 @@ const playerList = [ // player list for testing purposes
         grad1: 'indigo-purple',
         grad2: 'indigo-purplegrad',
         listing: '12/12/2021', //3
+        rarity: 'silver'
     },
     {
         name: 'LEBRON JAMES',
@@ -55,7 +57,8 @@ const playerList = [ // player list for testing purposes
         avgscore: '96.0',
         grad1: 'indigo-purple',
         grad2: 'indigo-purplegrad',
-        listing: '11/12/2025' //6
+        listing: '11/12/2025', //6
+        rarity: 'gold'
     },
     {
         name: 'DEVIN BOOKER',
@@ -67,7 +70,8 @@ const playerList = [ // player list for testing purposes
         avgscore: '76.8',
         grad1: 'indigo-darkblue',
         grad2: 'indigo-darkbluegrad',
-        listing: '12/11/2025' //5
+        listing: '12/11/2025', //5
+        rarity: 'silver'
     },
     {
         name: 'ARMONI BROOKS',
@@ -79,7 +83,8 @@ const playerList = [ // player list for testing purposes
         avgscore: '81.0',
         grad1: 'indigo-blue',
         grad2: 'indigo-bluegrad',
-        listing: '12/12/2001' //1
+        listing: '12/12/2001', //1
+        rarity: 'silver'
     },
     {
         name: 'KEVIN DURANT',
@@ -91,7 +96,8 @@ const playerList = [ // player list for testing purposes
         avgscore: '83.0',
         grad1: 'indigo-black',
         grad2: 'indigo-red',
-        listing: '10/12/2004' //2
+        listing: '10/12/2004', //2
+        rarity: 'gold'
     },
     {
         name: 'KOBE BRYANT',
@@ -103,7 +109,8 @@ const playerList = [ // player list for testing purposes
         avgscore: '96.0',
         grad1: 'indigo-purple',
         grad2: 'indigo-purplegrad',
-        listing: '12/12/2025' //7
+        listing: '12/12/2025', //7
+        rarity: 'silver'
     },
     // {
     //     name: '',
@@ -199,35 +206,47 @@ const Portfolio = () => {
 
     const handleSort = (event) => {
         setSort(event.target.value)
+        console.log(sortMode)
+
+        console.log("pre-sort list: "+ sortedList[0].name)
+        const tempList = sortedList;
 
         if(sortMode === "")
-            setList(playerList)
+            setList([...tempList])
         else if (sortMode === "lowserial"){
-            playerList.sort((a,b) => a.id - b.id)
-            setList(playerList)
+            tempList.sort((a,b) => a.id - b.id)
+            setList([...tempList])
+            console.log("low serial player list: " + sortedList[0].name)
         }
         else if (sortMode === "highserial"){
-            playerList.sort((a,b) => b.id - a.id)
-            setList(playerList)
+            tempList.sort((a,b) => b.id - a.id)
+            setList([...tempList])
+            console.log("high serial player list: " + sortedList[0].name)
         }
         else if (sortMode === "oldlisting"){
-            [...playerList].sort((a,b) => new Date(...a.listing.split('/').reverse()) - new Date(...b.listing.split('/').reverse()))
-            setList(playerList)
+            [...tempList].sort((a,b) => new Date(...a.listing.split('/').reverse()) - new Date(...b.listing.split('/').reverse()))
+            setList([...tempList])
+            console.log("old list player list: " + sortedList[0].name)
         }
         else if (sortMode === "newlisting"){
-            [...playerList].sort((a,b) => new Date(...b.listing.split('/').reverse()) - new Date(...a.listing.split('/').reverse()))
-            setList(playerList)
+            [...tempList].sort((a,b) => new Date(...b.listing.split('/').reverse()) - new Date(...a.listing.split('/').reverse()))
+            setList([...tempList])
+            console.log("new list player list: " + sortedList[0].name)
         }
         else if (sortMode === "team"){
-            playerList.sort((a,b) => a.team > b.team)
-            setList(playerList)
+            tempList.sort((a,b) => a.team.localeCompare(b.team))
+            setList([...tempList])
         }
-        console.log(sortMode)
-        console.log(sortedList)
+
+        // console.log("sorted list: "+ sortedList[0].name)
     }
 
     // const key1 = 'team'
     // const uniqueTeams = [...new Map(playerList.map(i => [i[key1], i])).values()]
+
+    useEffect(() => {
+        console.log("hello")
+    }, [sortedList]);
 
     return (
         <>
@@ -368,7 +387,7 @@ const Portfolio = () => {
                                                     return (
                                                         <Link href={`/PlayerDetails?id=${player.id}`}>
                                                             <div className='mb-4' key={i}>
-                                                                <PerformerContainer AthleteName={player.name} AvgScore={player.avgscore} id={player.id}/>
+                                                                <PerformerContainer AthleteName={player.name} AvgScore={player.avgscore} id={player.id} rarity={player.rarity}/>
                                                             </div>
                                                         </Link>
                                                     )

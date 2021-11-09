@@ -8,7 +8,11 @@ module.exports = {
             'MyFont': ['"My Font"', 'serif'], // Ensure fonts with spaces have " " surrounding it.
             'montserrat': ['Montserrat'],
         },
-        extend: {}
+        extend: {
+            backgroundImage: {
+                'avg-icon': "url('/images/avgscore.png')"
+            }
+        }
         , colors: {
             indigo: {
                 light: '#2A2C42',
@@ -65,7 +69,7 @@ module.exports = {
             'iphoneX' : '375px',
             'md' : '768px',
             'lg' : '1024px',
-        }
+        },
     },
     variants: {
         extend: {},

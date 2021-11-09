@@ -8,7 +8,7 @@ const DesktopNavbar = (props) => {
     <div data-test="DesktopNavbar" className={`bg-gradient-to-b from-${color} to-${secondcolor} text-white-light flex flex-col w-full h-screen`}>
       <div className="flex justify-center h-16">
 
-        <img className="object-none mt-4" src="images/fantasylogo.png" alt="Img" />
+        <img className="object-none mt-4" src="images/playibleheader.png" alt="Img" />
       </div>
       <div className="flex justify-center mt-10">
         <div className="flex flex-col h-1/5 w-4/6">

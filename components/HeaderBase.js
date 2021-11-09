@@ -21,7 +21,7 @@ const HeaderBase = (props) => {
     <Header>
       <div className="mr-16"/>
       
-      <div className="text-white-light mt-8">
+      <div className="text-white-light mt-11">
         {' '}
         <img src="images/playibleheader.png" alt="Img" />
       </div>
