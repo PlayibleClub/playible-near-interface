@@ -10,8 +10,10 @@ import { useDispatch } from 'react-redux';
 import { getPortfolio } from '../redux/reducers/contract/portfolio';
 import { useConnectedWallet } from '@terra-money/wallet-provider';
 import Link from 'next/link';
-import { BrowserView, MobileView } from 'react-device-detect';
 import DesktopNavbar from '../components/DesktopNavbar';
+import PlayComponent from '../components/PlayComponent';
+import HorizontalScrollContainer from '../components/HorizontalScrollContainer';
+import Container from '../components/Container'
 
 const playerList = [ // player list for testing purposes
     {
@@ -145,6 +147,54 @@ const playHistorySample = [
     },
 ]
 
+const levelOnePlayList = [
+    {
+        icon: 'beastoftheeast',
+        prizePool: '7,484.00',
+        currPlayers: '100',
+        maxPlayers: '100',
+        timeLeft: '06:23:05'
+    },
+    {
+        icon: 'threepointshootout',
+        prizePool: '8,624.00',
+        currPlayers: '24',
+        maxPlayers: '100',
+        timeLeft: '05:25:22'
+    },
+]
+
+const levelTwoPlayList = [
+    {
+        icon: 'baller',
+        prizePool: '2,398.90',
+        currPlayers: '77',
+        maxPlayers: '100',
+        timeLeft: '05:38:09'
+    },
+    {
+        icon: 'playoffschallenge',
+        prizePool: '1,002.00',
+        currPlayers: '100',
+        maxPlayers: '100',
+        timeLeft: '02:28:31'
+    },
+    {
+        icon: 'tripledouble',
+        prizePool: '9,300.00',
+        currPlayers: '100',
+        maxPlayers: '100',
+        timeLeft: '00:13:54'
+    },
+    {
+        icon: 'playoffschallenge',
+        prizePool: '1,002.00',
+        currPlayers: '100',
+        maxPlayers: '100',
+        timeLeft: '02:28:31'
+    },
+]
+
 const Play = () => {
     const { status, connect, disconnect, availableConnectTypes } = useWallet();
     const [isActivePlay, setPlay] = useState(true)
@@ -166,510 +216,302 @@ const Play = () => {
     }, [connectedWallet])
     
     return (
-        <>
-            <BrowserView>
-                <div className={`font-montserrat h-screen relative flex`}>
-                    <DesktopNavbar/>
-
-                    <div className="flex flex-col w-full h-screen justify-center self-center">
-                        <Main color="indigo-dark">
-
-                            <div className="flex flex-col w-full h-full overflow-y-scroll overflow-x-hidden">
-
-                                <PortfolioContainer align="justify-center" title="PLAY">
-                                    <div className="flex self-center justify-center mt-6">
-                                        <div className="rounded-md flex justify-center mr-12"><img className="rounded-md" src="images/daily.png" alt="Italian Trulli" /></div>
-                                        <div className="rounded-md flex justify-center mr-12"><img className="rounded-md" src="images/weekly.png" alt="Italian Trulli" /></div>
-                                        <div className="rounded-md flex justify-center"><img className="rounded-md" src="images/seasonal.png" alt="Italian Trulli" /></div>
+        <Container>
+            {/* <div className={`font-montserrat h-screen relative flex overflow-x-hidden`}> */}
+                <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
+                    <Main color="indigo-dark">
+                        <div className="flex flex-col">
+                            <PortfolioContainer title="PLAY">
+                                <div className="flex flex-col ml-7 mt-6">
+                                    <div className="text-lg">
+                                        LEVEL 1
                                     </div>
-                                </PortfolioContainer>
-
-                                <div className="mt-12">
-                                <PortfolioContainer className="flex" title="MY ACTIVITY">
-                                    <div className="flex flex-col ml-8">
-                                        <div className="flex mb-4 mt-6">
-                                            {isActivePlay ?
-                                                <> {/* ACTIVE PLAYS IS ACTIVE */}
-                                                    <div className="w-5/6">
-                                                        <div className="flex">
-                                                            <div className="border-b-8 mr-4 border-indigo-buttonblue">
-                                                                ACTIVE PLAYS
-                                                            </div>
-
-                                                            <div className="ml-4" onClick={() => {
-                                                                setPlay(false)
-                                                            }}>
-                                                                PLAY HISTORY
-                                                            </div>
-                                                        </div>
-
-                                                        <div className="mt-12 ml-12">
-                                                            {activePlaySample.map(function(data,i){
-                                                                if(i < activePlaySample.length-1){
-                                                                    return(
-                                                                        <Link href={`/History?id=${data.id}`}>
-                                                                            <div className="flex mt-2 flex-col" key={i}>
-                                                                                <div className="flex justify-between text-sm">
-                                                                                    <div className="flex">
-                                                                                        <div className="mr-2">
-                                                                                            {data.type} Play {data.entry}
-                                                                                        </div>
-                                                                                        {data.week ?
-                                                                                            <div>
-                                                                                                (WEEK {data.week})
-                                                                                            </div>
-                                                                                        :
-                                                                                            <></>
-                                                                                        }
-                                                                                    </div>
-                                                                                    <div>&#62;</div>
-                                                                                </div>
-
-                                                                                <div className="font-thin text-sm overflow-ellipsis mt-1">
-                                                                                    <div>
-                                                                                        #{data.tokenList[0].id}/25000 {data.tokenList[0].name}, #{data.tokenList[1].id}/25000 {data.tokenList[1].name}...
-                                                                                    </div>
-                                                                                </div>
-
-                                                                                <div className="font-thin text-sm mt-3">
-                                                                                    {data.date}
-                                                                                </div>
-
-                                                                                <hr className="w-full self-center opacity-25 my-8"/>
-                                                                            </div>
-                                                                        </Link>
-                                                                    )
-                                                                }
-                                                                else {
-                                                                    return(
-                                                                        <Link href={`/History?id=${data.id}`}>
-                                                                            <div className="flex mt-2 flex-col" key={i}>
-                                                                                <div className="flex justify-between text-sm">
-                                                                                    <div className="flex">
-                                                                                        <div className="mr-2">
-                                                                                        {data.type} Play {data.entry} 
-                                                                                        </div>
-                                                                                        <div>
-                                                                                        {data.week ?
-                                                                                            <div>
-                                                                                                (WEEK {data.week})
-                                                                                            </div>
-                                                                                        :
-                                                                                            <></>
-                                                                                        }
-                                                                                        </div>
-                                                                                    </div>
-                                                                                    
-                                                                                    <div>&#62;</div>
-                                                                                </div>
-
-                                                                                <div className="font-thin text-sm overflow-ellipsis mt-1">
-                                                                                    <div>
-                                                                                        #{data.tokenList[0].id}/25000 {data.tokenList[0].name}, #{data.tokenList[1].id}/25000 {data.tokenList[1].name}...
-                                                                                    </div>
-                                                                                </div>
-
-                                                                                <div className="font-thin text-sm mt-3 mb-8">
-                                                                                    {data.date}
-                                                                                </div>
-                                                                            </div>
-                                                                        </Link>
-                                                                    )
-                                                                }
-                                                            })}
-                                                        </div>
+                                
+                                    <div className="mt-4 flex">
+                                        <HorizontalScrollContainer>
+                                            {levelOnePlayList.map(function(data,i){
+                                                return (
+                                                    <div className="mr-6">
+                                                        <PlayComponent
+                                                            icon={data.icon}
+                                                            prizePool={data.prizePool}
+                                                            currPlayers={data.currPlayers}
+                                                            maxPlayers={data.maxPlayers}
+                                                            timeLeft={data.timeLeft}
+                                                        />
                                                     </div>
-                                                </>
-                                                : 
-                                                <> {/* PLAY HISTORY IS ACTIVE */}
-                                                    <div className="w-5/6">
-                                                        <div className="flex">
-                                                            <div className="mr-4" onClick={() => {
-                                                                setPlay(true)
-                                                            }}>
-                                                                ACTIVE PLAYS
-                                                            </div>
-
-                                                            <div className="ml-4 border-b-8 border-indigo-buttonblue">
-                                                                PLAY HISTORY
-                                                            </div>
-                                                        </div>
-
-                                                        <div className="mt-12 ml-12">
-                                                            {playHistorySample.map(function(data, i){
-                                                                if(i < playHistorySample.length-1){
-                                                                    return(
-                                                                        <Link href={`/History?id=${data.id}`}>
-                                                                            <div className="flex mt-2 flex-col" key={i}>
-                                                                                <div className="flex justify-between text-sm">
-                                                                                    <div className="flex">
-                                                                                        <div className="mr-2">
-                                                                                            {data.type} Play {data.entry}
-                                                                                        </div>
-                                                                                        {data.week ?
-                                                                                            <div>
-                                                                                                (WEEK {data.week})
-                                                                                            </div>
-                                                                                        :
-                                                                                            <></>
-                                                                                        }
-                                                                                    </div>
-                                                                                    
-                                                                                    <div>&#62;</div>
-                                                                                </div>
-
-                                                                                <div className="flex font-thin mt-4 text-sm">
-                                                                                    <div className="flex flex-col mr-10">
-                                                                                        <div>
-                                                                                            Rank
-                                                                                        </div>
-                                                                                        <div>
-                                                                                            {data.rank}
-                                                                                        </div>
-                                                                                    </div>
-
-                                                                                    <div className="flex flex-col mr-10">
-                                                                                        <div>
-                                                                                            Score
-                                                                                        </div>
-                                                                                        <div>
-                                                                                            {data.score}
-                                                                                        </div>
-                                                                                    </div>
-
-                                                                                    <div className="flex flex-col">
-                                                                                        <div>
-                                                                                            Prize
-                                                                                        </div>
-                                                                                        <div>
-                                                                                            {data.prize} UST
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-
-                                                                                <hr className="w-full self-center opacity-25 my-8"/>
-                                                                            </div>
-                                                                        </Link>
-                                                                    )
-                                                                }
-                                                                else {
-                                                                    return(
-                                                                        <Link href={`/History?id=${data.id}`}>
-                                                                            <div className="flex mt-4 flex-col" key={i}>
-                                                                                <div className="flex justify-between text-sm">
-                                                                                    <div className="flex">
-                                                                                        <div className="mr-2">
-                                                                                            {data.type} Play {data.entry}
-                                                                                        </div>
-                                                                                        <div>
-                                                                                            {data.week ?
-                                                                                                <div>
-                                                                                                    (WEEK {data.week})
-                                                                                                </div>
-                                                                                            :
-                                                                                                <></>
-                                                                                            }
-                                                                                        </div>
-                                                                                    </div>
-                                                                                    
-                                                                                    <div>&#62;</div>
-                                                                                </div>
-
-                                                                                <div className="flex font-thin mt-4 text-sm">
-                                                                                    <div className="flex flex-col mr-10">
-                                                                                        <div>
-                                                                                            Rank
-                                                                                        </div>
-                                                                                        <div>
-                                                                                            {data.rank}
-                                                                                        </div>
-                                                                                    </div>
-
-                                                                                    <div className="flex flex-col mr-10">
-                                                                                        <div>
-                                                                                            Score
-                                                                                        </div>
-                                                                                        <div>
-                                                                                            {data.score}
-                                                                                        </div>
-                                                                                    </div>
-
-                                                                                    <div className="flex flex-col mb-8">
-                                                                                        <div>
-                                                                                            Prize
-                                                                                        </div>
-                                                                                        <div>
-                                                                                            {data.prize} UST
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </Link>
-                                                                    )
-                                                                }
-                                                            })}
-                                                        </div>
-                                                    </div>
-                                                </>
-                                            }
-                                        </div>
+                                                )
+                                            })}
+                                        </HorizontalScrollContainer>
                                     </div>
-                                </PortfolioContainer>
                                 </div>
 
-                            </div>
-
-                        </Main>
-
-                    </div>
-
-                </div>
-            </BrowserView>
-
-            <MobileView>
-                <div className={`font-montserrat h-screen relative`}>
-                    <Navbar/>
-                    <HeaderBase/>
-
-                    <div className="flex flex-col w-full h-screen">
-                        <Main color="indigo-dark">
-
-                            <div className="flex flex-col w-full h-full overflow-y-scroll overflow-x-hidden">
-
-                                <PortfolioContainer align="justify-center" title="PLAY">
-                                    <div className="pl-2 w-5/6 grid gap-x-1 gap-y-2 grid-cols-2">
-                                        <div className="rounded-md  flex justify-center"><img className="rounded-md" src="images/daily.png" alt="Italian Trulli" /></div>
-                                        <div className="rounded-md  flex justify-center"><img className="rounded-md" src="images/weekly.png" alt="Italian Trulli" /></div>
-                                        <div className="rounded-md  flex justify-center"><img className="rounded-md" src="images/seasonal.png" alt="Italian Trulli" /></div>
+                                <div className="flex flex-col ml-7 mt-12">
+                                    <div className="text-lg">
+                                        LEVEL 2
                                     </div>
+                                
+                                    <div className="mt-4 flex">
+                                        <HorizontalScrollContainer>
+                                            {levelTwoPlayList.map(function(data,i){
+                                                return (
+                                                    <div className="mr-6">
+                                                        <PlayComponent
+                                                            icon={data.icon}
+                                                            prizePool={data.prizePool}
+                                                            currPlayers={data.currPlayers}
+                                                            maxPlayers={data.maxPlayers}
+                                                            timeLeft={data.timeLeft}
+                                                        />
+                                                    </div>
+                                                )
+                                            })}
+                                        </HorizontalScrollContainer>
+                                    </div>
+                                </div>
+                            </PortfolioContainer>
 
-                                </PortfolioContainer>
-
-                                <PortfolioContainer className="flex" title="MY ACTIVITY">
-                                    <div className="flex flex-col justify-center self-center">
-                                        <div className="flex mb-4 mt-8">
-                                            {isActivePlay ?
-                                                <> {/* ACTIVE PLAYS IS ACTIVE */}
-                                                    <div className="w-72">
-                                                        <div className="flex">
-                                                            <div className="border-b-8 mr-4 border-indigo-buttonblue">
-                                                                ACTIVE PLAYS
-                                                            </div>
-
-                                                            <div className="ml-4" onClick={() => {
-                                                                setPlay(false)
-                                                            }}>
-                                                                PLAY HISTORY
-                                                            </div>
+                            <div className="mt-12">
+                            <PortfolioContainer className="flex" title="MY ACTIVITY">
+                                <div className="flex flex-col ml-8">
+                                    <div className="flex mb-4 mt-6">
+                                        {isActivePlay ?
+                                            <> {/* ACTIVE PLAYS IS ACTIVE */}
+                                                <div className="w-5/6">
+                                                    <div className="flex">
+                                                        <div className="border-b-8 mr-4 border-indigo-buttonblue">
+                                                            ACTIVE PLAYS
                                                         </div>
 
-                                                        <div className="mt-12">
-                                                            {activePlaySample.map(function(data,i){
-                                                                if(i < activePlaySample.length-1){
-                                                                    return(
-                                                                        <Link href={`/History?id=${data.id}`}>
-                                                                            <div className="flex mt-2 flex-col" key={i}>
-                                                                                <div className="flex justify-between text-sm">
-                                                                                    <div>
-                                                                                        {data.type} Play {data.entry}
-                                                                                    </div>
-                                                                                    {data.week ?
-                                                                                        <div>
-                                                                                            (WEEK {data.week})
-                                                                                        </div>
-                                                                                    :
-                                                                                        <></>
-                                                                                    }
-                                                                                    <div>&#62;</div>
-                                                                                </div>
-
-                                                                                <div className="font-thin text-sm overflow-ellipsis mt-1">
-                                                                                    <div>
-                                                                                        #{data.tokenList[0].id}/25000 {data.tokenList[0].name}...
-                                                                                    </div>
-                                                                                </div>
-
-                                                                                <div className="font-thin text-sm mt-3">
-                                                                                    {data.date}
-                                                                                </div>
-
-                                                                                <hr className="w-72 self-center opacity-25 my-8"/>
-                                                                            </div>
-                                                                        </Link>
-                                                                    )
-                                                                }
-                                                                else {
-                                                                    return(
-                                                                        <Link href={`/History?id=${data.id}`}>
-                                                                            <div className="flex mt-2 flex-col" key={i}>
-                                                                                <div className="flex justify-between text-sm">
-                                                                                    <div>
-                                                                                        {data.type} Play {data.entry}
-                                                                                    </div>
-                                                                                    {data.week ?
-                                                                                        <div>
-                                                                                            (WEEK {data.week})
-                                                                                        </div>
-                                                                                    :
-                                                                                        <></>
-                                                                                    }
-                                                                                    <div>&#62;</div>
-                                                                                </div>
-
-                                                                                <div className="font-thin text-sm overflow-ellipsis mt-1">
-                                                                                    <div>
-                                                                                        #{data.tokenList[0].id}/25000 {data.tokenList[0].name}...
-                                                                                    </div>
-                                                                                </div>
-
-                                                                                <div className="font-thin text-sm mt-3 mb-8">
-                                                                                    {data.date}
-                                                                                </div>
-                                                                            </div>
-                                                                        </Link>
-                                                                    )
-                                                                }
-                                                            })}
+                                                        <div className="ml-4" onClick={() => {
+                                                            setPlay(false)
+                                                        }}>
+                                                            PLAY HISTORY
                                                         </div>
                                                     </div>
-                                                </>
-                                                : 
-                                                <> {/* PLAY HISTORY IS ACTIVE */}
-                                                    <div className="w-72">
-                                                        <div className="flex">
-                                                            <div className="mr-4" onClick={() => {
-                                                                setPlay(true)
-                                                            }}>
-                                                                ACTIVE PLAYS
-                                                            </div>
 
-                                                            <div className="ml-4 border-b-8 border-indigo-buttonblue">
-                                                                PLAY HISTORY
-                                                            </div>
+                                                    <div className="mt-12 ml-12">
+                                                        {activePlaySample.map(function(data,i){
+                                                            if(i < activePlaySample.length-1){
+                                                                return(
+                                                                    <Link href={`/History?id=${data.id}`}>
+                                                                        <div className="flex mt-2 flex-col" key={i}>
+                                                                            <div className="flex justify-between text-sm">
+                                                                                <div className="flex">
+                                                                                    <div className="mr-2">
+                                                                                        {data.type} Play {data.entry}
+                                                                                    </div>
+                                                                                    {data.week ?
+                                                                                        <div>
+                                                                                            (WEEK {data.week})
+                                                                                        </div>
+                                                                                    :
+                                                                                        <></>
+                                                                                    }
+                                                                                </div>
+                                                                                <div>&#62;</div>
+                                                                            </div>
+
+                                                                            <div className="font-thin text-sm overflow-ellipsis mt-1">
+                                                                                <div>
+                                                                                    #{data.tokenList[0].id}/25000 {data.tokenList[0].name}, #{data.tokenList[1].id}/25000 {data.tokenList[1].name}...
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div className="font-thin text-sm mt-3">
+                                                                                {data.date}
+                                                                            </div>
+
+                                                                            <hr className="w-full self-center opacity-25 my-8"/>
+                                                                        </div>
+                                                                    </Link>
+                                                                )
+                                                            }
+                                                            else {
+                                                                return(
+                                                                    <Link href={`/History?id=${data.id}`}>
+                                                                        <div className="flex mt-2 flex-col" key={i}>
+                                                                            <div className="flex justify-between text-sm">
+                                                                                <div className="flex">
+                                                                                    <div className="mr-2">
+                                                                                    {data.type} Play {data.entry} 
+                                                                                    </div>
+                                                                                    <div>
+                                                                                    {data.week ?
+                                                                                        <div>
+                                                                                            (WEEK {data.week})
+                                                                                        </div>
+                                                                                    :
+                                                                                        <></>
+                                                                                    }
+                                                                                    </div>
+                                                                                </div>
+                                                                                
+                                                                                <div>&#62;</div>
+                                                                            </div>
+
+                                                                            <div className="font-thin text-sm overflow-ellipsis mt-1">
+                                                                                <div>
+                                                                                    #{data.tokenList[0].id}/25000 {data.tokenList[0].name}, #{data.tokenList[1].id}/25000 {data.tokenList[1].name}...
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div className="font-thin text-sm mt-3 mb-8">
+                                                                                {data.date}
+                                                                            </div>
+                                                                        </div>
+                                                                    </Link>
+                                                                )
+                                                            }
+                                                        })}
+                                                    </div>
+                                                </div>
+                                            </>
+                                            : 
+                                            <> {/* PLAY HISTORY IS ACTIVE */}
+                                                <div className="w-5/6">
+                                                    <div className="flex">
+                                                        <div className="mr-4" onClick={() => {
+                                                            setPlay(true)
+                                                        }}>
+                                                            ACTIVE PLAYS
                                                         </div>
 
-                                                        <div className="mt-12">
-                                                            {playHistorySample.map(function(data, i){
-                                                                if(i < playHistorySample.length-1){
-                                                                    return(
-                                                                        <Link href={`/History?id=${data.id}`}>
-                                                                            <div className="flex mt-2 flex-col" key={i}>
-                                                                                <div className="flex justify-between text-sm">
-                                                                                    <div>
-                                                                                        {data.type} Play {data.entry}
-                                                                                    </div>
-                                                                                    {data.week ?
-                                                                                        <div>
-                                                                                            (WEEK {data.week})
-                                                                                        </div>
-                                                                                    :
-                                                                                        <></>
-                                                                                    }
-                                                                                    <div>&#62;</div>
-                                                                                </div>
-
-                                                                                <div className="flex font-thin mt-4 text-sm">
-                                                                                    <div className="flex flex-col mr-10">
-                                                                                        <div>
-                                                                                            Rank
-                                                                                        </div>
-                                                                                        <div>
-                                                                                            {data.rank}
-                                                                                        </div>
-                                                                                    </div>
-
-                                                                                    <div className="flex flex-col mr-10">
-                                                                                        <div>
-                                                                                            Score
-                                                                                        </div>
-                                                                                        <div>
-                                                                                            {data.score}
-                                                                                        </div>
-                                                                                    </div>
-
-                                                                                    <div className="flex flex-col">
-                                                                                        <div>
-                                                                                            Prize
-                                                                                        </div>
-                                                                                        <div>
-                                                                                            {data.prize} UST
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-
-                                                                                <hr className="w-72 self-center opacity-25 my-8"/>
-                                                                            </div>
-                                                                        </Link>
-                                                                    )
-                                                                }
-                                                                else {
-                                                                    return(
-                                                                        <Link href={`/History?id=${data.id}`}>
-                                                                            <div className="flex mt-4 flex-col" key={i}>
-                                                                                <div className="flex justify-between text-sm">
-                                                                                    <div>
-                                                                                        {data.type} Play {data.entry}
-                                                                                    </div>
-                                                                                    {data.week ?
-                                                                                        <div>
-                                                                                            (WEEK {data.week})
-                                                                                        </div>
-                                                                                    :
-                                                                                        <></>
-                                                                                    }
-                                                                                    <div>&#62;</div>
-                                                                                </div>
-
-                                                                                <div className="flex font-thin mt-4 text-sm">
-                                                                                    <div className="flex flex-col mr-10">
-                                                                                        <div>
-                                                                                            Rank
-                                                                                        </div>
-                                                                                        <div>
-                                                                                            {data.rank}
-                                                                                        </div>
-                                                                                    </div>
-
-                                                                                    <div className="flex flex-col mr-10">
-                                                                                        <div>
-                                                                                            Score
-                                                                                        </div>
-                                                                                        <div>
-                                                                                            {data.score}
-                                                                                        </div>
-                                                                                    </div>
-
-                                                                                    <div className="flex flex-col mb-8">
-                                                                                        <div>
-                                                                                            Prize
-                                                                                        </div>
-                                                                                        <div>
-                                                                                            {data.prize} UST
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </Link>
-                                                                    )
-                                                                }
-                                                            })}
+                                                        <div className="ml-4 border-b-8 border-indigo-buttonblue">
+                                                            PLAY HISTORY
                                                         </div>
                                                     </div>
-                                                </>
-                                            }
-                                        </div>
-                                    </div>
-                                </PortfolioContainer>
 
+                                                    <div className="mt-12 ml-12">
+                                                        {playHistorySample.map(function(data, i){
+                                                            if(i < playHistorySample.length-1){
+                                                                return(
+                                                                    <Link href={`/History?id=${data.id}`}>
+                                                                        <div className="flex mt-2 flex-col" key={i}>
+                                                                            <div className="flex justify-between text-sm">
+                                                                                <div className="flex">
+                                                                                    <div className="mr-2">
+                                                                                        {data.type} Play {data.entry}
+                                                                                    </div>
+                                                                                    {data.week ?
+                                                                                        <div>
+                                                                                            (WEEK {data.week})
+                                                                                        </div>
+                                                                                    :
+                                                                                        <></>
+                                                                                    }
+                                                                                </div>
+                                                                                
+                                                                                <div>&#62;</div>
+                                                                            </div>
+
+                                                                            <div className="flex font-thin mt-4 text-sm">
+                                                                                <div className="flex flex-col mr-10">
+                                                                                    <div>
+                                                                                        Rank
+                                                                                    </div>
+                                                                                    <div>
+                                                                                        {data.rank}
+                                                                                    </div>
+                                                                                </div>
+
+                                                                                <div className="flex flex-col mr-10">
+                                                                                    <div>
+                                                                                        Score
+                                                                                    </div>
+                                                                                    <div>
+                                                                                        {data.score}
+                                                                                    </div>
+                                                                                </div>
+
+                                                                                <div className="flex flex-col">
+                                                                                    <div>
+                                                                                        Prize
+                                                                                    </div>
+                                                                                    <div>
+                                                                                        {data.prize} UST
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <hr className="w-full self-center opacity-25 my-8"/>
+                                                                        </div>
+                                                                    </Link>
+                                                                )
+                                                            }
+                                                            else {
+                                                                return(
+                                                                    <Link href={`/History?id=${data.id}`}>
+                                                                        <div className="flex mt-4 flex-col" key={i}>
+                                                                            <div className="flex justify-between text-sm">
+                                                                                <div className="flex">
+                                                                                    <div className="mr-2">
+                                                                                        {data.type} Play {data.entry}
+                                                                                    </div>
+                                                                                    <div>
+                                                                                        {data.week ?
+                                                                                            <div>
+                                                                                                (WEEK {data.week})
+                                                                                            </div>
+                                                                                        :
+                                                                                            <></>
+                                                                                        }
+                                                                                    </div>
+                                                                                </div>
+                                                                                
+                                                                                <div>&#62;</div>
+                                                                            </div>
+
+                                                                            <div className="flex font-thin mt-4 text-sm">
+                                                                                <div className="flex flex-col mr-10">
+                                                                                    <div>
+                                                                                        Rank
+                                                                                    </div>
+                                                                                    <div>
+                                                                                        {data.rank}
+                                                                                    </div>
+                                                                                </div>
+
+                                                                                <div className="flex flex-col mr-10">
+                                                                                    <div>
+                                                                                        Score
+                                                                                    </div>
+                                                                                    <div>
+                                                                                        {data.score}
+                                                                                    </div>
+                                                                                </div>
+
+                                                                                <div className="flex flex-col mb-8">
+                                                                                    <div>
+                                                                                        Prize
+                                                                                    </div>
+                                                                                    <div>
+                                                                                        {data.prize} UST
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </Link>
+                                                                )
+                                                            }
+                                                        })}
+                                                    </div>
+                                                </div>
+                                            </>
+                                        }
+                                    </div>
+                                </div>
+                            </PortfolioContainer>
                             </div>
 
-                        </Main>
+                        </div>
 
-                    </div>
+                    </Main>
 
                 </div>
-            </MobileView>
-        </>
+
+            {/* </div> */}
+        </Container>
     );
 }
 export default Play;
