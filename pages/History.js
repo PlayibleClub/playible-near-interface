@@ -10,11 +10,13 @@ import { useRouter } from 'next/router';
 import { MobileView, BrowserView } from 'react-device-detect';
 import DesktopNavbar from '../components/DesktopNavbar';
 import Link from 'next/link'
+import Container from '../components/Container';
+import Image from 'next/image';
 
 const playerList = [ // player list for testing purposes
     {
         name: 'STEPHEN CURRY',
-        team: 'Golden State Warriors',
+        team: 'Golden State Warriors', //2
         id: '320',
         cost: '420 UST',
         jersey: '30',
@@ -22,10 +24,12 @@ const playerList = [ // player list for testing purposes
         avgscore: '86.3',
         grad1: 'indigo-blue',
         grad2: 'indigo-bluegrad',
+        listing: '12/12/2024', //4
+        rarity: 'base',
     },
     {
         name: 'TAUREAN PRINCE',
-        team: 'Minnesota Timberwolves',
+        team: 'Minnesota Timberwolves', //6
         id: '14450',
         cost: '41 UST',
         jersey: '12',
@@ -33,21 +37,25 @@ const playerList = [ // player list for testing purposes
         avgscore: '66.5',
         grad1: 'indigo-purple',
         grad2: 'indigo-purplegrad',
+        listing: '12/12/2021', //3
+        rarity: 'silver'
     },
     {
-        name: 'ARMONI BROOKS',
-        team: 'Houston Rockets',
-        id: '21300',
-        cost: '45.5 UST',
+        name: 'LEBRON JAMES',
+        team: 'Los Angeles Lakers', //5
+        id: '25',
+        cost: '840 UST',
         jersey: '23',
-        positions: ['SG', 'C'],
-        avgscore: '81.0',
-        grad1: 'indigo-blue',
-        grad2: 'indigo-bluegrad',
+        positions: ['PG', 'SG'],
+        avgscore: '96.0',
+        grad1: 'indigo-purple',
+        grad2: 'indigo-purplegrad',
+        listing: '11/12/2025', //6
+        rarity: 'gold'
     },
     {
         name: 'DEVIN BOOKER',
-        team: 'Phoenix Suns',
+        team: 'Phoenix Suns', //7
         id: '16450',
         cost: '21 UST',
         jersey: '01',
@@ -55,10 +63,12 @@ const playerList = [ // player list for testing purposes
         avgscore: '76.8',
         grad1: 'indigo-darkblue',
         grad2: 'indigo-darkbluegrad',
+        listing: '12/11/2025', //5
+        rarity: 'silver'
     },
     {
         name: 'ARMONI BROOKS',
-        team: 'Houston Rockets',
+        team: 'Houston Rockets', //3
         id: '21300',
         cost: '45.5 UST',
         jersey: '23',
@@ -66,97 +76,110 @@ const playerList = [ // player list for testing purposes
         avgscore: '81.0',
         grad1: 'indigo-blue',
         grad2: 'indigo-bluegrad',
+        listing: '12/12/2001', //1
+        rarity: 'silver'
     },
     {
-        name: 'DEVIN BOOKER',
-        team: 'Phoenix Suns',
-        id: '16450',
-        cost: '21 UST',
-        jersey: '01',
-        positions: ['SF', 'C'],
-        avgscore: '76.8',
-        grad1: 'indigo-darkblue',
-        grad2: 'indigo-darkbluegrad',
+        name: 'KEVIN DURANT',
+        team: 'Brooklyn Nets', //1
+        id: '12300',
+        cost: '180 UST',
+        jersey: '07',
+        positions: ['PG'],
+        avgscore: '83.0',
+        grad1: 'indigo-black',
+        grad2: 'indigo-red',
+        listing: '10/12/2004', //2
+        rarity: 'gold'
     },
+    {
+        name: 'KOBE BRYANT',
+        team: 'Los Angeles Lakers', //4
+        id: '999',
+        cost: '999 UST',
+        jersey: '24',
+        positions: ['SG'],
+        avgscore: '96.0',
+        grad1: 'indigo-purple',
+        grad2: 'indigo-purplegrad',
+        listing: '12/12/2025', //7
+        rarity: 'silver'
+    },
+    // {
+    //     name: '',
+    //     team: '',
+    //     id: '',
+    //     cost: '',
+    //     jersey: '',
+    //     positions: [],
+    //     grad1: '',
+    //     grad2: '',
+    // },
 ]
 
-const gameInfo = [ // sample game info
+const gameInfo = [
     {
+        title: 'BEST OF THE EAST',
+        date: '2 days ago',
         id: '1',
-        isActivePlay: true,
-        type: 'Daily',
-        week: '',
-        entry: '3', 
-        desc: 'Successful Daily Play entry.', // active play
-        date: 'July 2, 2021', // active play
-        rank: '', // history
-        score: '', // history
-        prize: '', // history
-        tokenList: playerList,
+        icon: 'beastoftheeast',
+        prizePool: '7,484.00',
+        currPlayers: '100',
+        maxPlayers: '100',
+        timeLeft: '06:23:05',
+        isActive: true,
+        description: 'Go head-to-head with the best of the East. Select 5 players and create your fantasy lineup now.'
     },
     {
+        title: 'CERTIFIED BALLER',
+        date: '6 days ago',
         id: '2',
-        isActivePlay: true,
-        type: 'Daily',
-        week: '',
-        entry: '', 
-        desc: 'Successful Daily Play entry.', // active play
-        date: 'July 8, 2021', // active play
-        rank: '', // history
-        score: '', // history
-        prize: '', // history
-        tokenList: playerList,
+        icon: 'baller',
+        prizePool: '2,398.90',
+        currPlayers: '77',
+        maxPlayers: '100',
+        timeLeft: '05:38:09',
+        isActive: true,
+        description: 'Go head-to-head with the best of the East. Select 5 players and create your fantasy lineup now.'
     },
     {
+        title: 'TRIPLE DOUBLE',
+        date: '2 weeks ago',
         id: '3',
-        isActivePlay: true,
-        type: 'Seasonal',
-        week: '3',
-        entry: '', 
-        desc: 'Successful Daily Play entry.', // active play
-        date: 'July 14, 2021', // active play
-        rank: '', // history
-        score: '', // history
-        prize: '', // history
+        icon: 'tripledouble',
+        prizePool: '9,300.00',
+        currPlayers: '100',
+        maxPlayers: '100',
+        timeLeft: '00:13:54',
+        isActive: false,
         tokenList: playerList,
+        description: 'Go head-to-head with the best of the East. Select 5 players and create your fantasy lineup now.'
     },
     {
+        title: 'EAST VS. WEST',
+        date: '3 weeks ago',
         id: '4',
-        isActivePlay: false,
-        type: 'Seasonal',
-        week: '1',
-        entry: '', 
-        desc: '', // active play
-        date: '', // active play
-        rank: '2', // history
-        score: '96.5', // history
-        prize: '15', // history
+        icon: 'tripledouble',
+        prizePool: '1,300.00',
+        currPlayers: '100',
+        maxPlayers: '100',
+        timeLeft: '00:13:54',
+        isActive: false,
+        tokenList: playerList,
+        description: 'Go head-to-head with the best of the East. Select 5 players and create your fantasy lineup now.'
     },
     {
+        title: 'BEST ROOKIE YEAR',
+        date: '1 month ago',
         id: '5',
-        isActivePlay: false,
-        type: 'Daily',
-        week: '',
-        entry: '5', 
-        desc: '', // active play
-        date: '', // active play
-        rank: '1', // history
-        score: '98.7', // history
-        prize: '30', // history
+        icon: 'baller',
+        prizePool: '112,300.00',
+        currPlayers: '100',
+        maxPlayers: '100',
+        timeLeft: '00:03:54',
+        isActive: false,
         tokenList: playerList,
-    },
-    {
-        id: '6',
-        isActivePlay: false,
-        type: 'Weekly',
-        week: '',
-        entry: '3', 
-        desc: '', // active play
-        date: '', // active play
-        rank: '10', // history
-        score: '70.3', // history
-        prize: '1', // history
-        tokenList: playerList,
+        description: 'Go head-to-head with the best of the East. Select 5 players and create your fantasy lineup now.'
     },
 ]
 
@@ -167,249 +190,73 @@ export default function History(props) {
     // console.log("Game ID: "+query.id)
     
     return (
-        <>
-            <BrowserView>
-                <div className={`font-montserrat h-screen relative flex`}>
-                    <DesktopNavbar/>
-
-                    <div className="flex flex-col w-full h-screen">
-                        <Main color="indigo-dark">
-                            <div className="flex flex-col  w-full h-full overflow-y-scroll overflow-x-hidden">
-                                <Link href="/Play/">
-                                    <div className="text-indigo-white flex ml-6 mt-12">
-                                        <div className="font-bold mr-2">&#x3c;</div><div>Back</div>
-                                    </div>
-                                </Link>
-                                <PortfolioContainer align="justify-center" title="ENTRY SUMMARY">
-                                    {gameInfo.map(function(data,i){
-                                        if(query.id === data.id){
-                                            if(data.isActivePlay){
-                                                return(
-                                                    <>
-                                                        <div className="ml-7 mt-7 text-sm">
-                                                            <div className="flex text-sm">
-                                                                <div>
-                                                                    {data.type.toUpperCase()} PLAY {data.entry}
-                                                                </div>
-                                                                {data.week ?
-                                                                    <div className="ml-2">
-                                                                        (WEEK {data.week})
-                                                                    </div>
-                                                                :
-                                                                    <></>
-                                                                }
-                                                            </div>
-
-                                                            <div className="font-thin mt-4">
-                                                                Successful {data.type} Play entry.
-                                                            </div>
-
-                                                            <div className="font-thin">
-                                                                {data.date}
-                                                            </div>
-                                                        </div>
-
-                                                        <div className="justify-center flex w-full self-center mt-10">
-                                                            <div className="grid grid-cols-4">
-                                                                {playerList.map(function(data,i){
-                                                                    return(
-                                                                        <div className='mb-12 mr-16' key={i}>
-                                                                            <PerformerContainer AthleteName={data.name} AvgScore={data.avgscore} id={data.id}/>
-                                                                        </div>
-                                                                    )
-                                                                })}
-                                                            </div>
-                                                        </div>
-                                                    </>
-                                                )
-                                            } else {
-                                                return(
-                                                    <>
-                                                        <div className="ml-7 mt-7 text-sm">
-                                                            <div className="flex justify-between text-sm">
-                                                                <div>
-                                                                    {data.type.toUpperCase()} PLAY {data.entry}
-                                                                </div>
-                                                                {data.week ?
-                                                                    <div className="mr-16">
-                                                                        (WEEK {data.week})
-                                                                    </div>
-                                                                :
-                                                                    <></>
-                                                                }
-                                                            </div>
-
-                                                            <div className="flex font-thin mt-4 text-sm">
-                                                                <div className="flex flex-col mr-10">
-                                                                    <div>
-                                                                        Rank
-                                                                    </div>
-                                                                    <div>
-                                                                        {data.rank}
-                                                                    </div>
-                                                                </div>
-
-                                                                <div className="flex flex-col mr-10">
-                                                                    <div>
-                                                                        Score
-                                                                    </div>
-                                                                    <div>
-                                                                        {data.score}
-                                                                    </div>
-                                                                </div>
-
-                                                                <div className="flex flex-col">
-                                                                    <div>
-                                                                        Prize
-                                                                    </div>
-                                                                    <div>
-                                                                        {data.prize} UST
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div className="justify-center flex w-full self-center mt-10">
-                                                            <div className="grid grid-cols-4">
-                                                                {playerList.map(function(data,i){
-                                                                    return(
-                                                                        <div className='mb-12 mr-16' key={i}>
-                                                                            <PerformerContainer AthleteName={data.name} AvgScore={data.avgscore} id={data.id}/>
-                                                                        </div>
-                                                                    )
-                                                                })}
-                                                            </div>
-                                                        </div>
-                                                    </>
-                                                )
-                                            }   
-                                        }            
-                                    })}
-                                </PortfolioContainer>
-
+        <Container>
+            <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
+                <Main color="indigo-dark">
+                    <div className="flex flex-col ml-6">
+                        <Link href="/Play/">
+                            <div className="text-indigo-white flex mt-6 md:mt-12">
+                                <div className="font-bold mr-2">&#x3c;</div><div>Back</div>
                             </div>
-                        </Main>
-                    </div>
-                </div>
-            </BrowserView>
-            <MobileView>
-                <div className={`font-montserrat h-screen relative`}>
-                    <HeaderBack link="/Play"/>
-
-                    <div className="flex flex-col w-full h-screen">
-                        <Main color="indigo-dark">
-                            <div className="flex flex-col  w-full h-full overflow-y-scroll overflow-x-hidden">
-                                <PortfolioContainer align="justify-center" title="ENTRY SUMMARY">
-                                    {gameInfo.map(function(data,i){
-                                        if(query.id === data.id){
-                                            if(data.isActivePlay){
-                                                return(
-                                                    <>
-                                                        <div className="ml-7 mt-7 text-sm">
-                                                            <div className="flex justify-between text-sm">
-                                                                <div>
-                                                                    {data.type.toUpperCase()} PLAY {data.entry}
-                                                                </div>
-                                                                {data.week ?
-                                                                    <div className="mr-16">
-                                                                        (WEEK {data.week})
-                                                                    </div>
-                                                                :
-                                                                    <></>
-                                                                }
-                                                            </div>
-
-                                                            <div className="font-thin mt-4">
-                                                                Successful {data.type} Play entry.
-                                                            </div>
-
-                                                            <div className="font-thin">
-                                                                {data.date}
-                                                            </div>
-                                                        </div>
-
-                                                        <div className="justify-center flex md:w-96 md:self-center mt-10">
-                                                            <TokenGridCol2>
-                                                                {playerList.map(function(data,i){
-                                                                    return(
-                                                                        <div className='mb-12' key={i}>
-                                                                            <PerformerContainer AthleteName={data.name} AvgScore={data.avgscore} id={data.id}/>
-                                                                        </div>
-                                                                    )
-                                                                })}
-                                                            </TokenGridCol2>
-                                                        </div>
-                                                    </>
-                                                )
-                                            } else {
-                                                return(
-                                                    <>
-                                                        <div className="ml-7 mt-7 text-sm">
-                                                            <div className="flex justify-between text-sm">
-                                                                <div>
-                                                                    {data.type.toUpperCase()} PLAY {data.entry}
-                                                                </div>
-                                                                {data.week ?
-                                                                    <div className="mr-16">
-                                                                        (WEEK {data.week})
-                                                                    </div>
-                                                                :
-                                                                    <></>
-                                                                }
-                                                            </div>
-
-                                                            <div className="flex font-thin mt-4 text-sm">
-                                                                <div className="flex flex-col mr-10">
-                                                                    <div>
-                                                                        Rank
-                                                                    </div>
-                                                                    <div>
-                                                                        {data.rank}
-                                                                    </div>
-                                                                </div>
-
-                                                                <div className="flex flex-col mr-10">
-                                                                    <div>
-                                                                        Score
-                                                                    </div>
-                                                                    <div>
-                                                                        {data.score}
-                                                                    </div>
-                                                                </div>
-
-                                                                <div className="flex flex-col">
-                                                                    <div>
-                                                                        Prize
-                                                                    </div>
-                                                                    <div>
-                                                                        {data.prize} UST
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </>
-                                                )
-                                            }   
-                                        }            
-                                    })}
-
-                                    <div className="justify-center flex md:w-96 md:self-center mt-10">
-                                        <TokenGridCol2>
-                                            {playerList.map(function(data,i){
-                                                return(
-                                                    <div className='mb-12' key={i}>
-                                                        <PerformerContainer AthleteName={data.name} AvgScore={data.avgscore} id={data.id}/>
+                        </Link>
+                        <PortfolioContainer title="ENTRY SUMMARY">
+                            {gameInfo.map(function(data,i){
+                                if(query.id === data.id){
+                                    if(!data.isActivePlay){
+                                        const playicon = "/../public/images/playthumbnails/"+data.icon+".png"
+                                        return(
+                                            <div className="mt-6">
+                                                <div className="flex flex-col md:flex-row justify-center md:justify-between">
+                                                    <div className="md:w-1/2 mr-6">
+                                                        <Image
+                                                            src={playicon}
+                                                            width={420}
+                                                            height={225}
+                                                        />
                                                     </div>
-                                                )
-                                            })}
-                                        </TokenGridCol2>
-                                    </div>
-                                </PortfolioContainer>
 
-                            </div>
-                        </Main>
+                                                    <div className="md:w-1/2 mt-8 md:mt-0">
+                                                        <div className="font-thin">
+                                                            PRIZE POOL
+                                                        </div>
+
+                                                        <div className="text-3xl">
+                                                            ${data.prizePool}
+                                                        </div>
+
+                                                        <div className="md:w-3/4 mt-8 font-thin mr-4">
+                                                            {data.description}
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div className="justify-center flex self-center mt-10">
+                                                    <div className="grid grid-cols-2 md:grid-cols-4 w-full">
+                                                        {playerList.map(function(data,i){
+                                                            return(
+                                                                <div className='mb-4' key={i}>
+                                                                    <PerformerContainer AthleteName={data.name} AvgScore={data.avgscore} id={data.id} rarity={data.rarity}/>
+                                                                </div>
+                                                            )
+                                                        })}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )
+                                    } else {
+                                        return(
+                                            <>
+                                            hello
+                                            </>
+                                        )
+                                    }   
+                                }            
+                            })}
+                        </PortfolioContainer>
+
                     </div>
-                </div>
-            </MobileView>
-        </>
+                </Main>
+            </div>
+        </Container>
     )
 }

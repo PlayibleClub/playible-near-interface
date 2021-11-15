@@ -14,7 +14,7 @@ const Container = (props) => {
       <div className="invisible w-0 md:visible md:w-full">
         <div className="flex bg-indigo-white">
           <DesktopNavbar color="indigo-navbargrad2" secondcolor="indigo-navbargrad1"/>
-          <div className="flex flex-col w-full h-full overflow-y-hidden">
+          <div className="flex flex-col w-screen h-full overflow-y-hidden">
           <DesktopHeaderBase/>
             {children}
           </div>
