@@ -11,7 +11,7 @@ module.exports = {
         extend: {
             backgroundImage: {
                 'avg-icon': "url('/images/avgscore.png')"
-            }
+            },
         }
         , colors: {
             indigo: {
@@ -33,8 +33,8 @@ module.exports = {
                 red: '#922020',
                 green: '#61CD73',
                 navbargrad1: '#4DBEEE',
-                navbargrad2: '#5556A5'
-
+                navbargrad2: '#5556A5',
+                lightgreen: '#64D17A',
             },
             white: {
                 light: '#FFFFFF'

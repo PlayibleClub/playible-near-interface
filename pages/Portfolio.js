@@ -1,24 +1,18 @@
 import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import HeaderBase from '../components/HeaderBase';
-import Navbar from '../components/Navbar';
 import Main from '../components/Main'
 import PortfolioContainer from '../components/PortfolioContainer'
-import AthleteGrid from '../components/AthleteGrid'
-import AthleteContainer from '../components/AthleteContainer'
 import PerformerContainer from '../components/PerformerContainer';
 import filterIcon from '../public/images/filter.png'
 import searchIcon from '../public/images/search.png'
 import { useDispatch, useSelector } from 'react-redux';
 import { getPortfolio, clearData } from '../redux/reducers/contract/portfolio';
 import { useConnectedWallet } from '@terra-money/wallet-provider';
-import TokenGridCol2 from '../components/TokenGridCol2';
 import LoadingPageDark from '../components/loading/LoadingPageDark';
 import * as statusCode from '../data/constants/status'
 import Link from 'next/link'
-import DesktopNavbar from '../components/DesktopNavbar';
 import SquadPackComponent from '../components/SquadPackComponent'
-import {BrowserView, MobileView} from 'react-device-detect'
+import Container from '../components/Container';
 
 const playerList = [ // player list for testing purposes
     {
@@ -160,7 +154,7 @@ const Portfolio = () => {
     const [sortMode, setSort] = useState("")
     const [showFilter, setFilter] = useState(false)
     const [displayMode, setDisplay] = useState(true)
-    const [loading, setLoading] = useState(true)
+    const [loading, setLoading] = useState(false)
     
     // const { tokenList: playerList, status } = useSelector((state) => state.contract.portfolio);
 
@@ -249,18 +243,8 @@ const Portfolio = () => {
     }, [sortedList]);
 
     return (
-        <>
-            <div className={`font-montserrat h-screen relative flex`}>
-                <div className="invisible w-0 md:visible md:w-1/4">
-                    <DesktopNavbar/>
-                </div>
-
-                <div className="visible md:invisible">
-                    <Navbar/>
-                    <HeaderBase/>
-                </div>
-
-                <div className="flex flex-col w-full h-screen">
+        <Container>
+            <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
                 <Main color="indigo-dark">
                     
                     {loading ? (
@@ -431,9 +415,8 @@ const Portfolio = () => {
                     </div>
                     )}
                 </Main>
-                </div>
             </div>
-        </>
+        </Container>
     )
 }
 export default Portfolio;
