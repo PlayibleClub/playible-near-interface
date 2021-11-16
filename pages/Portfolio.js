@@ -189,6 +189,8 @@ const Portfolio = () => {
             setResult(data.search)
         else setResult("")
 
+        console.log(result)
+
         // if (data.teamName)
         //     setTeamFilter(data.teamName)
         // else setTeamFilter("")
@@ -237,10 +239,6 @@ const Portfolio = () => {
 
     // const key1 = 'team'
     // const uniqueTeams = [...new Map(playerList.map(i => [i[key1], i])).values()]
-
-    useEffect(() => {
-        console.log("hello")
-    }, [sortedList]);
 
     return (
         <Container>
@@ -369,7 +367,10 @@ const Portfolio = () => {
                                                 const searchInfo = result.toLowerCase()
                                                 if (toFindName.includes(searchInfo) || player.jersey.includes(searchInfo))
                                                     return (
-                                                        <Link href={`/PlayerDetails?id=${player.id}`}>
+                                                        <Link href={{
+                                                            pathname: '/PlayerDetails',
+                                                            query: { id: player.id, origin: 'portfolio' }                                                    
+                                                        }}>
                                                             <div className='mb-4' key={i}>
                                                                 <PerformerContainer AthleteName={player.name} AvgScore={player.avgscore} id={player.id} rarity={player.rarity}/>
                                                             </div>
