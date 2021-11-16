@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import underlineIcon from '../public/images/underline.png'
 import React, { useEffect, useState } from 'react'
+import {BrowserView, MobileView} from 'react-device-detect'
 
 const PortfolioContainer = (props) => {
   const { color, textcolor, size, title, children, align, stats } = props;
@@ -8,7 +9,7 @@ const PortfolioContainer = (props) => {
 
   return (
       <>
-    {/* <MobileView>
+    <MobileView>
     <div data-test="portfoliocontainer" className={`text-${textcolor} bg-${color} text-${size} font-bold ${align} flex flex-col w-full `}>
       <div className="flex justify-between">
         <div className="pb-3 pt-6 justify-start text-xl">
@@ -31,10 +32,10 @@ const PortfolioContainer = (props) => {
       </div>
 
     </div>
-    </MobileView> */}
-    {/* <BrowserView> */}
+    </MobileView>
+    <BrowserView>
     <div data-test="portfoliocontainer" className={`text-${textcolor} bg-${color} text-${size} font-bold ${align} flex flex-col w-full `}>
-      <div className="flex">
+      <div className="flex justify-between">
         {stats ?
           <>
           <div className="pb-3 pt-20 md:pt-14 ml-7 justify-start align-center text-2xl">
@@ -63,7 +64,7 @@ const PortfolioContainer = (props) => {
         {children}
       </div>
     </div>
-    {/* </BrowserView> */}
+    </BrowserView>
     </>
   )
 };

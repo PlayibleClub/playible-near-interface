@@ -263,11 +263,7 @@ export default function Marketplace() {
                                         const searchInfo = result.toLowerCase()
                                         if (toFindName.includes(searchInfo) || player.jersey.includes(searchInfo))
                                             return (
-                                                // <Link href={`/PlayerDetails?id=${player.id}`}>
-                                                <Link href={{
-                                                    pathname: '/PlayerDetails',
-                                                    query: { id: player.id, origin: 'marketplace' }                                                    
-                                                }}>
+                                                <Link href={`/PlayerDetails?id=${player.id}`}>
                                                     <div className='mb-4' key={i}>
                                                         <MarketplaceContainer AthleteName={player.name} id={player.id} LowAsk={player.lowestask}/>
                                                     </div>
