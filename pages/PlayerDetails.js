@@ -301,7 +301,7 @@ const PlayerDetails = () => {
             setSign(data.sign)
 
         setPostingModal(false)
-        setTokenCongrats(true)
+        displayCongrats(true)
     }
 
     const signSubmit = (event) => {
@@ -378,7 +378,7 @@ const PlayerDetails = () => {
                     </div>
                 </div>
             }
-            { displayModal &&
+            {/* { displayModal &&
                 <>
                     <div className="fixed w-screen h-screen bg-opacity-70 z-50 overflow-auto bg-indigo-gray flex">
                         <div className="relative p-8 bg-indigo-white w-11/12 md:w-1/2 h-10/12 md:h-3/5 m-auto flex-col flex rounded-lg items-center">
@@ -550,8 +550,7 @@ const PlayerDetails = () => {
                         </div>
                     </div>
                 </>
-            }
-
+            } */}
             { postingModal &&
                 <>
                     <div className="fixed w-screen h-screen bg-opacity-70 z-50 overflow-auto bg-indigo-gray flex">
@@ -601,6 +600,82 @@ const PlayerDetails = () => {
                     </div>
                 </>
             }
+            { displayModal &&
+                <>
+                    <div className="fixed w-screen h-screen bg-opacity-70 z-50 overflow-auto bg-indigo-gray flex">
+                        <div className="relative p-8 bg-indigo-white w-11/12 md:w-96 h-10/12 md:h-auto m-auto flex-col flex rounded-lg">
+                            <button onClick={()=>{setModal(false)}}>
+                                <div className="absolute top-0 right-0 p-4 font-black">
+                                    X
+                                </div>
+                            </button>
+
+                            <div className="flex flex-col md:flex-row">
+                                <div className="font-bold flex flex-col text-2xl">
+                                    PURCHASE NOW
+                                    <img src={underlineIcon} className="sm:object-none w-6" />
+                                </div>
+                            </div>
+
+                            <div className="flex flex-col mt-4 items-center">
+                                <div className="">
+                                    <PlayerContainer playerID={playerToFind.id} rarity='base'/>
+                                </div>
+                            </div>
+
+                            <div className="flex justify-between mt-4">
+                                <div>
+                                    <div className="font-bold">
+                                    #{playerToFind.id}/25000
+                                    </div>
+
+                                    <div className="font-thin">
+                                        SERIAL NUMBER
+                                    </div>
+                                </div>
+
+                                <div className="text-right">
+                                    <div className="font-bold">
+                                        {playerToFind.silvercost}
+                                    </div>
+
+                                    <div className="font-thin">
+                                        PRICE
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="flex justify-between mt-6">
+                                <div>
+                                    <div className="font-bold">
+                                        @masterworm
+                                    </div>
+
+                                    <div className="font-thin">
+                                        OWNER
+                                    </div>
+                                </div>
+
+                                <div className="text-right">
+                                    <div className="font-bold">
+                                        0x2d95...a02c
+                                    </div>
+
+                                    <div className="font-thin">
+                                        CONTACT ADDRESS
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button className="bg-indigo-buttonblue w-full h-12 text-center font-bold rounded-md text-sm mt-4 self-center" onClick={()=>{setModal(false);setTokenCongrats(true)}}>
+                                <div className="text-indigo-white">
+                                    PURCHASE NOW - {playerToFind.silvercost}
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+                </>
+            }
             
             <Container>
                 <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
@@ -638,7 +713,7 @@ const PlayerDetails = () => {
                                                             </div>
                                                         </div>
 
-                                                        { query.origin === 'marketplace' &&
+                                                        { query.origin === 'portfolio' &&
                                                             <div className="flex justify-between mt-6 mb-2 text-sm">
                                                                 <div>
                                                                     <div className="font-thin">
@@ -661,21 +736,34 @@ const PlayerDetails = () => {
                                                                 </div>
                                                             </div>
                                                         }
+
+                                                        { query.origin === 'marketplace' &&
+                                                            <div className="flex justify-between mt-6 mb-2 text-sm">
+                                                                <div>
+                                                                    <div className="font-thin">
+                                                                        PRICE
+                                                                    </div>
+
+                                                                    <div>
+                                                                        {playerToFind.silvercost}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        }
                                                     
 
                                                         <button className="bg-indigo-buttonblue w-5/6 md:w-60 h-10 text-center font-bold text-md mt-4 self-center justify-center">
                                                             { query.origin === 'portfolio' &&
-                                                                <div className="" onClick={()=>{setModal(true)}}>
-                                                                    UPGRADE
-                                                                </div>
-                                                            }
-
-                                                            { query.origin === 'marketplace' &&
                                                                 <div className="" onClick={()=>{setPostingModal(true)}}>
                                                                     POST FOR SALE
                                                                 </div>
                                                             }
-                                                            
+
+                                                            { query.origin === 'marketplace' &&
+                                                                <div className="" onClick={()=>{setModal(true)}}>
+                                                                    PURCHASE TOKEN
+                                                                </div>
+                                                            }
                                                         </button>
                                                     </div>
                                                 </div>
