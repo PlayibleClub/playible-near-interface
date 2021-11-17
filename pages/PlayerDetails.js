@@ -684,6 +684,22 @@ const PlayerDetails = () => {
                             <Main color="indigo-dark">
                                 <div className="flex flex-col overflow-y-auto overflow-x-hidden">
                                     <div className="md:mt-12 md:ml-8">
+                                        { query.origin === 'portfolio' &&
+                                            <Link href="/Portfolio/">
+                                                <div className="text-indigo-white flex mt-6 ml-6 mb-2">
+                                                    <div className="font-bold mr-2">&#x3c;</div><div>Back</div>
+                                                </div>
+                                            </Link>
+                                        }
+
+                                        { query.origin === 'marketplace' &&
+                                            <Link href="/Marketplace/">
+                                                <div className="text-indigo-white flex mt-6 ml-6 mb-2">
+                                                    <div className="font-bold mr-2">&#x3c;</div><div>Back</div>
+                                                </div>
+                                            </Link>
+                                        }
+                                        
                                         <PortfolioContainer title="PLAYER DETAILS">
                                             <div className="flex flex-col mt-2 mb-8">
                                                 <div className="flex md:flex-row flex-col md:mt-8">
