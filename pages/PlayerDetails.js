@@ -19,6 +19,15 @@ import Link from 'next/link';
 import {BrowserView, MobileView} from 'react-device-detect';
 import Container from '../components/Container';
 
+import { useConnectedWallet } from '@terra-money/wallet-provider';
+import { estimateFee, retrieveTxInfo } from '../utils/terra/index';
+import { useDispatch, useSelector } from 'react-redux';
+import { postSale, getPostSaleResponse } from '../redux/reducers/contract/marketplace';
+import { MsgExecuteContract } from '@terra-money/terra.js';
+import { marketplaceData } from '../data';
+import * as statusCode from '../data/constants/status';
+import * as actionType from '../data/constants/actions';
+
 const playerdata = [
     {
         key: 'sevendays',
@@ -268,6 +277,12 @@ const PlayerDetails = () => {
     const [postingModal, setPostingModal] = useState(false);
     const { query } = useRouter();
 
+    const [contract_addr, setContractAddr] = useState("")
+    const [owner_addr, setOwnerAddr] = useState("")
+    const [buyer_addr, setBuyerAddr] = useState("")
+    const [token_id, setTokenId] = useState("")
+    const { status, txInfo, action, message } = useSelector((state) => state.contract.marketplace);
+
     const playerToFind = playerList.find(playerList => playerList.id === query.id)
     const baseTokenCount = tokenList.reduce(function(n, list){
         return n + (list.id === playerToFind.id && list.rarity === 'base')
@@ -287,7 +302,91 @@ const PlayerDetails = () => {
         return filteredList[i].rarity === 'silver'
     })
 
-    // console.log(tokenCount)
+    useEffect(() => {
+        if(typeof(connectedWallet) == 'undefined' || connectedWallet == null){
+          router.push("/")
+        }
+            else if(tokenPrice != null) {
+                setPrice(tokenPrice / 1_000_000);
+                const executeContractMsg = [
+                    new MsgExecuteContract(
+                        connectedWallet.walletAddress,         // Wallet Address
+                        marketplaceData.contract_addr,             // Contract Address
+                        JSON.parse(`{
+                            "temp_execute_transaction": {
+                                "contract_addr": ${contract_addr},
+                                "owner_addr": ${owner_addr},
+                                "token_id": ${token_id},
+                                "buyer_addr": ${buyer_addr},
+                                "price": ${tokenPrice}
+                            }
+                        }`), // ExecuteMsg
+                        { uusd: tokenPrice }
+                    ),  
+                ]
+                estimateFee(connectedWallet.walletAddress, executeContractMsg)
+                .then((response) => {
+                            const amount = response.amount._coins.uusd.amount
+                            setTxFee(amount.d / 10**amount.e)
+                        setLoading(false)
+                        })
+                .catch((error) => {
+                            setTxFee(0)
+                        setLoading(false)
+                })
+            }
+        }, [tokenPrice])
+    
+      //TODO: Handle status mix ups when transactions are executed simultaneously.
+        useEffect(async () => {
+            if(action == actionType.EXECUTE && status == statusCode.PENDING){
+          setModal(true)
+                setModalHeader(message)
+              setModalStatus(status)
+            }
+            else if(action == actionType.EXECUTE && status == statusCode.SUCCESS){
+          setModal(true)
+                setModalHeader(message)
+          const amount = txInfo.txResult.fee.amount._coins.uusd.amount;
+          //const amount = txResponse.tx.fee.amount._coins.uusd.amount;
+          const txFeeResponse = amount.d / 10**amount.e
+          setModalData([
+            {
+              name: "Tx Hash",
+              value: txInfo.txHash
+            },
+            {
+              name: "Tx Fee",
+              value: txFeeResponse
+            }
+          ])
+              setModalStatus(status)
+          setLoading(true)
+          setLoadingMessage("Posting Token for Sale...")
+          dispatch(getPostSaleResponse()).then(() => {
+            // router.push("/TokenDrawPage")
+          })
+            }
+            else if(action == actionType.EXECUTE && status == statusCode.ERROR){
+          setModal(true)
+                setModalHeader("Transaction Failed")
+          //TODO: Proper error handling an display on redux
+          setModalData([
+            {
+              name: "Error",
+              value: message
+            }
+          ])
+              setModalStatus(status)
+            }
+        else if(status != statusCode.CONFIRMED){
+              setModalStatus(statusCode.IDLE);
+        }
+        }, [status, action, txInfo, message])
+    
+        const executePostSale = () => {
+            dispatch(postSale({connectedWallet}))
+        }
 
     const handleFilter = (event) => {
         setFilter(event.target.value)
@@ -378,179 +477,6 @@ const PlayerDetails = () => {
                     </div>
                 </div>
             }
-            {/* { displayModal &&
-                <>
-                    <div className="fixed w-screen h-screen bg-opacity-70 z-50 overflow-auto bg-indigo-gray flex">
-                        <div className="relative p-8 bg-indigo-white w-11/12 md:w-1/2 h-10/12 md:h-3/5 m-auto flex-col flex rounded-lg items-center">
-                            <button onClick={()=>{setModal(false)}}>
-                                <div className="absolute top-0 right-0 p-4 font-black">
-                                    X
-                                </div>
-                            </button>
-
-                            <div className="flex flex-col md:flex-row justify-center">
-                                <div className="flex flex-col mt-4">
-                                    <div className="mr-12">
-                                        <PlayerContainer playerID={playerToFind.id} rarity='base'/>
-                                    </div>
-                                    <div>
-                                        <div>
-                                            <div className="font-thin text-xs mt-4">
-                                                #{playerToFind.id}/25000
-                                            </div>
-
-                                            <div className="text-sm font-bold">
-                                                {playerToFind.name}
-                                            </div>
-
-                                            <div className="font-thin mt-4 text-xs">
-                                                AVERAGE SCORE
-                                            </div>
-
-                                            <div className="text-sm font-bold">
-                                                {playerToFind.avgscore}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-
-                                <div className="mt-4 md:mt-2">
-                                    <div className="font-bold flex flex-col">
-                                        UPGRADE TOKEN
-                                        <img src={underlineIcon} className="sm:object-none w-6" />
-                                    </div>
-
-                                    <div className="mt-6 mb-6">
-                                        { silverDropdown ?
-                                            <div onClick={()=>displaySilver(false)} className="flex flex-col w-72">
-                                                <div className="flex justify-between items-center">
-                                                    <div>
-                                                        <img src={emptyToken} />
-                                                    </div>
-                                                    <div className="font-bold">
-                                                        Upgrade to Silver
-                                                    </div>
-                                                    <div className="font-bold text-xl">&#x5e;</div>
-                                                </div>
-
-                                                {baseTokenCount > 2 && baseFilteredList.length > 0 ?
-                                                    <>
-                                                        <div className="flex items-center self-center mt-4">
-                                                            {[...Array(3)].map((element, i)=>{
-                                                                return (
-                                                                    <img src={emptyToken} className="w-10 mr-2" key={i}/>
-                                                                )
-                                                            })}
-                                                        </div>
-
-                                                        <button className="bg-indigo-buttonblue w-72 h-10 text-center font-bold rounded-md text-sm mt-4 self-center">
-                                                            <div className="text-indigo-white" onClick={()=>{setModal(false);displayCongrats(true)}}>
-                                                                MINT BLACK COIN
-                                                            </div>
-                                                        </button>
-                                                    </>
-                                                :
-                                                    <>
-                                                        <div className="flex items-center self-center mt-4">
-                                                            {[...Array(baseTokenCount)].map((element, i)=>{
-                                                                return(
-                                                                    <img src={emptyToken} className="w-10 mr-2" key={i}/>
-                                                                )
-                                                            })}
-                                                            <img src={tokenOutline} className="w-10 ml-2"/>
-                                                        </div>
-
-                                                        <button className="bg-indigo-lightgray w-72 h-10 text-center font-bold rounded-md text-sm mt-4 self-center">
-                                                            <div className="text-indigo-white">
-                                                                MINT BLACK COIN
-                                                            </div>
-                                                        </button>
-                                                    </>
-                                                }
-                                            </div>
-                                        :
-                                            <div onClick={()=>{displaySilver(true);displayGold(false)}} className="flex justify-between items-center w-72">
-                                                <div>
-                                                    <img src={emptyToken} />
-                                                </div>
-                                                <div className="font-bold">
-                                                    Upgrade to Silver
-                                                </div>
-                                                <div className="font-bold">v</div>
-                                            </div>
-                                        }
-                                    </div>
-
-                                    <hr className="opacity-25"/>
-
-                                    <div className="mt-6">
-                                        { goldDropdown ?
-                                            <div onClick={()=>displayGold(false)} className="flex flex-col w-72">
-                                            <div className="flex justify-between items-center">
-                                                <div>
-                                                    <img src={emptyGoldToken} />
-                                                </div>
-                                                <div className="font-bold">
-                                                    Upgrade to Gold
-                                                </div>
-                                                <div className="font-bold text-xl">&#x5e;</div>
-                                            </div>
-
-                                            {silverTokenCount > 2 && silverFilteredList.length > 0 ?
-                                                    <>
-                                                        <div className="flex items-center self-center mt-4">
-                                                            {[...Array(3)].map((element, i)=>{
-                                                                return (
-                                                                    <img src={emptyToken} className="w-10 mr-2" key={i}/>
-                                                                )
-                                                            })}
-                                                        </div>
-
-                                                        <button className="bg-indigo-buttonblue w-72 h-10 text-center font-bold rounded-md text-sm mt-4 self-center">
-                                                            <div className="text-indigo-white" onClick={()=>{setModal(false);displayCongrats(true)}}>
-                                                                MINT SILVER COIN
-                                                            </div>
-                                                        </button>
-                                                    </>
-                                                
-                                                :
-                                                    <>
-                                                        <div className="flex items-center self-center mt-4">
-                                                            {[...Array(silverTokenCount)].map((element, i)=>{
-                                                                return(
-                                                                    <img src={emptyToken} className="w-10 mr-2" key={i}/>
-                                                                )
-                                                            })}
-                                                            <img src={tokenOutline} className="w-10 ml-2"/>
-                                                        </div>
-
-                                                        <button className="bg-indigo-lightgray w-72 h-10 text-center font-bold rounded-md text-sm mt-4 self-center">
-                                                            <div className="text-indigo-white">
-                                                                MINT SILVER COIN
-                                                            </div>
-                                                        </button>
-                                                    </>
-                                                }
-                                        </div>
-                                        :
-                                            <div onClick={()=>{displayGold(true);displaySilver(false)}} className="flex justify-between items-center w-72">
-                                                <div>
-                                                    <img src={emptyGoldToken} />
-                                                </div>
-                                                <div className="font-bold">
-                                                    Upgrade to Gold
-                                                </div>
-                                                <div className="font-bold">v</div>
-                                            </div>
-                                        }
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </>
-            } */}
             { postingModal &&
                 <>
                     <div className="fixed w-screen h-screen bg-opacity-70 z-50 overflow-auto bg-indigo-gray flex">
@@ -585,16 +511,12 @@ const PlayerDetails = () => {
                                     <div className="mt-1">
                                         <input {...register("sign")} className="text-base w-full h-24 border text-white rounded-md px-2 py-1 mr-2" placeholder="Sign a message to continue." />
                                     </div>
-                                    <button className="bg-indigo-buttonblue w-80 h-12 text-center font-bold rounded-md text-sm mt-4 items-center justify-center flex">
+                                    <button className="bg-indigo-buttonblue w-80 h-12 text-center font-bold rounded-md text-sm mt-4 items-center justify-center flex" onClick={()=>executePostSale()}>
                                         <input type="button"/>
                                         <div className="text-center text-indigo-white">CONFIRM LISTING</div>
                                     </button>
                                 </form>
                                 </div>
-                                {/* <button className="bg-indigo-buttonblue w-full h-10 text-center font-bold rounded-md text-sm mt-6 self-center">
-                                    COMPLETE LISTING
-                                    <input type=""/>
-                                </button> */}
                             </div>
                         </div>
                     </div>

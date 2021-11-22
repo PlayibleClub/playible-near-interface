@@ -2,6 +2,10 @@ export const fantasyData = {
   contract_addr: "terra1spy5vyj98ux7sje9nhugh7lndxuhg2tm3pk8g4"
 }
 
+export const marketplaceData = {
+  contract_addr: "terra1spy5vyj98ux7sje9nhugh7lndxuhg2tm3pk8g4"
+}
+
 export const tokenData = [
   
   /* Format
