@@ -19,7 +19,7 @@ const initialState = {
   price: 0,
 }
 
-export const postSale = createAsyncThunk('postSale', async (payload, thunkAPI) => {
+export const purchaseToken = createAsyncThunk('purchaseToken', async (payload, thunkAPI) => {
   try {
     const { connectedWallet } = payload;
 
@@ -54,7 +54,7 @@ export const postSale = createAsyncThunk('postSale', async (payload, thunkAPI) =
   }
 });
 
-export const getPostSaleResponse = createAsyncThunk('getPostSaleResponse', async (payload, thunkAPI) => {
+export const getPurchaseTokenResponse = createAsyncThunk('getPurchaseTokenResponse', async (payload, thunkAPI) => {
   try {
     // const txInfo = thunkAPI.getState().contract.pack.txInfo;
     // const txResponse = await retrieveTxInfo(txInfo.txHash)
@@ -79,7 +79,7 @@ const marketplaceSlice = createSlice({
     
   },
   extraReducers: {
-    [postSale.pending]: (state) => {
+    [purchaseToken.pending]: (state) => {
       return {
         ...state,
         status: statusCode.PENDING,
@@ -87,7 +87,7 @@ const marketplaceSlice = createSlice({
         message: statusMessage.EXECUTE_MESSAGE_PENDING
       };
     },
-    [postSale.fulfilled]: (state, action) => {
+    [purchaseToken.fulfilled]: (state, action) => {
       return {
         ...state,
         txInfo: action.payload.response,
@@ -96,7 +96,7 @@ const marketplaceSlice = createSlice({
         message: statusMessage.EXECUTE_MESSAGE_SUCCESS
       };
     },
-    [postSale.rejected]: (state, action) => {
+    [purchaseToken.rejected]: (state, action) => {
       return {
         ...state,
         status: action.payload.status,
@@ -104,12 +104,12 @@ const marketplaceSlice = createSlice({
         message: action.payload.response
       };
     },
-    [getPostSaleResponse.pending]: (state) => {
+    [getPurchaseTokenResponse.pending]: (state) => {
       return {
         ...state,
       };
     },
-    [getPostSaleResponse.fulfilled]: (state, action) => {
+    [getPurchaseTokenResponse.fulfilled]: (state, action) => {
       return {
         ...state,
         status: action.payload.status,
@@ -117,7 +117,7 @@ const marketplaceSlice = createSlice({
         message: statusMessage.EXECUTE_MESSAGE_SUCCESS
       };
     },
-    [getPostSaleResponse.rejected]: (state, action) => {
+    [getPurchaseTokenResponse.rejected]: (state, action) => {
       return {
         ...state,
         status: action.payload.status,

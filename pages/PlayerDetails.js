@@ -22,7 +22,7 @@ import * as statusCode from '../data/constants/status';
 import * as actionType from '../data/constants/actions';
 import { useConnectedWallet } from '@terra-money/wallet-provider';
 import { useDispatch, useSelector } from 'react-redux';
-import { postSale, getPostSaleResponse } from '../redux/reducers/contract/marketplace';
+import { purchaseToken, getPurchaseTokenResponse } from '../redux/reducers/contract/marketplace';
 import { MsgExecuteContract } from '@terra-money/terra.js';
 
 
@@ -368,7 +368,7 @@ export default function PlayerDetail() {
             // setModalStatus(status)
             // setLoading(true)
             // setLoadingMessage("Posting Token for Sale...")
-            dispatch(getPostSaleResponse()).then(() => {
+            dispatch(getPurchaseTokenResponse()).then(() => {
             // router.push("/TokenDrawPage")
             })
         }
@@ -387,8 +387,8 @@ export default function PlayerDetail() {
         }
     }, [status, action, txInfo, message])
 
-    const executePostSale = () => {
-        dispatch(postSale({connectedWallet}))
+    const executePurchaseToken = () => {
+        dispatch(purchaseToken({connectedWallet}))
     }
 
     const handleFilter = (event) => {
@@ -514,7 +514,7 @@ export default function PlayerDetail() {
                                     <div className="mt-1">
                                         <input {...register("sign")} className="text-base w-full h-24 border text-white rounded-md px-2 py-1 mr-2" placeholder="Sign a message to continue." />
                                     </div>
-                                    <button className="bg-indigo-buttonblue w-80 h-12 text-center font-bold rounded-md text-sm mt-4 items-center justify-center flex" onClick={()=>executePostSale()}>
+                                    <button className="bg-indigo-buttonblue w-80 h-12 text-center font-bold rounded-md text-sm mt-4 items-center justify-center flex" onClick={()=>executePurchaseToken()}>
                                         <input type="button"/>
                                         <div className="text-center text-indigo-white">CONFIRM LISTING</div>
                                     </button>
