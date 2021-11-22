@@ -2,31 +2,29 @@ import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import PortfolioContainer from '../components/PortfolioContainer'
 import Main from '../components/Main';
-import HeaderBase from '../components/HeaderBase';
-import Navbar from '../components/Navbar';
 import PlayerContainer from '../components/PlayerContainer';
 import PlayerStats from '../components/PlayerStats';
 import filterIcon from '../public/images/filter.png';
-import DesktopNavbar from '../components/DesktopNavbar';
-import TitledContainer from '../components/TitledContainer';
 import underlineIcon from '../public/images/blackunderline.png'
-import Image from 'next/image'
-import emptyToken from '../public/images/emptyToken.png'
-import emptyGoldToken from '../public/images/emptyGoldToken.png'
-import tokenOutline from '../public/images/tokenOutline.png'
+
+// import Image from 'next/image'
+// import emptyToken from '../public/images/emptyToken.png'
+// import emptyGoldToken from '../public/images/emptyGoldToken.png'
+// import tokenOutline from '../public/images/tokenOutline.png'
+
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import {BrowserView, MobileView} from 'react-device-detect';
 import Container from '../components/Container';
 
-import { useConnectedWallet } from '@terra-money/wallet-provider';
 import { estimateFee, retrieveTxInfo } from '../utils/terra/index';
-import { useDispatch, useSelector } from 'react-redux';
-import { postSale, getPostSaleResponse } from '../redux/reducers/contract/marketplace';
-import { MsgExecuteContract } from '@terra-money/terra.js';
 import { marketplaceData } from '../data';
 import * as statusCode from '../data/constants/status';
 import * as actionType from '../data/constants/actions';
+import { useConnectedWallet } from '@terra-money/wallet-provider';
+import { useDispatch, useSelector } from 'react-redux';
+import { postSale, getPostSaleResponse } from '../redux/reducers/contract/marketplace';
+import { MsgExecuteContract } from '@terra-money/terra.js';
+
 
 const playerdata = [
     {
@@ -263,9 +261,13 @@ const tokenList = [
     },
 ]
 
-const PlayerDetails = () => {
+export default function PlayerDetail() {
+
+    const dispatch = useDispatch();
+	const router = useRouter();
+	const connectedWallet = useConnectedWallet();
+
     const { register, handleSubmit } = useForm()
-    const [tokenPrice, setPrice] = useState("")
     const [sign, setSign] = useState("")
     const [tokenCongrats, setTokenCongrats] = useState(false)
 
@@ -281,7 +283,10 @@ const PlayerDetails = () => {
     const [owner_addr, setOwnerAddr] = useState("")
     const [buyer_addr, setBuyerAddr] = useState("")
     const [token_id, setTokenId] = useState("")
+    const [price, setPrice] = useState("")
     const { status, txInfo, action, message } = useSelector((state) => state.contract.marketplace);
+
+    // console.log("status: " + status)
 
     const playerToFind = playerList.find(playerList => playerList.id === query.id)
     const baseTokenCount = tokenList.reduce(function(n, list){
@@ -304,10 +309,10 @@ const PlayerDetails = () => {
 
     useEffect(() => {
         if(typeof(connectedWallet) == 'undefined' || connectedWallet == null){
-          router.push("/")
+        //   router.push("/")
         }
-            else if(tokenPrice != null) {
-                setPrice(tokenPrice / 1_000_000);
+            else if(price != null) {
+                setPrice(price / 1_000_000);
                 const executeContractMsg = [
                     new MsgExecuteContract(
                         connectedWallet.walletAddress,         // Wallet Address
@@ -318,10 +323,10 @@ const PlayerDetails = () => {
                                 "owner_addr": ${owner_addr},
                                 "token_id": ${token_id},
                                 "buyer_addr": ${buyer_addr},
-                                "price": ${tokenPrice}
+                                "price": ${price}
                             }
                         }`), // ExecuteMsg
-                        { uusd: tokenPrice }
+                        { uusd: price }
                     ),  
                 ]
                 estimateFee(connectedWallet.walletAddress, executeContractMsg)
@@ -335,58 +340,56 @@ const PlayerDetails = () => {
                         setLoading(false)
                 })
             }
-        }, [tokenPrice])
+        }, [price])
     
-      //TODO: Handle status mix ups when transactions are executed simultaneously.
-        useEffect(async () => {
-            if(action == actionType.EXECUTE && status == statusCode.PENDING){
-          setModal(true)
-                setModalHeader(message)
-              setModalStatus(status)
-            }
-            else if(action == actionType.EXECUTE && status == statusCode.SUCCESS){
-          setModal(true)
-                setModalHeader(message)
-          const amount = txInfo.txResult.fee.amount._coins.uusd.amount;
-          //const amount = txResponse.tx.fee.amount._coins.uusd.amount;
-          const txFeeResponse = amount.d / 10**amount.e
-          setModalData([
-            {
-              name: "Tx Hash",
-              value: txInfo.txHash
-            },
-            {
-              name: "Tx Fee",
-              value: txFeeResponse
-            }
-          ])
-              setModalStatus(status)
-          setLoading(true)
-          setLoadingMessage("Posting Token for Sale...")
-          dispatch(getPostSaleResponse()).then(() => {
+    //TODO: Handle status mix ups when transactions are executed simultaneously.
+    useEffect(async () => {
+        if(action == actionType.EXECUTE && status == statusCode.PENDING){
+            // setModal(true)
+            // setModalHeader(message)
+            // setModalStatus(status)
+        }
+        else if(action == actionType.EXECUTE && status == statusCode.SUCCESS){
+            // setModal(true)
+            // setModalHeader(message)
+            const amount = txInfo.txResult.fee.amount._coins.uusd.amount;
+            //const amount = txResponse.tx.fee.amount._coins.uusd.amount;
+            const txFeeResponse = amount.d / 10**amount.e
+            // setModalData([
+            //     {
+            //         name: "Tx Hash",
+            //         value: txInfo.txHash
+            //     },
+            //     {
+            //         name: "Tx Fee",
+            //         value: txFeeResponse
+            //     }
+            // ])
+            // setModalStatus(status)
+            // setLoading(true)
+            // setLoadingMessage("Posting Token for Sale...")
+            dispatch(getPostSaleResponse()).then(() => {
             // router.push("/TokenDrawPage")
-          })
-            }
-            else if(action == actionType.EXECUTE && status == statusCode.ERROR){
-          setModal(true)
-                setModalHeader("Transaction Failed")
-          //TODO: Proper error handling an display on redux
-          setModalData([
-            {
-              name: "Error",
-              value: message
-            }
-          ])
-              setModalStatus(status)
+            })
+        }
+        else if(action == actionType.EXECUTE && status == statusCode.ERROR){
+            // setModal(true)
+            //     setModalHeader("Transaction Failed")
+            //TODO: Proper error handling an display on redux
+            // setModalData([{
+            //     name: "Error",
+            //     value: message
+            // }])
+            //     setModalStatus(status)
             }
         else if(status != statusCode.CONFIRMED){
-              setModalStatus(statusCode.IDLE);
+            // setModalStatus(statusCode.IDLE);
         }
-        }, [status, action, txInfo, message])
-    
-        const executePostSale = () => {
-            dispatch(postSale({connectedWallet}))
-        }
+    }, [status, action, txInfo, message])
+
+    const executePostSale = () => {
+        dispatch(postSale({connectedWallet}))
+    }
 
     const handleFilter = (event) => {
         setFilter(event.target.value)
@@ -407,8 +410,8 @@ const PlayerDetails = () => {
         setSign(event.target.value)
     }
 
-    console.log("Price: " + tokenPrice)
-    console.log("Sign: " + sign)
+    // console.log("Price: " + price)
+    // console.log("Sign: " + sign)
 
     return (
         <div className={`font-montserrat`}>
@@ -796,5 +799,3 @@ const PlayerDetails = () => {
         </div>
     )
 }
-
-export default PlayerDetails;

@@ -16,7 +16,7 @@ const initialState = {
   owner_addr: '',
   buyer_addr: '',
   token_id: '',
-  price: '',
+  price: 0,
 }
 
 export const postSale = createAsyncThunk('postSale', async (payload, thunkAPI) => {
