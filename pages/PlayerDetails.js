@@ -678,15 +678,15 @@ const PlayerDetails = () => {
             }
             
             <Container>
-                <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
+                <div className="flex flex-col w-screen md:w-full overflow-y-auto h-auto justify-center self-center">
                     <div className="flex">
                         <div className="flex flex-col w-full h-screen">
                             <Main color="indigo-dark">
                                 <div className="flex flex-col overflow-y-auto overflow-x-hidden">
-                                    <div className="md:mt-12 md:ml-8">
+                                    <div className="md:ml-8">
                                         { query.origin === 'portfolio' &&
                                             <Link href="/Portfolio/">
-                                                <div className="text-indigo-white flex mt-6 ml-6 mb-2">
+                                                <div className="text-indigo-white flex mt-8 ml-6 mb-2">
                                                     <div className="font-bold mr-2">&#x3c;</div><div>Back</div>
                                                 </div>
                                             </Link>
@@ -730,7 +730,7 @@ const PlayerDetails = () => {
                                                         </div>
 
                                                         { query.origin === 'portfolio' &&
-                                                            <div className="flex justify-between mt-6 mb-2 text-sm">
+                                                            <div className="flex flex-col md:flex-row md:justify-between mb-2 text-sm ml-8 md:ml-0">
                                                                 <div>
                                                                     <div className="font-thin">
                                                                         LOWEST ASK
@@ -742,7 +742,7 @@ const PlayerDetails = () => {
                                                                 </div>
 
                                                                 <div>
-                                                                    <div className="font-thin">
+                                                                    <div className="font-thin mt-4 md:mt-0">
                                                                         HIGHEST ASK
                                                                     </div>
 
@@ -754,7 +754,7 @@ const PlayerDetails = () => {
                                                         }
 
                                                         { query.origin === 'marketplace' &&
-                                                            <div className="flex justify-between mt-6 mb-2 text-sm">
+                                                            <div className="flex justify-between md:mt-6 mb-2 text-sm ml-8 md:ml-0">
                                                                 <div>
                                                                     <div className="font-thin">
                                                                         PRICE
@@ -857,7 +857,7 @@ const PlayerDetails = () => {
                                             </div>
                                         </div>
                                         <div className="flex flex-col justify-center self-center text-indigo-white md:mr-24 mb-8">
-                                            <div className="mt-8 mb-6 self-center">
+                                            <div className="mt-8 mb-16 self-center">
                                                 {playerToFind.data.map(function(data, i){
                                                     if(statfilter === data.key)
                                                         return <PlayerStats player={data} key={i}/>
