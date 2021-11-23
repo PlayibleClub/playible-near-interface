@@ -1,16 +1,19 @@
 /* eslint-disable no-unused-vars */
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { executeContract, queryContract, retrieveTxInfo } from '../../../../utils/terra';
+import { executeContract, estimateFee, queryContract, retrieveTxInfo } from '../../../../utils/terra';
+import { MsgExecuteContract } from '@terra-money/terra.js';
 import { fantasyData, tokenData } from '../../../../data';
 import * as statusCode from '../../../../data/constants/status';
 import * as statusMessage from '../../../../data/constants/statusMessage';
 import * as actionType from '../../../../data/constants/actions';
+
 
 const initialState = {
   latestRound: null,
   drawList: [],
   txInfo: null,
   txResponse: null,
+  txFee: 0,
   message: '',
   packPrice: null,
   status: statusCode.IDLE,
@@ -119,9 +122,56 @@ export const getRoundData = createAsyncThunk('getRoundData', async (payload, thu
       status: statusCode.SUCCESS
     }
   } catch (err) {
-    return thunkAPI.rejectWithValue({err});
+    return thunkAPI.rejectWithValue({
+      response: err,
+      status: statusCode.ERROR
+    });
   }
 });
+
+export const estimatePurchaseFee = createAsyncThunk('estimatePurchaseFee', async (payload, thunkAPI) => {
+  try{
+    const { connectedWallet } = payload;
+    const packPrice = thunkAPI.getState().contract.pack.packPrice;
+
+    //generate seed. Pack length is hardcoded since this is supposed to be used to testing purposes only.
+    const packLength = 5
+    let seed = ' ';
+    //use lowercase chars and numbers
+    const characters ='abcdefghijklmnopqrstuvwxyz0123456789'; 
+    const charactersLength = characters.length;
+    //
+    for ( let i = 0; i < (packLength * 3); i++ ) {
+      seed += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+
+    if(packPrice == null){
+      return thunkAPI.rejectWithValue({
+        response: "Pack Price cannot be null. Please query the pack price from the smart contract.",
+        status: statusCode.ERROR
+      });
+    }
+
+    const executeContractMsg = [
+      new MsgExecuteContract(
+        connectedWallet.walletAddress,         // Wallet Address
+        fantasyData.contract_addr,             // Contract Address
+        JSON.parse(`{ "purchase_pack": { "rand_seed": "${seed}" } }`), // ExecuteMsg
+        { uusd: packPrice }
+      ),  
+    ]
+
+    const response = await estimateFee(connectedWallet.walletAddress, executeContractMsg)
+    const amount = response.amount._coins.uusd.amount
+
+    return {
+      response: amount.d / 10**amount.e //estimated transaction fee
+    }
+
+  } catch (err) {
+    return thunkAPI.rejectWithValue({err});
+  }
+})
 
 const processRoundData = (data) => {
   const processedData = []
@@ -211,6 +261,28 @@ const packSlice = createSlice({
       };
     },
     [getPackPrice.rejected]: (state, action) => {
+      return {
+        ...state,
+        status: action.payload.status,
+        action: actionType.GET
+      };
+    },
+    [estimatePurchaseFee.pending]: (state) => {
+      return {
+        ...state,
+        status: statusCode.PENDING,
+        action: actionType.GET
+      };
+    },
+    [estimatePurchaseFee.fulfilled]: (state, action) => {
+      return {
+        ...state,
+        txFee: action.payload.response,
+        status: action.payload.status,
+        action: actionType.GET
+      };
+    },
+    [estimatePurchaseFee.rejected]: (state, action) => {
       return {
         ...state,
         status: action.payload.status,
