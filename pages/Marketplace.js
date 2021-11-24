@@ -1,15 +1,20 @@
-import { useWallet, WalletStatus } from '@terra-money/wallet-provider';
+import { useWallet, WalletStatus, useConnectedWallet } from '@terra-money/wallet-provider';
 // import Image from 'next/image';
 import React, { useEffect, useState } from 'react'
 import Main from '../components/Main';
-import PerformerContainer from '../components/PerformerContainer';
 import PortfolioContainer from '../components/PortfolioContainer';
 import Container from '../components/Container';
 import { useForm } from 'react-hook-form'
 import filterIcon from '../public/images/filter.png'
 import searchIcon from '../public/images/search.png'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import MarketplaceContainer from '../components/MarketplaceContainer';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { marketplaceData } from '../data';
+import * as statusCode from '../data/constants/status';
+import * as actionType from '../data/constants/actions';
 
 const playerList = [ // player list for testing purposes
     {
@@ -125,15 +130,10 @@ const playerList = [ // player list for testing purposes
 
 
 export default function Marketplace() {
-    const { status, connect, disconnect, availableConnectTypes } = useWallet();
 
-    const interactWallet = () => {
-        if (status === WalletStatus.WALLET_CONNECTED) {
-            disconnect();
-        } else {
-            connect(availableConnectTypes[1]);
-        }
-    };
+	const dispatch = useDispatch();
+	const router = useRouter();
+	const connectedWallet = useConnectedWallet();
 
     const { register, handleSubmit } = useForm()
     const [result, setResult] = useState("")
@@ -141,6 +141,89 @@ export default function Marketplace() {
     const [posFilter, setPosFilter] = useState("")
     const [filterMode, setMode] = useState(false)
     const [sortMode, setSort] = useState("")
+
+    const [price, setPrice] = useState("")
+    const { status, txInfo, action, message } = useSelector((state) => state.contract.marketplace);
+
+    useEffect(() => {
+        if(typeof(connectedWallet) == 'undefined' || connectedWallet == null){
+        //   router.push("/")
+        }
+        else if(price != null) {
+            setPrice(price / 1_000_000);
+            const executeContractMsg = [
+                new MsgExecuteContract(
+                    connectedWallet.walletAddress,         // Wallet Address
+                    marketplaceData.contract_addr,             // Contract Address
+                    JSON.parse(`{
+                        "temp_execute_transaction": {
+                            "contract_addr": ${contract_addr},
+                            "owner_addr": ${owner_addr},
+                            "token_id": ${token_id},
+                            "buyer_addr": ${buyer_addr},
+                            "price": ${price}
+                        }
+                    }`), // ExecuteMsg
+                    { uusd: price }
+                ),  
+            ]
+            estimateFee(connectedWallet.walletAddress, executeContractMsg)
+            .then((response) => {
+                        const amount = response.amount._coins.uusd.amount
+                        setTxFee(amount.d / 10**amount.e)
+                    setLoading(false)
+                    })
+            .catch((error) => {
+                        setTxFee(0)
+                    setLoading(false)
+            })
+        }
+    }, [price])
+    
+    //TODO: Handle status mix ups when transactions are executed simultaneously.
+    useEffect(async () => {
+        if(action == actionType.EXECUTE && status == statusCode.PENDING){
+            // setModal(true)
+            // setModalHeader(message)
+            // setModalStatus(status)
+        }
+        else if(action == actionType.EXECUTE && status == statusCode.SUCCESS){
+            // setModal(true)
+            // setModalHeader(message)
+            const amount = txInfo.txResult.fee.amount._coins.uusd.amount;
+            //const amount = txResponse.tx.fee.amount._coins.uusd.amount;
+            const txFeeResponse = amount.d / 10**amount.e
+            // setModalData([
+            //     {
+            //         name: "Tx Hash",
+            //         value: txInfo.txHash
+            //     },
+            //     {
+            //         name: "Tx Fee",
+            //         value: txFeeResponse
+            //     }
+            // ])
+            // setModalStatus(status)
+            // setLoading(true)
+            // setLoadingMessage("Posting Token for Sale...")
+            dispatch(getPurchaseTokenResponse()).then(() => {
+            // router.push("/TokenDrawPage")
+            })
+        }
+        else if(action == actionType.EXECUTE && status == statusCode.ERROR){
+            // setModal(true)
+            //     setModalHeader("Transaction Failed")
+            //TODO: Proper error handling an display on redux
+            // setModalData([{
+            //     name: "Error",
+            //     value: message
+            // }])
+            //     setModalStatus(status)
+            }
+        else if(status != statusCode.CONFIRMED){
+            // setModalStatus(statusCode.IDLE);
+        }
+    }, [status, action, txInfo, message])
 
     const onSubmit = (data) => {
         if (data.search)

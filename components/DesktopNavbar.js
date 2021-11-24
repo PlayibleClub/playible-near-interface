@@ -13,10 +13,11 @@ const DesktopNavbar = (props) => {
       <div className="flex justify-center mt-10">
         <div className="flex flex-col h-1/5 w-4/6">
 
-          <NavButtonContainer imagesrc="images/navicons/icon_home.png" Title="Dashboard" path="/"></NavButtonContainer>
-          <NavButtonContainer imagesrc="images/navicons/icon_portfolio.png" Title="Portfolio" path="/"></NavButtonContainer>
+          <NavButtonContainer imagesrc="images/navicons/icon_home.png" Title="Home" path="/"></NavButtonContainer>
+          <NavButtonContainer imagesrc="images/navicons/icon_portfolio.png" Title="Squad" path="/Portfolio"></NavButtonContainer>
           <NavButtonContainer imagesrc="images/navicons/icon_packs.png" Title="Packs" path="/Packs"></NavButtonContainer>
-          <NavButtonContainer imagesrc="images/navicons/icon_marketplace.png" Title="Marketplace" path="/"></NavButtonContainer>
+          <NavButtonContainer imagesrc="images/navicons/icon_marketplace.png" Title="Marketplace" path="/Marketplace"></NavButtonContainer>
+          <NavButtonContainer imagesrc="images/navicons/icon_marketplace.png" Title="Play" path="/Play"></NavButtonContainer>
 
         </div>
       </div>
