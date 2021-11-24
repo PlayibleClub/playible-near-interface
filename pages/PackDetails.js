@@ -11,15 +11,13 @@ import Image from 'next/image'
 import underlineIcon from '../public/images/blackunderline.png'
 import Link from 'next/link';
 import {BrowserView, MobileView} from 'react-device-detect'
-import { estimateFee, retrieveTxInfo } from '../utils/terra/index';
 import { handleRequestResponse } from '../utils/general/index';
 import { fantasyData } from '../data';
 import * as statusCode from '../data/constants/status';
 import * as actionType from '../data/constants/actions';
 import { useConnectedWallet } from '@terra-money/wallet-provider';
 import { useDispatch, useSelector } from 'react-redux';
-import { getPackPrice, purchasePack, getPurchasePackResponse } from '../redux/reducers/contract/pack';
-import { MsgExecuteContract } from '@terra-money/terra.js';
+import { getPackPrice, purchasePack, getPurchasePackResponse, estimatePurchaseFee } from '../redux/reducers/contract/pack';
 
 const packList = [
 	{
@@ -63,7 +61,7 @@ export default function PackDetails() {
 	const [modalData, setModalData] = useState([]);
 	const [modalStatus, setModalStatus] = useState(statusCode.IDLE);
 
-	const { packPrice, status, txInfo, action, message } = useSelector((state) => state.contract.pack);
+	const { packPrice, txFee: txFeeEstimate, status, txInfo, action, message } = useSelector((state) => state.contract.pack);
 
 	useEffect(() => {
 		//screen setup
@@ -95,28 +93,17 @@ export default function PackDetails() {
     }
 		else if(packPrice != null) {
 			setPrice(packPrice / 1_000_000);
-			const executeContractMsg = [
-				new MsgExecuteContract(
-					connectedWallet.walletAddress,         // Wallet Address
-					fantasyData.contract_addr,             // Contract Address
-					JSON.parse(`{ "purchase_pack": {} }`), // ExecuteMsg
-					{ uusd: packPrice }
-				),  
-			]
-
-			estimateFee(connectedWallet.walletAddress, executeContractMsg)
-      .then((response) => {
-				const amount = response.amount._coins.uusd.amount
-				setTxFee(amount.d / 10**amount.e)
-			  setLoading(false)
-			})
-      .catch((error) => {
-				setTxFee(0)
+      dispatch(estimatePurchaseFee({connectedWallet})).then(() => {
 			  setLoading(false)
       })
 		}
 			
 	}, [packPrice])
+
+  
+	useEffect(() => {
+    setTxFee(txFeeEstimate)
+	}, [txFeeEstimate])
 
   //TODO: Handle status mix ups when transactions are executed simultaneously.
 	useEffect(async () => {
