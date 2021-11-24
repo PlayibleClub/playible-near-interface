@@ -1,5 +1,5 @@
 export const fantasyData = {
-  contract_addr: "terra150cjmx33q8yukvldxmdvnc5elaac5yfkapqcw5"
+  contract_addr: "terra1sqykns367p7fg5m4m6mun287rew0td0p2t2v04"
 }
 
 export const tokenData = [

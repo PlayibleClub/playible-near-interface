@@ -160,7 +160,6 @@ export const estimatePurchaseFee = createAsyncThunk('estimatePurchaseFee', async
         { uusd: packPrice }
       ),  
     ]
-
     const response = await estimateFee(connectedWallet.walletAddress, executeContractMsg)
     const amount = response.amount._coins.uusd.amount
 
@@ -169,7 +168,10 @@ export const estimatePurchaseFee = createAsyncThunk('estimatePurchaseFee', async
     }
 
   } catch (err) {
-    return thunkAPI.rejectWithValue({err});
+    return thunkAPI.rejectWithValue({
+      response: err,
+      status: statusCode.ERROR
+    });
   }
 })
 
@@ -285,6 +287,7 @@ const packSlice = createSlice({
     [estimatePurchaseFee.rejected]: (state, action) => {
       return {
         ...state,
+        message: action.payload.response,
         status: action.payload.status,
         action: actionType.GET
       };
