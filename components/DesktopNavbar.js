@@ -8,17 +8,19 @@ const DesktopNavbar = (props) => {
     <div data-test="DesktopNavbar" className={`bg-gradient-to-b from-${color} to-${secondcolor} text-white-light flex flex-col w-64 h-screen`}>
       <div className="flex justify-center h-16">
 
-        <img className="object-none mt-4" src="images/playibleheader.png" alt="Img" />
+        <button>
+          <Link href="/">
+          <img className="object-none mt-4" src="images/playibleheader.png" alt="Img" />
+          </Link>
+        </button>
       </div>
       <div className="flex justify-center mt-10">
         <div className="flex flex-col h-1/5 w-4/6">
-
-          <NavButtonContainer imagesrc="images/navicons/icon_home.png" Title="Home" path="/"></NavButtonContainer>
-          <NavButtonContainer imagesrc="images/navicons/icon_portfolio.png" Title="Squad" path="/Portfolio"></NavButtonContainer>
-          <NavButtonContainer imagesrc="images/navicons/icon_packs.png" Title="Packs" path="/Packs"></NavButtonContainer>
-          <NavButtonContainer imagesrc="images/navicons/icon_marketplace.png" Title="Marketplace" path="/Marketplace"></NavButtonContainer>
-          <NavButtonContainer imagesrc="images/navicons/icon_marketplace.png" Title="Play" path="/Play"></NavButtonContainer>
-
+          <button><NavButtonContainer imagesrc="images/navicons/icon_home.png" Title="Home" path="/"></NavButtonContainer></button>
+          <button><NavButtonContainer imagesrc="images/navicons/icon_portfolio.png" Title="Squad" path="/Portfolio"></NavButtonContainer></button>
+          <button><NavButtonContainer imagesrc="images/navicons/icon_packs.png" Title="Packs" path="/Packs"></NavButtonContainer></button>
+          <button><NavButtonContainer imagesrc="images/navicons/icon_marketplace.png" Title="Marketplace" path="/Marketplace"></NavButtonContainer></button>
+          <button><NavButtonContainer imagesrc="images/navicons/icon_play.png" Title="Play" path="/Play"></NavButtonContainer></button>
         </div>
       </div>
     </div>
