@@ -5,7 +5,7 @@ const DesktopHeader = (props) => {
 
   return (
     <div data-test="DesktopHeader" className={`bg-${color} flex flex-row h-12 w-full`}>
-      <div className="w-full h-full flex flex-row justify-end ">
+      <div className="w-full h-full flex flex-row justify-end border-b-2 border-indigo-lightgray border-opacity-10 bg-indigo-white">
         {children}
       </div>
     </div>
