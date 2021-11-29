@@ -13,7 +13,7 @@ import Container from '../../components/Container';
 import Sorter from './components/Sorter';
 
 
-const playerList = [ // player list for testing purposes
+/*const playerList = [ // player list for testing purposes
     {
         name: 'STEPHEN CURRY',
         team: 'Golden State Warriors', //2
@@ -115,7 +115,7 @@ const playerList = [ // player list for testing purposes
     //     grad1: '',
     //     grad2: '',
     // },
-]
+]*/
 
 
 const packList = [
@@ -152,11 +152,11 @@ const Portfolio = () => {
   const [displayMode, setDisplay] = useState(true)
   const [loading, setLoading] = useState(true)
   
-  const { list: aa, status } = useSelector((state) => state.external.playible.assets);
+  const { list: playerList, status } = useSelector((state) => state.external.playible.assets);
 
   const dispatch = useDispatch();
   const connectedWallet = useConnectedWallet();
-  const [sortedList, setSortedList] = useState(playerList);
+  const [sortedList, setSortedList] = useState([]);
 
 
   useEffect(() => {
