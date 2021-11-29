@@ -184,86 +184,85 @@ const Portfolio = () => {
               <LoadingPageDark/>
           ) : (
             <div className="flex flex-col w-full overflow-y-auto overflow-x-hidden h-screen self-center text-white-light">
-                <div className="ml-6 flex flex-col md:flex-row md:justify-between">
-                    <PortfolioContainer title="SQUAD"/>
-                    <Sorter
-                      list={sortedList}
-                      setList={setSortedList}
-                      setSearchText={setSearchText}
-                    />
-                </div>
+              <div className="ml-6 flex flex-col md:flex-row md:justify-between">
+                  <PortfolioContainer title="SQUAD"/>
+                  <Sorter
+                    list={sortedList}
+                    setList={setSortedList}
+                    setSearchText={setSearchText}
+                  />
+              </div>
 
-                <div className="flex flex-col w-full">
-                    <div className="justify-center self-center w-full mt-4">
-                        {displayMode ?
-                            <>
-                                <div className="flex md:ml-4 font-bold ml-8 md:ml-0">
-                                    <div className="mr-6 md:ml-4 border-b-8 pb-2 border-indigo-buttonblue">
-                                        ATHLETES
-                                    </div>
+              <div className="flex flex-col w-full">
+                <div className="justify-center self-center w-full mt-4">
+                  {displayMode ?
+                    <>
+                      <div className="flex md:ml-4 font-bold ml-8 md:ml-0">
+                        <div className="mr-6 md:ml-4 border-b-8 pb-2 border-indigo-buttonblue">
+                          ATHLETES
+                        </div>
 
-                                    <div className="" onClick={() => {
-                                        setDisplay(false)
-                                    }}>
-                                        PACKS
-                                    </div>
+                        <div className="" onClick={() => {
+                          setDisplay(false)
+                        }}>
+                          PACKS
+                        </div>
+                      </div>
+                      <hr className="visible opacity-50 md:invisible"/>
+                      <div className="grid grid-cols-2 md:grid-cols-4 mt-12">
+                        {sortedList.map(function (player, i) {
+                          const toFindName = player.name.toLowerCase()
+                          // const toFindTeam = player.team.toLowerCase()
+                          const searchInfo = searchText.toLowerCase()
+                          if (toFindName.includes(searchInfo) || player.jersey.includes(searchInfo))
+                            return (
+                              <Link href={{
+                                pathname: '/PlayerDetails',
+                                query: { id: player.id, origin: 'portfolio' }                                                    
+                              }}>
+                                <div className='mb-4' key={i}>
+                                  <PerformerContainer AthleteName={player.name} AvgScore={player.avgscore} id={player.id} rarity={player.rarity}/>
                                 </div>
-                                <hr className="visible opacity-50 md:invisible"/>
-                                <div className="grid grid-cols-2 md:grid-cols-4 mt-12">
-                                    {sortedList.map(function (player, i) {
-                                        const toFindName = player.name.toLowerCase()
-                                        // const toFindTeam = player.team.toLowerCase()
-                                        const searchInfo = searchText.toLowerCase()
-                                        if (toFindName.includes(searchInfo) || player.jersey.includes(searchInfo))
-                                            return (
-                                                <Link href={{
-                                                    pathname: '/PlayerDetails',
-                                                    query: { id: player.id, origin: 'portfolio' }                                                    
-                                                }}>
-                                                    <div className='mb-4' key={i}>
-                                                        <PerformerContainer AthleteName={player.name} AvgScore={player.avgscore} id={player.id} rarity={player.rarity}/>
-                                                    </div>
-                                                </Link>
-                                            )
-                                        })
-                                    }
-                                </div>
-                            </>
-                        :
-                        <>
-                            <div className="flex md:ml-4 font-bold ml-8 md:ml-0">
-                                <div className="md:ml-4 mr-6" onClick={() => {
-                                    setDisplay(true)
-                                }}>
-                                    ATHLETES
-                                </div>
+                              </Link>
+                            )
+                          })
+                          }
+                      </div>
+                    </>
+                    :
+                    <>
+                      <div className="flex md:ml-4 font-bold ml-8 md:ml-0">
+                        <div className="md:ml-4 mr-6" onClick={() => {
+                          setDisplay(true)
+                        }}>
+                          ATHLETES
+                        </div>
 
-                                <div className="border-b-8 pb-2 border-indigo-buttonblue">
-                                    PACKS
-                                </div>
+                        <div className="border-b-8 pb-2 border-indigo-buttonblue">
+                          PACKS
+                        </div>
+                      </div>
+                      <hr className="visible opacity-50 md:invisible"/>
+                      <div className="md:ml-16 grid grid-cols-0 md:grid-cols-4 mt-12 justify-center">
+                        {packList.map(function(data,i){
+                          return(
+                            <div className='' key={i}>
+                              <SquadPackComponent
+                                imagesrc={data.image}
+                                packName={data.name}
+                                releaseValue={data.release}
+                                link={data.key}
+                              />
                             </div>
-                            <hr className="visible opacity-50 md:invisible"/>
-                            <div className="md:ml-16 grid grid-cols-0 md:grid-cols-4 mt-12 justify-center">
-                                {packList.map(function(data,i){
-                                    return(
-                                        <div className='' key={i}>
-                                            <SquadPackComponent
-                                                imagesrc={data.image}
-                                                packName={data.name}
-                                                releaseValue={data.release}
-                                                link={data.key}
-                                            />
-                                        </div>
-                                    )
-                                })}
-                            </div>
-                        </>
-                        }
-                    </div>
-                {/* </PortfolioContainer> */}
+                          )
+                        })}
+                      </div>
+                    </>
+                  }
                 </div>
+              </div>
             </div>
-            )}
+          )}
         </Main>
       </div>
     </Container>
