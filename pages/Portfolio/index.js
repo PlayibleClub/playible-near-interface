@@ -3,8 +3,6 @@ import { useForm } from 'react-hook-form'
 import Main from '../../components/Main'
 import PortfolioContainer from '../../components/PortfolioContainer'
 import PerformerContainer from '../../components/PerformerContainer';
-import filterIcon from '../../public/images/filter.png'
-import searchIcon from '../../public/images/search.png'
 import { useDispatch, useSelector } from 'react-redux';
 import { getAccountAssets, clearData } from '../../redux/reducers/external/playible/assets';
 import { useConnectedWallet } from '@terra-money/wallet-provider';
@@ -12,8 +10,9 @@ import LoadingPageDark from '../../components/loading/LoadingPageDark';
 import Link from 'next/link'
 import SquadPackComponent from '../../components/SquadPackComponent'
 import Container from '../../components/Container';
+import Sorter from './components/Sorter';
 
-/*
+
 const playerList = [ // player list for testing purposes
     {
         name: 'STEPHEN CURRY',
@@ -116,7 +115,7 @@ const playerList = [ // player list for testing purposes
     //     grad1: '',
     //     grad2: '',
     // },
-]*/
+]
 
 
 const packList = [
@@ -146,20 +145,18 @@ const packList = [
 ]
 
 const Portfolio = () => {
-
-  const { register, handleSubmit } = useForm()
-  const [result, setResult] = useState("")
+  const [searchText, setSearchText] = useState("")
   const [filterMode, setMode] = useState(false)
   const [sortMode, setSortMode] = useState("")
   const [showFilter, setFilter] = useState(false)
   const [displayMode, setDisplay] = useState(true)
   const [loading, setLoading] = useState(true)
   
-  const { list: playerList, status } = useSelector((state) => state.external.playible.assets);
+  const { list: aa, status } = useSelector((state) => state.external.playible.assets);
 
   const dispatch = useDispatch();
   const connectedWallet = useConnectedWallet();
-  const [sortedList, setList] = useState([]);
+  const [sortedList, setSortedList] = useState(playerList);
 
 
   useEffect(() => {
@@ -174,45 +171,9 @@ const Portfolio = () => {
 
   useEffect(() => {
     if(typeof playerList !== "undefined"){
-      handleSort("")
       setLoading(false)
     }
   }, [playerList])
-
-  const onSubmit = (data) => {
-    if (data.search)
-      setResult(data.search)
-    else setResult("")
-  }
-
-  const handleSort = (mode) => {
-    setSortMode(mode)
-
-    const tempList = playerList;
-
-    if(mode === "")
-      setList([...tempList])
-    else if (mode === "lowserial"){
-      tempList.sort((a,b) => a.id - b.id)
-      setList([...tempList])
-    }
-    else if (mode === "highserial"){
-      tempList.sort((a,b) => b.id - a.id)
-      setList([...tempList])
-    }
-    else if (mode === "oldlisting"){
-      [...tempList].sort((a,b) => new Date(...a.listing.split('/').reverse()) - new Date(...b.listing.split('/').reverse()))
-      setList([...tempList])
-    }
-    else if (mode === "newlisting"){
-      [...tempList].sort((a,b) => new Date(...b.listing.split('/').reverse()) - new Date(...a.listing.split('/').reverse()))
-      setList([...tempList])
-    }
-    else if (mode === "team"){
-      tempList.sort((a,b) => a.team.localeCompare(b.team))
-      setList([...tempList])
-    }
-  }
 
   return (
     <Container>
@@ -225,97 +186,11 @@ const Portfolio = () => {
             <div className="flex flex-col w-full overflow-y-auto overflow-x-hidden h-screen self-center text-white-light">
                 <div className="ml-6 flex flex-col md:flex-row md:justify-between">
                     <PortfolioContainer title="SQUAD"/>
-                    <div>
-                      <div className="flex md:mt-5 md:mr-6 invisible md:visible">
-                        <div className="bg-indigo-light mr-1 h-11 w-64 flex font-thin">
-                            <form onSubmit={handleSubmit(handleSort)}>
-                              <div>
-                                <select value={sortMode} className="bg-indigo-light ml-3 mt-2 text-lg" onChange={(e) => handleSort(e.target.value)}>
-                                  <option value="">Sort by</option>
-                                  <option value="lowserial">Lowest Serial Number</option>
-                                  <option value="highserial">Highest Serial Number</option>
-                                  <option value="newlisting">Newest Listing</option>
-                                  <option value="oldlisting">Oldest Listing</option>
-                                  <option value="team">Team</option>
-                                </select>
-                              </div>
-                            </form>
-                            {/* {console.log("sort: "+sortMode)} */}
-                            <img src={filterIcon} className="object-none w-3/12 mr-4" />
-                        </div>
-                          <div className="bg-indigo-light ml-1 h-11 w-60" onClick={() => setFilter(false)}>
-                              <div className="ml-1 mt-2">
-                                  <form onSubmit={handleSubmit(onSubmit)}>
-                                      <input {...register("search")} className="text-xl ml-3 appearance-none bg-indigo-light focus:outline-none w-40" placeholder="Search..." />
-                                      <button className="">
-                                          <input type="image" src={searchIcon} className="object-none ml-8 mt-1" />
-                                      </button>
-                                  </form>
-                              </div>
-                          </div>
-                      </div>
-
-                      <div className="flex w-full mb-4 self-center justify-center md:invisible">
-                        {filterMode ?
-                            <>
-                              <div className="rounded-md bg-indigo-light mr-1 w-12 h-11" onClick={() => {
-                                setMode(false)
-                                setResult("")
-                              }}>
-                                <div className="ml-3.5 mt-4">
-                                  <img src={filterIcon} />
-                                </div>
-                              </div>
-
-                              <div className="rounded-md bg-indigo-light ml-1 h-11 w-10/12 flex iphone5:w-56 iphoneX:w-64 md:w-80">
-                                <div className="ml-1 mt-2">
-                                  <form onSubmit={handleSubmit(onSubmit)}>
-                                    <input {...register("search")} className="text-xl ml-2 appearance-none bg-indigo-light focus:outline-none w-10/12" placeholder="Search..." />
-                                    <button className="w-1/12 md:w-9">
-                                      <input type="image" src={searchIcon} className="object-none md:ml-3 md:mt-1 iphone5:mt-1" />
-                                    </button>
-                                  </form>
-                                </div>
-                              </div>
-                            </>
-                            :
-                            <>
-                              <div className="flex">
-                                <div className="rounded-md bg-indigo-light mr-1 h-11 w-72 flex font-thin iphone5:w-56 iphoneX:w-64 md:w-80" 
-                                // onClick={() => {if(showFilter) setFilter(false) 
-                                //     else setFilter(true)}}
-                                >
-                                  {/* <div className="text-lg ml-4 mt-2 mr-24 w-10/12"> */}
-                                    <form onSubmit={handleSubmit(handleSort)}>
-                                      <div>
-                                        <select value={sortMode} className="bg-indigo-light ml-3 mt-2 text-lg" onChange={(e) => handleSort(e.target.value)}>
-                                          <option value="">Sort by</option>
-                                          <option value="lowserial">Lowest Serial Number</option>
-                                          <option value="highserial">Highest Serial Number</option>
-                                          <option value="newlisting">Newest Listing</option>
-                                          <option value="oldlisting">Oldest Listing</option>
-                                          <option value="team">Team</option>
-                                        </select>
-                                      </div>
-                                    </form>
-                                  {/* </div> */}
-                                    <img src={filterIcon} className="object-none w-3/12 mr-4" />
-                                </div>
-
-                                <div className="rounded-md bg-indigo-light ml-1 w-12 h-11" onClick={() => {
-                                  setMode(true)
-                                  setFilter(false)
-                                  setResult("")
-                                }}>
-                                  <div className="ml-4 mt-3">
-                                    <img src={searchIcon} />
-                                  </div>
-                                </div>
-                              </div>
-                            </>
-                          }
-                      </div>
-                    </div>
+                    <Sorter
+                      list={sortedList}
+                      setList={setSortedList}
+                      setSearchText={setSearchText}
+                    />
                 </div>
 
                 <div className="flex flex-col w-full">
@@ -338,7 +213,7 @@ const Portfolio = () => {
                                     {sortedList.map(function (player, i) {
                                         const toFindName = player.name.toLowerCase()
                                         // const toFindTeam = player.team.toLowerCase()
-                                        const searchInfo = result.toLowerCase()
+                                        const searchInfo = searchText.toLowerCase()
                                         if (toFindName.includes(searchInfo) || player.jersey.includes(searchInfo))
                                             return (
                                                 <Link href={{
