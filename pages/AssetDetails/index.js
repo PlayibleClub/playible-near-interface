@@ -1,226 +1,217 @@
-import React, { useEffect, useState } from 'react'
-import { useForm } from 'react-hook-form'
-import PortfolioContainer from '../components/PortfolioContainer'
-import Main from '../components/Main';
-import HeaderBase from '../components/HeaderBase';
-import Navbar from '../components/Navbar';
-import PlayerContainer from '../components/PlayerContainer';
-import PlayerStats from '../components/PlayerStats';
+import React, { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import PortfolioContainer from '../../components/PortfolioContainer';
+import Main from '../../components/Main';
+import PlayerContainer from '../../components/PlayerContainer';
+import PlayerStats from '../../components/PlayerStats';
 import filterIcon from '../public/images/filter.png';
-import DesktopNavbar from '../components/DesktopNavbar';
-import TitledContainer from '../components/TitledContainer';
-import underlineIcon from '../public/images/blackunderline.png'
-import Image from 'next/image'
-import emptyToken from '../public/images/emptyToken.png'
-import emptyGoldToken from '../public/images/emptyGoldToken.png'
-import tokenOutline from '../public/images/tokenOutline.png'
+import underlineIcon from '../public/images/blackunderline.png';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import {BrowserView, MobileView} from 'react-device-detect';
-import Container from '../components/Container';
+import Container from '../../components/Container';
 
 const playerdata = [
-    {
-        key: 'sevendays',
-        points: {
-            score: 35,
-            pos: "3rd",
-        },
-        rebounds: {
-            score: 5.5,
-            pos: "24th",
-        },
-        assists: {
-            score: 23,
-            pos: "55th",
-        },
-        blocks: {
-            score: 5,
-            pos: "5th",
-        },
-        steals: {
-            score: 11,
-            pos: "6th",
-        },
+  {
+    key: 'sevendays',
+    points: {
+      score: 35,
+      pos: "3rd",
     },
-    {
-        key: 'month',
-        points: {
-            score: 50,
-            pos: "2nd",
-        },
-        rebounds: {
-            score: 9,
-            pos: "45th",
-        },
-        assists: {
-            score: 44,
-            pos: "24th",
-        },
-        blocks: {
-            score: 13,
-            pos: "9th",
-        },
-        steals: {
-            score: 18,
-            pos: "7th",
-        },
+    rebounds: {
+      score: 5.5,
+      pos: "24th",
     },
-    {
-        key: 'year',
-        points: {
-            score: 86,
-            pos: "1st",
-        },
-        rebounds: {
-            score: 19,
-            pos: "37th",
-        },
-        assists: {
-            score: 68,
-            pos: "16th",
-        },
-        blocks: {
-            score: 32,
-            pos: "5th",
-        },
-        steals: {
-            score: 23,
-            pos: "3rd",
-        },
+    assists: {
+      score: 23,
+      pos: "55th",
     },
+    blocks: {
+      score: 5,
+      pos: "5th",
+    },
+    steals: {
+      score: 11,
+      pos: "6th",
+    },
+  },
+  {
+    key: 'month',
+    points: {
+      score: 50,
+      pos: "2nd",
+    },
+    rebounds: {
+      score: 9,
+      pos: "45th",
+    },
+    assists: {
+      score: 44,
+      pos: "24th",
+    },
+    blocks: {
+      score: 13,
+      pos: "9th",
+    },
+    steals: {
+      score: 18,
+      pos: "7th",
+    },
+  },
+  {
+    key: 'year',
+    points: {
+      score: 86,
+      pos: "1st",
+    },
+    rebounds: {
+      score: 19,
+      pos: "37th",
+    },
+    assists: {
+      score: 68,
+      pos: "16th",
+    },
+    blocks: {
+      score: 32,
+      pos: "5th",
+    },
+    steals: {
+      score: 23,
+      pos: "3rd",
+    },
+  },
 ]
 
 const playerList = [ // player list for testing purposes
-    {
-        name: 'STEPHEN CURRY',
-        team: 'Golden State Warriors',
-        id: '320',
-        silvercost: '420 UST',
-        goldcost: '521 UST',
-        jersey: '30',
-        positions: ['PG', 'SG'],
-        avgscore: '86.3',
-        stats: 86.5,
-        data: playerdata,
-        grad1: 'indigo-blue',
-        grad2: 'indigo-bluegrad',
-        rarity: 'silver',
-        lowestask: '120 UST',
-        highestask: '550 UST'
-    },
-    {
-        name: 'TAUREAN PRINCE',
-        team: 'Minnesota Timberwolves',
-        id: '14450',
-        silvercost: '41 UST',
-        goldcost: '55 UST',
-        jersey: '12',
-        positions: ['PG'],
-        avgscore: '66.5',
-        stats: 66.9,
-        data: playerdata,
-        grad1: 'indigo-purple',
-        grad2: 'indigo-purplegrad',
-        rarity: 'silver',
-        lowestask: '120 UST',
-        highestask: '550 UST'
-    },
-    {
-        name: 'LEBRON JAMES',
-        team: 'Los Angeles Lakers',
-        id: '25',
-        silvercost: '840 UST',
-        goldcost: '1100 UST',
-        jersey: '23',
-        positions: ['PG', 'SG'],
-        avgscore: '96.0',
-        stats: 90.2,
-        data: playerdata,
-        grad1: 'indigo-purple',
-        grad2: 'indigo-purplegrad',
-        rarity: 'gold',
-        lowestask: '120 UST',
-        highestask: '550 UST'
-    },
-    {
-        name: 'DEVIN BOOKER',
-        team: 'Phoenix Suns',
-        id: '16450',
-        silvercost: '21 UST',
-        goldcost: '34 UST',
-        jersey: '01',
-        positions: ['SF', 'C'],
-        avgscore: '76.8',
-        stats: 80.5,
-        data: playerdata,
-        grad1: 'indigo-darkblue',
-        grad2: 'indigo-darkbluegrad',
-        rarity: 'silver',
-        lowestask: '120 UST',
-        highestask: '550 UST'
-    },
-    {
-        name: 'ARMONI BROOKS',
-        team: 'Houston Rockets',
-        id: '21300',
-        silvercost: '45.5 UST',
-        goldcost: '66.6 UST',
-        jersey: '23',
-        positions: ['SG', 'C'],
-        avgscore: '81.0',
-        stats: 76.2,
-        data: playerdata,
-        grad1: 'indigo-blue',
-        grad2: 'indigo-bluegrad',
-        rarity: 'silver',
-        lowestask: '120 UST',
-        highestask: '550 UST'
-    },
-    {
-        name: 'KEVIN DURANT',
-        team: 'Brooklyn Nets',
-        id: '12300',
-        silvercost: '180 UST',
-        goldcost: '220 UST',
-        jersey: '07',
-        positions: ['PG'],
-        avgscore: '83.0',
-        stats: 77.7,
-        data: playerdata,
-        grad1: 'indigo-black',
-        grad2: 'indigo-red',
-        rarity: 'gold',
-        lowestask: '120 UST',
-        highestask: '550 UST'
-    },
-    {
-        name: 'KOBE BRYANT',
-        team: 'Los Angeles Lakers',
-        id: '999',
-        silvercost: '999 UST',
-        goldcost: '1001 UST',
-        jersey: '24',
-        positions: ['SG'],
-        avgscore: '96.0',
-        stats: 99.9,
-        data: playerdata,
-        grad1: 'indigo-purple',
-        grad2: 'indigo-purplegrad',
-        rarity: 'silver',
-        lowestask: '120 UST',
-        highestask: '550 UST'
-    },
-    // {
-    //     name: '',
-    //     team: '',
-    //     id: '',
-    //     cost: '',
-    //     jersey: '',
-    //     positions: [],
-    //     grad1: '',
-    //     grad2: '',
-    // },
+  {
+    name: 'STEPHEN CURRY',
+    team: 'Golden State Warriors',
+    id: '320',
+    silvercost: '420 UST',
+    goldcost: '521 UST',
+    jersey: '30',
+    positions: ['PG', 'SG'],
+    avgscore: '86.3',
+    stats: 86.5,
+    data: playerdata,
+    grad1: 'indigo-blue',
+    grad2: 'indigo-bluegrad',
+    rarity: 'silver',
+    lowestask: '120 UST',
+    highestask: '550 UST'
+  },
+  {
+    name: 'TAUREAN PRINCE',
+    team: 'Minnesota Timberwolves',
+    id: '14450',
+    silvercost: '41 UST',
+    goldcost: '55 UST',
+    jersey: '12',
+    positions: ['PG'],
+    avgscore: '66.5',
+    stats: 66.9,
+    data: playerdata,
+    grad1: 'indigo-purple',
+    grad2: 'indigo-purplegrad',
+    rarity: 'silver',
+    lowestask: '120 UST',
+    highestask: '550 UST'
+  },
+  {
+    name: 'LEBRON JAMES',
+    team: 'Los Angeles Lakers',
+    id: '25',
+    silvercost: '840 UST',
+    goldcost: '1100 UST',
+    jersey: '23',
+    positions: ['PG', 'SG'],
+    avgscore: '96.0',
+    stats: 90.2,
+    data: playerdata,
+    grad1: 'indigo-purple',
+    grad2: 'indigo-purplegrad',
+    rarity: 'gold',
+    lowestask: '120 UST',
+    highestask: '550 UST'
+  },
+  {
+    name: 'DEVIN BOOKER',
+    team: 'Phoenix Suns',
+    id: '16450',
+    silvercost: '21 UST',
+    goldcost: '34 UST',
+    jersey: '01',
+    positions: ['SF', 'C'],
+    avgscore: '76.8',
+    stats: 80.5,
+    data: playerdata,
+    grad1: 'indigo-darkblue',
+    grad2: 'indigo-darkbluegrad',
+    rarity: 'silver',
+    lowestask: '120 UST',
+    highestask: '550 UST'
+  },
+  {
+    name: 'ARMONI BROOKS',
+    team: 'Houston Rockets',
+    id: '21300',
+    silvercost: '45.5 UST',
+    goldcost: '66.6 UST',
+    jersey: '23',
+    positions: ['SG', 'C'],
+    avgscore: '81.0',
+    stats: 76.2,
+    data: playerdata,
+    grad1: 'indigo-blue',
+    grad2: 'indigo-bluegrad',
+    rarity: 'silver',
+    lowestask: '120 UST',
+    highestask: '550 UST'
+  },
+  {
+    name: 'KEVIN DURANT',
+    team: 'Brooklyn Nets',
+    id: '12300',
+    silvercost: '180 UST',
+    goldcost: '220 UST',
+    jersey: '07',
+    positions: ['PG'],
+    avgscore: '83.0',
+    stats: 77.7,
+    data: playerdata,
+    grad1: 'indigo-black',
+    grad2: 'indigo-red',
+    rarity: 'gold',
+    lowestask: '120 UST',
+    highestask: '550 UST'
+  },
+  {
+    name: 'KOBE BRYANT',
+    team: 'Los Angeles Lakers',
+    id: '999',
+    silvercost: '999 UST',
+    goldcost: '1001 UST',
+    jersey: '24',
+    positions: ['SG'],
+    avgscore: '96.0',
+    stats: 99.9,
+    data: playerdata,
+    grad1: 'indigo-purple',
+    grad2: 'indigo-purplegrad',
+    rarity: 'silver',
+    lowestask: '120 UST',
+    highestask: '550 UST'
+  },
+  // {
+  //     name: '',
+  //     team: '',
+  //     id: '',
+  //     cost: '',
+  //     jersey: '',
+  //     positions: [],
+  //     grad1: '',
+  //     grad2: '',
+  // },
 ]
 
 const tokenList = [
@@ -254,7 +245,7 @@ const tokenList = [
     },
 ]
 
-const PlayerDetails = () => {
+const AssetDetails = () => {
     const { register, handleSubmit } = useForm()
     const [tokenPrice, setPrice] = useState("")
     const [sign, setSign] = useState("")
@@ -552,53 +543,7 @@ const PlayerDetails = () => {
                 </>
             } */}
             { postingModal &&
-                <>
-                    <div className="fixed w-screen h-screen bg-opacity-70 z-50 overflow-auto bg-indigo-gray flex">
-                        <div className="relative p-8 bg-indigo-white w-11/12 md:w-96 h-10/12 md:h-96 m-auto flex-col flex rounded-lg">
-                            <button onClick={()=>{setPostingModal(false)}}>
-                                <div className="absolute top-0 right-0 p-4 font-black">
-                                    X
-                                </div>
-                            </button>
-
-                            <div className="flex flex-col md:flex-row">
-                                <div className="font-bold flex flex-col text-2xl">
-                                    LIST ITEM FOR SALE
-                                    <img src={underlineIcon} className="sm:object-none w-6" />
-                                </div>
-                            </div>
-
-                            <div className="flex flex-col mt-2">
-                                <div className="flex">
-                                <form onSubmit={handleSubmit(onSubmit)}>
-                                    <div className="mt-4 text-xl font-bold">
-                                        Price
-                                    </div>
-                                    <div className="mt-1">
-                                        <input {...register("price")} className="text-base w-36 border text-white rounded-md px-2 py-1 mr-2" placeholder="Amount..." />
-                                        UST
-                                    </div>
-
-                                    <div className="mt-4 text-xl font-bold">
-                                        Sign message
-                                    </div>
-                                    <div className="mt-1">
-                                        <input {...register("sign")} className="text-base w-full h-24 border text-white rounded-md px-2 py-1 mr-2" placeholder="Sign a message to continue." />
-                                    </div>
-                                    <button className="bg-indigo-buttonblue w-80 h-12 text-center font-bold rounded-md text-sm mt-4 items-center justify-center flex">
-                                        <input type="button"/>
-                                        <div className="text-center text-indigo-white">CONFIRM LISTING</div>
-                                    </button>
-                                </form>
-                                </div>
-                                {/* <button className="bg-indigo-buttonblue w-full h-10 text-center font-bold rounded-md text-sm mt-6 self-center">
-                                    COMPLETE LISTING
-                                    <input type=""/>
-                                </button> */}
-                            </div>
-                        </div>
-                    </div>
-                </>
+                //PostSaleModal
             }
             { displayModal &&
                 <>
@@ -875,4 +820,4 @@ const PlayerDetails = () => {
     )
 }
 
-export default PlayerDetails;
+export default AssetDetails;
