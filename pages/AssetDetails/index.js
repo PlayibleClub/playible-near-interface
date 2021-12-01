@@ -1,14 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+
 import PortfolioContainer from '../../components/PortfolioContainer';
 import Main from '../../components/Main';
 import PlayerContainer from '../../components/PlayerContainer';
 import PlayerStats from '../../components/PlayerStats';
-import filterIcon from '../public/images/filter.png';
-import underlineIcon from '../public/images/blackunderline.png';
+import Container from '../../components/Container';
+
+import filterIcon from '../../public/images/filter.png';
+import underlineIcon from '../../public/images/blackunderline.png';
+
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import Container from '../../components/Container';
+import PostSaleModal from './forms/PostSaleModal';
+import { marketPlaceDetails, portfolioDetails } from './data';
 
 const playerdata = [
   {
@@ -87,6 +92,7 @@ const playerList = [ // player list for testing purposes
     name: 'STEPHEN CURRY',
     team: 'Golden State Warriors',
     id: '320',
+    owner: 'terraasdsadsadsadd',
     silvercost: '420 UST',
     goldcost: '521 UST',
     jersey: '30',
@@ -104,6 +110,7 @@ const playerList = [ // player list for testing purposes
     name: 'TAUREAN PRINCE',
     team: 'Minnesota Timberwolves',
     id: '14450',
+    owner: 'terraasdsadsadsadd',
     silvercost: '41 UST',
     goldcost: '55 UST',
     jersey: '12',
@@ -121,6 +128,7 @@ const playerList = [ // player list for testing purposes
     name: 'LEBRON JAMES',
     team: 'Los Angeles Lakers',
     id: '25',
+    owner: 'terraasdsadsadsadd',
     silvercost: '840 UST',
     goldcost: '1100 UST',
     jersey: '23',
@@ -138,6 +146,7 @@ const playerList = [ // player list for testing purposes
     name: 'DEVIN BOOKER',
     team: 'Phoenix Suns',
     id: '16450',
+    owner: 'terraasdsadsadsadd',
     silvercost: '21 UST',
     goldcost: '34 UST',
     jersey: '01',
@@ -155,6 +164,7 @@ const playerList = [ // player list for testing purposes
     name: 'ARMONI BROOKS',
     team: 'Houston Rockets',
     id: '21300',
+    owner: 'terraasdsadsadsadd',
     silvercost: '45.5 UST',
     goldcost: '66.6 UST',
     jersey: '23',
@@ -172,6 +182,7 @@ const playerList = [ // player list for testing purposes
     name: 'KEVIN DURANT',
     team: 'Brooklyn Nets',
     id: '12300',
+    owner: 'terraasdsadsadsadd',
     silvercost: '180 UST',
     goldcost: '220 UST',
     jersey: '07',
@@ -189,6 +200,7 @@ const playerList = [ // player list for testing purposes
     name: 'KOBE BRYANT',
     team: 'Los Angeles Lakers',
     id: '999',
+    owner: 'terraasdsadsadsadd',
     silvercost: '999 UST',
     goldcost: '1001 UST',
     jersey: '24',
@@ -247,17 +259,16 @@ const tokenList = [
 
 const AssetDetails = () => {
     const { register, handleSubmit } = useForm()
-    const [tokenPrice, setPrice] = useState("")
-    const [sign, setSign] = useState("")
+
     const [tokenCongrats, setTokenCongrats] = useState(false)
+    const [displayModal, setModal] = useState(false)
+    const [congratsModal, displayCongrats] = useState(false)
+    const [postingModal, setPostingModal] = useState(false)
 
     const [statfilter, setFilter] = useState("sevendays")
-    const [displayModal, setModal] = useState(false);
-    const [silverDropdown, displaySilver] = useState(false);
-    const [goldDropdown, displayGold] = useState(false);
-    const [congratsModal, displayCongrats] = useState(false);
-    const [postingModal, setPostingModal] = useState(false);
-    const { query } = useRouter();
+    const [silverDropdown, displaySilver] = useState(false)
+    const [goldDropdown, displayGold] = useState(false)
+    const { query } = useRouter()
 
     const playerToFind = playerList.find(playerList => playerList.id === query.id)
     const baseTokenCount = tokenList.reduce(function(n, list){
@@ -283,24 +294,6 @@ const AssetDetails = () => {
     const handleFilter = (event) => {
         setFilter(event.target.value)
     }
-
-    const onSubmit = (data) => {
-        if(data.price)
-            setPrice(data.price)
-
-        if(data.sign)
-            setSign(data.sign)
-
-        setPostingModal(false)
-        displayCongrats(true)
-    }
-
-    const signSubmit = (event) => {
-        setSign(event.target.value)
-    }
-
-    console.log("Price: " + tokenPrice)
-    console.log("Sign: " + sign)
 
     return (
         <div className={`font-montserrat`}>
@@ -543,7 +536,18 @@ const AssetDetails = () => {
                 </>
             } */}
             { postingModal &&
-                //PostSaleModal
+                <PostSaleModal
+                  asset={null}
+                  onClose={() => {
+                    console.log("CLOSE")
+                    setPostingModal(false)
+                  }}
+                  onSubmit={() => {
+                    console.log("SUBMIT")
+                    setPostingModal(false)
+                    displayCongrats(true)
+                  }}
+                />
             }
             { displayModal &&
                 <>
@@ -629,21 +633,11 @@ const AssetDetails = () => {
                             <Main color="indigo-dark">
                                 <div className="flex flex-col overflow-y-auto overflow-x-hidden">
                                     <div className="md:ml-8">
-                                        { query.origin === 'portfolio' &&
-                                            <Link href="/Portfolio/">
-                                                <div className="text-indigo-white flex mt-8 ml-6 mb-2">
-                                                    <div className="font-bold mr-2">&#x3c;</div><div>Back</div>
-                                                </div>
-                                            </Link>
-                                        }
-
-                                        { query.origin === 'marketplace' &&
-                                            <Link href="/Marketplace/">
-                                                <div className="text-indigo-white flex mt-6 ml-6 mb-2">
-                                                    <div className="font-bold mr-2">&#x3c;</div><div>Back</div>
-                                                </div>
-                                            </Link>
-                                        }
+                                        <Link href={query.origin === 'portfolio' ? "/Portfolio/" : "/Marketplace/"}>
+                                          <div className="text-indigo-white flex mt-6 ml-6 mb-2">
+                                            <div className="font-bold mr-2">&#x3c;</div><div>Back</div>
+                                          </div>
+                                        </Link>
                                         
                                         <PortfolioContainer title="PLAYER DETAILS">
                                             <div className="flex flex-col mt-2 mb-8">
@@ -670,48 +664,28 @@ const AssetDetails = () => {
                                                             </div>
 
                                                             <div className="text-sm">
-                                                                {playerToFind.avgscore}
+                                                                {playerToFind["avgscore"]}
                                                             </div>
                                                         </div>
 
-                                                        { query.origin === 'portfolio' &&
-                                                            <div className="flex flex-col md:flex-row md:justify-between mb-2 text-sm ml-8 md:ml-0">
-                                                                <div>
-                                                                    <div className="font-thin">
-                                                                        LOWEST ASK
-                                                                    </div>
-
-                                                                    <div>
-                                                                        {playerToFind.lowestask}
-                                                                    </div>
-                                                                </div>
-
-                                                                <div>
-                                                                    <div className="font-thin mt-4 md:mt-0">
-                                                                        HIGHEST ASK
-                                                                    </div>
-
-                                                                    <div>
-                                                                        {playerToFind.highestask}
-                                                                    </div>
-                                                                </div>
+                                                        <div className="flex flex-col md:flex-row md:justify-between mb-2 text-sm ml-8 md:ml-0">
+                                                          {query.origin === 'portfolio' && portfolioDetails.map((item) => 
+                                                            <div>
+                                                              <div className="font-thin">
+                                                                {item.name.toUpperCase()}
+                                                              </div>
+                                                              {playerToFind[item.key]}
                                                             </div>
-                                                        }
-
-                                                        { query.origin === 'marketplace' &&
-                                                            <div className="flex justify-between md:mt-6 mb-2 text-sm ml-8 md:ml-0">
-                                                                <div>
-                                                                    <div className="font-thin">
-                                                                        PRICE
-                                                                    </div>
-
-                                                                    <div>
-                                                                        {playerToFind.silvercost}
-                                                                    </div>
-                                                                </div>
+                                                          )}
+                                                          {query.origin === 'marketplace' && marketPlaceDetails.map((item) => 
+                                                            <div>
+                                                              <div className="font-thin">
+                                                                {item.name.toUpperCase()}
+                                                              </div>
+                                                              {playerToFind[item.key]}
                                                             </div>
-                                                        }
-                                                    
+                                                          )}
+                                                        </div>
 
                                                         <button className="bg-indigo-buttonblue w-5/6 md:w-60 h-10 text-center font-bold text-md mt-4 self-center justify-center">
                                                             { query.origin === 'portfolio' &&
