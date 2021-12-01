@@ -16,13 +16,13 @@ const DesktopNavbar = (props) => {
             <NavButtonContainer imagesrc="images/navicons/icon_home.png" Title="Dashboard" path="/"></NavButtonContainer>
           </a>
           <a href="*">
-            <NavButtonContainer imagesrc="images/navicons/icon_portfolio.png" Title="Portfolio" path="/"></NavButtonContainer>
+            <NavButtonContainer imagesrc="images/navicons/icon_portfolio.png" Title="Portfolio" path="/Portfolio"></NavButtonContainer>
           </a>
           <a href="*">
             <NavButtonContainer imagesrc="images/navicons/icon_packs.png" Title="Packs" path="/Packs"></NavButtonContainer>
           </a>
           <a href="*">
-            <NavButtonContainer imagesrc="images/navicons/icon_marketplace.png" Title="Marketplace" path="/"></NavButtonContainer>
+            <NavButtonContainer imagesrc="images/navicons/icon_marketplace.png" Title="Marketplace" path="/Marketplace"></NavButtonContainer>
           </a>
           <a href="*">
             <NavButtonContainer imagesrc="images/navicons/icon_marketplace.png" Title="Play" path="/"></NavButtonContainer>

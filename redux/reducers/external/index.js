@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
-import player from './player';
+import playible from './playible';
 
 export default combineReducers({
-  player
+  playible
 });
