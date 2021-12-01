@@ -33,30 +33,19 @@ const LargePackContainer = (props) => {
         </div>
       </MobileView>
       <BrowserView>
-        <div data-test="LargePackContainer" className={`bg-${color} overflow-hidden w-full flex flex-col`}>
-          <div className="">
-            <Image
-                src={imagesrc}
-                width={300}
-                height={250}
-            />
-
-          </div>
-          {children}
-          <div className="w-full">
-            <div className="lg:ml-20 md:ml-12">
-              <div className="text-left">
-                <div className="mb-1">{PackName}</div>
-                <div className="text-md font-light">Release {releaseValue}</div>
-                <div className="mt-4">{CoinValue}</div>
-              </div>
-              <div className="text-xs font-bold">
-                {' '}
-              </div>
+        <div data-test="LargePackContainer" className={`bg-${color}} w-full`}>
+            <div className="text-s md:text-lg lg:text-lg transition-all">
+                  <Image className="object-contain  hover:-translate-y-1 transform transition-all"
+                    src={imagesrc}
+                    width={150}
+                    height={200}
+                  />
+               <div className="mb-1 font-bold">{PackName}</div>
+               <div className="font-normal md:text-base lg:text-base transition-all">Release {releaseValue}</div>
+               <div className="mt-4 font-bold">{CoinValue}</div>
             </div>
-          </div>
         </div>
-        </BrowserView>
+      </BrowserView>
       </>
     )
 };

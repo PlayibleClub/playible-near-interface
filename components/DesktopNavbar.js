@@ -5,18 +5,28 @@ const DesktopNavbar = (props) => {
   const { children, color, secondcolor } = props;
 
   return (
-    <div data-test="DesktopNavbar" className={`bg-gradient-to-b from-${color} to-${secondcolor} text-white-light flex flex-col w-64 h-screen`}>
-      <div className="flex justify-center h-16">
-
-        <img className="object-none mt-4" src="images/playibleheader.png" alt="Img" />
+    <div data-test="DesktopNavbar" className={`bg-gradient-to-b from-${color} to-${secondcolor} text-white-light flex flex-col w-72 h-screen`}>
+      <div className="flex justify-center h-16 mt-10">
+        <img className="object-none" src="images/playibleheader.png" alt="Img" />
       </div>
       <div className="flex justify-center mt-10">
         <div className="flex flex-col h-1/5 w-4/6">
 
-          <NavButtonContainer imagesrc="images/navicons/icon_home.png" Title="Dashboard" path="/"></NavButtonContainer>
-          <NavButtonContainer imagesrc="images/navicons/icon_portfolio.png" Title="Portfolio" path="/Portfolio"></NavButtonContainer>
-          <NavButtonContainer imagesrc="images/navicons/icon_packs.png" Title="Packs" path="/Packs"></NavButtonContainer>
-          <NavButtonContainer imagesrc="images/navicons/icon_marketplace.png" Title="Marketplace" path="/Marketplace"></NavButtonContainer>
+          <a href="*">
+            <NavButtonContainer imagesrc="images/navicons/icon_home.png" Title="Dashboard" path="/"></NavButtonContainer>
+          </a>
+          <a href="*">
+            <NavButtonContainer imagesrc="images/navicons/icon_portfolio.png" Title="Portfolio" path="/Portfolio"></NavButtonContainer>
+          </a>
+          <a href="*">
+            <NavButtonContainer imagesrc="images/navicons/icon_packs.png" Title="Packs" path="/Packs"></NavButtonContainer>
+          </a>
+          <a href="*">
+            <NavButtonContainer imagesrc="images/navicons/icon_marketplace.png" Title="Marketplace" path="/Marketplace"></NavButtonContainer>
+          </a>
+          <a href="*">
+            <NavButtonContainer imagesrc="images/navicons/icon_marketplace.png" Title="Play" path="/"></NavButtonContainer>
+          </a>
 
         </div>
       </div>

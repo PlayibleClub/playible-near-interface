@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import underlineIcon from '../public/images/underline.png'
+import underlineIcon from '../public/images/blackunderline.png'
 import React, { useEffect, useState } from 'react'
 
 const PortfolioContainer = (props) => {
