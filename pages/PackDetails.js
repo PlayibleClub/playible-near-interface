@@ -18,6 +18,8 @@ import * as actionType from '../data/constants/actions';
 import { useConnectedWallet } from '@terra-money/wallet-provider';
 import { useDispatch, useSelector } from 'react-redux';
 import { getPackPrice, purchasePack, getPurchasePackResponse, estimatePurchaseFee } from '../redux/reducers/contract/pack';
+import PortfolioContainer from '../components/PortfolioContainer';
+import BackFunction from '../components/BackFunction';
 
 const packList = [
 	{
@@ -89,7 +91,7 @@ export default function PackDetails() {
 
 	useEffect(() => {
     if(typeof(connectedWallet) == 'undefined' || connectedWallet == null){
-      router.push("/")
+      // router.push("/")
     }
 		else if(packPrice != null) {
 			setPrice(packPrice / 1_000_000);
@@ -237,57 +239,50 @@ export default function PackDetails() {
               </div>
             </MobileView>
             <BrowserView>
-              <TitledContainer title={`
-                ${router.query.id.includes("prem") ? "PREMIUM PACK" : ""} 
-                ${router.query.id.includes("base") ? "BASE PACK" : ""}`}>
-
-                {packList.map(function(data, i){
+            {packList.map(function(data, i){
                   if(router.query.id === data.key){
-                    return (
-                      <div className="flex" key={i}>
-                        <Image
-                          src={data.image}
-                          width={350}
-                          height={300}
-                        />
-
-                        <div className="flex flex-col">
-                          <div className="mt-12">
-                            {data.name}
-                          </div>
-                          <div className="font-thin text-sm mb-4">
-                            Release {data.release}
-                          </div>
-                          <div className="font-thin mt-4 text-sm">
-                            PRICE
-                          </div>
-                          <div>
-                            {`${price} UST`}
-                          </div>
-                          <div className="font-thin mt-4 text-xs">
-                            Tx Fee
-                          </div>
-                          <div className="text-xs">
-                            {`${txFee} UST`}
-                          </div>
-
-                          <button className="bg-indigo-buttonblue w-72 h-10 text-center rounded-md text-md mt-12" onClick={() => {executePurchasePack()}}>
-                            BUY NOW
-                          </button>
-                        </div>
+                    return(
+                    <>
+                      <div className="invisible">
+                          <PortfolioContainer color="indigo-white" textcolor="indigo-black" title="PACKS"/>
                       </div>
+                      <div className="visible">
+                          <BackFunction prev="/Packs"/>
+                      </div>
+                      <div className="mt-8">
+                          <PortfolioContainer  textcolor="indigo-black" title="Premium Pack"/>
+                      </div>
+                      <div className="mt-8 ml-7 flex flex-row" key={i}>
+                          <div className="mr-16">
+                          <Image
+                          src={data.image}
+                          // layout="fill"
+                          height={325}
+                          width={225}
+                          />
+                          </div>
+                          <div className="mx-4 gird grid-col">
+                              <div className="mt-5 font-bold text-base">{data.name}</div>
+                              <div className="mb-10">Release {data.release}</div>
+                              <div>Price</div>
+                              <div className="font-bold text-base">{`${price} UST`}</div>
+                              <button className="mt-10 bg-indigo-buttonblue hover:bg-indigo-bluegrad text-indigo-white font-bold py-2 px-24" onClick={() => {executePurchasePack()}}>
+                                  BUY NOW - {`${price} UST`}
+                              </button>
+                          </div>
+                      </div>
+                      <div className="mt-8">
+                          <PortfolioContainer  textcolor="indigo-black" title="Pack Details"/>
+                      </div>
+                      <div className="ml-7 mt-5 font-normal">
+                          Each pack contains 5 tokens
+                      </div>
+                    </>
                     )
                   }
-                })}
-              </TitledContainer>
-
-            <TitledContainer title="PACK DETAILS">
-              <div className="flex w-full">
-                <div className="font-thin justify-start ml-7">
-                  Each pack contains 5 cards.
-                </div>
-              </div>
-            </TitledContainer>
+                }
+              )
+            }
           </BrowserView>
         </>
       )}
