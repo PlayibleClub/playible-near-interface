@@ -10,6 +10,7 @@ import MarketplaceContainer from '../components/MarketplaceContainer';
 import LargePackContainer from '../components/LargePackContainer';
 import filterIcon from '../public/images/filter.png';
 import PerformerContainer from '../components/PerformerContainer';
+import progressBar from '../public/images/progressbar.png'
 
 const playerList = [ // player list for testing purposes
   {
@@ -157,8 +158,8 @@ export default function Home() {
                     <div className="text-3xl font-bold">
                       ${playibleValue}
                     </div>
-                    <div>
-                      {/* insert bar here */}
+                    <div className="mt-4 w-11/12">
+                      <img src={progressBar}/>
                     </div>
                   </div>
 
