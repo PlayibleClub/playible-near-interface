@@ -1,4 +1,4 @@
-+/* eslint-disable no-unused-vars */
+/* eslint-disable no-unused-vars */
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { axiosInstance } from '../../../../../utils/playible';
 import * as statusCode from '../../../../../data/constants/status';
