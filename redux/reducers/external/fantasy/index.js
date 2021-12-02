@@ -3,7 +3,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { axiosInstance, generateAuth } from '../../../../utils/statsperform';
 import { checkResponseValidity } from '../../../../utils/general';
 
-export const listPlayer = createAsyncThunk('listPlayer', async (payload, thunkAPI) => {
+export const fantasy = createAsyncThunk('fantasy', async (payload, thunkAPI) => {
   try {
     const response = await axiosInstance.get('/participants' + generateAuth());
     const { response: validatedResponse, valid } = checkResponseValidity(response);
@@ -19,7 +19,7 @@ export const listPlayer = createAsyncThunk('listPlayer', async (payload, thunkAP
   }
 });
 
-const processPlayerListData = (data) => {
+const processFantasyData = (data) => {
   const processedData = []
 
   
@@ -28,27 +28,27 @@ const processPlayerListData = (data) => {
 }
 
 const initialState = {
-  playerList: []
+
 }
 
-const playerSlice = createSlice({
+const fantasySlice = createSlice({
   name: 'player',
   initialState: initialState,
   reducers: {
     clearData: () => initialState,
   },
   extraReducers: {
-    [listPlayer.pending]: (state) => {
+    [fantasy.pending]: (state) => {
       return {
         ...state,
       };
     },
-    [listPlayer.fulfilled]: (state, action) => {
+    [fantasy.fulfilled]: (state, action) => {
       return {
         ...state,
       };
     },
-    [listPlayer.rejected]: (state, action) => {
+    [fantasy.rejected]: (state, action) => {
       return {
         ...state,
       };
@@ -56,4 +56,4 @@ const playerSlice = createSlice({
   },
 });
 
-export default playerSlice.reducer;
+export default fantasySlice.reducer;

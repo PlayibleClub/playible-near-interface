@@ -9,30 +9,6 @@ const LargePackContainer = (props) => {
   
     return (
       <>
-      <MobileView>
-        <div data-test="LargePackContainer" className={`bg-${color} overflow-hidden flex flex-col w-full `}>
-          <div className="flex">
-            <img src={imagesrc} alt="Img" />
-
-          </div>
-          {children}
-          <div className="flex w-full justify-center">
-            <div className=" flex flex-col w-4/5">
-              <div className="flex flex-row justify-between w-full">
-                <div className="mb-3 font-bold">{PackName}</div>
-                <div className="font-bold">{CoinValue}</div>
-              </div>
-              <div className="text-md font-light">Release {releaseValue}</div>
-              <div className="text-xs font-bold">
-
-                {' '}
-
-              </div>
-            </div>
-          </div>
-        </div>
-      </MobileView>
-      <BrowserView>
         <div data-test="LargePackContainer" className={`bg-${color}} w-full`}>
             <div className="text-s md:text-lg lg:text-lg transition-all">
                   <Image className="object-contain  hover:-translate-y-1 transform transition-all"
@@ -45,7 +21,6 @@ const LargePackContainer = (props) => {
                <div className="mt-4 font-bold">{CoinValue}</div>
             </div>
         </div>
-      </BrowserView>
       </>
     )
 };
@@ -62,7 +37,6 @@ LargePackContainer.propTypes = {
 LargePackContainer.defaultProps = {
   color: 'sds',
   imagesrc: 'images/yellow.png',
-  // children: <div>Fantasy investr</div>
   children: <div />,
 };
 
