@@ -202,9 +202,7 @@ const Portfolio = () => {
                           ATHLETES
                         </div>
 
-                        <div className="" onClick={() => {
-                          setDisplay(false)
-                        }}>
+                        <div className="" onClick={() => {setDisplay(false)}}>
                           PACKS
                         </div>
                       </div>

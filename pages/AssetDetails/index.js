@@ -12,8 +12,9 @@ import underlineIcon from '../../public/images/blackunderline.png';
 
 import { useRouter } from 'next/router';
 import Link from 'next/link';
+import { useConnectedWallet } from '@terra-money/wallet-provider';
+
 import PostSaleModal from './forms/PostSaleModal';
-import { marketPlaceDetails, portfolioDetails } from './data';
 
 const playerdata = [
   {
@@ -92,7 +93,7 @@ const playerList = [ // player list for testing purposes
     name: 'STEPHEN CURRY',
     team: 'Golden State Warriors',
     id: '320',
-    owner: 'terraasdsadsadsadd',
+    owner: 'terra1f8wkdt7sms3c3tucaqle7yvn59v8qz27srlghj',
     silvercost: '420 UST',
     goldcost: '521 UST',
     jersey: '30',
@@ -259,6 +260,7 @@ const tokenList = [
 
 const AssetDetails = () => {
     const { register, handleSubmit } = useForm()
+    const connectedWallet = useConnectedWallet();
 
     const [tokenCongrats, setTokenCongrats] = useState(false)
     const [displayModal, setModal] = useState(false)
@@ -288,8 +290,6 @@ const AssetDetails = () => {
     const silverFilteredList = filteredList.filter((list,i)=>{
         return filteredList[i].rarity === 'silver'
     })
-
-    // console.log(tokenCount)
 
     const handleFilter = (event) => {
         setFilter(event.target.value)
@@ -362,179 +362,6 @@ const AssetDetails = () => {
                     </div>
                 </div>
             }
-            {/* { displayModal &&
-                <>
-                    <div className="fixed w-screen h-screen bg-opacity-70 z-50 overflow-auto bg-indigo-gray flex">
-                        <div className="relative p-8 bg-indigo-white w-11/12 md:w-1/2 h-10/12 md:h-3/5 m-auto flex-col flex rounded-lg items-center">
-                            <button onClick={()=>{setModal(false)}}>
-                                <div className="absolute top-0 right-0 p-4 font-black">
-                                    X
-                                </div>
-                            </button>
-
-                            <div className="flex flex-col md:flex-row justify-center">
-                                <div className="flex flex-col mt-4">
-                                    <div className="mr-12">
-                                        <PlayerContainer playerID={playerToFind.id} rarity='base'/>
-                                    </div>
-                                    <div>
-                                        <div>
-                                            <div className="font-thin text-xs mt-4">
-                                                #{playerToFind.id}/25000
-                                            </div>
-
-                                            <div className="text-sm font-bold">
-                                                {playerToFind.name}
-                                            </div>
-
-                                            <div className="font-thin mt-4 text-xs">
-                                                AVERAGE SCORE
-                                            </div>
-
-                                            <div className="text-sm font-bold">
-                                                {playerToFind.avgscore}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-
-                                <div className="mt-4 md:mt-2">
-                                    <div className="font-bold flex flex-col">
-                                        UPGRADE TOKEN
-                                        <img src={underlineIcon} className="sm:object-none w-6" />
-                                    </div>
-
-                                    <div className="mt-6 mb-6">
-                                        { silverDropdown ?
-                                            <div onClick={()=>displaySilver(false)} className="flex flex-col w-72">
-                                                <div className="flex justify-between items-center">
-                                                    <div>
-                                                        <img src={emptyToken} />
-                                                    </div>
-                                                    <div className="font-bold">
-                                                        Upgrade to Silver
-                                                    </div>
-                                                    <div className="font-bold text-xl">&#x5e;</div>
-                                                </div>
-
-                                                {baseTokenCount > 2 && baseFilteredList.length > 0 ?
-                                                    <>
-                                                        <div className="flex items-center self-center mt-4">
-                                                            {[...Array(3)].map((element, i)=>{
-                                                                return (
-                                                                    <img src={emptyToken} className="w-10 mr-2" key={i}/>
-                                                                )
-                                                            })}
-                                                        </div>
-
-                                                        <button className="bg-indigo-buttonblue w-72 h-10 text-center font-bold rounded-md text-sm mt-4 self-center">
-                                                            <div className="text-indigo-white" onClick={()=>{setModal(false);displayCongrats(true)}}>
-                                                                MINT BLACK COIN
-                                                            </div>
-                                                        </button>
-                                                    </>
-                                                :
-                                                    <>
-                                                        <div className="flex items-center self-center mt-4">
-                                                            {[...Array(baseTokenCount)].map((element, i)=>{
-                                                                return(
-                                                                    <img src={emptyToken} className="w-10 mr-2" key={i}/>
-                                                                )
-                                                            })}
-                                                            <img src={tokenOutline} className="w-10 ml-2"/>
-                                                        </div>
-
-                                                        <button className="bg-indigo-lightgray w-72 h-10 text-center font-bold rounded-md text-sm mt-4 self-center">
-                                                            <div className="text-indigo-white">
-                                                                MINT BLACK COIN
-                                                            </div>
-                                                        </button>
-                                                    </>
-                                                }
-                                            </div>
-                                        :
-                                            <div onClick={()=>{displaySilver(true);displayGold(false)}} className="flex justify-between items-center w-72">
-                                                <div>
-                                                    <img src={emptyToken} />
-                                                </div>
-                                                <div className="font-bold">
-                                                    Upgrade to Silver
-                                                </div>
-                                                <div className="font-bold">v</div>
-                                            </div>
-                                        }
-                                    </div>
-
-                                    <hr className="opacity-25"/>
-
-                                    <div className="mt-6">
-                                        { goldDropdown ?
-                                            <div onClick={()=>displayGold(false)} className="flex flex-col w-72">
-                                            <div className="flex justify-between items-center">
-                                                <div>
-                                                    <img src={emptyGoldToken} />
-                                                </div>
-                                                <div className="font-bold">
-                                                    Upgrade to Gold
-                                                </div>
-                                                <div className="font-bold text-xl">&#x5e;</div>
-                                            </div>
-
-                                            {silverTokenCount > 2 && silverFilteredList.length > 0 ?
-                                                    <>
-                                                        <div className="flex items-center self-center mt-4">
-                                                            {[...Array(3)].map((element, i)=>{
-                                                                return (
-                                                                    <img src={emptyToken} className="w-10 mr-2" key={i}/>
-                                                                )
-                                                            })}
-                                                        </div>
-
-                                                        <button className="bg-indigo-buttonblue w-72 h-10 text-center font-bold rounded-md text-sm mt-4 self-center">
-                                                            <div className="text-indigo-white" onClick={()=>{setModal(false);displayCongrats(true)}}>
-                                                                MINT SILVER COIN
-                                                            </div>
-                                                        </button>
-                                                    </>
-                                                
-                                                :
-                                                    <>
-                                                        <div className="flex items-center self-center mt-4">
-                                                            {[...Array(silverTokenCount)].map((element, i)=>{
-                                                                return(
-                                                                    <img src={emptyToken} className="w-10 mr-2" key={i}/>
-                                                                )
-                                                            })}
-                                                            <img src={tokenOutline} className="w-10 ml-2"/>
-                                                        </div>
-
-                                                        <button className="bg-indigo-lightgray w-72 h-10 text-center font-bold rounded-md text-sm mt-4 self-center">
-                                                            <div className="text-indigo-white">
-                                                                MINT SILVER COIN
-                                                            </div>
-                                                        </button>
-                                                    </>
-                                                }
-                                        </div>
-                                        :
-                                            <div onClick={()=>{displayGold(true);displaySilver(false)}} className="flex justify-between items-center w-72">
-                                                <div>
-                                                    <img src={emptyGoldToken} />
-                                                </div>
-                                                <div className="font-bold">
-                                                    Upgrade to Gold
-                                                </div>
-                                                <div className="font-bold">v</div>
-                                            </div>
-                                        }
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </>
-            } */}
             { postingModal &&
                 <PostSaleModal
                   asset={null}
@@ -664,27 +491,24 @@ const AssetDetails = () => {
                                                             </div>
 
                                                             <div className="text-sm">
-                                                                {playerToFind["avgscore"]}
+                                                              {playerToFind["avgscore"]}
                                                             </div>
                                                         </div>
 
                                                         <div className="flex flex-col md:flex-row md:justify-between mb-2 text-sm ml-8 md:ml-0">
-                                                          {query.origin === 'portfolio' && portfolioDetails.map((item) => 
-                                                            <div>
-                                                              <div className="font-thin">
-                                                                {item.name.toUpperCase()}
-                                                              </div>
-                                                              {playerToFind[item.key]}
+                                                          <div>
+                                                            <div className="font-thin">
+                                                              PRICE
                                                             </div>
-                                                          )}
-                                                          {query.origin === 'marketplace' && marketPlaceDetails.map((item) => 
-                                                            <div>
-                                                              <div className="font-thin">
-                                                                {item.name.toUpperCase()}
-                                                              </div>
-                                                              {playerToFind[item.key]}
+                                                            {playerToFind["silvercost"]}
+                                                          </div>
+                                                          
+                                                          <div>
+                                                            <div className="font-thin">
+                                                              OWNER
                                                             </div>
-                                                          )}
+                                                            {connectedWallet.walletAddress === playerToFind["owner"] ? "YOU" : playerToFind["owner"]}
+                                                          </div>
                                                         </div>
 
                                                         <button className="bg-indigo-buttonblue w-5/6 md:w-60 h-10 text-center font-bold text-md mt-4 self-center justify-center">
