@@ -202,9 +202,7 @@ const Portfolio = () => {
                           ATHLETES
                         </div>
 
-                        <div className="" onClick={() => {
-                          setDisplay(false)
-                        }}>
+                        <div className="" onClick={() => {setDisplay(false)}}>
                           PACKS
                         </div>
                       </div>
@@ -217,7 +215,7 @@ const Portfolio = () => {
                           if (toFindName.includes(searchInfo) || player.jersey.includes(searchInfo))
                             return (
                               <Link href={{
-                                pathname: '/PlayerDetails',
+                                pathname: '/AssetDetails',
                                 query: { id: player.id, origin: 'portfolio' }                                                    
                               }}>
                                 <div className='mb-4' key={i}>

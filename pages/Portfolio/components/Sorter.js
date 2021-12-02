@@ -9,7 +9,6 @@ const Sorter = (props) => {
     list, //current value of the state
     setList, //set state for the sorter/filtered list
     setSearchText
-
   } = props
 
   const handleSort = (mode) => {
