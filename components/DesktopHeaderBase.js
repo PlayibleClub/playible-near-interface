@@ -84,8 +84,7 @@ const DesktopHeaderBase = () => {
         </BaseModal>
       }
 
-      <Button rounded="rounded-sm " textColor="white-light" color="indigo-light" onClick={() => {setModal(true)}} size="py-1 px-1 h-full" >
-
+      <Button rounded="rounded-sm " textColor="white-light" color="indigo-buttonblue" onClick={() => {setModal(true)}} size="py-1 px-1 h-full" >
         <div className="flex flex-row text-sm h-12">
           <div className="text-xs text-light place-self-center"> 
             {walletAddress} 

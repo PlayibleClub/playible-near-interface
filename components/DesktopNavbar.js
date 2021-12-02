@@ -6,7 +6,7 @@ const DesktopNavbar = (props) => {
 
   return (
     <div data-test="DesktopNavbar" className={`bg-gradient-to-b from-${color} to-${secondcolor} text-white-light flex flex-col w-64 h-screen`}>
-      <div className="flex justify-center h-16">
+      <div className="flex justify-center h-16 mt-10">
 
         <button>
           <Link href="/">

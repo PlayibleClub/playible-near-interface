@@ -12,6 +12,7 @@ import DesktopNavbar from '../components/DesktopNavbar';
 import Link from 'next/link';
 import {BrowserView, MobileView} from 'react-device-detect'
 import Container from '../components/Container';
+import BackFunction from '../components/BackFunction';
 
 export default function Packs() {
     const { status, connect, disconnect, availableConnectTypes } = useWallet();
@@ -150,23 +151,28 @@ export default function Packs() {
             </MobileView>
             <BrowserView>
             <Container>
-                <PortfolioContainer title="PACKS">
-                    <div className="flex float-left mt-12 lg:ml-12 md:ml-2 md:mt-4">
+                <PortfolioContainer color="indigo-white" textcolor="indigo-black" title="PACKS">
+                    <div className="invisible">
+                        <BackFunction prev="/Packs"/>
+                    </div>
+                    <div className="grid grid-cols-4 pl-10">
                         {
                             packList.map(function (pack, i) {
                                 const toFindName = pack.name.toLowerCase()
                                 const searchInfo = result.toLowerCase()
                                 if (toFindName.includes(searchInfo))
                                     return (
-                                        <Link href={`/PackDetails?id=${pack.key}`}>
-                                            <div className='' key={i}>
-                                                <LargePackContainer
-                                                    PackName={pack.name}
-                                                    CoinValue={pack.price}
-                                                    releaseValue={pack.release}
-                                                    imagesrc={pack.image} />
-                                            </div>
-                                        </Link>
+                                        <div className="mx-4 py-4 mr-40">
+                                            <a href={`/PackDetails?id=${pack.key}`}>
+                                                <div className="mx-left" key={i}>
+                                                    <LargePackContainer
+                                                        PackName={pack.name}
+                                                        CoinValue={pack.price}
+                                                        releaseValue={pack.release}
+                                                        imagesrc={pack.image} />
+                                                </div>
+                                            </a>
+                                        </div>
                                     )
                                 }
                             )
