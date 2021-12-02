@@ -15,6 +15,7 @@ import Link from 'next/link';
 import { useConnectedWallet } from '@terra-money/wallet-provider';
 
 import PostSaleModal from './forms/PostSaleModal';
+import CongratsModal from './components/congratsModal';
 
 const playerdata = [
   {
@@ -294,83 +295,66 @@ const AssetDetails = () => {
     const handleFilter = (event) => {
         setFilter(event.target.value)
     }
-
+    //TODO: Congrats Modal after purchase process
     return (
         <div className={`font-montserrat`}>
             { tokenCongrats &&
-                <div className="fixed w-screen h-screen bg-opacity-70 z-50 overflow-auto bg-indigo-gray flex">
-                    <div className="relative p-8 bg-indigo-white w-80 h-10/12 m-auto flex-col flex rounded-lg">
-                        <button onClick={()=>{setTokenCongrats(false)}}>
-                            <div className="absolute top-0 right-0 p-4 font-black">
-                                X
-                            </div>
-                        </button>
-
-                        <div className="font-bold flex flex-col">
-                            CONGRATULATIONS!
-                            <img src={underlineIcon} className="sm:object-none md:w-6" />
-                        </div>
-
-                        <div className="flex flex-col mt-4 items-center">
-                            <div className="">
-                                <PlayerContainer playerID={playerToFind.id} rarity='base'/>
-                            </div>
-                            <div>
-                                <div>
-                                    <div className="font-thin text-xs mt-4">
-                                        #{playerToFind.id}/25000
-                                    </div>
-
-                                    <div className="text-sm font-bold">
-                                        {playerToFind.name}
-                                    </div>
-
-                                    <div className="font-thin mt-4 text-xs">
-                                        AVERAGE SCORE
-                                    </div>
-
-                                    <div className="text-sm font-bold">
-                                        {playerToFind.avgscore}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <Link href="/Portfolio">
-                            <button className="bg-indigo-buttonblue w-full h-12 text-center font-bold rounded-md text-sm mt-6 self-center">
-                                <div className="text-indigo-white">
-                                    GO TO SQUAD
-                                </div>
-                            </button>
-                        </Link>
+              <div className="fixed w-screen h-screen bg-opacity-70 z-50 overflow-auto bg-indigo-gray flex">
+                <div className="relative p-8 bg-indigo-white w-80 h-10/12 m-auto flex-col flex rounded-lg">
+                  <button onClick={()=>{setTokenCongrats(false)}}>
+                    <div className="absolute top-0 right-0 p-4 font-black">
+                      X
                     </div>
-                </div>
-            }
-            { congratsModal &&
-                <div className="fixed w-screen h-screen bg-opacity-70 z-50 overflow-auto bg-indigo-gray flex">
-                    <div className="relative p-8 bg-indigo-white w-60 h-24 m-auto flex-col flex rounded-lg items-center">
-                        <button onClick={()=>{displayCongrats(false)}}>
-                            <div className="absolute top-0 right-0 p-4 font-black">
-                                X
-                            </div>
-                        </button>
+                  </button>
 
-                        <div className="font-bold flex flex-col">
-                            CONGRATULATIONS!
-                            <img src={underlineIcon} className="sm:object-none md:w-6" />
-                        </div>
+                  <div className="font-bold flex flex-col">
+                    CONGRATULATIONS!
+                    <img src={underlineIcon} className="sm:object-none md:w-6" />
+                  </div>
+
+                  <div className="flex flex-col mt-4 items-center">
+                    <div className="">
+                      <PlayerContainer playerID={playerToFind.id} rarity='base'/>
                     </div>
+                    <div>
+                      <div>
+                        <div className="font-thin text-xs mt-4">
+                          #{playerToFind.id}/25000
+                        </div>
+
+                        <div className="text-sm font-bold">
+                          {playerToFind.name}
+                        </div>
+
+                        <div className="font-thin mt-4 text-xs">
+                          AVERAGE SCORE
+                        </div>
+
+                        <div className="text-sm font-bold">
+                          {playerToFind.avgscore}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <Link href="/Portfolio">
+                    <button className="bg-indigo-buttonblue w-full h-12 text-center font-bold rounded-md text-sm mt-6 self-center">
+                      <div className="text-indigo-white">
+                        GO TO SQUAD
+                      </div>
+                    </button>
+                  </Link>
                 </div>
+              </div>
             }
+            { congratsModal && <CongratsModal onClose={ () => { displayCongrats(false) } }/> }
             { postingModal &&
                 <PostSaleModal
                   asset={null}
                   onClose={() => {
-                    console.log("CLOSE")
                     setPostingModal(false)
                   }}
                   onSubmit={() => {
-                    console.log("SUBMIT")
                     setPostingModal(false)
                     displayCongrats(true)
                   }}
@@ -452,7 +436,6 @@ const AssetDetails = () => {
                     </div>
                 </>
             }
-            
             <Container>
                 <div className="flex flex-col w-screen md:w-full overflow-y-auto h-auto justify-center self-center">
                     <div className="flex">
