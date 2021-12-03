@@ -55,7 +55,7 @@ export default function PackDetails() {
 	const router = useRouter();
 	const connectedWallet = useConnectedWallet();
 
-	const [loading, setLoading] = useState(false);
+	const [loading, setLoading] = useState(true);
   const [loadingMessage, setLoadingMessage] = useState("")
 	const [isNarrowScreen, setIsNarrowScreen] = useState(false);
 	const [displayModal, setModal] = useState(false);
