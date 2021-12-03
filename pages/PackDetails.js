@@ -157,23 +157,7 @@ export default function PackDetails() {
 	}, [status, action, txInfo, message])
 
 	const executePurchasePack = () => {
-		setModal(true)
-			setModalHeader(message)
-      setModalData([
-        {
-          name: "Tx Hash",
-          value: "0x2446f1fd773fbb9f080e674b60c6a033c7ed7427b8b9413cf28a2a4a6da9b56c"
-        },
-        {
-          name: "Tx Fee",
-          value: "0.143 UST"
-        }
-      ])
-		  setModalStatus(status)
-      setLoadingMessage("Retrieving Draw Results...")
-    
-    
-    // dispatch(purchasePack({connectedWallet}))
+    dispatch(purchasePack({connectedWallet}))
 	}
 
 	return (

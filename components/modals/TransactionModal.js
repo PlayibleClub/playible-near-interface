@@ -13,13 +13,15 @@ const TransactionModal = (props) => {
 		if(modalStatus == statusCode.PENDING){
 			return (
         <>
-          <LoadingModal/>
+          <div className="flex justify-center">
+            <LoadingModal/>
+          </div>
         </>
 			)
 		}
 		if(modalStatus == statusCode.SUCCESS){
 			return (
-				<>
+        <>
           <div className="flex flex-row my-4 justify-between">
               <div className="font-bold">
                 {modalData[0].name}
