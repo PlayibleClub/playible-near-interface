@@ -14,7 +14,7 @@ import HorizontalScrollContainer from '../components/HorizontalScrollContainer'
 import TokenComponent from '../components/TokenComponent';
 import Main from '../components/Main';
 
-const sampleList = [0,0,0,0,0]
+const sampleList = [0,1,2,3,4,5]
 
 const TokenDrawPage = () => {
     const dispatch = useDispatch();
@@ -24,43 +24,70 @@ const TokenDrawPage = () => {
 
     const { drawList: tokenList, status } = useSelector((state) => state.contract.pack);
 
+    const [assets, setassets] = useState([false,false,false,false,false])
+
+    function changecard(position){
+        if (assets[position] == false){
+
+            var newassets = []
+            newassets = assets
+
+            console.log(newassets)
+
+            newassets[position] = true
+            setassets(newassets.concat())
+
+            console.log(assets[position])
+            console.log(assets)
+            
+        }
+        else {
+
+            var newassets = []
+            newassets = assets
+
+            console.log(newassets)
+
+            newassets[position] = false
+            setassets(newassets.concat())
+
+            console.log(assets[position])
+            console.log(assets)
+
+        }
+        return 
+    };
+
+
     return (
             <>
                 <BrowserView>
-                    <Container>                    
+                <Container>                    
                         {loading ? (
                             <LoadingPageDark/>
                         ) : (
                             <div className="flex flex-col overflow-y-auto overflow-x-hidden">
                                     <div className="flex overflow-x-visible justify-center self-center mt-24">
-                                        <div className="flex">
-                                            {/* <TokenGridCol3>
-                                                {sampleList.map(function(list, i){
-                                                    return (
-                                                        <div className="inline-block ml-2.5 mr-8" key={i}>
-                                                            <TokenComponent playerID={list}/>
-                                                        </div>
+                                            <div className="flex flex-row w-3/5 flex-wrap justify-center">
+                                                {
+                                                    assets.map(function (i,key) 
+                                                        {
+                                                            return (
+                                                                <div className="flex px-10 py-10">
+                                                                <div className="px-10 py-10" onClick={() => {
+                                                                    changecard(key)}}>
+                                                                        
+                                                                    <TokenComponent
+                                                                    playerID={sampleList[key+1]}
+                                                                    isopen={i}
+                                                                    />
+                                                                </div>
+                                                                </div>
+                                                            )
+                                                        }
                                                     )
-                                                })}
-                                            </TokenGridCol3> */}
-                                            <div className="grid grid-cols-5 gap-1">
-                                                <div className="col-start-1">
-                                                    <TokenComponent playerID={tokenList[0]}/>
-                                                </div>
-                                                <div className="col-start-3">
-                                                    <TokenComponent playerID={tokenList[1]}/>
-                                                </div>
-                                                <div className="col-start-5">
-                                                    <TokenComponent playerID={tokenList[2]}/>
-                                                </div>
-                                                <div className="col-start-2">
-                                                    <TokenComponent playerID={tokenList[3]}/>
-                                                </div>
-                                                <div className="col-start-4">
-                                                    <TokenComponent playerID={tokenList[4]}/>
-                                                </div>
+                                                }
                                             </div>
-                                        </div>
                                     </div>
 
                                     <div className='absolute bottom-0 right-12 flex justify-center'> 
