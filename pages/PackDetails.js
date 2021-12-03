@@ -55,7 +55,7 @@ export default function PackDetails() {
 	const router = useRouter();
 	const connectedWallet = useConnectedWallet();
 
-	const [loading, setLoading] = useState(true);
+	const [loading, setLoading] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState("")
 	const [isNarrowScreen, setIsNarrowScreen] = useState(false);
 	const [displayModal, setModal] = useState(false);
@@ -157,7 +157,23 @@ export default function PackDetails() {
 	}, [status, action, txInfo, message])
 
 	const executePurchasePack = () => {
-		dispatch(purchasePack({connectedWallet}))
+		setModal(true)
+			setModalHeader(message)
+      setModalData([
+        {
+          name: "Tx Hash",
+          value: "0x2446f1fd773fbb9f080e674b60c6a033c7ed7427b8b9413cf28a2a4a6da9b56c"
+        },
+        {
+          name: "Tx Fee",
+          value: "0.143 UST"
+        }
+      ])
+		  setModalStatus(status)
+      setLoadingMessage("Retrieving Draw Results...")
+    
+    
+    // dispatch(purchasePack({connectedWallet}))
 	}
 
 	return (

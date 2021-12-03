@@ -20,7 +20,22 @@ const TransactionModal = (props) => {
 		if(modalStatus == statusCode.SUCCESS){
 			return (
 				<>
-          {modalData.map((data) => `${data.name}: ${data.value}`)}
+          <div className="flex flex-row my-4 justify-between">
+              <div className="font-bold">
+                {modalData[0].name}
+              </div>
+              <div>
+                {modalData[0].value.slice(0,6) + "..." + modalData[0].value.slice(-7)}
+              </div>
+          </div>
+          <div className="flex flex-row my-4 justify-between">
+              <div className="font-bold">
+                {modalData[1].name}
+              </div>
+              <div>
+                {modalData[1].value}
+              </div>
+          </div>            
         </>
 			)
 		}
@@ -87,7 +102,7 @@ const TransactionModal = (props) => {
                 {renderModalContent()}
                 <button
                   type="button"
-                  className="inline-flex justify-center px-4 py-2 text-sm font-medium text-blue-900 bg-blue-100 border border-transparent rounded-md hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500"
+                  className="mt-10 inline-flex justify-center px-4 py-2 text-sm font-medium text-blue-900 bg-blue-100 border border-transparent rounded-md hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500 w-full"
                   onClick={() => onClose()}
                 >
                   Close
