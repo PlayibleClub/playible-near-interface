@@ -14,7 +14,7 @@ const MarketplaceContainer = (props) => {
           />
       </div>
       {children}
-      <div className="h-1/2 flex justify-center mb-6">
+      <div className="h-1/2 flex justify-center mb-2">
         <div className="flex flex-col mt-4">
           <div className="text-xs font-bold">{AthleteName}</div>
           <div className="mt-4 text-xs font-thin">LOWEST ASK</div>

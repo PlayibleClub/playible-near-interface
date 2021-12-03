@@ -12,6 +12,8 @@ import underlineIcon from '../public/images/blackunderline.png'
 import Link from 'next/link';
 import {BrowserView, MobileView} from 'react-device-detect'
 import { handleRequestResponse } from '../utils/general/index';
+
+import { estimateFee, retrieveTxInfo } from '../utils/terra/index';
 import { fantasyData } from '../data';
 import * as statusCode from '../data/constants/status';
 import * as actionType from '../data/constants/actions';
