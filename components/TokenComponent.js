@@ -15,7 +15,7 @@ const TokenComponent = (props) =>{
     if(isopen){
 
         return (
-            <div className="w-32 h-48 overflow-hidden ease-in-out transform scale-125 cursor-pointer">
+            <div className="w-32 h-48 overflow-hidden transform cursor-pointer">
                     <Image
                         src={picLink}
                         width={150}
@@ -28,7 +28,7 @@ const TokenComponent = (props) =>{
     
     else {
         return (
-            <div className="w-32 h-48 overflow-hidden ease-in-out transform scale-125 cursor-pointer">
+            <div className="w-32 h-48 overflow-hidden transform cursor-pointer animate-bounce">
                     <Image
                         src= {"/../public/images/tokens/0.png"}
                         width={150}

@@ -65,10 +65,10 @@ const TokenDrawPage = () => {
             <>
                 <BrowserView>
                 <Container>                    
-                        {loading ? (
+                {loading ? (
                             <LoadingPageDark/>
                 ) : (
-                    <div className="" style={{
+                    <div className="pb-96" style={{
                             backgroundImage: `url('../images/BackgroundMarket.PNG')`,
                             backgroundRepeat: 'no-repeat',
                             backgroundSize:'100% auto',
@@ -77,27 +77,12 @@ const TokenDrawPage = () => {
                             height: '100%',
                     }}>
                             <div className="flex flex-col pb-24">
-                                    <div className="flex justify-center self-center w-10/12 mt-24" style={{backgroundColor:'white'}}>
-                                        <div className="flex flex-row w-4/5 flex-wrap justify-center">
-                                            {
-                                                assets.map(function (i,key) 
-                                                    {
-                                                        return (
-                                                            <div className="flex px-10 py-10">
-                                                            <div className="px-10 py-10" onClick={() => {
-                                                                changecard(key)}}>
-                                                                    
-                                                                <TokenComponent
-                                                                playerID={sampleList[key+1]}
-                                                                isopen={i}
-                                                                />
-                                                            </div>
-                                                            </div>
-                                                        )
-                                                    }
-                                                )
-                                            }
-                                        </div>
+                                    <div className="flex justify-center self-center w-10/12 h-10/12 py-64 mt-24" style={{backgroundColor:'white'}}>
+                                            <div className="py-3">
+                                                <Link href="/TokenDrawPage">
+                                                    <img className="transform scale-200" src="../images/packimages/BaseRelease1.png" alt="..."/>
+                                                </Link>
+                                            </div>
                                     </div>
                             </div>     
                     </div>
