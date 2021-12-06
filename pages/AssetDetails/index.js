@@ -363,7 +363,7 @@ const AssetDetails = () => {
             { congratsModal && <CongratsModal onClose={ () => { displayCongrats(false) } }/> }
             { postingModal &&
                 <PostSaleModal
-                  asset={null}
+                  asset={assetData}
                   onClose={() => {
                     setPostingModal(false)
                   }}
@@ -512,13 +512,13 @@ const AssetDetails = () => {
 
                                     <button className="bg-indigo-buttonblue w-5/6 md:w-60 h-10 text-center font-bold text-md mt-4 self-center justify-center">
                                       { query.origin === 'portfolio' &&
-                                        <div className="" onClick={()=>{setPostingModal(true)}}>
+                                        <div className="" onClick={()=>{ setPostingModal(true) }}>
                                           POST FOR SALE
                                         </div>
                                       }
 
                                       { query.origin === 'marketplace' &&
-                                        <div className="" onClick={()=>{setModal(true)}}>
+                                        <div className="" onClick={()=>{ setModal(true) }}>
                                           PURCHASE TOKEN
                                         </div>
                                       }
