@@ -1,8 +1,8 @@
 /* eslint-disable no-unused-vars */
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { executeContract, estimateFee, queryContract, retrieveTxInfo } from '../../../../utils/terra';
+import { executeContract, estimateFee, retrieveTxInfo } from '../../../../utils/terra';
 import { MsgExecuteContract } from '@terra-money/terra.js';
-import { marketplaceData, tokenData } from '../../../../data';
+import { marketplaceData } from '../../../../data';
 import * as statusCode from '../../../../data/constants/status';
 import * as statusMessage from '../../../../data/constants/statusMessage';
 import * as actionType from '../../../../data/constants/actions';
@@ -55,10 +55,10 @@ export const purchaseToken = createAsyncThunk('purchaseToken', async (payload, t
 
 export const getPurchaseTokenResponse = createAsyncThunk('getPurchaseTokenResponse', async (payload, thunkAPI) => {
   try {
-    // const txInfo = thunkAPI.getState().contract.marketplace.txInfo;
-    // const txResponse = await retrieveTxInfo(txInfo.txHash)
+    const txInfo = thunkAPI.getState().contract.marketplace.txInfo;
+    const txResponse = await retrieveTxInfo(txInfo.txHash)
     return {
-      // response: txResponse.logs[0],
+      response: txResponse.logs[0],
       // drawList: txResponse.logs[0].eventsByType.wasm.token_id,
       status: statusCode.CONFIRMED
     }
@@ -154,6 +154,7 @@ const purchaseTokenSlice = createSlice({
     [getPurchaseTokenResponse.fulfilled]: (state, action) => {
       return {
         ...state,
+        txResponse: action.payload.response,
         status: action.payload.status,
         action: actionType.EXECUTE,
         message: statusMessage.EXECUTE_MESSAGE_SUCCESS
