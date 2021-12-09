@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import underlineIcon from '../public/images/underline.png'
+import underlineIcon from '../../public/images/underline.png'
 
 const TitledContainer = (props) => {
   const { color, textcolor, size, title, children, align, className } = props;

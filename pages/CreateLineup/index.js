@@ -1,10 +1,10 @@
 // import Image from 'next/image';
 import React from 'react';
-import HeaderBack from '../components/HeaderBack';
-import Main from '../components/Main';
-import PortfolioContainer from '../components/PortfolioContainer';
-import TokenGridCol2 from '../components/TokenGridCol2';
-import TeamMemberContainer from '../components/TeamMemberContainer';
+import HeaderBack from '../../components/headers/HeaderBack';
+import Main from '../../components/Main';
+import PortfolioContainer from '../../components/containers/PortfolioContainer';
+import TokenGridCol2 from '../../components/grids/TokenGridCol2';
+import TeamMemberContainer from '../../components/containers/TeamMemberContainer';
 import Link from 'next/link';
 
 const playerList = [

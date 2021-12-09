@@ -1,27 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import HeaderBack from '../components/HeaderBack';
-import TitledContainer from '../components/TitledContainer';
-import Main from '../components/Main';
-import LoadingPageDark from '../components/loading/LoadingPageDark';
-import Button from '../components/Button';
-import Container from '../components/Container';
-import TransactionModal from '../components/modals/TransactionModal';
+import TitledContainer from '../../components/containers/TitledContainer';
+import Main from '../../components/Main';
+import LoadingPageDark from '../../components/loading/LoadingPageDark';
+import Container from '../../components/containers/Container';
+import TransactionModal from '../../components/modals/TransactionModal';
 import { useRouter } from 'next/router';
 import Image from 'next/image'
-import underlineIcon from '../public/images/blackunderline.png'
-import Link from 'next/link';
 import {BrowserView, MobileView} from 'react-device-detect'
-import { handleRequestResponse } from '../utils/general/index';
+import { handleRequestResponse } from '../../utils/general/index';
 
-import { estimateFee, retrieveTxInfo } from '../utils/terra/index';
-import { fantasyData } from '../data';
-import * as statusCode from '../data/constants/status';
-import * as actionType from '../data/constants/actions';
+import * as statusCode from '../../data/constants/status';
+import * as actionType from '../../data/constants/actions';
 import { useConnectedWallet } from '@terra-money/wallet-provider';
 import { useDispatch, useSelector } from 'react-redux';
-import { getPackPrice, purchasePack, getPurchasePackResponse, estimatePurchaseFee } from '../redux/reducers/contract/pack';
-import PortfolioContainer from '../components/PortfolioContainer';
-import BackFunction from '../components/BackFunction';
+import { getPackPrice, purchasePack, getPurchasePackResponse, estimatePurchaseFee } from '../../redux/reducers/contract/pack';
+import PortfolioContainer from '../../components/containers/PortfolioContainer';
+import BackFunction from '../../components/buttons/BackFunction';
 
 const packList = [
 	{
@@ -55,7 +49,7 @@ export default function PackDetails() {
 	const router = useRouter();
 	const connectedWallet = useConnectedWallet();
 
-	const [loading, setLoading] = useState(true);
+	const [loading, setLoading] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState("")
 	const [isNarrowScreen, setIsNarrowScreen] = useState(false);
 	const [displayModal, setModal] = useState(false);
@@ -178,69 +172,6 @@ export default function PackDetails() {
             <LoadingPageDark message={loadingMessage}/>
         ) : (
           <>
-            <MobileView>
-              <div className="font-montserrat h-screen relative bg-indigo-dark">
-                {/*<HeaderBack link="/Packs"/>*/}
-                <div className="flex">
-                  <div className="w-full">
-                    <Main color="indigo-dark">
-                      <div className="flex flex-col w-full h-full overflow-y-scroll overflow-x-hidden text-indigo-white font-bold">
-                          {packList.map(function(data,i){
-                            if(router.query.id === data.key){
-                              return (
-                                <div className="flex flex-col" key={i}>
-                                  <Image
-                                    src={data.image}
-                                    width={300}
-                                    height={300}
-                                  />
-
-                                  <div className="flex flex-col">
-                                    <div className="ml-10">
-                                      <div className="">
-                                        {data.name}
-                                      </div>
-                                      <div className="font-thin text-sm mb-4">
-                                        Release {data.release}
-                                      </div>
-                                      <div className="mt-1 text-lg">
-                                        {`${price} UST`}
-                                      </div>
-                                      <div className="font-thin text-sm">
-                                        PRICE
-                                      </div>
-                                      <div className="text-xs">
-                                        {`${txFee} UST`}
-                                      </div>
-                                      <div className="font-thin mt-4 text-xs">
-                                        Tx Fee
-                                      </div>
-                                    </div>
-                                    
-                                    <button className="bg-indigo-buttonblue w-80 h-12 text-center rounded-md text-md mt-4 mb-8 self-center" onClick={() => {executePurchasePack()}}>
-                                        BUY NOW
-                                    </button>
-                                  </div>
-
-                                </div>
-                              )
-                            }
-                          })}
-
-                            <TitledContainer title="PACK DETAILS">
-                              <div className="flex w-full">
-                                <div className="font-thin justify-start ml-7">
-                                  Each pack contains 5 cards.
-                                </div>
-                              </div>
-                            </TitledContainer>
-                      </div>
-                    </Main>
-                  </div>
-              </div>
-              </div>
-            </MobileView>
-            <BrowserView>
             {packList.map(function(data, i){
                   if(router.query.id === data.key){
                     return(
@@ -277,7 +208,7 @@ export default function PackDetails() {
                           <PortfolioContainer  textcolor="indigo-black" title="Pack Details"/>
                       </div>
                       <div className="ml-7 mt-5 font-normal">
-                          Each pack contains 5 tokens
+                          Each pack contains 5 tokens.
                       </div>
                     </>
                     )
@@ -285,7 +216,6 @@ export default function PackDetails() {
                 }
               )
             }
-          </BrowserView>
         </>
       )}
 		</Container>

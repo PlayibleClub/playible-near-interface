@@ -1,15 +1,15 @@
 import { useWallet, WalletStatus } from '@terra-money/wallet-provider';
-import Container from '../components/Container';
+import Container from '../components/containers/Container';
 import Main from '../components/Main';
 import React, { useEffect, useState } from 'react'
 import underlineIcon from '../public/images/underline.png'
 import viewall from '../public/images/viewall.png'
 import PrizePoolComponent from '../components/PrizePoolComponent';
 import Link from 'next/link'
-import MarketplaceContainer from '../components/MarketplaceContainer';
-import LargePackContainer from '../components/LargePackContainer';
+import MarketplaceContainer from '../components/containers/MarketplaceContainer';
+import LargePackContainer from '../components/containers/LargePackContainer';
 import filterIcon from '../public/images/filter.png';
-import PerformerContainer from '../components/PerformerContainer';
+import PerformerContainer from '../components/containers/PerformerContainer';
 import progressBar from '../public/images/progressbar.png'
 
 const playerList = [ // player list for testing purposes

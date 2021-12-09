@@ -1,16 +1,10 @@
-import { useWallet, WalletStatus } from '@terra-money/wallet-provider';
 import React, { useEffect, useState } from 'react'
-import HeaderBack from '../components/HeaderBack';
-import Navbar from '../components/Navbar';
-import Main from '../components/Main';
-import PortfolioContainer from '../components/PortfolioContainer';
-import TokenGridCol2 from '../components/TokenGridCol2';
-import PerformerContainer from '../components/PerformerContainer';
+import Main from '../../components/Main';
+import PortfolioContainer from '../../components/containers/PortfolioContainer';
+import PerformerContainer from '../../components/containers/PerformerContainer';
 import { useRouter } from 'next/router';
-import { MobileView, BrowserView } from 'react-device-detect';
-import DesktopNavbar from '../components/DesktopNavbar';
 import Link from 'next/link'
-import Container from '../components/Container';
+import Container from '../../components/containers/Container';
 import Image from 'next/image';
 
 const playerList = [ // player list for testing purposes

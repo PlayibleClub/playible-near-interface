@@ -1,18 +1,10 @@
 import { useWallet, WalletStatus } from '@terra-money/wallet-provider';
 import React, { Component, useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import HeaderBase from '../components/HeaderBase';
-import Navbar from '../components/Navbar';
-import Main from '../components/Main';
-import TitledContainer from '../components/TitledContainer';
-import PortfolioContainer from '../components/PortfolioContainer';
-import LargePackContainer from '../components/LargePackContainer';
-import searchIcon from '../public/images/search.png'
-import DesktopNavbar from '../components/DesktopNavbar';
-import Link from 'next/link';
-import {BrowserView, MobileView} from 'react-device-detect'
-import Container from '../components/Container';
-import BackFunction from '../components/BackFunction';
+import PortfolioContainer from '../../components/containers/PortfolioContainer';
+import LargePackContainer from '../../components/containers/LargePackContainer';
+import Container from '../../components/containers/Container';
+import BackFunction from '../../components/buttons/BackFunction';
 
 export default function Packs() {
     const { status, connect, disconnect, availableConnectTypes } = useWallet();
