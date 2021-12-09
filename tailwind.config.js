@@ -12,8 +12,8 @@ module.exports = {
             backgroundImage: {
                 'avg-icon': "url('/images/avgscore.png')"
             },
-        }
-        , colors: {
+        },
+        colors: {
             indigo: {
                 light: '#2A2C42',
                 DEFAULT: '#5c6ac4',
@@ -70,6 +70,24 @@ module.exports = {
             'md' : '768px',
             'lg' : '1024px',
         },
+        animation: {
+            'bounce' : 'bounce 0.75s infinite'
+        },
+        keyframes: {
+            'bounce' : {
+            '0%, 100%' : {
+                'transform': 'translateY(-7.5%)',
+                'animationTimingFunction': 'cubic-bezier(0.8, 0, 1, 1)'
+              },
+              '50%' : {
+                'transform': 'translateY(0)',
+                'animationTimingFunction': 'cubic-bezier(0, 0, 0.2, 1)'
+              }
+            }
+        },
+        scale: {
+            '200':'2',
+        }
     },
     variants: {
         extend: {},

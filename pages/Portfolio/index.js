@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import Main from '../../components/Main'
-import PortfolioContainer from '../../components/PortfolioContainer'
-import PerformerContainer from '../../components/PerformerContainer';
+import PortfolioContainer from '../../components/containers/PortfolioContainer'
+import PerformerContainer from '../../components/containers/PerformerContainer';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAccountAssets, clearData } from '../../redux/reducers/external/playible/assets';
 import { useConnectedWallet } from '@terra-money/wallet-provider';
 import LoadingPageDark from '../../components/loading/LoadingPageDark';
 import Link from 'next/link'
 import SquadPackComponent from '../../components/SquadPackComponent'
-import Container from '../../components/Container';
+import Container from '../../components/containers/Container';
 import Sorter from './components/Sorter';
 
 

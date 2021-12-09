@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
-import PortfolioContainer from '../../components/PortfolioContainer';
+import PortfolioContainer from '../../components/containers/PortfolioContainer';
 import Main from '../../components/Main';
-import PlayerContainer from '../../components/PlayerContainer';
+import PlayerContainer from '../../components/containers/PlayerContainer';
 import PlayerStats from '../../components/PlayerStats';
-import Container from '../../components/Container';
+import Container from '../../components/containers/Container';
 
 import filterIcon from '../../public/images/filter.png';
 import underlineIcon from '../../public/images/blackunderline.png';
@@ -495,12 +495,12 @@ const AssetDetails = () => {
                                     </div>
 
                                     <div className="flex flex-col md:flex-row md:justify-between mb-2 text-sm ml-8 md:ml-0">
-                                      <div>
+                                      {/*<div>
                                         <div className="font-thin">
                                           PRICE
                                         </div>
                                         {assetData["silvercost"]}
-                                      </div>
+                                      </div>*/}
                                       
                                       <div>
                                         <div className="font-thin">
