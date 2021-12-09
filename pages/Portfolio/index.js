@@ -13,7 +13,7 @@ import Container from '../../components/containers/Container';
 import Sorter from './components/Sorter';
 
 
-const playerList = [ // player list for testing purposes
+/*const playerList = [ // player list for testing purposes
     {
         name: 'STEPHEN CURRY',
         team: 'Golden State Warriors', //2
@@ -115,7 +115,7 @@ const playerList = [ // player list for testing purposes
     //     grad1: '',
     //     grad2: '',
     // },
-]
+]*/
 
 
 const packList = [
@@ -146,31 +146,25 @@ const packList = [
 
 const Portfolio = () => {
   const [searchText, setSearchText] = useState("")
-  const [filterMode, setMode] = useState(false)
-  const [sortMode, setSortMode] = useState("")
-  const [showFilter, setFilter] = useState(false)
   const [displayMode, setDisplay] = useState(true)
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
   
-  const { list: aaa, status } = useSelector((state) => state.external.playible.assets);
+  const { list: playerList, status } = useSelector((state) => state.external.playible.assets);
 
   const dispatch = useDispatch();
   const connectedWallet = useConnectedWallet();
-  const [sortedList, setSortedList] = useState(playerList);
+  const [sortedList, setSortedList] = useState([]);
 
 
   useEffect(() => {
     if (typeof connectedWallet !== 'undefined') {
       dispatch(getAccountAssets({walletAddr: connectedWallet.walletAddress}))
     }
-    return function cleanup() {
-      setLoading(true)
-      dispatch(clearData());
-    };
   }, [dispatch, connectedWallet])
 
   useEffect(() => {
     if(typeof playerList !== "undefined"){
+      setSortedList(playerList)
       setLoading(false)
     }
   }, [playerList])

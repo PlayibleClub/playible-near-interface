@@ -1,4 +1,9 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux';
+import { useConnectedWallet } from '@terra-money/wallet-provider';
+import { createSalesOrder } from '../../../redux/reducers/external/playible/salesOrder';
+import { approveMarketplace, clearData } from '../../../redux/reducers/contract/nft';
+import * as statusCode from '../../../data/constants/status';
 
 import underlineIcon from '../../../public/images/blackunderline.png'
 
@@ -8,24 +13,45 @@ const PostSaleModal = (props) => {
     onClose, //setPostingModal(false)
     onSubmit
   } = props
-  const [state, setState] = useState({
-    contractAddr: "",
-    tokenID: "",
-    price: 0,
-    message: ""
-  })
-  
-  const handleSubmit = () => {
+  const dispatch = useDispatch()
+  const connectedWallet = useConnectedWallet();
+  const [price, setPrice] = useState(0)
 
-    //execute approve 
-    onSubmit()
+  const { status } = useSelector((state) => state.contract.nft)
+
+  useEffect(() => {
+    dispatch(clearData())
+  }, [])
+ 
+  useEffect(() => {
+    //NFT approval is succesful
+    if(status == statusCode.SUCCESS){
+      const data = {
+        collection: asset.collection,
+        token_id: asset.tokenID,
+        price: price,
+        message: "sample message",
+        signed_message: "sample signed message"
+      }
+      dispatch(clearData())
+      dispatch(createSalesOrder(data)).then(onSubmit)
+    }
+  }, [status])
+
+  const handleSubmit = () => {
+    dispatch(approveMarketplace({
+      connectedWallet: connectedWallet,
+      tokenID: asset.tokenID
+    })).then(() => {
+      onClose()
+    })
   }
 
   return (
     <>
       <div className="fixed w-screen h-screen bg-opacity-70 z-50 overflow-auto bg-indigo-gray flex">
         <div className="relative p-8 bg-indigo-white w-11/12 md:w-96 h-10/12 md:h-96 m-auto flex-col flex rounded-lg">
-          <button onClick = {() => { onClose()}}>
+          <button onClick = {() => { onClose() }}>
             <div className="absolute top-0 right-0 p-4 font-black">
               X
             </div>
@@ -44,12 +70,9 @@ const PostSaleModal = (props) => {
             </div>
             <div className="mt-1">
               <input 
-                value={state.price} 
+                value={price} 
                 onChange={(e) => {
-                  setState({
-                    ...state, 
-                    price: e.target.value
-                  })
+                  setPrice(e.target.value)
                 }
               } 
                 className="text-base w-36 border text-white rounded-md px-2 py-1 mr-2" 

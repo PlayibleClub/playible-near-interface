@@ -30,11 +30,12 @@ export const getAccountAssets = createAsyncThunk('getAccountAssets', async (payl
 
 const processAssetListData = (data) => {
   const processedData = []
-  console.log(data)
   data.forEach((item) => {
     processedData.push({
       id: item.id,
       tokenID: item.token_id,
+      collection: item.collection.contract_addr,
+      owner: item.owner.wallet_addr,
       name: 'STEPHEN CURRY',
       team: 'Golden State Warriors',
       athlete_id: '320',

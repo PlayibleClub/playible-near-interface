@@ -26,6 +26,24 @@ export const getSalesOrders = createAsyncThunk('getSalesOrders', async (payload,
   }
 });
 
+export const createSalesOrder = createAsyncThunk(
+  'createSalesOrder',
+  async (payload, thunkAPI) => {
+    try {
+      const result = await axiosInstance.post(`/account/sales/`, payload);
+      return {
+        response: result,
+        status: statusCode.SUCCESS
+      }
+    } catch (err) {
+      return thunkAPI.rejectWithValue({
+        response: err,
+        status: statusCode.ERROR
+      });
+    }
+  }
+);
+
 const salesOrderSlice = createSlice({
   name: 'salesOrder',
   initialState: initialState,
@@ -53,6 +71,27 @@ const salesOrderSlice = createSlice({
         ...state,
         status: action.payload.status,
         action: actionType.GET
+      };
+    },
+    [createSalesOrder.pending]: (state) => {
+      return {
+        ...state,
+        status: statusCode.PENDING,
+        action: actionType.CREATE
+      };
+    },
+    [createSalesOrder.fulfilled]: (state, action) => {
+      return {
+        ...state,
+        status: action.payload.status,
+        action: actionType.CREATE
+      };
+    },
+    [createSalesOrder.rejected]: (state, action) => {
+      return {
+        ...state,
+        status: action.payload.status,
+        action: actionType.CREATE
       };
     },
   },
