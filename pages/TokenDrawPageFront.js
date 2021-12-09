@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import * as statusCode from '../data/constants/status'
+
 import { useDispatch, useSelector } from 'react-redux';
 import { BrowserView, MobileView } from 'react-device-detect';
-import LoadingPageDark from '../../components/loading/LoadingPageDark';
-import Container from '../../components/containers/Container';
-import HeaderBase from '../../components/headers/HeaderBase';
-import Navbar from '../../components/navbars/Navbar';
-import HorizontalScrollContainer from '../../components/containers/HorizontalScrollContainer'
-import TokenComponent from '../../components/TokenComponent';
-import Main from '../../components/Main';
+import { getLastRound, getRoundData, clearData } from '../redux/reducers/contract/pack';
 
-import { TokenDrawData } from '../data';
+import LoadingPageDark from '../components/loading/LoadingPageDark';
+import Container from '../components/Container';
+import HeaderBase from '../components/HeaderBase';
+import Navbar from '../components/Navbar';
+import HorizontalScrollContainer from '../components/HorizontalScrollContainer'
+import TokenComponent from '../components/TokenComponent';
+import Main from '../components/Main';
 
 const sampleList = [0,1,2,3,4,5]
 
@@ -63,10 +65,10 @@ const TokenDrawPage = () => {
             <>
                 <BrowserView>
                 <Container>                    
-                        {loading ? (
+                {loading ? (
                             <LoadingPageDark/>
                 ) : (
-                    <div className="" style={{
+                    <div className="pb-96" style={{
                             backgroundImage: `url('../images/BackgroundMarket.PNG')`,
                             backgroundRepeat: 'no-repeat',
                             backgroundSize:'100% auto',
@@ -75,27 +77,12 @@ const TokenDrawPage = () => {
                             height: '100%',
                     }}>
                             <div className="flex flex-col pb-24">
-                                    <div className="flex justify-center self-center w-10/12 mt-24" style={{backgroundColor:'white'}}>
-                                        <div className="flex flex-row w-4/5 flex-wrap justify-center">
-                                            {
-                                                assets.map(function (i,key) 
-                                                    {
-                                                        return (
-                                                            <div className="flex px-10 py-10">
-                                                            <div className="px-10 py-10" onClick={() => {
-                                                                changecard(key)}}>
-                                                                    
-                                                                <TokenComponent
-                                                                playerID={sampleList[key+1]}
-                                                                isopen={i}
-                                                                />
-                                                            </div>
-                                                            </div>
-                                                        )
-                                                    }
-                                                )
-                                            }
-                                        </div>
+                                    <div className="flex justify-center self-center w-10/12 h-10/12 py-64 mt-24" style={{backgroundColor:'white'}}>
+                                            <div className="py-3">
+                                                <Link href="/TokenDrawPage">
+                                                    <img className="transform scale-200" src="../images/packimages/BaseRelease1.png" alt="..."/>
+                                                </Link>
+                                            </div>
                                     </div>
                             </div>     
                     </div>
