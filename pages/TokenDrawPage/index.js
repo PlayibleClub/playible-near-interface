@@ -1,18 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import * as statusCode from '../data/constants/status'
-
 import { useDispatch, useSelector } from 'react-redux';
 import { BrowserView, MobileView } from 'react-device-detect';
-import { getLastRound, getRoundData, clearData } from '../redux/reducers/contract/pack';
-
-import LoadingPageDark from '../components/loading/LoadingPageDark';
-import Container from '../components/Container';
-import HeaderBase from '../components/HeaderBase';
-import Navbar from '../components/Navbar';
-import HorizontalScrollContainer from '../components/HorizontalScrollContainer'
-import TokenComponent from '../components/TokenComponent';
-import Main from '../components/Main';
+import LoadingPageDark from '../../components/loading/LoadingPageDark';
+import Container from '../../components/containers/Container';
+import HeaderBase from '../../components/headers/HeaderBase';
+import Navbar from '../../components/navbars/Navbar';
+import HorizontalScrollContainer from '../../components/containers/HorizontalScrollContainer'
+import TokenComponent from '../../components/TokenComponent';
+import Main from '../../components/Main';
 
 const sampleList = [0,0,0,0,0]
 

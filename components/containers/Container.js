@@ -1,10 +1,8 @@
 import React from 'react';
-import {BrowserView, MobileView} from 'react-device-detect';
-import DesktopNavbar from '../components/DesktopNavbar';
-import DesktopHeaderBase from '../components/DesktopHeaderBase';
-import Navbar from './Navbar';
-import HeaderBase from './HeaderBase';
-import Main from './Main';
+import DesktopNavbar from '../navbars/DesktopNavbar';
+import DesktopHeaderBase from '../headers/DesktopHeaderBase';
+import Navbar from '../navbars/Navbar';
+import HeaderBase from '../headers/HeaderBase';
 
 const Container = (props) => {
   const { children } = props

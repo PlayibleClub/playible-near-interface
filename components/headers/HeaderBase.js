@@ -1,10 +1,12 @@
-import React, {useState, useEffect} from 'react';
+import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useWallet, WalletStatus, useConnectedWallet } from '@terra-money/wallet-provider';
-import DesktopHeader from './DesktopHeader.js';
-import Button from './Button.js';
-import BaseModal from './modals/BaseModal.js';
-const DesktopHeaderBase = () => {
+import Button from '../buttons/Button.js';
+import BaseModal from '../modals/BaseModal.js';
+import Header from '../headers/Header.js';
+
+
+const HeaderBase = () => {
   const { status, connect, disconnect, availableConnectTypes } = useWallet();
 
 	const connectedWallet = useConnectedWallet();
@@ -71,7 +73,7 @@ const DesktopHeaderBase = () => {
   }
 
   return (
-    <DesktopHeader>
+    <Header>
       {displayModal &&
         <BaseModal 
           title={"Terra Wallet"} 
@@ -83,32 +85,36 @@ const DesktopHeaderBase = () => {
         {renderWalletModal()}
         </BaseModal>
       }
+      <div className="mr-16"/>
+      
+      <div className="text-white-light mt-11">
+        {' '}
+        <img src="images/playibleheader.png" alt="Img" />
+      </div>
+      {/* </div> */}
 
-      <Button rounded="rounded-sm " textColor="white-light" color="indigo-buttonblue" onClick={() => {setModal(true)}} size="py-1 px-1 h-full" >
-        <div className="flex flex-row text-sm h-12">
-          <div className="text-xs text-light place-self-center"> 
-            {walletAddress} 
-          </div>
-          <img className="ml-3 h-4 w-4 place-self-center" src="images/wallet.png" alt="Img" />
-          {/*status === WalletStatus.WALLET_CONNECTED ? '*' : '+'*/}
-        </div>
-      </Button>
+      <div className="mt-10">
+        <Button rounded="rounded-sm " textColor="white-light" color="null" onClick={() => {setModal(true)}} size="py-1 px-1">
+          <img src="images/wallet.png" alt="Img"/>
+          {status === WalletStatus.WALLET_CONNECTED ? '*' : '+'}
+        </Button>
+      </div>
 
-    </DesktopHeader>
+    </Header>
   );
 };
 
-DesktopHeaderBase.propTypes = {
+HeaderBase.propTypes = {
   color: PropTypes.string,
   isClosed: PropTypes.bool,
   setClosed: PropTypes.func,
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
 };
 
-DesktopHeaderBase.defaultProps = {
-  color: 'indigo-navy',
+HeaderBase.defaultProps = {
+  color: 'indigo-light',
   // children: <div>Fantasy investr</div>
   children: <div />,
 };
 
-export default DesktopHeaderBase;
+export default HeaderBase;

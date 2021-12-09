@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router'
-import Main from '../components/Main';
-import HeaderBase from '../components/HeaderBase';
-import Navbar from '../components/Navbar';
-import PackComponent from '../components/PackComponent';
-import TitledContainer from '../components/TitledContainer';
+import Main from '../../components/Main';
+import HeaderBase from '../../components/headers/HeaderBase';
+import Navbar from '../../components/navbars/Navbar';
+import PackComponent from '../../components/PackComponent';
+import TitledContainer from '../../components/containers/TitledContainer';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { getLastRound, getRoundData, purchasePack } from '../redux/reducers/contract/pack';
+import { getLastRound, getRoundData, purchasePack } from '../../redux/reducers/contract/pack';
 import { useConnectedWallet } from '@terra-money/wallet-provider';
 import BaseDialog from '../components/dialogs/BaseDialog';
-import * as statusCode from '../data/constants/status'
-import * as actionType from '../data/constants/actions'
+import * as statusCode from '../../data/constants/status'
+import * as actionType from '../../data/constants/actions'
 
 const Purchase = () => {
     const router = useRouter();

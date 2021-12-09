@@ -1,13 +1,13 @@
 import React from 'react';
 import { useRouter } from 'next/router'
-import Main from '../components/Main';
-import HeaderBase from '../components/HeaderBase';
-import Navbar from '../components/Navbar';
-import PackComponent from '../components/PackComponent';
-import PortfolioContainer from '../components/PortfolioContainer';
+import Main from '../../components/Main';
+import HeaderBase from '../../components/headers/HeaderBase';
+import Navbar from '../../components/navbars/Navbar';
+import PackComponent from '../../components/PackComponent';
+import PortfolioContainer from '../../components/containers/PortfolioContainer';
 import { useDispatch } from 'react-redux';
 import { useConnectedWallet } from '@terra-money/wallet-provider';
-import { getPackPrice, purchasePack, getLastRound, getRoundData } from '../redux/reducers/contract/pack';
+import { getPackPrice, purchasePack, getLastRound, getRoundData } from '../../redux/reducers/contract/pack';
 
 export default function OpenPackPage() {
     const router = useRouter();

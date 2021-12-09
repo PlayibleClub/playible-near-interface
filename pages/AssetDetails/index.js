@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
-import PortfolioContainer from '../../components/PortfolioContainer';
+import PortfolioContainer from '../../components/containers/PortfolioContainer';
 import Main from '../../components/Main';
-import PlayerContainer from '../../components/PlayerContainer';
+import PlayerContainer from '../../components/containers/PlayerContainer';
 import PlayerStats from '../../components/PlayerStats';
-import Container from '../../components/Container';
+import Container from '../../components/containers/Container';
 
 import filterIcon from '../../public/images/filter.png';
 import underlineIcon from '../../public/images/blackunderline.png';
@@ -458,7 +458,7 @@ const AssetDetails = () => {
                                                         </div>
                                                     </div>
                                                     <div className="flex flex-col">
-                                                        <div className="ml-8 md:ml-0 mb-4 md:mb-0">
+                                                        <div className="ml-8 md:ml-0 mb-4">
                                                             { query.origin === 'portfolio' &&
                                                                 <div className="font-thin text-sm">
                                                                     #{playerToFind.id}/25000
@@ -479,14 +479,14 @@ const AssetDetails = () => {
                                                         </div>
 
                                                         <div className="flex flex-col md:flex-row md:justify-between mb-2 text-sm ml-8 md:ml-0">
-                                                          <div>
+                                                          <div className="mb-4 md:mb-0">
                                                             <div className="font-thin">
                                                               PRICE
                                                             </div>
                                                             {playerToFind["silvercost"]}
                                                           </div>
                                                           
-                                                          <div>
+                                                          <div className="md:ml-8">
                                                             <div className="font-thin">
                                                               OWNER
                                                             </div>
@@ -494,7 +494,7 @@ const AssetDetails = () => {
                                                           </div>
                                                         </div>
 
-                                                        <button className="bg-indigo-buttonblue w-5/6 md:w-60 h-10 text-center font-bold text-md mt-4 self-center justify-center">
+                                                        <button className="bg-indigo-buttonblue w-5/6 md:w-60 h-10 text-center font-bold text-md mt-4 self-center justify-center md:self-start">
                                                             { query.origin === 'portfolio' &&
                                                                 <div className="" onClick={()=>{setPostingModal(true)}}>
                                                                     POST FOR SALE
