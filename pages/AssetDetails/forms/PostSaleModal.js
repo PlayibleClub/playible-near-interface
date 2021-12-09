@@ -1,6 +1,9 @@
-import React, { useState } from 'react'
-import { useDispatch } from 'react-redux';
+import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux';
+import { useConnectedWallet } from '@terra-money/wallet-provider';
 import { createSalesOrder } from '../../../redux/reducers/external/playible/salesOrder';
+import { approveMarketplace, clearData } from '../../../redux/reducers/contract/nft';
+import * as statusCode from '../../../data/constants/status';
 
 import underlineIcon from '../../../public/images/blackunderline.png'
 
@@ -11,18 +14,37 @@ const PostSaleModal = (props) => {
     onSubmit
   } = props
   const dispatch = useDispatch()
+  const connectedWallet = useConnectedWallet();
   const [price, setPrice] = useState(0)
 
-  const handleSubmit = () => {
-    console.log("SALES ORDER")
-    const data = {
-      collection: asset.collection,
-      token_id: asset.tokenID,
-      price: price,
-      message: "sample message",
-      signed_message: "sample signed message"
+  const { status } = useSelector((state) => state.contract.nft)
+
+  useEffect(() => {
+    dispatch(clearData())
+  }, [])
+ 
+  useEffect(() => {
+    //NFT approval is succesful
+    if(status == statusCode.SUCCESS){
+      const data = {
+        collection: asset.collection,
+        token_id: asset.tokenID,
+        price: price,
+        message: "sample message",
+        signed_message: "sample signed message"
+      }
+      dispatch(clearData())
+      dispatch(createSalesOrder(data)).then(onSubmit)
     }
-    dispatch(createSalesOrder(data)).then(onSubmit)
+  }, [status])
+
+  const handleSubmit = () => {
+    dispatch(approveMarketplace({
+      connectedWallet: connectedWallet,
+      tokenID: asset.tokenID
+    })).then(() => {
+      onClose()
+    })
   }
 
   return (
