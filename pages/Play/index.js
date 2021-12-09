@@ -1,19 +1,15 @@
 import { useWallet, WalletStatus } from '@terra-money/wallet-provider';
 // import Image from 'next/image';
 import React, { useEffect, useState } from 'react'
-import HeaderBase from '../components/HeaderBase';
-import Navbar from '../components/Navbar';
-import Main from '../components/Main';
-import TitledContainer from '../components/TitledContainer';
-import PortfolioContainer from '../components/PortfolioContainer';
+import Main from '../../components/Main';
+import PortfolioContainer from '../../components/containers/PortfolioContainer';
 import { useDispatch } from 'react-redux';
-import { getPortfolio } from '../redux/reducers/contract/portfolio';
+import { getPortfolio } from '../../redux/reducers/contract/portfolio';
 import { useConnectedWallet } from '@terra-money/wallet-provider';
 import Link from 'next/link';
-import DesktopNavbar from '../components/DesktopNavbar';
-import PlayComponent from '../components/PlayComponent';
-import HorizontalScrollContainer from '../components/HorizontalScrollContainer';
-import Container from '../components/Container'
+import PlayComponent from '../../components/PlayComponent';
+import HorizontalScrollContainer from '../../components/containers/HorizontalScrollContainer';
+import Container from '../../components/containers/Container';
 
 const activeList = [
     {

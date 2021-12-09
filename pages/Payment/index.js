@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import PortfolioContainer from '../components/PortfolioContainer'
-import Main from '../components/Main';
-import PackComponent from '../components/PackComponent';
+import PortfolioContainer from '../../components/containers/PortfolioContainer';
+import Main from '../../components/Main';
+import PackComponent from '../../components/PackComponent';
 import Link from 'next/link';
-import HeaderBase from '../components/HeaderBase';
-import Navbar from '../components/Navbar';
+import HeaderBase from '../../components/headers/HeaderBase';
+import Navbar from '../../components/navbars/Navbar';
 import walletIcon from '../public/images/wallet.png';
 
 const Payment = () => {

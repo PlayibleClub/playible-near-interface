@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import warriorLogo from '../public/images/warriors.png';
+import warriorLogo from '../../public/images/warriors.png';
 
 const AthleteContainer = (props) => {
   const { children, colorgrad1, colorgrad2, AthleteName, TeamName, CoinValue, Positions, Jersey, ID } = props;

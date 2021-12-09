@@ -1,8 +1,6 @@
 import PropTypes from 'prop-types';
-import Link from 'next/link'
 import React, { Component, useState, useEffect } from 'react';
 import Image from 'next/image'
-import {BrowserView, MobileView} from 'react-device-detect'
 
 const LargePackContainer = (props) => {
   const { children, color, imagesrc, PackName, releaseValue, CoinValue } = props;

@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import Link from 'next/link'
-import NavButtonContainer from './NavButtonContainer.js';
+import NavButtonContainer from '../containers/NavButtonContainer.js';
 const DesktopNavbar = (props) => {
   const { children, color, secondcolor } = props;
 
