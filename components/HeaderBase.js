@@ -48,11 +48,11 @@ const HeaderBase = () => {
     } else {
       return (
         <>
-          {availableConnectTypes.includes("CHROME_EXTENSION") &&
+          {availableConnectTypes.includes("EXTENSION") &&
             <button
               type="button"
               className="bg-indigo-buttonblue w-full h-12 text-center text-indigo-white font-bold rounded-md text-md mt-4 self-center"
-              onClick={() => { connectWallet(availableConnectTypes.indexOf("CHROME_EXTENSION"))} }
+              onClick={() => { connectWallet(availableConnectTypes.indexOf("EXTENSION"))} }
             >
               Terra Station (Web Extension)
             </button>
