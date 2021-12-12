@@ -239,17 +239,17 @@ export default function Marketplace() {
     return (
         <Container>
             <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
-                <Main color="indigo-dark">
+                <Main color="indigo-white">
                     
-                    <div className="flex flex-col w-full overflow-y-auto overflow-x-hidden h-screen self-center text-white-light">
+                    <div className="flex flex-col w-full overflow-y-auto overflow-x-hidden h-screen self-center text-indigo-black">
                         <div className="md:ml-6 flex flex-col md:flex-row md:justify-between">
-                            <PortfolioContainer title="MARKETPLACE"/>
+                            <PortfolioContainer title="MARKETPLACE" textcolor="indigo-black"/>
                             <div>
                                 <div className="flex md:mt-5 md:mr-6 invisible md:visible">
-                                    <div className="bg-indigo-light mr-1 h-11 w-64 flex font-thin">
+                                    <div className="bg-indigo-white mr-1 h-11 w-64 flex font-thin border-2 border-indigo-lightgray border-opacity-10">
                                             <form onSubmit={handleSubmit(handleSort)}>
                                                 <div>
-                                                    <select value={sortMode} className="bg-indigo-light ml-3 mt-2 text-lg" onChange={handleSort}>
+                                                    <select value={sortMode} className="bg-indigo-white ml-3 mt-2 text-lg" onChange={handleSort}>
                                                         <option value="">Sort by</option>
                                                         <option value="lowserial">Lowest Serial Number</option>
                                                         <option value="highserial">Highest Serial Number</option>
@@ -261,13 +261,15 @@ export default function Marketplace() {
                                             </form>
                                             {/* {console.log("sort: "+sortMode)} */}
                                         <img src={filterIcon} className="object-none w-3/12 mr-4" />
+                                        {/* change filterIcon icon to black */}
                                     </div>
-                                    <div className="bg-indigo-light ml-1 h-11 w-60" onClick={() => setFilter(false)}>
+                                    <div className="bg-indigo-white border-2 border-indigo-lightgray border-opacity-10 ml-1 h-11 w-60" onClick={() => setFilter(false)}>
                                         <div className="ml-1 mt-2">
                                             <form onSubmit={handleSubmit(onSubmit)}>
-                                                <input {...register("search")} className="text-xl ml-3 appearance-none bg-indigo-light focus:outline-none w-40" placeholder="Search..." />
+                                                <input {...register("search")} className="text-xl text-indigo-black ml-3 appearance-none bg-indigo-white focus:outline-none w-40" placeholder="Search..." />
                                                 <button className="">
                                                     <input type="image" src={searchIcon} className="object-none ml-8 mt-1" />
+                                                    {/* change searchIcon icon to black */}
                                                 </button>
                                             </form>
                                         </div>
