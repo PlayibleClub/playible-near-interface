@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
 const header = {
-  backgroundImage: `url('../images/header.png')`,
   backgroundSize: "contain",
   backgroundRepeat: "no-repeat",
   backgroundPosition: "center",
@@ -10,7 +9,7 @@ const Header = (props) => {
   const { children, color } = props;
 
   return (
-    <div data-test="header" className={`bg-${color} w-full h-24 flex flex-row justify-around fixed z-40`} style={header}>
+    <div data-test="header" className={`bg-${color} bg-gradient-to-r from-indigo-navbargrad2 to-indigo-navbargrad1 w-full h-24 flex flex-row justify-around fixed z-40`} style={header}>
       {children}
     </div>
   );

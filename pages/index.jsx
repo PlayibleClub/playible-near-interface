@@ -263,10 +263,11 @@ export default function Home() {
                     <img src={underlineIcon} className="mt-1"/>
                   </div>
 
-                  <div className="bg-indigo-light h-11 flex justify-between self-center font-thin w-72 mt-6">
-                    <div className="text-lg ml-4 mt-1 text-indigo-white">
+                  <div className="bg-indigo-white h-11 flex justify-between self-center font-thin w-72 mt-6 border-2 border-indigo-lightgray border-opacity-10">
+                    <div className="text-lg ml-4 mt-1 text-indigo-black">
                         <form>
-                            <select className='filter-select bg-indigo-light'>
+                            <select className='filter-select bg-white'>
+                              {/* change filterIcon icon black */}
                                 <option name="sevendays" value="sevendays">Last 7 days</option>
                                 <option name="month" value="month">Last month</option>
                                 <option name="year" value="year">Last year</option>

@@ -27,7 +27,7 @@ var styles = {
       height: '100%'
     },
     bmMenu: {
-      background: '#000000',
+      background: 'white',
       padding: '2.5em 1.5em 0',
       fontSize: '1.15em'
     },
@@ -35,7 +35,7 @@ var styles = {
       fill: '#000000'
     },
     bmItemList: {
-      color: '#b8b7ad',
+      color: 'black',
       padding: '0.8em'
     },
     bmItem: {
@@ -49,7 +49,7 @@ var styles = {
 
 const Navbar = () => {
   return (
-    <div>
+    <div className="">
       <Menu styles={ styles } customBurgerIcon={ <img src="images/Hamburger.png" /> }>
           <a id="home" className="menu-item"><Link href="/">HOME</Link></a>
           <a id="portfolio" className="menu-item"><Link href="/Portfolio">PORTFOLIO</Link></a>
