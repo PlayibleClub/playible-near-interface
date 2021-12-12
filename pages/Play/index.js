@@ -144,9 +144,9 @@ const Play = () => {
         <Container>
             {/* <div className={`font-montserrat h-screen relative flex overflow-x-hidden`}> */}
                 <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
-                    <Main color="indigo-dark">
+                    <Main color="indigo-white">
                         <div className="flex flex-col">
-                            <PortfolioContainer title="PLAY">
+                            <PortfolioContainer title="PLAY" textcolor="text-indigo-black">
                                 <div className="flex flex-col ml-7 mt-6">
                                     <div className="text-lg">
                                         LEVEL 1
@@ -197,7 +197,7 @@ const Play = () => {
                             </PortfolioContainer>
 
                             <div className="mt-12">
-                            <PortfolioContainer className="flex" title="MY ACTIVITY">
+                            <PortfolioContainer className="flex" title="MY ACTIVITY" textcolor="text-indigo-black">
                                 <div className="flex flex-col md:ml-8">
                                     <div className="flex mb-12 md:mb-8 mt-6">
                                         {isActivePlay ?
