@@ -21,7 +21,7 @@ const { imagesrc, packName, releaseValue, link } = props;
                 </div>
                 <div className="mt-6 mb-24 md:mb-6">
                     <Link href={`/PackDetails?id=${link}`}>
-                        <button className="bg-indigo-buttonblue w-64 md:w-2/3 h-12 text-center text-sm font-bold mt-2">
+                        <button className="bg-indigo-buttonblue text-indigo-white w-64 md:w-2/3 h-12 text-center text-sm font-bold mt-2">
                             <div className="">
                                 OPEN PACK
                             </div>
