@@ -24,7 +24,7 @@ const PrizePoolComponent = (props) =>{
                 />
             </div> */}
 
-            <div className="w-32 h-32" style={{
+            <div className="w-32 h-32 text-indigo-white" style={{
               backgroundImage: `url('/images/prizepoolthumbnails/${icon}.png')`,
               backgroundRepeat: 'no-repeat',
               width: '275px',
