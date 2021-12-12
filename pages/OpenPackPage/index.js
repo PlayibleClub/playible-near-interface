@@ -34,9 +34,9 @@ export default function OpenPackPage() {
             <Navbar/>
             <HeaderBase/>
             <div className="flex flex-col w-full h-screen">
-                <Main color="indigo-dark overflow-y-scroll">
+                <Main color="indigo-white overflow-y-scroll">
                     <div className="flex flex-col overflow-y-auto overflow-x-hidden">
-                        <PortfolioContainer title="CONGRATULATIONS!">
+                        <PortfolioContainer title="CONGRATULATIONS!" textcolor="text-indigo-black">
                             <div className='flex justify-center'>
                                 <div className="flex overflow-x-scroll pt-16 pb-32 hide-scroll-bar snap snap-x snap-mandatory">
                                     <div className="flex flex-nowrap pt-16">
