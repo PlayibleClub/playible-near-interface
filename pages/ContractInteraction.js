@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import {
   useWallet, WalletStatus, useConnectedWallet
 } from '@terra-money/wallet-provider';
 
 import { useDispatch } from 'react-redux';
 import { queryContract, executeContract } from '../utils/terra';
+import { ConsoleView } from 'react-device-detect';
 
 
 const ContractInteraction = () => {
@@ -28,7 +29,20 @@ const ContractInteraction = () => {
     availableConnectTypes,
     connect,
     disconnect,
+    signBytes,
+    supportFeatures
   } = useWallet();
+
+  const signMessage = async () => {
+    const BYTES = Buffer.from("hello world")
+    try {
+      const { result, success } = await signBytes(Buffer.from("hello world"))
+      console.log(success)
+      console.log(result)
+    } catch (error) {
+      console.log(`Unknown Error: ${error instanceof Error ? error.message : String(error)}`);
+    }
+  }
 
 
   const interactWallet = () => {
@@ -118,6 +132,8 @@ const ContractInteraction = () => {
         </div>
 
         <button onClick={performExecuteContract}>Submit Contract</button>
+        
+        <button onClick={signMessage}>Sign Message</button>
 
         <div className="flex flex-col gap-2">
           <label htmlFor="codeID">
