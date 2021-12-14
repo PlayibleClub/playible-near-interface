@@ -5,6 +5,7 @@ import PortfolioContainer from '../../components/containers/PortfolioContainer';
 import LargePackContainer from '../../components/containers/LargePackContainer';
 import Container from '../../components/containers/Container';
 import BackFunction from '../../components/buttons/BackFunction';
+import Main from '../../components/Main'
 
 export default function Packs() {
     const { status, connect, disconnect, availableConnectTypes } = useWallet();
@@ -89,37 +90,42 @@ export default function Packs() {
     
     // if (isNarrowScreen) {
     return (
-        <>
-            <Container>
-                <PortfolioContainer color="indigo-white" textcolor="indigo-black" title="PACKS">
-                    <div className="invisible">
-                        <BackFunction prev="/Packs"/>
+        <Container>
+            <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
+                <Main color="indigo-dark">
+                    <div className="md:ml-6 w-screen md:w-full">
+                    <PortfolioContainer title="PACKS">
+                        <div className="flex flex-col w-full">
+                            <div className="self-center">
+                                <div className="md:ml-16 grid grid-cols-1 gap-x-8 gap-y-8 md:grid-cols-4 mt-4 md:mt-12 mb-12">
+                                    {
+                                        packList.map(function (pack, i) {
+                                            const toFindName = pack.name.toLowerCase()
+                                            const searchInfo = result.toLowerCase()
+                                            if (toFindName.includes(searchInfo))
+                                                return (
+                                                    <div className="">
+                                                        <a href={`/PackDetails?id=${pack.key}`}>
+                                                            <div className="" key={i}>
+                                                                <LargePackContainer
+                                                                    PackName={pack.name}
+                                                                    CoinValue={pack.price}
+                                                                    releaseValue={pack.release}
+                                                                    imagesrc={pack.image} />
+                                                            </div>
+                                                        </a>
+                                                    </div>
+                                                )
+                                            }
+                                        )
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </PortfolioContainer>
                     </div>
-                    <div className="grid grid-cols-4 pl-10">
-                        {
-                            packList.map(function (pack, i) {
-                                const toFindName = pack.name.toLowerCase()
-                                const searchInfo = result.toLowerCase()
-                                if (toFindName.includes(searchInfo))
-                                    return (
-                                        <div className="mx-4 py-4 mr-40">
-                                            <a href={`/PackDetails?id=${pack.key}`}>
-                                                <div className="mx-left" key={i}>
-                                                    <LargePackContainer
-                                                        PackName={pack.name}
-                                                        CoinValue={pack.price}
-                                                        releaseValue={pack.release}
-                                                        imagesrc={pack.image} />
-                                                </div>
-                                            </a>
-                                        </div>
-                                    )
-                                }
-                            )
-                        }
-                    </div>
-                </PortfolioContainer>
-            </Container>
-        </>
+                </Main>
+            </div>
+        </Container>
     )
 }
