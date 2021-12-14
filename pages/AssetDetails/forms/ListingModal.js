@@ -10,7 +10,7 @@ import underlineIcon from '../../../public/images/blackunderline.png'
 import BaseModal from '../../../components/modals/BaseModal'
 import LoadingModal from '../../../components/loading/LoadingModal';
 
-const PostSaleModal = (props) => {
+const ListingModal = (props) => {
   const {
     asset,
     onClose, //setPostingModal(false)
@@ -20,10 +20,11 @@ const PostSaleModal = (props) => {
   const connectedWallet = useConnectedWallet()
   const [price, setPrice] = useState(0)
   const [title, setTitle] = useState("LIST ITEM FOR SALE")
-  const [status, setStatus] = useState("default")
+  const [status, setStatus] = useState(statusCode.IDLE)
+  const [errorMessage, setErrorMessage] = useState("An error has occurred")
   const { signBytes } = useWallet()
 
-  const { status: approvalStatus } = useSelector((state) => state.contract.nft)
+  const { status: approvalStatus, message } = useSelector((state) => state.contract.nft)
 
   useEffect(() => {
     dispatch(clearData())
@@ -44,7 +45,7 @@ const PostSaleModal = (props) => {
  
   useEffect(() => {
     //NFT approval is succesful
-    if(approvalStatus == statusCode.SUCCESS){
+    if(approvalStatus === statusCode.SUCCESS){
       const data = {
         collection: asset.collection,
         token_id: asset.tokenID,
@@ -56,12 +57,24 @@ const PostSaleModal = (props) => {
       dispatch(createSalesOrder({
         ...data,
         signed_message: signed_data
-      })).then(onSubmit)
+      }))
+      .then(() => {
+        setStatus(statusCode.SUCCESS)
+        onSubmit()
+      })
+      .catch(() => {
+        setStatus(statusCode.ERROR)
+      })
+    }
+    else if(approvalStatus === statusCode.ERROR){
+      setStatus(statusCode.ERROR)
+      setTitle("Error")
+      setErrorMessage(message)
     }
   }, [approvalStatus])
 
   const handleSubmit = () => {
-    setStatus("approval")
+    setStatus(statusCode.PENDING)
     setTitle("Waiting for approval")
     dispatch(approveMarketplace({
       connectedWallet: connectedWallet,
@@ -75,7 +88,7 @@ const PostSaleModal = (props) => {
       visible={true}
       onClose={() => {onClose()}}
     >
-      {status === "default" &&
+      {status === statusCode.IDLE &&
         <>
         <div className="flex flex-col mt-2">
           <div className="mt-4 text-xl font-bold">
@@ -103,10 +116,14 @@ const PostSaleModal = (props) => {
         </div>
       </>
       }
-      {status === "approval" &&
+      {status === statusCode.PENDING &&
         <LoadingModal/>
+      }
+      
+      {status === statusCode.ERROR &&
+        errorMessage
       }
     </BaseModal>
   )
 }
-export default PostSaleModal;
+export default ListingModal;
