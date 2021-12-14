@@ -10,8 +10,6 @@ import HorizontalScrollContainer from '../../components/containers/HorizontalScr
 import TokenComponent from '../../components/TokenComponent';
 import Main from '../../components/Main';
 
-// import { tokenDrawData } from '../data/index.js';
-
 const sampleList = [0,1,2,3,4,5]
 
 const TokenDrawPage = () => {
