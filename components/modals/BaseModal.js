@@ -1,5 +1,6 @@
 import { Dialog, Transition } from '@headlessui/react'
 import { Fragment } from 'react'
+import underlineIcon from '../../public/images/blackunderline.png'
 
 const BaseModal = (props) => {
   const { title, children, visible, onClose } = props
@@ -9,7 +10,7 @@ const BaseModal = (props) => {
       <Transition appear show={visible} as={Fragment}>
         <Dialog
           as="div"
-          className="fixed inset-0 z-10 overflow-y-auto"
+          className="fixed inset-0 z-10 overflow-y-auto font-montserrat"
           onClose={() => {onClose()}}
         >
           <div className="min-h-screen px-4 text-center">
@@ -41,12 +42,13 @@ const BaseModal = (props) => {
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <div className="bg-indigo-white inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
+              <div className="bg-indigo-white inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-lg">
                 <Dialog.Title
                   as="h3"
-                  className="text-lg font-medium leading-6 text-gray-900"
+                  className="text-2xl font-medium leading-6 text-gray-900 font-bold"
                 >
                   {title}
+                  <img src={underlineIcon} className="sm:object-none w-6 py-1" />
                 </Dialog.Title>
                 {children}
                 <div className="mt-4">

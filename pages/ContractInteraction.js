@@ -29,16 +29,12 @@ const ContractInteraction = () => {
     availableConnectTypes,
     connect,
     disconnect,
-    signBytes,
-    supportFeatures
+    signBytes
   } = useWallet();
 
   const signMessage = async () => {
-    const BYTES = Buffer.from("hello world")
     try {
-      const { result, success } = await signBytes(Buffer.from("hello world"))
-      console.log(success)
-      console.log(result)
+      const { result, success } = await signBytes(Buffer.from("ngmi"))
     } catch (error) {
       console.log(`Unknown Error: ${error instanceof Error ? error.message : String(error)}`);
     }
