@@ -149,14 +149,14 @@ const Marketplace = () => {
     return (
         <Container>
           <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
-            <Main color="indigo-dark">
+            <Main color="indigo-white">
                 
               {loading ? (
                   <LoadingPageDark/>
               ) : (
-                <div className="flex flex-col w-full overflow-y-auto overflow-x-hidden h-screen self-center text-white-light">
+                <div className="flex flex-col w-full overflow-y-auto overflow-x-hidden h-screen self-center text-indigo-black">
                   <div className="ml-6 flex flex-col md:flex-row md:justify-between">
-                      <PortfolioContainer title="MARKETPLACE"/>
+                      <PortfolioContainer title="MARKETPLACE" textcolor="text-indigo-black"/>
                       <Sorter
                         list={sortedList}
                         setList={setSortedList}
