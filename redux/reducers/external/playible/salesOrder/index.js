@@ -48,7 +48,7 @@ const processSalesListData = (data) => {
   const processedData = []
   data.forEach((item) => {
     processedData.push({
-      id: item.id,
+      id: item.asset,
       tokenID: item.token_id,
       collection: item.collection,
       asset: item.asset,
