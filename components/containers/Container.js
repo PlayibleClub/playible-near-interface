@@ -8,7 +8,7 @@ const Container = (props) => {
   const { children } = props
 
   return (
-    <div className="font-montserrat h-screen relative bg-indigo-dark flex overflow-x-hidden overflow-y-hidden">
+    <div className="font-montserrat h-screen relative bg-indigo-white flex overflow-x-hidden overflow-y-hidden">
       <div className="invisible w-0 md:visible md:w-full">
         <div className="flex bg-indigo-white">
           <DesktopNavbar color="indigo-navbargrad2" secondcolor="indigo-navbargrad1"/>

@@ -2,7 +2,7 @@ import { useWallet, WalletStatus } from '@terra-money/wallet-provider';
 import Container from '../components/containers/Container';
 import Main from '../components/Main';
 import React, { useEffect, useState } from 'react'
-import underlineIcon from '../public/images/underline.png'
+import underlineIcon from '../public/images/blackunderline.png'
 import viewall from '../public/images/viewall.png'
 import PrizePoolComponent from '../components/PrizePoolComponent';
 import Link from 'next/link'
@@ -147,8 +147,8 @@ export default function Home() {
 
   return (
     <Container>
-        <div className="flex flex-col w-screen md:w-full overflow-y-auto h-screen justify-center self-center md:pb-12 text-indigo-white">
-          <Main color="indigo-dark">
+        <div className="flex flex-col w-screen md:w-full overflow-y-auto h-screen justify-center self-center md:pb-12 text-indigo-black">
+          <Main color="indigo-white">
               <div className="flex flex-col md:flex-row md:ml-8 mt-12">
                 <div className="md:w-2/3">
                   <div className="ml-8 md:ml-0">
@@ -263,10 +263,11 @@ export default function Home() {
                     <img src={underlineIcon} className="mt-1"/>
                   </div>
 
-                  <div className="bg-indigo-light h-11 flex justify-between self-center font-thin w-72 mt-6">
-                    <div className="text-lg ml-4 mt-1 text-indigo-white">
+                  <div className="bg-indigo-white h-11 flex justify-between self-center font-thin w-72 mt-6 border-2 border-indigo-lightgray border-opacity-10">
+                    <div className="text-lg ml-4 mt-1 text-indigo-black">
                         <form>
-                            <select className='filter-select bg-indigo-light'>
+                            <select className='filter-select bg-white'>
+                              {/* change filterIcon icon black */}
                                 <option name="sevendays" value="sevendays">Last 7 days</option>
                                 <option name="month" value="month">Last month</option>
                                 <option name="year" value="year">Last year</option>
