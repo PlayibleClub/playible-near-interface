@@ -152,10 +152,10 @@ export default function Home() {
               <div className="flex flex-col md:flex-row md:ml-8 mt-12">
                 <div className="md:w-2/3">
                   <div className="ml-8 md:ml-0">
-                    <div className="font-thin text-sm">
+                    <div className="font-thin text-sm font-monument">
                       PLAYIBLE TOTAL VALUE
                     </div>
-                    <div className="text-3xl font-bold">
+                    <div className="text-3xl font-bold font-monument">
                       ${playibleValue}
                     </div>
                     <div className="mt-4 w-11/12">
@@ -165,7 +165,7 @@ export default function Home() {
 
                   <div className="flex flex-col md:border rounded-lg md:p-6 mt-8 md:mr-8">
                     <div className="ml-8 md:ml-0">
-                      <div className="text-xl font-bold">
+                      <div className="text-xl font-bold font-monument">
                         PRIZE POOL
                       </div>
                       <img src={underlineIcon} className="mt-1"/>
@@ -185,7 +185,7 @@ export default function Home() {
                   <div className="flex flex-col md:border rounded-lg md:p-6 mt-12 md:mt-8 md:mr-8">
                     <div className="flex justify-between">
                       <div className="ml-8 md:ml-0">
-                        <div className="text-xl font-bold">
+                        <div className="text-xl font-bold font-monument">
                           MARKETPLACE
                         </div>
                         <img src={underlineIcon} className="mt-1"/>
@@ -205,7 +205,7 @@ export default function Home() {
                       {playerList.map(function(data,i){
                         return(
                           <Link href={{
-                            pathname: '/PlayerDetails',
+                            pathname: '/AssetDetails',
                             query: { id: data.id, origin: 'marketplace' }                                                    
                           }}>
                             <div className='' key={i}>
@@ -220,7 +220,7 @@ export default function Home() {
                   <div className="flex flex-col md:border rounded-lg md:p-6 mt-12 md:mt-8 mr-8 md:mb-8">
                     <div className="flex justify-between">
                       <div className="ml-8 md:ml-0">
-                        <div className="text-xl font-bold">
+                        <div className="text-xl font-bold font-monument">
                           PACKS
                         </div>
                         <img src={underlineIcon} className="mt-1"/>
@@ -257,14 +257,14 @@ export default function Home() {
 
                 <div className="flex flex-col md:w-1/3 md:h-3/5 md:border rounded-lg md:p-6 md:mr-8 mt-12 md:mt-0">
                   <div className="ml-8 md:ml-0">
-                    <div className="text-xl font-bold">
+                    <div className="text-xl font-bold font-monument">
                       TOP PERFORMERS
                     </div>
                     <img src={underlineIcon} className="mt-1"/>
                   </div>
 
-                  <div className="bg-indigo-white h-11 flex justify-between self-center font-thin w-72 mt-6 border-2 border-indigo-lightgray border-opacity-10">
-                    <div className="text-lg ml-4 mt-1 text-indigo-black">
+                  <div className="bg-indigo-white h-11 flex justify-between self-center font-thin w-72 mt-6 border-2 border-indigo-lightgray border-opacity-50">
+                    <div className="text-lg ml-4 mt-1.5 md:mb-1.5 text-indigo-black">
                         <form>
                             <select className='filter-select bg-white'>
                               {/* change filterIcon icon black */}
@@ -281,7 +281,7 @@ export default function Home() {
                     {playerList.map(function(player,i){
                       return(
                         <Link href={{
-                          pathname: '/PlayerDetails',
+                          pathname: '/AssetDetails',
                           query: { id: player.id, origin: 'portfolio' }                                                    
                         }}>
                             <div className='' key={i}>

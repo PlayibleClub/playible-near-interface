@@ -246,10 +246,10 @@ export default function Marketplace() {
                             <PortfolioContainer title="MARKETPLACE" textcolor="indigo-black"/>
                             <div>
                                 <div className="flex md:mt-5 md:mr-6 invisible md:visible">
-                                    <div className="bg-indigo-white mr-1 h-11 w-64 flex font-thin border-2 border-indigo-lightgray border-opacity-10">
+                                    <div className="bg-indigo-white mr-1 h-11 w-64 flex font-thin border-2 border-indigo-lightgray border-opacity-40">
                                             <form onSubmit={handleSubmit(handleSort)}>
                                                 <div>
-                                                    <select value={sortMode} className="bg-indigo-white ml-3 mt-2 text-lg" onChange={handleSort}>
+                                                    <select value={sortMode} className="bg-indigo-white ml-3 mt-1.5 text-lg" onChange={handleSort}>
                                                         <option value="">Sort by</option>
                                                         <option value="lowserial">Lowest Serial Number</option>
                                                         <option value="highserial">Highest Serial Number</option>
@@ -263,8 +263,8 @@ export default function Marketplace() {
                                         <img src={filterIcon} className="object-none w-3/12 mr-4" />
                                         {/* change filterIcon icon to black */}
                                     </div>
-                                    <div className="bg-indigo-white border-2 border-indigo-lightgray border-opacity-10 ml-1 h-11 w-60" onClick={() => setFilter(false)}>
-                                        <div className="ml-1 mt-2">
+                                    <div className="bg-indigo-white border-2 border-indigo-lightgray border-opacity-40 ml-1 h-11 w-60" onClick={() => setFilter(false)}>
+                                        <div className="mt-1.5">
                                             <form onSubmit={handleSubmit(onSubmit)}>
                                                 <input {...register("search")} className="text-xl text-indigo-black ml-3 appearance-none bg-indigo-white focus:outline-none w-40" placeholder="Search..." />
                                                 <button className="">
@@ -279,7 +279,7 @@ export default function Marketplace() {
                                 <div className="flex w-full mb-4 self-center justify-center md:invisible ">
                                     {filterMode ?
                                         <>
-                                            <div className="rounded-md bg-indigo-white mr-1 w-12 h-11 border-2 border-indigo-lightgray border-opacity-10" onClick={() => {
+                                            <div className="rounded-md bg-indigo-white mr-1 w-12 h-11 border-2 border-indigo-lightgray border-opacity-40" onClick={() => {
                                                 setMode(false)
                                                 setResult("")
                                             }}>
@@ -288,7 +288,7 @@ export default function Marketplace() {
                                                 </div>
                                             </div>
 
-                                            <div className="rounded-md bg-indigo-white ml-1 h-11 w-10/12 flex iphone5:w-56 iphoneX:w-64 md:w-80 border-2 border-indigo-lightgray border-opacity-10">
+                                            <div className="rounded-md bg-indigo-white ml-1 h-11 w-10/12 flex iphone5:w-56 iphoneX:w-64 md:w-80 border-2 border-indigo-lightgray border-opacity-40">
                                                 <div className="ml-1 mt-2 ">
                                                     <form onSubmit={handleSubmit(onSubmit)}>
                                                         <input {...register("search")} className="text-xl ml-2 appearance-none bg-indigo-white focus:outline-none w-10/12 " placeholder="Search..." />
@@ -303,7 +303,7 @@ export default function Marketplace() {
                                         :
                                         <>
                                             <div className="flex ">
-                                                <div className="rounded-md bg-indigo-white mr-1 h-11 w-72 flex font-thin iphone5:w-56 iphoneX:w-64 md:w-80 border-2 border-indigo-lightgray border-opacity-10" 
+                                                <div className="rounded-md bg-indigo-white mr-1 h-11 w-72 flex font-thin iphone5:w-56 iphoneX:w-64 md:w-80 border-2 border-indigo-lightgray border-opacity-40" 
                                                 // onClick={() => {if(showFilter) setFilter(false) 
                                                 //     else setFilter(true)}}
                                                 >
@@ -324,7 +324,7 @@ export default function Marketplace() {
                                                     <img src={filterIcon} className="object-none w-3/12 mr-4 " />
                                                 </div>
 
-                                                <div className="rounded-md bg-indigo-white ml-1 w-12 h-11 border-2 border-indigo-lightgray border-opacity-10" onClick={() => {
+                                                <div className="rounded-md bg-indigo-white ml-1 w-12 h-11 border-2 border-indigo-lightgray border-opacity-40" onClick={() => {
                                                     setMode(true)
                                                     setFilter(false)
                                                     setResult("")
