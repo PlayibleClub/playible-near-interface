@@ -113,7 +113,7 @@ const playerList = [ // player list for testing purposes
   {
     name: 'TAUREAN PRINCE',
     team: 'Minnesota Timberwolves',
-    id: '14450',
+    id: '2',
     owner: 'terraasdsadsadsadd',
     silvercost: '41 UST',
     goldcost: '55 UST',
@@ -131,7 +131,7 @@ const playerList = [ // player list for testing purposes
   {
     name: 'LEBRON JAMES',
     team: 'Los Angeles Lakers',
-    id: '25',
+    id: '3',
     owner: 'terraasdsadsadsadd',
     silvercost: '840 UST',
     goldcost: '1100 UST',
@@ -149,7 +149,7 @@ const playerList = [ // player list for testing purposes
   {
     name: 'DEVIN BOOKER',
     team: 'Phoenix Suns',
-    id: '16450',
+    id: '4',
     owner: 'terraasdsadsadsadd',
     silvercost: '21 UST',
     goldcost: '34 UST',
@@ -277,7 +277,7 @@ const AssetDetails = () => {
     //const [goldDropdown, displayGold] = useState(false)
     const { query } = useRouter()
 
-    const { list: playerList } = useSelector((state) => state.external.playible.assets)
+    //const { list: playerList } = useSelector((state) => state.external.playible.assets)
 
     /*const baseTokenCount = tokenList.reduce(function(n, list){
         return n + (list.id === playerToFind.id && list.rarity === 'base')
