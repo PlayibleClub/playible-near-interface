@@ -93,9 +93,9 @@ export default function CreateLineup() {
             <div className={`font-montserrat h-screen relative `}>
                 <div className="flex flex-col w-full ">
                     <HeaderBack link="/Play"/>
-                    <Main color="indigo-dark">
+                    <Main color="indigo-white">
                         <div className="flex flex-col w-full h-full overflow-y-scroll overflow-x-hidden">
-                            <PortfolioContainer title="CREATE LINEUP">
+                            <PortfolioContainer title="CREATE LINEUP" textcolor="text-indigo-black">
                                 <div className="flex flex-col">
                                     <div className="font-thin text-sm mt-8 mb-10 ml-6">Create your own Fantasy Team</div>
                                     <TokenGridCol2>

@@ -5,7 +5,8 @@ import PackComponent from '../../components/PackComponent';
 import Link from 'next/link';
 import HeaderBase from '../../components/headers/HeaderBase';
 import Navbar from '../../components/navbars/Navbar';
-import walletIcon from '../public/images/wallet.png';
+// import walletIcon from '../public/images/wallet.png';
+// Had to comment this out because it's returning an error
 
 const Payment = () => {
     const [isClosed, setClosed] = useState(true)

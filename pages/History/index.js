@@ -186,14 +186,14 @@ export default function History(props) {
     return (
         <Container>
             <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
-                <Main color="indigo-dark">
+                <Main color="indigo-white">
                     <div className="flex flex-col ml-6">
                         <Link href="/Play/">
-                            <div className="text-indigo-white flex mt-6 md:mt-12">
+                            <div className="text-indigo-black flex mt-6 md:mt-12">
                                 <div className="font-bold mr-2">&#x3c;</div><div>Back</div>
                             </div>
                         </Link>
-                        <PortfolioContainer title="ENTRY SUMMARY">
+                        <PortfolioContainer title="ENTRY SUMMARY" textcolor="text-indigo-black">
                             {gameInfo.map(function(data,i){
                                 if(query.id === data.id){
                                     if(!data.isActivePlay){
