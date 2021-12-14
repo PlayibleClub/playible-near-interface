@@ -6,6 +6,7 @@ import LargePackContainer from '../../components/containers/LargePackContainer';
 import Container from '../../components/containers/Container';
 import BackFunction from '../../components/buttons/BackFunction';
 import Main from '../../components/Main'
+import {packList} from './data'
 
 export default function Packs() {
     const { status, connect, disconnect, availableConnectTypes } = useWallet();
@@ -42,34 +43,6 @@ export default function Packs() {
 
         console.log(data)
     }
-    const key1 = 'team'
-
-    const packList = [
-        {
-            name: 'PREMIUM PACK',
-            key: 'prem2',
-            release: '2',
-            price: '20 UST',
-            image: '/images/packimages/PremiumRelease2.png',
-
-        },
-        {
-            name: 'PREMIUM PACK',
-            key: 'prem3',
-            release: '3',
-            price: '35 UST',
-            image: '/images/packimages/PremiumRelease3.png',
-
-        },
-        {
-            name: 'BASE PACK',
-            key: 'base2',
-            release: '2',
-            price: '20 UST',
-            image: '/images/packimages/BaseRelease1.png',
-        },
-    ]
-
     const [isNarrowScreen, setIsNarrowScreen] = useState(false);
 
     // useEffect(() => {
@@ -92,12 +65,12 @@ export default function Packs() {
     return (
         <Container>
             <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
-                <Main color="indigo-dark">
-                    <div className="md:ml-6 w-screen md:w-full">
-                    <PortfolioContainer title="PACKS">
-                        <div className="flex flex-col w-full">
-                            <div className="self-center">
-                                <div className="md:ml-16 grid grid-cols-1 gap-x-8 gap-y-8 md:grid-cols-4 mt-4 md:mt-12 mb-12">
+                <Main color="indigo-white">
+                    <div className="md:ml-6">
+                    <PortfolioContainer textcolor="indigo-black" title="PACKS">
+                        <div className="flex flex-col">
+                            <div className="">
+                                <div className="md:ml-7 grid grid-cols-1 gap-x-2 gap-y-8 md:grid-cols-4 mt-4 md:mt-12 mb-12">
                                     {
                                         packList.map(function (pack, i) {
                                             const toFindName = pack.name.toLowerCase()

@@ -7,7 +7,7 @@ const LargePackContainer = (props) => {
   
     return (
       <>
-        <div data-test="LargePackContainer" className={`bg-${color} w-full`}>
+        <div data-test="LargePackContainer" className={`bg-${color} w-32`}>
             <div className="transition-all">
                   <Image className="object-contain  hover:-translate-y-1 transform transition-all"
                     src={imagesrc}

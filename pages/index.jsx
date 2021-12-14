@@ -149,7 +149,7 @@ export default function Home() {
     <Container>
         <div className="flex flex-col w-screen md:w-full overflow-y-auto h-screen justify-center self-center md:pb-12 text-indigo-black">
           <Main color="indigo-white">
-              <div className="flex flex-col md:flex-row md:ml-8 mt-12">
+              <div className="flex flex-col md:flex-row md:ml-12 mt-12">
                 <div className="md:w-2/3">
                   <div className="ml-8 md:ml-0">
                     <div className="font-thin text-sm font-monument">
@@ -204,14 +204,9 @@ export default function Home() {
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-x-4 mt-8">
                       {playerList.map(function(data,i){
                         return(
-                          <Link href={{
-                            pathname: '/AssetDetails',
-                            query: { id: data.id, origin: 'marketplace' }                                                    
-                          }}>
-                            <div className='' key={i}>
-                                <MarketplaceContainer AthleteName={data.name} id={data.id} LowAsk={data.lowestask}/>
-                            </div>
-                          </Link>
+                          <div className='' key={i}>
+                              <MarketplaceContainer AthleteName={data.name} id={data.id} LowAsk={data.lowestask}/>
+                          </div>
                         )
                       })}
                     </div>
@@ -240,15 +235,13 @@ export default function Home() {
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-x-6 mt-8 self-center">
                       {packList.map(function(pack,i){
                         return(
-                          <Link href={`/PackDetails?id=${pack.key}`}>
-                            <div className='mb-4' key={i}>
-                                <LargePackContainer
-                                    PackName={pack.name}
-                                    CoinValue={pack.price}
-                                    releaseValue={pack.release}
-                                    imagesrc={pack.image} />
-                            </div>
-                        </Link>
+                          <div className='mb-4' key={i}>
+                              <LargePackContainer
+                                  PackName={pack.name}
+                                  CoinValue={pack.price}
+                                  releaseValue={pack.release}
+                                  imagesrc={pack.image} />
+                          </div>
                         )
                       })}
                     </div>
@@ -280,14 +273,9 @@ export default function Home() {
                   <div className="grid grid-cols-2 gap-x-4 mt-8">
                     {playerList.map(function(player,i){
                       return(
-                        <Link href={{
-                          pathname: '/AssetDetails',
-                          query: { id: player.id, origin: 'portfolio' }                                                    
-                        }}>
-                            <div className='' key={i}>
-                                <PerformerContainer AthleteName={player.name} AvgScore={player.avgscore} id={player.id} rarity={player.rarity}/>
-                            </div>
-                        </Link>
+                        <div className='' key={i}>
+                            <PerformerContainer AthleteName={player.name} AvgScore={player.avgscore} id={player.id} rarity={player.rarity}/>
+                        </div>
                       )
                     })}
                   </div>

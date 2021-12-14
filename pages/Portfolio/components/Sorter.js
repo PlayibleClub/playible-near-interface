@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { sortOptions } from '../data';
 
-import filterIcon from '../../../public/images/filter.png'
-import searchIcon from '../../../public/images/search.png'
+import filterIcon from '../../../public/images/filterBlack.png'
+import searchIcon from '../../../public/images/searchBlack.png'
 
 const Sorter = (props) => {
   const {

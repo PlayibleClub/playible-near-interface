@@ -15,7 +15,7 @@ const DesktopNavbar = (props) => {
         </button>
       </div>
       <div className="flex justify-center mt-10">
-        <div className="flex flex-col h-1/5 w-4/6">
+        <div className="flex flex-col h-1/5 w-4/6 font-monument">
           <button><NavButtonContainer imagesrc="images/navicons/icon_home.png" Title="Home" path="/"></NavButtonContainer></button>
           <button><NavButtonContainer imagesrc="images/navicons/icon_portfolio.png" Title="Squad" path="/Portfolio"></NavButtonContainer></button>
           <button><NavButtonContainer imagesrc="images/navicons/icon_packs.png" Title="Packs" path="/Packs"></NavButtonContainer></button>

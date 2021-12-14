@@ -18,248 +18,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import PostSaleModal from './forms/PostSaleModal';
 import CongratsModal from './components/congratsModal';
 import LoadingPageDark from '../../components/loading/LoadingPageDark';
+import BackFunction from '../../components/buttons/BackFunction';
 
-const playerdata = [
-  {
-    key: 'sevendays',
-    points: {
-      score: 35,
-      pos: "3rd",
-    },
-    rebounds: {
-      score: 5.5,
-      pos: "24th",
-    },
-    assists: {
-      score: 23,
-      pos: "55th",
-    },
-    blocks: {
-      score: 5,
-      pos: "5th",
-    },
-    steals: {
-      score: 11,
-      pos: "6th",
-    },
-  },
-  {
-    key: 'month',
-    points: {
-      score: 50,
-      pos: "2nd",
-    },
-    rebounds: {
-      score: 9,
-      pos: "45th",
-    },
-    assists: {
-      score: 44,
-      pos: "24th",
-    },
-    blocks: {
-      score: 13,
-      pos: "9th",
-    },
-    steals: {
-      score: 18,
-      pos: "7th",
-    },
-  },
-  {
-    key: 'year',
-    points: {
-      score: 86,
-      pos: "1st",
-    },
-    rebounds: {
-      score: 19,
-      pos: "37th",
-    },
-    assists: {
-      score: 68,
-      pos: "16th",
-    },
-    blocks: {
-      score: 32,
-      pos: "5th",
-    },
-    steals: {
-      score: 23,
-      pos: "3rd",
-    },
-  },
-]
-
-const playerList = [ // player list for testing purposes
-  {
-    name: 'STEPHEN CURRY',
-    team: 'Golden State Warriors',
-    id: '1',
-    owner: 'terra1f8wkdt7sms3c3tucaqle7yvn59v8qz27srlghj',
-    silvercost: '420 UST',
-    goldcost: '521 UST',
-    jersey: '30',
-    positions: ['PG', 'SG'],
-    avgscore: '86.3',
-    stats: 86.5,
-    data: playerdata,
-    grad1: 'indigo-blue',
-    grad2: 'indigo-bluegrad',
-    rarity: 'silver',
-    lowestask: '120 UST',
-    highestask: '550 UST'
-  },
-  {
-    name: 'TAUREAN PRINCE',
-    team: 'Minnesota Timberwolves',
-    id: '2',
-    owner: 'terraasdsadsadsadd',
-    silvercost: '41 UST',
-    goldcost: '55 UST',
-    jersey: '12',
-    positions: ['PG'],
-    avgscore: '66.5',
-    stats: 66.9,
-    data: playerdata,
-    grad1: 'indigo-purple',
-    grad2: 'indigo-purplegrad',
-    rarity: 'silver',
-    lowestask: '120 UST',
-    highestask: '550 UST'
-  },
-  {
-    name: 'LEBRON JAMES',
-    team: 'Los Angeles Lakers',
-    id: '3',
-    owner: 'terraasdsadsadsadd',
-    silvercost: '840 UST',
-    goldcost: '1100 UST',
-    jersey: '23',
-    positions: ['PG', 'SG'],
-    avgscore: '96.0',
-    stats: 90.2,
-    data: playerdata,
-    grad1: 'indigo-purple',
-    grad2: 'indigo-purplegrad',
-    rarity: 'gold',
-    lowestask: '120 UST',
-    highestask: '550 UST'
-  },
-  {
-    name: 'DEVIN BOOKER',
-    team: 'Phoenix Suns',
-    id: '4',
-    owner: 'terraasdsadsadsadd',
-    silvercost: '21 UST',
-    goldcost: '34 UST',
-    jersey: '01',
-    positions: ['SF', 'C'],
-    avgscore: '76.8',
-    stats: 80.5,
-    data: playerdata,
-    grad1: 'indigo-darkblue',
-    grad2: 'indigo-darkbluegrad',
-    rarity: 'silver',
-    lowestask: '120 UST',
-    highestask: '550 UST'
-  },
-  {
-    name: 'ARMONI BROOKS',
-    team: 'Houston Rockets',
-    id: '21300',
-    owner: 'terraasdsadsadsadd',
-    silvercost: '45.5 UST',
-    goldcost: '66.6 UST',
-    jersey: '23',
-    positions: ['SG', 'C'],
-    avgscore: '81.0',
-    stats: 76.2,
-    data: playerdata,
-    grad1: 'indigo-blue',
-    grad2: 'indigo-bluegrad',
-    rarity: 'silver',
-    lowestask: '120 UST',
-    highestask: '550 UST'
-  },
-  {
-    name: 'KEVIN DURANT',
-    team: 'Brooklyn Nets',
-    id: '12300',
-    owner: 'terraasdsadsadsadd',
-    silvercost: '180 UST',
-    goldcost: '220 UST',
-    jersey: '07',
-    positions: ['PG'],
-    avgscore: '83.0',
-    stats: 77.7,
-    data: playerdata,
-    grad1: 'indigo-black',
-    grad2: 'indigo-red',
-    rarity: 'gold',
-    lowestask: '120 UST',
-    highestask: '550 UST'
-  },
-  {
-    name: 'KOBE BRYANT',
-    team: 'Los Angeles Lakers',
-    id: '999',
-    owner: 'terraasdsadsadsadd',
-    silvercost: '999 UST',
-    goldcost: '1001 UST',
-    jersey: '24',
-    positions: ['SG'],
-    avgscore: '96.0',
-    stats: 99.9,
-    data: playerdata,
-    grad1: 'indigo-purple',
-    grad2: 'indigo-purplegrad',
-    rarity: 'silver',
-    lowestask: '120 UST',
-    highestask: '550 UST'
-  },
-  // {
-  //     name: '',
-  //     team: '',
-  //     id: '',
-  //     cost: '',
-  //     jersey: '',
-  //     positions: [],
-  //     grad1: '',
-  //     grad2: '',
-  // },
-]
-
-/*const tokenList = [
-    {
-        id: '12300',
-        rarity: 'gold'
-    },
-    {
-        id: '320',
-        rarity: 'base'
-    },
-    {
-        id: '320',
-        rarity: 'base'
-    },
-    {
-        id: '21300',
-        rarity: 'silver'
-    },
-    {
-        id: '320',
-        rarity: 'base'
-    },
-    {
-        id: '14450',
-        rarity: 'silver'
-    },
-    {
-        id: '320',
-        rarity: 'silver'
-    },
-]*/
+import { playerList } from './data';
 
 const AssetDetails = () => {
     //const { register, handleSubmit } = useForm()
@@ -456,16 +217,14 @@ const AssetDetails = () => {
                 <div className="flex flex-col w-screen md:w-full overflow-y-auto h-auto justify-center self-center">
                   <div className="flex">
                     <div className="flex flex-col w-full h-screen">
-                      <Main color="indigo-dark">
+                      <Main color="indigo-white">
                         <div className="flex flex-col overflow-y-auto overflow-x-hidden">
                           <div className="md:ml-8">
-                            <Link href={query.origin === 'portfolio' ? "/Portfolio/" : "/Marketplace/"}>
-                              <div className="text-indigo-white flex mt-6 ml-6 mb-2">
-                                <div className="font-bold mr-2">&#x3c;</div><div>Back</div>
-                              </div>
-                            </Link>
+                            <div className="mt-8">
+                              <BackFunction prev={query.origin === 'portfolio' ? "/Portfolio/" : "/Marketplace/"}/>
+                            </div>
                               
-                            <PortfolioContainer title="PLAYER DETAILS">
+                            <PortfolioContainer textcolor="indigo-black" title="PLAYER DETAILS">
                               <div className="flex flex-col mt-2 mb-8">
                                 <div className="flex md:flex-row flex-col md:mt-8">
                                   <div>
@@ -489,19 +248,12 @@ const AssetDetails = () => {
                                         AVERAGE SCORE
                                       </div>
 
-                                      <div className="text-sm">
+                                      <div className="text-sm mb-4">
                                         {assetData["avgscore"]}
                                       </div>
                                     </div>
 
-                                    <div className="flex flex-col md:flex-row md:justify-between mb-2 text-sm ml-8 md:ml-0">
-                                      {/*<div>
-                                        <div className="font-thin">
-                                          PRICE
-                                        </div>
-                                        {assetData["silvercost"]}
-                                      </div>*/}
-                                      
+                                    <div className="flex flex-col md:flex-row md:justify-between mb-2 text-sm ml-8 md:ml-0">                         
                                       <div>
                                         <div className="font-thin">
                                           OWNER
@@ -510,7 +262,7 @@ const AssetDetails = () => {
                                       </div>
                                     </div>
 
-                                    <button className="bg-indigo-buttonblue w-5/6 md:w-60 h-10 text-center font-bold text-md mt-4 self-center justify-center">
+                                    <button className="bg-indigo-buttonblue text-indigo-white w-5/6 md:w-60 h-10 text-center font-bold text-md mt-4 self-center justify-center">
                                       { query.origin === 'portfolio' &&
                                         <div className="" onClick={()=>{ setPostingModal(true) }}>
                                           POST FOR SALE
@@ -529,8 +281,8 @@ const AssetDetails = () => {
                             </PortfolioContainer>
 
                             { query.origin === 'portfolio' &&
-                              <PortfolioContainer title="OTHER TOKENS">
-                                <div className="flex mt-8 ml-8 grid grid-cols-2 md:grid-cols-4">
+                              <PortfolioContainer textcolor="indigo-black" title="OTHER TOKENS">
+                                <div className="flex mt-8 ml-8 grid grid-cols-2 md:grid-cols-4 mb-16">
                                   <div className="flex flex-col">
                                     <div>
                                       <PlayerContainer playerID={assetData.id} rarity='silver'/>
