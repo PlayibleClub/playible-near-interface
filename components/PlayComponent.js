@@ -33,14 +33,14 @@ const PlayComponent = (props) =>{
                         <div className="font-thin text-sm">
                             PRIZE POOL
                         </div>
-                        <div className="text-2xl">
+                        <div className="text-xl font-monument">
                             ${prizePool}
                         </div>
                     </div>
 
                     <div className="border-indigo-green text-indigo-green">
                         {currPlayers <= maxPlayers &&
-                            <div className="border rounded-2xl py-1 px-3 w-30 text-sm">
+                            <div className="border rounded-2xl py-1 px-2.5 w-30 text-sm">
                                 LIMIT REACHED
                             </div>
                         }

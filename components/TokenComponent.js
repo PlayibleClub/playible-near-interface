@@ -22,12 +22,12 @@ const TokenComponent = (props) =>{
                         width={150}
                         height={210}
                     />
-                    <div className="flex flex-col font-bold">
-                        <div>
-                            *number here*
+                    <div className="flex text-sm flex-col font-thin">
+                        <div className="mt-2">
+                            #{tokenDrawData[playerID-1].id}/25000
                         </div>
-                        <div>
-                            {tokenDrawData[playerID-1].name}
+                        <div className="font-bold mt-2">
+                            {tokenDrawData[playerID-1].name.toUpperCase()}
                         </div>
                     </div>
             </div>

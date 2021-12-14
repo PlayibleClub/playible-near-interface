@@ -9,7 +9,7 @@ import TitledContainer from '../../components/containers/TitledContainer';
 import { useDispatch, useSelector } from 'react-redux';
 import { getLastRound, getRoundData, purchasePack } from '../../redux/reducers/contract/pack';
 import { useConnectedWallet } from '@terra-money/wallet-provider';
-import BaseDialog from '../components/dialogs/BaseDialog';
+import BaseModal from '../../components/modals/BaseModal';
 import * as statusCode from '../../data/constants/status'
 import * as actionType from '../../data/constants/actions'
 
@@ -52,7 +52,7 @@ const Purchase = () => {
             <div className={`font-montserrat h-screen relative`}>
                 <Navbar/>
                 <HeaderBase />
-                <BaseDialog 
+                <BaseModal 
                     title={"Purchase"}
                     visible={displayModal}
                     children={modalMessage}
