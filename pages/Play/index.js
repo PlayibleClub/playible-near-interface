@@ -145,10 +145,10 @@ const Play = () => {
             {/* <div className={`font-montserrat h-screen relative flex overflow-x-hidden`}> */}
                 <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
                     <Main color="indigo-white">
-                        <div className="flex flex-col">
+                        <div className="flex flex-col ml-6">
                             <PortfolioContainer title="PLAY" textcolor="text-indigo-black">
                                 <div className="flex flex-col ml-7 mt-6">
-                                    <div className="text-lg">
+                                    <div className="text-lg font-monument">
                                         LEVEL 1
                                     </div>
                                 
@@ -172,7 +172,7 @@ const Play = () => {
                                 </div>
 
                                 <div className="flex flex-col ml-7 mt-12">
-                                    <div className="text-lg">
+                                    <div className="text-lg font-monument">
                                         LEVEL 2
                                     </div>
                                 
@@ -203,7 +203,7 @@ const Play = () => {
                                         {isActivePlay ?
                                             <> {/* ACTIVE PLAYS IS ACTIVE */}
                                                 <div className="w-11/12">
-                                                    <div className="flex justify-center md:justify-start">
+                                                    <div className="flex justify-center md:justify-start font-monument">
                                                         <div className="border-b-8 mr-4 border-indigo-buttonblue">
                                                             ACTIVE PLAYS
                                                         </div>
@@ -262,7 +262,7 @@ const Play = () => {
                                             : 
                                             <> {/* PLAY HISTORY IS ACTIVE */}
                                                 <div className="w-11/12">
-                                                    <div className="flex justify-center md:justify-start">
+                                                    <div className="flex justify-center md:justify-start font-monument">
                                                         <div className="mr-4" onClick={() => {
                                                             setPlay(true)
                                                         }}>

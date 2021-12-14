@@ -62,9 +62,8 @@ const TokenDrawPageFront = () => {
 
 
     return (
-            <>
-                <BrowserView>
-                <Container>                    
+        <>
+            <Container>                    
                 {loading ? (
                             <LoadingPageDark/>
                 ) : (
@@ -87,54 +86,8 @@ const TokenDrawPageFront = () => {
                             </div>     
                     </div>
                 )}
-                </Container>
-                </BrowserView>
-                <MobileView>
-                    <div>
-                        <div className={`font-montserrat h-screen relative flex`}>
-                            <Navbar/>
-                            <HeaderBase/>
-
-                            <div className="flex flex-col w-full h-screen">
-                                
-                                <Main color="indigo-dark">
-                                    
-                                    {loading ? (
-                                        <Loading/>
-                                    ) : (
-                                        <div className="flex flex-col overflow-y-auto">
-                                                <div className="flex overflow-x-visible justify-center self-center mt-24 ml-80">
-                                                    <div className="flex ml-96">
-                                                        <HorizontalScrollContainer>
-                                                            {sampleList.map(function(data,i){
-                                                                console.log(data)
-                                                                return (
-                                                                    <div key={i} className="mr-12 text-xl text-indigo-white">
-                                                                        <TokenComponent playerID={data}/>
-                                                                    </div>
-                                                                )
-                                                            })}
-                                                        </HorizontalScrollContainer>
-                                                    </div>
-                                                </div>
-
-                                                <div className='absolute bottom-0 right-12 flex justify-center'> 
-                                                    <Link href="/Portfolio">
-                                                        <div className="bg-indigo-buttonblue w-72 h-12 mb-20 text-center rounded-md text-indigo-white font-bold">
-                                                            <div className="mt-3">
-                                                                GO TO PORTFOLIO
-                                                            </div>
-                                                        </div>
-                                                    </Link>
-                                                </div>
-                                        </div>
-                                    )}
-                                </Main>
-                            </div>
-                        </div>
-                    </div>
-                </MobileView>
-            </>
+            </Container>
+        </>
     )
 }
 

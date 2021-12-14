@@ -156,7 +156,7 @@ const Marketplace = () => {
               ) : (
                 <div className="flex flex-col w-full overflow-y-auto overflow-x-hidden h-screen self-center text-indigo-black">
                   <div className="ml-6 flex flex-col md:flex-row md:justify-between">
-                      <PortfolioContainer title="MARKETPLACE" textcolor="text-indigo-black"/>
+                      <PortfolioContainer textcolor="indigo-black" title="MARKETPLACE"/>
                       <Sorter
                         list={sortedList}
                         setList={setSortedList}
@@ -164,26 +164,26 @@ const Marketplace = () => {
                       />
                   </div>
     
-                  <div className="flex flex-col w-full">
-                    <div className="justify-center self-center w-full mt-4">
-											<div className="grid grid-cols-2 md:grid-cols-4 mt-12">
-												{sortedList.map(function (player, i) {
-													const toFindName = player.name.toLowerCase()
-													// const toFindTeam = player.team.toLowerCase()
-													const searchInfo = searchText.toLowerCase()
-													if (toFindName.includes(searchInfo) || player.jersey.includes(searchInfo))
-														return (
-															<Link href={{
-																pathname: '/AssetDetails',
-																query: { id: player.id, origin: 'marketplace' }                                                    
-															}}>
-																<div className='mb-4' key={i}>
-																	<MarketplaceContainer AthleteName={player.name} id={player.id} LowAsk={player.price}/>
-																</div>
-															</Link>
-														)
-													})
-												}
+                  <div className="flex flex-col w-full text-indigo-black">
+                    <div className="justify-center self-center w-full md:mt-4">
+                        <div className="grid grid-cols-2 md:grid-cols-4 md:mt-12">
+                            {sortedList.map(function (player, i) {
+                                const toFindName = player.name.toLowerCase()
+                                // const toFindTeam = player.team.toLowerCase()
+                                const searchInfo = searchText.toLowerCase()
+                                if (toFindName.includes(searchInfo) || player.jersey.includes(searchInfo))
+                                    return (
+                                        <Link href={{
+                                            pathname: '/AssetDetails',
+                                            query: { id: player.id, origin: 'marketplace' }                                                    
+                                        }}>
+                                            <div>
+                                                <MarketplaceContainer AthleteName={player.name} id={player.id} LowAsk={player.price}/>
+                                            </div>
+                                        </Link>
+                                    )
+                                })
+                            }
                       </div>
                     </div>
                   </div>

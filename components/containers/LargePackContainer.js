@@ -7,16 +7,16 @@ const LargePackContainer = (props) => {
   
     return (
       <>
-        <div data-test="LargePackContainer" className={`bg-${color}} w-full`}>
-            <div className="text-s md:text-lg lg:text-lg transition-all">
+        <div data-test="LargePackContainer" className={`bg-${color} w-32`}>
+            <div className="transition-all">
                   <Image className="object-contain  hover:-translate-y-1 transform transition-all"
                     src={imagesrc}
-                    width={150}
-                    height={200}
+                    width={120}
+                    height={150}
                   />
-               <div className="mb-1 font-bold">{PackName}</div>
-               <div className="font-normal md:text-base lg:text-base transition-all">Release {releaseValue}</div>
-               <div className="mt-4 font-bold">{CoinValue}</div>
+               <div className="mt-3 mb-1 font-bold text-sm">{PackName}</div>
+               <div className="font-thin md:text-xs transition-all">Release {releaseValue}</div>
+               <div className="mt-4 text-sm font-bold">{CoinValue}</div>
             </div>
         </div>
       </>
