@@ -6,7 +6,7 @@ import LargePackContainer from '../../components/containers/LargePackContainer';
 import Container from '../../components/containers/Container';
 import BackFunction from '../../components/buttons/BackFunction';
 import Main from '../../components/Main'
-import {packList} from './data'
+import { packList } from './data'
 
 export default function Packs() {
     const { status, connect, disconnect, availableConnectTypes } = useWallet();
