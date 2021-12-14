@@ -17,31 +17,7 @@ import { getPackPrice, purchasePack, getPurchasePackResponse, estimatePurchaseFe
 import PortfolioContainer from '../../components/containers/PortfolioContainer';
 import BackFunction from '../../components/buttons/BackFunction';
 
-const packList = [
-	{
-		name: 'PREMIUM PACK',
-		key: 'prem2',
-		release: '2',
-		price: '20 UST',
-		image: '/images/packimages/PremiumRelease2.png',
-
-	},
-{
-		name: 'PREMIUM PACK',
-		key: 'prem3',
-		release: '3',
-		price: '35 UST',
-		image: '/images/packimages/PremiumRelease3.png',
-
-	},
-	{
-		name: 'BASE PACK',
-		key: 'base2',
-		release: '2',
-		price: '20 UST',
-		image: '/images/packimages/BaseRelease1.png',
-	},
-]
+import { packList } from './data'
 
 export default function PackDetails() {
 
@@ -171,52 +147,57 @@ export default function PackDetails() {
       {loading ? (
             <LoadingPageDark message={loadingMessage}/>
         ) : (
-          <>
-            {packList.map(function(data, i){
-                  if(router.query.id === data.key){
-                    return(
-                    <>
-                      <div className="invisible">
-                          <PortfolioContainer color="indigo-white" textcolor="indigo-black" title="PACKS"/>
-                      </div>
-                      <div className="visible">
-                          <BackFunction prev="/Packs"/>
-                      </div>
-                      <div className="mt-8">
-                          <PortfolioContainer  textcolor="indigo-black" title="Premium Pack"/>
-                      </div>
-                      <div className="mt-8 ml-7 flex flex-row" key={i}>
-                          <div className="mr-16">
-                          <Image
-                          src={data.image}
-                          // layout="fill"
-                          height={325}
-                          width={225}
-                          />
+          <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
+            <Main color="indigo-white">
+              <div className="md:ml-6">
+                {packList.map(function(data, i){
+                      if(router.query.id === data.key){
+                        return(
+                        <>
+                          {/* <div className="invisible">
+                              <PortfolioContainer color="indigo-white" textcolor="indigo-black" title="PACKS"/>
+                          </div> */}
+                          <div className="mt-8">
+                              <BackFunction prev="/Packs"/>
                           </div>
-                          <div className="mx-4 gird grid-col">
-                              <div className="mt-5 font-bold text-base">{data.name}</div>
-                              <div className="mb-10">Release {data.release}</div>
-                              <div>Price</div>
-                              <div className="font-bold text-base">{`${price} UST`}</div>
-                              <button className="mt-10 bg-indigo-buttonblue hover:bg-indigo-bluegrad text-indigo-white font-bold py-2 px-24" onClick={() => {executePurchasePack()}}>
-                                  BUY NOW - {`${price} UST`}
-                              </button>
+                          <div className="">
+                              <PortfolioContainer textcolor="indigo-black" title="PREMIUM PACK"/>
                           </div>
-                      </div>
-                      <div className="mt-8">
-                          <PortfolioContainer  textcolor="indigo-black" title="Pack Details"/>
-                      </div>
-                      <div className="ml-7 mt-5 font-normal">
-                          Each pack contains 5 tokens.
-                      </div>
-                    </>
-                    )
-                  }
+                          <div className="mt-8 md:ml-7 flex flex-col md:flex-row" key={i}>
+                              <div className="self-center md:self-left md:mr-16">
+                              <Image
+                              src={data.image}
+                              width={125}
+                              height={160}
+                              />
+                              </div>
+                              <div className="flex flex-col">
+                                  <div className="ml-12 md:ml-0 mt-4 md:mt-0">
+                                    <div className="font-bold text-base">{data.name}</div>
+                                    <div className="mb-6">Release {data.release}</div>
+                                    <div>Price</div>
+                                    <div className="font-bold text-base">{`${price} UST`}</div>
+                                  </div>
+                                  <button className="bg-indigo-buttonblue text-indigo-white w-5/6 md:w-60 h-10 text-center font-bold text-md mt-4 self-center justify-center" onClick={() => {executePurchasePack()}}>
+                                      BUY NOW - {`${price} UST`}
+                                  </button>
+                              </div>
+                          </div>
+                          <div className="mt-8">
+                              <PortfolioContainer  textcolor="indigo-black" title="PACK DETAILS"/>
+                          </div>
+                          <div className="ml-7 mt-5 font-normal">
+                              Each pack contains 5 tokens.
+                          </div>
+                        </>
+                        )
+                      }
+                    }
+                  )
                 }
-              )
-            }
-        </>
+              </div>
+            </Main>
+          </div>
       )}
 		</Container>
 	)

@@ -50,7 +50,7 @@ const PostSaleModal = (props) => {
   return (
     <>
       <div className="fixed w-screen h-screen bg-opacity-70 z-50 overflow-auto bg-indigo-gray flex">
-        <div className="relative p-8 bg-indigo-white w-11/12 md:w-96 h-10/12 md:h-96 m-auto flex-col flex rounded-lg">
+        <div className="relative p-8 bg-indigo-white w-11/12 md:w-96 h-10/12 md:h-80 m-auto flex-col flex rounded-lg">
           <button onClick = {() => { onClose() }}>
             <div className="absolute top-0 right-0 p-4 font-black">
               X
@@ -87,7 +87,7 @@ const PostSaleModal = (props) => {
             <div className="mt-1">
               {"Sign a message to continue."}
             </div>
-            <button  onClick = {() => { handleSubmit()}} className="bg-indigo-buttonblue w-80 h-12 text-center font-bold rounded-md text-sm mt-4 items-center justify-center flex">
+            <button  onClick = {() => { handleSubmit()}} className="bg-indigo-buttonblue md:w-80 h-12 text-center font-bold rounded-md text-sm mt-4 items-center justify-center flex">
               <div className="text-center text-indigo-white">CONFIRM LISTING</div>
             </button>
           </div>

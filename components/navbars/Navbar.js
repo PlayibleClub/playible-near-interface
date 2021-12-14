@@ -49,7 +49,7 @@ var styles = {
 
 const Navbar = () => {
   return (
-    <div className="">
+    <div className="font-monument">
       <Menu styles={ styles } customBurgerIcon={ <img src="images/Hamburger.png" /> }>
           <a id="home" className="menu-item"><Link href="/">HOME</Link></a>
           <a id="portfolio" className="menu-item"><Link href="/Portfolio">PORTFOLIO</Link></a>

@@ -188,11 +188,11 @@ const Portfolio = () => {
               </div>
 
               <div className="flex flex-col w-full">
-                <div className="justify-center self-center w-full mt-4">
+                <div className="justify-center self-center w-full md:mt-4">
                   {displayMode ?
                     <>
-                      <div className="flex md:ml-4 font-bold ml-8 md:ml-0">
-                        <div className="mr-6 md:ml-4 border-b-8 pb-2 border-indigo-buttonblue">
+                      <div className="flex md:ml-4 font-bold ml-8 md:ml-0 font-monument">
+                        <div className="mr-6 md:ml-8 border-b-8 pb-2 border-indigo-buttonblue">
                           ATHLETES
                         </div>
 
@@ -223,8 +223,8 @@ const Portfolio = () => {
                     </>
                     :
                     <>
-                      <div className="flex md:ml-4 font-bold ml-8 md:ml-0">
-                        <div className="md:ml-4 mr-6" onClick={() => {
+                      <div className="flex md:ml-4 font-bold ml-8 md:ml-0 font-monument">
+                        <div className="md:ml-8 mr-6" onClick={() => {
                           setDisplay(true)
                         }}>
                           ATHLETES

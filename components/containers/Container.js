@@ -19,7 +19,7 @@ const Container = (props) => {
         </div>
       </div>
 
-      <div className="visible md:invisible h-screen overflow-x-auto">
+      <div className="visible md:invisible h-screen overflow-x-auto z-40">
           <Navbar/>
           <HeaderBase/>
 
