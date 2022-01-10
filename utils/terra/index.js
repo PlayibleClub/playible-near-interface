@@ -20,10 +20,17 @@ export const queryContract = async (contractAddr, queryMsg) => {
 };
 
 export const estimateFee = async (walletAddress, executeContractMsg, gasPrices = { uusd: 0.456 }, feeDenoms = ["uusd"]) => {
+
+  const accountInfo = await terra.auth.accountInfo(walletAddress)
+
   const estimatedFee = await terra.tx.estimateFee(
-    walletAddress, 
-    executeContractMsg, 
-    { gasPrices: gasPrices, feeDenoms: feeDenoms } //use UST as gas by default
+    [
+      {
+        sequenceNumber: accountInfo.getSequenceNumber(),
+        publicKey: accountInfo.getPublicKey()
+      }
+    ],
+    { msgs:executeContractMsg, gasPrices: gasPrices, feeDenoms: feeDenoms } //use UST as gas by default
   )
   .catch((error) => {
     throw `Estimate Fee Error: ${error instanceof Error ? error.message : String(error)}`;
