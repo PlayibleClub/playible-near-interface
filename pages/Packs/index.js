@@ -64,13 +64,12 @@ export default function Packs() {
     // if (isNarrowScreen) {
     return (
         <Container>
-            <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
+            <div className="flex flex-col w-full overflow-y-auto h-screen md:pb-12">
                 <Main color="indigo-white">
                     <div className="md:ml-6">
                     <PortfolioContainer textcolor="indigo-black" title="PACKS">
                         <div className="flex flex-col">
-                            <div className="">
-                                <div className="md:ml-7 grid grid-cols-1 gap-x-2 gap-y-8 md:grid-cols-4 mt-4 md:mt-12 mb-12">
+                                <div className="grid grid-cols-4 gap-y-8 mt-4 md:grid-cols-4 md:ml-7 md:mt-12">
                                     {
                                         packList.map(function (pack, i) {
                                             const toFindName = pack.name.toLowerCase()
@@ -93,7 +92,6 @@ export default function Packs() {
                                         )
                                     }
                                 </div>
-                            </div>
                         </div>
                     </PortfolioContainer>
                     </div>
