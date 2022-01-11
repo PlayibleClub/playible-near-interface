@@ -160,25 +160,23 @@ export default function PackDetails() {
                           <div className="mt-8">
                               <BackFunction prev="/Packs"/>
                           </div>
-                          <div className="">
-                              <PortfolioContainer textcolor="indigo-black" title="PREMIUM PACK"/>
-                          </div>
-                          <div className="mt-8 md:ml-7 flex flex-col md:flex-row" key={i}>
-                              <div className="self-center md:self-left md:mr-16">
-                              <Image
-                              src={data.image}
-                              width={125}
-                              height={160}
-                              />
+                          <div className="mt-8 md:ml-7 flex flex-row md:flex-row" key={i}>
+                              <div className="mt-7 justify-center md:self-left md:mr-16">
+                                <Image
+                                src={data.image}
+                                width={125}
+                                height={160}
+                                />
                               </div>
                               <div className="flex flex-col">
+                                <PortfolioContainer textcolor="indigo-black" title={data.name}/>
                                   <div className="ml-12 md:ml-0 mt-4 md:mt-0">
-                                    <div className="font-bold text-base">{data.name}</div>
-                                    <div className="mb-6">Release {data.release}</div>
-                                    <div>Price</div>
-                                    <div className="font-bold text-base">{`${price} UST`}</div>
+                                    <div className="ml-7 mt-7 font-bold text-base">{data.name}</div>
+                                    <div className="ml-7 mb-6">Release {data.release}</div>
+                                    <div className="ml-7 ">Price</div>
+                                    <div className="ml-7 font-bold text-base">{`${price} UST`}</div>
                                   </div>
-                                  <button className="bg-indigo-buttonblue text-indigo-white w-5/6 md:w-60 h-10 text-center font-bold text-md mt-4 self-center justify-center" onClick={() => {executePurchasePack()}}>
+                                  <button className="bg-indigo-buttonblue ml-7 text-indigo-white w-5/6 md:w-60 h-10 text-center font-bold text-md mt-4" onClick={() => {executePurchasePack()}}>
                                       BUY NOW - {`${price} UST`}
                                   </button>
                               </div>
