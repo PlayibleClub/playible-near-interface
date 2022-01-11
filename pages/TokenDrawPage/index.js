@@ -63,7 +63,7 @@ const TokenDrawPage = () => {
                     {loading ? (
                         <LoadingPageDark/>
             ) : (
-                <div className="" style={{
+                <div className="pb-40" style={{
                         backgroundImage: `url('../images/BackgroundMarket.PNG')`,
                         backgroundRepeat: 'no-repeat',
                         backgroundSize:'100% auto',
@@ -78,7 +78,7 @@ const TokenDrawPage = () => {
                                             assets.map(function (i,key) 
                                                 {
                                                     return (
-                                                        <div className="flex px-10 py-10">
+                                                        <div className="flex px-14 py-10">
                                                         <div className="px-10 py-10" onClick={() => {
                                                             changecard(key)}}>
                                                                 
