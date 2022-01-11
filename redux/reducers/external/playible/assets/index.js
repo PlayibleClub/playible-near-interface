@@ -30,24 +30,26 @@ export const getAccountAssets = createAsyncThunk('getAccountAssets', async (payl
 
 const processAssetListData = (data) => {
   const processedData = []
-  data.forEach((item) => {
-    processedData.push({
-      id: item.id,
-      tokenID: item.token_id,
-      collection: item.collection.contract_addr,
-      owner: item.owner.wallet_addr,
-      name: 'STEPHEN CURRY',
-      team: 'Golden State Warriors',
-      athlete_id: '320',
-      jersey: '30',
-      positions: ['PG', 'SG'],
-      avgscore: '86.3',
-      grad1: 'indigo-blue',
-      grad2: 'indigo-bluegrad',
-      listing: '12/12/2024', //4
-      rarity: 'base',
-    })
-  });
+  if(data.length > 0){
+    data.forEach((item) => {
+      processedData.push({
+        id: item.id,
+        tokenID: item.token_id,
+        collection: item.collection.contract_addr,
+        owner: item.owner.wallet_addr,
+        name: 'STEPHEN CURRY',
+        team: 'Golden State Warriors',
+        athlete_id: '320',
+        jersey: '30',
+        positions: ['PG', 'SG'],
+        avgscore: '86.3',
+        grad1: 'indigo-blue',
+        grad2: 'indigo-bluegrad',
+        listing: '12/12/2024', //4
+        rarity: 'base',
+      })
+    });
+  }
 
   return processedData
 }

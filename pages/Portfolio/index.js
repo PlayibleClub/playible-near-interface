@@ -173,7 +173,6 @@ const Portfolio = () => {
     <Container>
       <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
         <Main color="indigo-white">
-            
           {loading ? (
               <LoadingPageDark/>
           ) : (
@@ -202,7 +201,8 @@ const Portfolio = () => {
                       </div>
                       <hr className="visible opacity-50 md:invisible"/>
                       <div className="grid grid-cols-2 md:grid-cols-4 mt-12">
-                        {sortedList.map(function (player, i) {
+                        {sortedList.length > 0 ? (
+                          sortedList.map(function (player, i) {
                           const toFindName = player.name.toLowerCase()
                           // const toFindTeam = player.team.toLowerCase()
                           const searchInfo = searchText.toLowerCase()
@@ -218,7 +218,9 @@ const Portfolio = () => {
                               </Link>
                             )
                           })
-                          }
+                        ):(
+                          <div>No assets in your portfolio</div>
+                        )}
                       </div>
                     </>
                     :

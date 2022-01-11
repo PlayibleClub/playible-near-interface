@@ -15,7 +15,7 @@ import Link from 'next/link';
 import { useConnectedWallet } from '@terra-money/wallet-provider';
 import { useDispatch, useSelector } from 'react-redux';
 
-import PostSaleModal from './forms/PostSaleModal';
+import ListingModal from './forms/ListingModal';
 import CongratsModal from './components/congratsModal';
 import LoadingPageDark from '../../components/loading/LoadingPageDark';
 import BackFunction from '../../components/buttons/BackFunction';
@@ -30,7 +30,7 @@ const AssetDetails = () => {
     const [tokenCongrats, setTokenCongrats] = useState(false)
     const [displayModal, setModal] = useState(false)
     const [congratsModal, displayCongrats] = useState(false)
-    const [postingModal, setPostingModal] = useState(false)
+    const [listingModal, setListingModal] = useState(false)
     const [assetData, setAssetData] = useState(null)
 
     //const [statfilter, setFilter] = useState("sevendays")
@@ -122,14 +122,14 @@ const AssetDetails = () => {
               </div>
             }
             { congratsModal && <CongratsModal onClose={ () => { displayCongrats(false) } }/> }
-            { postingModal &&
-                <PostSaleModal
+            { listingModal &&
+                <ListingModal
                   asset={assetData}
                   onClose={() => {
-                    setPostingModal(false)
+                    setListingModal(false)
                   }}
                   onSubmit={() => {
-                    setPostingModal(false)
+                    setListingModal(false)
                     displayCongrats(true)
                   }}
                 />
@@ -264,7 +264,7 @@ const AssetDetails = () => {
 
                                     <button className="bg-indigo-buttonblue text-indigo-white w-5/6 md:w-60 h-10 text-center font-bold text-md mt-4 self-center justify-center">
                                       { query.origin === 'portfolio' &&
-                                        <div className="" onClick={()=>{ setPostingModal(true) }}>
+                                        <div className="" onClick={()=>{ setListingModal(true) }}>
                                           POST FOR SALE
                                         </div>
                                       }
