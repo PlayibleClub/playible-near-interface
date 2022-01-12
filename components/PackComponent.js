@@ -10,19 +10,27 @@ const TokenComponent = (props) =>{
 
     return (
         <div className="overflow-hidden ease-in-out">
-                <Image
-                    src={tokenType}
-                    width={300}
-                    height={250}
-                />
+                
+                <div className="mt-10">
+                    <Image 
+                        src={tokenType}
+                        width={170}
+                        height={270}
+                    />
+                </div>
 
-                <div className="text-center">
-                    <div>
+                <div>
+                    <div className="font-black mt-10">
                         PREMIUM PACK
                     </div>
-                    
                     <div className="font-thin">
                         Release 3
+                    </div>
+                    <div className="font-thin mt-8">
+                        Price
+                    </div>
+                    <div className="font-black">
+                        UST 35
                     </div>
                 </div>
         </div>
