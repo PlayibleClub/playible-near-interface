@@ -151,24 +151,22 @@ export default function Home() {
           <Main color="indigo-white">
               <div className="flex flex-col md:flex-row md:ml-12 mt-12">
                 <div className="md:w-2/3">
-                  <div className="ml-8 md:ml-0">
-                    <div className="font-thin text-sm font-monument">
-                      PLAYIBLE TOTAL VALUE
-                    </div>
-                    <div className="text-3xl font-bold font-monument">
-                      ${playibleValue}
-                    </div>
-                    <div className="mt-4 w-11/12">
-                      <img src={progressBar}/>
-                    </div>
-                  </div>
-
-                  <div className="flex flex-col md:border rounded-lg md:p-6 mt-8 md:mr-8">
-                    <div className="ml-8 md:ml-0">
-                      <div className="text-xl font-bold font-monument">
-                        PRIZE POOL
+                  <div className="flex flex-col md:border rounded-lg md:p-6 md:mr-8">
+                  <div className="flex">
+                      <div className="ml-8 md:ml-0">
+                        <div className="text-xl font-bold font-monument">
+                          ACTIVE GAMES
+                        </div>
+                        <img src={underlineIcon} className="mt-1"/>
                       </div>
-                      <img src={underlineIcon} className="mt-1"/>
+
+                      <Link href="/Play">
+                        <button className="ml-12 md:ml-16">
+                          <div className="text-indigo-black underline text-xs font-bold md:mb-2">
+                            VIEW ALL
+                          </div>
+                        </button>
+                      </Link>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6 mt-8 self-center">
@@ -183,7 +181,7 @@ export default function Home() {
                   </div>
 
                   <div className="flex flex-col md:border rounded-lg md:p-6 mt-12 md:mt-8 md:mr-8">
-                    <div className="flex justify-between">
+                    <div className="flex">
                       <div className="ml-8 md:ml-0">
                         <div className="text-xl font-bold font-monument">
                           MARKETPLACE
@@ -192,11 +190,10 @@ export default function Home() {
                       </div>
 
                       <Link href="/Marketplace">
-                        <button className="invisible md:visible">
-                          <div className="text-indigo-buttonblue text-sm font-bold inline mr-2">
+                        <button className="ml-12 md:ml-16">
+                          <div className="text-indigo-black underline text-xs font-bold md:mb-2">
                             VIEW ALL
                           </div>
-                          <img src={viewall} className="inline"/>
                         </button>
                       </Link>
                     </div>
@@ -213,7 +210,7 @@ export default function Home() {
                   </div>
 
                   <div className="flex flex-col md:border rounded-lg md:p-6 mt-12 md:mt-8 mr-8 md:mb-8">
-                    <div className="flex justify-between">
+                    <div className="flex">
                       <div className="ml-8 md:ml-0">
                         <div className="text-xl font-bold font-monument">
                           PACKS
@@ -223,11 +220,10 @@ export default function Home() {
 
                       
                       <Link href="/Packs">
-                        <button className="invisible md:visible">
-                          <div className="text-indigo-buttonblue text-sm font-bold inline mr-2">
+                        <button className="ml-12 md:ml-16">
+                          <div className="text-indigo-black underline text-xs font-bold md:mb-2">
                             VIEW ALL
                           </div>
-                          <img src={viewall} className="inline"/>
                         </button>
                       </Link>
                     </div>
@@ -248,7 +244,7 @@ export default function Home() {
                   </div>
                 </div>
 
-                <div className="flex flex-col md:w-1/3 md:h-3/5 md:border rounded-lg md:p-6 md:mr-8 mt-12 md:mt-0">
+                <div className="flex flex-col md:w-1/3 md:h-4/6 md:border rounded-lg md:p-6 md:mr-8 mt-12 md:mt-0">
                   <div className="ml-8 md:ml-0">
                     <div className="text-xl font-bold font-monument">
                       TOP PERFORMERS
