@@ -7,7 +7,7 @@ import HeaderBase from '../../components/headers/HeaderBase';
 import Navbar from '../../components/navbars/Navbar';
 import walletIcon from '../../public/images/walletBlue.png';
 import Container from '../../components/containers/Container';
-import Image from 'next/image'
+import BackFunction from '../../components/buttons/BackFunction';
 
 const Payment = () => {
     const [isClosed, setClosed] = useState(true)
@@ -15,14 +15,17 @@ const Payment = () => {
     return(
         <Container>
             <Main color="indigo-white overflow-y-scroll">
+            <div className="mt-8 mb-16">
+                <BackFunction prev=""/>
+            </div>
                 <PortfolioContainer title="PAYMENT METHOD" textcolor="indigo-black">
-                    <div className="flex flex-row justify-center space-x-36 mt-8 ml-4">
-                        <div className='flex flex-col'>
+                    <div className="flex justify-center space-x-72 mt-8 ml-4">
+                        <div className='flex flex-col w-56'>
                             <div className="font-bold text-lg">
                                 PURCHASE DETAILS
                             </div>
                             <PackComponent type="BoosterPack3"/>
-                        </div>
+                            </div>
                         <div>
 
 
