@@ -2,10 +2,23 @@ import PropTypes from 'prop-types';
 import Image from 'next/image'
 
 const PerformerContainer = (props) => {
-  const { children, color, imagesrc, AthleteName, TeamName, CoinValue, AvgScore, id, rarity } = props;
+  const { children, color, imagesrc, AthleteName, TeamName, CoinValue, AvgScore, id, rarity, status } = props;
 
   return (
     <div data-test="PerformerContainer" className={`justify-center flex flex-col w-full h-full`}>
+      <div className="self-center">
+        { status === 'forsale' &&
+          <div className="bg-indigo-buttonblue text-indigo-white text-center text-xs font-bold py-1 px-3 mb-2 rounded-lg">
+            FOR SALE
+          </div> 
+        }
+        { status === 'ingame' &&
+          <div className="bg-indigo-lightgreen text-indigo-white text-center text-xs font-bold py-1 px-3 mb-2 rounded-lg">
+            IN GAME
+          </div> 
+        }
+
+      </div>
       <div className="flex justify-center h-2/3">
         {rarity === 'gold' && 
           <Image
