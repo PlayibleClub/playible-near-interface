@@ -98,6 +98,7 @@ export const tokenDrawData = [
     positions: ['SF', 'C'],
     grad1: 'indigo-darkblue',
     grad2: 'indigo-darkbluegrad',
+    average: '81',
   },
   {
     id: 2,
@@ -105,7 +106,8 @@ export const tokenDrawData = [
     apiID: "0",
     name: "Bryn Forbes",
     symbol: "BRF",
-    contractAddr: "terra1jlazuamj9gcqfjw8dre8jc0rttxyswgjux8slt"
+    contractAddr: "terra1jlazuamj9gcqfjw8dre8jc0rttxyswgjux8slt",
+    average: '82',
   },
   {
     id: 3,
@@ -113,7 +115,8 @@ export const tokenDrawData = [
     apiID: "0",
     name: "Taurean Prince",
     symbol: "TRP",
-    contractAddr: "terra1jlazuamj9gcqfjw8dre8jc0rttxyswgjux8slt"
+    contractAddr: "terra1jlazuamj9gcqfjw8dre8jc0rttxyswgjux8slt",
+    average: '83',
   },
   {
     id: 4,
@@ -128,6 +131,7 @@ export const tokenDrawData = [
     positions: ['PG', 'SG'],
     grad1: 'indigo-purple',
     grad2: 'indigo-purplegrad',
+    average: '84',
   },
   {
     id: 5,
@@ -142,6 +146,7 @@ export const tokenDrawData = [
     positions: ['PG', 'SG'],
     grad1: 'indigo-blue',
     grad2: 'indigo-bluegrad',
+    average: '85',
   },
 
 ]

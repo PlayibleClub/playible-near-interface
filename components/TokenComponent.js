@@ -22,12 +22,18 @@ const TokenComponent = (props) =>{
                         width={150}
                         height={210}
                     />
-                    <div className="flex text-sm flex-col font-thin">
+                    <div className="flex whitespace-nowrap text-sm flex-col font-thin">
                         <div className="mt-2">
                             #{tokenDrawData[playerID-1].id}/25000
                         </div>
-                        <div className="font-bold mt-2">
+                        <div className="font-black mt-2">
                             {tokenDrawData[playerID-1].name.toUpperCase()}
+                        </div>
+                        <div className="mt-4">
+                            AVERAGE SCORE
+                        </div>
+                        <div className="font-black mt-2">
+                            {tokenDrawData[playerID-1].average}
                         </div>
                     </div>
             </div>
