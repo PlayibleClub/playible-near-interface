@@ -10,7 +10,7 @@ const DesktopNavbar = (props) => {
 
         <button>
           <Link href="/">
-          <img className="object-none mt-4" src="images/playibleheader.png" alt="Img" />
+          <img className="w-8 h-8.5" src="images/logo.png" alt="Img" />
           </Link>
         </button>
       </div>
