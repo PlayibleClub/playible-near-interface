@@ -5,74 +5,82 @@ import PackComponent from '../../components/PackComponent';
 import Link from 'next/link';
 import HeaderBase from '../../components/headers/HeaderBase';
 import Navbar from '../../components/navbars/Navbar';
-// import walletIcon from '../public/images/wallet.png';
-// Had to comment this out because it's returning an error
+import walletIcon from '../../public/images/walletBlue.png';
+import Container from '../../components/containers/Container';
+import BackFunction from '../../components/buttons/BackFunction';
 
 const Payment = () => {
     const [isClosed, setClosed] = useState(true)
 
     return(
-        <>
-            <div className={`font-montserrat h-screen relative ${isClosed ? "" : "overflow-y-hidden"}`}>
-                <Navbar/>
-                <HeaderBase/>
-
-                <Main color="indigo-dark overflow-y-scroll">
-                    <div className="flex flex-col overflow-y-auto overflow-x-hidden">
-                        <PortfolioContainer title="PAYMENT METHOD">
-                            <div className='flex flex-col self-center justify-center mt-8'>
-                                <div className="ml-4">
-                                    PURCHASE DETAILS
-                                </div>
-                                <PackComponent type="PremiumRelease3"/>
-                            </div>
-
-                            <div className='flex flex-col self-center justify-center mt-8 mb-8'>
-                                <div>
-                                    CHOOSE PAYMENT METHOD
-                                </div>
-
-                                <div className="flex border-bg-white border p-4 rounded-lg mt-6">
-                                    <img src={walletIcon} className="h-6 w-7 mt-3 mr-6 ml-2"/>
-                                    <div className="font-thin">
-                                        <div>
-                                            Wallet Balance
-                                        </div>
-                                        <div>
-                                            985 UST
-                                        </div>
-                                    </div>
-                                    <div className="rounded-lg bg-indigo-white mt-4 ml-10 w-4 h-4"/>
-                                </div>
-                            </div>
-
-                            <div className="flex justify-center self-center w-72 mt-8 mb-12 border border-l-0 border-r-0 p-4 font-thin">
-                                <div className="w-36 text-left">
-                                    Total
-                                </div>
-                                <div className="w-36 text-right">
-                                    35 UST
-                                </div>
-                            </div>
-
-                            <div className='flex flex-col self-center justify-center'>
-                                <button className="bg-indigo-buttonblue w-72 h-12 text-center rounded-md text-lg">
-                                    <div className="pt-1">
-                                        PURCHASE NOW
-                                    </div>
-                                </button>
-
-                                <Link href="/Marketplace">
-                                    <div className="text-center pt-6 pb-12 underline">
-                                        CANCEL
-                                    </div>
-                                </Link>
-                            </div>
-                        </PortfolioContainer>
-                    </div>
-                </Main>
+        <Container>
+            <Main color="indigo-white overflow-y-scroll">
+            <div className="mt-8 mb-16">
+                <BackFunction prev=""/>
             </div>
-        </>
+                <PortfolioContainer title="PAYMENT METHOD" textcolor="indigo-black">
+                    <div className="flex justify-center space-x-72 mt-8 ml-4">
+                        <div className='flex flex-col w-56'>
+                            <div className="font-bold text-lg">
+                                PURCHASE DETAILS
+                            </div>
+                            <PackComponent type="BoosterPack3"/>
+                            </div>
+                        <div>
+
+
+                        <div className='flex flex-col self-center justify-center'>
+                            <div className='mb-10'>
+                                AVILABLE BALANCE
+                            </div>
+                            <div className="flex border-bg-white border p-4 rounded-lg mt-6">
+                                <img src={walletIcon} className="h-6 w-7 mt-3 mr-6 ml-2"/>
+                                <div className="flex flex-row mt-3 space-x-4 font-thin">
+                                    <div className='font-bold'>
+                                        Wallet
+                                    </div>
+                                    <div>
+                                        985 UST
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                            <div className="font-thin">
+                                <div className='flex mt-20 justify-between pb-4 border-b-2 border-indigo-lightgray border-opacity-10'>
+                                    <div className='font-bold'>
+                                        + Tx Fees
+                                    </div>
+                                    <div>
+                                        5 UST
+                                    </div>
+                                </div>
+                                <div className='flex mt-5 justify-between'>
+                                    <div className='font-bold'> 
+                                        Total
+                                    </div>
+                                    <div>
+                                        40 UST
+                                    </div>
+                                </div>
+                                <div className='flex flex-col self-center justify-center mt-10'>
+                                    <button className="bg-indigo-buttonblue mt-10 w-72 h-12 text-indigo-white font-bold text-center text-md">
+                                        <div className="pt-1">
+                                            PURCHASE NOW
+                                        </div>
+                                    </button>
+
+                                    <Link href="/Marketplace">
+                                        <div className="text-center font-bold text-md pt-6 pb-12 underline">
+                                            CANCEL
+                                        </div>
+                                    </Link>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </PortfolioContainer>
+            </Main>
+        </Container>
     )
 }
 

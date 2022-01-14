@@ -37,7 +37,7 @@ const PortfolioContainer = (props) => {
       <div className="flex">
         {stats ?
           <>
-          <div className="pb-3 pt-20 md:pt-14 ml-7 justify-start align-center text-2xl">
+          <div className="pb-3 pt-20 md:pt-14 ml-7 justify-start align-center">
             {title}
             <img src={underlineIcon} className="object-none" />
           </div>
