@@ -5,8 +5,8 @@ const NavButtonContainer = (props) => {
 
   return (
     <Link href={path}>
-      <div data-test="NavButtonContainer" className="text-sm font-thin flex flex-row justify-left mt-4">
-        <img className="h-3 w-3 mr-5 place-self-center" src={imagesrc} alt="Img" />
+      <div data-test="NavButtonContainer" className="text-sm font-thin flex flex-row justify-left mt-6">
+        <img className="h-4 w-4 mr-5 place-self-center" src={imagesrc} alt="Img" />
         <a>{Title}</a>
       </div>
     </Link>
