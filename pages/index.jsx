@@ -11,6 +11,7 @@ import LargePackContainer from '../components/containers/LargePackContainer';
 import filterIcon from '../public/images/filter.png';
 import PerformerContainer from '../components/containers/PerformerContainer';
 import progressBar from '../public/images/progressbar.png'
+import Image from 'next/image'
 
 const playerList = [ // player list for testing purposes
   {
@@ -151,14 +152,37 @@ export default function Home() {
           <Main color="indigo-white">
               <div className="flex flex-col md:flex-row md:ml-12 mt-12">
                 <div className="md:w-2/3">
+                  
                   <div className="flex flex-col md:border rounded-lg md:p-6 md:mr-8">
+                    <div className="flex">
+                        <div className="ml-8 md:ml-0">
+                          <div className="text-l font-bold font-monument">
+                            PLAYIBLE TOTAL VALUE
+                          </div>
+                          <div className="text-3xl font-bold font-monument mt-2 whitespace-nowrap">
+                            $ 1,750,990.00
+                          </div>
+                        </div>
+                    </div>
+                  </div>
+                  <div className='mt-4'>
+                    <Image
+                              src={"/images/promotionheader.png"}
+                              width={375}
+                              height={200}
+                              objectFit={'fill'}
+                            />
+                            
+                  </div>
+                  
+                  <div className="flex flex-col md:border rounded-lg md:p-6 md:mr-8 mt-8">
                   <div className="flex">
                       <div className="ml-8 md:ml-0">
                         <div className="text-xl font-bold font-monument">
                           ACTIVE GAMES
                         </div>
                         <img src={underlineIcon} className="mt-1"/>
-                      </div>
+                  </div>
 
                       <Link href="/Play">
                         <button className="ml-12 md:ml-16">
@@ -180,7 +204,7 @@ export default function Home() {
                     </div>
                   </div>
 
-                  <div className="flex flex-col md:border rounded-lg md:p-6 mt-12 md:mt-8 md:mr-8">
+                  {/* <div className="flex flex-col md:border rounded-lg md:p-6 mt-12 md:mt-8 md:mr-8">
                     <div className="flex">
                       <div className="ml-8 md:ml-0">
                         <div className="text-xl font-bold font-monument">
@@ -241,7 +265,7 @@ export default function Home() {
                         )
                       })}
                     </div>
-                  </div>
+                  </div> */}
                 </div>
 
                 <div className="flex flex-col md:w-1/3 md:h-4/6 md:border rounded-lg md:p-6 md:mr-8 mt-12 md:mt-0">
