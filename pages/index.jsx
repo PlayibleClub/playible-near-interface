@@ -8,10 +8,10 @@ import PrizePoolComponent from '../components/PrizePoolComponent';
 import Link from 'next/link'
 import MarketplaceContainer from '../components/containers/MarketplaceContainer';
 import LargePackContainer from '../components/containers/LargePackContainer';
-import filterIcon from '../public/images/filter.png';
+import filterIcon from '../public/images/filterblack.png';
 import PerformerContainer from '../components/containers/PerformerContainer';
 import progressBar from '../public/images/progressbar.png'
-import Image from 'next/image'
+import banner from '../public/images/promotionheader.png'
 
 const playerList = [ // player list for testing purposes
   {
@@ -165,14 +165,8 @@ export default function Home() {
                         </div>
                     </div>
                   </div>
-                  <div className='mt-4'>
-                    <Image
-                              src={"/images/promotionheader.png"}
-                              width={375}
-                              height={200}
-                              objectFit={'fill'}
-                            />
-                            
+                  <div className='mt-4 md:mr-8'>
+                    <img className='object-fill h-48 w-full' src={banner}/>
                   </div>
                   
                   <div className="flex flex-col md:border rounded-lg md:p-6 md:mr-8 mt-8">
@@ -193,7 +187,7 @@ export default function Home() {
                       </Link>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6 mt-8 self-center">
+                    <div className="flex flex-row md:grid-cols-2 gap-x-6 gap-y-6 mt-8 ml-8 pr-8 overflow-x-auto">
                         {prizePoolSample.map(function(data,i){
                           return(
                             <div className="" key={i}>
