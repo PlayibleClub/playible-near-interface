@@ -268,7 +268,7 @@ export default function Home() {
                   </div> */}
                 </div>
 
-                <div className="flex flex-col md:w-1/3 md:h-4/6 md:border rounded-lg md:p-6 md:mr-8 mt-12 md:mt-0">
+                <div className="flex flex-col rounded-lg md:w-1/3 md:border md:p-6 md:mr-8 md:mt-0 mt-8">
                   <div className="ml-8 md:ml-0">
                     <div className="text-xl font-bold font-monument">
                       TOP PERFORMERS
