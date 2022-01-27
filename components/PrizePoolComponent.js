@@ -30,7 +30,7 @@ const PrizePoolComponent = (props) =>{
               width: '275px',
               height: '160px'
             }}>
-                <div className="pl-6 pt-6">
+                <div className="pl-6 pt-8">
                     <div className="text-2xl font-bold">
                         ${prizePool}
                     </div>
@@ -39,7 +39,7 @@ const PrizePoolComponent = (props) =>{
                     </div>
                 </div>
 
-                <div className="mt-12 ml-32">
+                <div className="mt-6 ml-32">
                     <button>
                         <div className="flex">
                             <div className="font-bold">

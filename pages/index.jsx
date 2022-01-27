@@ -8,13 +8,14 @@ import PrizePoolComponent from '../components/PrizePoolComponent';
 import Link from 'next/link'
 import MarketplaceContainer from '../components/containers/MarketplaceContainer';
 import LargePackContainer from '../components/containers/LargePackContainer';
-import filterIcon from '../public/images/filter.png';
+import filterIcon from '../public/images/filterblack.png';
 import PerformerContainer from '../components/containers/PerformerContainer';
 import progressBar from '../public/images/progressbar.png'
+import banner from '../public/images/promotionheader.png'
 
 const playerList = [ // player list for testing purposes
   {
-      name: 'STEPHEN CURRY',
+      name: 'BRYAN REYNOLDS',
       team: 'Golden State Warriors', //2
       id: '320',
       cost: '420 UST',
@@ -28,7 +29,7 @@ const playerList = [ // player list for testing purposes
       lowestask: '120 UST',
   },
   {
-      name: 'TAUREAN PRINCE',
+      name: 'ZACK WHEELER',
       team: 'Minnesota Timberwolves', //6
       id: '14450',
       cost: '41 UST',
@@ -38,11 +39,11 @@ const playerList = [ // player list for testing purposes
       grad1: 'indigo-purple',
       grad2: 'indigo-purplegrad',
       listing: '12/12/2021', //3
-      rarity: 'silver',
+      rarity: 'base',
       lowestask: '45 UST',
   },
   {
-      name: 'LEBRON JAMES',
+      name: 'BO BICHETTE',
       team: 'Los Angeles Lakers', //5
       id: '25',
       cost: '840 UST',
@@ -52,11 +53,11 @@ const playerList = [ // player list for testing purposes
       grad1: 'indigo-purple',
       grad2: 'indigo-purplegrad',
       listing: '11/12/2025', //6
-      rarity: 'gold',
+      rarity: 'base',
       lowestask: '3 UST',
   },
   {
-      name: 'DEVIN BOOKER',
+      name: 'ROBBIE RAY',
       team: 'Phoenix Suns', //7
       id: '16450',
       cost: '21 UST',
@@ -66,7 +67,7 @@ const playerList = [ // player list for testing purposes
       grad1: 'indigo-darkblue',
       grad2: 'indigo-darkbluegrad',
       listing: '12/11/2025', //5
-      rarity: 'silver',
+      rarity: 'base',
       lowestask: '354 UST',
   },
 ]
@@ -151,14 +152,31 @@ export default function Home() {
           <Main color="indigo-white">
               <div className="flex flex-col md:flex-row md:ml-12 mt-12">
                 <div className="md:w-2/3">
+                  
                   <div className="flex flex-col md:border rounded-lg md:p-6 md:mr-8">
+                    <div className="flex">
+                        <div className="ml-8 md:ml-0">
+                          <div className="text-l font-bold font-monument">
+                            PLAYIBLE TOTAL VALUE
+                          </div>
+                          <div className="text-3xl font-bold font-monument mt-2 whitespace-nowrap">
+                            $ 1,750,990.00
+                          </div>
+                        </div>
+                    </div>
+                  </div>
+                  <div className='mt-4 md:mr-8'>
+                    <img className='object-fill h-48 w-full' src={banner}/>
+                  </div>
+                  
+                  <div className="flex flex-col md:border rounded-lg md:p-6 md:mr-8 mt-8">
                   <div className="flex">
                       <div className="ml-8 md:ml-0">
                         <div className="text-xl font-bold font-monument">
                           ACTIVE GAMES
                         </div>
                         <img src={underlineIcon} className="mt-1"/>
-                      </div>
+                  </div>
 
                       <Link href="/Play">
                         <button className="ml-12 md:ml-16">
@@ -169,7 +187,7 @@ export default function Home() {
                       </Link>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6 mt-8 self-center">
+                    <div className="flex flex-row md:grid-cols-2 gap-x-6 gap-y-6 mt-8 ml-8 pr-8 overflow-x-auto">
                         {prizePoolSample.map(function(data,i){
                           return(
                             <div className="" key={i}>
@@ -179,72 +197,9 @@ export default function Home() {
                         })}
                     </div>
                   </div>
-
-                  <div className="flex flex-col md:border rounded-lg md:p-6 mt-12 md:mt-8 md:mr-8">
-                    <div className="flex">
-                      <div className="ml-8 md:ml-0">
-                        <div className="text-xl font-bold font-monument">
-                          MARKETPLACE
-                        </div>
-                        <img src={underlineIcon} className="mt-1"/>
-                      </div>
-
-                      <Link href="/Marketplace">
-                        <button className="ml-12 md:ml-16">
-                          <div className="text-indigo-black underline text-xs font-bold md:mb-2">
-                            VIEW ALL
-                          </div>
-                        </button>
-                      </Link>
-                    </div>
-
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-x-4 mt-8">
-                      {playerList.map(function(data,i){
-                        return(
-                          <div className='' key={i}>
-                              <MarketplaceContainer AthleteName={data.name} id={data.id} LowAsk={data.lowestask}/>
-                          </div>
-                        )
-                      })}
-                    </div>
-                  </div>
-
-                  <div className="flex flex-col md:border rounded-lg md:p-6 mt-12 md:mt-8 mr-8 md:mb-8">
-                    <div className="flex">
-                      <div className="ml-8 md:ml-0">
-                        <div className="text-xl font-bold font-monument">
-                          PACKS
-                        </div>
-                        <img src={underlineIcon} className="mt-1"/>
-                      </div>
-
-                      
-                      <Link href="/Packs">
-                        <button className="ml-12 md:ml-16">
-                          <div className="text-indigo-black underline text-xs font-bold md:mb-2">
-                            VIEW ALL
-                          </div>
-                        </button>
-                      </Link>
-                    </div>
-
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-x-6 mt-8 self-center">
-                      {packList.map(function(pack,i){
-                        return(
-                          <div className='mb-4' key={i}>
-                              <LargePackContainer
-                                  PackName={pack.name}
-                                  CoinValue={pack.price}
-                                  releaseValue={pack.release}
-                                  imagesrc={pack.image} />
-                          </div>
-                        )
-                      })}
-                    </div>
-                  </div>
                 </div>
 
-                <div className="flex flex-col md:w-1/3 md:h-4/6 md:border rounded-lg md:p-6 md:mr-8 mt-12 md:mt-0">
+                <div className="flex flex-col rounded-lg md:w-1/3 md:border md:p-6 md:mr-8 md:mt-0 mt-8 md:mb-4">
                   <div className="ml-8 md:ml-0">
                     <div className="text-xl font-bold font-monument">
                       TOP PERFORMERS
@@ -256,7 +211,6 @@ export default function Home() {
                     <div className="text-lg ml-4 mt-1.5 md:mb-1.5 text-indigo-black">
                         <form>
                             <select className='filter-select bg-white'>
-                              {/* change filterIcon icon black */}
                                 <option name="sevendays" value="sevendays">Last 7 days</option>
                                 <option name="month" value="month">Last month</option>
                                 <option name="year" value="year">Last year</option>
