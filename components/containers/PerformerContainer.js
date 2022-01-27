@@ -38,7 +38,7 @@ const PerformerContainer = (props) => {
 
         {rarity === 'base' && 
           <Image
-            src={"/public/images/tokens/"+id+".png"}
+            src={"/../public/images/tokens/"+id+".png"}
             width={120}
             height={160}
           />
