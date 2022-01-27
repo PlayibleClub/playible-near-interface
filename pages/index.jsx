@@ -15,7 +15,7 @@ import banner from '../public/images/promotionheader.png'
 
 const playerList = [ // player list for testing purposes
   {
-      name: 'STEPHEN CURRY',
+      name: 'BRYAN REYNOLDS',
       team: 'Golden State Warriors', //2
       id: '320',
       cost: '420 UST',
@@ -29,7 +29,7 @@ const playerList = [ // player list for testing purposes
       lowestask: '120 UST',
   },
   {
-      name: 'TAUREAN PRINCE',
+      name: 'ZACK WHEELER',
       team: 'Minnesota Timberwolves', //6
       id: '14450',
       cost: '41 UST',
@@ -39,11 +39,11 @@ const playerList = [ // player list for testing purposes
       grad1: 'indigo-purple',
       grad2: 'indigo-purplegrad',
       listing: '12/12/2021', //3
-      rarity: 'silver',
+      rarity: 'base',
       lowestask: '45 UST',
   },
   {
-      name: 'LEBRON JAMES',
+      name: 'BO BICHETTE',
       team: 'Los Angeles Lakers', //5
       id: '25',
       cost: '840 UST',
@@ -53,11 +53,11 @@ const playerList = [ // player list for testing purposes
       grad1: 'indigo-purple',
       grad2: 'indigo-purplegrad',
       listing: '11/12/2025', //6
-      rarity: 'gold',
+      rarity: 'base',
       lowestask: '3 UST',
   },
   {
-      name: 'DEVIN BOOKER',
+      name: 'ROBBIE RAY',
       team: 'Phoenix Suns', //7
       id: '16450',
       cost: '21 UST',
@@ -67,7 +67,7 @@ const playerList = [ // player list for testing purposes
       grad1: 'indigo-darkblue',
       grad2: 'indigo-darkbluegrad',
       listing: '12/11/2025', //5
-      rarity: 'silver',
+      rarity: 'base',
       lowestask: '354 UST',
   },
 ]

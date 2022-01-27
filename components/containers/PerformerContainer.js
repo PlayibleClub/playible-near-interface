@@ -38,7 +38,7 @@ const PerformerContainer = (props) => {
 
         {rarity === 'base' && 
           <Image
-            src={"/../public/images/tokens/"+id+".png"}
+            src={"/public/images/tokens/"+id+".png"}
             width={120}
             height={160}
           />
@@ -47,7 +47,7 @@ const PerformerContainer = (props) => {
       {children}
       <div className="h-1/2 flex justify-center mb-6">
         <div className="flex flex-col mt-4">
-          <div className="text-sm font-thin">#{id}/25000</div>
+          {/* <div className="text-sm font-thin">#{id}/25000</div> */}
           <div className="text-xs font-bold">{AthleteName}</div>
           <div className="mt-4 text-xs font-thin">AVERAGE SCORE</div>
           <div className="text-xs font-bold">{AvgScore}</div>
@@ -67,7 +67,7 @@ PerformerContainer.propTypes = {
 };
 
 PerformerContainer.defaultProps = {
-  imagesrc: 'images/tokens/0.png',
+  imagesrc: '/public/images/tokens/0.png',
   // children: <div>Fantasy investr</div>
   children: <div />,
 };
