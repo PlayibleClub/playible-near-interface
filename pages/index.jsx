@@ -197,69 +197,6 @@ export default function Home() {
                         })}
                     </div>
                   </div>
-
-                  {/* <div className="flex flex-col md:border rounded-lg md:p-6 mt-12 md:mt-8 md:mr-8">
-                    <div className="flex">
-                      <div className="ml-8 md:ml-0">
-                        <div className="text-xl font-bold font-monument">
-                          MARKETPLACE
-                        </div>
-                        <img src={underlineIcon} className="mt-1"/>
-                      </div>
-
-                      <Link href="/Marketplace">
-                        <button className="ml-12 md:ml-16">
-                          <div className="text-indigo-black underline text-xs font-bold md:mb-2">
-                            VIEW ALL
-                          </div>
-                        </button>
-                      </Link>
-                    </div>
-
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-x-4 mt-8">
-                      {playerList.map(function(data,i){
-                        return(
-                          <div className='' key={i}>
-                              <MarketplaceContainer AthleteName={data.name} id={data.id} LowAsk={data.lowestask}/>
-                          </div>
-                        )
-                      })}
-                    </div>
-                  </div>
-
-                  <div className="flex flex-col md:border rounded-lg md:p-6 mt-12 md:mt-8 mr-8 md:mb-8">
-                    <div className="flex">
-                      <div className="ml-8 md:ml-0">
-                        <div className="text-xl font-bold font-monument">
-                          PACKS
-                        </div>
-                        <img src={underlineIcon} className="mt-1"/>
-                      </div>
-
-                      
-                      <Link href="/Packs">
-                        <button className="ml-12 md:ml-16">
-                          <div className="text-indigo-black underline text-xs font-bold md:mb-2">
-                            VIEW ALL
-                          </div>
-                        </button>
-                      </Link>
-                    </div>
-
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-x-6 mt-8 self-center">
-                      {packList.map(function(pack,i){
-                        return(
-                          <div className='mb-4' key={i}>
-                              <LargePackContainer
-                                  PackName={pack.name}
-                                  CoinValue={pack.price}
-                                  releaseValue={pack.release}
-                                  imagesrc={pack.image} />
-                          </div>
-                        )
-                      })}
-                    </div>
-                  </div> */}
                 </div>
 
                 <div className="flex flex-col rounded-lg md:w-1/3 md:border md:p-6 md:mr-8 md:mt-0 mt-8 md:mb-4">
@@ -274,7 +211,6 @@ export default function Home() {
                     <div className="text-lg ml-4 mt-1.5 md:mb-1.5 text-indigo-black">
                         <form>
                             <select className='filter-select bg-white'>
-                              {/* change filterIcon icon black */}
                                 <option name="sevendays" value="sevendays">Last 7 days</option>
                                 <option name="month" value="month">Last month</option>
                                 <option name="year" value="year">Last year</option>

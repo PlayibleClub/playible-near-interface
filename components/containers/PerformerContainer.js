@@ -47,7 +47,6 @@ const PerformerContainer = (props) => {
       {children}
       <div className="h-1/2 flex justify-center mb-6">
         <div className="flex flex-col mt-4">
-          {/* <div className="text-sm font-thin">#{id}/25000</div> */}
           <div className="text-xs font-bold">{AthleteName}</div>
           <div className="mt-4 text-xs font-thin">AVERAGE SCORE</div>
           <div className="text-xs font-bold">{AvgScore}</div>
