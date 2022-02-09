@@ -12,6 +12,7 @@ import filterIcon from '../public/images/filterblack.png';
 import PerformerContainer from '../components/containers/PerformerContainer';
 import progressBar from '../public/images/progressbar.png'
 import banner from '../public/images/promotionheader.png'
+import bannerDesktop from '../public/images/promotionheaderDesktop.png'
 
 const playerList = [ // player list for testing purposes
   {
@@ -166,7 +167,8 @@ export default function Home() {
                     </div>
                   </div>
                   <div className='mt-4 md:mr-8'>
-                    <img className='object-fill h-48 w-full' src={banner}/>
+                    <img className='object-fill h-48 w-full visible md:hidden' src={banner}/>
+                    <img className='object-fill h-48 w-full hidden md:flex' src={bannerDesktop}/>
                   </div>
                   
                   <div className="flex flex-col md:border rounded-lg md:p-6 md:mr-8 mt-8">
