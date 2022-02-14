@@ -5,61 +5,94 @@ const PlayerStats = (props) =>{
     const {player, children} = props;
     return (
         <>
-            <div className="flex md:border mt-2 md:p-12 rounded-lg text-xs">
-                <div className="grid grid-cols-2 gap-16 md:gap-24 md:grid-cols-5">
+            <div className="flex mt-2 md:p-12 rounded-lg text-xs">
+                <div className="grid grid-cols-2 gap-16 md:gap-20 md:grid-cols-5">
                     <div className="flex flex-col">
                         <div className="font-bold text-6xl mb-2">
-                            <div>{player.points.score}</div> 
+                            <div>{player.singles.score}</div> 
                         </div>
                         <div className="font-thin">
-                            <div>POINTS</div>
+                            <div>SINGLES</div>
                         </div>
                         <div className="font-thin">
-                            <div>{player.points.pos}</div>
+                            <div>{player.singles.pos}</div>
                         </div>
                     </div>
                     <div className="flex flex-col">
                         <div className="font-bold text-6xl mb-2">
-                            <div>{player.rebounds.score}</div> 
+                            <div>{player.doubles.score}</div> 
                         </div>
                         <div className="font-thin">
-                            <div>REBOUNDS</div>
+                            <div>DOUBLES</div>
                         </div>
                         <div className="font-thin">
-                            <div>{player.rebounds.pos}</div>
+                            <div>{player.doubles.pos}</div>
                         </div>
                     </div>
                     <div className="flex flex-col">
                         <div className="font-bold text-6xl mb-2">
-                            <div>{player.assists.score}</div> 
+                            <div>{player.triples.score}</div> 
                         </div>
                         <div className="font-thin">
-                            <div>ASSISTS</div>
+                            <div>TRIPLES</div>
                         </div>
                         <div className="font-thin">
-                            <div>{player.assists.pos}</div>
+                            <div>{player.triples.pos}</div>
                         </div>
                     </div>
                     <div className="flex flex-col">
                         <div className="font-bold text-6xl mb-2">
-                            <div>{player.blocks.score}</div> 
+                            <div>{player.homeruns.score}</div> 
                         </div>
                         <div className="font-thin">
-                            <div>BLOCKS</div>
+                            <div>HOME RUNS</div>
                         </div>
                         <div className="font-thin">
-                            <div>{player.blocks.pos}</div>
+                            <div>{player.homeruns.pos}</div>
                         </div>
                     </div>
                     <div className="flex flex-col">
                         <div className="font-bold text-6xl mb-2">
-                            <div>{player.steals.score}</div> 
+                            <div>{player.runsbatted.score}</div> 
                         </div>
                         <div className="font-thin">
-                            <div>STEALS</div>
+                            <div>RUNS BATTED IN</div>
                         </div>
                         <div className="font-thin">
-                            <div>{player.steals.pos}</div>
+                            <div>{player.runsbatted.pos}</div>
+                        </div>
+                    </div>
+                    <div className="flex flex-col">
+                        <div className="font-bold text-6xl mb-2">
+                            <div>{player.walks.score}</div> 
+                        </div>
+                        <div className="font-thin">
+                            <div>WALKS</div>
+                        </div>
+                        <div className="font-thin">
+                            <div>{player.walks.pos}</div>
+                        </div>
+                    </div>
+                    <div className="flex flex-col">
+                        <div className="font-bold text-6xl mb-2">
+                            <div>{player.hitbypitch.score}</div> 
+                        </div>
+                        <div className="font-thin">
+                            <div>HIT BY PITCH</div>
+                        </div>
+                        <div className="font-thin">
+                            <div>{player.hitbypitch.pos}</div>
+                        </div>
+                    </div>
+                    <div className="flex flex-col">
+                        <div className="font-bold text-6xl mb-2">
+                            <div>{player.stolenbases.score}</div> 
+                        </div>
+                        <div className="font-thin">
+                            <div>STOLEN BASES</div>
+                        </div>
+                        <div className="font-thin">
+                            <div>{player.stolenbases.pos}</div>
                         </div>
                     </div>
                 </div>

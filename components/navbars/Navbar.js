@@ -53,8 +53,8 @@ const Navbar = () => {
       <Menu styles={ styles } customBurgerIcon={ <img src="images/Hamburger.png" /> }>
           <a id="home" className="menu-item"><Link href="/">HOME</Link></a>
           <a id="portfolio" className="menu-item"><Link href="/Portfolio">PORTFOLIO</Link></a>
-          <a id="packs" className="menu-item"><Link href="/Packs">PACKS</Link></a>
-          <a id="marketplace" className="menu-item"><Link href="/Marketplace">MARKETPLACE</Link></a>
+          {/* <a id="packs" className="menu-item"><Link href="/Packs">PACKS</Link></a> */}
+          {/* <a id="marketplace" className="menu-item"><Link href="/Marketplace">MARKETPLACE</Link></a> */}
           <a id="play" className="menu-item"><Link href="/Play">PLAY</Link></a>
           <a id="contract" className="menu-item"><Link href="/ContractInteraction">(ContractInteraction)</Link></a>
       </Menu>
