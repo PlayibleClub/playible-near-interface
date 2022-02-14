@@ -7,7 +7,7 @@ import PlayerContainer from '../../components/containers/PlayerContainer';
 import PlayerStats from '../../components/PlayerStats';
 import Container from '../../components/containers/Container';
 
-import filterIcon from '../../public/images/filter.png';
+import filterIcon from '../../public/images/filterblack.png';
 import underlineIcon from '../../public/images/blackunderline.png';
 
 import { useRouter } from 'next/router';
@@ -20,10 +20,10 @@ import CongratsModal from './components/congratsModal';
 import LoadingPageDark from '../../components/loading/LoadingPageDark';
 import BackFunction from '../../components/buttons/BackFunction';
 
-import { playerList } from './data';
+import { playerList, playerdata } from './data';
 
 const AssetDetails = () => {
-    //const { register, handleSubmit } = useForm()
+    const { register, handleSubmit } = useForm()
     const connectedWallet = useConnectedWallet();
 
     const [loading, setLoading] = useState(true)
@@ -33,7 +33,7 @@ const AssetDetails = () => {
     const [listingModal, setListingModal] = useState(false)
     const [assetData, setAssetData] = useState(null)
 
-    //const [statfilter, setFilter] = useState("sevendays")
+    const [statfilter, setFilter] = useState("sevendays")
     //const [silverDropdown, displaySilver] = useState(false)
     //const [goldDropdown, displayGold] = useState(false)
     const { query } = useRouter()
@@ -66,9 +66,9 @@ const AssetDetails = () => {
       }
     }, [playerList])
 
-    /*const handleFilter = (event) => {
+    const handleFilter = (event) => {
         setFilter(event.target.value)
-    }*/
+    }
     //TODO: Congrats Modal after purchase process
     return (
         <div className={`font-montserrat`}>
@@ -233,7 +233,7 @@ const AssetDetails = () => {
                                     </div>
                                   </div>
                                   <div className="flex flex-col">
-                                    <div className="ml-8 md:ml-0 mb-4 md:mb-0">
+                                    <div className="ml-8 md:ml-0 mb-4 md:mb-0 mt-8 md:mt-0">
                                       { query.origin === 'portfolio' &&
                                         <div className="font-thin text-sm">
                                           #{assetData.id}/25000
@@ -253,17 +253,17 @@ const AssetDetails = () => {
                                       </div>
                                     </div>
 
-                                    <div className="flex flex-col md:flex-row md:justify-between mb-2 text-sm ml-8 md:ml-0">                         
+                                    {/* <div className="flex flex-col md:flex-row md:justify-between mb-2 text-sm ml-8 md:ml-0">                         
                                       <div>
                                         <div className="font-thin">
                                           OWNER
                                         </div>
                                         {connectedWallet.walletAddress === assetData["owner"] ? "YOU" : assetData["owner"]}
                                       </div>
-                                    </div>
+                                    </div> */}
 
-                                    <button className="bg-indigo-buttonblue text-indigo-white w-5/6 md:w-60 h-10 text-center font-bold text-md mt-4 self-center justify-center">
-                                      { query.origin === 'portfolio' &&
+                                    <button className="bg-indigo-lightgreen text-indigo-white w-5/6 md:w-60 h-10 text-center font-bold text-md mt-4 self-center justify-center">
+                                      {/* { query.origin === 'portfolio' &&
                                         <div className="" onClick={()=>{ setListingModal(true) }}>
                                           POST FOR SALE
                                         </div>
@@ -273,73 +273,23 @@ const AssetDetails = () => {
                                         <div className="" onClick={()=>{ setModal(true) }}>
                                           PURCHASE TOKEN
                                         </div>
-                                      }
+                                      } */}
+                                      <div className="">
+                                          IN GAME
+                                      </div>
                                     </button>
                                   </div>
                                 </div>
                               </div>
                             </PortfolioContainer>
-
-                            { query.origin === 'portfolio' &&
-                              <PortfolioContainer textcolor="indigo-black" title="OTHER TOKENS">
-                                <div className="flex mt-8 ml-8 grid grid-cols-2 md:grid-cols-4 mb-16">
-                                  <div className="flex flex-col">
-                                    <div>
-                                      <PlayerContainer playerID={assetData.id} rarity='silver'/>
-                                    </div>
-                                    <div className="text-sm mt-2">
-                                      {assetData.name}
-                                    </div>
-                                    <div className="font-thin text-xs">
-                                      SILVER
-                                    </div> 
-                                    <div className="mt-4 text-sm">
-                                      {assetData.silvercost}
-                                    </div>
-                                  </div>
-                                
-
-                                  <div className="flex flex-col">
-                                    <div>
-                                      <PlayerContainer playerID={assetData.id} rarity='gold'/>
-                                    </div>
-                                    <div className="text-sm mt-2">
-                                      {assetData.name}
-                                    </div>
-                                    <div className="font-thin text-xs">
-                                      GOLD
-                                    </div> 
-                                    <div className="mt-4 text-sm">
-                                      {assetData.goldcost}
-                                    </div>
-                                  </div>
-
-                                    {/* TEMPLATE FOR NEW RARITY */}
-                                    {/* <div className="flex flex-col">
-                                        <div>
-                                            <PlayerContainer playerID={playerToFind.id} rarity='gold'/>
-                                        </div>
-                                        <div className="text-sm mt-2">
-                                            {playerToFind.name}
-                                        </div>
-                                        <div className="font-thin text-xs">
-                                            GOLD
-                                        </div> 
-                                        <div className="mt-4 text-sm">
-                                            {playerToFind.goldcost}
-                                        </div>
-                                    </div> */}
-                                </div>
-                              </PortfolioContainer>
-                            }
                               
-                            {/*<div className="mt-10 flex flex-col md:flex-row justify-between">
-                              <PortfolioContainer title="PLAYER STATS" stats={playerToFind.stats}/>
+                            <div className="mt-10 flex flex-col md:flex-row justify-between">
+                              <PortfolioContainer textcolor="indigo-black" title="PLAYER STATS" stats="86.5"/>
                               <div className="self-center md:mr-24">
-                                <div className="rounded-md bg-indigo-light md:mr-7 h-11 w-80 flex justify-between self-center font-thin md:w-72 mt-4 md:mt-12">
-                                  <div className="text-lg ml-4 mt-2 text-indigo-white">
+                                <div className="bg-indigo-white h-11 flex justify-between self-center font-thin w-80 mt-6 border-2 border-indigo-lightgray border-opacity-50">
+                                  <div className="text-lg ml-4 mt-2 text-indigo-black">
                                     <form onSubmit={handleSubmit(handleFilter)}>
-                                      <select value={statfilter} className='filter-select bg-indigo-light' onChange={handleFilter}>
+                                      <select value={statfilter} className='filter-select bg-indigo-white' onChange={handleFilter}>
                                         <option name="sevendays" value="sevendays">Last 7 days</option>
                                         <option name="month" value="month">Last month</option>
                                         <option name="year" value="year">Last year</option>
@@ -350,14 +300,17 @@ const AssetDetails = () => {
                                 </div>
                               </div>
                             </div>
-                            <div className="flex flex-col justify-center self-center text-indigo-white md:mr-24 mb-8">
+                            <div className="text-indigo-white bg-indigo-black w-48 py-4 text-3xl font-bold text-center ml-6 mt-8 md:mt-0">
+                              HITTER
+                            </div>
+                            <div className="flex flex-col justify-center self-center md:mr-24 mb-8 md:ml-6">
                               <div className="mt-8 mb-16 self-center">
-                                {playerToFind.data.map(function(data, i){
+                                {playerdata.map(function(data, i){
                                   if(statfilter === data.key)
                                     return <PlayerStats player={data} key={i}/>
                                 })}
                               </div>
-                              </div>*/}
+                            </div>
                           </div>
                         </div>
                       </Main>

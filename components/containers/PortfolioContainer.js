@@ -36,22 +36,22 @@ const PortfolioContainer = (props) => {
     <div data-test="portfoliocontainer" className={`text-${textcolor} bg-${color} text-${size} font-bold ${align} flex flex-col w-full `}>
       <div className="flex">
         {stats ?
-          <>
-          <div className="pb-3 pt-20 md:pt-14 ml-7 justify-start align-center">
-            {title}
-            <img src={underlineIcon} className="object-none" />
-          </div>
+          <div className="flex w-full">
+            <div className="w-2/3 text-2xl pb-3 pt-20 md:pt-14 ml-7 justify-between align-center">
+              {title}
+              <img src={underlineIcon} className="object-none" />
+            </div>
             <div className="w-32 h-32" style={{
               backgroundImage: `url('/images/avgscore.png')`,
               backgroundRepeat: 'no-repeat',
               width: '135px',
               height: '135px'
             }}>
-              <div className="text-center text-2xl w-full mt-14">
+              <div className="text-center text-2xl w-full mt-14 text-indigo-white">
                 {stats}
               </div>
             </div>
-          </>
+          </div>
           :
           <div className="pb-3 pt-6 ml-7 justify-start align-center text-2xl font-monument">
             {title}

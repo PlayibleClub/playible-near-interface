@@ -14,11 +14,11 @@ import Sorter from './components/Sorter';
 
 const packList = [
   {
-    name: 'PREMIUM PACK',
+    name: 'STARTER PACK',
     key: 'prem2',
     release: '2',
     price: '20 UST',
-    image: '/images/packimages/packs1.png',
+    image: '/images/packimages/StarterPack1.png',
 
   },
   {
@@ -26,7 +26,7 @@ const packList = [
     key: 'prem3',
     release: '3',
     price: '35 UST',
-    image: '/images/packimages/packs1.png',
+    image: '/images/packimages/StarterPack1.png',
 
   },
   {
@@ -34,7 +34,7 @@ const packList = [
     key: 'base2',
     release: '2',
     price: '20 UST',
-    image: '/images/packimages/packs1.png',
+    image: '/images/packimages/StarterPack1.png',
   },
 ]
 
@@ -107,7 +107,7 @@ const Portfolio = () => {
                                 query: { id: player.id, origin: 'portfolio' }                                                    
                               }}>
                                 <div className='mb-4' key={i}>
-                                  <PerformerContainer AthleteName={player.name} AvgScore={player.avgscore} id={player.id} rarity={player.rarity} status="forsale"/>
+                                  <PerformerContainer AthleteName={player.name} AvgScore={player.avgscore} id={player.id} rarity={player.rarity} status="ingame"/>
                                 </div>
                               </Link>
                             )
@@ -134,7 +134,7 @@ const Portfolio = () => {
                       <div className="md:ml-16 grid grid-cols-0 md:grid-cols-4 mt-12 justify-center">
                         {packList.map(function(data,i){
                           return(
-                            <div className='' key={i}>
+                            <div className='mb-4' key={i}>
                               <SquadPackComponent
                                 imagesrc={data.image}
                                 packName={data.name}
