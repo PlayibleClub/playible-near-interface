@@ -6,14 +6,14 @@ const PerformerContainer = (props) => {
 
   return (
     <div data-test="PerformerContainer" className={`justify-center flex flex-col w-full h-full`}>
-      <div className="self-center">
+      <div className="self-center mr-10">
         { status === 'forsale' &&
-          <div className="bg-indigo-buttonblue text-indigo-white text-center text-xs font-bold py-1 px-3 mb-2 rounded-lg">
+          <div className="bg-indigo-buttonblue text-indigo-white text-center text-xs font-bold py-1 px-3 mb-2">
             FOR SALE
           </div> 
         }
         { status === 'ingame' &&
-          <div className="bg-indigo-lightgreen text-indigo-white text-center text-xs font-bold py-1 px-3 mb-2 rounded-lg">
+          <div className="bg-indigo-lightgreen text-indigo-white text-center text-xs font-bold py-1 px-3 mb-2">
             IN GAME
           </div> 
         }
