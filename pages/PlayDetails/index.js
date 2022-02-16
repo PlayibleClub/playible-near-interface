@@ -30,12 +30,48 @@ export default function PackDetails() {
                               <BackFunction prev="/Packs"/>
                           </div>
                           <div className="mt-8 md:ml-7 flex flex-row md:flex-row" key={i}>
-                              <div className="mt-7 justify-center md:self-left md:mr-16">
-                                <Image
-                                src={data.image}
-                                width={125}
-                                height={160}
-                                />
+                              <div>
+                                    <div className="mt-7 justify-center md:self-left md:mr-16">
+                                        <Image
+                                        src={data.image}
+                                        width={600}
+                                        height={300}
+                                        />
+                                    </div>
+                                    <div className='flex space-x-14 mt-4'>
+                                        <div>
+                                            <div>
+                                                PRIZE POOL
+                                            </div>
+                                            <div className='font-black font-monument text-lg'>
+                                                ${data.prize}
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div>
+                                                START DATE
+                                            </div>
+                                            <div className='font-black font-monument text-lg'>
+                                                {data.month}/{data.date}/{data.year}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className='mt-4'>
+                                        <div>
+                                            REGISTRATION ENDS IN
+                                        </div>
+                                        <div className='flex space-x-2 mt-2'>
+                                            <div className='bg-indigo-darkgray text-indigo-white p-2 rounded'> 
+                                                01
+                                            </div>
+                                            <div className='bg-indigo-darkgray text-indigo-white p-2 rounded'>
+                                                02
+                                            </div>
+                                            <div className='bg-indigo-darkgray text-indigo-white p-2 rounded'>
+                                                03
+                                            </div>
+                                        </div>
+                                    </div>
                               </div>
                               <div className="flex flex-col">
                                 <PortfolioContainer textcolor="indigo-black" title={data.name}/>
@@ -51,10 +87,12 @@ export default function PackDetails() {
                               </div>
                           </div>
                           <div className="mt-8">
-                              <PortfolioContainer  textcolor="indigo-black" title="PACK DETAILS"/>
+                              <PortfolioContainer  textcolor="indigo-black" title="GAMEPLAY"/>
                           </div>
                           <div className="ml-7 mt-5 font-normal">
-                              Each pack contains 5 tokens.
+                              Enter a team into the Alley-oop tournament to compete for cash prizes.
+                          </div><div className="ml-7 mt-5 font-normal">
+                              Create a lineup by selecting five Playible Athlete Tokens now.
                           </div>
                         </>
                         )
