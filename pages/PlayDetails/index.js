@@ -93,10 +93,10 @@ export default function PlayDetails() {
                                                                 key+1 <= 9 ? '0'+(key+1) : key+1
                                                             }
                                                         </div>
-                                                        <div className='bg-indigo-black text-indigo-white w-40 mt-4 text-center p-1 font-monument'>
+                                                        <div className='bg-indigo-black text-indigo-white w-40 mt-3 text-center p-1 font-monument'>
                                                             {data.wallet}
                                                         </div>
-                                                        <div className='ml-16 w-10 text-center mt-4 font-black'>
+                                                        <div className='ml-16 w-10 text-center mt-3 font-black'>
                                                             {data.score}
                                                         </div>
                                                     </div>
