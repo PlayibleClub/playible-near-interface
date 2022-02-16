@@ -49,7 +49,7 @@ export const playList = [
     },
 ]
 
-export const leaderBoard = [
+export const leaderboard = [
     {
         wallet:'Terra1...345H',
         score:'93.0',

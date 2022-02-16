@@ -7,9 +7,11 @@ import Main from '../../components/Main';
 import PortfolioContainer from '../../components/containers/PortfolioContainer';
 import BackFunction from '../../components/buttons/BackFunction';
 
-import { playList } from '../../pages/PlayDetails/data/index.js'
+import { playList, leaderboard } from '../../pages/PlayDetails/data/index.js'
 
-export default function PackDetails() {
+export default function PlayDetails() {
+
+ 
 
     const router = useRouter();
 
@@ -30,12 +32,12 @@ export default function PackDetails() {
                               <BackFunction prev="/Packs"/>
                           </div>
                           <div className="mt-8 md:ml-7 flex flex-row md:flex-row" key={i}>
-                              <div>
+                              <div className='md:mr-12'>
                                     <div className="mt-7 justify-center md:self-left md:mr-16">
                                         <Image
                                         src={data.image}
-                                        width={600}
-                                        height={300}
+                                        width={475}
+                                        height={200}
                                         />
                                     </div>
                                     <div className='flex space-x-14 mt-4'>
@@ -71,27 +73,45 @@ export default function PackDetails() {
                                                 03
                                             </div>
                                         </div>
+                                        <div>
+                                            <button className='bg-indigo-buttonblue text-indigo-white w-5/6 md:w-64 h-12 text-center font-bold text-md mt-8'>
+                                                ENTER GAME
+                                            </button>
+                                        </div>
                                     </div>
                               </div>
                               <div className="flex flex-col">
-                                <PortfolioContainer textcolor="indigo-black" title={data.name}/>
-                                  <div className="ml-12 md:ml-0 mt-4 md:mt-0">
-                                    <div className="ml-7 mt-7 font-bold text-base">{data.name}</div>
-                                    <div className="ml-7 mb-6">Release {data.release}</div>
-                                    <div className="ml-7 ">Price</div>
-                                    <div className="ml-7 font-bold text-base"></div>
-                                  </div>
-                                  <button className="bg-indigo-buttonblue ml-7 text-indigo-white w-5/6 md:w-60 h-10 text-center font-bold text-md mt-4" onClick={() => {executePurchasePack()}}>
-                                      BUY NOW - 
-                                  </button>
+                                <PortfolioContainer textcolor="indigo-black" title='LEADERBOARD'/>
+                                    <div className="ml-12 md:ml-10 mt-4 md:mt-0">
+                                        <div>
+                                            {leaderboard.map(function(data,key)
+                                            {
+                                                return(
+                                                    <div className='flex text-center'>
+                                                        <div className='w-10 mt-4 mr-2 font-monument text-xl'>
+                                                            {
+                                                                key+1 <= 9 ? '0'+(key+1) : key+1
+                                                            }
+                                                        </div>
+                                                        <div className='bg-indigo-black text-indigo-white w-40 mt-4 text-center p-1 font-monument'>
+                                                            {data.wallet}
+                                                        </div>
+                                                        <div className='ml-16 w-10 text-center mt-4 font-black'>
+                                                            {data.score}
+                                                        </div>
+                                                    </div>
+                                                )
+                                            })}
+                                        </div>
+                                    </div>
                               </div>
                           </div>
-                          <div className="mt-8">
+                          <div className="mt-4">
                               <PortfolioContainer  textcolor="indigo-black" title="GAMEPLAY"/>
                           </div>
                           <div className="ml-7 mt-5 font-normal">
                               Enter a team into the Alley-oop tournament to compete for cash prizes.
-                          </div><div className="ml-7 mt-5 font-normal">
+                          </div><div className="ml-7 mt-2 font-normal">
                               Create a lineup by selecting five Playible Athlete Tokens now.
                           </div>
                         </>
