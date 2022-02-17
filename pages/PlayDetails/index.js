@@ -11,8 +11,6 @@ import { playList, leaderboard } from '../../pages/PlayDetails/data/index.js'
 
 export default function PlayDetails() {
 
- 
-
     const router = useRouter();
 
 	return (
