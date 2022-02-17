@@ -31,11 +31,11 @@ export default function PlayDetails() {
                           </div>
                           <div className="mt-8 md:ml-7 flex flex-row md:flex-row" key={i}>
                               <div className='md:mr-12'>
-                                    <div className="mt-7 justify-center md:self-left md:mr-16">
+                                    <div className="mt-7 justify-center md:self-left md:mr-8">
                                         <Image
                                         src={data.image}
-                                        width={475}
-                                        height={200}
+                                        width={550}
+                                        height={220}
                                         />
                                     </div>
                                     <div className='flex space-x-14 mt-4'>
@@ -71,8 +71,11 @@ export default function PlayDetails() {
                                                 03
                                             </div>
                                         </div>
-                                        <div>
-                                            <button className='bg-indigo-buttonblue text-indigo-white w-5/6 md:w-64 h-12 text-center font-bold text-md mt-8'>
+                                        <div className='flex space-x-4'>
+                                            <button className='bg-indigo-lightblue text-indigo-buttonblue w-4/6 md:w-64 h-12 text-center font-bold text-md mt-8'>
+                                                VIEW TEAM
+                                            </button>
+                                            <button className='bg-indigo-buttonblue text-indigo-white w-4/6 md:w-64 h-12 text-center font-bold text-md mt-8'>
                                                 ENTER GAME
                                             </button>
                                         </div>
