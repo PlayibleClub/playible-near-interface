@@ -63,14 +63,7 @@ const TokenDrawPage = () => {
                     {loading ? (
                         <LoadingPageDark/>
             ) : (
-                <div className="pb-40" style={{
-                        backgroundImage: `url('../images/BackgroundMarket.PNG')`,
-                        backgroundRepeat: 'no-repeat',
-                        backgroundSize:'100% auto',
-                        //backgroundPosition: 'center',
-                        width: '100%',
-                        height: '100%',
-                }}>
+                <div className="pb-40">
                         <div className="flex flex-col pb-24">
                                 <div className="flex justify-center self-center w-10/12 mt-24" style={{backgroundColor:'white'}}>
                                     <div className="flex flex-row w-4/5 flex-wrap justify-center">
