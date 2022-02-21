@@ -36,6 +36,7 @@ module.exports = {
                 navbargrad1: '#4DBEEE',
                 navbargrad2: '#5556A5',
                 lightgreen: '#64D17A',
+                yellow: '#F2C946',
             },
             white: {
                 light: '#FFFFFF'
