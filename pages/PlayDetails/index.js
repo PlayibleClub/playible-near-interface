@@ -8,10 +8,44 @@ import PortfolioContainer from '../../components/containers/PortfolioContainer';
 import BackFunction from '../../components/buttons/BackFunction';
 
 import { playList, leaderboard } from '../../pages/PlayDetails/data/index.js'
+import { data } from 'autoprefixer';
+import { assign } from 'lodash';
 
 export default function PlayDetails() {
 
     const router = useRouter();
+    const [team, setteam] = useState(false)
+
+    const [hour, setHour] = useState(0);
+    const [minute, setMinute] = useState(0);
+    const [second, setSecond] = useState(0);
+
+    const deadline = '01 Jan 2024'
+
+    function formatTime(time)
+    {
+        return time < 10 ? ('0'+time) : time;
+    }
+
+    
+    useEffect(() => {
+      setInterval(() => {
+
+        const currentDate = new Date();
+        const endDate = new Date(deadline);
+
+        const totalSeconds = (endDate - currentDate) / 1000;
+
+        const hours = Math.floor(totalSeconds/3600) % 24;
+        const minutes = Math.floor(totalSeconds/60) % 60;
+        const seconds = Math.floor(totalSeconds) % 60;
+
+        setHour(formatTime(hours))
+        setMinute(formatTime(minutes))
+        setSecond(formatTime(seconds))
+
+      }, 1000);
+    }, []);
 
 	return (
     
@@ -60,19 +94,22 @@ export default function PlayDetails() {
                                         <div>
                                             REGISTRATION ENDS IN
                                         </div>
+
                                         <div className='flex space-x-2 mt-2'>
                                             <div className='bg-indigo-darkgray text-indigo-white p-2 rounded'> 
-                                                01
+                                                {hour}
                                             </div>
                                             <div className='bg-indigo-darkgray text-indigo-white p-2 rounded'>
-                                                02
+                                                {minute}
                                             </div>
                                             <div className='bg-indigo-darkgray text-indigo-white p-2 rounded'>
-                                                03
+                                                {second}
                                             </div>
                                         </div>
-                                        <div className='flex space-x-4'>
-                                            <button className='bg-indigo-lightblue text-indigo-buttonblue w-4/6 md:w-64 h-12 text-center font-bold text-md mt-8'>
+
+                                        <div className='flex'>
+                                            <button className={
+                                                team === true ? 'bg-indigo-lightblue text-indigo-buttonblue w-4/6 md:w-64 h-12 text-center font-bold text-md mt-8 mr-4' : 'bg-indigo-lightblue text-indigo-buttonblue w-4/6 md:w-64 h-12 text-center font-bold text-md mt-8 hidden'} >
                                                 VIEW TEAM
                                             </button>
                                             <button className='bg-indigo-buttonblue text-indigo-white w-4/6 md:w-64 h-12 text-center font-bold text-md mt-8'>
