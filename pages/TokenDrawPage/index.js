@@ -63,39 +63,37 @@ const TokenDrawPage = () => {
                     {loading ? (
                         <LoadingPageDark/>
             ) : (
-                <div className="pb-40" style={{
-                        backgroundImage: `url('../images/BackgroundMarket.PNG')`,
-                        backgroundRepeat: 'no-repeat',
-                        backgroundSize:'100% auto',
-                        //backgroundPosition: 'center',
-                        width: '100%',
-                        height: '100%',
-                }}>
-                        <div className="flex flex-col pb-24">
-                                <div className="flex justify-center self-center w-10/12 mt-24" style={{backgroundColor:'white'}}>
-                                    <div className="flex flex-row w-4/5 flex-wrap justify-center">
-                                        {
-                                            assets.map(function (i,key) 
-                                                {
-                                                    return (
-                                                        <div className="flex px-14 py-10">
-                                                        <div className="px-10 py-10" onClick={() => {
-                                                            changecard(key)}}>
-                                                                
-                                                            <TokenComponent
-                                                            playerID={sampleList[key+1]}
-                                                            isopen={i}
-                                                            />
-                                                        </div>
-                                                        </div>
-                                                    )
-                                                }
-                                            )
-                                        }
-                                    </div>
-                                </div>
-                        </div>     
-                </div>
+                <div className=''>
+                    <div className="flex justify-center self-center w-10/12 mt-4" style={{backgroundColor:'white'}}>
+                        <div className="flex flex-row w-4/5 flex-wrap justify-center">
+                            {
+                                assets.map(function (i,key) 
+                                    {
+                                        return (
+                                            <div className="flex px-14 py-10">
+                                            <div className="px-10 py-10" onClick={() => {
+                                                changecard(key)}}>
+                                                    
+                                                <TokenComponent
+                                                playerID={sampleList[key+1]}
+                                                isopen={i}
+                                                />
+                                            </div>
+                                            </div>
+                                        )
+                                    }
+                                )
+                            }
+                        </div>
+                    </div>
+                    <div className='flex h-full pt-8'>
+                            <div className='bg-indigo-black w-full justify-end flex opacity-5'>
+                            </div>
+                            <button className='bg-indigo-buttonblue text-indigo-white w-5/6 md:w-80 h-14 text-center font-bold text-md'>
+                                    GO TO MY SQUAD
+                            </button>
+                        </div>
+                    </div>
             )}
             </Container>
         </>

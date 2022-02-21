@@ -173,11 +173,9 @@ export default function PackDetails() {
                                   <div className="ml-12 md:ml-0 mt-4 md:mt-0">
                                     <div className="ml-7 mt-7 font-bold text-base">{data.name}</div>
                                     <div className="ml-7 mb-6">Release {data.release}</div>
-                                    <div className="ml-7 ">Price</div>
-                                    <div className="ml-7 font-bold text-base">{`${price} UST`}</div>
                                   </div>
-                                  <button className="bg-indigo-buttonblue ml-7 text-indigo-white w-5/6 md:w-60 h-10 text-center font-bold text-md mt-4" onClick={() => {executePurchasePack()}}>
-                                      BUY NOW - {`${price} UST`}
+                                  <button className="bg-indigo-buttonblue ml-7 text-indigo-white w-5/6 md:w-80 h-10 text-center font-bold text-sm mt-4" onClick={() => {executePurchasePack()}}>
+                                      OPEN PACK
                                   </button>
                               </div>
                           </div>
