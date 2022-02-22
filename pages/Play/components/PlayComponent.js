@@ -76,14 +76,14 @@ const PlayComponent = (props) =>{
                                         <div className="font-thin text-sm">
                                             REGISTRATION ENDS IN
                                         </div>
-                                        <div className="text-sm font-montserrat font-bold flex mt-2">
-                                            <div className="bg-indigo-gray rounded-lg py-1.5 px-2 text-indigo-white mr-2">
+                                        <div className="text-sm font-montserrat font-bold flex mt-2 space-x-2">
+                                            <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
                                                 {time[0]}
                                             </div>
-                                            <div className="bg-indigo-gray rounded-lg py-1.5 px-2 text-indigo-white mr-2">
+                                            <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
                                                 {time[1]}
                                             </div>
-                                            <div className="bg-indigo-gray rounded-lg py-1.5 px-2 text-indigo-white">
+                                            <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
                                                 {time[2]}
                                             </div>
                                         </div>
