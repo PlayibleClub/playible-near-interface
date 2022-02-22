@@ -95,15 +95,17 @@ const Play = () => {
                                         <div className="mt-4 flex ml-6 grid grid-cols-0 md:grid-cols-3">
                                                 {newPlaylist.map(function(data,i){
                                                     return (
-                                                        <div className="mr-6">
-                                                            <PlayComponent
-                                                                type="new"
-                                                                icon={data.icon}
-                                                                prizePool={data.prizePool}
-                                                                timeLeft={data.timeLeft}
-                                                                startDate={data.startDate}
-                                                            />
-                                                        </div>
+                                                        <a href={`/PlayDetails?id=${data.key}`}>
+                                                            <div className="mr-6">
+                                                                <PlayComponent
+                                                                    type="new"
+                                                                    icon={data.icon}
+                                                                    prizePool={data.prizePool}
+                                                                    timeLeft={data.timeLeft}
+                                                                    startDate={data.startDate}
+                                                                />
+                                                            </div>
+                                                        </a>
                                                     )
                                                 })}
                                         </div>
