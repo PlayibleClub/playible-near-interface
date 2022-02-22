@@ -112,10 +112,10 @@ export default function PlayDetails() {
                                             <div className='bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2'> 
                                                 {hour}
                                             </div>
-                                            <div className='bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2 rounded'>
+                                            <div className='bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2'>
                                                 {minute}
                                             </div>
-                                            <div className='bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2 rounded'>
+                                            <div className='bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2'>
                                                 {second}
                                             </div>
                                         </div>
