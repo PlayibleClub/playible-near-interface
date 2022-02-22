@@ -14,8 +14,6 @@ const PlayComponent = (props) =>{
     const [minute, setMinute] = useState(0);
     const [second, setSecond] = useState(0);
     
-    const [deadline, setDeadline] = useState('01 01 2024');
-    
     function formatTime(time)
         {
             return time < 10 ? ('0'+time) : time;

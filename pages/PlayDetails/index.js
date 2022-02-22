@@ -11,6 +11,8 @@ import { playList, leaderboard } from '../../pages/PlayDetails/data/index.js'
 import { data } from 'autoprefixer';
 import { assign } from 'lodash';
 
+import PlayDetailsComponent from './components/PlayDetailsComponent.js';
+
 export default function PlayDetails() {
 
     const router = useRouter();
@@ -21,7 +23,8 @@ export default function PlayDetails() {
     const [minute, setMinute] = useState(0);
     const [second, setSecond] = useState(0);
 
-    const [deadline, setDeadline] = useState('01 Jan 2023');
+    const startDate = '01 01 2025'
+
 
     function formatTime(time)
     {
@@ -32,9 +35,8 @@ export default function PlayDetails() {
     useEffect(() => {
       setInterval(() => {
         
-
         const currentDate = new Date();
-        const endDate = new Date(deadline);
+        const endDate = new Date(startDate);
 
         const totalSeconds = (endDate - currentDate) / 1000;
 
@@ -56,7 +58,6 @@ export default function PlayDetails() {
 	return (
     
 		<Container>
-            {console.log('Return')}
           <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
             <Main color="indigo-white">
               <div className="md:ml-6">
@@ -101,21 +102,13 @@ export default function PlayDetails() {
                                         <div>
                                             REGISTRATION ENDS IN
                                         </div>
-
-                                        <div className='flex space-x-2 mt-2'>
-                                            <div className='bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2'> 
-                                                {day}
-                                            </div>
-                                            <div className='bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2'> 
-                                                {hour}
-                                            </div>
-                                            <div className='bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2'>
-                                                {minute}
-                                            </div>
-                                            <div className='bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2'>
-                                                {second}
-                                            </div>
-                                        </div>
+                                        <PlayDetailsComponent
+                                        type="new"
+                                        icon={data.icon}
+                                        prizePool={data.prizePool}
+                                        timeLeft={data.timeLeft}
+                                        startDate={data.startDate}
+                                        />
 
                                         <div className='flex'>
                                             <button className={
