@@ -14,7 +14,7 @@ const PlayComponent = (props) =>{
     const [minute, setMinute] = useState(0);
     const [second, setSecond] = useState(0);
     
-    const [deadline, setDeadline] = useState('01 Jan 2023');
+    const [deadline, setDeadline] = useState('01 01 2024');
     
     function formatTime(time)
         {
@@ -23,11 +23,8 @@ const PlayComponent = (props) =>{
     
     useEffect(() => {
         setInterval(() => {
-          
-    
           const currentDate = new Date();
-          const endDate = new Date(deadline);
-    
+          const endDate = new Date(startDate);
           const totalSeconds = (endDate - currentDate) / 1000;
     
           const days = Math.floor(totalSeconds/2600/24);
