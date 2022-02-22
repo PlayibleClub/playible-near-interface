@@ -35,7 +35,8 @@ const Play = () => {
         if(typeof connectedWallet !== 'undefined')
         dispatch(getPortfolio({walletAddr: connectedWallet.walletAddress}))
     }, [connectedWallet])
-    
+
+
     return (
         <>
             { claimModal === true &&

@@ -30,9 +30,6 @@ export default function PlayDetails() {
 
     
     useEffect(() => {
-
-        setDeadline(data.date+' '+data.month+' '+data.year);
-
       setInterval(() => {
         
 
