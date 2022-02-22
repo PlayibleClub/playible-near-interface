@@ -87,7 +87,7 @@ export default function PlayDetails() {
                                             <div>
                                                 PRIZE POOL
                                             </div>
-                                            <div className='font-black font-monument text-lg'>
+                                            <div className='text-base font-monument text-lg'>
                                                 ${data.prize}
                                             </div>
                                         </div>
@@ -95,7 +95,7 @@ export default function PlayDetails() {
                                             <div>
                                                 START DATE
                                             </div>
-                                            <div className='font-black font-monument text-lg'>
+                                            <div className='text-base font-monument text-lg'>
                                                 {data.month}/{data.date}/{data.year}
                                             </div>
                                         </div>
@@ -144,7 +144,7 @@ export default function PlayDetails() {
                                                                 key+1 <= 9 ? '0'+(key+1) : key+1
                                                             }
                                                         </div>
-                                                        <div className='bg-indigo-black text-indigo-white w-40 mt-3 text-center p-1 font-monument'>
+                                                        <div className='bg-indigo-black text-indigo-white w-40 mt-3 text-center p-1 text-base font-monument'>
                                                             {data.wallet}
                                                         </div>
                                                         <div className='ml-16 w-10 text-center mt-3 font-black'>
