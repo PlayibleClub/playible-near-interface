@@ -16,11 +16,12 @@ export default function PlayDetails() {
     const router = useRouter();
     const [team, setteam] = useState(false)
 
+    const [day, setDay] = useState(0);
     const [hour, setHour] = useState(0);
     const [minute, setMinute] = useState(0);
     const [second, setSecond] = useState(0);
 
-    const deadline = '01 Jan 2024'
+    const [deadline, setDeadline] = useState('01 Jan 2023');
 
     function formatTime(time)
     {
@@ -29,20 +30,28 @@ export default function PlayDetails() {
 
     
     useEffect(() => {
+
+        setDeadline(data.date+' '+data.month+' '+data.year);
+
       setInterval(() => {
+        
 
         const currentDate = new Date();
         const endDate = new Date(deadline);
 
         const totalSeconds = (endDate - currentDate) / 1000;
 
+        const days = Math.floor(totalSeconds/2600/24);
         const hours = Math.floor(totalSeconds/3600) % 24;
         const minutes = Math.floor(totalSeconds/60) % 60;
         const seconds = Math.floor(totalSeconds) % 60;
 
-        setHour(formatTime(hours))
-        setMinute(formatTime(minutes))
-        setSecond(formatTime(seconds))
+        setDay(formatTime(days));
+        setHour(formatTime(hours));
+        setMinute(formatTime(minutes));
+        setSecond(formatTime(seconds));
+
+
 
       }, 1000);
     }, []);
@@ -50,6 +59,7 @@ export default function PlayDetails() {
 	return (
     
 		<Container>
+            {console.log('Return')}
           <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
             <Main color="indigo-white">
               <div className="md:ml-6">
@@ -96,13 +106,16 @@ export default function PlayDetails() {
                                         </div>
 
                                         <div className='flex space-x-2 mt-2'>
-                                            <div className='bg-indigo-darkgray text-indigo-white p-2 rounded'> 
+                                            <div className='bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2'> 
+                                                {day}
+                                            </div>
+                                            <div className='bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2'> 
                                                 {hour}
                                             </div>
-                                            <div className='bg-indigo-darkgray text-indigo-white p-2 rounded'>
+                                            <div className='bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2 rounded'>
                                                 {minute}
                                             </div>
-                                            <div className='bg-indigo-darkgray text-indigo-white p-2 rounded'>
+                                            <div className='bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2 rounded'>
                                                 {second}
                                             </div>
                                         </div>
