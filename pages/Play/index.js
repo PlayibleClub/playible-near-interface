@@ -102,8 +102,10 @@ const Play = () => {
                                                                     type="new"
                                                                     icon={data.icon}
                                                                     prizePool={data.prizePool}
-                                                                    timeLeft={data.timeLeft}
                                                                     startDate={data.startDate}
+                                                                    month={data.month}
+                                                                    date={data.date}
+                                                                    year={data.year}
                                                                 />
                                                             </div>
                                                         </a>
@@ -138,8 +140,10 @@ const Play = () => {
                                                                 type="ongoing"
                                                                 icon={data.icon}
                                                                 prizePool={data.prizePool}
-                                                                timeLeft={data.timeLeft}
                                                                 startDate={data.startDate}
+                                                                month={data.month}
+                                                                date={data.date}
+                                                                year={data.year}
                                                             />
                                                         </div>
                                                     )
@@ -175,7 +179,9 @@ const Play = () => {
                                                                     icon={data.icon}
                                                                     prizePool={data.prizePool}
                                                                     startDate={data.startDate}
-                                                                    timeLeft={data.timeLeft}
+                                                                    month={data.month}
+                                                                    date={data.date}
+                                                                    year={data.year}
                                                                 />
 
                                                                 <div className="">
