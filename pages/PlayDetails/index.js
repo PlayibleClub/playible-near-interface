@@ -69,7 +69,7 @@ export default function PlayDetails() {
                               <PortfolioContainer color="indigo-white" textcolor="indigo-black" title="PACKS"/>
                           </div> */}
                           <div className="mt-8">
-                              <BackFunction prev="/Packs"/>
+                              <BackFunction prev="/Play"/>
                           </div>
                           <div className="mt-8 md:ml-7 flex flex-row md:flex-row" key={i}>
                               <div className='md:mr-12'>
@@ -86,7 +86,7 @@ export default function PlayDetails() {
                                                 PRIZE POOL
                                             </div>
                                             <div className='text-base font-monument text-lg'>
-                                                ${data.prize}
+                                                ${data.prizePool}
                                             </div>
                                         </div>
                                         <div>
@@ -112,7 +112,7 @@ export default function PlayDetails() {
 
                                         <div className='flex'>
                                             <button className={
-                                                team === true ? 'bg-indigo-lightblue text-indigo-buttonblue w-4/6 md:w-64 h-12 text-center font-bold text-md mt-8 mr-4' : 'bg-indigo-lightblue text-indigo-buttonblue w-4/6 md:w-64 h-12 text-center font-bold text-md mt-8 hidden'} >
+                                                team === true || data.status === 'ongoing' ? 'bg-indigo-lightblue text-indigo-buttonblue w-4/6 md:w-64 h-12 text-center font-bold text-md mt-8 mr-4' : 'bg-indigo-lightblue text-indigo-buttonblue w-4/6 md:w-64 h-12 text-center font-bold text-md mt-8 hidden'} >
                                                 VIEW TEAM
                                             </button>
                                             <button className='bg-indigo-buttonblue text-indigo-white w-4/6 md:w-64 h-12 text-center font-bold text-md mt-8'>
