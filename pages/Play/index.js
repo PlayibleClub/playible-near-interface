@@ -135,17 +135,19 @@ const Play = () => {
                                         <div className="mt-4 flex ml-6 grid grid-cols-0 md:grid-cols-3">
                                                 {ongoingPlaylist.map(function(data,i){
                                                     return (
-                                                        <div className="mr-6">
-                                                            <PlayComponent
-                                                                type="ongoing"
-                                                                icon={data.icon}
-                                                                prizePool={data.prizePool}
-                                                                startDate={data.startDate}
-                                                                month={data.month}
-                                                                date={data.date}
-                                                                year={data.year}
-                                                            />
-                                                        </div>
+                                                        <a href={`/PlayDetails?id=${data.key}`}>
+                                                            <div className="mr-6">
+                                                                <PlayComponent
+                                                                    type="ongoing"
+                                                                    icon={data.icon}
+                                                                    prizePool={data.prizePool}
+                                                                    startDate={data.startDate}
+                                                                    month={data.month}
+                                                                    date={data.date}
+                                                                    year={data.year}
+                                                                />
+                                                            </div>
+                                                        </a>
                                                     )
                                                 })}
                                         </div>
