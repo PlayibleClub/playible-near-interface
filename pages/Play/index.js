@@ -70,7 +70,7 @@ const Play = () => {
                                 <div className="flex-initial">
                                 <PortfolioContainer title="PLAY" textcolor="text-indigo-black"/>
                                 </div>
-                                <div className="ml-6 mt-8 text-xs underline">MY ACTIVITY</div>
+                                <Link href="/MyActivity"><button><div className="ml-8 mt-4 text-xs underline">MY ACTIVITY</div></button></Link>
                             </div>
 
                             <div className="flex flex-col mt-6">
