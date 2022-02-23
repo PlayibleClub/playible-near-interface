@@ -7,7 +7,7 @@ export const playList = [
         name: 'Game 1',
         key: 'game1',
         image: '/images/game.png',
-        prizePool: '7,484.00',
+        prize: '7,484.00',
         month:'04',
         date:'12',
         year:'2022',
