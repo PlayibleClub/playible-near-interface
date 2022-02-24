@@ -6,7 +6,7 @@ import PortfolioContainer from '../../components/containers/PortfolioContainer';
 import TokenGridCol2 from '../../components/grids/TokenGridCol2';
 import TeamMemberContainer from '../../components/containers/TeamMemberContainer';
 import { useRouter } from 'next/router';
-import checkIcon from '../public/images/check.png';
+import checkIcon from '../../public/images/check.png';
 import Link from 'next/link';
 
 const playerList = [ // sample player list
