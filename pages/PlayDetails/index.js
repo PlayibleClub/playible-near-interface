@@ -11,6 +11,8 @@ import { playList, leaderboard } from '../../pages/PlayDetails/data/index.js'
 import { data } from 'autoprefixer';
 import { assign } from 'lodash';
 
+import PlayDetailsComponent from './components/PlayDetailsComponent.js';
+
 export default function PlayDetails() {
 
     const router = useRouter();
@@ -21,7 +23,8 @@ export default function PlayDetails() {
     const [minute, setMinute] = useState(0);
     const [second, setSecond] = useState(0);
 
-    const [deadline, setDeadline] = useState('01 Jan 2023');
+    const startDate = '01 01 2025'
+
 
     function formatTime(time)
     {
@@ -30,14 +33,10 @@ export default function PlayDetails() {
 
     
     useEffect(() => {
-
-        setDeadline(data.date+' '+data.month+' '+data.year);
-
       setInterval(() => {
         
-
         const currentDate = new Date();
-        const endDate = new Date(deadline);
+        const endDate = new Date(startDate);
 
         const totalSeconds = (endDate - currentDate) / 1000;
 
@@ -59,7 +58,6 @@ export default function PlayDetails() {
 	return (
     
 		<Container>
-            {console.log('Return')}
           <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
             <Main color="indigo-white">
               <div className="md:ml-6">
@@ -71,7 +69,7 @@ export default function PlayDetails() {
                               <PortfolioContainer color="indigo-white" textcolor="indigo-black" title="PACKS"/>
                           </div> */}
                           <div className="mt-8">
-                              <BackFunction prev="/Packs"/>
+                              <BackFunction prev="/Play"/>
                           </div>
                           <div className="mt-8 md:ml-7 flex flex-row md:flex-row" key={i}>
                               <div className='md:mr-12'>
@@ -87,15 +85,15 @@ export default function PlayDetails() {
                                             <div>
                                                 PRIZE POOL
                                             </div>
-                                            <div className='font-black font-monument text-lg'>
-                                                ${data.prize}
+                                            <div className='text-base font-monument text-lg'>
+                                                ${data.prizePool}
                                             </div>
                                         </div>
                                         <div>
                                             <div>
                                                 START DATE
                                             </div>
-                                            <div className='font-black font-monument text-lg'>
+                                            <div className='text-base font-monument text-lg'>
                                                 {data.month}/{data.date}/{data.year}
                                             </div>
                                         </div>
@@ -104,25 +102,17 @@ export default function PlayDetails() {
                                         <div>
                                             REGISTRATION ENDS IN
                                         </div>
-
-                                        <div className='flex space-x-2 mt-2'>
-                                            <div className='bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2'> 
-                                                {day}
-                                            </div>
-                                            <div className='bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2'> 
-                                                {hour}
-                                            </div>
-                                            <div className='bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2 rounded'>
-                                                {minute}
-                                            </div>
-                                            <div className='bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2 rounded'>
-                                                {second}
-                                            </div>
-                                        </div>
+                                        <PlayDetailsComponent
+                                        type="new"
+                                        icon={data.icon}
+                                        prizePool={data.prizePool}
+                                        timeLeft={data.timeLeft}
+                                        startDate={data.startDate}
+                                        />
 
                                         <div className='flex'>
                                             <button className={
-                                                team === true ? 'bg-indigo-lightblue text-indigo-buttonblue w-4/6 md:w-64 h-12 text-center font-bold text-md mt-8 mr-4' : 'bg-indigo-lightblue text-indigo-buttonblue w-4/6 md:w-64 h-12 text-center font-bold text-md mt-8 hidden'} >
+                                                team === true || data.status === 'ongoing' ? 'bg-indigo-lightblue text-indigo-buttonblue w-4/6 md:w-64 h-12 text-center font-bold text-md mt-8 mr-4' : 'bg-indigo-lightblue text-indigo-buttonblue w-4/6 md:w-64 h-12 text-center font-bold text-md mt-8 hidden'} >
                                                 VIEW TEAM
                                             </button>
                                             <button className='bg-indigo-buttonblue text-indigo-white w-4/6 md:w-64 h-12 text-center font-bold text-md mt-8'>
@@ -144,7 +134,7 @@ export default function PlayDetails() {
                                                                 key+1 <= 9 ? '0'+(key+1) : key+1
                                                             }
                                                         </div>
-                                                        <div className='bg-indigo-black text-indigo-white w-40 mt-3 text-center p-1 font-monument'>
+                                                        <div className='bg-indigo-black text-indigo-white w-40 mt-3 text-center p-1 text-base font-monument'>
                                                             {data.wallet}
                                                         </div>
                                                         <div className='ml-16 w-10 text-center mt-3 font-black'>
