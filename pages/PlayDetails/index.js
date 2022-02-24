@@ -8,52 +8,12 @@ import PortfolioContainer from '../../components/containers/PortfolioContainer';
 import BackFunction from '../../components/buttons/BackFunction';
 
 import { playList, leaderboard } from '../../pages/PlayDetails/data/index.js'
-import { data } from 'autoprefixer';
-import { assign } from 'lodash';
 
 import PlayDetailsComponent from './components/PlayDetailsComponent.js';
 
 export default function PlayDetails() {
 
     const router = useRouter();
-    const [team, setteam] = useState(false)
-
-    const [day, setDay] = useState(0);
-    const [hour, setHour] = useState(0);
-    const [minute, setMinute] = useState(0);
-    const [second, setSecond] = useState(0);
-
-    const startDate = '01 01 2025'
-
-
-    function formatTime(time)
-    {
-        return time < 10 ? ('0'+time) : time;
-    }
-
-    
-    useEffect(() => {
-      setInterval(() => {
-        
-        const currentDate = new Date();
-        const endDate = new Date(startDate);
-
-        const totalSeconds = (endDate - currentDate) / 1000;
-
-        const days = Math.floor(totalSeconds/2600/24);
-        const hours = Math.floor(totalSeconds/3600) % 24;
-        const minutes = Math.floor(totalSeconds/60) % 60;
-        const seconds = Math.floor(totalSeconds) % 60;
-
-        setDay(formatTime(days));
-        setHour(formatTime(hours));
-        setMinute(formatTime(minutes));
-        setSecond(formatTime(seconds));
-
-
-
-      }, 1000);
-    }, []);
 
 	return (
     
@@ -61,6 +21,9 @@ export default function PlayDetails() {
           <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
             <Main color="indigo-white">
               <div className="md:ml-6">
+              <div className="mt-8">
+                <BackFunction prev="/Play"/>
+              </div>
                 {playList.map(function(data, i){
                       if(router.query.id === data.key){
                         return(
@@ -68,10 +31,7 @@ export default function PlayDetails() {
                           {/* <div className="invisible">
                               <PortfolioContainer color="indigo-white" textcolor="indigo-black" title="PACKS"/>
                           </div> */}
-                          <div className="mt-8">
-                              <BackFunction prev="/Play"/>
-                          </div>
-                          <div className="mt-8 md:ml-7 flex flex-row md:flex-row" key={i}>
+                          <div className="md:ml-7 flex flex-row md:flex-row">
                               <div className='md:mr-12'>
                                     <div className="mt-7 justify-center md:self-left md:mr-8">
                                         <Image
@@ -112,12 +72,14 @@ export default function PlayDetails() {
 
                                         <div className='flex'>
                                             <button className={
-                                                team === true || data.status === 'ongoing' ? 'bg-indigo-lightblue text-indigo-buttonblue w-4/6 md:w-64 h-12 text-center font-bold text-md mt-8 mr-4' : 'bg-indigo-lightblue text-indigo-buttonblue w-4/6 md:w-64 h-12 text-center font-bold text-md mt-8 hidden'} >
+                                                data.team === true || data.status === 'ongoing' ? 'bg-indigo-lightblue text-indigo-buttonblue w-4/6 md:w-64 h-12 text-center font-bold text-md mt-8 mr-4' : 'bg-indigo-lightblue text-indigo-buttonblue w-4/6 md:w-64 h-12 text-center font-bold text-md mt-8 hidden'} >
                                                 VIEW TEAM
                                             </button>
+                                            <a href={`/CreateLineup?id=${data.key}`}>
                                             <button className='bg-indigo-buttonblue text-indigo-white w-4/6 md:w-64 h-12 text-center font-bold text-md mt-8'>
                                                 ENTER GAME
                                             </button>
+                                            </a>
                                         </div>
                                     </div>
                               </div>
