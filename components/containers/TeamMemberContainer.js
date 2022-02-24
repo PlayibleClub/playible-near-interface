@@ -26,9 +26,7 @@ const TeamMemberContainer = (props) => {
           <div className="text-xs font-thin">#{id}/25000</div>
           <div className="mb-5 text-sm ">{AthleteName}</div>
           <div className="text-xs font-thin">AVERAGE SCORE </div>
-          <div className="text-xs">
-            {AverageScore}
-          </div>
+          <div className="text-xs">{AverageScore}</div>
         </div>
       </div>
     </div>
