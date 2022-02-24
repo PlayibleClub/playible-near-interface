@@ -2,14 +2,35 @@ export const newPlaylist = [
     {
         icon: 'key',
         prizePool: '7,484.00',
-        startDate: '04/12/2021',
-        timeLeft: '06:23:05'
+        startDate: '04 12 2022',
+        name: 'Game 1',
+        key: 'game1',
+        image: '/images/game.png',
+        month:'04',
+        date:'12',
+        year:'2022',
     },
     {
         icon: 'key',
         prizePool: '8,624.00',
-        startDate: '03/23/2021',
-        timeLeft: '05:25:22'
+        startDate: '03 23 2022',
+        name: 'Game 2',
+        key: 'game2',
+        image: '/images/game.png',
+        month:'03',
+        date:'23',
+        year:'2022',
+    },
+    {
+        icon: 'key',
+        prizePool: '4,000.00',
+        startDate: '05 05 2022',
+        name: 'Game 3',
+        key: 'game3',
+        image: '/images/game.png',
+        month:'05',
+        date:'05',
+        year:'2022',
     },
 ]
 
@@ -17,50 +38,90 @@ export const ongoingPlaylist = [
     {
         icon: 'key',
         prizePool: '12,000.00',
-        startDate: '07/26/2021',
-        timeLeft: '12:45:33'
+        startDate: '03 02 2022',
+        name: 'Game 4',
+        key: 'game4',
+        image: '/images/game.png',
+        month:'03',
+        date:'02',
+        year:'2022',
     },
     {
         icon: 'key',
         prizePool: '30,000.00',
-        startDate: '02/22/2020',
-        timeLeft: '01:00:43'
+        startDate: '04 04 2022',
+        name: 'Game 5',
+        key: 'game5',
+        image: '/images/game.png',
+        month:'04',
+        date:'04',
+        year:'2022',
     },
     {
         icon: 'key',
         prizePool: '12,000.00',
-        startDate: '07/26/2021',
-        timeLeft: '12:45:33'
+        startDate: '05 06 2022',
+        name: 'Game 6',
+        key: 'game6',
+        image: '/images/game.png',
+        month:'05',
+        date:'06',
+        year:'2022',
     },
     {
         icon: 'key',
         prizePool: '30,000.00',
-        startDate: '02/22/2020',
-        timeLeft: '01:00:43'
+        startDate: '06 08 2022',
+        name: 'Game 7',
+        key: 'game7',
+        image: '/images/game.png',
+        month:'06',
+        date:'08',
+        year:'2022',
     },
     {
         icon: 'key',
         prizePool: '12,000.00',
-        startDate: '07/26/2021',
-        timeLeft: '12:45:33'
+        startDate: '07 10 2022',
+        name: 'Game 8',
+        key: 'game8',
+        image: '/images/game.png',
+        month:'07',
+        date:'10',
+        year:'2022',
     },
     {
         icon: 'key',
         prizePool: '30,000.00',
-        startDate: '02/22/2020',
-        timeLeft: '01:00:43'
+        startDate: '08 12 2022',
+        name: 'Game 9',
+        key: 'game9',
+        image: '/images/game.png',
+        month:'08',
+        date:'12',
+        year:'2022',
     },
     {
         icon: 'key',
         prizePool: '12,000.00',
-        startDate: '07/26/2021',
-        timeLeft: '12:45:33'
+        startDate: '09 14 2022',
+        name: 'Game 10',
+        key: 'game10',
+        image: '/images/game.png',
+        month:'09',
+        date:'14',
+        year:'2022',
     },
     {
         icon: 'key',
         prizePool: '30,000.00',
-        startDate: '02/22/2020',
-        timeLeft: '01:00:43'
+        startDate: '10 16 2022',
+        name: 'Game 11',
+        key: 'game11',
+        image: '/images/game.png',
+        month:'10',
+        date:'16',
+        year:'2022',
     },
 ]
 
@@ -69,12 +130,10 @@ export const completedPlaylist = [
         icon: 'key',
         prizePool: '7,484.00',
         startDate: '03/31/2021',
-        timeLeft: '00:00:00'
     },
     {
         icon: 'key',
         prizePool: '8,624.00',
         startDate: '03/31/2021',
-        timeLeft: '00:00:00'
     },
 ]
