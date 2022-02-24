@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import Image from 'next/image'
 
 const PerformerContainer = (props) => {
-  const { children, color, imagesrc, AthleteName, TeamName, CoinValue, AvgScore, id, rarity, status } = props;
+  const { children, color, imagesrc, uri, AthleteName, TeamName, CoinValue, AvgScore, id, rarity, status } = props;
 
   return (
     <div data-test="PerformerContainer" className={`justify-center flex flex-col w-full h-full`}>
@@ -20,28 +20,37 @@ const PerformerContainer = (props) => {
 
       </div>
       <div className="flex justify-center h-2/3">
-        {rarity === 'gold' && 
+        {uri ? 
           <Image
-            src={"/../public/images/tokens/"+id+"g.png"}
+            src={uri}
             width={120}
             height={160}
-          />
-        }
+          /> : 
+          <>
+            {rarity === 'gold' && 
+              <Image
+                src={"/../public/images/tokens/"+id+"g.png"}
+                width={120}
+                height={160}
+              />
+            }
 
-        {rarity === 'silver' && 
-          <Image
-            src={"/../public/images/tokens/"+id+"s.png"}
-            width={120}
-            height={160}
-          />
-        }
+            {rarity === 'silver' && 
+              <Image
+                src={"/../public/images/tokens/"+id+"s.png"}
+                width={120}
+                height={160}
+              />
+            }
 
-        {rarity === 'base' && 
-          <Image
-            src={"/../public/images/tokens/"+id+".png"}
-            width={120}
-            height={160}
-          />
+            {rarity === 'base' && 
+              <Image
+                src={"/../public/images/tokens/"+id+".png"}
+                width={120}
+                height={160}
+              />
+            }
+          </>
         }
       </div>
       {children}
