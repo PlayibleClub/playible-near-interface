@@ -16,8 +16,9 @@ export const getAccountAssets = createAsyncThunk('getAccountAssets', async (payl
   try {
     const { walletAddr } = payload;
     const result = await axiosInstance.get(
-      `/account/assets/account/${walletAddr}/collection/${contracts.CW721}`
+      `/account/athlete_tokens/${walletAddr}/collection/${contracts.ATHLETE}`
     );
+    console.log('result', result)
     return {
       response: result,
       status: statusCode.SUCCESS,
@@ -34,22 +35,7 @@ const processAssetListData = (data) => {
   const processedData = [];
   if (data.length > 0) {
     data.forEach((item) => {
-      processedData.push({
-        id: item.id,
-        tokenID: item.token_id,
-        collection: item.collection.contract_addr,
-        owner: item.owner.wallet_addr,
-        name: 'STEPHEN CURRY',
-        team: 'Golden State Warriors',
-        athlete_id: '320',
-        jersey: '30',
-        positions: ['PG', 'SG'],
-        avgscore: '86.3',
-        grad1: 'indigo-blue',
-        grad2: 'indigo-bluegrad',
-        listing: '12/12/2024', //4
-        rarity: 'base',
-      });
+      processedData.push(item);
     });
   }
 

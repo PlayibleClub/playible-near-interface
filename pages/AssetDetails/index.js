@@ -20,7 +20,8 @@ import CongratsModal from './components/congratsModal';
 import LoadingPageDark from '../../components/loading/LoadingPageDark';
 import BackFunction from '../../components/buttons/BackFunction';
 
-import { playerList, playerdata } from './data';
+import { playerdata } from './data';
+import { position } from '../../utils/athlete/position';
 
 const AssetDetails = () => {
     const { register, handleSubmit } = useForm()
@@ -34,11 +35,21 @@ const AssetDetails = () => {
     const [assetData, setAssetData] = useState(null)
 
     const [statfilter, setFilter] = useState("sevendays")
+    const filterList = [
+      "singles",
+      "doubles",
+      "triples",
+      "home_runs",
+      "runs_batted_in",
+      "walks",
+      "hit_by_pitch",
+      "stolen_bases",
+    ]
     //const [silverDropdown, displaySilver] = useState(false)
     //const [goldDropdown, displayGold] = useState(false)
     const { query } = useRouter()
 
-    //const { list: playerList } = useSelector((state) => state.external.playible.assets)
+    const { list: playerList } = useSelector((state) => state.external.playible.assets)
 
     /*const baseTokenCount = tokenList.reduce(function(n, list){
         return n + (list.id === playerToFind.id && list.rarity === 'base')
@@ -59,11 +70,15 @@ const AssetDetails = () => {
     })*/
 
     useEffect(() => {
-      const data = playerList.find((item) => String(item.id) === String(query.id))
+      const data = playerList.find((item) => {
+        const path = item.token_info.info.extension
+        return String(path.athlete_id) === String(query.id)
+      })
       if(typeof data !== "undefined"){
         setAssetData(data)
         setLoading(false)
       }
+      console.log('data,playerList', data,)
     }, [playerList])
 
     const handleFilter = (event) => {
@@ -88,16 +103,16 @@ const AssetDetails = () => {
 
                   <div className="flex flex-col mt-4 items-center">
                     <div className="">
-                      <PlayerContainer playerID={assetData.id} rarity='base'/>
+                      <PlayerContainer playerID={assetData.token_info.info.extension.athlete_id} rarity='base'/>
                     </div>
                     <div>
                       <div>
                         <div className="font-thin text-xs mt-4">
-                          #{assetData.id}/25000
+                          #{assetData.token_info.info.extension.athlete_id}/25000
                         </div>
 
                         <div className="text-sm font-bold">
-                          {assetData.name}
+                          {assetData.token_info.info.extension.name}
                         </div>
 
                         <div className="font-thin mt-4 text-xs">
@@ -105,7 +120,7 @@ const AssetDetails = () => {
                         </div>
 
                         <div className="text-sm font-bold">
-                          {assetData.avgscore}
+                          {assetData.fantasy_score}
                         </div>
                       </div>
                     </div>
@@ -229,19 +244,19 @@ const AssetDetails = () => {
                                 <div className="flex md:flex-row flex-col md:mt-8">
                                   <div>
                                     <div className="ml-8 md:ml-6 mr-16">
-                                      <PlayerContainer playerID={assetData.id} rarity='base'/>
+                                      <PlayerContainer playerID={assetData.token_info.info.extension.athlete_id} rarity='base'/>
                                     </div>
                                   </div>
                                   <div className="flex flex-col">
                                     <div className="ml-8 md:ml-0 mb-4 md:mb-0 mt-8 md:mt-0">
                                       { query.origin === 'portfolio' &&
                                         <div className="font-thin text-sm">
-                                          #{assetData.id}/25000
+                                          #{assetData.token_info.info.extension.athlete_id}/25000
                                         </div>
                                       }
                                       
                                       <div className="text-sm">
-                                        {assetData.name}
+                                        {assetData.token_info.info.extension.name}
                                       </div>
 
                                       <div className="font-thin mt-4 text-sm">
@@ -249,7 +264,7 @@ const AssetDetails = () => {
                                       </div>
 
                                       <div className="text-sm mb-4">
-                                        {assetData["avgscore"]}
+                                        {assetData.fantasy_score}
                                       </div>
                                     </div>
 
@@ -284,7 +299,7 @@ const AssetDetails = () => {
                             </PortfolioContainer>
                               
                             <div className="mt-10 flex flex-col md:flex-row justify-between">
-                              <PortfolioContainer textcolor="indigo-black" title="PLAYER STATS" stats="86.5"/>
+                              <PortfolioContainer textcolor="indigo-black" title="PLAYER STATS" stats={String(assetData.fantasy_score)}/>
                               <div className="self-center md:mr-24">
                                 <div className="bg-indigo-white h-11 flex justify-between self-center font-thin w-80 mt-6 border-2 border-indigo-lightgray border-opacity-50">
                                   <div className="text-lg ml-4 mt-2 text-indigo-black">
@@ -301,14 +316,11 @@ const AssetDetails = () => {
                               </div>
                             </div>
                             <div className="text-indigo-white bg-indigo-black w-48 py-4 text-3xl font-bold text-center ml-6 mt-8 md:mt-0">
-                              HITTER
+                              {assetData ? position('baseball', assetData.token_info.info.extension.position) : 'N/A'}
                             </div>
                             <div className="flex flex-col justify-center self-center md:mr-24 mb-8 md:ml-6">
                               <div className="mt-8 mb-16 self-center">
-                                {playerdata.map(function(data, i){
-                                  if(statfilter === data.key)
-                                    return <PlayerStats player={data} key={i}/>
-                                })}
+                                {assetData && <PlayerStats player={assetData} />}
                               </div>
                             </div>
                           </div>

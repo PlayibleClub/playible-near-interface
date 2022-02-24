@@ -67,13 +67,14 @@ const Portfolio = () => {
 
   useEffect(() => {
     if (typeof connectedWallet !== 'undefined') {
-      // dispatch(getAccountAssets({ walletAddr: connectedWallet.walletAddress }));
-      fetchUserAssets();
+      dispatch(getAccountAssets({ walletAddr: connectedWallet.walletAddress }));
     }
   }, [dispatch, connectedWallet]);
 
   useEffect(() => {
     if (typeof playerList !== 'undefined') {
+      setSortedList(playerList)
+      setLoading(false)
     }
   }, [playerList]);
 
