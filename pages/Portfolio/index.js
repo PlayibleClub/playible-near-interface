@@ -43,27 +43,12 @@ const Portfolio = () => {
   const [displayMode, setDisplay] = useState(true);
   const [loading, setLoading] = useState(true);
 
-  const { list: playerList, status } = useSelector((state) => state.external.playible.assets);
+  const { list: playerList, status } = useSelector((state) => state.assets);
 
   const dispatch = useDispatch();
   const connectedWallet = useConnectedWallet();
   const lcd = useLCDClient();
   const [sortedList, setSortedList] = useState([]);
-
-  const fetchUserAssets = async () => {
-    if (connectedWallet) {
-      const res = await axiosInstance.get(
-        `/account/athlete_tokens/${connectedWallet.walletAddress}/collection/${ATHLETE}`
-      );
-
-      if (res.status === 200) {
-        if (res.data.length > 0) {
-          setSortedList([...res.data]);
-        }
-      }
-    }
-    setLoading(false);
-  };
 
   useEffect(() => {
     if (typeof connectedWallet !== 'undefined') {

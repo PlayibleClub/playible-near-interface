@@ -23,7 +23,8 @@ import BackFunction from '../../components/buttons/BackFunction';
 import { playerdata } from './data';
 import { position } from '../../utils/athlete/position';
 
-const AssetDetails = () => {
+const AssetDetails = (props) => {
+    const { queryObj } = props;
     const { register, handleSubmit } = useForm()
     const connectedWallet = useConnectedWallet();
 
@@ -49,7 +50,7 @@ const AssetDetails = () => {
     //const [goldDropdown, displayGold] = useState(false)
     const { query } = useRouter()
 
-    const { list: playerList } = useSelector((state) => state.external.playible.assets)
+    const { list: playerList } = useSelector((state) => state.assets)
 
     /*const baseTokenCount = tokenList.reduce(function(n, list){
         return n + (list.id === playerToFind.id && list.rarity === 'base')
@@ -72,13 +73,16 @@ const AssetDetails = () => {
     useEffect(() => {
       const data = playerList.find((item) => {
         const path = item.token_info.info.extension
-        return String(path.athlete_id) === String(query.id)
+        if (queryObj) {
+          return String(path.athlete_id) === String(queryObj.id)
+        } else {
+          return String(path.athlete_id) === String(query.id)
+        }
       })
-      if(typeof data !== "undefined"){
+      if (typeof data !== "undefined") {
         setAssetData(data)
         setLoading(false)
       }
-      console.log('data,playerList', data,)
     }, [playerList])
 
     const handleFilter = (event) => {
@@ -116,7 +120,7 @@ const AssetDetails = () => {
                         </div>
 
                         <div className="font-thin mt-4 text-xs">
-                          AVERAGE SCORE
+                          FANTASY SCORE
                         </div>
 
                         <div className="text-sm font-bold">
@@ -168,14 +172,14 @@ const AssetDetails = () => {
 
                             <div className="flex flex-col mt-4 items-center">
                                 <div className="">
-                                    <PlayerContainer playerID={assetData.id} rarity='base'/>
+                                    <PlayerContainer playerID={assetData.token_info.info.extension.athlete_id} rarity='base'/>
                                 </div>
                             </div>
 
                             <div className="flex justify-between mt-4">
                                 <div>
                                     <div className="font-bold">
-                                    #{assetData.id}/25000
+                                    #{assetData.token_info.info.extension.athlete_id}/25000
                                     </div>
 
                                     <div className="font-thin">
@@ -260,7 +264,7 @@ const AssetDetails = () => {
                                       </div>
 
                                       <div className="font-thin mt-4 text-sm">
-                                        AVERAGE SCORE
+                                        FANTASY SCORE
                                       </div>
 
                                       <div className="text-sm mb-4">
@@ -336,3 +340,14 @@ const AssetDetails = () => {
 }
 
 export default AssetDetails;
+
+export async function getServerSideProps(ctx) {
+  const { query } = ctx
+  let queryObj = null 
+  if (query) {
+    queryObj = query
+  }
+  return {
+    props: { queryObj }
+  }
+}
