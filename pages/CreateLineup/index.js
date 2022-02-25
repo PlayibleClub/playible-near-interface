@@ -1,141 +1,97 @@
-// import Image from 'next/image';
-import React from 'react';
-import HeaderBack from '../../components/headers/HeaderBack';
+import Image from 'next/image';
+import React, { useState } from 'react';
 import Main from '../../components/Main';
 import PortfolioContainer from '../../components/containers/PortfolioContainer';
-import TokenGridCol2 from '../../components/grids/TokenGridCol2';
+import TokenGridCol4 from '../../components/grids/TokenGridCol4';
 import TeamMemberContainer from '../../components/containers/TeamMemberContainer';
 import Link from 'next/link';
+import Container from '../../components/containers/Container';
+import BackFunction from '../../components/buttons/BackFunction';
 
-const playerList = [
-    {
-        name: 'STEPHEN CURRY',
-        team: 'Golden State Warriors',
-        id: '320',
-        averageScore: '40',
-        cost: '420 UST',
-        jersey: '30',
-        positions: ['PG', 'SG'],
-        grad1: 'indigo-blue',
-        grad2: 'indigo-bluegrad',
-    },
-    {
-        name: 'LEBRON JAMES',
-        team: 'Los Angeles Lakers',
-        id: '25',
-        averageScore: '25',
-        cost: '840 UST',
-        jersey: '23',
-        positions: ['PG', 'SG'],
-        grad1: 'indigo-purple',
-        grad2: 'indigo-purplegrad',
-    },
-    {
-        name: 'DEVIN BOOKER',
-        team: 'Phoenix Suns',
-        id: '16450',
-        averageScore: '27',
-        cost: '21 UST',
-        jersey: '01',
-        positions: ['SF', 'C'],
-        grad1: 'indigo-darkblue',
-        grad2: 'indigo-darkbluegrad',
-    },
-    {
-        name: 'KEVIN DURANT',
-        team: 'Brooklyn Nets',
-        id: '12300',
-        averageScore: '45',
-        cost: '180 UST',
-        jersey: '07',
-        positions: ['PG'],
-        grad1: 'indigo-black',
-        grad2: 'indigo-red',
-    },
-    {
-        name: 'BEN SIMMONS',
-        team: 'Philadelphia 76ers',
-        id: '21300',
-        averageScore: '27',
-        cost: '45.5 UST',
-        jersey: '25',
-        positions: ['SG', 'C'],
-        grad1: 'indigo-blue',
-        grad2: 'indigo-bluegrad',
-    },
+import { playList } from '../../pages/PlayDetails/data/index.js'
 
-    // {
-    //     name: '',
-    //     team: '',
-    //     id: '',
-    //     cost: '',
-    //     jersey: '',
-    //     positions: [],
-    //     grad1: '',
-    //     grad2: '',
-    // },
-]
+import { teamComposition } from './data';
 
-const playerLineup = [
-    {
-        userid: '',
-        shootingGuard: '',
-        pointGuard: '',
-        shortForward: '',
-        pointForward: '',
-        center: ''
-    }
-]
+import PlayDetailsComponent from '../../pages/PlayDetails/components/PlayDetailsComponent.js';
+
+import { useRouter } from 'next/router';
+
+import Lineup from '../../pages/CreateLineup/components/Lineup.js';
 
 export default function CreateLineup() { 
+
+    const router = useRouter();
+
     return (
         <>
-            <div className={`font-montserrat h-screen relative `}>
-                <div className="flex flex-col w-full ">
-                    <HeaderBack link="/Play"/>
+        <Container>
+          <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
                     <Main color="indigo-white">
-                        <div className="flex flex-col w-full h-full overflow-y-scroll overflow-x-hidden">
-                            <PortfolioContainer title="CREATE LINEUP" textcolor="text-indigo-black">
+                        <div className="mt-8">
+                              <BackFunction prev="/Play"/>
+                        </div>
+                        {playList.map(function(data, i){
+                      if(router.query.id === data.key){
+                        return(
+                        <>
+                          <div className="md:ml-7 flex flex-row md:flex-row">
+                              <div className='md:mr-12'>
+                                    <div className="mt-7 justify-center md:self-left md:mr-8">
+                                        <Image
+                                        src={data.image}
+                                        width={550}
+                                        height={220}
+                                        />
+                                    </div>
+                              </div>
+                            <div className="flex flex-col">
+                                <div className="mt-4">
+                                    <PortfolioContainer  textcolor="indigo-black" title="GAMEPLAY"/>
+                                </div>
+                                <div className="ml-7 mt-5 font-normal">
+                                    Enter a team into the Alley-oop tournament to compete for cash prizes.
+                                </div><div className="ml-7 mt-2 font-normal">
+                                    Create a lineup by selecting five Playible Athlete Tokens now.
+                                </div>
+                            </div>
+                          </div>
+
+                          <PortfolioContainer title="CREATE LINEUP" textcolor="text-indigo-black">
                                 <div className="flex flex-col">
-                                    <div className="font-thin text-sm mt-8 mb-10 ml-6">Create your own Fantasy Team</div>
-                                    <TokenGridCol2>
-                                        <Link href="/EnterPlayers?pos=SF">
-                                            <div>
-                                                <TeamMemberContainer pos="SF" />
-                                            </div>
-                                        </Link>
-
-                                        <Link href="/EnterPlayers?pos=PF">
-                                            <div>
-                                                <TeamMemberContainer pos="PF"/>
-                                            </div>
-                                        </Link>
-
-                                        <Link href="/EnterPlayers?pos=SG">
-                                            <div>
-                                                <TeamMemberContainer pos="SG"/>
-                                            </div>
-                                        </Link>
-
-                                        <Link href="/EnterPlayers?pos=PG">
-                                            <div>
-                                                <TeamMemberContainer pos="PG"/>
-                                            </div>
-                                        </Link>
-
-                                        <Link href="/EnterPlayers?pos=C">
-                                            <div>
-                                                <TeamMemberContainer pos="C"/>
-                                            </div>
-                                        </Link>
-                                    </TokenGridCol2>
+                            <PortfolioContainer title={`Team ${data.number}`} textcolor="text-indigo-black"/>
+                                <div className="grid grid-cols-4 gap-y-4 mt-4 md:grid-cols-4 md:ml-7 md:mt-12">
+                                    {teamComposition.map(function (data, i) {
+                                                return (
+                                                    <div className="">
+                                                        <a href={`/Position?id=${data.position}`}>
+                                                            <div className="" key={i}>
+                                                                <Lineup
+                                                                    position={data.position}
+                                                                    player={data.player}
+                                                                    id={data.id}
+                                                                    score={data.score} />
+                                                            </div>
+                                                        </a>
+                                                    </div>
+                                                )
+                                            }
+                                        )
+                                    }
+                                </div>
                                 </div>
                             </PortfolioContainer>
-                        </div>
+                                
+                                </>
+                                )
+                            }
+                            }
+                        )
+                        }
+                            
 
-                        <div className='flex justify-center'> 
+                        <div className='flex justify-center mt-8'> 
                             <Link href="/Play">
-                                <div className="bg-indigo-lightgray w-80 h-12 mb-16 text-center rounded-md">
+                                <div className="bg-indigo-buttonblue w-80 h-12 mb-16 text-center rounded-md">
                                     <div className="mt-3 text-indigo-white font-black">
                                         PROCEED
                                     </div>
@@ -143,8 +99,8 @@ export default function CreateLineup() {
                             </Link>
                         </div>
                     </Main>
-                </div>
-            </div>
+                    </div>
+		</Container>
         </>
     );
 }
