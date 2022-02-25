@@ -12,8 +12,6 @@ import { playList } from '../../pages/PlayDetails/data/index.js'
 
 import { teamComposition } from './data';
 
-import PlayDetailsComponent from '../../pages/PlayDetails/components/PlayDetailsComponent.js';
-
 import { useRouter } from 'next/router';
 
 import Lineup from '../../pages/CreateLineup/components/Lineup.js';
@@ -60,16 +58,17 @@ export default function CreateLineup() {
                                 <div className="flex flex-col">
                             <PortfolioContainer title={`Team ${data.number}`} textcolor="text-indigo-black"/>
                                 <div className="grid grid-cols-4 gap-y-4 mt-4 md:grid-cols-4 md:ml-7 md:mt-12">
-                                    {teamComposition.map(function (data, i) {
+                                    {teamComposition[data.number].map(function (data, i) {
                                                 return (
                                                     <div className="">
-                                                        <a href={`/Position?id=${data.position}`}>
+                                                        <a href={`/EnterPlayers?pos=${data.position}`}>
                                                             <div className="" key={i}>
                                                                 <Lineup
                                                                     position={data.position}
                                                                     player={data.player}
                                                                     id={data.id}
-                                                                    score={data.score} />
+                                                                    score={data.score}
+                                                                    />
                                                             </div>
                                                         </a>
                                                     </div>
