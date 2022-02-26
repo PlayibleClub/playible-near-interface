@@ -19,7 +19,7 @@ const logger = createLogger({
 const persistConfig = {
     key: 'root',
     storage,
-    whitelist: [],
+    whitelist: ['assets'],
     stateReconciler: autoMergeLevel1,
 };
 

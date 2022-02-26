@@ -9,50 +9,38 @@ const initialState = {
   list: [],
   message: '',
   status: statusCode.IDLE,
-  action: ''
-}
+  action: '',
+};
 
 export const getAccountAssets = createAsyncThunk('getAccountAssets', async (payload, thunkAPI) => {
   try {
-    const { walletAddr } = payload
-    const result = await axiosInstance.get(`/account/assets/account/${walletAddr}/collection/${contracts.CW721}`);
+    const { walletAddr } = payload;
+    const result = await axiosInstance.get(
+      `/account/athlete_tokens/${walletAddr}/collection/${contracts.ATHLETE}`
+    );
+    console.log('result', result)
     return {
       response: result,
-      status: statusCode.SUCCESS
-    }
+      status: statusCode.SUCCESS,
+    };
   } catch (err) {
     return thunkAPI.rejectWithValue({
       response: err,
-      status: statusCode.ERROR
+      status: statusCode.ERROR,
     });
   }
 });
 
 const processAssetListData = (data) => {
-  const processedData = []
-  if(data.length > 0){
+  const processedData = [];
+  if (data.length > 0) {
     data.forEach((item) => {
-      processedData.push({
-        id: item.id,
-        tokenID: item.token_id,
-        collection: item.collection.contract_addr,
-        owner: item.owner.wallet_addr,
-        name: 'STEPHEN CURRY',
-        team: 'Golden State Warriors',
-        athlete_id: '320',
-        jersey: '30',
-        positions: ['PG', 'SG'],
-        avgscore: '86.3',
-        grad1: 'indigo-blue',
-        grad2: 'indigo-bluegrad',
-        listing: '12/12/2024', //4
-        rarity: 'base',
-      })
+      processedData.push(item);
     });
   }
 
-  return processedData
-}
+  return processedData;
+};
 
 const assetSlice = createSlice({
   name: 'asset',
@@ -65,7 +53,7 @@ const assetSlice = createSlice({
       return {
         ...state,
         status: statusCode.PENDING,
-        action: actionType.GET
+        action: actionType.GET,
       };
     },
     [getAccountAssets.fulfilled]: (state, action) => {
@@ -73,14 +61,14 @@ const assetSlice = createSlice({
         ...state,
         list: processAssetListData(action.payload.response.data),
         status: action.payload.status,
-        action: actionType.GET
+        action: actionType.GET,
       };
     },
     [getAccountAssets.rejected]: (state, action) => {
       return {
         ...state,
         status: action.payload.status,
-        action: actionType.GET
+        action: actionType.GET,
       };
     },
   },
