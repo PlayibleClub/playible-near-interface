@@ -1,12 +1,12 @@
 import React, { Component, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Image from 'next/image'
+import moment from 'moment';
 
 
 const PlayComponent = (props) =>{
-    const {icon, prizePool, timeLeft, startDate, endsin, type, children, month, date, year} = props;
-    // const playicon = "/../../../public/images/playthumbnails/"+icon+".png"
-    const playicon = "/../public/images/playthumbnails/"+icon+".png"
+    const {icon, prizePool, timeLeft, startDate, endsin, type, children, month, date, year, img = null} = props;
+    const playicon = "/../public/images/playthumbnails/key.png"
 
     const [day, setDay] = useState(0);
     const [hour, setHour] = useState(0);
@@ -46,7 +46,7 @@ const PlayComponent = (props) =>{
                 <div className="w-84 h-84">
                     <div className="w-full p-3">
                         <div className="w-full">
-                            <Image src={playicon}
+                            <Image src={img ? img : playicon}
                                 width="300px"
                                 height="263px"
                             />
@@ -96,7 +96,7 @@ const PlayComponent = (props) =>{
                                     START DATE
                                 </div>
                                 <div className="text-base font-monument">
-                                    {month}/{date}/{year}
+                                    {moment(startDate).format('MM/DD/YYYY')}
                                 </div>
                             </div>
                         </div>
@@ -165,6 +165,7 @@ PlayComponent.propTypes = {
     maxPlayers: PropTypes.string.isRequired,
     timeLeft: PropTypes.string.isRequired,
     children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
+    img: PropTypes.string,
   };
 
 export default PlayComponent;
