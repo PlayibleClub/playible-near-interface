@@ -5,7 +5,7 @@ import { CommunityPoolSpendProposal } from '@terra-money/terra.js';
 
 
 const Lineup = (props) =>{
-    const {position, player,id,score} = props;
+    const {position, player,id,score,nextposition} = props;
     const lineupPosition = "/../public/images/tokensMLB/"+position+".png"
 
     return (
