@@ -58,7 +58,7 @@ export default function CreateLineup() {
                                 <div className="flex flex-col">
                             <PortfolioContainer title={`Team ${data.number}`} textcolor="text-indigo-black"/>
                                 <div className="grid grid-cols-4 gap-y-4 mt-4 md:grid-cols-4 md:ml-7 md:mt-12">
-                                    {teamComposition[data.number].map(function (data, i) {
+                                    {teamComposition[data.number][1].map(function (data, i) {
                                                 return (
                                                     <div className="">
                                                         <a href={`/EnterPlayers?pos=${data.position}`}>
