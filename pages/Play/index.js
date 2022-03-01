@@ -14,6 +14,7 @@ import BaseModal from '../../components/modals/BaseModal'
 import claimreward from '../../public/images/claimreward.png';
 
 import { newPlaylist, ongoingPlaylist, completedPlaylist } from './data';
+import { axiosInstance } from '../../utils/playible';
 
 const Play = () => {
     const { status, connect, disconnect, availableConnectTypes } = useWallet();
@@ -29,13 +30,24 @@ const Play = () => {
     };
     const dispatch = useDispatch();
     const connectedWallet = useConnectedWallet();
+    const [games, setGames] = useState([])
 
+    const fetchGames = async (type) => {
+        setGames([])
+        const res = await axiosInstance.get(`/fantasy/game/${type}/`)
+        if (res.status === 200) {
+            setGames(res.data)
+        }
+    }
 
     useEffect(() => {
         if(typeof connectedWallet !== 'undefined')
         dispatch(getPortfolio({walletAddr: connectedWallet.walletAddress}))
     }, [connectedWallet])
 
+    useEffect(() => {
+        fetchGames(activeCategory)
+    }, [activeCategory])
 
     return (
         <>
@@ -82,7 +94,7 @@ const Play = () => {
                                                 NEW
                                             </div>
 
-                                            <div className="mr-6" onClick={() => {setCategory("ongoing")}}>
+                                            <div className="mr-6" onClick={() => {setCategory("active")}}>
                                                 ON-GOING
                                             </div>
 
@@ -94,18 +106,19 @@ const Play = () => {
                                         <hr className="opacity-50"/>
                                     
                                         <div className="mt-4 flex ml-6 grid grid-cols-0 md:grid-cols-3">
-                                                {newPlaylist.map(function(data,i){
+                                                {games.length > 0 && games.map(function(data,i){
                                                     return (
                                                         <a href={`/PlayDetails?id=${data.key}`}>
                                                             <div className="mr-6">
                                                                 <PlayComponent
                                                                     type="new"
                                                                     icon={data.icon}
-                                                                    prizePool={data.prizePool}
-                                                                    startDate={data.startDate}
+                                                                    prizePool={data.prize}
+                                                                    startDate={data.start_datetime}
                                                                     month={data.month}
                                                                     date={data.date}
                                                                     year={data.year}
+                                                                    img={data.image}
                                                                 />
                                                             </div>
                                                         </a>
@@ -114,7 +127,7 @@ const Play = () => {
                                         </div>
                                     </>
                                 }
-                                { activeCategory === "ongoing" &&
+                                { activeCategory === "active" &&
                                     <>
                                         <div className="flex font-bold ml-8 md:ml-0 font-monument">
                                             <div className="mr-6 md:ml-8" onClick={() => {setCategory("new")}}>
@@ -133,18 +146,19 @@ const Play = () => {
                                         <hr className="opacity-50"/>
                                     
                                         <div className="mt-4 flex ml-6 grid grid-cols-0 md:grid-cols-3">
-                                                {ongoingPlaylist.map(function(data,i){
+                                                {games.length > 0 && games.map(function(data,i){
                                                     return (
                                                         <a href={`/PlayDetails?id=${data.key}`}>
                                                             <div className="mr-6">
                                                                 <PlayComponent
                                                                     type="ongoing"
                                                                     icon={data.icon}
-                                                                    prizePool={data.prizePool}
-                                                                    startDate={data.startDate}
+                                                                    prizePool={data.prize}
+                                                                    startDate={data.start_datetime}
                                                                     month={data.month}
                                                                     date={data.date}
                                                                     year={data.year}
+                                                                    img={data.image}
                                                                 />
                                                             </div>
                                                         </a>
@@ -160,7 +174,7 @@ const Play = () => {
                                                 NEW
                                             </div>
 
-                                            <div className="mr-6" onClick={() => {setCategory("ongoing")}}>
+                                            <div className="mr-6" onClick={() => {setCategory("active")}}>
                                                 ON-GOING
                                             </div>
 
@@ -172,18 +186,19 @@ const Play = () => {
                                         <hr className="opacity-50"/>
                                     
                                         <div className="mt-4 flex ml-6 grid grid-cols-0 md:grid-cols-3">
-                                                {completedPlaylist.map(function(data,i){
+                                                {games.length > 0 && games.map(function(data,i){
                                                     return (
                                                         <div className="flex">                                                    
                                                             <div className="mr-6">
                                                                 <PlayComponent
                                                                     type="completed"
                                                                     icon={data.icon}
-                                                                    prizePool={data.prizePool}
-                                                                    startDate={data.startDate}
+                                                                    prizePool={data.prize}
+                                                                    startDate={data.start_datetime}
                                                                     month={data.month}
                                                                     date={data.date}
                                                                     year={data.year}
+                                                                    img={data.image}
                                                                 />
 
                                                                 <div className="">

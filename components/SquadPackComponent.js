@@ -7,11 +7,6 @@ const { imagesrc, packName, releaseValue, link } = props;
 
     return (
         <div data-test="PackContainer" className={`w-full h-full overflow-hidden flex flex-col w-full h-full justify-center`}>
-            <div className="self-center ml-20 md:ml-0">
-                <div className="bg-indigo-buttonblue text-indigo-white text-center text-xs font-bold py-1 px-2 mb-2 rounded-lg">
-                    x2
-                </div> 
-            </div>
             <div className="flex justify-center md:justify-start">
                 <Image
                     src={imagesrc}
