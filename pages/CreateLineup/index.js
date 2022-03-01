@@ -86,7 +86,6 @@ export default function CreateLineup() {
                             }
                         )
                         }
-                            
 
                         <div className='flex justify-center mt-8'> 
                             <Link href="/Play">
