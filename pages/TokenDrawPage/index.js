@@ -108,6 +108,7 @@ const TokenDrawPage = (props) => {
                                                 usage={data.useage}
                                                 isOpen={data.isOpen}
                                                 name={data.name}
+                                                fantasy_score={data.fantasy_score}
                                             />
                                         </div>
                                     </div>

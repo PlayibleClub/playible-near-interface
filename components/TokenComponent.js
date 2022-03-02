@@ -5,8 +5,7 @@ import { tokenDrawData } from '../data/index.js';
 
 
 const TokenComponent = (props) =>{
-    const {athlete_id, usage, name, rarity, release, team, isOpen} = props;
-    // const [reveal, revealMe] = useState(false);
+    const {athlete_id, usage, name, rarity, release, team, isOpen, fantasy_score} = props;
     const picLink = "/../public/images/tokens/"+athlete_id+".png"    
 
     if(isOpen){
@@ -26,10 +25,10 @@ const TokenComponent = (props) =>{
                             {name.toUpperCase()}
                         </div>
                         <div className="mt-4">
-                            AVERAGE SCORE
+                            FANTASY SCORE
                         </div>
                         <div className="font-black mt-2">
-                            86.7
+                            {fantasy_score || 0}
                         </div>
                     </div>
             </div>
