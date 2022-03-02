@@ -20,18 +20,26 @@ export default function CreateLineup() {
 
     const router = useRouter();
 
+    // export async function getServerSideProps(context) {
+    //     return {
+    //       props: {}
+    //     }
+    // }
+        
+
     return (
         <>
         <Container>
           <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
                     <Main color="indigo-white">
-                        <div className="mt-8">
-                              <BackFunction prev="/Play"/>
-                        </div>
+                        
                         {playList.map(function(data, i){
                       if(router.query.id === data.key){
                         return(
                         <>
+                        <div className="mt-8">
+                              <BackFunction prev={`/PlayDetails?id=${data.key}`}/>
+                        </div>
                           <div className="md:ml-7 flex flex-row md:flex-row">
                               <div className='md:mr-12'>
                                     <div className="mt-7 justify-center md:self-left md:mr-8">
