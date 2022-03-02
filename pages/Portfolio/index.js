@@ -11,7 +11,7 @@ import Link from 'next/link';
 import SquadPackComponent from '../../components/SquadPackComponent';
 import Container from '../../components/containers/Container';
 import Sorter from './components/Sorter';
-import { ATHLETE } from '../../data/constants/contracts';
+import { ATHLETE, PACK } from '../../data/constants/contracts';
 import { axiosInstance } from '../../utils/playible';
 
 const packList = [
@@ -49,10 +49,26 @@ const Portfolio = () => {
   const connectedWallet = useConnectedWallet();
   const lcd = useLCDClient();
   const [sortedList, setSortedList] = useState([]);
+  const [packs, setPacks] = useState([])
+
+  const fetchPacks = async () => {
+    if (connectedWallet) {
+      const formData = { 
+        all_tokens_info: {
+          owner: connectedWallet.walletAddress
+        }
+      }
+      const res = await lcd.wasm.contractQuery(PACK, formData)
+      if (res && res.length > 0) {
+        setPacks(res)
+      }
+    }
+  }
 
   useEffect(() => {
     if (typeof connectedWallet !== 'undefined') {
       dispatch(getAccountAssets({ walletAddr: connectedWallet.walletAddress }));
+      fetchPacks()
     }
   }, [dispatch, connectedWallet]);
 
@@ -140,14 +156,15 @@ const Portfolio = () => {
                       </div>
                       <hr className="opacity-50" />
                       <div className="md:ml-16 grid grid-cols-0 md:grid-cols-4 mt-12 justify-center">
-                        {packList.map(function (data, i) {
+                        {packs.map((data, i) => {
+                          const path = data.token_info.info.extension
                           return (
                             <div className="mb-4" key={i}>
                               <SquadPackComponent
-                                imagesrc={data.image}
-                                packName={data.name}
-                                releaseValue={data.release}
-                                link={data.key}
+                                imagesrc={null}
+                                packName={path.sport}
+                                releaseValue={path.release[1]}
+                                link={`?token_id=${data.token_id}`}
                               />
                             </div>
                           );

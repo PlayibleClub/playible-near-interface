@@ -22,7 +22,7 @@ const initialState = {
 
 export const purchasePack = createAsyncThunk('purchasePack', async (payload, thunkAPI) => {
   try {
-    const { connectedWallet } = payload;
+    const { connectedWallet, msg } = payload;
     const packPrice = thunkAPI.getState().contract.pack.packPrice;
 
     //generate seed. Pack length is hardcoded since this is supposed to be used to testing purposes only.

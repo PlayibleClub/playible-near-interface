@@ -18,9 +18,11 @@ import PortfolioContainer from '../../components/containers/PortfolioContainer';
 import BackFunction from '../../components/buttons/BackFunction';
 
 import { packList } from './data'
+import { executeContract } from '../../utils/terra';
+import { OPENPACK, PACK } from '../../data/constants/contracts';
 
-export default function PackDetails() {
-
+export default function PackDetails(props) {
+  const { queryObj } = props;
 	const dispatch = useDispatch();
 	const router = useRouter();
 	const connectedWallet = useConnectedWallet();
@@ -126,9 +128,30 @@ export default function PackDetails() {
     }
 	}, [status, action, txInfo, message])
 
-	const executePurchasePack = () => {
-    dispatch(purchasePack({connectedWallet}))
-	}
+  const openPack = async () => {
+    if (connectedWallet && queryObj) {
+        const res = await executeContract(connectedWallet, PACK, [{ 
+            contractAddr: PACK,
+            msg: {
+                approve: {
+                    spender: OPENPACK,
+                    token_id: queryObj.token_id
+                }
+            }
+        },
+        {
+            contractAddr: OPENPACK,
+            msg: {
+                open_pack: {
+                    pack_id: queryObj.token_id
+                }
+            }
+        }])
+        if (res.txHash) {
+            router.replace(`/TokenDrawPage/?txHash=${res.txHash}`)
+        }
+    }
+  }
 
 	return (
     
@@ -150,51 +173,49 @@ export default function PackDetails() {
           <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
             <Main color="indigo-white">
               <div className="md:ml-6">
-                {packList.map(function(data, i){
-                      if(router.query.id === data.key){
-                        return(
-                        <>
-                          {/* <div className="invisible">
-                              <PortfolioContainer color="indigo-white" textcolor="indigo-black" title="PACKS"/>
-                          </div> */}
-                          <div className="mt-8">
-                              <BackFunction prev="/Packs"/>
-                          </div>
-                          <div className="mt-8 md:ml-7 flex flex-row md:flex-row" key={i}>
-                              <div className="mt-7 justify-center md:self-left md:mr-16">
-                                <Image
-                                src={data.image}
-                                width={125}
-                                height={160}
-                                />
-                              </div>
-                              <div className="flex flex-col">
-                                <PortfolioContainer textcolor="indigo-black" title={data.name}/>
-                                  <div className="ml-12 md:ml-0 mt-4 md:mt-0">
-                                    <div className="ml-7 mt-7 font-bold text-base">{data.name}</div>
-                                    <div className="ml-7 mb-6">Release {data.release}</div>
-                                  </div>
-                                  <button className="bg-indigo-buttonblue ml-7 text-indigo-white w-5/6 md:w-80 h-10 text-center font-bold text-sm mt-4" onClick={() => {executePurchasePack()}}>
-                                      OPEN PACK
-                                  </button>
-                              </div>
-                          </div>
-                          <div className="mt-8">
-                              <PortfolioContainer  textcolor="indigo-black" title="PACK DETAILS"/>
-                          </div>
-                          <div className="ml-7 mt-5 font-normal">
-                              Each pack contains 5 tokens.
-                          </div>
-                        </>
-                        )
-                      }
-                    }
-                  )
-                }
+                <div className="mt-8">
+                    <BackFunction prev="/Packs"/>
+                </div>
+                <div className="mt-8 md:ml-7 flex flex-row md:flex-row">
+                    <div className="mt-7 justify-center md:self-left md:mr-16">
+                      {/* <Image
+                      src={data.image}
+                      width={125}
+                      height={160}
+                      /> */}
+                    </div>
+                    <div className="flex flex-col">
+                      <PortfolioContainer textcolor="indigo-black" title={"Booster Pack"}/>
+                        <div className="ml-12 md:ml-0 mt-4 md:mt-0">
+                          <div className="ml-7 mt-7 font-bold text-base">{"Booster Pack"}</div>
+                          <div className="ml-7 mb-6">Release {1}</div>
+                        </div>
+                        <button className="bg-indigo-buttonblue ml-7 text-indigo-white w-5/6 md:w-80 h-10 text-center font-bold text-sm mt-4" onClick={openPack}>
+                            OPEN PACK
+                        </button>
+                    </div>
+                </div>
+                <div className="mt-8">
+                    <PortfolioContainer  textcolor="indigo-black" title="PACK DETAILS"/>
+                </div>
+                <div className="ml-7 mt-5 font-normal">
+                    Each pack contains X tokens.
+                </div>
               </div>
             </Main>
           </div>
       )}
 		</Container>
 	)
+}
+
+export async function getServerSideProps(ctx) {
+  const { query } = ctx
+  let queryObj = null 
+  if (query) {
+    queryObj = query
+  }
+  return {
+    props: { queryObj }
+  }
 }

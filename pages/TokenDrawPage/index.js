@@ -9,52 +9,80 @@ import Navbar from '../../components/navbars/Navbar';
 import HorizontalScrollContainer from '../../components/containers/HorizontalScrollContainer'
 import TokenComponent from '../../components/TokenComponent';
 import Main from '../../components/Main';
+import { useConnectedWallet, useLCDClient } from '@terra-money/wallet-provider';
+import { executeContract, queryContract, retrieveTxInfo } from '../../utils/terra';
+import { OPENPACK, PACK, ATHLETE } from '../../data/constants/contracts';
+import { axiosInstance } from '../../utils/playible';
 
 const sampleList = [0,1,2,3,4,5]
 
-const TokenDrawPage = () => {
+const TokenDrawPage = (props) => {
+    const { queryObj, newAthletes } = props;
+
     const dispatch = useDispatch();
+    const lcd = useLCDClient()
+    const connectedWallet = useConnectedWallet()
 
     const [isClosed, setClosed] = useState(true)
     const [loading, setLoading] = useState(false)
 
     const { drawList: tokenList, status } = useSelector((state) => state.contract.pack);
 
-    const [assets, setassets] = useState([false,false,false,false,false])
+    const [assets, setassets] = useState([...newAthletes])
+    const [athletes, setAthletes] = useState([])
 
     const [packs, setpacks] = useState(true)
 
-    function changecard(position){
-        if (assets[position] == false){
-
-            var newassets = []
-            newassets = assets
-
-            console.log(newassets)
-
-            newassets[position] = true
-            setassets(newassets.concat())
-
-            console.log(assets[position])
-            console.log(assets)
-            
-        }
-        else {
-
-            var newassets = []
-            newassets = assets
-
-            console.log(newassets)
-
-            newassets[position] = false
-            setassets(newassets.concat())
-
-            console.log(assets[position])
-            console.log(assets)
-
-        }
-        return 
+    const changecard = (position) => {
+        if (athletes[position].isOpen === false){
+            let updatedList = [...athletes]
+            let updatedAthlete = {
+                ...athletes[position],
+                isOpen: true
+            }
+            updatedList.splice(position,1,updatedAthlete)
+            setAthletes(updatedList)
+        } 
     };
+
+    const prepareNewAthletes = async () => {
+        if (assets.length > 0) {
+            assets.forEach((id,i) => { 
+                getAthleteInfo(id)
+            })
+        }
+    }
+
+    const getAthleteInfo = async (id) => {
+        const res = await lcd.wasm.contractQuery(ATHLETE, {
+            all_nft_info: {
+                token_id: id
+            }
+        })
+
+
+        if (!res.error) {
+            const details = await axiosInstance.get(`/fantasy/athlete/${res.info.extension.athlete_id+1}/stats/`)
+            let stats = null
+            if (details.status === 200) {
+                stats = details.data.athlete_stat
+            }
+
+            const newAthlete = {
+                ...res.info.extension,
+                ...stats,
+                isOpen: false
+            }
+            setAthletes(prevState => [...prevState, newAthlete])
+        }
+    }
+
+    useEffect(() => {
+        if (connectedWallet) {
+            prepareNewAthletes()
+        }
+    }, [connectedWallet])
+
 
 
     return (
@@ -67,22 +95,23 @@ const TokenDrawPage = () => {
                     <div className="flex justify-center self-center w-10/12 mt-4" style={{backgroundColor:'white'}}>
                         <div className="flex flex-row w-4/5 flex-wrap justify-center">
                             {
-                                assets.map(function (i,key) 
-                                    {
-                                        return (
-                                            <div className="flex px-14 py-10">
-                                            <div className="px-10 py-10" onClick={() => {
-                                                changecard(key)}}>
-                                                    
-                                                <TokenComponent
-                                                playerID={sampleList[key+1]}
-                                                isopen={i}
-                                                />
-                                            </div>
-                                            </div>
-                                        )
-                                    }
-                                )
+                                athletes.length > 0 ? athletes.map((data,key) => <div className="flex px-14 py-10" key={key}>
+                                        <div className="px-10 py-10" onClick={() => {
+                                            changecard(key)}}>
+                                                
+                                            <TokenComponent
+                                                athlete_id={data.athlete_id}
+                                                position={data.position}
+                                                rarity={data.rarity}
+                                                release={data.release}
+                                                team={data.team}
+                                                usage={data.useage}
+                                                isOpen={data.isOpen}
+                                                name={data.name}
+                                            />
+                                        </div>
+                                    </div>
+                                ) : ''
                             }
                         </div>
                     </div>
@@ -101,3 +130,30 @@ const TokenDrawPage = () => {
 }
 
 export default TokenDrawPage
+
+export async function getServerSideProps(ctx) {
+    const { query } = ctx
+    let queryObj = null
+    let newAthletes=[]
+
+    if (query) {
+      queryObj = query
+      if (query.txHash) {
+        const response = await retrieveTxInfo(query.txHash)
+        if (response) {
+            const tokenList = response.logs[1].eventsByType.wasm.token_id
+            if (tokenList && tokenList.length > 0) {
+                tokenList.forEach((id, i) => {
+                    if (i !== 0) {
+                        newAthletes.push(id)
+                    }
+                })
+            }
+        }
+      }
+    }
+
+    return {
+      props: { queryObj, newAthletes }
+    }
+  }
