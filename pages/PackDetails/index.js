@@ -11,7 +11,7 @@ import { handleRequestResponse } from '../../utils/general/index';
 
 import * as statusCode from '../../data/constants/status';
 import * as actionType from '../../data/constants/actions';
-import { useConnectedWallet } from '@terra-money/wallet-provider';
+import { useConnectedWallet, useLCDClient } from '@terra-money/wallet-provider';
 import { useDispatch, useSelector } from 'react-redux';
 import { getPackPrice, purchasePack, getPurchasePackResponse, estimatePurchaseFee } from '../../redux/reducers/contract/pack';
 import PortfolioContainer from '../../components/containers/PortfolioContainer';
@@ -26,6 +26,7 @@ export default function PackDetails(props) {
 	const dispatch = useDispatch();
 	const router = useRouter();
 	const connectedWallet = useConnectedWallet();
+  const lcd = useLCDClient()
 
 	const [loading, setLoading] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState("")
@@ -36,6 +37,7 @@ export default function PackDetails(props) {
 	const [modalHeader, setModalHeader] = useState("");
 	const [modalData, setModalData] = useState([]);
 	const [modalStatus, setModalStatus] = useState(statusCode.IDLE);
+  const [data, setData] = useState(null)
 
 	const { packPrice, txFee: txFeeEstimate, status, txInfo, action, message } = useSelector((state) => state.contract.pack);
 
@@ -128,6 +130,28 @@ export default function PackDetails(props) {
     }
 	}, [status, action, txInfo, message])
 
+  const fetchPacks = async () => {
+    const formData = { 
+      all_tokens_info: {
+        owner: connectedWallet.walletAddress
+      }
+    }
+    const res = await lcd.wasm.contractQuery(PACK, formData)
+    if (res && res.length > 0) {
+      res.forEach((item) => {
+        if (item.token_id === queryObj.token_id) {
+          setData(item)
+        }
+      })
+    }
+  }
+
+  useEffect(() => {
+    if (connectedWallet) {
+      fetchPacks()
+    }
+  }, [connectedWallet])
+
   const openPack = async () => {
     if (connectedWallet && queryObj) {
         const res = await executeContract(connectedWallet, PACK, [{ 
@@ -176,31 +200,35 @@ export default function PackDetails(props) {
                 <div className="mt-8">
                     <BackFunction prev="/Packs"/>
                 </div>
-                <div className="mt-8 md:ml-7 flex flex-row md:flex-row">
-                    <div className="mt-7 justify-center md:self-left md:mr-16">
-                      {/* <Image
-                      src={data.image}
-                      width={125}
-                      height={160}
-                      /> */}
+                {
+                  data && <>
+                    <div className="mt-8 md:ml-7 flex flex-row md:flex-row">
+                      <div className="mt-7 justify-center md:self-left md:mr-16">
+                        <Image
+                        src={data.token_info.info.extension.pack_type === 'booster' ? '/images/packimages/BoosterPack1.png' : '/images/packimages/StarterPack1.png'}
+                        width={125}
+                        height={160}
+                        />
+                      </div>
+                      <div className="flex flex-col">
+                        <PortfolioContainer textcolor="indigo-black" title={`${data.token_info.info.extension.sport} ${data.token_info.info.extension.pack_type.toUpperCase()} Pack`}/>
+                          <div className="ml-12 md:ml-0 mt-4 md:mt-0">
+                            <div className="ml-7 mt-7 font-bold text-base">{`${data.token_info.info.extension.sport} ${data.token_info.info.extension.pack_type.toUpperCase()} Pack`}</div>
+                            <div className="ml-7 mb-6">Release {data.token_info.info.extension.release[1]}</div>
+                          </div>
+                          <button className="bg-indigo-buttonblue ml-7 text-indigo-white w-5/6 md:w-80 h-10 text-center font-bold text-sm mt-4" onClick={openPack}>
+                              OPEN PACK
+                          </button>
+                      </div>
                     </div>
-                    <div className="flex flex-col">
-                      <PortfolioContainer textcolor="indigo-black" title={"Booster Pack"}/>
-                        <div className="ml-12 md:ml-0 mt-4 md:mt-0">
-                          <div className="ml-7 mt-7 font-bold text-base">{"Booster Pack"}</div>
-                          <div className="ml-7 mb-6">Release {1}</div>
-                        </div>
-                        <button className="bg-indigo-buttonblue ml-7 text-indigo-white w-5/6 md:w-80 h-10 text-center font-bold text-sm mt-4" onClick={openPack}>
-                            OPEN PACK
-                        </button>
+                    <div className="mt-8">
+                        <PortfolioContainer  textcolor="indigo-black" title="PACK DETAILS"/>
                     </div>
-                </div>
-                <div className="mt-8">
-                    <PortfolioContainer  textcolor="indigo-black" title="PACK DETAILS"/>
-                </div>
-                <div className="ml-7 mt-5 font-normal">
-                    Each pack contains X tokens.
-                </div>
+                    <div className="ml-7 mt-5 font-normal">
+                        Each pack contains X tokens.
+                    </div>
+                  </>
+                }
               </div>
             </Main>
           </div>
