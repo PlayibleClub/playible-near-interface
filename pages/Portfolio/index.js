@@ -42,6 +42,8 @@ const Portfolio = () => {
   const [searchText, setSearchText] = useState('');
   const [displayMode, setDisplay] = useState(true);
   const [loading, setLoading] = useState(true);
+  const [limit, setLimit] = useState(10)
+  const [packLimit, setPackLimit] = useState(5)
 
   const { list: playerList, status } = useSelector((state) => state.assets);
 
@@ -50,6 +52,7 @@ const Portfolio = () => {
   const lcd = useLCDClient();
   const [sortedList, setSortedList] = useState([]);
   const [packs, setPacks] = useState([])
+  const limitOptions = [5,10,30,50]
 
   const fetchPacks = async () => {
     if (connectedWallet) {
@@ -67,15 +70,21 @@ const Portfolio = () => {
 
   useEffect(() => {
     if (typeof connectedWallet !== 'undefined') {
-      dispatch(getAccountAssets({ walletAddr: connectedWallet.walletAddress }));
+      setLoading(true)
+      dispatch(getAccountAssets({ walletAddr: connectedWallet.walletAddress, limit }));
+      setLoading(false)
+    }
+  }, [dispatch, connectedWallet, limit]);
+
+  useEffect(() => {
+    if (typeof connectedWallet !== 'undefined') {
       fetchPacks()
     }
-  }, [dispatch, connectedWallet]);
+  }, [dispatch, connectedWallet, packLimit])
 
   useEffect(() => {
     if (typeof playerList !== 'undefined') {
       setSortedList(playerList)
-      setLoading(false)
     }
   }, [playerList]);
 
@@ -111,34 +120,43 @@ const Portfolio = () => {
                         </div>
                       </div>
                       <hr className="opacity-50" />
-                      <div className="grid grid-cols-2 md:grid-cols-4 mt-12">
                         {sortedList.length > 0 ? (
-                          sortedList.map(function (player, i) {
-                            const path = player.token_info.info.extension
-                              return (
-                                <Link
-                                  href={{
-                                    pathname: '/AssetDetails',
-                                    query: { id: path.athlete_id, origin: 'portfolio' },
-                                  }}
-                                >
-                                  <div className="mb-4" key={i}>
-                                    <PerformerContainer
-                                      AthleteName={path.name}
-                                      AvgScore={player.fantasy_score}
-                                      id={path.athlete_id}
-                                      uri={player.token_info.info.token_uri}
-                                      rarity={path.rarity}
-                                      status="ingame"
-                                    />
-                                  </div>
-                                </Link>
-                              );
-                          })
+                          <>
+                          <div className="grid grid-cols-2 md:grid-cols-4 mt-12">
+                            {sortedList.map(function (player, i) {
+                              const path = player.token_info.info.extension
+                                return (
+                                  <Link
+                                    href={{
+                                      pathname: '/AssetDetails',
+                                      query: { id: path.athlete_id, origin: 'portfolio' },
+                                    }}
+                                  >
+                                    <div className="mb-4" key={i}>
+                                      <PerformerContainer
+                                        AthleteName={path.name}
+                                        AvgScore={player.fantasy_score}
+                                        id={path.athlete_id}
+                                        uri={player.token_info.info.token_uri}
+                                        rarity={path.rarity}
+                                        status="ingame"
+                                      />
+                                    </div>
+                                  </Link>
+                                );
+                            })}
+                          </div>
+                          <div className="flex justify-end md:mt-5 md:mr-6 ">
+                            <div className="bg-indigo-white mr-1 h-11 w-64 flex font-thin border-2 border-indigo-lightgray border-opacity-40 p-2">
+                                <select value={limit} className="bg-indigo-white text-lg w-full outline-none" onChange={(e) => setLimit(e.target.value)}>
+                                  {limitOptions.map((option) => <option value={option}>{option}</option>)}
+                                </select>
+                            </div>
+                          </div>
+                          </>
                         ) : (
                           <div>No assets in your portfolio</div>
                         )}
-                      </div>
                     </>
                   ) : (
                     <>

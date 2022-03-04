@@ -14,10 +14,11 @@ const initialState = {
 
 export const getAccountAssets = createAsyncThunk('getAccountAssets', async (payload, thunkAPI) => {
   try {
-    const { walletAddr } = payload;
+    const { walletAddr, limit } = payload;
     const result = await axiosInstance.get(
-      `/account/athlete_tokens/${walletAddr}/collection/${contracts.ATHLETE}`
+      `/account/athlete_tokens/${walletAddr}/collection/${contracts.ATHLETE}?limit=${limit}`
     );
+    console.log('rees', result)
     return {
       response: result,
       status: statusCode.SUCCESS,

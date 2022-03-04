@@ -19,45 +19,25 @@ const PerformerContainer = (props) => {
         }
 
       </div>
-      <div className="flex justify-center h-2/3">
+      <div className="flex justify-center h-2/3 cursor-pointer">
         {uri ? 
           <Image
             src={uri}
             width={120}
             height={160}
           /> : 
-          <>
-            {rarity === 'gold' && 
-              <Image
-                src={"/../public/images/tokens/"+id+"g.png"}
+          <Image
+                src={"/../public/images/tokens/1.png"}
                 width={120}
                 height={160}
               />
-            }
-
-            {rarity === 'silver' && 
-              <Image
-                src={"/../public/images/tokens/"+id+"s.png"}
-                width={120}
-                height={160}
-              />
-            }
-
-            {rarity === 'base' && 
-              <Image
-                src={"/../public/images/tokens/"+id+".png"}
-                width={120}
-                height={160}
-              />
-            }
-          </>
         }
       </div>
       {children}
       <div className="h-1/2 flex justify-center mb-6">
         <div className="flex flex-col mt-4">
-          <div className="text-xs font-bold">{AthleteName}</div>
-          <div className="mt-4 text-xs font-thin">AVERAGE SCORE</div>
+          <div className="text-xs font-bold cursor-pointer">{AthleteName}</div>
+          <div className="mt-4 text-xs font-thin">FANTASY SCORE</div>
           <div className="text-xs font-bold">{AvgScore}</div>
         </div>
       </div>
