@@ -20,6 +20,7 @@ const Play = () => {
     const { status, connect, disconnect, availableConnectTypes } = useWallet();
     const [activeCategory, setCategory] = useState("new")
     const [claimModal, showClaimModal] = useState(false)
+    const [claimTeam, showClaimTeam] = useState(false)
 
     const interactWallet = () => {
         if (status === WalletStatus.WALLET_CONNECTED) {
@@ -73,6 +74,25 @@ const Play = () => {
                             </div>
                         </div>
                     </div>
+                </>
+            }
+            { claimTeam === true &&
+                <>
+                    <div className="fixed w-screen h-screen bg-opacity-70 z-50 overflow-auto bg-indigo-gray flex font-montserrat">
+                        <div className="relative p-8 bg-indigo-white w-11/12 md:w-96 h-10/12 md:h-auto m-auto flex-col flex rounded-lg">
+                            <button onClick={()=>{showClaimTeam(false)}}>
+                                <div className="absolute top-0 right-0 p-4 font-black">
+                                    X
+                                </div>
+                            </button>
+                                <div className="mt-4 bg-indigo-yellow p-2 text-center font-bold text-xl rounded">
+                                    Your Team has not made it to the leader board
+                                </div>
+                                <div className="mt-4 p-2 text-center font-bold text-xl">
+                                    Try again next time!
+                                </div>
+                            </div>
+                        </div>
                 </>
             }
             <Container>
@@ -202,9 +222,14 @@ const Play = () => {
                                                                 />
 
                                                                 <div className="">
-                                                                    <button className="bg-indigo-buttonblue w-full h-12 text-center font-bold rounded-md text-sm mt-4 self-center" onClick={()=>showClaimModal(true)}>
+                                                                    <button className={data.id % 2 === 0 ? "bg-indigo-buttonblue w-full h-12 text-center font-bold rounded-md text-sm mt-4 self-center hidden" : "bg-indigo-buttonblue w-full h-12 text-center font-bold rounded-md text-sm mt-4 self-center"} onClick={()=>showClaimModal(true)}>
                                                                         <div className="text-indigo-white">
                                                                             CLAIM REWARD
+                                                                        </div>
+                                                                    </button>
+                                                                    <button className={data.id % 2 === 0 ? "bg-indigo-buttonblue w-full h-12 text-center font-bold rounded-md text-sm mt-4 self-center" : "bg-indigo-buttonblue w-full h-12 text-center font-bold rounded-md text-sm mt-4 self-center hidden"} onClick={()=>showClaimTeam(true)}>
+                                                                        <div className="text-indigo-white">
+                                                                            CLAIM TEAM
                                                                         </div>
                                                                     </button>
                                                                 </div>
