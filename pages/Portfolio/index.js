@@ -129,7 +129,7 @@ const Portfolio = () => {
                                   <Link
                                     href={{
                                       pathname: '/AssetDetails',
-                                      query: { id: path.athlete_id, origin: 'portfolio' },
+                                      query: { id: path.athlete_id, origin: 'Portfolio', token_id: player.token_id },
                                     }}
                                   >
                                     <div className="mb-4" key={i}>
