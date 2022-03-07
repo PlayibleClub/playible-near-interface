@@ -14,11 +14,10 @@ const initialState = {
 
 export const getAccountAssets = createAsyncThunk('getAccountAssets', async (payload, thunkAPI) => {
   try {
-    const { walletAddr, limit } = payload;
+    const { walletAddr, limit, start_after } = payload;
     const result = await axiosInstance.get(
-      `/account/athlete_tokens/${walletAddr}/collection/${contracts.ATHLETE}?limit=${limit}`
+      `/account/athlete_tokens/${walletAddr}/collection/${contracts.ATHLETE}?limit=${limit}${start_after !== undefined ? `&start_after=${start_after}` : ''}`
     );
-    console.log('rees', result)
     return {
       response: result,
       status: statusCode.SUCCESS,
@@ -32,12 +31,9 @@ export const getAccountAssets = createAsyncThunk('getAccountAssets', async (payl
 });
 
 const processAssetListData = (data) => {
-  const processedData = [];
-  if (data.length > 0) {
-    data.forEach((item) => {
-      processedData.push(item);
-    });
-  }
+  const processedData = data;
+
+  console.log('data', data)
 
   return processedData;
 };

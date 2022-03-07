@@ -43,6 +43,8 @@ const Portfolio = () => {
   const [displayMode, setDisplay] = useState(true);
   const [loading, setLoading] = useState(true);
   const [limit, setLimit] = useState(10)
+  const [offset, setOffset] = useState(0)
+  const [pageCount, setPageCount] = useState(0)
   const [packLimit, setPackLimit] = useState(5)
 
   const { list: playerList, status } = useSelector((state) => state.assets);
@@ -68,13 +70,51 @@ const Portfolio = () => {
     }
   }
 
+  const changeIndex = (index) => {
+    switch (index) {
+      case 'next':
+          setOffset(offset + 1)
+          break
+      case 'previous':
+          setOffset(offset - 1)
+          break
+      case 'first':
+          setOffset(0)
+          break
+      case 'last':
+          setOffset(pageCount - 1)
+          break
+
+      default:
+          break
+      }
+  }
+
+  const canNext = () => {
+    if (offset + 1 === pageCount) {
+        return false
+    } else {
+        return true
+    }
+  }
+
+  const canPrevious = () => {
+    if (offset === 0) {
+      return false
+    } else {
+      return true
+    }
+  }
+
   useEffect(() => {
     if (typeof connectedWallet !== 'undefined') {
       setLoading(true)
-      dispatch(getAccountAssets({ walletAddr: connectedWallet.walletAddress, limit }));
-      setLoading(false)
+      dispatch(getAccountAssets({ walletAddr: connectedWallet.walletAddress, limit, start_after: sortedList.length > 0 ? (offset === 0 ? undefined : sortedList[sortedList.length - 1].token_id ): undefined }));
+      setTimeout(() => {
+        setLoading(false)
+      },500)
     }
-  }, [dispatch, connectedWallet, limit]);
+  }, [dispatch, connectedWallet, limit, offset]);
 
   useEffect(() => {
     if (typeof connectedWallet !== 'undefined') {
@@ -84,7 +124,12 @@ const Portfolio = () => {
 
   useEffect(() => {
     if (typeof playerList !== 'undefined') {
-      setSortedList(playerList)
+      if (playerList.tokens.length > 0) {
+        setSortedList([...playerList.tokens])
+        setPageCount(Math.ceil(playerList.total_count / limit))
+      } else {
+        setPageCount(0)
+      }
     }
   }, [playerList]);
 
@@ -146,9 +191,16 @@ const Portfolio = () => {
                                 );
                             })}
                           </div>
-                          <div className="flex justify-end md:mt-5 md:mr-6 ">
+                          <div className="flex justify-between md:mt-5 md:mr-6 p-5">
+                            <div className="bg-indigo-white mr-1 h-11 flex items-center font-thin border-indigo-lightgray border-opacity-40 p-2">
+                              {pageCount > 1 && <button className='px-2 border mr-2' onClick={() => changeIndex('first')}>First</button>}
+                              {pageCount !== 0 && canPrevious() && <button className='px-2 border mr-2' onClick={() => changeIndex('previous')}>Previous</button>}
+                              <p className='mr-2'>Page {offset + 1} of {pageCount}</p>
+                              {pageCount !== 0 && canNext() && <button className='px-2 border mr-2' onClick={() => changeIndex('next')}>Next</button>}
+                              {pageCount  > 1 && <button className='px-2 border mr-2' onClick={() => changeIndex('last')}>Last</button>}
+                            </div>
                             <div className="bg-indigo-white mr-1 h-11 w-64 flex font-thin border-2 border-indigo-lightgray border-opacity-40 p-2">
-                                <select value={limit} className="bg-indigo-white text-lg w-full outline-none" onChange={(e) => setLimit(e.target.value)}>
+                                <select value={limit} className="bg-indigo-white text-lg w-full outline-none" onChange={(e) => {setLimit(e.target.value), setOffset(0)}}>
                                   {limitOptions.map((option) => <option value={option}>{option}</option>)}
                                 </select>
                             </div>
