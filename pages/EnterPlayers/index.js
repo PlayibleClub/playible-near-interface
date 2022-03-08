@@ -13,16 +13,37 @@ import BackFunction from '../../components/buttons/BackFunction';
 import Lineup from '../../pages/CreateLineup/components/Lineup.js';
 
 import {playerList} from './data/index.js'
+import { CommunityPoolSpendProposal } from '@terra-money/terra.js';
 
 export default function EnterPlayers(props) {
     const { query } = useRouter();
     const [selectedPlayer, setPlayer] = useState("")
     const PlayerPosition = query.pos;
-    const {position,id} = props;
+
+    const router = useRouter();
+
+    async function createGameData(){
+
+        if(!router.query.id) 
+        {
+            return
+        }
+
+        const response = await fetch('/api/team/',
+        {method:'PUT',
+        headers:{
+            'Content-Type':'application/json'
+        },
+        body:JSON.stringify({gameId:router.query.id})
+    })
+    const res = await response.json()
+    console.log(res)
+}
 
 
     return (
         <>
+        {console.log(query)}
             <Container>
                 <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
                     <Main color="indigo-white">
@@ -72,7 +93,6 @@ export default function EnterPlayers(props) {
                                 </div>
                             </PortfolioContainer>
                         </div>
-
                         {selectedPlayer === "" ?
                             <div className="w-full h-16 bg-indigo-lightgray fixed bottom-0">
                                 <div className="flex justify-center mt-5 font-black text-indigo-white">
@@ -81,11 +101,13 @@ export default function EnterPlayers(props) {
                             </div>
                         :
                             <div className="w-full h-16 bg-indigo-buttonblue fixed bottom-0">
-                                <Link href={`/CreateLineup?id=game1`}>
+                                {/* <a href={`/CreateLineup?id=${query.id}`} > */}
+                                <button onClick={createGameData}> 
                                     <div className="flex justify-center mt-5 font-black text-indigo-white">
                                         PROCEED
                                     </div>
-                                </Link>
+                                </button>
+                                {/* </a> */}
                             </div>
                         }
                         
