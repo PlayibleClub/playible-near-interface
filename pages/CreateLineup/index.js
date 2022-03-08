@@ -2,8 +2,6 @@ import Image from 'next/image';
 import React, { useState } from 'react';
 import Main from '../../components/Main';
 import PortfolioContainer from '../../components/containers/PortfolioContainer';
-import TokenGridCol4 from '../../components/grids/TokenGridCol4';
-import TeamMemberContainer from '../../components/containers/TeamMemberContainer';
 import Link from 'next/link';
 import Container from '../../components/containers/Container';
 import BackFunction from '../../components/buttons/BackFunction';
@@ -16,15 +14,11 @@ import { useRouter } from 'next/router';
 
 import Lineup from '../../pages/CreateLineup/components/Lineup.js';
 
+import Data from "../../data/teams.json"
+
 export default function CreateLineup() { 
 
     const router = useRouter();
-
-    // export async function getServerSideProps(context) {
-    //     return {
-    //       props: {}
-    //     }
-    // }
         
 
     return (
@@ -33,18 +27,18 @@ export default function CreateLineup() {
           <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
                     <Main color="indigo-white">
                         
-                        {playList.map(function(data, i){
-                      if(router.query.id === data.key){
+                        {playList.map(function(data1, i){
+                      if(router.query.id === data1.key){
                         return(
                         <>
                         <div className="mt-8">
-                              <BackFunction prev={`/PlayDetails?id=${data.key}`}/>
+                              <BackFunction prev={`/PlayDetails?id=${data1.key}`}/>
                         </div>
                           <div className="md:ml-7 flex flex-row md:flex-row">
                               <div className='md:mr-12'>
                                     <div className="mt-7 justify-center md:self-left md:mr-8">
                                         <Image
-                                        src={data.image}
+                                        src={data1.image}
                                         width={550}
                                         height={220}
                                         />
@@ -64,12 +58,12 @@ export default function CreateLineup() {
 
                           <PortfolioContainer title="CREATE LINEUP" textcolor="text-indigo-black">
                                 <div className="flex flex-col">
-                            <PortfolioContainer title={`Team ${data.number}`} textcolor="text-indigo-black"/>
+                            <PortfolioContainer title={`Team ${data1.number}`} textcolor="text-indigo-black"/>
                                 <div className="grid grid-cols-4 gap-y-4 mt-4 md:grid-cols-4 md:ml-7 md:mt-12">
-                                    {teamComposition[data.number][1].map(function (data, i) {
+                                   {Data[(data1.number)-1].roster[0].athletes.map(function (data, i) {
                                                 return (
                                                     <div className="">
-                                                        <a href={`/EnterPlayers?pos=${data.position}`}>
+                                                        <a href={`/EnterPlayers?pos=${data.position}`+`&id=${Data[(data1.number)-1].gameId}`}>
                                                             <div className="" key={i}>
                                                                 <Lineup
                                                                     position={data.position}
@@ -87,7 +81,6 @@ export default function CreateLineup() {
                                 </div>
                                 </div>
                             </PortfolioContainer>
-                                
                                 </>
                                 )
                             }
