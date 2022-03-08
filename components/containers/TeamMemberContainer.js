@@ -1,12 +1,7 @@
 import PropTypes from 'prop-types';
 
 const TeamMemberContainer = (props) => {
-  const { children, color, imagesrc, AthleteName, TeamName, AverageScore, id, pos } = props;
-  // const image url for SF
-  // const image url for PF
-  // const image url for SG
-  // const image url for PG
-  // const image url for C
+  const { children, color, imagesrc, player, TeamName, score, id, pos } = props;
 
   return (
     <div data-test="TeamMemberContainer" className={`bg-${color}  sx-${TeamName} w-full h-full overflow-hidden flex flex-col`}>
@@ -23,12 +18,12 @@ const TeamMemberContainer = (props) => {
       {children}
       <div className="flex justify-center" >
         <div className="flex flex-col mt-4">
-          <div className="text-xs font-thin">#{id}/25000</div>
-          <div className="mb-5 text-sm ">{AthleteName}</div>
-          <div className="text-xs font-thin">AVERAGE SCORE </div>
-          <div className="text-xs">
-            {AverageScore}
-          </div>
+        <div className="text-xs font-thin">
+            #{id === '' ? '0' : id}
+        </div>
+        <div className="mb-3 text-sm ">{player === '' ? '-' : player}</div>
+        <div className="text-xs font-thin">FANTASY SCORE </div>
+        <div className="text-xs">{score === '' ? '-' : score}</div>
         </div>
       </div>
     </div>
