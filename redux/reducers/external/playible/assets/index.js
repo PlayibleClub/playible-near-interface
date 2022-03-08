@@ -6,7 +6,7 @@ import * as actionType from '../../../../../data/constants/actions';
 import * as contracts from '../../../../../data/constants/contracts';
 
 const initialState = {
-  list: [],
+  list: null,
   message: '',
   status: statusCode.IDLE,
   action: '',
@@ -14,11 +14,11 @@ const initialState = {
 
 export const getAccountAssets = createAsyncThunk('getAccountAssets', async (payload, thunkAPI) => {
   try {
-    const { walletAddr } = payload;
+    const { walletAddr, limit, start_after } = payload;
     const result = await axiosInstance.get(
-      `/account/athlete_tokens/${walletAddr}/collection/${contracts.ATHLETE}`
+      `/account/athlete_tokens/${walletAddr}/collection/${contracts.ATHLETE}${limit ? `?limit=${limit}` : ''}`
     );
-    console.log('result', result)
+
     return {
       response: result,
       status: statusCode.SUCCESS,
@@ -32,13 +32,7 @@ export const getAccountAssets = createAsyncThunk('getAccountAssets', async (payl
 });
 
 const processAssetListData = (data) => {
-  const processedData = [];
-  if (data.length > 0) {
-    data.forEach((item) => {
-      processedData.push(item);
-    });
-  }
-
+  const processedData = data;
   return processedData;
 };
 

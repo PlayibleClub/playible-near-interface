@@ -82,7 +82,7 @@ export const position = (sport, pos) => {
         const filteredPos = baseballPos.filter(item => item.name === pos)
 
         if (filteredPos.length > 0) {
-            return filteredPos.value
+            return filteredPos[0].value
         } else {
             return pos
         }

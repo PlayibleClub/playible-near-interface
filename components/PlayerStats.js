@@ -9,7 +9,7 @@ const PlayerStats = (props) =>{
                 <div className="grid grid-cols-2 gap-16 md:gap-20 md:grid-cols-5">
                     <div className="flex flex-col">
                         <div className="font-bold text-6xl mb-2">
-                            <div>{player.singles}</div> 
+                            <div>{player.singles || 0}</div> 
                         </div>
                         <div className="font-thin">
                             <div>SINGLES</div>
@@ -20,7 +20,7 @@ const PlayerStats = (props) =>{
                     </div>
                     <div className="flex flex-col">
                         <div className="font-bold text-6xl mb-2">
-                            <div>{player.doubles}</div> 
+                            <div>{player.doubles || 0}</div> 
                         </div>
                         <div className="font-thin">
                             <div>DOUBLES</div>
@@ -31,7 +31,7 @@ const PlayerStats = (props) =>{
                     </div>
                     <div className="flex flex-col">
                         <div className="font-bold text-6xl mb-2">
-                            <div>{player.triples}</div> 
+                            <div>{player.triples || 0}</div> 
                         </div>
                         <div className="font-thin">
                             <div>TRIPLES</div>
@@ -42,7 +42,7 @@ const PlayerStats = (props) =>{
                     </div>
                     <div className="flex flex-col">
                         <div className="font-bold text-6xl mb-2">
-                            <div>{player.home_runs}</div> 
+                            <div>{player.home_runs || 0}</div> 
                         </div>
                         <div className="font-thin">
                             <div>HOME RUNS</div>
@@ -53,7 +53,7 @@ const PlayerStats = (props) =>{
                     </div>
                     <div className="flex flex-col">
                         <div className="font-bold text-6xl mb-2">
-                            <div>{player.runs_batted_in}</div> 
+                            <div>{player.runs_batted_in || 0}</div> 
                         </div>
                         <div className="font-thin">
                             <div>RUNS BATTED IN</div>
@@ -64,7 +64,7 @@ const PlayerStats = (props) =>{
                     </div>
                     <div className="flex flex-col">
                         <div className="font-bold text-6xl mb-2">
-                            <div>{player.walks}</div> 
+                            <div>{player.walks || 0}</div> 
                         </div>
                         <div className="font-thin">
                             <div>WALKS</div>
@@ -75,7 +75,7 @@ const PlayerStats = (props) =>{
                     </div>
                     <div className="flex flex-col">
                         <div className="font-bold text-6xl mb-2">
-                            <div>{player.hit_by_pitch}</div> 
+                            <div>{player.hit_by_pitch || 0}</div> 
                         </div>
                         <div className="font-thin">
                             <div>HIT BY PITCH</div>
@@ -86,7 +86,7 @@ const PlayerStats = (props) =>{
                     </div>
                     <div className="flex flex-col">
                         <div className="font-bold text-6xl mb-2">
-                            <div>{player.stolen_bases}</div> 
+                            <div>{player.stolen_bases || 0}</div> 
                         </div>
                         <div className="font-thin">
                             <div>STOLEN BASES</div>

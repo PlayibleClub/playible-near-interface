@@ -53,21 +53,33 @@ export const retrieveTxInfo = async (txHash) => {
   return txInfo
 }
 
-export const executeContract = async (connectedWallet, contractAddr, executeMsg, coins={}, estimatedFee = null) => {
+export const executeContract = async (connectedWallet, contractAddr, executeMsg = [], coins={}, estimatedFee = null) => {
   const txResult = {
     txResult: null,
     txHash: null,
     txError: null
   };
 
-  const executeContractMsg = [
-    new MsgExecuteContract(
+  const executeContractMsg = []
+
+  if (executeMsg.length > 1) {
+    executeMsg.forEach(msg => {
+      executeContractMsg.push(new MsgExecuteContract(
+        connectedWallet.walletAddress,  // Wallet Address
+        msg.contractAddr,                   // Contract Address
+        msg.msg,                     // ExecuteMsg
+        coins
+      ))
+    }) 
+  } else {
+    executeContractMsg.push(new MsgExecuteContract(
       connectedWallet.walletAddress,  // Wallet Address
       contractAddr,                   // Contract Address
-      JSON.parse(executeMsg),         // ExecuteMsg
+      executeMsg[0].msg,                     // ExecuteMsg
       coins
-    ),  
-  ]
+    ))
+  }
+
   if(estimatedFee == null){
     estimatedFee = await estimateFee(connectedWallet.walletAddress, executeContractMsg)
   }

@@ -5,15 +5,10 @@ import { tokenDrawData } from '../data/index.js';
 
 
 const TokenComponent = (props) =>{
-    const {playerID, children, isopen} = props;
-    // const [reveal, revealMe] = useState(false);
-    const picLink = "/../public/images/tokens/"+playerID+".png"
+    const {athlete_id, usage, name, rarity, release, team, isOpen, fantasy_score} = props;
+    const picLink = "/../public/images/tokens/"+athlete_id+".png"    
 
-    console.log('playerID is ' + playerID)
-    console.log('isopen is ' + isopen)
-    
-
-    if(isopen){
+    if(isOpen){
 
         return (
             <div className="w-32 h-48 transform cursor-pointer">
@@ -24,16 +19,16 @@ const TokenComponent = (props) =>{
                     />
                     <div className="flex whitespace-nowrap text-sm flex-col font-thin">
                         <div className="mt-2">
-                            #{tokenDrawData[playerID-1].id}/25000
+                            #{athlete_id}/25000
                         </div>
                         <div className="font-black mt-2">
-                            {tokenDrawData[playerID-1].name.toUpperCase()}
+                            {name.toUpperCase()}
                         </div>
                         <div className="mt-4">
-                            AVERAGE SCORE
+                            FANTASY SCORE
                         </div>
                         <div className="font-black mt-2">
-                            {tokenDrawData[playerID-1].average}
+                            {fantasy_score || 0}
                         </div>
                     </div>
             </div>
@@ -58,7 +53,13 @@ const TokenComponent = (props) =>{
 }
 
 TokenComponent.propTypes = {
-    playerID: PropTypes.string.isRequired,
+    athlete_id: PropTypes.string.isRequired,
+    usage: PropTypes.number.isRequired,
+    name: PropTypes.string.isRequired,
+    rarity: PropTypes.string.isRequired,
+    release: PropTypes.string.isRequired,
+    team: PropTypes.string.isRequired,
+    isOpen: PropTypes.bool.isRequired,
     children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
   };
 
