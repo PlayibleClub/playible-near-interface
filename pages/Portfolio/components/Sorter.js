@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import filterIcon from '../../../public/images/filterBlack.png';
 import searchIcon from '../../../public/images/searchBlack.png';
 
@@ -8,10 +8,12 @@ const Sorter = (props) => {
     setList, //set state for the sorter/filtered list
     setSearchText,
     filterHandler,
-    filterValue
+    filterValue,
+    resetOffset
   } = props;
 
   const [sortMode, setSortMode] = useState(null);
+  const searchRef = useRef('')
 
   const sortOptions = [
     {
@@ -27,10 +29,15 @@ const Sorter = (props) => {
       value: 'position',
     },
   ];
-
-  const handleSort = (mode) => {
-    setSortMode(mode);
-  };
+  
+  const searchHandler = () => {
+    if (searchRef.current.value) {
+      setSearchText(searchRef.current.value)
+    } else {
+      setSearchText('')
+    }
+    resetOffset()
+  }
 
   return (
     <>
@@ -52,16 +59,14 @@ const Sorter = (props) => {
           <img src={filterIcon} className="object-none w-1/12 absolute right-0 mr-2" />
         </div>
         <div className="bg-indigo-white border-2 border-indigo-lightgray border-opacity-40 ml-1 h-11 w-60">
-          <div className="mt-1.5">
+          <div className="mt-1.5 relative flex items-center">
             <input
-              onChange={(e) => {
-                setSearchText(e.target.value);
-              }}
+              ref={searchRef}
               className="text-xl text-indigo-black ml-3 appearance-none bg-indigo-white focus:outline-none w-40"
               placeholder="Search..."
             />
-            <button className="">
-              <input type="image" src={searchIcon} className="object-none ml-8 mt-1" />
+            <button className="flex items-center absolute right-0 mr-5" onClick={searchHandler}>
+              <img className='ml-2' src={searchIcon} />
             </button>
           </div>
         </div>

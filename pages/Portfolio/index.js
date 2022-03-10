@@ -59,6 +59,7 @@ const Portfolio = () => {
   const [sortedPacks, setSortedPacks] = useState([])
   const limitOptions = [5,10,30,50]
   const [filter, setFilter] = useState(null)
+  const [search, setSearch] = useState('')
 
   const fetchPacks = async () => {
     if (connectedWallet) {
@@ -148,21 +149,22 @@ const Portfolio = () => {
     }
   }
 
-  const applySortFilter = (list, filter) => {
+  const applySortFilter = (list, filter, search = '') => {
     let tempList = [...list]
     if (tempList.length > 0) {
-      switch(filter) {
-        case 'name':
-          tempList.sort((a,b) => a.token_info.info.extension.name.localeCompare(b.token_info.info.extension.name))
-          return tempList
-        case 'team':
-          tempList.sort((a,b) => a.token_info.info.extension.team.localeCompare(b.token_info.info.extension.team))
-          return tempList
-        case 'position':
-          tempList.sort((a,b) => a.token_info.info.extension.position.localeCompare(b.token_info.info.extension.position))
-          return tempList
-        default:
-          return tempList
+        let filteredList = tempList.filter(item => item.token_info.info.extension.name.toLowerCase().indexOf(search.toLowerCase()) > -1)
+        switch(filter) {
+          case 'name':
+            filteredList.sort((a,b) => a.token_info.info.extension.name.localeCompare(b.token_info.info.extension.name))
+            return filteredList
+          case 'team':
+            filteredList.sort((a,b) => a.token_info.info.extension.team.localeCompare(b.token_info.info.extension.team))
+            return filteredList
+          case 'position':
+            filteredList.sort((a,b) => a.token_info.info.extension.position.localeCompare(b.token_info.info.extension.position))
+            return filteredList
+          default:
+            return filteredList
       }
     } else {
       return tempList
@@ -202,12 +204,16 @@ const Portfolio = () => {
     if (typeof playerList !== null) {
       if (playerList.tokens.length > 0) {
         const tempList = [...playerList.tokens]
-        const filteredList = applySortFilter(tempList, filter).splice(limit*offset, limit)
+        const filteredList = applySortFilter(tempList, filter, search).splice(limit*offset, limit)
         setSortedList(filteredList)
-        setPageCount(Math.ceil(playerList.tokens.length / limit))
+        if (search) {
+          setPageCount(Math.ceil(applySortFilter(tempList, filter, search).length / limit))
+        } else {
+          setPageCount(Math.ceil(playerList.tokens.length / limit))
+        }
       } 
     }
-  }, [playerList, limit, offset, filter]);
+  }, [playerList, limit, offset, filter, search]);
 
   useEffect(() => {
     if (packs.length > 0) {
@@ -228,7 +234,7 @@ const Portfolio = () => {
             <div className="flex flex-col w-full overflow-y-auto overflow-x-hidden h-screen self-center text-indigo-black">
               <div className="ml-6 flex flex-col md:flex-row md:justify-between">
                 <PortfolioContainer title="SQUAD" textcolor="text-indigo-black" />
-                { displayMode ? <Sorter list={sortedList} setList={setSortedList} setSearchText={setSearchText} filterValue={filter} filterHandler={(val) => setFilter(val)} /> : ''}
+                { displayMode ? <Sorter list={sortedList} setList={setSortedList} resetOffset={() => setOffset(0)} setSearchText={setSearch} filterValue={filter} filterHandler={(val) => setFilter(val)} /> : ''}
               </div>
               <div className="flex flex-col w-full">
                 <div className="justify-center self-center w-full md:mt-4">
@@ -268,7 +274,7 @@ const Portfolio = () => {
                                           AthleteName={path.name}
                                           AvgScore={player.fantasy_score}
                                           id={path.athlete_id}
-                                          uri={player.token_info.info.token_uri}
+                                          uri={player.nft_image}
                                           rarity={path.rarity}
                                           status="ingame"
                                         />

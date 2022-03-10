@@ -19,15 +19,12 @@ const PerformerContainer = (props) => {
         }
 
       </div>
-      <div className="flex justify-center h-2/3 cursor-pointer">
+      <div className="flex justify-center h-2/3 cursor-pointer hover:-translate-y-1 transform transition-all">
         {uri ? 
+          <img src={uri} width={120} height={160} />
+          : 
           <Image
-            src={uri}
-            width={120}
-            height={160}
-          /> : 
-          <Image
-                src={"/../public/images/tokens/1.png"}
+                src={"/../public/images/tokensMLB/SP.png"}
                 width={120}
                 height={160}
               />
