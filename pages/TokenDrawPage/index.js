@@ -17,7 +17,7 @@ import { axiosInstance } from '../../utils/playible';
 const sampleList = [0,1,2,3,4,5]
 
 const TokenDrawPage = (props) => {
-    const { queryObj, newAthletes } = props;
+    const { queryObj, newAthletes, error } = props;
 
     const dispatch = useDispatch();
     const lcd = useLCDClient()
@@ -63,7 +63,10 @@ const TokenDrawPage = (props) => {
 
         if (!res.error) {
             const details = await axiosInstance.get(`/fantasy/athlete/${res.info.extension.athlete_id+1}/stats/`)
+            const imgRes = await axiosInstance.get(`/fantasy/athlete/${parseInt(res.info.extension.athlete_id)}/`)
             let stats = null
+            let img = imgRes.status === 200 ? imgRes.data.nft_image : null
+
             if (details.status === 200) {
                 stats = details.data.athlete_stat
             }
@@ -71,7 +74,8 @@ const TokenDrawPage = (props) => {
             const newAthlete = {
                 ...res.info.extension,
                 ...stats,
-                isOpen: false
+                isOpen: false,
+                img
             }
             setAthletes(prevState => [...prevState, newAthlete])
         }
@@ -93,28 +97,31 @@ const TokenDrawPage = (props) => {
             ) : (
                 <div className=''>
                     <div className="flex justify-center self-center w-10/12 mt-4" style={{backgroundColor:'white'}}>
-                        <div className="flex flex-row w-4/5 flex-wrap justify-center">
-                            {
-                                athletes.length > 0 ? athletes.map((data,key) => <div className="flex px-14 py-10" key={key}>
-                                        <div className="px-10 py-10" onClick={() => {
-                                            changecard(key)}}>
-                                                
-                                            <TokenComponent
-                                                athlete_id={data.athlete_id}
-                                                position={data.position}
-                                                rarity={data.rarity}
-                                                release={data.release}
-                                                team={data.team}
-                                                usage={data.useage}
-                                                isOpen={data.isOpen}
-                                                name={data.name}
-                                                fantasy_score={data.fantasy_score}
-                                            />
+                        {
+                            error ? <p>{error}</p>
+                            : <div className="flex flex-row w-4/5 flex-wrap justify-center">
+                                {
+                                    athletes.length > 0 ? athletes.map((data,key) => <div className="flex px-14 py-10" key={key}>
+                                            <div className="px-10 py-10" onClick={() => {
+                                                changecard(key)}}>
+                                                <TokenComponent
+                                                    athlete_id={data.athlete_id}
+                                                    position={data.position}
+                                                    rarity={data.rarity}
+                                                    release={data.release}
+                                                    team={data.team}
+                                                    usage={data.useage}
+                                                    isOpen={data.isOpen}
+                                                    name={data.name}
+                                                    fantasy_score={data.fantasy_score}
+                                                    img={data.img}
+                                                />
+                                            </div>
                                         </div>
-                                    </div>
-                                ) : ''
-                            }
-                        </div>
+                                    ) : ''
+                                }
+                            </div>
+                        }
                     </div>
                     <div className='flex h-full pt-8'>
                             <div className='bg-indigo-black w-full justify-end flex opacity-5'>
@@ -136,12 +143,14 @@ export async function getServerSideProps(ctx) {
     const { query } = ctx
     let queryObj = null
     let newAthletes=[]
+    let error = null
 
-    if (query) {
+    if (query.txHash) {
       queryObj = query
       if (query.txHash) {
         const response = await retrieveTxInfo(query.txHash)
-        if (response) {
+
+        if (response && response.logs) {
             const tokenList = response.logs[1].eventsByType.wasm.token_id
             if (tokenList && tokenList.length > 0) {
                 tokenList.forEach((id, i) => {
@@ -150,11 +159,20 @@ export async function getServerSideProps(ctx) {
                     }
                 })
             }
+        } else {
+            error = 'An error occurred. Please refresh the page'
         }
       }
+    } else {
+        return {
+            redirect: {
+                destination: "/Portfolio",
+                permanent: false,
+            },
+        }
     }
 
     return {
-      props: { queryObj, newAthletes }
+      props: { queryObj, newAthletes, error }
     }
   }
