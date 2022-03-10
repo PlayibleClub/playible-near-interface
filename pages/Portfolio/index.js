@@ -325,7 +325,7 @@ const Portfolio = () => {
                                           imagesrc={null}
                                           packName={data.token_id}
                                           releaseValue={path.release[1]}
-                                          link={`?token_id=${data.token_id}`}
+                                          link={`?token_id=${data.token_id}&origin=Portfolio`}
                                         />
                                       </div>
                                   );
