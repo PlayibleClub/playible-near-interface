@@ -173,10 +173,8 @@ const Portfolio = () => {
 
   const resetFilters = (type = 'athlete') => {
     if (type === 'pack') {
-      setPackLimit(10)
       setPackOffset(0)
     } else {
-      setLimit(10)
       setOffset(0)
     }
   }
