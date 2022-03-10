@@ -45,7 +45,9 @@ const Portfolio = () => {
   const [limit, setLimit] = useState(10)
   const [offset, setOffset] = useState(0)
   const [pageCount, setPageCount] = useState(0)
-  const [packLimit, setPackLimit] = useState(5)
+  const [packLimit, setPackLimit] = useState(10)
+  const [packOffset, setPackOffset] = useState(0)
+  const [packPageCount, setPackPageCount] = useState(0)
 
   const { list: playerList, status } = useSelector((state) => state.assets);
 
@@ -54,18 +56,23 @@ const Portfolio = () => {
   const lcd = useLCDClient();
   const [sortedList, setSortedList] = useState([]);
   const [packs, setPacks] = useState([])
+  const [sortedPacks, setSortedPacks] = useState([])
   const limitOptions = [5,10,30,50]
+  const [filter, setFilter] = useState(null)
+  const [search, setSearch] = useState('')
 
   const fetchPacks = async () => {
     if (connectedWallet) {
       const formData = { 
-        all_tokens_info: {
+        owner_tokens_info: {
           owner: connectedWallet.walletAddress
         }
       }
       const res = await lcd.wasm.contractQuery(PACK, formData)
       if (res && res.length > 0) {
         setPacks(res)
+      } else {
+        setPacks([])
       }
     }
   }
@@ -90,8 +97,36 @@ const Portfolio = () => {
       }
   }
 
+  const changeIndexPack = (index) => {
+    switch (index) {
+      case 'next':
+          setPackOffset(packOffset + 1)
+          break
+      case 'previous':
+          setPackOffset(packOffset - 1)
+          break
+      case 'first':
+          setPackOffset(0)
+          break
+      case 'last':
+          setPackOffset(packPageCount - 1)
+          break
+
+      default:
+          break
+      }
+  }
+
   const canNext = () => {
     if (offset + 1 === pageCount) {
+        return false
+    } else {
+        return true
+    }
+  }
+
+  const canNextPack = () => {
+    if (packOffset + 1 === packPageCount) {
         return false
     } else {
         return true
@@ -104,6 +139,47 @@ const Portfolio = () => {
     } else {
       return true
     }
+  }
+
+  const canPreviousPack = () => {
+    if (packOffset === 0) {
+      return false
+    } else {
+      return true
+    }
+  }
+
+  const applySortFilter = (list, filter, search = '') => {
+    let tempList = [...list]
+    if (tempList.length > 0) {
+        let filteredList = tempList.filter(item => item.token_info.info.extension.name.toLowerCase().indexOf(search.toLowerCase()) > -1)
+        switch(filter) {
+          case 'name':
+            filteredList.sort((a,b) => a.token_info.info.extension.name.localeCompare(b.token_info.info.extension.name))
+            return filteredList
+          case 'team':
+            filteredList.sort((a,b) => a.token_info.info.extension.team.localeCompare(b.token_info.info.extension.team))
+            return filteredList
+          case 'position':
+            filteredList.sort((a,b) => a.token_info.info.extension.position.localeCompare(b.token_info.info.extension.position))
+            return filteredList
+          default:
+            return filteredList
+      }
+    } else {
+      return tempList
+    }
+  }
+
+  const resetFilters = (type = 'athlete') => {
+    if (type === 'pack') {
+      setPackOffset(0)
+    } else {
+      setOffset(0)
+    }
+  }
+
+  const resetFilterPacks = () => {
   }
 
   useEffect(() => {
@@ -120,18 +196,31 @@ const Portfolio = () => {
     if (typeof connectedWallet !== 'undefined') {
       fetchPacks()
     }
-  }, [dispatch, connectedWallet, packLimit])
+  }, [dispatch, connectedWallet])
 
   useEffect(() => {
     if (typeof playerList !== null) {
       if (playerList.tokens.length > 0) {
         const tempList = [...playerList.tokens]
-        const filteredList = tempList.splice(limit*offset, limit)
+        const filteredList = applySortFilter(tempList, filter, search).splice(limit*offset, limit)
         setSortedList(filteredList)
-        setPageCount(Math.ceil(playerList.tokens.length / limit))
+        if (search) {
+          setPageCount(Math.ceil(applySortFilter(tempList, filter, search).length / limit))
+        } else {
+          setPageCount(Math.ceil(playerList.tokens.length / limit))
+        }
       } 
     }
-  }, [playerList, limit, offset]);
+  }, [playerList, limit, offset, filter, search]);
+
+  useEffect(() => {
+    if (packs.length > 0) {
+      const tempList = [...packs]
+      const filteredList = tempList.splice(packLimit*packOffset, packLimit)
+      setSortedPacks(filteredList)
+      setPackPageCount(Math.ceil(packs.length / packLimit))
+    }
+  }, [packs, packLimit, packOffset]);
 
   return (
     <Container>
@@ -143,22 +232,23 @@ const Portfolio = () => {
             <div className="flex flex-col w-full overflow-y-auto overflow-x-hidden h-screen self-center text-indigo-black">
               <div className="ml-6 flex flex-col md:flex-row md:justify-between">
                 <PortfolioContainer title="SQUAD" textcolor="text-indigo-black" />
-                <Sorter list={sortedList} setList={setSortedList} setSearchText={setSearchText} />
+                { displayMode ? <Sorter list={sortedList} setList={setSortedList} resetOffset={() => setOffset(0)} setSearchText={setSearch} filterValue={filter} filterHandler={(val) => setFilter(val)} /> : ''}
               </div>
-
               <div className="flex flex-col w-full">
                 <div className="justify-center self-center w-full md:mt-4">
                   {displayMode ? (
                     <>
                       <div className="flex md:ml-4 font-bold ml-8 md:ml-0 font-monument">
-                        <div className="mr-6 md:ml-8 border-b-8 pb-2 border-indigo-buttonblue">
+                        <div className="mr-6 md:ml-8 border-b-8 pb-2 border-indigo-buttonblue cursor-pointer">
                           ATHLETES
                         </div>
 
                         <div
-                          className=""
+                          className="cursor-pointer"
                           onClick={() => {
                             setDisplay(false);
+                            setFilter(null);
+                            resetFilters();
                           }}
                         >
                           PACKS
@@ -182,7 +272,7 @@ const Portfolio = () => {
                                           AthleteName={path.name}
                                           AvgScore={player.fantasy_score}
                                           id={path.athlete_id}
-                                          uri={player.token_info.info.token_uri}
+                                          uri={player.nft_image}
                                           rarity={path.rarity}
                                           status="ingame"
                                         />
@@ -200,7 +290,7 @@ const Portfolio = () => {
                                 {pageCount  > 1 && <button className='px-2 border mr-2' onClick={() => changeIndex('last')}>Last</button>}
                               </div>
                               <div className="bg-indigo-white mr-1 h-11 w-64 flex font-thin border-2 border-indigo-lightgray border-opacity-40 p-2">
-                                  <select value={limit} className="bg-indigo-white text-lg w-full outline-none" onChange={(e) => {setLimit(e.target.value), setOffset(0)}}>
+                                  <select value={limit} className="bg-indigo-white text-lg w-full outline-none" onChange={(e) => {setLimit(e.target.value); setOffset(0)}}>
                                     {limitOptions.map((option) => <option value={option}>{option}</option>)}
                                   </select>
                               </div>
@@ -214,28 +304,29 @@ const Portfolio = () => {
                     <>
                       <div className="flex md:ml-4 font-bold ml-8 md:ml-0 font-monument">
                         <div
-                          className="md:ml-8 mr-6"
+                          className="md:ml-8 mr-6 cursor-pointer"
                           onClick={() => {
                             setDisplay(true);
+                            resetFilters('pack');
                           }}
                         >
                           ATHLETES
                         </div>
 
-                        <div className="border-b-8 pb-2 border-indigo-buttonblue">PACKS</div>
+                        <div className="border-b-8 pb-2 border-indigo-buttonblue cursor-pointer">PACKS</div>
                       </div>
                       <hr className="opacity-50" />
                       
-                        {packs.length > 0 ? 
+                        {sortedPacks.length > 0 ? 
                           <>
                             <div className="md:ml-16 grid grid-cols-0 md:grid-cols-4 mt-12 justify-center">
-                              {packs.map((data, i) => {
+                              {sortedPacks.map((data, i) => {
                                   const path = data.token_info.info.extension
                                   return (
-                                      <div className="mb-4" key={i}>
+                                      <div className="mb-4 cursor-pointer" key={i}>
                                         <SquadPackComponent
                                           imagesrc={null}
-                                          packName={path.sport}
+                                          packName={data.token_id}
                                           releaseValue={path.release[1]}
                                           link={`?token_id=${data.token_id}`}
                                         />
@@ -246,14 +337,14 @@ const Portfolio = () => {
                             </div>
                             <div className="flex justify-between md:mt-5 md:mr-6 p-5">
                               <div className="bg-indigo-white mr-1 h-11 flex items-center font-thin border-indigo-lightgray border-opacity-40 p-2">
-                                {pageCount > 1 && <button className='px-2 border mr-2' onClick={() => changeIndex('first')}>First</button>}
-                                {pageCount !== 0 && canPrevious() && <button className='px-2 border mr-2' onClick={() => changeIndex('previous')}>Previous</button>}
-                                <p className='mr-2'>Page {offset + 1} of {pageCount}</p>
-                                {pageCount !== 0 && canNext() && <button className='px-2 border mr-2' onClick={() => changeIndex('next')}>Next</button>}
-                                {pageCount  > 1 && <button className='px-2 border mr-2' onClick={() => changeIndex('last')}>Last</button>}
+                                {packPageCount > 1 && <button className='px-2 border mr-2' onClick={() => changeIndexPack('first')}>First</button>}
+                                {packPageCount !== 0 && canPreviousPack() && <button className='px-2 border mr-2' onClick={() => changeIndexPack('previous')}>Previous</button>}
+                                <p className='mr-2'>Page {packOffset + 1} of {packPageCount}</p>
+                                {packPageCount !== 0 && canNextPack() && <button className='px-2 border mr-2' onClick={() => changeIndexPack('next')}>Next</button>}
+                                {packPageCount  > 1 && <button className='px-2 border mr-2' onClick={() => changeIndexPack('last')}>Last</button>}
                               </div>
                               <div className="bg-indigo-white mr-1 h-11 w-64 flex font-thin border-2 border-indigo-lightgray border-opacity-40 p-2">
-                                  <select value={limit} className="bg-indigo-white text-lg w-full outline-none" onChange={(e) => {setLimit(e.target.value), setOffset(0)}}>
+                                  <select value={packLimit} className="bg-indigo-white text-lg w-full outline-none" onChange={(e) => {setPackLimit(e.target.value), setPackOffset(0)}}>
                                     {limitOptions.map((option) => <option value={option}>{option}</option>)}
                                   </select>
                               </div>

@@ -4,11 +4,11 @@ import Image from 'next/image'
 
 
 const PlayerContainer = (props) =>{
-    const {playerID, children, rarity} = props;
+    const {playerID, children, rarity, img = null} = props;
 
     return (
         <div className="overflow-hidden ease-in-out">
-            {rarity === 'gold' && 
+            {/* {rarity === 'gold' && 
                 <Image
                     src={"/../public/images/tokens/"+playerID+"g.png"}
                     width={125}
@@ -30,7 +30,8 @@ const PlayerContainer = (props) =>{
                     width={125}
                     height={160}
                 />
-            }
+            } */}
+            <img src={img || '/images/tokensMLB/SP.png'} width={125} height={160} />
         </div>
     )
 }
