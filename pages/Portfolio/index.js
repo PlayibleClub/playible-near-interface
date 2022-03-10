@@ -179,9 +179,6 @@ const Portfolio = () => {
     }
   }
 
-  const resetFilterPacks = () => {
-  }
-
   useEffect(() => {
     if (typeof connectedWallet !== 'undefined') {
       setLoading(true)
@@ -200,7 +197,7 @@ const Portfolio = () => {
 
   useEffect(() => {
     if (typeof playerList !== null) {
-      if (playerList.tokens.length > 0) {
+      if (playerList.tokens && playerList.tokens.length > 0) {
         const tempList = [...playerList.tokens]
         const filteredList = applySortFilter(tempList, filter, search).splice(limit*offset, limit)
         setSortedList(filteredList)
