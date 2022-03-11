@@ -41,18 +41,12 @@ export const estimateFee = async (walletAddress, executeContractMsg, gasPrices =
 export const retrieveTxInfo = async (txHash) => {
     let hasTxInfo = false
     let txInfo = null
-    let loopCount = 0
     while(!hasTxInfo){
       //try to query transaction info every 2 seconds until the transaction is reflected in the block
       await terra.tx.txInfo(txHash).then((result) => { 
         hasTxInfo = true
         txInfo = result
       }).catch(async () => {
-        if (loopCount < 3) {
-          hasTxInfo = true
-        } else {
-          loopCount += 1
-        }
         await new Promise(resolve => setTimeout(resolve, 2000));
       })
     }
