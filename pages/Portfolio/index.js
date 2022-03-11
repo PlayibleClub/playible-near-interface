@@ -179,9 +179,6 @@ const Portfolio = () => {
     }
   }
 
-  const resetFilterPacks = () => {
-  }
-
   useEffect(() => {
     if (typeof connectedWallet !== 'undefined') {
       setLoading(true)
@@ -200,7 +197,7 @@ const Portfolio = () => {
 
   useEffect(() => {
     if (typeof playerList !== null) {
-      if (playerList.tokens.length > 0) {
+      if (playerList.tokens && playerList.tokens.length > 0) {
         const tempList = [...playerList.tokens]
         const filteredList = applySortFilter(tempList, filter, search).splice(limit*offset, limit)
         setSortedList(filteredList)
@@ -328,7 +325,7 @@ const Portfolio = () => {
                                           imagesrc={null}
                                           packName={data.token_id}
                                           releaseValue={path.release[1]}
-                                          link={`?token_id=${data.token_id}`}
+                                          link={`?token_id=${data.token_id}&origin=Portfolio`}
                                         />
                                       </div>
                                   );

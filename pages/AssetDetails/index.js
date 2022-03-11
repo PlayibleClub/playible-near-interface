@@ -50,44 +50,9 @@ const AssetDetails = (props) => {
       "hit_by_pitch",
       "stolen_bases",
     ]
-    //const [silverDropdown, displaySilver] = useState(false)
-    //const [goldDropdown, displayGold] = useState(false)
     const { query } = useRouter()
 
     const { list: playerList } = useSelector((state) => state.assets)
-
-    /*const baseTokenCount = tokenList.reduce(function(n, list){
-        return n + (list.id === playerToFind.id && list.rarity === 'base')
-    }, 0)
-
-    const silverTokenCount = tokenList.reduce(function(n, list){
-        return n + (list.id === playerToFind.id && list.rarity === 'silver')
-    }, 0)
-    
-    const filteredList = tokenList.filter((list,i) => {
-        return tokenList[i].id === playerToFind.id
-    })
-    const baseFilteredList = filteredList.filter((list,i)=>{
-        return filteredList[i].rarity === 'base'
-    })
-    const silverFilteredList = filteredList.filter((list,i)=>{
-        return filteredList[i].rarity === 'silver'
-    })*/
-
-    // useEffect(() => {
-    //   const data = playerList.find((item) => {
-    //     const path = item.token_info.info.extension
-    //     if (queryObj) {
-    //       return String(path.athlete_id) === String(queryObj.id)
-    //     } else {
-    //       return String(path.athlete_id) === String(query.id)
-    //     }
-    //   })
-    //   if (typeof data !== "undefined") {
-    //     setAssetData(data)
-    //     setLoading(false)
-    //   }
-    // }, [playerList])
 
     useEffect(() => {
       if (connectedWallet) {

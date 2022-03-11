@@ -194,7 +194,7 @@ export default function PackDetails(props) {
             <Main color="indigo-white">
               <div className="md:ml-6">
                 <div className="mt-8">
-                    <BackFunction prev="/Packs"/>
+                    <BackFunction prev={queryObj.origin ? `/${queryObj.origin}` : '/Portfolio'} />
                 </div>
                 {
                   data && <>
