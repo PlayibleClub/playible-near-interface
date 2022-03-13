@@ -15,6 +15,7 @@ export default function PlayDetails() {
 
     const router = useRouter();
 
+
 	return (
     
 		<Container>
@@ -75,7 +76,7 @@ export default function PlayDetails() {
                                                 data.team === true || data.status === 'ongoing' ? 'bg-indigo-lightblue text-indigo-buttonblue w-4/6 md:w-64 h-12 text-center font-bold text-md mt-8 mr-4' : 'bg-indigo-lightblue text-indigo-buttonblue w-4/6 md:w-64 h-12 text-center font-bold text-md mt-8 hidden'} >
                                                 VIEW TEAM
                                             </button>
-                                            <a href={`/CreateLineup?id=${data.key}`}>
+                                            <a href={`/CreateLineup?id=${data.key}&number=${data.number}`}>
                                                 <button className='bg-indigo-buttonblue text-indigo-white w-4/6 md:w-64 h-12 text-center font-bold text-md mt-8'>
                                                     ENTER GAME
                                                 </button>
