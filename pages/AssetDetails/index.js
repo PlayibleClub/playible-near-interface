@@ -26,7 +26,7 @@ import { axiosInstance } from '../../utils/playible';
 import { ATHLETE } from '../../data/constants/contracts';
 
 const AssetDetails = (props) => {
-    const { queryObj, playerStats } = props;
+    const { queryObj, playerStats, playerImg } = props;
     const { register, handleSubmit } = useForm()
     const connectedWallet = useConnectedWallet();
     const lcd = useLCDClient()
@@ -50,44 +50,9 @@ const AssetDetails = (props) => {
       "hit_by_pitch",
       "stolen_bases",
     ]
-    //const [silverDropdown, displaySilver] = useState(false)
-    //const [goldDropdown, displayGold] = useState(false)
     const { query } = useRouter()
 
     const { list: playerList } = useSelector((state) => state.assets)
-
-    /*const baseTokenCount = tokenList.reduce(function(n, list){
-        return n + (list.id === playerToFind.id && list.rarity === 'base')
-    }, 0)
-
-    const silverTokenCount = tokenList.reduce(function(n, list){
-        return n + (list.id === playerToFind.id && list.rarity === 'silver')
-    }, 0)
-    
-    const filteredList = tokenList.filter((list,i) => {
-        return tokenList[i].id === playerToFind.id
-    })
-    const baseFilteredList = filteredList.filter((list,i)=>{
-        return filteredList[i].rarity === 'base'
-    })
-    const silverFilteredList = filteredList.filter((list,i)=>{
-        return filteredList[i].rarity === 'silver'
-    })*/
-
-    // useEffect(() => {
-    //   const data = playerList.find((item) => {
-    //     const path = item.token_info.info.extension
-    //     if (queryObj) {
-    //       return String(path.athlete_id) === String(queryObj.id)
-    //     } else {
-    //       return String(path.athlete_id) === String(query.id)
-    //     }
-    //   })
-    //   if (typeof data !== "undefined") {
-    //     setAssetData(data)
-    //     setLoading(false)
-    //   }
-    // }, [playerList])
 
     useEffect(() => {
       if (connectedWallet) {
@@ -100,10 +65,12 @@ const AssetDetails = (props) => {
       const res = await lcd.wasm.contractQuery(ATHLETE, { all_nft_info : {
         token_id: queryObj.token_id
       }})
+      const imgRes = await axiosInstance.get(`/fantasy/athlete/${parseInt(queryObj.id)}/`)
+      let img = imgRes.status === 200 ? imgRes.data.nft_image : null
       if (res.info  !== undefined) {
         setAssetData({
           ...res.info.extension,
-          token_uri: res.info.token_uri
+          token_uri: img,
         })
       }
       if (playerStats) {
@@ -277,7 +244,7 @@ const AssetDetails = (props) => {
                                     <div className="flex md:flex-row flex-col md:mt-8">
                                       <div>
                                         <div className="ml-8 md:ml-6 mr-16">
-                                          <PlayerContainer playerID={assetData.athlete_id} rarity='base'/>
+                                          <PlayerContainer img={assetData.token_uri} playerID={assetData.athlete_id} rarity='base'/>
                                         </div>
                                       </div>
                                       <div className="flex flex-col">
@@ -389,12 +356,12 @@ export async function getServerSideProps(ctx) {
   }
 
   let playerStats = null
-
   const res = await axiosInstance.get(`/fantasy/athlete/${parseInt(queryObj.id)+1}/stats/`)
+ 
   if (res.status === 200) {
     playerStats = res.data
   }
   return {
-    props: { queryObj, playerStats }
+    props: { queryObj, playerStats,  }
   }
 }

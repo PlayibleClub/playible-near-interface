@@ -5,14 +5,14 @@ import { tokenDrawData } from '../data/index.js';
 
 
 const TokenComponent = (props) =>{
-    const {athlete_id, usage, name, rarity, release, team, isOpen, fantasy_score} = props;
-    const picLink = "/../public/images/tokens/"+athlete_id+".png"    
+    const {athlete_id, usage, name, rarity, release, team, isOpen, fantasy_score, img} = props;
+    const picLink = img || "/images/tokensMLB/SP.png"    
 
     if(isOpen){
 
         return (
             <div className="w-32 h-48 transform cursor-pointer">
-                    <Image
+                    <img
                         src={picLink}
                         width={150}
                         height={210}

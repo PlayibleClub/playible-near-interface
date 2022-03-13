@@ -16,9 +16,8 @@ export const getAccountAssets = createAsyncThunk('getAccountAssets', async (payl
   try {
     const { walletAddr, limit, start_after } = payload;
     const result = await axiosInstance.get(
-      `/account/athlete_tokens/${walletAddr}/collection/${contracts.ATHLETE}${limit ? `?limit=${limit}` : ''}`
+      `/account/athlete_tokens/${walletAddr}/collection/${contracts.ATHLETE}`
     );
-
     return {
       response: result,
       status: statusCode.SUCCESS,
