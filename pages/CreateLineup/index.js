@@ -8,17 +8,19 @@ import BackFunction from '../../components/buttons/BackFunction';
 
 import { playList } from '../../pages/PlayDetails/data/index.js'
 
-import { teamComposition } from './data';
-
 import { useRouter } from 'next/router';
 
-import Lineup from '../../pages/CreateLineup/components/Lineup.js';
+import Teams from '../../pages/CreateLineup/components/Teams.js';
 
 import Data from "../../data/teams.json"
 
 export default function CreateLineup() { 
     const { query } = useRouter();
     const router = useRouter();
+
+    // const data5 = JSON.parse(Data);
+
+    console.log(query)
         
     async function createGameData(){
 
@@ -44,7 +46,6 @@ export default function CreateLineup() {
         <Container>
           <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
                     <Main color="indigo-white">
-                        
                         {playList.map(function(data1, i){
                       if(router.query.id === data1.key){
                         return(
@@ -73,21 +74,28 @@ export default function CreateLineup() {
                                 </div>
                             </div>
                           </div>
-                        {Data.length>0 ? 
+                        {(Data[(query.number)-1]) ? 
                         (
-                              <>
-                              <PortfolioContainer title={`Team ${data1.number}`} textcolor="text-indigo-black"/>
-                              <div className="grid grid-cols-4 gap-y-4 mt-4 md:grid-cols-4 md:ml-7 md:mt-12">
-                                 {Data[(data1.number)-1].roster[0].athletes.map(function (data, i) {
+                            <>
+                            <div className='flex mb-10'>
+                                <PortfolioContainer title='CREATE TEAM' textcolor="text-indigo-black"/>
+                                <a href={`/CreateTeam?id=${query.id}&number=${query.number}`}>
+                                    <button className='mr-20 bg-indigo-buttonblue text-indigo-white whitespace-nowrap h-14 px-20 bottom-0 mt-4 text-center font-bold' onClick={createGameData}>CREATE YOUR LINEUP +</button>
+                                </a>
+                            </div>
+                            <div className='ml-7 mr-7 border-b-2 border-indigo-lightgray border-opacity-30'/>
+                            <div className='ml-7 mt-4'>
+                                Create a team and shocase your collection. Enter a team into the tournament and compete for cash prizes.
+                            </div>
+                            <div className="mt-7 ml-7">
+                                 {Data[(query.number)-1].roster.map(function (data, i) {
                                               return (
                                                   <div className="">
-                                                      <a href={`/EnterPlayers?pos=${data.position}`+`&id=${Data[(data1.number)-1].gameId}`}>
+                                                      <a href={`/EntrySummary?team=${data.teamName}&id=${Data[(query.number)-1].gameId}&number=${(i+1)}`}>
                                                           <div className="" key={i}>
-                                                              <Lineup
-                                                                  position={data.position}
-                                                                  player={data.player}
-                                                                  id={data.id}
-                                                                  score={data.score}
+                                                              {console.log(data.teamName)}
+                                                              <Teams
+                                                                  teamName={data.teamName}
                                                                   />
                                                           </div>
                                                       </a>
@@ -96,15 +104,15 @@ export default function CreateLineup() {
                                           }
                                       )
                                   }
-                              </div>
-                              </>
+                            </div>
+                            </>
                         )
                         :
                         (
                             <>
                             <div className='flex mb-10'>
                                 <PortfolioContainer title='Create Team' textcolor="text-indigo-black"/>
-                                <a href={`/CreateTeam?id=${query.id}`}>
+                                <a href={`/CreateTeam?id=${query.id}&number=${query.number}`}>
                                     <button className='mr-20 bg-indigo-buttonblue text-indigo-white whitespace-nowrap h-14 px-20 bottom-0 mt-4 text-center font-bold' onClick={createGameData}>CREATE YOUR LINEUP +</button>
                                 </a>
                             </div>
