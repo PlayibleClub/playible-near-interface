@@ -151,7 +151,7 @@ export default function Home() {
     <Container>
         <div className="flex flex-col w-screen md:w-full overflow-y-auto h-screen justify-center self-center md:pb-12 text-indigo-black">
           <Main color="indigo-white">
-              <div className="flex flex-col md:flex-row md:ml-12 mt-12">
+              <div className="flex flex-col md:flex-row md:ml-12">
                 <div className="md:w-2/3">
                   
                   <div className="flex flex-col md:border rounded-lg md:p-6 md:mr-8">
