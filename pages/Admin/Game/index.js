@@ -5,6 +5,10 @@ import Main from '../../../components/Main';
 import Distribution from './components/distribution';
 import { axiosInstance } from '../../../utils/playible';
 import BaseModal from '../../../components/modals/BaseModal';
+import TimeAgo from 'javascript-time-ago';
+import en from 'javascript-time-ago/locale/en.json';
+import ReactTimeAgo from 'react-time-ago';
+TimeAgo.addDefaultLocale(en);
 
 const Index = (props) => {
   const [loading, setLoading] = useState(false);
@@ -32,6 +36,8 @@ const Index = (props) => {
       percentage: 0,
     },
   ]);
+
+  const [games, setGames] = useState([]);
 
   const [modal, setModal] = useState(false);
   const [msg, setMsg] = useState({
@@ -128,11 +134,6 @@ const Index = (props) => {
     if (checkValidity().length > 0) {
       alert(`Following errors: ${checkValidity().map((item) => ` \n❌ ${item}`)}`.replace(',', ''));
     } else {
-      console.log({
-        ...details,
-        distribution,
-      });
-
       const formData = {
         ...details,
         duration: parseInt(details.duration),
@@ -148,6 +149,7 @@ const Index = (props) => {
           content: `${res.data.name} created!`,
         });
         resetForm();
+        fetchGames();
       } else {
         setMsg({
           title: 'Failed',
@@ -158,6 +160,19 @@ const Index = (props) => {
       setModal(true);
       setLoading(false);
     }
+  };
+
+  const fetchGames = async () => {
+    setLoading(true);
+    const res = await axiosInstance.get('/fantasy/game/new/');
+    console.log('res', res);
+    if (res.status === 200 && res.data.length > 0) {
+      const data = [...res.data].sort(
+        (a, b) => new Date(a.start_datetime) - new Date(b.start_datetime)
+      );
+      setGames(data);
+    }
+    setLoading(false);
   };
 
   const resetForm = () => {
@@ -179,130 +194,157 @@ const Index = (props) => {
     getTotalPercent();
   }, [distribution]);
 
+  useEffect(() => {
+    fetchGames();
+  }, []);
+
   return (
     <Container isAdmin>
       <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
         <Main color="indigo-white">
-          {loading ? (
-            <LoadingPageDark />
-          ) : (
-            <div className="flex flex-col w-full overflow-y-auto overflow-x-hidden h-screen self-center text-indigo-black">
-              <div className="flex md:ml-4 font-bold ml-8 font-monument mt-5">
-                {tabs.map(({ name, isActive }) => (
-                  <div
-                    className={`cursor-pointer mr-6 ${
-                      isActive ? 'border-b-8 border-indigo-buttonblue' : ''
-                    }`}
-                    onClick={() => changeTab(name)}
-                  >
-                    {name}
-                  </div>
-                ))}
-              </div>
-              <hr className="opacity-50" />
-              <div className="p-8 px-32">
-                <div className="flex">
-                  {/* GAME TITLE */}
-                  <div className="flex flex-col lg:w-1/2 lg:mr-10">
-                    <label className="font-monument" htmlFor="title">
-                      TITLE
-                    </label>
-                    <input
-                      className="border outline-none rounded-lg px-3 p-2"
-                      id="title"
-                      name="name"
-                      placeholder="Enter title"
-                      onChange={(e) => onChange(e)}
-                      value={details.name}
-                    />
-                  </div>
-
-                  {/* DATE & TIME */}
-                  <div className="flex flex-col lg:w-1/2">
-                    <label className="font-monument" htmlFor="datetime">
-                      DATE & TIME
-                    </label>
-                    <input
-                      className="border outline-none rounded-lg px-3 p-2"
-                      id="datetime"
-                      type="datetime-local"
-                      name="start_datetime"
-                      onChange={(e) => onChange(e)}
-                      value={details.start_datetime}
-                    />
-                  </div>
+          <div className="flex flex-col w-full overflow-y-auto overflow-x-hidden h-screen self-center text-indigo-black">
+            <div className="flex md:ml-4 font-bold ml-8 font-monument mt-5">
+              {tabs.map(({ name, isActive }) => (
+                <div
+                  className={`cursor-pointer mr-6 ${
+                    isActive ? 'border-b-8 border-indigo-buttonblue' : ''
+                  }`}
+                  onClick={() => changeTab(name)}
+                >
+                  {name}
                 </div>
-
-                <div className="flex mt-8">
-                  {/* DURATION */}
-                  <div className="flex flex-col lg:w-1/2 lg:mr-10">
-                    <label className="font-monument" htmlFor="duration">
-                      DURATION
-                    </label>
-                    <input
-                      className="border outline-none rounded-lg px-3 p-2"
-                      id="duration"
-                      name="duration"
-                      type="number"
-                      min={1}
-                      placeholder="Express in minutes"
-                      onChange={(e) => onChange(e)}
-                      value={details.duration}
-                    />
-                  </div>
-
-                  {/* PRIZE */}
-                  <div className="flex flex-col lg:w-1/2">
-                    <label className="font-monument" htmlFor="prize">
-                      PRIZE
-                    </label>
-                    <input
-                      className="border outline-none rounded-lg px-3 p-2"
-                      id="prize"
-                      type="number"
-                      name="prize"
-                      min={1}
-                      placeholder="Enter amount"
-                      onChange={(e) => onChange(e)}
-                      value={details.prize}
-                    />
-                  </div>
+              ))}
+            </div>
+            <hr className="opacity-50" />
+            <div className="p-8 px-32">
+              {loading ? (
+                <LoadingPageDark />
+              ) : tabs[0].isActive ? (
+                <div>
+                  <p className='font-monument font-bold text-xl'>UPCOMING GAMES</p>
+                  {games.length > 0 &&
+                    games.map(function (data, i) {
+                      return (
+                        <div className="border-b p-5 py-8">
+                          <p className="font-bold text-lg">{data.name}</p>
+                          <div className="flex justify-between">
+                            <ReactTimeAgo
+                              future
+                              timeStyle="round-minute"
+                              date={data.start_datetime}
+                              locale="en-US"
+                            />
+                            <p>Prize: $ {data.prize}</p>
+                          </div>
+                        </div>
+                      );
+                    })}
                 </div>
+              ) : (
+                <>
+                  <div className="flex">
+                    {/* GAME TITLE */}
+                    <div className="flex flex-col lg:w-1/2 lg:mr-10">
+                      <label className="font-monument" htmlFor="title">
+                        TITLE
+                      </label>
+                      <input
+                        className="border outline-none rounded-lg px-3 p-2"
+                        id="title"
+                        name="name"
+                        placeholder="Enter title"
+                        onChange={(e) => onChange(e)}
+                        value={details.name}
+                      />
+                    </div>
 
-                {/* DISTRIBUTION FORM */}
-                <div className="mt-8">
-                  <p className="font-monument">DISTRIBUTION</p>
-                  {distribution.map(({ rank, percentage }) => (
-                    <Distribution
-                      rank={rank}
-                      value={percentage}
-                      handleChange={modifyRankList}
-                      showDelete={rank === distribution.length && distribution.length > 1}
-                      percentTotal={percentTotal}
-                    />
-                  ))}
+                    {/* DATE & TIME */}
+                    <div className="flex flex-col lg:w-1/2">
+                      <label className="font-monument" htmlFor="datetime">
+                        DATE & TIME
+                      </label>
+                      <input
+                        className="border outline-none rounded-lg px-3 p-2"
+                        id="datetime"
+                        type="datetime-local"
+                        name="start_datetime"
+                        onChange={(e) => onChange(e)}
+                        value={details.start_datetime}
+                      />
+                    </div>
+                  </div>
 
-                  <div className="flex justify-start">
+                  <div className="flex mt-8">
+                    {/* DURATION */}
+                    <div className="flex flex-col lg:w-1/2 lg:mr-10">
+                      <label className="font-monument" htmlFor="duration">
+                        DURATION
+                      </label>
+                      <input
+                        className="border outline-none rounded-lg px-3 p-2"
+                        id="duration"
+                        name="duration"
+                        type="number"
+                        min={1}
+                        placeholder="Express in minutes"
+                        onChange={(e) => onChange(e)}
+                        value={details.duration}
+                      />
+                    </div>
+
+                    {/* PRIZE */}
+                    <div className="flex flex-col lg:w-1/2">
+                      <label className="font-monument" htmlFor="prize">
+                        PRIZE
+                      </label>
+                      <input
+                        className="border outline-none rounded-lg px-3 p-2"
+                        id="prize"
+                        type="number"
+                        name="prize"
+                        min={1}
+                        placeholder="Enter amount"
+                        onChange={(e) => onChange(e)}
+                        value={details.prize}
+                      />
+                    </div>
+                  </div>
+
+                  {/* DISTRIBUTION FORM */}
+                  <div className="mt-8">
+                    <p className="font-monument">DISTRIBUTION</p>
+                    {distribution.map(({ rank, percentage }) => (
+                      <Distribution
+                        rank={rank}
+                        value={percentage}
+                        handleChange={modifyRankList}
+                        showDelete={rank === distribution.length && distribution.length > 1}
+                        percentTotal={percentTotal}
+                      />
+                    ))}
+
+                    <div className="flex justify-start">
+                      <button
+                        className="bg-indigo-darkgray text-indigo-white w-5/6 md:w-48 h-10 text-center font-bold text-sm mt-4"
+                        onClick={() => modifyRankList('add')}
+                      >
+                        Add New Rank
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="flex justify-center mt-8">
                     <button
-                      className="bg-indigo-darkgray text-indigo-white w-5/6 md:w-48 h-10 text-center font-bold text-sm mt-4"
-                      onClick={() => modifyRankList('add')}
+                      className="bg-indigo-green font-monument tracking-widest ml-7 text-indigo-white w-5/6 md:w-80 h-16 text-center text-sm mt-4"
+                      onClick={createGame}
                     >
-                      Add New Rank
+                      CREATE GAME
                     </button>
                   </div>
-                </div>
-
-                <div className="flex justify-center mt-8">
-                  <button
-                    className="bg-indigo-green font-monument tracking-widest ml-7 text-indigo-white w-5/6 md:w-80 h-16 text-center text-sm mt-4"
-                    onClick={createGame}
-                  >
-                    CREATE GAME
-                  </button>
-                </div>
-              </div>
+                </>
+              )}
             </div>
-          )}
+          </div>
         </Main>
       </div>
       <BaseModal title={msg.title} visible={modal} onClose={() => setModal(false)}>
