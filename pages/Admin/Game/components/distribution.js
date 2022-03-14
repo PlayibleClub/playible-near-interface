@@ -1,10 +1,14 @@
 import { useEffect, useState } from 'react';
+import BaseModal from '../../../../components/modals/BaseModal';
 
 const Distribution = (props) => {
-  const { handleChange, value, rank, showDelete } = props;
+  const { handleChange, value, rank, showDelete, percentTotal } = props;
   const [edit, setEdit] = useState(false);
 
   const [percent, setPercent] = useState(value);
+
+  const [error, setError] = useState(null);
+  const [errorModal, setErrorModal] = useState(false);
 
   const colorProvider = (val) => {
     switch (val) {
@@ -25,7 +29,22 @@ const Distribution = (props) => {
       setEdit(!edit);
       setPercent(value);
     } else {
-      handleChange('update', rank, tempValue)
+      if (isValid(tempValue)) {
+        handleChange('update', rank, tempValue);
+      } else {
+        setError('The total percentage of all rank distributions must not exceed 100');
+        setErrorModal(true);
+        setEdit(!edit);
+        setPercent(value);
+      }
+    }
+  };
+
+  const isValid = (val) => {
+    if (val + (percentTotal - value) < 101) {
+      return true;
+    } else {
+      return false;
     }
   };
 
@@ -89,6 +108,9 @@ const Distribution = (props) => {
           </>
         )}
       </div>
+      <BaseModal title={'Invalid Value'} visible={errorModal} onClose={() => setErrorModal(false)}>
+        <p className="mt-5">{error}</p>
+      </BaseModal>
     </div>
   );
 };

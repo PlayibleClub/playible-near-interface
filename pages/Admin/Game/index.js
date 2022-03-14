@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Container from '../../../components/containers/Container';
-import Input from '../../../components/Input';
 import LoadingPageDark from '../../../components/loading/LoadingPageDark';
 import Main from '../../../components/Main';
 import Distribution from './components/distribution';
+import { axiosInstance } from '../../../utils/playible';
+import BaseModal from '../../../components/modals/BaseModal';
 
 const Index = (props) => {
   const [loading, setLoading] = useState(false);
@@ -18,12 +19,27 @@ const Index = (props) => {
     },
   ]);
 
+  const [details, setDetails] = useState({
+    name: '',
+    start_datetime: '',
+    duration: 1,
+    prize: 1,
+  });
+
   const [distribution, setDistribution] = useState([
     {
       rank: 1,
       percentage: 0,
     },
   ]);
+
+  const [modal, setModal] = useState(false);
+  const [msg, setMsg] = useState({
+    title: '',
+    content: '',
+  });
+
+  const [percentTotal, setPercentTotal] = useState(0);
 
   const changeTab = (name) => {
     const tabList = [...tabs];
@@ -40,24 +56,24 @@ const Index = (props) => {
   };
 
   const modifyRankList = (type, rankNum, percentVal) => {
-    let tempList = [...distribution]
+    let tempList = [...distribution];
 
     if (type === 'add') {
       const newDist = {
         rank: distribution.length + 1,
-        percentage: 20
-      }
-      setDistribution([...distribution, newDist])
+        percentage: 0,
+      };
+      setDistribution([...distribution, newDist]);
     }
 
     if (type === 'update') {
-      tempList.forEach(item => {
+      tempList.forEach((item) => {
         if (item.rank === rankNum) {
-          item.percentage = percentVal
+          item.percentage = percentVal;
         }
-      })
+      });
 
-      setDistribution(tempList)
+      setDistribution(tempList);
     }
 
     if (type === 'delete') {
@@ -65,7 +81,103 @@ const Index = (props) => {
 
       setDistribution(newList);
     }
-  }
+  };
+
+  const getTotalPercent = () => {
+    let total = 0;
+    distribution.forEach((item) => (total += item.percentage));
+
+    setPercentTotal(total);
+  };
+
+  const onChange = (e) => {
+    if ((e.target.name === 'duration' || e.target.name === 'prize') && e.target.value < 1) {
+      setDetails({
+        ...details,
+        [e.target.name]: 1,
+      });
+    } else {
+      setDetails({
+        ...details,
+        [e.target.name]: e.target.value,
+      });
+    }
+  };
+
+  const checkValidity = () => {
+    let errors = [];
+
+    if (!details.name) {
+      errors.push('Game is missing a title');
+    }
+
+    if (new Date(details.start_datetime) < new Date() || !details.start_datetime) {
+      errors.push('Invalid Date & Time values');
+    }
+
+    if (distribution.length === 1 && percentTotal === 0) {
+      errors.push('Invalid Distribution values');
+    }
+
+    console.log('errors', details.start_datetime, errors);
+
+    return errors;
+  };
+
+  const createGame = async () => {
+    if (checkValidity().length > 0) {
+      alert(`Following errors: ${checkValidity().map((item) => ` \n❌ ${item}`)}`.replace(',', ''));
+    } else {
+      console.log({
+        ...details,
+        distribution,
+      });
+
+      const formData = {
+        ...details,
+        duration: parseInt(details.duration),
+      };
+
+      setLoading(true);
+
+      const res = await axiosInstance.post('/fantasy/game/', formData);
+
+      if (res.status === 201) {
+        setMsg({
+          title: 'Success',
+          content: `${res.data.name} created!`,
+        });
+        resetForm();
+      } else {
+        setMsg({
+          title: 'Failed',
+          content: 'An error occurred! Please try again later.',
+        });
+      }
+
+      setModal(true);
+      setLoading(false);
+    }
+  };
+
+  const resetForm = () => {
+    setDetails({
+      name: '',
+      start_datetime: '',
+      duration: 1,
+      prize: 1,
+    });
+    setDistribution([
+      {
+        rank: 1,
+        percentage: 0,
+      },
+    ]);
+  };
+
+  useEffect(() => {
+    getTotalPercent();
+  }, [distribution]);
 
   return (
     <Container isAdmin>
@@ -98,7 +210,10 @@ const Index = (props) => {
                     <input
                       className="border outline-none rounded-lg px-3 p-2"
                       id="title"
+                      name="name"
                       placeholder="Enter title"
+                      onChange={(e) => onChange(e)}
+                      value={details.name}
                     />
                   </div>
 
@@ -111,6 +226,9 @@ const Index = (props) => {
                       className="border outline-none rounded-lg px-3 p-2"
                       id="datetime"
                       type="datetime-local"
+                      name="start_datetime"
+                      onChange={(e) => onChange(e)}
+                      value={details.start_datetime}
                     />
                   </div>
                 </div>
@@ -124,7 +242,12 @@ const Index = (props) => {
                     <input
                       className="border outline-none rounded-lg px-3 p-2"
                       id="duration"
+                      name="duration"
+                      type="number"
+                      min={1}
                       placeholder="Express in minutes"
+                      onChange={(e) => onChange(e)}
+                      value={details.duration}
                     />
                   </div>
 
@@ -137,8 +260,11 @@ const Index = (props) => {
                       className="border outline-none rounded-lg px-3 p-2"
                       id="prize"
                       type="number"
+                      name="prize"
                       min={1}
                       placeholder="Enter amount"
+                      onChange={(e) => onChange(e)}
+                      value={details.prize}
                     />
                   </div>
                 </div>
@@ -147,24 +273,41 @@ const Index = (props) => {
                 <div className="mt-8">
                   <p className="font-monument">DISTRIBUTION</p>
                   {distribution.map(({ rank, percentage }) => (
-                    <Distribution rank={rank} value={percentage} handleChange={modifyRankList} showDelete={rank === distribution.length && distribution.length > 1} />
+                    <Distribution
+                      rank={rank}
+                      value={percentage}
+                      handleChange={modifyRankList}
+                      showDelete={rank === distribution.length && distribution.length > 1}
+                      percentTotal={percentTotal}
+                    />
                   ))}
 
-                  <div className="flex justify-center p-2 bg-opacity-10 ">
+                  <div className="flex justify-start">
                     <button
-                      className="bg-indigo-buttonblue ml-7 text-indigo-white w-5/6 md:w-80 h-10 text-center font-bold text-sm mt-4"
+                      className="bg-indigo-darkgray text-indigo-white w-5/6 md:w-48 h-10 text-center font-bold text-sm mt-4"
                       onClick={() => modifyRankList('add')}
                     >
                       Add New Rank
                     </button>
                   </div>
+                </div>
 
+                <div className="flex justify-center mt-8">
+                  <button
+                    className="bg-indigo-green font-monument tracking-widest ml-7 text-indigo-white w-5/6 md:w-80 h-16 text-center text-sm mt-4"
+                    onClick={createGame}
+                  >
+                    CREATE GAME
+                  </button>
                 </div>
               </div>
             </div>
           )}
         </Main>
       </div>
+      <BaseModal title={msg.title} visible={modal} onClose={() => setModal(false)}>
+        <p className="mt-5">{msg.content}</p>
+      </BaseModal>
     </Container>
   );
 };
