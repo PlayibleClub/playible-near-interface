@@ -12,8 +12,9 @@ import HorizontalScrollContainer from '../../components/containers/HorizontalScr
 import Container from '../../components/containers/Container';
 import BaseModal from '../../components/modals/BaseModal'
 import claimreward from '../../public/images/claimreward.png';
+import ModalComponent from './components/ModalComponent'
 
-import { newPlaylist, ongoingPlaylist, completedPlaylist } from './data';
+import { newPlaylist, ongoingPlaylist, completedPlaylist, winningTeams, losingTeams } from './data';
 import { axiosInstance } from '../../utils/playible';
 
 const Play = () => {
@@ -21,6 +22,7 @@ const Play = () => {
     const [activeCategory, setCategory] = useState("new")
     const [claimModal, showClaimModal] = useState(false)
     const [claimTeam, showClaimTeam] = useState(false)
+    const [modalView, switchView] = useState(true)
 
     const interactWallet = () => {
         if (status === WalletStatus.WALLET_CONNECTED) {
@@ -62,15 +64,71 @@ const Play = () => {
                                 </div>
                             </button>
 
-                            <div className="mt-2">
-                                <img src={claimreward}/>
+                            <div className="mt-6 text-sm">
+                            { modalView === true &&
+                                    (
+                                        <>
+                                            <div className="flex font-bold font-monument">
+                                                <div className="mr-4 border-b-8 pb-2 border-indigo-buttonblue cursor-pointer"
+                                                    >
+                                                    WINNING TEAMS
+                                                    </div>
 
-                                <div className="mt-4 bg-indigo-yellow p-2 text-center font-bold text-xl">
-                                    CONGRATULATIONS
-                                </div>
+                                                <div className="cursor-pointer"                                             
+                                                    onClick={() => {
+                                                        switchView(false);
+                                                    }}>NO PLACEMENT</div>
+                                            </div>
+                                            <hr className="opacity-50" />
 
-                                <div className="text-3xl font-bold font-monument mt-2">4,000 UST</div>
-                                <div className="font-monument text-1xl">EARNED</div>
+                                            {winningTeams.map(function(data, i){
+                                                if (data.win === 'y'){
+                                                    return(
+                                                        <>
+                                                            <ModalComponent
+                                                                teamName={data.teamname}
+                                                                win={data.win}
+                                                                reward={data.reward}
+                                                                score={data.score}
+                                                            />
+                                                        </>
+                                                    )
+                                                }
+                                            })}
+                                        </>
+                                    )
+                                }
+                                { modalView === false &&
+                                    (
+                                        <>
+                                            <div className="flex font-bold font-monument">
+                                                <div className="mr-4 cursor-pointer"
+                                                    onClick={() => {
+                                                        switchView(true);
+                                                    }}
+                                                    >
+                                                    WINNING TEAMS
+                                                    </div>
+
+                                                <div className="border-b-8 pb-2 border-indigo-buttonblue cursor-pointer">NO PLACEMENT</div>
+                                            </div>
+                                            <hr className="opacity-50" />
+
+                                            {losingTeams.map(function(data, i){
+                                                if (data.win === 'n'){
+                                                    return(
+                                                        <>
+                                                            <ModalComponent
+                                                                teamName={data.teamname}
+                                                                win={data.win}
+                                                            />
+                                                        </>
+                                                    )
+                                                }
+                                            })}
+                                        </>
+                                    )
+                                }
                             </div>
                         </div>
                     </div>

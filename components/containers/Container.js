@@ -3,6 +3,7 @@ import DesktopNavbar from '../navbars/DesktopNavbar';
 import DesktopHeaderBase from '../headers/DesktopHeaderBase';
 import Navbar from '../navbars/Navbar';
 import HeaderBase from '../headers/HeaderBase';
+import DisclaimerHeader from '../headers/DisclaimerHeader';
 
 const Container = (props) => {
   const { children, isAdmin = false } = props
@@ -13,7 +14,8 @@ const Container = (props) => {
         <div className="flex bg-indigo-white">
           <DesktopNavbar isAdmin={isAdmin} color="indigo-navbargrad2" secondcolor="indigo-navbargrad1"/>
           <div className="flex flex-col w-screen h-full overflow-y-hidden">
-          <DesktopHeaderBase/>
+            <DesktopHeaderBase/>
+            <DisclaimerHeader/>
             {children}
           </div>
         </div>
@@ -22,21 +24,10 @@ const Container = (props) => {
       <div className="visible md:invisible h-screen overflow-x-auto z-40">
           <Navbar/>
           <HeaderBase/>
+          <DisclaimerHeader/>
 
           {children}
       </div>
-
-      
-
-        {/* <div className="flex bg-indigo-dark">
-          <DesktopNavbar color="indigo-navbargrad2" secondcolor="indigo-navbargrad1"/>
-          <div className="flex flex-col w-full h-full overflow-y-hidden overflow-x-hidden">
-            <DesktopHeaderBase/>
-            
-          </div>
-
-
-        </div> */}
     </div>
   );
 };
