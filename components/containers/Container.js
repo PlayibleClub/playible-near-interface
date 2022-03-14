@@ -5,13 +5,13 @@ import Navbar from '../navbars/Navbar';
 import HeaderBase from '../headers/HeaderBase';
 
 const Container = (props) => {
-  const { children } = props
+  const { children, isAdmin = false } = props
 
   return (
     <div className="font-montserrat h-screen relative bg-indigo-white flex overflow-x-hidden overflow-y-hidden">
       <div className="invisible w-0 md:visible md:w-full">
         <div className="flex bg-indigo-white">
-          <DesktopNavbar color="indigo-navbargrad2" secondcolor="indigo-navbargrad1"/>
+          <DesktopNavbar isAdmin={isAdmin} color="indigo-navbargrad2" secondcolor="indigo-navbargrad1"/>
           <div className="flex flex-col w-screen h-full overflow-y-hidden">
           <DesktopHeaderBase/>
             {children}
