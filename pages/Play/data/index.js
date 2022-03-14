@@ -137,3 +137,33 @@ export const completedPlaylist = [
         startDate: '03/31/2021',
     },
 ]
+
+export const winningTeams = [
+    {
+        teamname: 'STREGA',
+        reward: '100 UST',
+        score: '99',
+        win: 'y'
+    },   
+    {
+        teamname: 'MBL',
+        reward: '11 UST',
+        score: '22',
+        win: 'y'
+    },
+]
+
+export const losingTeams = [
+    {
+        teamname: 'Stark',
+        reward: '',
+        score: '',
+        win: 'n'
+    },   
+    {
+        teamname: 'NBA',
+        reward: '',
+        score: '',
+        win: 'n'
+    },
+]
