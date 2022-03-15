@@ -22,14 +22,14 @@ export default function CreateLineup() {
 
     console.log(query)
         
-    async function createGameData(){
+    async function createRosterData(){
 
         if(!router.query.id) 
         {
             return
         }
 
-        const response = await fetch('/api/team/',
+        const response = await fetch('/api/game/',
         {method:'POST',
         headers:{
             'Content-Type':'application/json'
@@ -74,13 +74,10 @@ export default function CreateLineup() {
                                 </div>
                             </div>
                           </div>
-                        {(Data[(query.number)-1]) ? 
-                        (
-                            <>
-                            <div className='flex mb-10'>
+                            <div className='flex mb-10 justify-between'>
                                 <PortfolioContainer title='CREATE TEAM' textcolor="text-indigo-black"/>
                                 <a href={`/CreateTeam?id=${query.id}&number=${query.number}`}>
-                                    <button className='mr-20 bg-indigo-buttonblue text-indigo-white whitespace-nowrap h-14 px-20 bottom-0 mt-4 text-center font-bold' onClick={createGameData}>CREATE YOUR LINEUP +</button>
+                                    <button className='mr-20 bg-indigo-buttonblue text-indigo-white whitespace-nowrap h-14 px-20 bottom-0 mt-4 text-center font-bold' onClick={createRosterData}>CREATE YOUR LINEUP +</button>
                                 </a>
                             </div>
                             <div className='ml-7 mr-7 border-b-2 border-indigo-lightgray border-opacity-30'/>
@@ -105,25 +102,6 @@ export default function CreateLineup() {
                                       )
                                   }
                             </div>
-                            </>
-                        )
-                        :
-                        (
-                            <>
-                            <div className='flex mb-10'>
-                                <PortfolioContainer title='Create Team' textcolor="text-indigo-black"/>
-                                <a href={`/CreateTeam?id=${query.id}&number=${query.number}`}>
-                                    <button className='mr-20 bg-indigo-buttonblue text-indigo-white whitespace-nowrap h-14 px-20 bottom-0 mt-4 text-center font-bold' onClick={createGameData}>CREATE YOUR LINEUP +</button>
-                                </a>
-                            </div>
-                            <div className='ml-7 mr-7 border-b-2 border-indigo-lightgray border-opacity-30'/>
-                            <div className='ml-7 mt-4'>
-                                Create a team and shocase your collection. Enter a team into the tournament and compete for cash prizes.
-                            </div>
-                            </>
-                        )
-                            
-                      }
                                 </>
                                 )
                             }
