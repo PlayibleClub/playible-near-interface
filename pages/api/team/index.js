@@ -3,7 +3,7 @@ import { kStringMaxLength } from 'buffer';
 import fs from 'fs'
 import path from 'path'
 
-import {teamComposition} from '../../../pages/CreateLineup/data/index.js'
+import {teamComposition} from '../../CreateLineup/data/index.js'
 
 export function getTeamsFilePath(){
     const filePath = path.join(process.cwd(), 'data', 'teams.json')
@@ -44,123 +44,125 @@ export default function Index(req,res){
 
         const team = {
             gameId,
-            roster:[
-                {
-                    teamName:'',
-                    athletes:[
-                        {
-                            position:'P',
-                            player:'',
-                            id:'',
-                            score:'',
-                        },
-                        {
-                            position:'C',
-                            player:'',
-                            id:'',
-                            score:'',
-                        },
-                        {
-                            position:'1B',
-                            player:'',
-                            id:'',
-                            score:'',
-                        },
-                        {
-                            position:'2B',
-                            player:'',
-                            id:'',
-                            score:'',
-                        },
-                        {
-                            position:'3B',
-                            player:'',
-                            id:'',
-                            score:'',
-                        },
-                        {
-                            position:'SS',
-                            player:'',
-                            id:'',
-                            score:'',
-                        },
-                        {
-                            position:'LF',
-                            player:'',
-                            id:'',
-                            score:'',
-                        },
-                        {
-                            position:'CF',
-                            player:'',
-                            id:'',
-                            score:'',
-                        },
-                        {
-                            position:'RF',
-                            player:'',
-                            id:'',
-                            score:'',
-                        },
-                        {
-                            position:'IF',
-                            player:'',
-                            id:'',
-                            score:'',
-                        },
-                        {
-                            position:'OF',
-                            player:'',
-                            id:'',
-                            score:'',
-                        },
-                        {
-                            position:'SP',
-                            player:'',
-                            id:'',
-                            score:'',
-                        },
-                        {
-                            position:'MRP',
-                            player:'',
-                            id:'',
-                            score:'',
-                        },
-                        {
-                            position:'LRP',
-                            player:'',
-                            id:'',
-                            score:'',
-                        },
-                        {
-                            position:'CL',
-                            player:'',
-                            id:'',
-                            score:'',
-                        },
-                        {
-                            position:'DH',
-                            player:'',
-                            id:'',
-                            score:'',
-                        },
-                        {
-                            position:'PH',
-                            player:'',
-                            id:'',
-                            score:'',
-                        },
-                        {
-                            position:'PR',
-                            player:'',
-                            id:'',
-                            score:'',
-                        },
-                    ]
-                    }
-            ]
+            roster:[        {
+                teamName:'',
+                athletes:[
+                    {
+                        position:'P',
+                        player:'',
+                        id:'',
+                        score:'',
+                    },
+                    {
+                        position:'C',
+                        player:'',
+                        id:'',
+                        score:'',
+                    },
+                    {
+                        position:'1B',
+                        player:'',
+                        id:'',
+                        score:'',
+                    },
+                    {
+                        position:'2B',
+                        player:'',
+                        id:'',
+                        score:'',
+                    },
+                    {
+                        position:'3B',
+                        player:'',
+                        id:'',
+                        score:'',
+                    },
+                    {
+                        position:'SS',
+                        player:'',
+                        id:'',
+                        score:'',
+                    },
+                    {
+                        position:'LF',
+                        player:'',
+                        id:'',
+                        score:'',
+                    },
+                    {
+                        position:'CF',
+                        player:'',
+                        id:'',
+                        score:'',
+                    },
+                    {
+                        position:'RF',
+                        player:'',
+                        id:'',
+                        score:'',
+                    },
+                    {
+                        position:'IF',
+                        player:'',
+                        id:'',
+                        score:'',
+                    },
+                    {
+                        position:'OF',
+                        player:'',
+                        id:'',
+                        score:'',
+                    },
+                    {
+                        position:'SP',
+                        player:'',
+                        id:'',
+                        score:'',
+                    },
+                    {
+                        position:'MRP',
+                        player:'',
+                        id:'',
+                        score:'',
+                    },
+                    {
+                        position:'LRP',
+                        player:'',
+                        id:'',
+                        score:'',
+                    },
+                    {
+                        position:'CL',
+                        player:'',
+                        id:'',
+                        score:'',
+                    },
+                    {
+                        position:'DH',
+                        player:'',
+                        id:'',
+                        score:'',
+                    },
+                    {
+                        position:'PH',
+                        player:'',
+                        id:'',
+                        score:'',
+                    },
+                    {
+                        position:'PR',
+                        player:'',
+                        id:'',
+                        score:'',
+                    },
+                ]
+                }]
         }
         
+
+
+
+
         data1.push(team)
 
     //     res.status(201).json({
@@ -259,4 +261,4 @@ export default function Index(req,res){
             // else{
             //     res.status(404).json({Message:`Game does not exist`})
             }    
-    } 
+    }
