@@ -23,9 +23,9 @@ export default function CreateLineup() {
             <BackFunction prev={`/CreateTeam?id=${query.id}`}/>
             <PortfolioContainer title="CREATE LINEUP" textcolor="text-indigo-black">
                 <div className="flex flex-col">
-            <PortfolioContainer title={`Team ${Data[0].gameId}`} textcolor="text-indigo-black"/>
+            <PortfolioContainer title={`Team ${Data[(query.number)-1].gameId}`} textcolor="text-indigo-black"/>
                 <div className="grid grid-cols-4 gap-y-4 mt-4 md:grid-cols-4 md:ml-7 md:mt-12">
-                    {Data[0].roster[0].athletes.map(function (data, i) {
+                    {Data[(query.number)-1].roster[0].athletes.map(function (data, i) {
                                 return (
                                     <div className="">
                                         <a href={`/EnterPlayers?pos=${data.position}`+`&id=${Data[0].gameId}`}>
