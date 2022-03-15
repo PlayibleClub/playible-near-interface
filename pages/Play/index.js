@@ -23,6 +23,7 @@ const Play = () => {
     const [claimModal, showClaimModal] = useState(false)
     const [claimTeam, showClaimTeam] = useState(false)
     const [modalView, switchView] = useState(true)
+    const [failedTransactionModal, showFailedModal] = useState(true)
 
     const interactWallet = () => {
         if (status === WalletStatus.WALLET_CONNECTED) {
@@ -95,6 +96,10 @@ const Play = () => {
                                                     )
                                                 }
                                             })}
+
+                                            <div className="w-full flex justify-center">
+                                                <div className="text-indigo-white w-36 text-center bg-indigo-buttonblue py-2 px-2">CLAIM REWARD</div>
+                                            </div>
                                         </>
                                     )
                                 }
@@ -126,6 +131,10 @@ const Play = () => {
                                                     )
                                                 }
                                             })}
+
+                                            <div className="w-full flex justify-center">
+                                                <div className="text-indigo-white w-36 text-center bg-indigo-buttonblue py-2 px-2">CLAIM REWARD</div>
+                                            </div>
                                         </>
                                     )
                                 }
@@ -151,6 +160,30 @@ const Play = () => {
                                 </div>
                             </div>
                         </div>
+                </>
+            }
+            { failedTransactionModal === true &&
+                <>
+                    <div className="fixed w-screen h-screen bg-opacity-70 z-50 overflow-auto bg-indigo-gray flex font-montserrat">
+                        <div className="relative p-8 bg-indigo-white w-11/12 md:w-96 h-10/12 md:h-auto m-auto flex-col flex rounded-lg">
+                            <button onClick={()=>{showFailedModal(false)}}>
+                                <div className="absolute top-0 right-0 p-4 font-black">
+                                    X
+                                </div>
+                            </button>
+
+                            <img src={claimreward} className="h-20 w-20"/>
+                            <div className="mt-4 bg-indigo-yellow p-2 text-center font-bold text-xl rounded">
+                                FAILED TRANSACTION
+                            </div>
+                            <div className="mt-4 p-2 font-bold text-xl">
+                                We're sorry, unfortunately we've experienced a problem loading your request.
+                            </div>
+                            <div className="p-2 font-bold text-xl">
+                                Please try again.
+                            </div>
+                        </div>
+                    </div>
                 </>
             }
             <Container>
