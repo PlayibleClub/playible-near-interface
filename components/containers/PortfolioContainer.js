@@ -33,7 +33,7 @@ const PortfolioContainer = (props) => {
     </div>
     </MobileView> */}
     {/* <BrowserView> */}
-    <div data-test="portfoliocontainer" className={`text-${textcolor} bg-${color} text-${size} font-bold ${align} flex flex-col w-full `}>
+    <div data-test="portfoliocontainer" className={`text-${textcolor} bg-${color} text-${size} font-bold ${align} flex flex-col `}>
       <div className="flex">
         {stats ?
           <div className="flex w-full">
