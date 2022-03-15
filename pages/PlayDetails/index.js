@@ -15,6 +15,25 @@ export default function PlayDetails() {
 
     const router = useRouter();
 
+    async function createGameData(){
+
+        if(!router.query.id) 
+        {
+            return
+        }
+
+        const response = await fetch('/api/team/',
+        {method:'POST',
+        headers:{
+            'Content-Type':'application/json'
+        },
+        body:JSON.stringify({gameId:router.query.id})
+    })
+    const res = await response.json()
+    console.log(res)
+
+    }
+
 
 	return (
     
@@ -77,7 +96,7 @@ export default function PlayDetails() {
                                                 VIEW TEAM
                                             </button>
                                             <a href={`/CreateLineup?id=${data.key}&number=${data.number}`}>
-                                                <button className='bg-indigo-buttonblue text-indigo-white w-4/6 md:w-64 h-12 text-center font-bold text-md mt-8'>
+                                                <button className='bg-indigo-buttonblue text-indigo-white w-4/6 md:w-64 h-12 text-center font-bold text-md mt-8' onClick={createGameData}>
                                                     ENTER GAME
                                                 </button>
                                             </a>
