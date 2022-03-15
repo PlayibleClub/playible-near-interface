@@ -13,15 +13,12 @@ const PlayComponent = (props) =>{
                 <div className="my-8 text-base">
                     <div className="flex justify-between">
                         <div className="text-indigo-white bg-indigo-black py-2 px-6 font-bold">{teamName}</div>
-
-                        <div className="text-indigo-white bg-indigo-buttonblue py-2 px-2">UNLOCK TEAM</div>
                     </div>
                 </div>
             :
                 <div className="my-8 text-base">
                     <div className="flex justify-between">
                         <div className="text-indigo-white bg-indigo-black py-2 px-6 font-bold">{teamName}</div>
-                        <div className="text-indigo-white bg-indigo-buttonblue py-2 px-2">CLAIM REWARD</div>
                     </div>
 
                     <div className="flex mt-2">
