@@ -8,9 +8,13 @@ import BaseModal from '../../../components/modals/BaseModal';
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en.json';
 import ReactTimeAgo from 'react-time-ago';
+import { useConnectedWallet } from '@terra-money/wallet-provider';
+import { executeContract } from '../../../utils/terra';
+import { ORACLE } from '../../../data/constants/contracts';
 TimeAgo.addDefaultLocale(en);
 
 const Index = (props) => {
+  const connectedWallet = useConnectedWallet();
   const [loading, setLoading] = useState(false);
   const [tabs, setTabs] = useState([
     {
@@ -125,47 +129,98 @@ const Index = (props) => {
       errors.push('Invalid Distribution values');
     }
 
-    console.log('errors', details.start_datetime, errors);
+    if (percentTotal < 100) {
+      errors.push('Total percent distribution must be equal to 100');
+    }
 
     return errors;
   };
 
   const createGame = async () => {
-    if (checkValidity().length > 0) {
-      alert(`Following errors: ${checkValidity().map((item) => ` \n❌ ${item}`)}`.replace(',', ''));
-    } else {
-      const formData = {
-        ...details,
-        duration: parseInt(details.duration),
-      };
-
-      setLoading(true);
-
-      const res = await axiosInstance.post('/fantasy/game/', formData);
-
-      if (res.status === 201) {
-        setMsg({
-          title: 'Success',
-          content: `${res.data.name} created!`,
-        });
-        resetForm();
-        fetchGames();
+    if (connectedWallet) {
+      if (checkValidity().length > 0) {
+        alert(
+          `ERRORS: \n${checkValidity()
+            .map((item) => '❌ ' + item)
+            .join(` \n`)}`.replace(',', '')
+        );
       } else {
-        setMsg({
-          title: 'Failed',
-          content: 'An error occurred! Please try again later.',
-        });
-      }
+        const formData = {
+          ...details,
+          // DURATION IS EXPRESSED IN DAYS BUT WILL BE CONVERTED TO MINUTES
+          duration: parseInt(details.duration) * 60 * 24,
+        };
 
-      setModal(true);
-      setLoading(false);
+        setLoading(true);
+
+        const res = await axiosInstance.post('/fantasy/game/', formData);
+
+        if (res.status === 201) {
+          setMsg({
+            title: 'Success',
+            content: `${res.data.name} created!`,
+          });
+          const filteredDistribution = distribution.filter((item) => item.percentage !== 0);
+
+          const resContract = await executeContract(connectedWallet, ORACLE, [
+            {
+              contractAddr: ORACLE,
+              msg: {
+                add_game: {
+                  game_id: res.data.id.toString(),
+                  prize: parseInt(res.data.prize),
+                  decimals: 2,
+                  distribution: filteredDistribution,
+                },
+              },
+            },
+          ]);
+
+          setLoading(false);
+
+          if (
+            !resContract.txResult ||
+            (resContract.txResult && !resContract.txResult.success) ||
+            resContract.txError
+          ) {
+            let deleteSuccess = false;
+            while (!deleteSuccess) {
+              const deleteRes = await axiosInstance.delete(`/fantasy/game/${res.data.id}/`);
+
+              if (deleteRes.status === 204) {
+                deleteSuccess = true;
+              }
+            }
+
+            setMsg({
+              title: 'Failed',
+              content:
+                resContract.txResult && !resContract.txResult.success
+                  ? 'Blockchain error! Please try again later.'
+                  : resContract.txError,
+            });
+          }
+          resetForm();
+          fetchGames();
+        } else {
+          setMsg({
+            title: 'Failed',
+            content: 'An error occurred! Please try again later.',
+          });
+        }
+
+        setModal(true);
+        setLoading(false);
+      }
+    } else {
+      alert('Connect to your wallet first');
     }
   };
 
   const fetchGames = async () => {
     setLoading(true);
     const res = await axiosInstance.get('/fantasy/game/new/');
-    console.log('res', res);
+
     if (res.status === 200 && res.data.length > 0) {
       const data = [...res.data].sort(
         (a, b) => new Date(a.start_datetime) - new Date(b.start_datetime)
@@ -195,8 +250,8 @@ const Index = (props) => {
   }, [distribution]);
 
   useEffect(() => {
-    fetchGames();
-  }, []);
+    fetchGames()
+  }, [])
 
   return (
     <Container isAdmin>
@@ -221,7 +276,7 @@ const Index = (props) => {
                 <LoadingPageDark />
               ) : tabs[0].isActive ? (
                 <div>
-                  <p className='font-monument font-bold text-xl'>UPCOMING GAMES</p>
+                  <p className="font-monument font-bold text-xl">UPCOMING GAMES</p>
                   {games.length > 0 &&
                     games.map(function (data, i) {
                       return (
@@ -286,7 +341,7 @@ const Index = (props) => {
                         name="duration"
                         type="number"
                         min={1}
-                        placeholder="Express in minutes"
+                        placeholder="Express in days"
                         onChange={(e) => onChange(e)}
                         value={details.duration}
                       />
