@@ -117,6 +117,7 @@ const Index = (props) => {
 
   const checkValidity = () => {
     let errors = [];
+    let sortPercentage = [...distribution].sort((a,b) => b.percentage - a.percentage)
 
     if (!details.name) {
       errors.push('Game is missing a title');
@@ -132,6 +133,13 @@ const Index = (props) => {
 
     if (percentTotal < 100) {
       errors.push('Total percent distribution must be equal to 100');
+    }
+
+    for (let i = 0; i < distribution.length; i++) {
+      if (distribution[i].rank !== sortPercentage[i].rank) {
+        errors.push('Higher rank must have a higher percentage than next one')
+        break;
+      }
     }
 
     return errors;
