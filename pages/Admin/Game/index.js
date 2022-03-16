@@ -344,7 +344,7 @@ const Index = (props) => {
                     {/* DURATION */}
                     <div className="flex flex-col lg:w-1/2 lg:mr-10">
                       <label className="font-monument" htmlFor="duration">
-                        DURATION
+                        DURATION <span className='text-indigo-lightgray'>(DAYS)</span>
                       </label>
                       <input
                         className="border outline-none rounded-lg px-3 p-2"
