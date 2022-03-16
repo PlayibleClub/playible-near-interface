@@ -44,6 +44,7 @@ const Index = (props) => {
   const [games, setGames] = useState([]);
 
   const [modal, setModal] = useState(false);
+  const [confirmModal, setConfirmModal] = useState(false);
   const [msg, setMsg] = useState({
     title: '',
     content: '',
@@ -136,82 +137,84 @@ const Index = (props) => {
     return errors;
   };
 
+  const validateGame = () => {
+    if (checkValidity().length > 0) {
+      alert(
+        `ERRORS: \n${checkValidity()
+          .map((item) => '❌ ' + item)
+          .join(` \n`)}`.replace(',', '')
+      );
+    } else {
+      setConfirmModal(true)
+    }
+  };
+
   const createGame = async () => {
     if (connectedWallet) {
-      if (checkValidity().length > 0) {
-        alert(
-          `ERRORS: \n${checkValidity()
-            .map((item) => '❌ ' + item)
-            .join(` \n`)}`.replace(',', '')
-        );
-      } else {
-        const formData = {
-          ...details,
-          // DURATION IS EXPRESSED IN DAYS BUT WILL BE CONVERTED TO MINUTES
-          duration: parseInt(details.duration) * 60 * 24,
-        };
+      const formData = {
+        ...details,
+        // DURATION IS EXPRESSED IN DAYS BUT WILL BE CONVERTED TO MINUTES
+        duration: parseInt(details.duration) * 60 * 24,
+      };
 
-        setLoading(true);
+      setLoading(true);
 
-        const res = await axiosInstance.post('/fantasy/game/', formData);
+      const res = await axiosInstance.post('/fantasy/game/', formData);
 
-        if (res.status === 201) {
-          setMsg({
-            title: 'Success',
-            content: `${res.data.name} created!`,
-          });
-          const filteredDistribution = distribution.filter((item) => item.percentage !== 0);
+      if (res.status === 201) {
+        setMsg({
+          title: 'Success',
+          content: `${res.data.name} created!`,
+        });
+        const filteredDistribution = distribution.filter((item) => item.percentage !== 0);
 
-          const resContract = await executeContract(connectedWallet, ORACLE, [
-            {
-              contractAddr: ORACLE,
-              msg: {
-                add_game: {
-                  game_id: res.data.id.toString(),
-                  prize: parseInt(res.data.prize),
-                  decimals: 2,
-                  distribution: filteredDistribution,
-                },
+        const resContract = await executeContract(connectedWallet, ORACLE, [
+          {
+            contractAddr: ORACLE,
+            msg: {
+              add_game: {
+                game_id: res.data.id.toString(),
+                prize: parseInt(res.data.prize),
+                decimals: 2,
+                distribution: filteredDistribution,
               },
             },
-          ]);
+          },
+        ]);
 
-          setLoading(false);
+        if (
+          !resContract.txResult ||
+          (resContract.txResult && !resContract.txResult.success) ||
+          resContract.txError
+        ) {
+          let deleteSuccess = false;
+          while (!deleteSuccess) {
+            const deleteRes = await axiosInstance.delete(`/fantasy/game/${res.data.id}/`);
 
-          if (
-            !resContract.txResult ||
-            (resContract.txResult && !resContract.txResult.success) ||
-            resContract.txError
-          ) {
-            let deleteSuccess = false;
-            while (!deleteSuccess) {
-              const deleteRes = await axiosInstance.delete(`/fantasy/game/${res.data.id}/`);
-
-              if (deleteRes.status === 204) {
-                deleteSuccess = true;
-              }
+            if (deleteRes.status === 204) {
+              deleteSuccess = true;
             }
-
-            setMsg({
-              title: 'Failed',
-              content:
-                resContract.txResult && !resContract.txResult.success
-                  ? 'Blockchain error! Please try again later.'
-                  : resContract.txError,
-            });
           }
-          resetForm();
-          fetchGames();
-        } else {
+
           setMsg({
             title: 'Failed',
-            content: 'An error occurred! Please try again later.',
+            content:
+              resContract.txResult && !resContract.txResult.success
+                ? 'Blockchain error! Please try again later.'
+                : resContract.txError,
           });
         }
-
-        setModal(true);
-        setLoading(false);
+        resetForm();
+        fetchGames();
+      } else {
+        setMsg({
+          title: 'Failed',
+          content: 'An error occurred! Please try again later.',
+        });
       }
+
+      setModal(true);
+      setLoading(false);
     } else {
       alert('Connect to your wallet first');
     }
@@ -250,8 +253,8 @@ const Index = (props) => {
   }, [distribution]);
 
   useEffect(() => {
-    fetchGames()
-  }, [])
+    fetchGames();
+  }, []);
 
   return (
     <Container isAdmin>
@@ -391,7 +394,7 @@ const Index = (props) => {
                   <div className="flex justify-center mt-8">
                     <button
                       className="bg-indigo-green font-monument tracking-widest ml-7 text-indigo-white w-5/6 md:w-80 h-16 text-center text-sm mt-4"
-                      onClick={createGame}
+                      onClick={validateGame}
                     >
                       CREATE GAME
                     </button>
@@ -404,6 +407,24 @@ const Index = (props) => {
       </div>
       <BaseModal title={msg.title} visible={modal} onClose={() => setModal(false)}>
         <p className="mt-5">{msg.content}</p>
+      </BaseModal>
+      <BaseModal title={'Confirm'} visible={confirmModal} onClose={() => setConfirmModal(false)}>
+        <p className="mt-5">Are you sure?</p>
+        <button
+          className="bg-indigo-green font-monument tracking-widest text-indigo-white w-full h-16 text-center text-sm mt-4"
+          onClick={() => {
+            createGame();
+            setConfirmModal(false);
+          }}
+        >
+          CREATE GAME
+        </button>
+        <button
+          className="bg-red-pastel font-monument tracking-widest text-indigo-white w-full h-16 text-center text-sm mt-4"
+          onClick={() => setConfirmModal(false)}
+        >
+          CANCEL
+        </button>
       </BaseModal>
     </Container>
   );
