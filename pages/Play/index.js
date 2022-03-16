@@ -186,7 +186,7 @@ const Play = () => {
                                         <div className="mt-4 flex ml-6 grid grid-cols-0 md:grid-cols-3">
                                                 {games.length > 0 && games.map(function(data,i){
                                                     return (
-                                                        <a href={`/PlayDetails?id=${data.key}`}>
+                                                        <a href={`/PlayDetails?id=${games[i].id}`}>
                                                             <div className="mr-6">
                                                                 <PlayComponent
                                                                     type="new"
