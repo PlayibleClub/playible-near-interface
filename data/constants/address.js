@@ -1,0 +1,1 @@
+export const ADMIN = 'terra1jrg2hv92xpjl4wwgd84jcm4cs2pfmzdxl6y2sx'
