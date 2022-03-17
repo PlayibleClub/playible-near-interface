@@ -96,17 +96,17 @@ export const executeContract = async (connectedWallet, contractAddr, executeMsg 
 
   }).catch((error) => {
     if (error instanceof UserDenied) {
-      throw 'User Denied';
+      txResult.txError = 'User Denied';
     } else if (error instanceof CreateTxFailed) {
-      throw `Create Tx Failed: ${error.message}`;
+      txResult.txError = `Create Tx Failed: ${error.message}`;
     } else if (error instanceof TxFailed) {
-      throw `Tx Failed: ${error.message}`;
+      txResult.txError = `Tx Failed: ${error.message}`;
     } else if (error instanceof Timeout) {
-      throw 'Timeout';
+      txResult.txError = 'Timeout';
     } else if (error instanceof TxUnspecifiedError) {
-      throw `Unspecified Error: ${error.message}`;
+      txResult.txError = `Unspecified Error: ${error.message}`;
     } else {
-      throw `Unknown Error: ${error instanceof Error ? error.message : String(error)}`;
+      txResult.txError = `Unknown Error: ${error instanceof Error ? error.message : String(error)}`;
     }
   })
 

@@ -3,7 +3,7 @@ import { Fragment } from 'react'
 import underlineIcon from '../../public/images/blackunderline.png'
 
 const BaseModal = (props) => {
-  const { title, children, visible, onClose } = props
+  const { title, children, visible, onClose = null } = props
 
   return (
     <>
@@ -11,7 +11,7 @@ const BaseModal = (props) => {
         <Dialog
           as="div"
           className="fixed inset-0 z-10 overflow-y-auto font-montserrat"
-          onClose={() => {onClose()}}
+          onClose={() => {onClose ? onClose() : undefined}}
         >
           <div className="min-h-screen px-4 text-center">
             <Transition.Child
