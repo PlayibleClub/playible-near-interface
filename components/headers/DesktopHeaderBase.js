@@ -89,7 +89,7 @@ const DesktopHeaderBase = () => {
           <div className="text-xs text-light place-self-center"> 
             {walletAddress} 
           </div>
-          <img className="ml-3 h-4 w-4 place-self-center" src="images/wallet.png" alt="Img" />
+          <img className="ml-3 h-4 w-4 place-self-center" src="/images/wallet.png" alt="Img" />
           {/*status === WalletStatus.WALLET_CONNECTED ? '*' : '+'*/}
         </div>
       </Button>

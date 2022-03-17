@@ -89,13 +89,12 @@ const HeaderBase = () => {
       
       <div className="text-white-light mt-11">
         {' '}
-        <img src="images/playibleheader.png" alt="Img" />
+        <img src="/images/playibleheader.png" alt="Img" />
       </div>
-      {/* </div> */}
 
       <div className="mt-10">
         <Button rounded="rounded-sm " textColor="white-light" color="null" onClick={() => {setModal(true)}} size="py-1 px-1">
-          <img src="images/wallet.png" alt="Img"/>
+          <img src="/images/wallet.png" alt="Img"/>
           {status === WalletStatus.WALLET_CONNECTED ? '*' : '+'}
         </Button>
       </div>
