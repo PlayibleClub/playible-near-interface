@@ -84,7 +84,6 @@ export default function PlayDetails() {
                       height={220}
                     />
                   </div>
-
                   <div className="mt-4">
                     {new Date(gameData.start_datetime) <= new Date() &&
                     new Date(gameData.end_datetime) > new Date() ? (
