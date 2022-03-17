@@ -1,9 +1,10 @@
 import React, { Component, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Image from 'next/image'
+import moment from 'moment';
 
 const PlayDetailsComponent = (props) =>{
-    const {icon, prizePool, timeLeft, startDate, endsin, type, children} = props;
+    const {startDate} = props;
 
     const [day, setDay] = useState(0);
     const [hour, setHour] = useState(0);
@@ -55,15 +56,5 @@ const PlayDetailsComponent = (props) =>{
             </div>  
     )
 }
-
-PlayDetailsComponent.propTypes = {
-    icon: PropTypes.string.isRequired,
-    key: PropTypes.string.isRequired,
-    prizePool: PropTypes.string.isRequired,
-    currPlayers: PropTypes.string.isRequired,
-    maxPlayers: PropTypes.string.isRequired,
-    timeLeft: PropTypes.string.isRequired,
-    children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
-  };
 
 export default PlayDetailsComponent;
