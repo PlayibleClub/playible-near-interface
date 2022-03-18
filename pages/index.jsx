@@ -153,18 +153,26 @@ export default function Home() {
                     </div>
 
                     <div className="flex flex-row md:grid-cols-2 gap-x-6 gap-y-6 mt-8 ml-8 pr-8 overflow-x-auto">
-                      {activeGames.map(function (data, i) {
-                        return (
-                          <>
-                            <PrizePoolComponent
-                              icon={i}
-                              prizePool={data.prize}
-                              gameName={data.name}
-                              gameId={data.id}
-                            />
-                          </>
-                        );
-                      })}
+                      {activeGames.length > 0 ? (
+                        <>
+                          {activeGames.map(function (data, i) {
+                            return (
+                              <>
+                                <PrizePoolComponent
+                                  icon={i}
+                                  prizePool={data.prize}
+                                  gameName={data.name}
+                                  gameId={data.id}
+                                />
+                              </>
+                            );
+                          })}
+                        </>
+                      ) : (
+                        <>
+                          <div>No Active Games Currently</div>
+                        </>
+                      )}
                     </div>
                   </div>
                 </>
