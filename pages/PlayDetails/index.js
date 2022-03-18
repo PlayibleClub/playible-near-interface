@@ -16,7 +16,7 @@ export default function PlayDetails() {
   const router = useRouter();
   const [gameData, setGameData] = useState(null);
   const [leaderboard, setLeaderboard] = useState([]);
-  const [registeredTeams, setRegisteredTeams] = useState();
+  const [registeredTeams, setRegisteredTeams] = useState([]);
 
   async function fetchGameData() {
     const res = await axiosInstance.get(`/fantasy/game/${router.query.id}/`);
@@ -29,7 +29,7 @@ export default function PlayDetails() {
   async function fetchRegisteredTeams() {
     const res = await axiosInstance.get(`/fantasy/game/${router.query.id}/registered_teams/`);
     if (res.status === 200) {
-      //   setRegisteredTeams(res.data);
+        setRegisteredTeams(res.data);
     } else {
     }
   }
@@ -58,7 +58,7 @@ export default function PlayDetails() {
   }
 
   useEffect(() => {
-    if (router) {
+    if (router && router.query.id) {
       fetchRegisteredTeams();
       fetchLeaderboard();
       fetchGameData();
@@ -89,9 +89,7 @@ export default function PlayDetails() {
                     new Date(gameData.end_datetime) > new Date() ? (
                       <>
                         <ModalPortfolioContainer textcolor="indigo-black" title="VIEW TEAMS" />
-                        {/* {registeredTeams.map(function (data){
-
-                      })} */}
+                        {registeredTeams.length > 0 ? registeredTeams.map((data) => data.name) : 'No teams created for this game.'}
                       </>
                     ) : (
                       <>

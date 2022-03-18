@@ -302,7 +302,7 @@ const Play = () => {
                       {games.length > 0 &&
                         games.map(function (data, i) {
                           return (
-                            <a href={`/PlayDetails?id=${data.key}`}>
+                            <a href={`/PlayDetails?id=${data.id}`}>
                               <div className="mr-6">
                                 <PlayComponent
                                   type="ongoing"
