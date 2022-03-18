@@ -14,7 +14,7 @@ import { axiosInstance } from '../../utils/playible/';
 export default function CreateLineup() {
   const router = useRouter();
   const [gameData, setGameData] = useState(null);
-  const [teamModal, setTeamModal] = useState(false)
+  const [teamModal, setTeamModal] = useState(false);
 
   async function fetchGameData() {
     const res = await axiosInstance.get(`/fantasy/game/${router.query.id}/`);
@@ -54,13 +54,13 @@ export default function CreateLineup() {
                 </div>
                 <div className="flex ml-7 mb-10 w-2/5 justify-between">
                   <ModalPortfolioContainer title="CREATE TEAM" textcolor="text-indigo-black" />
-                  {/* <a href={`/CreateTeam?id=${query.id}&number=${query.number}`}> */}
-                  <button className="bg-indigo-buttonblue text-indigo-white whitespace-nowrap h-14 px-14 mt-4 text-center font-bold">
-                    CREATE YOUR LINEUP +
-                  </button>
-                  {/* </a> */}
+                  <a href={`/CreateTeam?id=${router.query.id}`}>
+                    <button className="bg-indigo-buttonblue text-indigo-white whitespace-nowrap h-14 px-14 mt-4 text-center font-bold">
+                      CREATE YOUR LINEUP +
+                    </button>
+                  </a>
                 </div>
-                <div className="ml-7 mr-7 border-b-2 border-indigo-lightgray border-opacity-30 w-2/5" />
+                {/* <div className="ml-7 mr-7 border-b-2 border-indigo-lightgray border-opacity-30 w-2/5" /> */}
                 <div className="ml-7 mt-4 w-2/5">
                   Create a team and shocase your collection. Enter a team into the tournament and
                   compete for cash prizes.
