@@ -5,7 +5,20 @@ import moment from 'moment';
 
 
 const PlayComponent = (props) =>{
-    const {icon, prizePool, timeLeft, startDate, endsin, type, children, month, date, year, img = null} = props;
+    const {
+      icon,
+      prizePool,
+      timeLeft,
+      startDate,
+      endDate = null,
+      endsin,
+      type,
+      children,
+      month,
+      date,
+      year,
+      img = null,
+    } = props;
     const playicon = "/../public/images/playthumbnails/key.png"
 
     const [day, setDay] = useState(0);
@@ -21,8 +34,8 @@ const PlayComponent = (props) =>{
     useEffect(() => {
         setInterval(() => {
           const currentDate = new Date();
-          const endDate = new Date(startDate);
-          const totalSeconds = (endDate - currentDate) / 1000;
+          const end = new Date(type === 'ongoing' ? endDate : startDate);
+          const totalSeconds = (end - currentDate) / 1000;
     
           const days = Math.floor(totalSeconds/2600/24);
           const hours = Math.floor(totalSeconds/3600) % 24;
@@ -38,6 +51,10 @@ const PlayComponent = (props) =>{
     
         }, 1000);
       }, []);
+
+    if (second < 0) {
+        return
+    }
     
 
     return (

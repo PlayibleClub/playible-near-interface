@@ -23,7 +23,7 @@ const Play = () => {
   const [claimModal, showClaimModal] = useState(false);
   const [claimTeam, showClaimTeam] = useState(false);
   const [modalView, switchView] = useState(true);
-  const [failedTransactionModal, showFailedModal] = useState(true);
+  const [failedTransactionModal, showFailedModal] = useState(false);
 
   const interactWallet = () => {
     if (status === WalletStatus.WALLET_CONNECTED) {
@@ -39,10 +39,25 @@ const Play = () => {
   const fetchGames = async (type) => {
     setGames([]);
     const res = await axiosInstance.get(`/fantasy/game/${type}/`);
+    console.log('res', res)
     if (res.status === 200) {
       setGames(res.data);
     }
   };
+
+  const gameStatus = (start, end) => {
+    const now = new Date()
+    const startTime = new Date(start)
+    const endTime = new Date(end)
+
+    if (startTime <= now && endTime > now) {
+      return 'active'
+    } else if (now < start) {
+      return 'new'
+    } else {
+      return 'completed'
+    }
+  }
 
   useEffect(() => {
     if (typeof connectedWallet !== 'undefined')
@@ -236,9 +251,9 @@ const Play = () => {
 
                     <div className="mt-4 flex ml-6 grid grid-cols-0 md:grid-cols-3">
                       {games.length > 0 &&
-                        games.map(function (data, i) {
+                        games.map(function (data) {
                           return (
-                            <a href={`/PlayDetails?id=${games[i].id}`}>
+                            <a href={`/PlayDetails?id=${data.id}`}>
                               <div className="mr-6">
                                 <PlayComponent
                                   type="new"
@@ -298,6 +313,7 @@ const Play = () => {
                                   date={data.date}
                                   year={data.year}
                                   img={data.image}
+                                  endDate={data.end_datetime}
                                 />
                               </div>
                             </a>
