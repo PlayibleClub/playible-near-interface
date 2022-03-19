@@ -13,7 +13,7 @@ import PerformerContainer from '../components/containers/PerformerContainer';
 import progressBar from '../public/images/progressbar.png';
 import banner from '../public/images/promotionheader.png';
 import bannerDesktop from '../public/images/promotionheaderDesktop.png';
-import { axiosInstance } from '../utils/playible/';
+import { axiosInstance } from '../utils/playible';
 
 const playerList = [
   // player list for testing purposes
@@ -137,18 +137,16 @@ export default function Home() {
               {activeGames ? (
                 <>
                   <div className="flex flex-col md:border rounded-lg md:p-6 md:mr-8 mt-8">
-                    <div className="flex">
+                    <div className="flex items-center">
                       <div className="ml-8 md:ml-0">
                         <div className="text-xl font-bold font-monument">ACTIVE GAMES</div>
                         <img src={underlineIcon} className="mt-1" />
                       </div>
 
-                      <Link href="/Play">
-                        <button className="ml-12 md:ml-16">
-                          <div className="text-indigo-black underline text-xs font-bold md:mb-2">
-                            VIEW ALL
-                          </div>
-                        </button>
+                      <Link href="/Play?type=active">
+                        <a className="ml-12 md:ml-16 text-indigo-black underline text-xs font-bold md:mb-2">
+                          VIEW ALL
+                        </a>
                       </Link>
                     </div>
 
