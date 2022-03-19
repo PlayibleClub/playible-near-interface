@@ -189,10 +189,6 @@ const MintScreenMobile = () => {
 
                                     <div>
                                         <div>
-                                            <div className="font-thin text-sm mt-6">
-                                                #{playerToFind.id}/25000
-                                            </div>
-
                                             <div className="text-md font-bold">
                                                 {playerToFind.name}
                                             </div>

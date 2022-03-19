@@ -282,7 +282,6 @@ export default function CreateLineup() {
                             <Lineup
                               position={data.position}
                               player={data.token_info ? data.token_info.info.extension.name : ''}
-                              id={data.token_info ? data.token_info.info.extension.athlete_id : 0}
                               score={data.score || 0}
                               onClick={() => {
                                 setFilterPos(data.position);
