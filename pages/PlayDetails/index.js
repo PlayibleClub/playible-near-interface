@@ -29,7 +29,7 @@ export default function PlayDetails() {
   async function fetchRegisteredTeams() {
     const res = await axiosInstance.get(`/fantasy/game/${router.query.id}/registered_teams/`);
     if (res.status === 200) {
-        setRegisteredTeams(res.data);
+      setRegisteredTeams(res.data);
     } else {
     }
   }
@@ -89,7 +89,9 @@ export default function PlayDetails() {
                     new Date(gameData.end_datetime) > new Date() ? (
                       <>
                         <ModalPortfolioContainer textcolor="indigo-black" title="VIEW TEAMS" />
-                        {registeredTeams.length > 0 ? registeredTeams.map((data) => data.name) : 'No teams created for this game.'}
+                        {registeredTeams.length > 0
+                          ? registeredTeams.map((data) => data.name)
+                          : 'No teams created for this game.'}
                       </>
                     ) : (
                       <>
@@ -190,7 +192,10 @@ export default function PlayDetails() {
                 </div>
               </div>
             ) : (
-              ''
+              <>
+                <PortfolioContainer textcolor="indigo-black" title="INVALID GAME DATA" />
+                <p className='ml-7'>Please proceed to Play and select a game</p>
+              </>
             )}
           </div>
         </Main>
