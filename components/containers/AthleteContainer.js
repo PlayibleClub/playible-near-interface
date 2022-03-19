@@ -9,7 +9,6 @@ const AthleteContainer = (props) => {
     <div data-test="AthleteContainer" className={`bg-gradient-to-r from-${colorgrad1} to-${colorgrad2} flex flex-col rounded-md h-full`}>
       <div className="flex flex-col h-1/2">
         {children}
-        <div className="mt-4 ml-4 text-xs">#{ID}/25000</div>
         <div className="flow-root">
           <div className="mt-1 ml-4 text-xl float-left">{AthleteName}</div>
           <div className="mt-1 text-3xl mr-4 float-right">{Jersey}</div>

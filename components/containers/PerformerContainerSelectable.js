@@ -55,7 +55,6 @@ const PerformerContainerSelectable = (props) => {
       {children}
       <div className="h-1/2 flex justify-center mb-6">
         <div className="flex flex-col mt-4">
-          <div className="text-xs font-thin">#{id}/25000</div>
           <div className="text-sm uppercase font-bold cursor-pointer mt-1">{AthleteName}</div>
           <div className="mt-4 text-xs font-thin">FANTASY SCORE</div>
           <div className="text-xs font-bold">{AvgScore}</div>
