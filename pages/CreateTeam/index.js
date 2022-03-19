@@ -190,7 +190,7 @@ export default function CreateLineup() {
       <Container>
         <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
           <Main color="indigo-white">
-            <BackFunction prev={`/CreateTeam?id=${router.query.id}`} />
+            <BackFunction prev={`/CreateLineup?id=${router.query.id}`} />
             {selectModal ? (
               <PortfolioContainer
                 title={`SELECT YOUR ${filterPos || 'No filtered'}`}
