@@ -194,7 +194,7 @@ export default function CreateLineup() {
             <BackFunction prev={`/CreateLineup?id=${router.query.id}`} />
             {selectModal ? (
               <PortfolioContainer
-                title={`SELECT YOUR ${position(filterPos) || 'No filtered'}`}
+                title={`SELECT YOUR ${position('baseball', filterPos).toUpperCase() || 'No filtered'}`}
                 textcolor="text-indigo-black"
               >
                 <div className="grid grid-cols-4 gap-y-4 mt-4 md:grid-cols-4 md:ml-7 md:mt-12">
