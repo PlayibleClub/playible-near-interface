@@ -20,6 +20,7 @@ import PerformerContainer from '../../components/containers/PerformerContainer';
 import PerformerContainerSelectable from '../../components/containers/PerformerContainerSelectable';
 import { CW721 } from '../../data/constants/contracts';
 import BaseModal from '../../components/modals/BaseModal';
+import { position } from '../../utils/athlete/position';
 
 export default function CreateLineup() {
   const router = useRouter();
@@ -193,7 +194,7 @@ export default function CreateLineup() {
             <BackFunction prev={`/CreateLineup?id=${router.query.id}`} />
             {selectModal ? (
               <PortfolioContainer
-                title={`SELECT YOUR ${filterPos || 'No filtered'}`}
+                title={`SELECT YOUR ${position('baseball', filterPos).toUpperCase() || 'No filtered'}`}
                 textcolor="text-indigo-black"
               >
                 <div className="grid grid-cols-4 gap-y-4 mt-4 md:grid-cols-4 md:ml-7 md:mt-12">
@@ -294,7 +295,7 @@ export default function CreateLineup() {
                       })}
                   </div>
                 </div>
-                <div className="flex mt-10 bg-indigo-black bg-opacity-5 w-full justify-end sticky bottom-0">
+                <div className="flex mt-10 bg-indigo-black bg-opacity-5 w-full justify-end">
                   <button
                     className="bg-indigo-buttonblue text-indigo-white w-5/6 md:w-80 h-14 text-center font-bold text-md"
                     onClick={proceedChanges}
@@ -319,7 +320,7 @@ export default function CreateLineup() {
               className="bg-indigo-green font-monument tracking-widest text-indigo-white w-full h-16 text-center text-sm mt-4"
               onClick={updateTeamSlots}
             >
-              CREATE GAME
+              CONFIRM
             </button>
           </div>
         ) : (

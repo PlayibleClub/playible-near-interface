@@ -39,7 +39,6 @@ const Play = () => {
   const fetchGames = async (type) => {
     setGames([]);
     const res = await axiosInstance.get(`/fantasy/game/${type}/`);
-    console.log('res', res)
     if (res.status === 200) {
       setGames(res.data);
     }
