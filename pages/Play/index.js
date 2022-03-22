@@ -13,6 +13,7 @@ import Container from '../../components/containers/Container';
 import BaseModal from '../../components/modals/BaseModal';
 import claimreward from '../../public/images/claimreward.png';
 import ModalComponent from './components/ModalComponent';
+import { useRouter } from 'next/router';
 
 import { newPlaylist, ongoingPlaylist, completedPlaylist, winningTeams, losingTeams } from './data';
 import { axiosInstance } from '../../utils/playible';
@@ -24,6 +25,7 @@ const Play = () => {
   const [claimTeam, showClaimTeam] = useState(false);
   const [modalView, switchView] = useState(true);
   const [failedTransactionModal, showFailedModal] = useState(false);
+  const router = useRouter();
 
   const interactWallet = () => {
     if (status === WalletStatus.WALLET_CONNECTED) {
@@ -45,19 +47,18 @@ const Play = () => {
   };
 
   const gameStatus = (start, end) => {
-    const now = new Date()
-    const startTime = new Date(start)
-    const endTime = new Date(end)
+    const now = new Date();
+    const startTime = new Date(start);
+    const endTime = new Date(end);
 
     if (startTime <= now && endTime > now) {
-      return 'active'
+      return 'active';
     } else if (now < start) {
-      return 'new'
+      return 'new';
     } else {
-      return 'completed'
+      return 'completed';
     }
-  }
-
+  };
   useEffect(() => {
     if (typeof connectedWallet !== 'undefined')
       dispatch(getPortfolio({ walletAddr: connectedWallet.walletAddress }));
@@ -66,6 +67,12 @@ const Play = () => {
   useEffect(() => {
     fetchGames(activeCategory);
   }, [activeCategory]);
+
+  useEffect(() => {
+    if (router && router.query.type) {
+      setCategory(router.query.type);
+    }
+  }, [router]);
 
   return (
     <>
@@ -191,7 +198,6 @@ const Play = () => {
               >
                 <div className="absolute top-0 right-0 p-4 font-black">X</div>
               </button>
-
               <img src={claimreward} className="h-20 w-20" />
               <div className="mt-4 bg-indigo-yellow p-2 text-center font-bold text-xl rounded">
                 FAILED TRANSACTION
@@ -223,12 +229,12 @@ const Play = () => {
                 {activeCategory === 'new' && (
                   <>
                     <div className="flex font-bold ml-8 md:ml-0 font-monument">
-                      <div className="mr-6 md:ml-8 border-b-8 pb-2 border-indigo-buttonblue">
+                      <div className="mr-6 md:ml-8 border-b-8 pb-2 border-indigo-buttonblue cursor-pointer">
                         NEW
                       </div>
 
                       <div
-                        className="mr-6"
+                        className="mr-6 cursor-pointer"
                         onClick={() => {
                           setCategory('active');
                         }}
@@ -237,7 +243,7 @@ const Play = () => {
                       </div>
 
                       <div
-                        className=""
+                        className="cursor-pointer"
                         onClick={() => {
                           setCategory('completed');
                         }}
@@ -250,9 +256,9 @@ const Play = () => {
 
                     <div className="mt-4 flex ml-6 grid grid-cols-0 md:grid-cols-3">
                       {games.length > 0 &&
-                        games.map(function (data) {
+                        games.map(function (data, i) {
                           return (
-                            <a href={`/PlayDetails?id=${data.id}`}>
+                            <a href={`/PlayDetails?id=${data.key}`}>
                               <div className="mr-6">
                                 <PlayComponent
                                   type="new"
@@ -275,7 +281,7 @@ const Play = () => {
                   <>
                     <div className="flex font-bold ml-8 md:ml-0 font-monument">
                       <div
-                        className="mr-6 md:ml-8"
+                        className="mr-6 md:ml-8 cursor-pointer"
                         onClick={() => {
                           setCategory('new');
                         }}
@@ -283,10 +289,12 @@ const Play = () => {
                         NEW
                       </div>
 
-                      <div className="mr-6 border-b-8 pb-2 border-indigo-buttonblue">ON-GOING</div>
+                      <div className="mr-6 border-b-8 pb-2 border-indigo-buttonblue cursor-pointer">
+                        ON-GOING
+                      </div>
 
                       <div
-                        className=""
+                        className="cursor-pointer"
                         onClick={() => {
                           setCategory('completed');
                         }}
@@ -301,7 +309,7 @@ const Play = () => {
                       {games.length > 0 &&
                         games.map(function (data, i) {
                           return (
-                            <a href={`/PlayDetails?id=${data.id}`}>
+                            <a href={`/PlayDetails?id=${data.key}`}>
                               <div className="mr-6">
                                 <PlayComponent
                                   type="ongoing"
@@ -312,7 +320,6 @@ const Play = () => {
                                   date={data.date}
                                   year={data.year}
                                   img={data.image}
-                                  endDate={data.end_datetime}
                                 />
                               </div>
                             </a>
@@ -325,7 +332,7 @@ const Play = () => {
                   <>
                     <div className="flex font-bold ml-8 md:ml-0 font-monument">
                       <div
-                        className="mr-6 md:ml-8"
+                        className="mr-6 md:ml-8 cursor-pointer"
                         onClick={() => {
                           setCategory('new');
                         }}
@@ -334,7 +341,7 @@ const Play = () => {
                       </div>
 
                       <div
-                        className="mr-6"
+                        className="mr-6 cursor-pointer"
                         onClick={() => {
                           setCategory('active');
                         }}
@@ -342,7 +349,9 @@ const Play = () => {
                         ON-GOING
                       </div>
 
-                      <div className="border-b-8 pb-2 border-indigo-buttonblue">COMPLETED</div>
+                      <div className="border-b-8 pb-2 border-indigo-buttonblue cursor-pointer">
+                        COMPLETED
+                      </div>
                     </div>
 
                     <hr className="opacity-50" />
@@ -363,7 +372,6 @@ const Play = () => {
                                   year={data.year}
                                   img={data.image}
                                 />
-
                                 <div className="">
                                   <button
                                     className={
