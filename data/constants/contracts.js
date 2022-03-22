@@ -6,3 +6,4 @@ export const PACK = 'terra1ew8jm7pev4v9q9u3pkc4c7zkp78jqlesk3xym3'; //Pack Contr
 export const OPENPACK = 'terra1kn9fe70ncsterdc5ksq9tcgjuypl748cdqhnuz'; //OpenPack Contract
 export const ORACLE = 'terra1lklauqwwh4ap9r3xfvnqdrjav0gx8z7pf6c7dt'; //Oracle Contract
 export const CONTROLLER = 'terra1w0t73qkkj50zdq5fkqcedm3ewwz2smm9g8hwns'; // Controller Contract
+export const DUMMY_ATHLETE_CW721 = 'terra1scvrkchr9xvfkd9kn8qgjhvk3dvs4vacq0zr9c';

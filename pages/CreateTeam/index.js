@@ -41,6 +41,7 @@ export default function CreateLineup() {
   const [team, setTeam] = useState([]);
   const [selectModal, setSelectModal] = useState(false);
   const [filterPos, setFilterPos] = useState(null);
+  const [teamName, setTeamName] = useState('Team 1')
 
   const [limit, setLimit] = useState(5);
   const [offset, setOffset] = useState(0);
@@ -110,7 +111,13 @@ export default function CreateLineup() {
 
     if (tempList.length > 0 && pos) {
       let filteredList = tempList
-        .filter((item) => item.position === pos)
+        .filter((item) => {
+          if (pos === 'P') {
+            return item.position === 'RP' || item.position === 'SP';
+          } else {
+            return item.position === pos;
+          }
+        })
         .map((item) => {
           return {
             ...item,
@@ -119,7 +126,7 @@ export default function CreateLineup() {
         });
       return filteredList;
     } else {
-      return tempList;
+      return [];
     }
   };
 
@@ -148,6 +155,8 @@ export default function CreateLineup() {
   const proceedChanges = () => {
     if (chosenAthlete) {
       setConfirmModal(true);
+      setLimit(5)
+      setOffset(0)
     } else {
       alert('Please choose an athlete for this position.');
     }
@@ -194,7 +203,9 @@ export default function CreateLineup() {
             <BackFunction prev={`/CreateLineup?id=${router.query.id}`} />
             {selectModal ? (
               <PortfolioContainer
-                title={`SELECT YOUR ${position('baseball', filterPos).toUpperCase() || 'No filtered'}`}
+                title={`SELECT YOUR ${
+                  position('baseball', filterPos).toUpperCase() || 'No filtered'
+                }`}
                 textcolor="text-indigo-black"
               >
                 <div className="grid grid-cols-4 gap-y-4 mt-4 md:grid-cols-4 md:ml-7 md:mt-12">
@@ -272,7 +283,7 @@ export default function CreateLineup() {
               <PortfolioContainer title="CREATE LINEUP" textcolor="text-indigo-black">
                 <div className="flex flex-col">
                   <div className="flex items-end pt-10 pb-3 ml-7">
-                    <div className="font-monument text-2xl">TEAM 1</div>
+                    <div className="font-monument text-2xl">{teamName}</div>
                     <p className="ml-5 underline text-sm pb-1">EDIT TEAM NAME</p>
                   </div>
                   <div className="grid grid-cols-4 gap-y-4 mt-4 md:grid-cols-4 md:ml-7 md:mt-12">
