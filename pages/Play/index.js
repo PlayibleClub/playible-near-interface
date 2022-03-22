@@ -59,6 +59,7 @@ const Play = () => {
       return 'completed';
     }
   };
+
   useEffect(() => {
     if (typeof connectedWallet !== 'undefined')
       dispatch(getPortfolio({ walletAddr: connectedWallet.walletAddress }));
@@ -258,7 +259,7 @@ const Play = () => {
                       {games.length > 0 &&
                         games.map(function (data, i) {
                           return (
-                            <a href={`/PlayDetails?id=${data.key}`}>
+                            <a href={`/PlayDetails?id=${data.id}`}>
                               <div className="mr-6">
                                 <PlayComponent
                                   type="new"
@@ -309,13 +310,14 @@ const Play = () => {
                       {games.length > 0 &&
                         games.map(function (data, i) {
                           return (
-                            <a href={`/PlayDetails?id=${data.key}`}>
+                            <a href={`/PlayDetails?id=${data.id}`}>
                               <div className="mr-6">
                                 <PlayComponent
                                   type="ongoing"
                                   icon={data.icon}
                                   prizePool={data.prize}
                                   startDate={data.start_datetime}
+                                  endDate={data.end_datetime}
                                   month={data.month}
                                   date={data.date}
                                   year={data.year}
