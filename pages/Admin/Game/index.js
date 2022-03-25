@@ -117,7 +117,7 @@ const Index = (props) => {
 
   const checkValidity = () => {
     let errors = [];
-    let sortPercentage = [...distribution].sort((a,b) => b.percentage - a.percentage)
+    let sortPercentage = [...distribution].sort((a, b) => b.percentage - a.percentage);
 
     if (!details.name) {
       errors.push('Game is missing a title');
@@ -137,7 +137,7 @@ const Index = (props) => {
 
     for (let i = 0; i < distribution.length; i++) {
       if (distribution[i].rank !== sortPercentage[i].rank) {
-        errors.push('Higher rank must have a higher percentage than next one')
+        errors.push('Higher rank must have a higher percentage than next one');
         break;
       }
     }
@@ -153,7 +153,7 @@ const Index = (props) => {
           .join(` \n`)}`.replace(',', '')
       );
     } else {
-      setConfirmModal(true)
+      setConfirmModal(true);
     }
   };
 
@@ -174,7 +174,14 @@ const Index = (props) => {
           title: 'Success',
           content: `${res.data.name} created!`,
         });
-        const filteredDistribution = distribution.filter((item) => item.percentage !== 0);
+        const filteredDistribution = distribution
+          .filter((item) => item.percentage !== 0)
+          .map((item) => {
+            return {
+              ...item,
+              percentage: (parseInt(item.percentage) / 100) * 1000000,
+            };
+          });
 
         const resContract = await executeContract(connectedWallet, ORACLE, [
           {
@@ -183,12 +190,13 @@ const Index = (props) => {
               add_game: {
                 game_id: res.data.id.toString(),
                 prize: parseInt(res.data.prize),
-                decimals: 2,
                 distribution: filteredDistribution,
               },
             },
           },
         ]);
+
+        console.log('resContract', resContract);
 
         if (
           !resContract.txResult ||
@@ -344,7 +352,7 @@ const Index = (props) => {
                     {/* DURATION */}
                     <div className="flex flex-col lg:w-1/2 lg:mr-10">
                       <label className="font-monument" htmlFor="duration">
-                        DURATION <span className='text-indigo-lightgray'>(DAYS)</span>
+                        DURATION <span className="text-indigo-lightgray">(DAYS)</span>
                       </label>
                       <input
                         className="border outline-none rounded-lg px-3 p-2"

@@ -4,5 +4,5 @@ export const MARKETPLACE = 'terra1he8gafpra00wth0uy5scwyclhm5t7rwacvhshp'; //Mar
 export const ATHLETE = 'terra13jaqt6cu09qxx2f7cqlgr2eadel4kcu8dlny5u'; //Athlete Contract
 export const PACK = 'terra1ew8jm7pev4v9q9u3pkc4c7zkp78jqlesk3xym3'; //Pack Contract
 export const OPENPACK = 'terra1kn9fe70ncsterdc5ksq9tcgjuypl748cdqhnuz'; //OpenPack Contract
-export const ORACLE = 'terra1lklauqwwh4ap9r3xfvnqdrjav0gx8z7pf6c7dt'; //Oracle Contract
+export const ORACLE = 'terra14lelwgkdn2fsvzhppfrxlx9m2a096xk8afe63v'; //Oracle Contract
 export const CONTROLLER = 'terra1w0t73qkkj50zdq5fkqcedm3ewwz2smm9g8hwns'; // Controller Contract
