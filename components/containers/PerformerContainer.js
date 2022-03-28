@@ -12,7 +12,7 @@ const PerformerContainer = (props) => {
             FOR SALE
           </div> 
         }
-        { status === 'ingame' &&
+        { status === true &&
           <div className="bg-indigo-lightgreen text-indigo-white text-center text-xs font-bold py-1 px-3 mb-2">
             IN GAME
           </div> 
