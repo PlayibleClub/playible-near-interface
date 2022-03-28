@@ -5,7 +5,7 @@ import { CommunityPoolSpendProposal } from '@terra-money/terra.js';
 
 const Lineup = (props) => {
   const { position, player = '', img = null, id, score, nextposition, onClick = null } = props;
-  const lineupPosition = '/../public/images/tokensMLB/' + position + '.png';
+  const lineupPosition = '/images/tokensMLB/' + position + '.png';
 
   return (
     <>
@@ -13,7 +13,9 @@ const Lineup = (props) => {
         {img ? (
           <img src={img} width={143} height={190} />
         ) : (
-          <Image src={lineupPosition} width={143} height={190} />
+          <>
+            <Image src={lineupPosition} width={143} height={190} />
+          </>
         )}
       </div>
       <div className="flex justify-center">

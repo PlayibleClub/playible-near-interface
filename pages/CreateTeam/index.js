@@ -21,6 +21,8 @@ import PerformerContainerSelectable from '../../components/containers/PerformerC
 import { CW721 } from '../../data/constants/contracts';
 import BaseModal from '../../components/modals/BaseModal';
 import { position } from '../../utils/athlete/position';
+import Modal from '../../components/modals/Modal';
+import { axiosInstance } from '../../utils/playible';
 
 export default function CreateLineup() {
   const router = useRouter();
@@ -41,7 +43,7 @@ export default function CreateLineup() {
   const [team, setTeam] = useState([]);
   const [selectModal, setSelectModal] = useState(false);
   const [filterPos, setFilterPos] = useState(null);
-  const [teamName, setTeamName] = useState('Team 1')
+  const [teamName, setTeamName] = useState('Team 1');
 
   const [limit, setLimit] = useState(5);
   const [offset, setOffset] = useState(0);
@@ -51,6 +53,10 @@ export default function CreateLineup() {
   const [chosenAthlete, setChosenAthlete] = useState(null);
   const [slotIndex, setSlotIndex] = useState(null);
   const [confirmModal, setConfirmModal] = useState(false);
+  const [submitModal, setSubmitModal] = useState(false);
+  const [successModal, setSuccessModal] = useState(false);
+  const [editModal, setEditModal] = useState(false);
+  const [editInput, setEditInput] = useState(teamName)
 
   const { list: playerList } = useSelector((state) => state.assets);
 
@@ -101,11 +107,6 @@ export default function CreateLineup() {
     setTeam(slots);
   };
 
-  const filterByPos = (pos) => {
-    const tempList = playerList.tokens.filter((item) => item.position === pos);
-    return tempList;
-  };
-
   const filterAthletes = (list, pos) => {
     let tempList = [...list];
 
@@ -113,9 +114,12 @@ export default function CreateLineup() {
       let filteredList = tempList
         .filter((item) => {
           if (pos === 'P') {
-            return item.position === 'RP' || item.position === 'SP';
+            return (
+              item.token_info.info.extension.position === 'RP' ||
+              item.token_info.info.extension.position === 'SP'
+            );
           } else {
-            return item.position === pos;
+            return item.token_info.info.extension.position === pos;
           }
         })
         .map((item) => {
@@ -138,6 +142,7 @@ export default function CreateLineup() {
         ...chosenAthlete,
         athlete_id: chosenAthlete.token_info.info.extension.athlete_id,
         contract_addr: CW721,
+        position: chosenAthlete.token_info.info.extension.position,
       };
       tempSlots[slotIndex] = athleteInfo;
 
@@ -155,10 +160,77 @@ export default function CreateLineup() {
   const proceedChanges = () => {
     if (chosenAthlete) {
       setConfirmModal(true);
-      setLimit(5)
-      setOffset(0)
+      setLimit(5);
+      setOffset(0);
     } else {
       alert('Please choose an athlete for this position.');
+    }
+  };
+
+  const confirmTeam = async () => {
+    setSubmitModal(true);
+    setLimit(5);
+    setOffset(0);
+    if (connectedWallet) {
+      let hasEmptySlot = false;
+
+      team.forEach((item) => {
+        if (!item.athlete_id) {
+          hasEmptySlot = true;
+        }
+      });
+
+      console.log('hasEmptySlot', hasEmptySlot);
+      setSubmitModal(false);
+
+      if (!hasEmptySlot) {
+        const trimmedAthleteData = team.map(({ athlete_id, token_id, contract_addr }) => {
+          return {
+            athlete_id,
+            token_id,
+            contract_addr,
+          };
+        });
+
+        console.log('trimmedAthleteData', trimmedAthleteData);
+        const formData = {
+          name: teamName,
+          game: router.query.id,
+          wallet_addr: connectedWallet.walletAddress,
+          athletes: [...trimmedAthleteData],
+        };
+
+        const res = await axiosInstance.post('/fantasy/game_team/', formData);
+
+        if (res.status === 201) {
+          setSuccessModal(true);
+          router.replace(`/CreateLineup/?id=${router.query.id}`);
+        } else {
+          alert('An error occurred! Refresh the page and try again.');
+        }
+      }
+    } else {
+      alert('Please connect your wallet first!');
+    }
+  };
+
+  const filterAthleteByPos = (pos) => {
+    if (playerList && playerList.tokens && playerList.tokens.length > 0) {
+      if (pos) {
+        setFilterPos(pos);
+        const tempList = [...playerList.tokens];
+        const filteredList = filterAthletes(tempList, pos).splice(limit * offset, limit);
+
+        if (!(filteredList.length > 0)) {
+          alert(`You currently do not own athlete(s) that have the position of ${pos}`);
+        } else {
+          setSelectModal(true);
+          setAthleteList(filteredList);
+          setPageCount(Math.ceil(filterAthletes(tempList, pos).length / limit));
+        }
+      } else {
+        setSelectModal(false);
+      }
     }
   };
 
@@ -189,7 +261,7 @@ export default function CreateLineup() {
         setSelectModal(false);
       }
     }
-  }, [playerList, limit, offset, filterPos]);
+  }, [playerList, limit, offset]);
 
   if (!(router && router.query.id)) {
     return '';
@@ -200,7 +272,6 @@ export default function CreateLineup() {
       <Container>
         <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
           <Main color="indigo-white">
-            <BackFunction prev={`/CreateLineup?id=${router.query.id}`} />
             {selectModal ? (
               <PortfolioContainer
                 title={`SELECT YOUR ${
@@ -280,41 +351,46 @@ export default function CreateLineup() {
                 </div>
               </PortfolioContainer>
             ) : (
-              <PortfolioContainer title="CREATE LINEUP" textcolor="text-indigo-black">
-                <div className="flex flex-col">
-                  <div className="flex items-end pt-10 pb-3 ml-7">
-                    <div className="font-monument text-2xl">{teamName}</div>
-                    <p className="ml-5 underline text-sm pb-1">EDIT TEAM NAME</p>
+              <>
+                <BackFunction prev={`/CreateLineup?id=${router.query.id}`} />
+                <PortfolioContainer title="CREATE LINEUP" textcolor="text-indigo-black">
+                  <div className="flex flex-col">
+                    <div className="flex items-end pt-10 pb-3 ml-7">
+                      <div className="font-monument text-xl">{teamName}</div>
+                      <p className="ml-5 underline text-sm pb-1 cursor-pointer" onClick={() => setEditModal(true)}>
+                        EDIT TEAM NAME
+                      </p>
+                    </div>
+                    <div className="grid grid-cols-4 gap-y-4 mt-4 md:grid-cols-4 md:ml-7 md:mt-12">
+                      {team.length > 0 &&
+                        team.map((data, i) => {
+                          return (
+                            <div>
+                              <Lineup
+                                position={data.position}
+                                player={data.token_info ? data.token_info.info.extension.name : ''}
+                                score={data.score || 0}
+                                onClick={() => {
+                                  filterAthleteByPos(data.position);
+                                  setSlotIndex(i);
+                                }}
+                                img={data.nft_image || null}
+                              />
+                            </div>
+                          );
+                        })}
+                    </div>
                   </div>
-                  <div className="grid grid-cols-4 gap-y-4 mt-4 md:grid-cols-4 md:ml-7 md:mt-12">
-                    {team.length > 0 &&
-                      team.map((data, i) => {
-                        return (
-                          <div>
-                            <Lineup
-                              position={data.position}
-                              player={data.token_info ? data.token_info.info.extension.name : ''}
-                              score={data.score || 0}
-                              onClick={() => {
-                                setFilterPos(data.position);
-                                setSlotIndex(i);
-                              }}
-                              img={data.nft_image || null}
-                            />
-                          </div>
-                        );
-                      })}
+                  <div className="flex mt-10 bg-indigo-black bg-opacity-5 w-full justify-end">
+                    <button
+                      className="bg-indigo-buttonblue text-indigo-white w-5/6 md:w-80 h-14 text-center font-bold text-md"
+                      onClick={() => setSubmitModal(true)}
+                    >
+                      CONFIRM TEAM
+                    </button>
                   </div>
-                </div>
-                <div className="flex mt-10 bg-indigo-black bg-opacity-5 w-full justify-end">
-                  <button
-                    className="bg-indigo-buttonblue text-indigo-white w-5/6 md:w-80 h-14 text-center font-bold text-md"
-                    onClick={proceedChanges}
-                  >
-                    CONFIRM TEAM
-                  </button>
-                </div>
-              </PortfolioContainer>
+                </PortfolioContainer>
+              </>
             )}
           </Main>
         </div>
@@ -338,6 +414,67 @@ export default function CreateLineup() {
           ''
         )}
       </BaseModal>
+      {/* <BaseModal title={'Submit Team'} visible={submitModal} onClose={() => setSubmitModal(false)}>
+        <div className="mt-5">
+          <p>Confirm team lineup</p>
+          <button
+            className="bg-indigo-green font-monument tracking-widest text-indigo-white w-full h-16 text-center text-sm mt-4"
+            onClick={() => setSubmitModal(false)}
+          >
+            CONFIRM
+          </button>
+          <button
+            className="bg-red-pastel font-monument tracking-widest text-indigo-white w-full h-16 text-center text-sm mt-4"
+            onClick={() => setSubmitModal(false)}
+          >
+            CANCEL
+          </button>
+        </div>
+      </BaseModal> */}
+      <Modal title={'Submit Team'} visible={submitModal} onClose={() => setSubmitModal(false)}>
+        <div className="mt-2">
+          <p className="">Confirm team lineup</p>
+          <button
+            className="bg-indigo-green font-monument tracking-widest text-indigo-white w-full h-16 text-center text-sm mt-4"
+            onClick={confirmTeam}
+          >
+            CONFIRM
+          </button>
+          <button
+            className="bg-red-pastel font-monument tracking-widest text-indigo-white w-full h-16 text-center text-sm mt-4"
+            onClick={() => setSubmitModal(false)}
+          >
+            CANCEL
+          </button>
+        </div>
+      </Modal>
+      <Modal title={'SUCCESS'} visible={successModal}>
+        <div className="mt-2">
+          <p className="">You have successfully entered a team!</p>
+        </div>
+      </Modal>
+      <Modal title={'EDIT TEAM NAME'} visible={editModal} onClose={() => setEditModal(false)}>
+        <div className="mt-2 px-5">
+          <p className="text-xs uppercase font-thin mb-2" style={{ fontFamily: 'Montserrat' }}>
+            EDIT TEAM NAME
+          </p>
+          <input
+            className="border p-2 w-full"
+            placeholder={teamName}
+            style={{ fontFamily: 'Montserrat' }}
+            value={editInput}
+            onChange={e => setEditInput(e.target.value)}
+          />
+          <div className="flex mt-16 mb-5 bg-opacity-5 w-full">
+            <button
+              className="bg-indigo-buttonblue text-indigo-white w-full h-14 text-center font-bold text-md"
+              onClick={() => { setTeamName(editInput); setEditModal(false);}}
+            >
+              CONFIRM TEAM
+            </button>
+          </div>
+        </div>
+      </Modal>
     </>
   );
 }
