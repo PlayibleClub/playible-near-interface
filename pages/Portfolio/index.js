@@ -206,7 +206,7 @@ const Portfolio = () => {
         } else {
           setPageCount(Math.ceil(playerList.tokens.length / limit))
         }
-        console.log('playerList', playerList.tokens);
+        console.log('playerList', playerList);
       } 
     }
   }, [playerList, limit, offset, filter, search]);
