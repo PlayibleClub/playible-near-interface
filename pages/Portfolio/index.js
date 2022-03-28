@@ -14,30 +14,6 @@ import Sorter from './components/Sorter';
 import { ATHLETE, PACK } from '../../data/constants/contracts';
 import { axiosInstance } from '../../utils/playible';
 
-const packList = [
-  {
-    name: 'STARTER PACK',
-    key: 'prem2',
-    release: '2',
-    price: '20 UST',
-    image: '/images/packimages/StarterPack1.png',
-  },
-  {
-    name: 'PREMIUM PACK',
-    key: 'prem3',
-    release: '3',
-    price: '35 UST',
-    image: '/images/packimages/StarterPack1.png',
-  },
-  {
-    name: 'BASE PACK',
-    key: 'base2',
-    release: '2',
-    price: '20 UST',
-    image: '/images/packimages/StarterPack1.png',
-  },
-];
-
 const Portfolio = () => {
   const [searchText, setSearchText] = useState('');
   const [displayMode, setDisplay] = useState(true);
@@ -271,7 +247,7 @@ const Portfolio = () => {
                                           id={path.athlete_id}
                                           uri={player.nft_image}
                                           rarity={path.rarity}
-                                          status="ingame"
+                                          status={player.is_locked}
                                         />
                                       </div>
                                     </Link>
