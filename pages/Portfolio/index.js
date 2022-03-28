@@ -184,7 +184,6 @@ const Portfolio = () => {
         }
       } 
     }
-    console.log(playerList)
   }, [playerList, limit, offset, filter, search]);
 
   useEffect(() => {
