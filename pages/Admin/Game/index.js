@@ -9,8 +9,8 @@ import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en.json';
 import ReactTimeAgo from 'react-time-ago';
 import { useConnectedWallet } from '@terra-money/wallet-provider';
-import { executeContract } from '../../../utils/terra';
-import { ORACLE } from '../../../data/constants/contracts';
+import { estimateFee, estimateMultipleFees, executeContract } from '../../../utils/terra';
+import { GAME, ORACLE } from '../../../data/constants/contracts';
 TimeAgo.addDefaultLocale(en);
 
 const Index = (props) => {
@@ -194,9 +194,18 @@ const Index = (props) => {
               },
             },
           },
+          {
+            contractAddr: GAME,
+            msg: {
+              add_game: {
+                game_id: res.data.id.toString(),
+                game_time_start: 2,
+                duration: 2,
+                whitelist: ['terra1h0mq6ktwrd0fgez5xrhwlcyf0p3w3nm94fc40j'],
+              },
+            },
+          },
         ]);
-
-        console.log('resContract', resContract);
 
         if (
           !resContract.txResult ||

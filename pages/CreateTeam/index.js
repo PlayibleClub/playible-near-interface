@@ -56,7 +56,7 @@ export default function CreateLineup() {
   const [submitModal, setSubmitModal] = useState(false);
   const [successModal, setSuccessModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
-  const [editInput, setEditInput] = useState(teamName)
+  const [editInput, setEditInput] = useState(teamName);
 
   const { list: playerList } = useSelector((state) => state.assets);
 
@@ -117,6 +117,11 @@ export default function CreateLineup() {
             return (
               item.token_info.info.extension.position === 'RP' ||
               item.token_info.info.extension.position === 'SP'
+            );
+          } else if (pos === 'OF') {
+            return (
+              item.token_info.info.extension.position === 'LF' ||
+              item.token_info.info.extension.position === 'CF'
             );
           } else {
             return item.token_info.info.extension.position === pos;
@@ -192,7 +197,6 @@ export default function CreateLineup() {
           };
         });
 
-        console.log('trimmedAthleteData', trimmedAthleteData);
         const formData = {
           name: teamName,
           game: router.query.id,
@@ -200,14 +204,16 @@ export default function CreateLineup() {
           athletes: [...trimmedAthleteData],
         };
 
-        const res = await axiosInstance.post('/fantasy/game_team/', formData);
+        
 
-        if (res.status === 201) {
-          setSuccessModal(true);
-          router.replace(`/CreateLineup/?id=${router.query.id}`);
-        } else {
-          alert('An error occurred! Refresh the page and try again.');
-        }
+        // const res = await axiosInstance.post('/fantasy/game_team/', formData);
+
+        // if (res.status === 201) {
+        //   setSuccessModal(true);
+        //   router.replace(`/CreateLineup/?id=${router.query.id}`);
+        // } else {
+        //   alert('An error occurred! Refresh the page and try again.');
+        // }
       }
     } else {
       alert('Please connect your wallet first!');
@@ -288,7 +294,7 @@ export default function CreateLineup() {
                           AthleteName={path.name}
                           AvgScore={player.fantasy_score}
                           id={path.athlete_id}
-                          uri={player.nft_image}
+                          uri={player.token_info.info.token_uri || player.nft_image}
                           rarity={path.rarity}
                           status="ingame"
                           index={i}
@@ -357,7 +363,10 @@ export default function CreateLineup() {
                   <div className="flex flex-col">
                     <div className="flex items-end pt-10 pb-3 ml-7">
                       <div className="font-monument text-xl">{teamName}</div>
-                      <p className="ml-5 underline text-sm pb-1 cursor-pointer" onClick={() => setEditModal(true)}>
+                      <p
+                        className="ml-5 underline text-sm pb-1 cursor-pointer"
+                        onClick={() => setEditModal(true)}
+                      >
                         EDIT TEAM NAME
                       </p>
                     </div>
@@ -374,7 +383,9 @@ export default function CreateLineup() {
                                   filterAthleteByPos(data.position);
                                   setSlotIndex(i);
                                 }}
-                                img={data.nft_image || null}
+                                img={
+                                 data.nft_image || data.token_info ? data.token_info.info.token_uri : null
+                                }
                               />
                             </div>
                           );
@@ -463,12 +474,15 @@ export default function CreateLineup() {
             placeholder={teamName}
             style={{ fontFamily: 'Montserrat' }}
             value={editInput}
-            onChange={e => setEditInput(e.target.value)}
+            onChange={(e) => setEditInput(e.target.value)}
           />
           <div className="flex mt-16 mb-5 bg-opacity-5 w-full">
             <button
               className="bg-indigo-buttonblue text-indigo-white w-full h-14 text-center font-bold text-md"
-              onClick={() => { setTeamName(editInput); setEditModal(false);}}
+              onClick={() => {
+                setTeamName(editInput);
+                setEditModal(false);
+              }}
             >
               CONFIRM TEAM
             </button>
