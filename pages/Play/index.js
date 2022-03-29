@@ -270,6 +270,7 @@ const Play = () => {
                                   date={data.date}
                                   year={data.year}
                                   img={data.image}
+                                  fetchGames={() => fetchGames(activeCategory)}
                                 />
                               </div>
                             </a>
@@ -305,7 +306,6 @@ const Play = () => {
                     </div>
 
                     <hr className="opacity-50" />
-
                     <div className="mt-4 flex ml-6 grid grid-cols-0 md:grid-cols-3">
                       {games.length > 0 &&
                         games.map(function (data, i) {
