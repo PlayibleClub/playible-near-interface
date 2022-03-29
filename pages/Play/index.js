@@ -37,6 +37,7 @@ const Play = () => {
   const dispatch = useDispatch();
   const connectedWallet = useConnectedWallet();
   const [games, setGames] = useState([]);
+  const [loading, setloading] = useState(false);
 
   const fetchGames = async (type) => {
     setGames([]);
@@ -45,6 +46,12 @@ const Play = () => {
       setGames(res.data);
     }
   };
+
+  function fetchGamesLoading(){
+    setloading(true)
+    fetchGames(activeCategory)
+    setloading(false)
+  }
 
   const gameStatus = (start, end) => {
     const now = new Date();
@@ -66,7 +73,7 @@ const Play = () => {
   }, [connectedWallet]);
 
   useEffect(() => {
-    fetchGames(activeCategory);
+    fetchGamesLoading();
   }, [activeCategory]);
 
   useEffect(() => {
@@ -322,6 +329,7 @@ const Play = () => {
                                   date={data.date}
                                   year={data.year}
                                   img={data.image}
+                                  fetchGames={() => fetchGames(activeCategory)}
                                 />
                               </div>
                             </a>
