@@ -18,6 +18,7 @@ const PlayComponent = (props) => {
     year,
     img = null,
     fetchGames,
+    index,
   } = props;
   const playicon = '/../public/images/playthumbnails/key.png';
 
@@ -26,12 +27,19 @@ const PlayComponent = (props) => {
   const [minute, setMinute] = useState(0);
   const [second, setSecond] = useState(0);
 
+  const [getGames, setGetGames] = useState(false);
+
   function formatTime(time) {
     return time < 10 ? '0' + time : time;
   }
 
   useEffect(() => {
-    setInterval(() => {
+    setGetGames(false)
+    setDay('');
+    setHour('');
+    setMinute('');
+    setSecond('');
+    const id = setInterval(() => {
       const currentDate = new Date();
       const end = new Date(type === 'ongoing' ? endDate : startDate);
       const totalSeconds = (end - currentDate) / 1000;
@@ -46,12 +54,13 @@ const PlayComponent = (props) => {
       setMinute(formatTime(minutes));
       setSecond(formatTime(seconds));
 
-      if (Math.floor(totalSeconds) === 0){
-        fetchGames()
+      if (Math.floor(totalSeconds) === 0) {
+        setGetGames(true)
+        fetchGames();
       }
-
     }, 1000);
-  }, []);
+    return () => clearInterval(id);
+  }, [index, getGames]);
 
   return (
     <>

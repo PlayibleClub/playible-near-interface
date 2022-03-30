@@ -44,7 +44,7 @@ const Play = () => {
   const [pageCount, setPageCount] = useState(0);
   const [gamesLimit, setgamesLimit] = useState(10);
   const [gamesOffset, setgamesOffset] = useState(0);
-  const [packPageCount, setPackPageCount] = useState(0);
+  const [gamePageCount, setgamePageCount] = useState(0);
   const [sortedList, setSortedList] = useState([]);
   const [sortedgames, setSortedgames] = useState([]);
   const limitOptions = [5, 10, 30, 50];
@@ -71,26 +71,6 @@ const Play = () => {
     }
   };
 
-  const changeIndexPack = (index) => {
-    switch (index) {
-      case 'next':
-        setgamesOffset(gamesOffset + 1);
-        break;
-      case 'previous':
-        setgamesOffset(gamesOffset - 1);
-        break;
-      case 'first':
-        setgamesOffset(0);
-        break;
-      case 'last':
-        setgamesOffset(packPageCount - 1);
-        break;
-
-      default:
-        break;
-    }
-  };
-
   const canNext = () => {
     if (offset + 1 === pageCount) {
       return false;
@@ -99,24 +79,8 @@ const Play = () => {
     }
   };
 
-  const canNextPack = () => {
-    if (gamesOffset + 1 === packPageCount) {
-      return false;
-    } else {
-      return true;
-    }
-  };
-
   const canPrevious = () => {
     if (offset === 0) {
-      return false;
-    } else {
-      return true;
-    }
-  };
-
-  const canPreviousPack = () => {
-    if (gamesOffset === 0) {
       return false;
     } else {
       return true;
@@ -159,20 +123,6 @@ const Play = () => {
     setloading(false);
   }
 
-  const gameStatus = (start, end) => {
-    const now = new Date();
-    const startTime = new Date(start);
-    const endTime = new Date(end);
-
-    if (startTime <= now && endTime > now) {
-      return 'active';
-    } else if (now < start) {
-      return 'new';
-    } else {
-      return 'completed';
-    }
-  };
-
   useEffect(() => {
     if (typeof games !== null) {
       if (games && games.length > 0) {
@@ -197,7 +147,7 @@ const Play = () => {
       const tempList = [...games];
       const filteredList = tempList.splice(gamesLimit * gamesOffset, gamesLimit);
       setSortedgames(filteredList);
-      setPackPageCount(Math.ceil(games.length / gamesLimit));
+      setgamePageCount(Math.ceil(games.length / gamesLimit));
     }
   }, [games, gamesLimit, gamesOffset]);
 
@@ -208,6 +158,7 @@ const Play = () => {
 
   useEffect(() => {
     fetchGamesLoading();
+    setOffset(0);
   }, [activeCategory]);
 
   useEffect(() => {
@@ -414,6 +365,7 @@ const Play = () => {
                                       year={data.year}
                                       img={data.image}
                                       fetchGames={() => fetchGames(activeCategory)}
+                                      index={() => changeIndex()}
                                     />
                                   </div>
                                 </a>
@@ -526,6 +478,7 @@ const Play = () => {
                                       year={data.year}
                                       img={data.image}
                                       fetchGames={() => fetchGames(activeCategory)}
+                                      index={() => changeIndex()}
                                     />
                                   </div>
                                 </a>
@@ -636,6 +589,7 @@ const Play = () => {
                                     date={data.date}
                                     year={data.year}
                                     img={data.image}
+                                    index={() => changeIndex()}
                                   />
                                   <div className="">
                                     <button
