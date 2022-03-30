@@ -8,7 +8,7 @@ import underlineIcon from '../../public/images/blackunderline.png';
 //TODO: Modal Design for dark mode and light mode
 
 const Modal = (props) => {
-  const { title, children, visible, onClose = null } = props;
+  const { title, children, visible, onClose = undefined } = props;
 
   //TODO: Make the modal more presentable
   return (

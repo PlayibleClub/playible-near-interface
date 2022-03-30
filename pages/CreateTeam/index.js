@@ -55,8 +55,10 @@ export default function CreateLineup() {
   const [confirmModal, setConfirmModal] = useState(false);
   const [submitModal, setSubmitModal] = useState(false);
   const [successModal, setSuccessModal] = useState(false);
+  const [failedModal, setFailedModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
   const [editInput, setEditInput] = useState(teamName);
+  const [createLoading, setCreateLoading] = useState(false);
 
   const { list: playerList } = useSelector((state) => state.assets);
 
@@ -111,6 +113,13 @@ export default function CreateLineup() {
     let tempList = [...list];
 
     if (tempList.length > 0 && pos) {
+      let token_ids = team
+        .map(({ athlete_id, token_id, contract_addr }) => {
+          if (token_id) {
+            return token_id;
+          }
+        })
+        .filter((item) => item);
       let filteredList = tempList
         .filter((item) => {
           if (pos === 'P') {
@@ -133,6 +142,12 @@ export default function CreateLineup() {
             selected: false,
           };
         });
+      if (token_ids.length > 0) {
+        filteredList = filteredList.filter((item) => {
+          return token_ids.indexOf(item.token_id) === -1;
+        });
+      }
+
       return filteredList;
     } else {
       return [];
@@ -172,23 +187,26 @@ export default function CreateLineup() {
     }
   };
 
+  const hasEmptySlot = () => {
+    let hasEmptySlot = false;
+
+    team.forEach((item) => {
+      if (!item.athlete_id) {
+        hasEmptySlot = true;
+      }
+    });
+
+    return hasEmptySlot;
+  };
+
   const confirmTeam = async () => {
-    setSubmitModal(true);
     setLimit(5);
     setOffset(0);
     if (connectedWallet) {
-      let hasEmptySlot = false;
-
-      team.forEach((item) => {
-        if (!item.athlete_id) {
-          hasEmptySlot = true;
-        }
-      });
-
-      console.log('hasEmptySlot', hasEmptySlot);
       setSubmitModal(false);
 
-      if (!hasEmptySlot) {
+      if (!hasEmptySlot()) {
+        setCreateLoading(true);
         const trimmedAthleteData = team.map(({ athlete_id, token_id, contract_addr }) => {
           return {
             athlete_id,
@@ -204,16 +222,26 @@ export default function CreateLineup() {
           athletes: [...trimmedAthleteData],
         };
 
-        
+        const lock_team = {
+          lock_team: {
+            game_id: router.query.id,
+            team_name: teamName,
+            token_ids: [trimmedAthleteData.map((item) => item.token_id)],
+          },
+        };
 
-        // const res = await axiosInstance.post('/fantasy/game_team/', formData);
+        console.log('lock_team', lock_team);
 
-        // if (res.status === 201) {
-        //   setSuccessModal(true);
-        //   router.replace(`/CreateLineup/?id=${router.query.id}`);
-        // } else {
-        //   alert('An error occurred! Refresh the page and try again.');
-        // }
+        const res = await axiosInstance.post('/fantasy/game_team/', formData);
+        setCreateLoading(false);
+        if (res.status === 201) {
+          setSuccessModal(true);
+          router.replace(`/CreateLineup/?id=${router.query.id}`);
+        } else {
+          alert('An error occurred! Refresh the page and try again.');
+        }
+      } else {
+        alert('You must fill up all the slots to proceed.');
       }
     } else {
       alert('Please connect your wallet first!');
@@ -384,7 +412,9 @@ export default function CreateLineup() {
                                   setSlotIndex(i);
                                 }}
                                 img={
-                                 data.nft_image || data.token_info ? data.token_info.info.token_uri : null
+                                  data.nft_image || data.token_info
+                                    ? data.token_info.info.token_uri
+                                    : null
                                 }
                               />
                             </div>
@@ -459,9 +489,24 @@ export default function CreateLineup() {
           </button>
         </div>
       </Modal>
-      <Modal title={'SUCCESS'} visible={successModal}>
+      <Modal title={'LOADING'} visible={createLoading} onClose={() => console.log()}>
+        <div>
+          <p className="mb-5 text-center">Creating your team</p>
+          <div className="flex gap-5 justify-center mb-5">
+            <div className="bg-indigo-buttonblue animate-bounce w-5 h-5 rounded-full"></div>
+            <div className="bg-indigo-buttonblue animate-bounce w-5 h-5 rounded-full"></div>
+            <div className="bg-indigo-buttonblue animate-bounce w-5 h-5 rounded-full"></div>
+          </div>
+        </div>
+      </Modal>
+      <Modal title={'SUCCESS'} visible={successModal} onClose={() => console.log()}>
         <div className="mt-2">
-          <p className="">You have successfully entered a team!</p>
+          <p className="text-center font-montserrat mb-5">Team created successfully!</p>
+        </div>
+      </Modal>
+      <Modal title={'FAILED'} visible={failedModal} onClose={() => setFailedModal(false)}>
+        <div className="mt-2">
+          <p className="text-center font-montserrat mb-5">An error occured. Please try again later.</p>
         </div>
       </Modal>
       <Modal title={'EDIT TEAM NAME'} visible={editModal} onClose={() => setEditModal(false)}>

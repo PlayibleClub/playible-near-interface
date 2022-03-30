@@ -28,10 +28,11 @@ export default function PlayDetails() {
 
   async function fetchRegisteredTeams() {
     const res = await axiosInstance.get(`/fantasy/game/${router.query.id}/registered_teams/`);
-    if (res.status === 200) {
-      setRegisteredTeams(res.data);
-    } else {
-    }
+    console.log('res', res)
+    // if (res.status === 200) {
+    //   setRegisteredTeams(res.data);
+    // } else {
+    // }
   }
 
   async function fetchLeaderboard() {
