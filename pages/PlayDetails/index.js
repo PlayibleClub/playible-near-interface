@@ -89,7 +89,7 @@ export default function PlayDetails() {
               <BackFunction prev="/Play" />
             </div>
             {gameData ? (
-              <div className="md:ml-7 flex flex-row md:flex-row">
+              <div className="ml-6 mr-6 md:ml-7 flex flex-col md:flex-row">
                 <div className="md:mr-12">
                   <div className="mt-7 justify-center md:self-left md:mr-8">
                     <Image
@@ -147,14 +147,14 @@ export default function PlayDetails() {
                       </>
                     )}
 
-                    <div className="flex">
+                    <div className="flex justify-center md:justify-start">
                       <a href={`/CreateLineup?id=${gameData.id}`}>
                         <button
                           className={
                             new Date(gameData.start_datetime) <= new Date() &&
                             new Date(gameData.end_datetime) > new Date()
-                              ? 'bg-indigo-lightblue text-indigo-buttonblue cursor-not-allowed w-4/6 md:w-64 h-12 text-center font-bold text-md mt-8 mr-4 hidden'
-                              : 'bg-indigo-buttonblue text-indigo-white w-4/6 md:w-64 h-12 text-center font-bold text-md mt-8'
+                              ? 'bg-indigo-lightblue text-indigo-buttonblue cursor-not-allowed w-64 h-12 text-center font-bold text-md mt-8 mr-4 hidden'
+                              : 'bg-indigo-buttonblue text-indigo-white w-64 h-12 text-center font-bold text-md mt-8'
                           }
                         >
                           ENTER GAME
