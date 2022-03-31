@@ -60,9 +60,6 @@ export default function CreateLineup() {
       const currentDate = new Date();
       const end = new Date(startDate);
       const totalSeconds = (end - currentDate) / 1000;
-      {
-        console.log(Math.floor(totalSeconds));
-      }
       if (Math.floor(totalSeconds) === 0) {
         setButtonMute(true);
         clearInterval(id)
