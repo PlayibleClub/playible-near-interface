@@ -38,9 +38,9 @@ export default function CreateLineup() {
             {gameData ? (
               <>
                 <div className="mt-8">
-                  <BackFunction prev={`/PlayDetails?id=${gameData.id}`} />
+                  <BackFunction prev={`/PlayDetails?id=${gameData.id}`}/>
                 </div>
-                <div className="md:ml-7 flex flex-row md:flex-row">
+                <div className="md:ml-7 flex flex-col md:flex-row">
                   <div className="md:mr-12">
                     <div className="mt-7 justify-center md:self-left md:mr-8">
                       <Image
@@ -52,17 +52,17 @@ export default function CreateLineup() {
                     </div>
                   </div>
                 </div>
-                <div className="flex ml-7 mb-10 w-2/5 justify-between">
+                <div className="flex flex-col md:flex-row ml-7 mb-10">
                   <ModalPortfolioContainer title="CREATE TEAM" textcolor="text-indigo-black" />
                   <a href={`/CreateTeam?id=${router.query.id}`}>
-                    <button className="bg-indigo-buttonblue text-indigo-white whitespace-nowrap h-14 px-14 mt-4 text-center font-bold">
+                    <button className="bg-indigo-buttonblue text-indigo-white whitespace-nowrap h-14 px-10 mt-4 ml-0 md:ml-12 text-center font-bold">
                       CREATE YOUR LINEUP +
                     </button>
                   </a>
                 </div>
                 {/* <div className="ml-7 mr-7 border-b-2 border-indigo-lightgray border-opacity-30 w-2/5" /> */}
-                <div className="ml-7 mt-4 w-2/5">
-                  Create a team and shocase your collection. Enter a team into the tournament and
+                <div className="ml-7 mt-0 md:mt-4 w-10/12 md:w-2/5">
+                  Create a team and showcase your collection. Enter a team into the tournament and
                   compete for cash prizes.
                 </div>
                 <div className="mt-7 ml-7 w-2/5">
