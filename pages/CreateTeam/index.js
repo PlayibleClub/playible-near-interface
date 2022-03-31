@@ -230,8 +230,6 @@ export default function CreateLineup() {
           },
         };
 
-        console.log('lock_team', lock_team);
-
         const res = await axiosInstance.post('/fantasy/game_team/', formData);
         setCreateLoading(false);
         if (res.status === 201) {

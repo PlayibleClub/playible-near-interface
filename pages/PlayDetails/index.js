@@ -11,12 +11,15 @@ import { axiosInstance } from '../../utils/playible/';
 import moment from 'moment';
 import { truncate } from '../../utils/wallet/index.js';
 import { ADMIN } from '../../data/constants/address.js';
+import { useConnectedWallet } from '@terra-money/wallet-provider';
+import Link from 'next/link';
 
 export default function PlayDetails() {
   const router = useRouter();
   const [gameData, setGameData] = useState(null);
   const [leaderboard, setLeaderboard] = useState([]);
   const [registeredTeams, setRegisteredTeams] = useState([]);
+  const connectedWallet = useConnectedWallet();
 
   async function fetchGameData() {
     const res = await axiosInstance.get(`/fantasy/game/${router.query.id}/`);
@@ -27,12 +30,14 @@ export default function PlayDetails() {
   }
 
   async function fetchRegisteredTeams() {
-    const res = await axiosInstance.get(`/fantasy/game/${router.query.id}/registered_teams/`);
-    console.log('res', res)
-    // if (res.status === 200) {
-    //   setRegisteredTeams(res.data);
-    // } else {
-    // }
+    const res = await axiosInstance.get(
+      `/fantasy/game/${router.query.id}/registered_teams_detail/?wallet_addr=${connectedWallet.walletAddress}`
+    );
+    console.log('res', res);
+
+    if (res.status === 200 && res.data.length > 0) {
+      setRegisteredTeams(res.data);
+    }
   }
 
   async function fetchLeaderboard() {
@@ -60,11 +65,20 @@ export default function PlayDetails() {
 
   useEffect(() => {
     if (router && router.query.id) {
-      fetchRegisteredTeams();
       fetchLeaderboard();
       fetchGameData();
     }
   }, [router]);
+
+  useEffect(() => {
+    if (router && router.query.id && connectedWallet) {
+      fetchRegisteredTeams();
+    }
+  }, [router, connectedWallet]);
+
+  if (!router) {
+    return
+  }
 
   return (
     <Container>
@@ -91,7 +105,27 @@ export default function PlayDetails() {
                       <>
                         <ModalPortfolioContainer textcolor="indigo-black" title="VIEW TEAMS" />
                         {registeredTeams.length > 0
-                          ? registeredTeams.map((data) => data.name)
+                          ? registeredTeams.map(function (data, i) {
+                              return (
+                                <div className="p-5 px-6 bg-black-dark text-indigo-white mb-5 flex justify-between">
+                                  <p className="font-monument">{data.name}</p>
+                                  <Link
+                                    href={{
+                                      pathname: '/EntrySummary',
+                                      query: {
+                                        team_id: data.id,
+                                        game_id: router.query.id,
+                                        origin: `/PlayDetails/?id=${router.query.id}`
+                                      },
+                                    }}
+                                  >
+                                    <a>
+                                      <img src={'/images/arrow-top-right.png'} />
+                                    </a>
+                                  </Link>
+                                </div>
+                              );
+                            })
                           : 'No teams created for this game.'}
                       </>
                     ) : (
@@ -133,20 +167,19 @@ export default function PlayDetails() {
                   {hasLeaderboard(gameData.start_datetime, gameData.end_datetime) ? (
                     leaderboard.length > 0 ? (
                       <>
-                        <PortfolioContainer textcolor="indigo-black" title="LEADERBOARD" />
+                        <PortfolioContainer textcolor="indigo-black mb-5" title="LEADERBOARD" />
                         {leaderboard.map(function (data, key) {
                           return (
                             <>
-                              <PortfolioContainer textcolor="indigo-black" title="LEADERBOARD" />
                               <div className="ml-12 md:ml-10 mt-4 md:mt-0">
-                                <div className="flex text-center">
-                                  <div className="w-10 mt-4 mr-2 font-monument text-xl">
+                                <div className="flex text-center items-center">
+                                  <div className="w-10 mr-2 font-monument text-xl">
                                     {key + 1 <= 9 ? '0' + (key + 1) : key + 1}
                                   </div>
-                                  <div className="bg-indigo-black text-indigo-white w-40 mt-3 text-center p-1 text-base font-monument">
+                                  <div className="bg-indigo-black text-indigo-white w-40 text-center p-1 text-base font-monument">
                                     {truncate(data.account.wallet_addr, 11)}
                                   </div>
-                                  <div className="ml-16 w-10 text-center mt-3 font-black">
+                                  <div className="ml-16 w-10 text-center font-black">
                                     {data.fantasy_score}
                                   </div>
                                 </div>
@@ -162,14 +195,14 @@ export default function PlayDetails() {
                           return (
                             <>
                               <div className="ml-12 md:ml-10 mt-4 md:mt-0">
-                                <div className="flex text-center">
-                                  <div className="w-10 mt-4 mr-2 font-monument text-xl">
+                                <div className="flex text-center items-center">
+                                  <div className="w-10  mr-2 font-monument text-xl">
                                     {key + 1 <= 9 ? '0' + (key + 1) : key + 1}
                                   </div>
-                                  <div className="bg-indigo-black text-indigo-white w-40 mt-3 text-center p-1 text-base font-monument">
+                                  <div className="bg-indigo-black text-indigo-white w-40 text-center p-1 text-base font-monument">
                                     {truncate(data.account.wallet_addr, 11)}
                                   </div>
-                                  <div className="ml-16 w-10 text-center mt-3 font-black">
+                                  <div className="ml-16 w-10 text-center font-black">
                                     {data.fantasy_score}
                                   </div>
                                 </div>
@@ -192,12 +225,7 @@ export default function PlayDetails() {
                   )}
                 </div>
               </div>
-            ) : (
-              <>
-                <PortfolioContainer textcolor="indigo-black" title="INVALID GAME DATA" />
-                <p className='ml-7'>Please proceed to Play and select a game</p>
-              </>
-            )}
+            ) : ''}
           </div>
         </Main>
       </div>

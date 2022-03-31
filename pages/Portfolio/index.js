@@ -237,7 +237,11 @@ const Portfolio = () => {
                                     <Link
                                       href={{
                                         pathname: '/AssetDetails',
-                                        query: { id: path.athlete_id, origin: 'Portfolio', token_id: player.token_id },
+                                        query: {
+                                          id: path.athlete_id,
+                                          origin: 'Portfolio',
+                                          token_id: player.token_id,
+                                        },
                                       }}
                                     >
                                       <div className="mb-4" key={i}>
@@ -245,7 +249,11 @@ const Portfolio = () => {
                                           AthleteName={path.name}
                                           AvgScore={player.fantasy_score}
                                           id={path.athlete_id}
-                                          uri={player.nft_image}
+                                          uri={
+                                            player.nft_image || player.token_info
+                                              ? player.token_info.info.token_uri
+                                              : null
+                                          }
                                           rarity={path.rarity}
                                           status={player.is_locked}
                                         />

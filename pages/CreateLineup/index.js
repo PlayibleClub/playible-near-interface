@@ -10,25 +10,47 @@ import { useRouter } from 'next/router';
 import Teams from '../../pages/CreateLineup/components/Teams.js';
 import Data from '../../data/teams.json';
 import { axiosInstance } from '../../utils/playible/';
+import { useConnectedWallet } from '@terra-money/wallet-provider';
+import Link from 'next/link';
 
 export default function CreateLineup() {
   const router = useRouter();
   const [gameData, setGameData] = useState(null);
   const [teamModal, setTeamModal] = useState(false);
+  const connectedWallet = useConnectedWallet();
+  const [teams, setTeams] = useState([]);
 
-  async function fetchGameData() {
+  const fetchGameData = async () => {
     const res = await axiosInstance.get(`/fantasy/game/${router.query.id}/`);
+
+    const teams = await axiosInstance.get(
+      `/fantasy/game/${router.query.id}/registered_teams_detail/?wallet_addr=${connectedWallet.walletAddress}`
+    );
+
+    if (teams.status === 200) {
+      setTeams(teams.data);
+    }
+
     if (res.status === 200) {
       setGameData(res.data);
-    } else {
     }
-  }
+  };
 
   useEffect(() => {
-    if (router && router.query.id) {
+    if (router && router.query.id && connectedWallet) {
       fetchGameData();
     }
-  }, [router]);
+  }, [router, connectedWallet]);
+
+  if (!router) {
+    return;
+  }
+
+  if (gameData && router && router.query.id) {
+    if (new Date(gameData.start_datetime) < new Date()) {
+      router.replace(`/PlayDetails/?id=${router.query.id}`);
+    }
+  }
 
   return (
     <>
@@ -66,22 +88,36 @@ export default function CreateLineup() {
                   compete for cash prizes.
                 </div>
                 <div className="mt-7 ml-7 w-2/5">
-                  {/* {Data[query.number - 1].roster.map(function (data, i) {
-                  return (
-                    <div className="">
-                      <a
-                        href={`/EntrySummary?team=${data.teamName}&id=${
-                          Data[query.number - 1].gameId
-                        }&number=${i + 1}`}
-                      >
-                        <div className="" key={i}>
-                          {console.log(data.teamName)}
-                          <Teams teamName={data.teamName} />
-                        </div>
-                      </a>
+                  {teams.length > 0 ? (
+                    <div>
+                      <ModalPortfolioContainer
+                        title="VIEW TEAMS"
+                        textcolor="text-indigo-black mb-5"
+                      />
+                      {teams.map(function (data, i) {
+                        return (
+                          <div className="p-5 px-6 bg-black-dark text-indigo-white mb-5 flex justify-between">
+                            <p className="font-monument">{data.name}</p>
+                            <Link
+                              href={{
+                                pathname: '/EntrySummary',
+                                query: {
+                                  team_id: data.id,
+                                  game_id: router.query.id,
+                                },
+                              }}
+                            >
+                              <a>
+                                <img src={'/images/arrow-top-right.png'} />
+                              </a>
+                            </Link>
+                          </div>
+                        );
+                      })}
                     </div>
-                  );
-                })} */}
+                  ) : (
+                    <p>No teams assigned</p>
+                  )}
                 </div>
               </>
             ) : (
@@ -92,4 +128,42 @@ export default function CreateLineup() {
       </Container>
     </>
   );
+}
+
+export async function getServerSideProps(ctx) {
+  const { query } = ctx;
+  let queryObj = null;
+  if (query) {
+    if (query.id) {
+      queryObj = query;
+      const res = await axiosInstance.get(`/fantasy/game/${query.id}/`);
+      if (res.status === 200) {
+        if (new Date(res.data.start_datetime) < new Date()) {
+          return {
+            redirect: {
+              destination: `/PlayDetails/?id=${query.id}`,
+              permanent: false,
+            },
+          };
+        }
+      }
+    } else {
+      return {
+        redirect: {
+          destination: query.origin || '/Portfolio',
+          permanent: false,
+        },
+      };
+    }
+  }
+
+  let playerStats = null;
+  const res = await axiosInstance.get(`/fantasy/athlete/${parseInt(queryObj.id) + 1}/stats/`);
+
+  if (res.status === 200) {
+    playerStats = res.data;
+  }
+  return {
+    props: { queryObj, playerStats },
+  };
 }
