@@ -30,7 +30,6 @@ export default function PlayDetails() {
         body:JSON.stringify({gameId:router.query.id})
     })
     const res = await response.json()
-    console.log(res)
 
     }
 
