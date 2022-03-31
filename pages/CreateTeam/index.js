@@ -285,7 +285,7 @@ export default function CreateLineup() {
                 }`}
                 textcolor="text-indigo-black"
               >
-                <div className="grid grid-cols-4 gap-y-4 mt-4 md:grid-cols-4 md:ml-7 md:mt-12">
+                <div className="grid grid-cols-2 gap-y-4 mt-4 md:grid-cols-4 md:ml-7 md:mt-12">
                   {athleteList.map((player, i) => {
                     const path = player.token_info.info.extension;
                     return (
@@ -370,7 +370,7 @@ export default function CreateLineup() {
                         EDIT TEAM NAME
                       </p>
                     </div>
-                    <div className="grid grid-cols-4 gap-y-4 mt-4 md:grid-cols-4 md:ml-7 md:mt-12">
+                    <div className="grid grid-cols-2 gap-y-4 mt-4 md:grid-cols-4 md:ml-7 md:mt-12">
                       {team.length > 0 &&
                         team.map((data, i) => {
                           return (
@@ -394,7 +394,7 @@ export default function CreateLineup() {
                   </div>
                   <div className="flex mt-10 bg-indigo-black bg-opacity-5 w-full justify-end">
                     <button
-                      className="bg-indigo-buttonblue text-indigo-white w-5/6 md:w-80 h-14 text-center font-bold text-md"
+                      className="bg-indigo-buttonblue text-indigo-white w-full md:w-5/6 md:w-80 h-14 text-center font-bold text-md"
                       onClick={() => setSubmitModal(true)}
                     >
                       CONFIRM TEAM
