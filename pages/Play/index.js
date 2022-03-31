@@ -37,6 +37,77 @@ const Play = () => {
   const dispatch = useDispatch();
   const connectedWallet = useConnectedWallet();
   const [games, setGames] = useState([]);
+  const [loading, setloading] = useState(false);
+
+  const [limit, setLimit] = useState(10);
+  const [offset, setOffset] = useState(0);
+  const [pageCount, setPageCount] = useState(0);
+  const [gamesLimit, setgamesLimit] = useState(10);
+  const [gamesOffset, setgamesOffset] = useState(0);
+  const [gamePageCount, setgamePageCount] = useState(0);
+  const [sortedList, setSortedList] = useState([]);
+  const [sortedgames, setSortedgames] = useState([]);
+  const limitOptions = [5, 10, 30, 50];
+  const [filter, setFilter] = useState(null);
+  const [search, setSearch] = useState('');
+
+  const changeIndex = (index) => {
+    switch (index) {
+      case 'next':
+        setOffset(offset + 1);
+        break;
+      case 'previous':
+        setOffset(offset - 1);
+        break;
+      case 'first':
+        setOffset(0);
+        break;
+      case 'last':
+        setOffset(pageCount - 1);
+        break;
+
+      default:
+        break;
+    }
+  };
+
+  const canNext = () => {
+    if (offset + 1 === pageCount) {
+      return false;
+    } else {
+      return true;
+    }
+  };
+
+  const canPrevious = () => {
+    if (offset === 0) {
+      return false;
+    } else {
+      return true;
+    }
+  };
+
+  const applySortFilter = (list, filter, search = '') => {
+    let tempList = [...list];
+    if (tempList.length > 0) {
+      let filteredList = tempList.filter((item) => item.id);
+      switch (filter) {
+        case 'id':
+          filteredList.sort((a, b) => a.id.localeCompare(b.id));
+          return filteredList;
+        case 'name':
+          filteredList.sort((a, b) => a.name.localeCompare(b.name));
+          return filteredList;
+        case 'start':
+          filteredList.sort((a, b) => a.start_datetime.localeCompare(b.start_datetime));
+          return filteredList;
+        default:
+          return filteredList;
+      }
+    } else {
+      return tempList;
+    }
+  };
 
   const fetchGames = async (type) => {
     setGames([]);
@@ -46,19 +117,38 @@ const Play = () => {
     }
   };
 
-  const gameStatus = (start, end) => {
-    const now = new Date();
-    const startTime = new Date(start);
-    const endTime = new Date(end);
+  function fetchGamesLoading() {
+    setloading(true);
+    fetchGames(activeCategory);
+    setloading(false);
+  }
 
-    if (startTime <= now && endTime > now) {
-      return 'active';
-    } else if (now < start) {
-      return 'new';
-    } else {
-      return 'completed';
+  useEffect(() => {
+    if (typeof games !== null) {
+      if (games && games.length > 0) {
+        const tempList = [...games];
+        const filteredList = applySortFilter(tempList, filter, search).splice(
+          limit * offset,
+          limit
+        );
+        setSortedList(filteredList);
+        if (search) {
+          setPageCount(Math.ceil(applySortFilter(tempList, filter, search).length / limit));
+        } else {
+          setPageCount(Math.ceil(games.length / limit));
+        }
+      }
     }
-  };
+  }, [games, limit, offset, filter, search]);
+
+  useEffect(() => {
+    if (games.length > 0) {
+      const tempList = [...games];
+      const filteredList = tempList.splice(gamesLimit * gamesOffset, gamesLimit);
+      setSortedgames(filteredList);
+      setgamePageCount(Math.ceil(games.length / gamesLimit));
+    }
+  }, [games, gamesLimit, gamesOffset]);
 
   useEffect(() => {
     if (typeof connectedWallet !== 'undefined')
@@ -66,7 +156,8 @@ const Play = () => {
   }, [connectedWallet]);
 
   useEffect(() => {
-    fetchGames(activeCategory);
+    fetchGamesLoading();
+    setOffset(0);
   }, [activeCategory]);
 
   useEffect(() => {
@@ -254,28 +345,89 @@ const Play = () => {
                     </div>
 
                     <hr className="opacity-50" />
-
-                    <div className="mt-4 flex ml-6 grid grid-cols-0 md:grid-cols-3">
-                      {games.length > 0 &&
-                        games.map(function (data, i) {
-                          return (
-                            <a href={`/PlayDetails?id=${data.id}`}>
-                              <div className="mr-6">
-                                <PlayComponent
-                                  type="new"
-                                  icon={data.icon}
-                                  prizePool={data.prize}
-                                  startDate={data.start_datetime}
-                                  month={data.month}
-                                  date={data.date}
-                                  year={data.year}
-                                  img={data.image}
-                                />
-                              </div>
-                            </a>
-                          );
-                        })}
-                    </div>
+                    {sortedList.length > 0 ? (
+                      <>
+                        <div className="mt-4 flex ml-6 grid grid-cols-0 md:grid-cols-3">
+                          {sortedList.map(function (data, i) {
+                            return (
+                              <>
+                                <a href={`/PlayDetails?id=${data.id}`}>
+                                  <div className="mr-6">
+                                    <PlayComponent
+                                      type="new"
+                                      icon={data.icon}
+                                      prizePool={data.prize}
+                                      startDate={data.start_datetime}
+                                      month={data.month}
+                                      date={data.date}
+                                      year={data.year}
+                                      img={data.image}
+                                      fetchGames={() => fetchGamesLoading(activeCategory)}
+                                      index={() => changeIndex()}
+                                    />
+                                  </div>
+                                </a>
+                              </>
+                            );
+                          })}
+                        </div>
+                        <div className="flex justify-between md:mt-5 md:mr-6 p-5">
+                          <div className="bg-indigo-white mr-1 h-11 flex items-center font-thin border-indigo-lightgray border-opacity-40 p-2">
+                            {pageCount > 1 && (
+                              <button
+                                className="px-2 border mr-2"
+                                onClick={() => changeIndex('first')}
+                              >
+                                First
+                              </button>
+                            )}
+                            {pageCount !== 0 && canPrevious() && (
+                              <button
+                                className="px-2 border mr-2"
+                                onClick={() => changeIndex('previous')}
+                              >
+                                Previous
+                              </button>
+                            )}
+                            <p className="mr-2">
+                              Page {offset + 1} of {pageCount}
+                            </p>
+                            {pageCount !== 0 && canNext() && (
+                              <button
+                                className="px-2 border mr-2"
+                                onClick={() => changeIndex('next')}
+                              >
+                                Next
+                              </button>
+                            )}
+                            {pageCount > 1 && (
+                              <button
+                                className="px-2 border mr-2"
+                                onClick={() => changeIndex('last')}
+                              >
+                                Last
+                              </button>
+                            )}
+                          </div>
+                          <div className="bg-indigo-white mr-1 h-11 w-64 flex font-thin border-2 border-indigo-lightgray border-opacity-40 p-2">
+                            <select
+                              value={limit}
+                              className="bg-indigo-white text-lg w-full outline-none"
+                              onChange={(e) => {
+                                setLimit(e.target.value);
+                                setOffset(0);
+                              }}
+                            >
+                              {limitOptions.map((option) => (
+                                <option value={option}>{option}</option>
+                              ))}
+                            </select>
+                          </div>
+                        </div>
+                      </>
+                    ) : (
+                      <></>
+                    )}
                   </>
                 )}
                 {activeCategory === 'active' && (
@@ -305,29 +457,90 @@ const Play = () => {
                     </div>
 
                     <hr className="opacity-50" />
-
-                    <div className="mt-4 flex ml-6 grid grid-cols-0 md:grid-cols-3">
-                      {games.length > 0 &&
-                        games.map(function (data, i) {
-                          return (
-                            <a href={`/PlayDetails?id=${data.id}`}>
-                              <div className="mr-6">
-                                <PlayComponent
-                                  type="ongoing"
-                                  icon={data.icon}
-                                  prizePool={data.prize}
-                                  startDate={data.start_datetime}
-                                  endDate={data.end_datetime}
-                                  month={data.month}
-                                  date={data.date}
-                                  year={data.year}
-                                  img={data.image}
-                                />
-                              </div>
-                            </a>
-                          );
-                        })}
-                    </div>
+                    {sortedList.length > 0 ? (
+                      <>
+                        <div className="mt-4 flex ml-6 grid grid-cols-0 md:grid-cols-3">
+                          {sortedList.map(function (data, i) {
+                            return (
+                              <>
+                                <a href={`/PlayDetails?id=${data.id}`}>
+                                  <div className="mr-6">
+                                    <PlayComponent
+                                      type="ongoing"
+                                      icon={data.icon}
+                                      prizePool={data.prize}
+                                      startDate={data.start_datetime}
+                                      endDate={data.end_datetime}
+                                      month={data.month}
+                                      date={data.date}
+                                      year={data.year}
+                                      img={data.image}
+                                      fetchGames={() => fetchGamesLoading(activeCategory)}
+                                      index={() => changeIndex()}
+                                    />
+                                  </div>
+                                </a>
+                              </>
+                            );
+                          })}
+                        </div>
+                        <div className="flex justify-between md:mt-5 md:mr-6 p-5">
+                          <div className="bg-indigo-white mr-1 h-11 flex items-center font-thin border-indigo-lightgray border-opacity-40 p-2">
+                            {pageCount > 1 && (
+                              <button
+                                className="px-2 border mr-2"
+                                onClick={() => changeIndex('first')}
+                              >
+                                First
+                              </button>
+                            )}
+                            {pageCount !== 0 && canPrevious() && (
+                              <button
+                                className="px-2 border mr-2"
+                                onClick={() => changeIndex('previous')}
+                              >
+                                Previous
+                              </button>
+                            )}
+                            <p className="mr-2">
+                              Page {offset + 1} of {pageCount}
+                            </p>
+                            {pageCount !== 0 && canNext() && (
+                              <button
+                                className="px-2 border mr-2"
+                                onClick={() => changeIndex('next')}
+                              >
+                                Next
+                              </button>
+                            )}
+                            {pageCount > 1 && (
+                              <button
+                                className="px-2 border mr-2"
+                                onClick={() => changeIndex('last')}
+                              >
+                                Last
+                              </button>
+                            )}
+                          </div>
+                          <div className="bg-indigo-white mr-1 h-11 w-64 flex font-thin border-2 border-indigo-lightgray border-opacity-40 p-2">
+                            <select
+                              value={limit}
+                              className="bg-indigo-white text-lg w-full outline-none"
+                              onChange={(e) => {
+                                setLimit(e.target.value);
+                                setOffset(0);
+                              }}
+                            >
+                              {limitOptions.map((option) => (
+                                <option value={option}>{option}</option>
+                              ))}
+                            </select>
+                          </div>
+                        </div>
+                      </>
+                    ) : (
+                      <></>
+                    )}
                   </>
                 )}
                 {activeCategory === 'completed' && (
@@ -358,49 +571,108 @@ const Play = () => {
 
                     <hr className="opacity-50" />
 
-                    <div className="mt-4 flex ml-6 grid grid-cols-0 md:grid-cols-3">
-                      {games.length > 0 &&
-                        games.map(function (data, i) {
-                          return (
-                            <div className="flex">
-                              <div className="mr-6">
-                                <PlayComponent
-                                  type="completed"
-                                  icon={data.icon}
-                                  prizePool={data.prize}
-                                  startDate={data.start_datetime}
-                                  month={data.month}
-                                  date={data.date}
-                                  year={data.year}
-                                  img={data.image}
-                                />
-                                <div className="">
-                                  <button
-                                    className={
-                                      data.id % 2 === 0
-                                        ? 'bg-indigo-buttonblue w-full h-12 text-center font-bold rounded-md text-sm mt-4 self-center hidden'
-                                        : 'bg-indigo-buttonblue w-full h-12 text-center font-bold rounded-md text-sm mt-4 self-center'
-                                    }
-                                    onClick={() => showClaimModal(true)}
-                                  >
-                                    <div className="text-indigo-white">CLAIM REWARD</div>
-                                  </button>
-                                  <button
-                                    className={
-                                      data.id % 2 === 0
-                                        ? 'bg-indigo-buttonblue w-full h-12 text-center font-bold rounded-md text-sm mt-4 self-center'
-                                        : 'bg-indigo-buttonblue w-full h-12 text-center font-bold rounded-md text-sm mt-4 self-center hidden'
-                                    }
-                                    onClick={() => showClaimTeam(true)}
-                                  >
-                                    <div className="text-indigo-white">CLAIM TEAM</div>
-                                  </button>
+                    {sortedList.length > 0 ? (
+                      <>
+                        <div className="mt-4 flex ml-6 grid grid-cols-0 md:grid-cols-3">
+                          {sortedList.map(function (data, i) {
+                            return (
+                              <div className="flex">
+                                <div className="mr-6">
+                                  <PlayComponent
+                                    type="completed"
+                                    icon={data.icon}
+                                    prizePool={data.prize}
+                                    startDate={data.start_datetime}
+                                    month={data.month}
+                                    date={data.date}
+                                    year={data.year}
+                                    img={data.image}
+                                    index={() => changeIndex()}
+                                  />
+                                  <div className="">
+                                    <button
+                                      className={
+                                        data.id % 2 === 0
+                                          ? 'bg-indigo-buttonblue w-full h-12 text-center font-bold rounded-md text-sm mt-4 self-center hidden'
+                                          : 'bg-indigo-buttonblue w-full h-12 text-center font-bold rounded-md text-sm mt-4 self-center'
+                                      }
+                                      onClick={() => showClaimModal(true)}
+                                    >
+                                      <div className="text-indigo-white">CLAIM REWARD</div>
+                                    </button>
+                                    <button
+                                      className={
+                                        data.id % 2 === 0
+                                          ? 'bg-indigo-buttonblue w-full h-12 text-center font-bold rounded-md text-sm mt-4 self-center'
+                                          : 'bg-indigo-buttonblue w-full h-12 text-center font-bold rounded-md text-sm mt-4 self-center hidden'
+                                      }
+                                      onClick={() => showClaimTeam(true)}
+                                    >
+                                      <div className="text-indigo-white">CLAIM TEAM</div>
+                                    </button>
+                                  </div>
                                 </div>
                               </div>
-                            </div>
-                          );
-                        })}
-                    </div>
+                            );
+                          })}
+                        </div>
+                        <div className="flex justify-between md:mt-5 md:mr-6 p-5">
+                          <div className="bg-indigo-white mr-1 h-11 flex items-center font-thin border-indigo-lightgray border-opacity-40 p-2">
+                            {pageCount > 1 && (
+                              <button
+                                className="px-2 border mr-2"
+                                onClick={() => changeIndex('first')}
+                              >
+                                First
+                              </button>
+                            )}
+                            {pageCount !== 0 && canPrevious() && (
+                              <button
+                                className="px-2 border mr-2"
+                                onClick={() => changeIndex('previous')}
+                              >
+                                Previous
+                              </button>
+                            )}
+                            <p className="mr-2">
+                              Page {offset + 1} of {pageCount}
+                            </p>
+                            {pageCount !== 0 && canNext() && (
+                              <button
+                                className="px-2 border mr-2"
+                                onClick={() => changeIndex('next')}
+                              >
+                                Next
+                              </button>
+                            )}
+                            {pageCount > 1 && (
+                              <button
+                                className="px-2 border mr-2"
+                                onClick={() => changeIndex('last')}
+                              >
+                                Last
+                              </button>
+                            )}
+                          </div>
+                          <div className="bg-indigo-white mr-1 h-11 w-64 flex font-thin border-2 border-indigo-lightgray border-opacity-40 p-2">
+                            <select
+                              value={limit}
+                              className="bg-indigo-white text-lg w-full outline-none"
+                              onChange={(e) => {
+                                setLimit(e.target.value);
+                                setOffset(0);
+                              }}
+                            >
+                              {limitOptions.map((option) => (
+                                <option value={option}>{option}</option>
+                              ))}
+                            </select>
+                          </div>
+                        </div>
+                      </>
+                    ) : (
+                      <></>
+                    )}
                   </>
                 )}
               </div>
