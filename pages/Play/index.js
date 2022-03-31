@@ -137,7 +137,6 @@ const Play = () => {
         } else {
           setPageCount(Math.ceil(games.length / limit));
         }
-        console.log('games', games);
       }
     }
   }, [games, limit, offset, filter, search]);
@@ -169,7 +168,6 @@ const Play = () => {
 
   return (
     <>
-      {console.log(games)}
       {claimModal === true && (
         <>
           <div className="fixed w-screen h-screen bg-opacity-70 z-50 overflow-auto bg-indigo-gray flex font-montserrat">
@@ -364,7 +362,7 @@ const Play = () => {
                                       date={data.date}
                                       year={data.year}
                                       img={data.image}
-                                      fetchGames={() => fetchGames(activeCategory)}
+                                      fetchGames={() => fetchGamesLoading(activeCategory)}
                                       index={() => changeIndex()}
                                     />
                                   </div>
@@ -477,7 +475,7 @@ const Play = () => {
                                       date={data.date}
                                       year={data.year}
                                       img={data.image}
-                                      fetchGames={() => fetchGames(activeCategory)}
+                                      fetchGames={() => fetchGamesLoading(activeCategory)}
                                       index={() => changeIndex()}
                                     />
                                   </div>
