@@ -20,6 +20,7 @@ export default function PlayDetails() {
   const [leaderboard, setLeaderboard] = useState([]);
   const [registeredTeams, setRegisteredTeams] = useState([]);
   const connectedWallet = useConnectedWallet();
+  const [gameEnd,  setGameEnd] = useState(false);
 
   async function fetchGameData() {
     const res = await axiosInstance.get(`/fantasy/game/${router.query.id}/`);
@@ -63,12 +64,17 @@ export default function PlayDetails() {
     }
   }
 
+  function gameEnded(){
+    setGameEnd(true);
+  }
+
   useEffect(() => {
     if (router && router.query.id) {
       fetchLeaderboard();
       fetchGameData();
+      setGameEnd(false)
     }
-  }, [router]);
+  }, [router,gameEnd]);
 
   useEffect(() => {
     if (router && router.query.id && connectedWallet) {
@@ -77,7 +83,7 @@ export default function PlayDetails() {
   }, [router, connectedWallet]);
 
   if (!router) {
-    return
+    return;
   }
 
   return (
@@ -115,7 +121,7 @@ export default function PlayDetails() {
                                       query: {
                                         team_id: data.id,
                                         game_id: router.query.id,
-                                        origin: `/PlayDetails/?id=${router.query.id}`
+                                        origin: `/PlayDetails/?id=${router.query.id}`,
                                       },
                                     }}
                                   >
@@ -143,7 +149,11 @@ export default function PlayDetails() {
                           </div>
                         </div>
                         <div>REGISTRATION ENDS IN</div>
-                        <PlayDetailsComponent startDate={gameData.start_datetime} />
+                        <PlayDetailsComponent
+                          startDate={gameData.start_datetime}
+                          fetch={() => fetchGameData()}
+                          game={()=> gameEnded()}
+                        />
                       </>
                     )}
 
@@ -225,7 +235,9 @@ export default function PlayDetails() {
                   )}
                 </div>
               </div>
-            ) : ''}
+            ) : (
+              ''
+            )}
           </div>
         </Main>
       </div>
