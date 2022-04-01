@@ -20,7 +20,8 @@ export default function PlayDetails() {
   const [leaderboard, setLeaderboard] = useState([]);
   const [registeredTeams, setRegisteredTeams] = useState([]);
   const connectedWallet = useConnectedWallet();
-  const [gameEnd,  setGameEnd] = useState(false);
+  const [gameOngoing, setgameOngoing] = useState(false);
+  const [gameEnd, setgameEnd] = useState(false);
 
   async function fetchGameData() {
     const res = await axiosInstance.get(`/fantasy/game/${router.query.id}/`);
@@ -64,17 +65,21 @@ export default function PlayDetails() {
     }
   }
 
-  function gameEnded(){
-    setGameEnd(true);
+  function isOngoing() {
+    setgameOngoing(true);
+  }
+
+  function isEnd() {
+    setgameEnd(true);
   }
 
   useEffect(() => {
     if (router && router.query.id) {
       fetchLeaderboard();
       fetchGameData();
-      setGameEnd(false)
+      setgameOngoing(false);
     }
-  }, [router,gameEnd]);
+  }, [router, gameOngoing]);
 
   useEffect(() => {
     if (router && router.query.id && connectedWallet) {
@@ -148,12 +153,21 @@ export default function PlayDetails() {
                             </div>
                           </div>
                         </div>
-                        <div>REGISTRATION ENDS IN</div>
-                        <PlayDetailsComponent
-                          startDate={gameData.start_datetime}
-                          fetch={() => fetchGameData()}
-                          game={()=> gameEnded()}
-                        />
+                        {console.log(gameEnd)}
+
+                        {gameEnd ? (
+                          <></>
+                        ) : (
+                          <>
+                            <div>REGISTRATION ENDS IN</div>
+                            <PlayDetailsComponent
+                              startDate={gameData.start_datetime}
+                              fetch={() => fetchGameData()}
+                              game={() => isOngoing()}
+                              gameEnd={() => isEnd()}
+                            />
+                          </>
+                        )}
                       </>
                     )}
 
@@ -162,7 +176,7 @@ export default function PlayDetails() {
                         <button
                           className={
                             new Date(gameData.start_datetime) <= new Date() &&
-                            new Date(gameData.end_datetime) > new Date()
+                            new Date(gameData.end_datetime) > new Date()||gameEnd
                               ? 'bg-indigo-lightblue text-indigo-buttonblue cursor-not-allowed w-64 h-12 text-center font-bold text-md mt-8 mr-4 hidden'
                               : 'bg-indigo-buttonblue text-indigo-white w-64 h-12 text-center font-bold text-md mt-8'
                           }
