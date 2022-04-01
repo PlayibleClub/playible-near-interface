@@ -4,7 +4,7 @@ import Image from 'next/image';
 import moment from 'moment';
 
 const PlayDetailsComponent = (props) => {
-  const { startDate,fetch,game } = props;
+  const { startDate, fetch, game } = props;
 
   const [day, setDay] = useState(0);
   const [hour, setHour] = useState(0);
@@ -18,7 +18,7 @@ const PlayDetailsComponent = (props) => {
   }
 
   useEffect(() => {
-    setGetGames(false)
+    setGetGames(false);
     setDay('');
     setHour('');
     setMinute('');
@@ -39,7 +39,7 @@ const PlayDetailsComponent = (props) => {
       setSecond(formatTime(seconds));
 
       if (Math.floor(totalSeconds) === 0) {
-        setGetGames(true)
+        setGetGames(true);
         fetch();
         game();
       }

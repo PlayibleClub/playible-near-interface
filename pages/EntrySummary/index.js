@@ -20,6 +20,7 @@ export default function EntrySummary() {
   const [teamModal, setTeamModal] = useState(false);
   const connectedWallet = useConnectedWallet();
   const [team, setTeam] = useState(null);
+  const [gameEnd,  setGameEnd] = useState(false);
 
   const fetchGameData = async () => {
     const res = await axiosInstance.get(`/fantasy/game/${router.query.game_id}/`);
@@ -35,11 +36,16 @@ export default function EntrySummary() {
     }
   };
 
+  function gameEnded(){
+    setGameEnd(true);
+  }
+
   useEffect(() => {
     if (router && router.query.game_id && router.query.team_id && connectedWallet) {
       fetchGameData();
+      setGameEnd(false)
     }
-  }, [router, connectedWallet]);
+  }, [router, connectedWallet,gameEnd]);
 
   if (!router) {
     return;
@@ -86,7 +92,9 @@ export default function EntrySummary() {
           <Main color="indigo-white">
             <>
               <div className="mt-8">
-                <BackFunction prev={router.query.origin || `/CreateLineup?id=${router.query.game_id}`} />
+                <BackFunction
+                  prev={router.query.origin || `/CreateLineup?id=${router.query.game_id}`}
+                />
               </div>
               <PortfolioContainer textcolor="indigo-black" title="ENTRY SUMMARY" />
               <div className="md:ml-7 flex flex-row md:flex-row">
@@ -119,6 +127,8 @@ export default function EntrySummary() {
                             <PlayDetailsComponent
                               prizePool={gameData.prize}
                               startDate={gameData.end_datetime}
+                              fetch={() => fetchGameData()}
+                              game={() => gameEnded()}
                             />
                           ) : (
                             ''
@@ -131,6 +141,8 @@ export default function EntrySummary() {
                             <PlayDetailsComponent
                               prizePool={gameData.prize}
                               startDate={gameData.start_datetime}
+                              fetch={() => fetchGameData()}
+                              game={() => gameEnded()}
                             />
                           ) : (
                             ''
