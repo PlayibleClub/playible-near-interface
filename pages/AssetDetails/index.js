@@ -335,7 +335,7 @@ const AssetDetails = (props) => {
 
                         <div className="mt-10 flex flex-col md:flex-row justify-between">
                           <PortfolioContainer
-                            textcolor="indigo-black"
+                            textcolor="indigo-black font-monument"
                             title="PLAYER STATS"
                             stats={String(stats.fantasy_score || 0)}
                           />
@@ -364,7 +364,7 @@ const AssetDetails = (props) => {
                             </div>
                           </div>
                         </div>
-                        <div className="text-indigo-white bg-indigo-black w-48 py-4 text-3xl font-bold text-center ml-6 mt-8 md:mt-0">
+                        <div className="text-indigo-white bg-indigo-black w-max font-monument p-4 text-3xl font-thin uppercase text-center ml-6 mt-8 md:mt-5">
                           {position('baseball', assetData.position)}
                         </div>
                         <div className="flex flex-col justify-center self-center md:mr-24 mb-8 md:ml-6">

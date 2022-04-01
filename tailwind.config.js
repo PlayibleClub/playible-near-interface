@@ -39,6 +39,7 @@ module.exports = {
                 darkgray: '#282828',
                 lightblue: '#E6EFFF',
                 yellow: '#F2C946',
+                slate: '#E4E4E4'
             },
             white: {
                 light: '#FFFFFF'
