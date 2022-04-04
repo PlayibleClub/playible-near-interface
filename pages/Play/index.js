@@ -119,6 +119,7 @@ const Play = () => {
 
   function fetchGamesLoading() {
     setloading(true);
+    setSortedList([])
     fetchGames(activeCategory);
     setloading(false);
   }
@@ -145,6 +146,7 @@ const Play = () => {
     if (games.length > 0) {
       const tempList = [...games];
       const filteredList = tempList.splice(gamesLimit * gamesOffset, gamesLimit);
+      
       setSortedgames(filteredList);
       setgamePageCount(Math.ceil(games.length / gamesLimit));
     }
