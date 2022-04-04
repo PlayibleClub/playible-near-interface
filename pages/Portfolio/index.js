@@ -45,6 +45,7 @@ const Portfolio = () => {
         }
       }
       const res = await lcd.wasm.contractQuery(PACK, formData)
+
       if (res && res.length > 0) {
         setPacks(res)
       } else {
@@ -156,7 +157,7 @@ const Portfolio = () => {
   }
 
   useEffect(() => {
-    if (typeof connectedWallet !== 'undefined') {
+    if (connectedWallet &&  dispatch  ) {
       setLoading(true)
       dispatch(getAccountAssets({ walletAddr: connectedWallet.walletAddress }));
       setTimeout(() => {
@@ -172,7 +173,7 @@ const Portfolio = () => {
   }, [dispatch, connectedWallet])
 
   useEffect(() => {
-    if (typeof playerList !== null) {
+    if (playerList) {
       if (playerList.tokens && playerList.tokens.length > 0) {
         const tempList = [...playerList.tokens]
         const filteredList = applySortFilter(tempList, filter, search).splice(limit*offset, limit)
