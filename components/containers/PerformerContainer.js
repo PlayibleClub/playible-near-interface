@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import Image from 'next/image'
+import React from 'react'
 
 const PerformerContainer = (props) => {
   const { children, color, imagesrc, uri, AthleteName, TeamName, CoinValue, AvgScore, id = null, rarity, status, hoverable = true } = props;

@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import Link from 'next/link'
 import Image from 'next/image'
+import React from 'react'
 
 const PackContainer = (props) => {
     const { imagesrc = null, packName, releaseValue, link } = props;

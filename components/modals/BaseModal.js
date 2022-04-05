@@ -1,5 +1,5 @@
 import { Dialog, Transition } from '@headlessui/react'
-import { Fragment } from 'react'
+import React, { Fragment } from 'react'
 import underlineIcon from '../../public/images/blackunderline.png'
 
 const BaseModal = (props) => {

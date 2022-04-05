@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import React from 'react'
 
 const MyactivityContainer = (props) => {
   const { children, color, date, rank, points } = props;

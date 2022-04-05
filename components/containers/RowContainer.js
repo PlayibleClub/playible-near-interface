@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import React from 'react'
 
 const RowContainer = (props) => {
   const { children, color } = props;

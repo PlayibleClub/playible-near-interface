@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import Image from 'next/image';
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 const PerformerContainerSelectable = (props) => {
   const {
