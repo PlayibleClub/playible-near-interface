@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 //const baseURL = 'http://localhost:8000/';
-const baseURL = 'https://dev.api.playible.io/';
+const baseURL = process.env.NEXT_PUBLIC_API_URL;
 // const baseURL = 'https://staging-api.playible.io/';
 
 const axiosInstance = axios.create({

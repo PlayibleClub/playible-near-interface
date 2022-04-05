@@ -5,7 +5,7 @@
     "scripts": {
         "dev": "next dev",
         "build": "next build",
-        "start": "next start",
+        "start": "next start -p 80",
         "redux-devtools": "redux-devtools --hostname=localhost --port=8000"
     },
     "dependencies": {
