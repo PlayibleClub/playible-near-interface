@@ -8,7 +8,7 @@ import PrizePoolComponent from '../components/PrizePoolComponent';
 import Link from 'next/link';
 import MarketplaceContainer from '../components/containers/MarketplaceContainer';
 import LargePackContainer from '../components/containers/LargePackContainer';
-import filterIcon from '../public/images/filterblack.png';
+import filterIcon from '../public/images/filterBlack.png';
 import PerformerContainer from '../components/containers/PerformerContainer';
 import progressBar from '../public/images/progressbar.png';
 import banner from '../public/images/promotionheader.png';
