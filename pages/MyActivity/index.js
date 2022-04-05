@@ -54,6 +54,8 @@ const MyActivity = () => {
       );
       if (teams.status === 200 && teams.data.length > 0) {
         return data;
+      } else {
+        return []
       }
     });
 
@@ -96,7 +98,6 @@ const MyActivity = () => {
           <Main color="indigo-white">
             <div className="flex flex-col">
               <div className="flex">
-                {/* <BackButton prev="/Play"/> */}
                 {allGames ? (
                   <>
                     <PortfolioContainer title="MY ACTIVITY" textcolor="text-indigo-black">
