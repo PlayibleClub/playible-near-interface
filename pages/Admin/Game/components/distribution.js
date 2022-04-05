@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import BaseModal from '../../../../components/modals/BaseModal';
 
 const Distribution = (props) => {

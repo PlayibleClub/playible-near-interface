@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import disclaimer from '../../public/images/disclaimer.png'
 import Image from 'next/link'
+import React from 'react'
 
 const DisclaimerHeader = (props) => {
   const { children, color } = props;

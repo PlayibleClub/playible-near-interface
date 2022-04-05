@@ -2,7 +2,9 @@ import '../styles/globals.css';
 import { Provider } from 'react-redux'
 import { store } from '../redux/store';
 import { StaticWalletProvider, WalletProvider } from '@terra-money/wallet-provider';
- 
+import 'regenerator-runtime/runtime';
+import React from 'react'
+
 function MyApp({ Component, pageProps }) {
   const mainnet = {
     name: 'mainnet',

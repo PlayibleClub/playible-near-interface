@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import React from 'react'
 
 const TokenGridCol3 = (props) => {
   const { children, color } = props;

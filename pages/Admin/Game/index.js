@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Container from '../../../components/containers/Container';
 import LoadingPageDark from '../../../components/loading/LoadingPageDark';
 import Main from '../../../components/Main';
@@ -11,6 +11,7 @@ import ReactTimeAgo from 'react-time-ago';
 import { useConnectedWallet } from '@terra-money/wallet-provider';
 import { estimateFee, estimateMultipleFees, executeContract } from '../../../utils/terra';
 import { GAME, ORACLE } from '../../../data/constants/contracts';
+import 'regenerator-runtime/runtime';
 TimeAgo.addDefaultLocale(en);
 
 const Index = (props) => {

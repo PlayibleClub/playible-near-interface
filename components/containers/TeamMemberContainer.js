@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import React from 'react'
 
 const TeamMemberContainer = (props) => {
   const { children, color, imagesrc, player, TeamName, score, id, pos } = props;

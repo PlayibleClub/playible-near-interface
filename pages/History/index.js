@@ -6,6 +6,7 @@ import { useRouter } from 'next/router';
 import Link from 'next/link'
 import Container from '../../components/containers/Container';
 import Image from 'next/image';
+import 'regenerator-runtime/runtime';
 
 const playerList = [ // player list for testing purposes
     {

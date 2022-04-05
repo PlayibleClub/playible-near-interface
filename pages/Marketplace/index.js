@@ -9,7 +9,7 @@ import { useConnectedWallet } from '@terra-money/wallet-provider';
 import LoadingPageDark from '../../components/loading/LoadingPageDark';
 import Link from 'next/link'
 import Container from '../../components/containers/Container';
-import Sorter from './components/Sorter';
+import 'regenerator-runtime/runtime';
 
 const salesList = [ // player list for testing purposes
     {
@@ -157,11 +157,7 @@ const Marketplace = () => {
                 <div className="flex flex-col w-full overflow-y-auto overflow-x-hidden h-screen self-center text-indigo-black">
                   <div className="ml-6 flex flex-col md:flex-row md:justify-between">
                       <PortfolioContainer textcolor="indigo-black" title="MARKETPLACE"/>
-                      <Sorter
-                        list={sortedList}
-                        setList={setSortedList}
-                        setSearchText={setSearchText}
-                      />
+                      
                   </div>
     
                   <div className="flex flex-col w-full text-indigo-black">

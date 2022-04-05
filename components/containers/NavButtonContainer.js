@@ -1,5 +1,7 @@
 import PropTypes from 'prop-types';
+import React from 'react'
 import Link from 'next/link'
+
 const NavButtonContainer = (props) => {
   const { children, color, imagesrc, Title, TeamName, CoinValue, path } = props;
 

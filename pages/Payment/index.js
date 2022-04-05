@@ -8,6 +8,7 @@ import Navbar from '../../components/navbars/Navbar';
 import walletIcon from '../../public/images/walletBlue.png';
 import Container from '../../components/containers/Container';
 import BackFunction from '../../components/buttons/BackFunction';
+import 'regenerator-runtime/runtime';
 
 const Payment = () => {
     const [isClosed, setClosed] = useState(true)

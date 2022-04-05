@@ -13,6 +13,7 @@ import { useConnectedWallet, useLCDClient } from '@terra-money/wallet-provider';
 import { executeContract, queryContract, retrieveTxInfo } from '../../utils/terra';
 import { OPENPACK, PACK, ATHLETE } from '../../data/constants/contracts';
 import { axiosInstance } from '../../utils/playible';
+import 'regenerator-runtime/runtime';
 
 const sampleList = [0,1,2,3,4,5]
 

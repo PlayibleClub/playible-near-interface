@@ -12,6 +12,7 @@ import { useConnectedWallet } from '@terra-money/wallet-provider';
 import BaseModal from '../../components/modals/BaseModal';
 import * as statusCode from '../../data/constants/status'
 import * as actionType from '../../data/constants/actions'
+import 'regenerator-runtime/runtime';
 
 const Purchase = () => {
     const router = useRouter();

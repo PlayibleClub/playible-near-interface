@@ -13,6 +13,7 @@ import { truncate } from '../../utils/wallet/index.js';
 import { ADMIN } from '../../data/constants/address.js';
 import { useConnectedWallet } from '@terra-money/wallet-provider';
 import Link from 'next/link';
+import 'regenerator-runtime/runtime';
 
 export default function PlayDetails() {
   const router = useRouter();

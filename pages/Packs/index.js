@@ -6,7 +6,7 @@ import LargePackContainer from '../../components/containers/LargePackContainer';
 import Container from '../../components/containers/Container';
 import BackFunction from '../../components/buttons/BackFunction';
 import Main from '../../components/Main'
-import { packList } from './data'
+import 'regenerator-runtime/runtime';
 
 export default function Packs() {
     const { status, connect, disconnect, availableConnectTypes } = useWallet();
@@ -70,27 +70,7 @@ export default function Packs() {
                     <PortfolioContainer textcolor="indigo-black" title="PACKS">
                         <div className="flex flex-col">
                                 <div className="grid grid-cols-4 gap-y-8 mt-4 md:grid-cols-4 md:ml-7 md:mt-12">
-                                    {
-                                        packList.map(function (pack, i) {
-                                            const toFindName = pack.name.toLowerCase()
-                                            const searchInfo = result.toLowerCase()
-                                            if (toFindName.includes(searchInfo))
-                                                return (
-                                                    <div className="">
-                                                        <a href={`/PackDetails?id=${pack.key}`}>
-                                                            <div className="" key={i}>
-                                                                <LargePackContainer
-                                                                    PackName={pack.name}
-                                                                    CoinValue={pack.price}
-                                                                    releaseValue={pack.release}
-                                                                    imagesrc={pack.image} />
-                                                            </div>
-                                                        </a>
-                                                    </div>
-                                                )
-                                            }
-                                        )
-                                    }
+                                    
                                 </div>
                         </div>
                     </PortfolioContainer>

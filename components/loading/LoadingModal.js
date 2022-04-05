@@ -1,4 +1,6 @@
 //loading component for modals
+import React from 'react'
+
 const LoadingModal = () => {
   return (
     <div className="max-w-sm animate-pulse flex space-x-6 justify-center p-4">

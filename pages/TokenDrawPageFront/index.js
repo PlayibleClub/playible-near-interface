@@ -13,6 +13,7 @@ import Navbar from '../../components/navbars/Navbar';
 import HorizontalScrollContainer from '../../components/containers/HorizontalScrollContainer'
 import TokenComponent from '../../components/TokenComponent';
 import Main from '../../components/Main';
+import 'regenerator-runtime/runtime';
 
 const sampleList = [0,1,2,3,4,5]
 

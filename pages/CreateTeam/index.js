@@ -5,14 +5,12 @@ import PortfolioContainer from '../../components/containers/PortfolioContainer';
 import Link from 'next/link';
 import Container from '../../components/containers/Container';
 import BackFunction from '../../components/buttons/BackFunction';
-
-import { playList } from '../../pages/PlayDetails/data/index.js';
+import 'regenerator-runtime/runtime';
 
 import { useRouter } from 'next/router';
 
-import Lineup from '../../pages/CreateLineup/components/Lineup.js';
+import Lineup from '../../components/Lineup'
 
-import Data from '../../data/teams.json';
 import { useDispatch, useSelector } from 'react-redux';
 import { useConnectedWallet } from '@terra-money/wallet-provider';
 import { getAccountAssets } from '../../redux/reducers/external/playible/assets';

@@ -1,17 +1,14 @@
 import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
 import Main from '../../components/Main';
-import PortfolioContainer from '../../components/containers/PortfolioContainer';
 import ModalPortfolioContainer from '../../components/containers/ModalPortfolioContainer';
 import Container from '../../components/containers/Container';
 import BackFunction from '../../components/buttons/BackFunction';
-import { playList } from '../../pages/PlayDetails/data/index.js';
 import { useRouter } from 'next/router';
-import Teams from '../../pages/CreateLineup/components/Teams.js';
-import Data from '../../data/teams.json';
 import { axiosInstance } from '../../utils/playible/';
 import { useConnectedWallet } from '@terra-money/wallet-provider';
 import Link from 'next/link';
+import 'regenerator-runtime/runtime';
 
 export default function CreateLineup() {
   const router = useRouter();

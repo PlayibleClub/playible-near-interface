@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   useWallet, WalletStatus, useConnectedWallet
 } from '@terra-money/wallet-provider';
@@ -6,6 +6,7 @@ import {
 import { useDispatch } from 'react-redux';
 import { queryContract, executeContract } from '../utils/terra';
 import { ConsoleView } from 'react-device-detect';
+import 'regenerator-runtime/runtime';
 
 
 const ContractInteraction = () => {

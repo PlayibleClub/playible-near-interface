@@ -8,7 +8,7 @@ import { useRouter } from 'next/router';
 import Image from 'next/image'
 import {BrowserView, MobileView} from 'react-device-detect'
 import { handleRequestResponse } from '../../utils/general/index';
-
+import 'regenerator-runtime/runtime';
 import * as statusCode from '../../data/constants/status';
 import * as actionType from '../../data/constants/actions';
 import { useConnectedWallet, useLCDClient } from '@terra-money/wallet-provider';
