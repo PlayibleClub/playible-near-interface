@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   useWallet, WalletStatus, useConnectedWallet
 } from '@terra-money/wallet-provider';

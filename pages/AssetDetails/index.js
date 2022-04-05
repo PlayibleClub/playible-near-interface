@@ -21,7 +21,6 @@ import CongratsModal from './components/congratsModal';
 import LoadingPageDark from '../../components/loading/LoadingPageDark';
 import BackFunction from '../../components/buttons/BackFunction';
 
-import { playerdata } from './data';
 import { position } from '../../utils/athlete/position';
 import { axiosInstance } from '../../utils/playible';
 import { ATHLETE } from '../../data/constants/contracts';

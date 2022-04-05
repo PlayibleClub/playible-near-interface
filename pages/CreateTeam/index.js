@@ -7,13 +7,10 @@ import Container from '../../components/containers/Container';
 import BackFunction from '../../components/buttons/BackFunction';
 import 'regenerator-runtime/runtime';
 
-import { playList } from '../../pages/PlayDetails/data/index.js';
-
 import { useRouter } from 'next/router';
 
-import Lineup from '../../pages/CreateLineup/components/Lineup.js';
+import Lineup from '../../components/Lineup'
 
-import Data from '../../data/teams.json';
 import { useDispatch, useSelector } from 'react-redux';
 import { useConnectedWallet } from '@terra-money/wallet-provider';
 import { getAccountAssets } from '../../redux/reducers/external/playible/assets';

@@ -15,7 +15,6 @@ import claimreward from '../../public/images/claimreward.png';
 import ModalComponent from './components/ModalComponent';
 import { useRouter } from 'next/router';
 import 'regenerator-runtime/runtime';
-import { newPlaylist, ongoingPlaylist, completedPlaylist, winningTeams, losingTeams } from './data';
 import { axiosInstance } from '../../utils/playible';
 
 const Play = () => {
@@ -200,20 +199,6 @@ const Play = () => {
                     </div>
                     <hr className="opacity-50" />
 
-                    {winningTeams.map(function (data, i) {
-                      if (data.win === 'y') {
-                        return (
-                          <>
-                            <ModalComponent
-                              teamName={data.teamname}
-                              win={data.win}
-                              reward={data.reward}
-                              score={data.score}
-                            />
-                          </>
-                        );
-                      }
-                    })}
 
                     <div className="w-full flex justify-center">
                       <div className="text-indigo-white w-36 text-center bg-indigo-buttonblue py-2 px-2">
@@ -240,15 +225,6 @@ const Play = () => {
                     </div>
                     <hr className="opacity-50" />
 
-                    {losingTeams.map(function (data, i) {
-                      if (data.win === 'n') {
-                        return (
-                          <>
-                            <ModalComponent teamName={data.teamname} win={data.win} />
-                          </>
-                        );
-                      }
-                    })}
 
                     <div className="w-full flex justify-center">
                       <div className="text-indigo-white w-36 text-center bg-indigo-buttonblue py-2 px-2">
