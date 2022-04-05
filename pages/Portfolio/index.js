@@ -158,7 +158,7 @@ const Portfolio = () => {
   }
 
   useEffect(() => {
-    if (connectedWallet &&  dispatch  ) {
+    if (connectedWallet && dispatch) {
       setLoading(true)
       dispatch(getAccountAssets({ walletAddr: connectedWallet.walletAddress }));
       setTimeout(() => {
@@ -168,8 +168,8 @@ const Portfolio = () => {
   }, [dispatch, connectedWallet]);
 
   useEffect(() => {
-    if (typeof connectedWallet !== 'undefined') {
-      fetchPacks()
+    if (connectedWallet) {
+      fetchPacks();
     }
   }, [dispatch, connectedWallet])
 

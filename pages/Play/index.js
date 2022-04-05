@@ -16,6 +16,7 @@ import ModalComponent from './components/ModalComponent';
 import { useRouter } from 'next/router';
 import 'regenerator-runtime/runtime';
 import { axiosInstance } from '../../utils/playible';
+import LoadingPageDark from '../../components/loading/LoadingPageDark';
 
 const Play = () => {
   const { status, connect, disconnect, availableConnectTypes } = useWallet();
@@ -36,7 +37,7 @@ const Play = () => {
   const dispatch = useDispatch();
   const connectedWallet = useConnectedWallet();
   const [games, setGames] = useState([]);
-  const [loading, setloading] = useState(false);
+  const [loading, setloading] = useState(true);
 
   const [limit, setLimit] = useState(10);
   const [offset, setOffset] = useState(0);
@@ -49,6 +50,8 @@ const Play = () => {
   const limitOptions = [5, 10, 30, 50];
   const [filter, setFilter] = useState(null);
   const [search, setSearch] = useState('');
+
+  const categoryList = ['new', 'active', 'completed'];
 
   const changeIndex = (index) => {
     switch (index) {
@@ -111,6 +114,7 @@ const Play = () => {
   const fetchGames = async (type) => {
     setGames([]);
     const res = await axiosInstance.get(`/fantasy/game/${type}/`);
+
     if (res.status === 200) {
       setGames(res.data);
     }
@@ -118,25 +122,22 @@ const Play = () => {
 
   function fetchGamesLoading() {
     setloading(true);
-    setSortedList([])
+    setSortedList([]);
     fetchGames(activeCategory);
-    setloading(false);
+    setTimeout(() => {
+      setloading(false);
+    }, 500);
   }
 
   useEffect(() => {
-    if (typeof games !== null) {
-      if (games && games.length > 0) {
-        const tempList = [...games];
-        const filteredList = applySortFilter(tempList, filter, search).splice(
-          limit * offset,
-          limit
-        );
-        setSortedList(filteredList);
-        if (search) {
-          setPageCount(Math.ceil(applySortFilter(tempList, filter, search).length / limit));
-        } else {
-          setPageCount(Math.ceil(games.length / limit));
-        }
+    if (games && games.length > 0) {
+      const tempList = [...games];
+      const filteredList = applySortFilter(tempList, filter, search).splice(limit * offset, limit);
+      setSortedList(filteredList);
+      if (search) {
+        setPageCount(Math.ceil(applySortFilter(tempList, filter, search).length / limit));
+      } else {
+        setPageCount(Math.ceil(games.length / limit));
       }
     }
   }, [games, limit, offset, filter, search]);
@@ -145,7 +146,7 @@ const Play = () => {
     if (games.length > 0) {
       const tempList = [...games];
       const filteredList = tempList.splice(gamesLimit * gamesOffset, gamesLimit);
-      
+
       setSortedgames(filteredList);
       setgamePageCount(Math.ceil(games.length / gamesLimit));
     }
@@ -199,7 +200,6 @@ const Play = () => {
                     </div>
                     <hr className="opacity-50" />
 
-
                     <div className="w-full flex justify-center">
                       <div className="text-indigo-white w-36 text-center bg-indigo-buttonblue py-2 px-2">
                         CLAIM REWARD
@@ -224,7 +224,6 @@ const Play = () => {
                       </div>
                     </div>
                     <hr className="opacity-50" />
-
 
                     <div className="w-full flex justify-center">
                       <div className="text-indigo-white w-36 text-center bg-indigo-buttonblue py-2 px-2">
@@ -296,362 +295,127 @@ const Play = () => {
               </div>
 
               <div className="flex flex-col mt-6">
-                {activeCategory === 'new' && (
-                  <>
-                    <div className="flex font-bold ml-8 md:ml-0 font-monument">
-                      <div className="mr-6 md:ml-8 border-b-8 pb-2 border-indigo-buttonblue cursor-pointer">
-                        NEW
-                      </div>
-
-                      <div
-                        className="mr-6 cursor-pointer"
-                        onClick={() => {
-                          setCategory('active');
-                        }}
-                      >
-                        ON-GOING
-                      </div>
-
-                      <div
-                        className="cursor-pointer"
-                        onClick={() => {
-                          setCategory('completed');
-                        }}
-                      >
-                        COMPLETED
-                      </div>
+                <div className="flex font-bold ml-8 md:ml-0 font-monument">
+                  {categoryList.map((type) => (
+                    <div
+                      className={`mr-6 uppercase cursor-pointer md:ml-8 ${
+                        activeCategory === type ? 'border-b-8 pb-2 border-indigo-buttonblue' : ''
+                      }`}
+                      onClick={() => {
+                        setCategory(type);
+                      }}
+                    >
+                      {type}
                     </div>
+                  ))}
+                </div>
 
-                    <hr className="opacity-50" />
-                    {sortedList.length > 0 ? (
-                      <>
-                        <div className="mt-4 flex ml-6 grid grid-cols-0 md:grid-cols-3">
-                          {sortedList.map(function (data, i) {
-                            return (
-                              <>
-                                <a href={`/PlayDetails?id=${data.id}`}>
-                                  <div className="mr-6">
-                                    <PlayComponent
-                                      type="new"
-                                      icon={data.icon}
-                                      prizePool={data.prize}
-                                      startDate={data.start_datetime}
-                                      month={data.month}
-                                      date={data.date}
-                                      year={data.year}
-                                      img={data.image}
-                                      fetchGames={() => fetchGamesLoading(activeCategory)}
-                                      index={() => changeIndex()}
-                                    />
-                                  </div>
-                                </a>
-                              </>
-                            );
-                          })}
-                        </div>
-                        <div className="flex justify-between md:mt-5 md:mr-6 p-5">
-                          <div className="bg-indigo-white mr-1 h-11 flex items-center font-thin border-indigo-lightgray border-opacity-40 p-2">
-                            {pageCount > 1 && (
-                              <button
-                                className="px-2 border mr-2"
-                                onClick={() => changeIndex('first')}
-                              >
-                                First
-                              </button>
-                            )}
-                            {pageCount !== 0 && canPrevious() && (
-                              <button
-                                className="px-2 border mr-2"
-                                onClick={() => changeIndex('previous')}
-                              >
-                                Previous
-                              </button>
-                            )}
-                            <p className="mr-2">
-                              Page {offset + 1} of {pageCount}
-                            </p>
-                            {pageCount !== 0 && canNext() && (
-                              <button
-                                className="px-2 border mr-2"
-                                onClick={() => changeIndex('next')}
-                              >
-                                Next
-                              </button>
-                            )}
-                            {pageCount > 1 && (
-                              <button
-                                className="px-2 border mr-2"
-                                onClick={() => changeIndex('last')}
-                              >
-                                Last
-                              </button>
-                            )}
-                          </div>
-                          <div className="bg-indigo-white mr-1 h-11 w-64 flex font-thin border-2 border-indigo-lightgray border-opacity-40 p-2">
-                            <select
-                              value={limit}
-                              className="bg-indigo-white text-lg w-full outline-none"
-                              onChange={(e) => {
-                                setLimit(e.target.value);
-                                setOffset(0);
-                              }}
-                            >
-                              {limitOptions.map((option) => (
-                                <option value={option}>{option}</option>
-                              ))}
-                            </select>
-                          </div>
-                        </div>
-                      </>
-                    ) : (
-                      <></>
-                    )}
-                  </>
-                )}
-                {activeCategory === 'active' && (
+                <hr className="opacity-50" />
+
+                {loading ? (
+                  <LoadingPageDark />
+                ) : sortedList.length > 0 ? (
                   <>
-                    <div className="flex font-bold ml-8 md:ml-0 font-monument">
-                      <div
-                        className="mr-6 md:ml-8 cursor-pointer"
-                        onClick={() => {
-                          setCategory('new');
-                        }}
-                      >
-                        NEW
-                      </div>
-
-                      <div className="mr-6 border-b-8 pb-2 border-indigo-buttonblue cursor-pointer">
-                        ON-GOING
-                      </div>
-
-                      <div
-                        className="cursor-pointer"
-                        onClick={() => {
-                          setCategory('completed');
-                        }}
-                      >
-                        COMPLETED
-                      </div>
-                    </div>
-
-                    <hr className="opacity-50" />
-                    {sortedList.length > 0 ? (
-                      <>
-                        <div className="mt-4 flex ml-6 grid grid-cols-0 md:grid-cols-3">
-                          {sortedList.map(function (data, i) {
-                            return (
-                              <>
-                                <a href={`/PlayDetails?id=${data.id}`}>
-                                  <div className="mr-6">
-                                    <PlayComponent
-                                      type="ongoing"
-                                      icon={data.icon}
-                                      prizePool={data.prize}
-                                      startDate={data.start_datetime}
-                                      endDate={data.end_datetime}
-                                      month={data.month}
-                                      date={data.date}
-                                      year={data.year}
-                                      img={data.image}
-                                      fetchGames={() => fetchGamesLoading(activeCategory)}
-                                      index={() => changeIndex()}
-                                    />
-                                  </div>
-                                </a>
-                              </>
-                            );
-                          })}
-                        </div>
-                        <div className="flex justify-between md:mt-5 md:mr-6 p-5">
-                          <div className="bg-indigo-white mr-1 h-11 flex items-center font-thin border-indigo-lightgray border-opacity-40 p-2">
-                            {pageCount > 1 && (
-                              <button
-                                className="px-2 border mr-2"
-                                onClick={() => changeIndex('first')}
-                              >
-                                First
-                              </button>
-                            )}
-                            {pageCount !== 0 && canPrevious() && (
-                              <button
-                                className="px-2 border mr-2"
-                                onClick={() => changeIndex('previous')}
-                              >
-                                Previous
-                              </button>
-                            )}
-                            <p className="mr-2">
-                              Page {offset + 1} of {pageCount}
-                            </p>
-                            {pageCount !== 0 && canNext() && (
-                              <button
-                                className="px-2 border mr-2"
-                                onClick={() => changeIndex('next')}
-                              >
-                                Next
-                              </button>
-                            )}
-                            {pageCount > 1 && (
-                              <button
-                                className="px-2 border mr-2"
-                                onClick={() => changeIndex('last')}
-                              >
-                                Last
-                              </button>
-                            )}
-                          </div>
-                          <div className="bg-indigo-white mr-1 h-11 w-64 flex font-thin border-2 border-indigo-lightgray border-opacity-40 p-2">
-                            <select
-                              value={limit}
-                              className="bg-indigo-white text-lg w-full outline-none"
-                              onChange={(e) => {
-                                setLimit(e.target.value);
-                                setOffset(0);
-                              }}
-                            >
-                              {limitOptions.map((option) => (
-                                <option value={option}>{option}</option>
-                              ))}
-                            </select>
-                          </div>
-                        </div>
-                      </>
-                    ) : (
-                      <></>
-                    )}
-                  </>
-                )}
-                {activeCategory === 'completed' && (
-                  <>
-                    <div className="flex font-bold ml-8 md:ml-0 font-monument">
-                      <div
-                        className="mr-6 md:ml-8 cursor-pointer"
-                        onClick={() => {
-                          setCategory('new');
-                        }}
-                      >
-                        NEW
-                      </div>
-
-                      <div
-                        className="mr-6 cursor-pointer"
-                        onClick={() => {
-                          setCategory('active');
-                        }}
-                      >
-                        ON-GOING
-                      </div>
-
-                      <div className="border-b-8 pb-2 border-indigo-buttonblue cursor-pointer">
-                        COMPLETED
-                      </div>
-                    </div>
-
-                    <hr className="opacity-50" />
-
-                    {sortedList.length > 0 ? (
-                      <>
-                        <div className="mt-4 flex ml-6 grid grid-cols-0 md:grid-cols-3">
-                          {sortedList.map(function (data, i) {
-                            return (
-                              <div className="flex">
+                    <div className="mt-4 flex ml-6 grid grid-cols-0 md:grid-cols-3">
+                      {sortedList.map(function (data, i) {
+                        return (
+                          <div className="flex">
+                            <div className="mr-6">
+                              <a href={`/PlayDetails?id=${data.id}`}>
                                 <div className="mr-6">
                                   <PlayComponent
-                                    type="completed"
+                                    type={activeCategory}
                                     icon={data.icon}
                                     prizePool={data.prize}
                                     startDate={data.start_datetime}
+                                    endDate={data.end_datetime}
                                     month={data.month}
                                     date={data.date}
                                     year={data.year}
                                     img={data.image}
+                                    fetchGames={() => fetchGamesLoading(activeCategory)}
                                     index={() => changeIndex()}
                                   />
-                                  <div className="">
-                                    <button
-                                      className={
-                                        data.id % 2 === 0
-                                          ? 'bg-indigo-buttonblue w-full h-12 text-center font-bold rounded-md text-sm mt-4 self-center hidden'
-                                          : 'bg-indigo-buttonblue w-full h-12 text-center font-bold rounded-md text-sm mt-4 self-center'
-                                      }
-                                      onClick={() => showClaimModal(true)}
-                                    >
-                                      <div className="text-indigo-white">CLAIM REWARD</div>
-                                    </button>
-                                    <button
-                                      className={
-                                        data.id % 2 === 0
-                                          ? 'bg-indigo-buttonblue w-full h-12 text-center font-bold rounded-md text-sm mt-4 self-center'
-                                          : 'bg-indigo-buttonblue w-full h-12 text-center font-bold rounded-md text-sm mt-4 self-center hidden'
-                                      }
-                                      onClick={() => showClaimTeam(true)}
-                                    >
-                                      <div className="text-indigo-white">CLAIM TEAM</div>
-                                    </button>
-                                  </div>
                                 </div>
-                              </div>
-                            );
-                          })}
-                        </div>
-                        <div className="flex justify-between md:mt-5 md:mr-6 p-5">
-                          <div className="bg-indigo-white mr-1 h-11 flex items-center font-thin border-indigo-lightgray border-opacity-40 p-2">
-                            {pageCount > 1 && (
-                              <button
-                                className="px-2 border mr-2"
-                                onClick={() => changeIndex('first')}
-                              >
-                                First
-                              </button>
-                            )}
-                            {pageCount !== 0 && canPrevious() && (
-                              <button
-                                className="px-2 border mr-2"
-                                onClick={() => changeIndex('previous')}
-                              >
-                                Previous
-                              </button>
-                            )}
-                            <p className="mr-2">
-                              Page {offset + 1} of {pageCount}
-                            </p>
-                            {pageCount !== 0 && canNext() && (
-                              <button
-                                className="px-2 border mr-2"
-                                onClick={() => changeIndex('next')}
-                              >
-                                Next
-                              </button>
-                            )}
-                            {pageCount > 1 && (
-                              <button
-                                className="px-2 border mr-2"
-                                onClick={() => changeIndex('last')}
-                              >
-                                Last
-                              </button>
-                            )}
+                              </a>
+                              {activeCategory === 'completed' ? (
+                                <div className="">
+                                  <button
+                                    className={
+                                      data.id % 2 === 0
+                                        ? 'bg-indigo-buttonblue w-full h-12 text-center font-bold rounded-md text-sm mt-4 self-center hidden'
+                                        : 'bg-indigo-buttonblue w-full h-12 text-center font-bold rounded-md text-sm mt-4 self-center'
+                                    }
+                                    onClick={() => showClaimModal(true)}
+                                  >
+                                    <div className="text-indigo-white">CLAIM REWARD</div>
+                                  </button>
+                                  <button
+                                    className={
+                                      data.id % 2 === 0
+                                        ? 'bg-indigo-buttonblue w-full h-12 text-center font-bold rounded-md text-sm mt-4 self-center'
+                                        : 'bg-indigo-buttonblue w-full h-12 text-center font-bold rounded-md text-sm mt-4 self-center hidden'
+                                    }
+                                    onClick={() => showClaimTeam(true)}
+                                  >
+                                    <div className="text-indigo-white">CLAIM TEAM</div>
+                                  </button>
+                                </div>
+                              ) : (
+                                ''
+                              )}
+                            </div>
                           </div>
-                          <div className="bg-indigo-white mr-1 h-11 w-64 flex font-thin border-2 border-indigo-lightgray border-opacity-40 p-2">
-                            <select
-                              value={limit}
-                              className="bg-indigo-white text-lg w-full outline-none"
-                              onChange={(e) => {
-                                setLimit(e.target.value);
-                                setOffset(0);
-                              }}
-                            >
-                              {limitOptions.map((option) => (
-                                <option value={option}>{option}</option>
-                              ))}
-                            </select>
-                          </div>
-                        </div>
-                      </>
-                    ) : (
-                      <></>
-                    )}
+                        );
+                      })}
+                    </div>
+                    <div className="flex justify-between md:mt-5 md:mr-6 p-5">
+                      <div className="bg-indigo-white mr-1 h-11 flex items-center font-thin border-indigo-lightgray border-opacity-40 p-2">
+                        {pageCount > 1 && (
+                          <button className="px-2 border mr-2" onClick={() => changeIndex('first')}>
+                            First
+                          </button>
+                        )}
+                        {pageCount !== 0 && canPrevious() && (
+                          <button
+                            className="px-2 border mr-2"
+                            onClick={() => changeIndex('previous')}
+                          >
+                            Previous
+                          </button>
+                        )}
+                        <p className="mr-2">
+                          Page {offset + 1} of {pageCount}
+                        </p>
+                        {pageCount !== 0 && canNext() && (
+                          <button className="px-2 border mr-2" onClick={() => changeIndex('next')}>
+                            Next
+                          </button>
+                        )}
+                        {pageCount > 1 && (
+                          <button className="px-2 border mr-2" onClick={() => changeIndex('last')}>
+                            Last
+                          </button>
+                        )}
+                      </div>
+                      <div className="bg-indigo-white mr-1 h-11 w-64 flex font-thin border-2 border-indigo-lightgray border-opacity-40 p-2">
+                        <select
+                          value={limit}
+                          className="bg-indigo-white text-lg w-full outline-none"
+                          onChange={(e) => {
+                            setLimit(e.target.value);
+                            setOffset(0);
+                          }}
+                        >
+                          {limitOptions.map((option) => (
+                            <option value={option}>{option}</option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
                   </>
+                ) : (
+                  <></>
                 )}
               </div>
             </div>

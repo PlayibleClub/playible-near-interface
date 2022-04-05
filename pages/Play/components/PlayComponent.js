@@ -41,7 +41,7 @@ const PlayComponent = (props) => {
     setSecond('');
     const id = setInterval(() => {
       const currentDate = new Date();
-      const end = new Date(type === 'ongoing' ? endDate : startDate);
+      const end = new Date((type === 'ongoing' || type === 'active') ? endDate : startDate);
       const totalSeconds = (end - currentDate) / 1000;
 
       const days = Math.floor(totalSeconds / 2600 / 24);
@@ -104,48 +104,31 @@ const PlayComponent = (props) => {
             </div>
 
             <div className="flex mt-2">
-              {type === 'new' && (
-                <>
-                  <div className="">
-                    <div className="font-thin text-sm">REGISTRATION ENDS IN</div>
-                    <div className="text-sm font-montserrat font-normal flex mt-2 space-x-2">
-                      <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
-                        {day}
-                      </div>
-                      <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
-                        {hour}
-                      </div>
-                      <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
-                        {minute}
-                      </div>
-                      <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
-                        {second}
-                      </div>
+              <div className="">
+                {type === 'completed' ? (
+                  ''
+                ) : type === 'active' || type === 'ongoing' ? (
+                  <div className="font-thin text-sm">ENDS IN</div>
+                ) : (
+                  <div className="font-thin text-sm">REGISTRATION ENDS IN</div>
+                )}
+                {(type === 'new' || type === 'ongoing' || type === 'active') && (
+                  <div className="text-sm font-montserrat font-normal flex mt-2 space-x-2">
+                    <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
+                      {day}
+                    </div>
+                    <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
+                      {hour}
+                    </div>
+                    <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
+                      {minute}
+                    </div>
+                    <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
+                      {second}
                     </div>
                   </div>
-                </>
-              )}
-              {type === 'ongoing' && (
-                <>
-                  <div className="">
-                    <div className="font-thin text-sm">ENDS IN</div>
-                    <div className="text-sm font-montserrat font-normal flex mt-2 space-x-2">
-                      <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
-                        {day}
-                      </div>
-                      <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
-                        {hour}
-                      </div>
-                      <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
-                        {minute}
-                      </div>
-                      <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
-                        {second}
-                      </div>
-                    </div>
-                  </div>
-                </>
-              )}
+                )}
+              </div>
             </div>
           </div>
         </div>
