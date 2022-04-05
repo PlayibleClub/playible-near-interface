@@ -10,6 +10,7 @@ import LoadingPageDark from '../../components/loading/LoadingPageDark';
 import Link from 'next/link'
 import Container from '../../components/containers/Container';
 import Sorter from './components/Sorter';
+import 'regenerator-runtime/runtime';
 
 const salesList = [ // player list for testing purposes
     {

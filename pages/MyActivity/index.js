@@ -12,7 +12,7 @@ import Container from '../../components/containers/Container';
 import myactivityicon from '../../public/images/myactivity.png'
 import win from '../../public/images/myactivitywin.png'
 import BackButton from '../../components/buttons/BackFunction'
-
+import 'regenerator-runtime/runtime';
 import TimeAgo from 'javascript-time-ago'
 import en from 'javascript-time-ago/locale/en.json'
 import ReactTimeAgo from 'react-time-ago'

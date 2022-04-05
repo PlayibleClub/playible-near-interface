@@ -11,6 +11,7 @@ import Link from 'next/link';
 import Container from '../../components/containers/Container';
 import BackFunction from '../../components/buttons/BackFunction';
 import Lineup from '../../pages/CreateLineup/components/Lineup.js';
+import 'regenerator-runtime/runtime';
 
 import {playerList} from './data/index.js'
 import { CommunityPoolSpendProposal } from '@terra-money/terra.js';

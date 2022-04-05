@@ -14,7 +14,7 @@ import BaseModal from '../../components/modals/BaseModal';
 import claimreward from '../../public/images/claimreward.png';
 import ModalComponent from './components/ModalComponent';
 import { useRouter } from 'next/router';
-
+import 'regenerator-runtime/runtime';
 import { newPlaylist, ongoingPlaylist, completedPlaylist, winningTeams, losingTeams } from './data';
 import { axiosInstance } from '../../utils/playible';
 

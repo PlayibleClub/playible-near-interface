@@ -1,4 +1,6 @@
 //loading component for pages in dark mode
+import React from 'react';
+
 const LoadingPageDark = (props) => {
 
   const { message } = props

@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { slide as Menu } from 'react-burger-menu'
 import { getNavigation } from './NavigationList';
+import React from 'react'
 
 var styles = {
     bmBurgerButton: {

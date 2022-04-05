@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import 'regenerator-runtime/runtime';
 
 import PortfolioContainer from '../../components/containers/PortfolioContainer';
 import Main from '../../components/Main';

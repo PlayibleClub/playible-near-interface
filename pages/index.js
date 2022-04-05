@@ -14,6 +14,7 @@ import progressBar from '../public/images/progressbar.png';
 import banner from '../public/images/promotionheader.png';
 import bannerDesktop from '../public/images/promotionheaderDesktop.png';
 import { axiosInstance } from '../utils/playible';
+import 'regenerator-runtime/runtime';
 
 const playerList = [
   // player list for testing purposes

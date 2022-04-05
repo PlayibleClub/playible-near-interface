@@ -13,6 +13,7 @@ import Container from '../../components/containers/Container';
 import Sorter from './components/Sorter';
 import { ATHLETE, PACK } from '../../data/constants/contracts';
 import { axiosInstance } from '../../utils/playible';
+import 'regenerator-runtime/runtime';
 
 const Portfolio = () => {
   const [searchText, setSearchText] = useState('');

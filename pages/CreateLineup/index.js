@@ -12,6 +12,7 @@ import Data from '../../data/teams.json';
 import { axiosInstance } from '../../utils/playible/';
 import { useConnectedWallet } from '@terra-money/wallet-provider';
 import Link from 'next/link';
+import 'regenerator-runtime/runtime';
 
 export default function CreateLineup() {
   const router = useRouter();

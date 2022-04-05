@@ -8,6 +8,7 @@ import PortfolioContainer from '../../components/containers/PortfolioContainer';
 import { useDispatch } from 'react-redux';
 import { useConnectedWallet } from '@terra-money/wallet-provider';
 import { getPackPrice, purchasePack, getLastRound, getRoundData } from '../../redux/reducers/contract/pack';
+import 'regenerator-runtime/runtime';
 
 export default function OpenPackPage() {
     const router = useRouter();

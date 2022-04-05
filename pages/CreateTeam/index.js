@@ -5,6 +5,7 @@ import PortfolioContainer from '../../components/containers/PortfolioContainer';
 import Link from 'next/link';
 import Container from '../../components/containers/Container';
 import BackFunction from '../../components/buttons/BackFunction';
+import 'regenerator-runtime/runtime';
 
 import { playList } from '../../pages/PlayDetails/data/index.js';
 

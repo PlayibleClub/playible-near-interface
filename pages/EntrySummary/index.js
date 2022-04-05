@@ -12,6 +12,7 @@ import { useConnectedWallet } from '@terra-money/wallet-provider';
 import moment from 'moment';
 import Link from 'next/link';
 import PerformerContainer from '../../components/containers/PerformerContainer';
+import 'regenerator-runtime/runtime';
 
 export default function EntrySummary() {
   const router = useRouter();
