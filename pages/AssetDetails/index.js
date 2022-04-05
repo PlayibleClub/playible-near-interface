@@ -17,7 +17,7 @@ import { useConnectedWallet, useLCDClient } from '@terra-money/wallet-provider';
 import { connect, useDispatch, useSelector } from 'react-redux';
 
 import ListingModal from './forms/ListingModal';
-import CongratsModal from './components/congratsModal';
+import CongratsModal from './components/CongratsModal';
 import LoadingPageDark from '../../components/loading/LoadingPageDark';
 import BackFunction from '../../components/buttons/BackFunction';
 
