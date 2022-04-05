@@ -8,7 +8,7 @@ import PlayerContainer from '../../components/containers/PlayerContainer';
 import PlayerStats from '../../components/PlayerStats';
 import Container from '../../components/containers/Container';
 
-import filterIcon from '../../public/images/filterblack.png';
+import filterIcon from '../../public/images/filterBlack.png';
 import underlineIcon from '../../public/images/blackunderline.png';
 
 import { useRouter } from 'next/router';
