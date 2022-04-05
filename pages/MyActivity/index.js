@@ -54,14 +54,12 @@ const MyActivity = () => {
           `/fantasy/game/${data.id}/registered_teams_detail/?wallet_addr=${connectedWallet.walletAddress}`
         );
         if (teams.status === 200 && teams.data.length > 0) {
-          return data;
-        } else {
-          return [];
+          return { ...data, team_id: teams.data };
         }
       });
-
       const promiseObject = await Promise.all(connectedWalletGames);
       const filteredPromiseObject = promiseObject.filter((check) => check);
+      console.log(filteredPromiseObject);
       setCompletedGames([]);
       setCompletedGames(filteredPromiseObject);
     }
@@ -74,9 +72,7 @@ const MyActivity = () => {
           `/fantasy/game/${data.id}/registered_teams_detail/?wallet_addr=${connectedWallet.walletAddress}`
         );
         if (teams.status === 200 && teams.data.length > 0) {
-          return data;
-        } else {
-          return [];
+          return { ...data, team_id: teams.data };
         }
       });
 
@@ -126,10 +122,20 @@ const MyActivity = () => {
                             <hr className="opacity-50" />
 
                             <div className="mt-8 ml-12 mr-8 md:mr-32">
+                              {console.log(allGames)}
                               {allGames.map(function (data, i) {
                                 if (allGames.length > 0) {
                                   return (
-                                    <Link href={`/PlayDetails?id=${data.id}`}>
+                                    <Link
+                                      href={{
+                                        pathname: '/EntrySummary',
+                                        query: {
+                                          game_id: data.id,
+                                          team_id: data.team_id[0].id,
+                                          origin: 'MyActivity',
+                                        },
+                                      }}
+                                    >
                                       <div className="flex mt-2 flex-col cursor-pointer" key={i}>
                                         <div className="flex justify-between text-sm">
                                           <div className="font-bold">{data.name}</div>
@@ -168,7 +174,16 @@ const MyActivity = () => {
                               {completedGames.map(function (data, i) {
                                 if (completedGames.length > 0) {
                                   return (
-                                    <Link href={`/PlayDetails?id=${data.id}`}>
+                                    <Link
+                                      href={{
+                                        pathname: '/EntrySummary',
+                                        query: {
+                                          game_id: data.id,
+                                          team_id: data.team_id[0].id,
+                                          origin: 'MyActivity',
+                                        },
+                                      }}
+                                    >
                                       <div className="flex mt-2 flex-col cursor-pointer" key={i}>
                                         <div className="flex justify-between text-sm">
                                           <div className="font-bold">{data.name}</div>
