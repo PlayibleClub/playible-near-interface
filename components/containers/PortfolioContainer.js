@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
-import underlineIcon from '../../public/images/blackunderline.png'
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 
 const PortfolioContainer = (props) => {
   const { color, textcolor, size, title, children, align, stats } = props;
@@ -13,7 +12,7 @@ const PortfolioContainer = (props) => {
       <div className="flex justify-between">
         <div className="pb-3 pt-6 justify-start text-xl">
           {title}
-          <img src={underlineIcon} className="object-none" />
+          <img src={'/images/blackunderline.png'} className="object-none" />
         </div>
         {stats ?
           <>
@@ -39,7 +38,7 @@ const PortfolioContainer = (props) => {
           <div className="flex w-full">
             <div className=" text-2xl pb-3 pt-20 md:pt-14 ml-7 justify-between align-center">
               {title}
-              <img src={underlineIcon} className="object-none" />
+              <img src={'/images/blackunderline.png'} className="object-none" />
             </div>
             <div className="w-32 h-32 flex justify-center items-center ml-10" style={{
               backgroundImage: `url('/images/avgscore.png')`,
@@ -55,7 +54,7 @@ const PortfolioContainer = (props) => {
           :
           <div className="pb-3 pt-6 ml-7 justify-start align-center text-2xl font-monument">
             {title}
-            <img src={underlineIcon} className="object-none" />
+            <img src={'/images/blackunderline.png'} className="object-none" />
           </div>
         }
       </div>
