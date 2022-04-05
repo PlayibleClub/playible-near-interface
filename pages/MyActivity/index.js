@@ -48,39 +48,43 @@ const MyActivity = () => {
   }
 
   async function fetchCompletedRegisteredTeams(allGames) {
-    const connectedWalletGames = allGames.map(async (data) => {
-      const teams = await axiosInstance.get(
-        `/fantasy/game/${data.id}/registered_teams_detail/?wallet_addr=${connectedWallet.walletAddress}`
-      );
-      if (teams.status === 200 && teams.data.length > 0) {
-        return data;
-      } else {
-        return []
-      }
-    });
+    if (allGames.length > 0) {
+      const connectedWalletGames = allGames.map(async (data) => {
+        const teams = await axiosInstance.get(
+          `/fantasy/game/${data.id}/registered_teams_detail/?wallet_addr=${connectedWallet.walletAddress}`
+        );
+        if (teams.status === 200 && teams.data.length > 0) {
+          return data;
+        } else {
+          return [];
+        }
+      });
 
-    const promiseObject = await Promise.all(connectedWalletGames);
-    const filteredPromiseObject = promiseObject.filter((check) => check);
-    setCompletedGames([]);
-    setCompletedGames(filteredPromiseObject);
+      const promiseObject = await Promise.all(connectedWalletGames);
+      const filteredPromiseObject = promiseObject.filter((check) => check);
+      setCompletedGames([]);
+      setCompletedGames(filteredPromiseObject);
+    }
   }
 
   async function fetchRegisteredTeams(allGames) {
-    const connectedWalletGames = allGames.map(async (data) => {
-      const teams = await axiosInstance.get(
-        `/fantasy/game/${data.id}/registered_teams_detail/?wallet_addr=${connectedWallet.walletAddress}`
-      );
-      if (teams.status === 200 && teams.data.length > 0) {
-        return data;
-      } else {
-        return []
-      }
-    });
+    if (allGames.length > 0) {
+      const connectedWalletGames = allGames.map(async (data) => {
+        const teams = await axiosInstance.get(
+          `/fantasy/game/${data.id}/registered_teams_detail/?wallet_addr=${connectedWallet.walletAddress}`
+        );
+        if (teams.status === 200 && teams.data.length > 0) {
+          return data;
+        } else {
+          return [];
+        }
+      });
 
-    const promiseObject = await Promise.all(connectedWalletGames);
-    const filteredPromiseObject = promiseObject.filter((check) => check);
-    setAllGames([]);
-    setAllGames(filteredPromiseObject);
+      const promiseObject = await Promise.all(connectedWalletGames);
+      const filteredPromiseObject = promiseObject.filter((check) => check);
+      setAllGames([]);
+      setAllGames(filteredPromiseObject);
+    }
   }
 
   useEffect(() => {
