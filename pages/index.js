@@ -246,8 +246,8 @@ export default function Home(props) {
                           AthleteName={`${player.athlete.first_name} ${player.athlete.last_name}`}
                           AvgScore={player.fantasy_score}
                           id={player.athlete.id}
-                          // uri={null || player.nft_image}
-                          uri={null}
+                          uri={null || player.nft_image}
+                          // uri={null}
                           hoverable={false}
                         />
                       </div>
