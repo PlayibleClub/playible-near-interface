@@ -8,12 +8,12 @@ import { getPortfolio } from '../../redux/reducers/contract/portfolio';
 import { useConnectedWallet } from '@terra-money/wallet-provider';
 import Link from 'next/link';
 import Container from '../../components/containers/Container';
-import myactivityicon from '../../public/images/myactivity.png'
+import myactivityicon from '../../public/images/myactivity.png';
 import 'regenerator-runtime/runtime';
-import TimeAgo from 'javascript-time-ago'
-import en from 'javascript-time-ago/locale/en.json'
-import ReactTimeAgo from 'react-time-ago'
-TimeAgo.addDefaultLocale(en)
+import TimeAgo from 'javascript-time-ago';
+import en from 'javascript-time-ago/locale/en.json';
+import ReactTimeAgo from 'react-time-ago';
+TimeAgo.addDefaultLocale(en);
 
 import win from '../../public/images/myactivitywin.png';
 import BackButton from '../../components/buttons/BackFunction';
@@ -28,6 +28,8 @@ const MyActivity = () => {
   const [completedGames, setCompletedGames] = useState([]);
   const connectedWallet = useConnectedWallet();
   const dispatch = useDispatch();
+
+  const categoryList = ['activeplays', 'playhistory'];
 
   async function fetchActiveGames() {
     let tempList1 = [];
@@ -101,115 +103,54 @@ const MyActivity = () => {
       <Container>
         <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
           <Main color="indigo-white">
+            <PortfolioContainer title="MY ACTIVITY" textcolor="text-indigo-black" />
             <div className="flex flex-col">
-              <div className="flex">
-                {allGames ? (
-                  <>
-                    <PortfolioContainer title="MY ACTIVITY" textcolor="text-indigo-black">
-                      <div className="flex flex-col mt-6 mb-12">
-                        {activeCategory === 'activeplays' && (
-                          <>
-                            <div className="flex font-bold ml-6 md:ml-0 font-monument">
-                              <div className="mr-6 md:ml-8 border-b-8 pb-2 border-indigo-buttonblue">
-                                ACTIVE PLAYS
-                              </div>
-
-                              <div
-                                className=""
-                                onClick={() => {
-                                  setCategory('playhistory');
-                                }}
-                              >
-                                PLAY HISTORY
-                              </div>
+              <div className="flex font-bold ml-8 mt-8 md:ml-0 font-monument">
+                {categoryList.map((type) => (
+                  <div
+                    className={`mr-6 uppercase cursor-pointer md:ml-8 ${
+                      activeCategory === type ? 'border-b-8 pb-2 border-indigo-buttonblue' : ''
+                    }`}
+                    onClick={() => {
+                      setCategory(type);
+                    }}
+                  >
+                    {type === 'activeplays' ? 'ACTIVE PLAYS' : 'PLAY HISTORY'}
+                  </div>
+                ))}
+                <hr className="opacity-50" />
+              </div>
+              <div className="mt-8 ml-12 mr-8 md:w-1/3">
+                <div>
+                  {(activeCategory === 'activeplays' ? allGames : completedGames).map(function (
+                    data,
+                    i
+                  ) {
+                    if ((activeCategory === 'activeplays' ? allGames : completedGames).length > 0) {
+                      return (
+                        <Link
+                          href={{
+                            pathname: '/EntrySummary',
+                            query: {
+                              game_id: data.id,
+                              team_id: data.team_id[0].id,
+                              origin: 'MyActivity',
+                            },
+                          }}
+                        >
+                          <div className="flex mt-2 flex-col cursor-pointer" key={i}>
+                            <div className="flex justify-between text-sm">
+                              <div className="font-bold">{data.name}</div>
+                              <img src={myactivityicon} />
                             </div>
 
-                            <hr className="opacity-50" />
-
-                            <div className="mt-8 ml-12 mr-8 md:mr-32">
-                              {console.log(allGames)}
-                              {allGames.map(function (data, i) {
-                                if (allGames.length > 0) {
-                                  return (
-                                    <Link
-                                      href={{
-                                        pathname: '/EntrySummary',
-                                        query: {
-                                          game_id: data.id,
-                                          team_id: data.team_id[0].id,
-                                          origin: 'MyActivity',
-                                        },
-                                      }}
-                                    >
-                                      <div className="flex mt-2 flex-col cursor-pointer" key={i}>
-                                        <div className="flex justify-between text-sm">
-                                          <div className="font-bold">{data.name}</div>
-                                          <img src={myactivityicon} />
-                                        </div>
-
-                                        <hr className="w-full self-center opacity-25 mt-8" />
-                                      </div>
-                                    </Link>
-                                  );
-                                }
-                              })}
-                            </div>
-                          </>
-                        )}
-                        {activeCategory === 'playhistory' && (
-                          <>
-                            <div className="flex font-bold ml-6 md:ml-0 font-monument">
-                              <div
-                                className="mr-6 md:ml-8"
-                                onClick={() => {
-                                  setCategory('activeplays');
-                                }}
-                              >
-                                ACTIVE PLAYS
-                              </div>
-
-                              <div className="border-b-8 pb-2 border-indigo-buttonblue">
-                                PLAY HISTORY
-                              </div>
-                            </div>
-
-                            <hr className="opacity-50" />
-
-                            <div className="mt-8 ml-12 mr-8 md:mr-32">
-                              {completedGames.map(function (data, i) {
-                                if (completedGames.length > 0) {
-                                  return (
-                                    <Link
-                                      href={{
-                                        pathname: '/EntrySummary',
-                                        query: {
-                                          game_id: data.id,
-                                          team_id: data.team_id[0].id,
-                                          origin: 'MyActivity',
-                                        },
-                                      }}
-                                    >
-                                      <div className="flex mt-2 flex-col cursor-pointer" key={i}>
-                                        <div className="flex justify-between text-sm">
-                                          <div className="font-bold">{data.name}</div>
-                                          <img src={myactivityicon} />
-                                        </div>
-
-                                        <hr className="w-full self-center opacity-25 mt-8" />
-                                      </div>
-                                    </Link>
-                                  );
-                                }
-                              })}
-                            </div>
-                          </>
-                        )}
-                      </div>
-                    </PortfolioContainer>
-                  </>
-                ) : (
-                  ''
-                )}
+                            <hr className="w-full self-center opacity-25 mt-8" />
+                          </div>
+                        </Link>
+                      );
+                    }
+                  })}
+                </div>
               </div>
             </div>
           </Main>
