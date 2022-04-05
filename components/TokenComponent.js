@@ -18,9 +18,6 @@ const TokenComponent = (props) =>{
                         height={210}
                     />
                     <div className="flex whitespace-nowrap text-sm flex-col font-thin">
-                        <div className="mt-2">
-                            #{athlete_id}/25000
-                        </div>
                         <div className="font-black mt-2">
                             {name.toUpperCase()}
                         </div>

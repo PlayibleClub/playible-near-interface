@@ -15,6 +15,9 @@ import Lineup from '../../pages/CreateLineup/components/Lineup.js';
 import {playerList} from './data/index.js'
 import { CommunityPoolSpendProposal } from '@terra-money/terra.js';
 
+import { playList } from '../../pages/PlayDetails/data/index.js'
+import Data from "../../data/teams.json"
+
 export default function EnterPlayers(props) {
     const { query } = useRouter();
     const [selectedPlayer, setPlayer] = useState("")
@@ -38,7 +41,7 @@ export default function EnterPlayers(props) {
     })
     const res = await response.json()
     console.log(res)
-}
+    }
 
 
     return (
@@ -47,6 +50,13 @@ export default function EnterPlayers(props) {
             <Container>
                 <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
                     <Main color="indigo-white">
+                    {playList.map(function(data, i){
+                    if(router.query.id === data.key){
+                        return(
+                        <>
+                        <div className="mt-8">
+                              <BackFunction prev={`/EntrySummary?team=${data.teamName}&id=${Data[(query.number)-1].gameId}&number=${(i+1)}`}/>
+                        </div>
                         <div className="flex flex-col w-full h-screen overflow-y-scroll overflow-x-hidden mb-6">
                             <PortfolioContainer title={`SELECT YOUR 
                                 ${PlayerPosition === "P" ? "PITCHER" : ""} 
@@ -94,23 +104,20 @@ export default function EnterPlayers(props) {
                             </PortfolioContainer>
                         </div>
                         {selectedPlayer === "" ?
-                            <div className="w-full h-16 bg-indigo-lightgray fixed bottom-0">
-                                <div className="flex justify-center mt-5 font-black text-indigo-white">
-                                    PROCEED
-                                </div>
-                            </div>
+                            <button className='w-full h-20 bg-indigo-buttonblue fixed bottom-0 text-indigo-white font-black'> 
+                            PROCEED
+                            </button>
                         :
-                            <div className="w-full h-16 bg-indigo-buttonblue fixed bottom-0">
-                                {/* <a href={`/CreateLineup?id=${query.id}`} > */}
-                                <button onClick={createGameData}> 
-                                    <div className="flex justify-center mt-5 font-black text-indigo-white">
-                                        PROCEED
-                                    </div>
-                                </button>
-                                {/* </a> */}
-                            </div>
+                            <button className='w-full h-20 bg-indigo-buttonblue fixed bottom-0 text-indigo-white font-black' onClick={createGameData}> 
+                            PROCEED
+                            </button>
                         }
-                        
+                        </>
+                                )
+                            }
+                            }
+                        )
+                        }
                     </Main>
                 </div>
             </Container>

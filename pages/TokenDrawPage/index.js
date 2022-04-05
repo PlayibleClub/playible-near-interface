@@ -90,51 +90,59 @@ const TokenDrawPage = (props) => {
 
 
     return (
-        <>
-            <Container>                    
-                    {loading ? (
-                        <LoadingPageDark/>
-            ) : (
-                <div className=''>
-                    <div className="flex justify-center self-center w-10/12 mt-4" style={{backgroundColor:'white'}}>
-                        {
-                            error ? <p>{error}</p>
-                            : <div className="flex flex-row w-4/5 flex-wrap justify-center">
-                                {
-                                    athletes.length > 0 ? athletes.map((data,key) => <div className="flex px-14 py-10" key={key}>
-                                            <div className="px-10 py-10" onClick={() => {
-                                                changecard(key)}}>
-                                                <TokenComponent
-                                                    athlete_id={data.athlete_id}
-                                                    position={data.position}
-                                                    rarity={data.rarity}
-                                                    release={data.release}
-                                                    team={data.team}
-                                                    usage={data.useage}
-                                                    isOpen={data.isOpen}
-                                                    name={data.name}
-                                                    fantasy_score={data.fantasy_score}
-                                                    img={data.img}
-                                                />
-                                            </div>
-                                        </div>
-                                    ) : ''
-                                }
+      <>
+        <Container>
+          {loading ? (
+            <LoadingPageDark />
+          ) : (
+            <div className="">
+              <div
+                className="flex justify-center self-center w-10/12 mt-4"
+                style={{ backgroundColor: 'white' }}
+              >
+                {error ? (
+                  <p>{error}</p>
+                ) : (
+                  <div className="flex flex-row w-4/5 flex-wrap justify-center">
+                    {athletes.length > 0
+                      ? athletes.map((data, key) => (
+                          <div className="flex px-14 py-10" key={key}>
+                            <div
+                              className="px-10 py-10"
+                              onClick={() => {
+                                changecard(key);
+                              }}
+                            >
+                              <TokenComponent
+                                athlete_id={data.athlete_id}
+                                position={data.position}
+                                rarity={data.rarity}
+                                release={data.release}
+                                team={data.team}
+                                usage={data.useage}
+                                isOpen={data.isOpen}
+                                name={data.name}
+                                fantasy_score={data.fantasy_score}
+                                img={data.img}
+                              />
                             </div>
-                        }
-                    </div>
-                    <div className='flex h-full pt-8'>
-                            <div className='bg-indigo-black w-full justify-end flex opacity-5'>
-                            </div>
-                            <button className='bg-indigo-buttonblue text-indigo-white w-5/6 md:w-80 h-14 text-center font-bold text-md'>
-                                    GO TO MY SQUAD
-                            </button>
-                        </div>
-                    </div>
-            )}
-            </Container>
-        </>
-    )
+                          </div>
+                        ))
+                      : ''}
+                  </div>
+                )}
+              </div>
+              <div className="flex h-full pt-8">
+                <div className="bg-indigo-black w-full justify-end flex opacity-5"></div>
+                <button className="bg-indigo-buttonblue text-indigo-white w-5/6 md:w-80 h-14 text-center font-bold text-md">
+                  GO TO MY SQUAD
+                </button>
+              </div>
+            </div>
+          )}
+        </Container>
+      </>
+    );
 }
 
 export default TokenDrawPage

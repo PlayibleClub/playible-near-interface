@@ -32,6 +32,8 @@ export default function Index(req,res){
     if (req.method === 'POST'){
         const {gameId} = req.body
         var exist = false
+
+        
         data1.forEach(data2 => {
             if (data2.gameId === gameId){
                 exist = true
@@ -43,9 +45,7 @@ export default function Index(req,res){
         }
 
         const team = {
-            gameId,
-            roster:[        {
-                teamName:'',
+                teamName:`${gameId}`,
                 athletes:[
                     {
                         position:'P',
@@ -154,15 +154,13 @@ export default function Index(req,res){
                         player:'',
                         id:'',
                         score:'',
-                    },
-                ]
-                }]
-        }
+                    }
+                ]}
+                
+            
         
 
-
-
-
+    
         data1.push(team)
 
     //     res.status(201).json({

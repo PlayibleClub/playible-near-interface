@@ -9,8 +9,8 @@ import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en.json';
 import ReactTimeAgo from 'react-time-ago';
 import { useConnectedWallet } from '@terra-money/wallet-provider';
-import { executeContract } from '../../../utils/terra';
-import { ORACLE } from '../../../data/constants/contracts';
+import { estimateFee, estimateMultipleFees, executeContract } from '../../../utils/terra';
+import { GAME, ORACLE } from '../../../data/constants/contracts';
 TimeAgo.addDefaultLocale(en);
 
 const Index = (props) => {
@@ -117,7 +117,7 @@ const Index = (props) => {
 
   const checkValidity = () => {
     let errors = [];
-    let sortPercentage = [...distribution].sort((a,b) => b.percentage - a.percentage)
+    let sortPercentage = [...distribution].sort((a, b) => b.percentage - a.percentage);
 
     if (!details.name) {
       errors.push('Game is missing a title');
@@ -137,7 +137,7 @@ const Index = (props) => {
 
     for (let i = 0; i < distribution.length; i++) {
       if (distribution[i].rank !== sortPercentage[i].rank) {
-        errors.push('Higher rank must have a higher percentage than next one')
+        errors.push('Higher rank must have a higher percentage than next one');
         break;
       }
     }
@@ -153,7 +153,7 @@ const Index = (props) => {
           .join(` \n`)}`.replace(',', '')
       );
     } else {
-      setConfirmModal(true)
+      setConfirmModal(true);
     }
   };
 
@@ -174,7 +174,14 @@ const Index = (props) => {
           title: 'Success',
           content: `${res.data.name} created!`,
         });
-        const filteredDistribution = distribution.filter((item) => item.percentage !== 0);
+        const filteredDistribution = distribution
+          .filter((item) => item.percentage !== 0)
+          .map((item) => {
+            return {
+              ...item,
+              percentage: (parseInt(item.percentage) / 100) * 1000000,
+            };
+          });
 
         const resContract = await executeContract(connectedWallet, ORACLE, [
           {
@@ -183,8 +190,18 @@ const Index = (props) => {
               add_game: {
                 game_id: res.data.id.toString(),
                 prize: parseInt(res.data.prize),
-                decimals: 2,
                 distribution: filteredDistribution,
+              },
+            },
+          },
+          {
+            contractAddr: GAME,
+            msg: {
+              add_game: {
+                game_id: res.data.id.toString(),
+                game_time_start: convertToMinutes(formData.start_datetime),
+                duration: formData.duration,
+                whitelist: ['terra1h0mq6ktwrd0fgez5xrhwlcyf0p3w3nm94fc40j'],
               },
             },
           },
@@ -227,6 +244,17 @@ const Index = (props) => {
       alert('Connect to your wallet first');
     }
   };
+
+  const convertToMinutes = (time) => {
+    const now = new Date()
+    const gameStart = new Date(time)
+    const timeDiff = ((gameStart/1000) - (now/1000))
+    if (timeDiff<60) {
+      return 1
+    } else {
+      return timeDiff/60
+    }
+  }
 
   const fetchGames = async () => {
     setLoading(true);
@@ -344,7 +372,7 @@ const Index = (props) => {
                     {/* DURATION */}
                     <div className="flex flex-col lg:w-1/2 lg:mr-10">
                       <label className="font-monument" htmlFor="duration">
-                        DURATION <span className='text-indigo-lightgray'>(DAYS)</span>
+                        DURATION <span className="text-indigo-lightgray">(DAYS)</span>
                       </label>
                       <input
                         className="border outline-none rounded-lg px-3 p-2"

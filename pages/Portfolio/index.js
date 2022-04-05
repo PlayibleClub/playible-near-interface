@@ -45,6 +45,7 @@ const Portfolio = () => {
         }
       }
       const res = await lcd.wasm.contractQuery(PACK, formData)
+
       if (res && res.length > 0) {
         setPacks(res)
       } else {
@@ -156,7 +157,7 @@ const Portfolio = () => {
   }
 
   useEffect(() => {
-    if (typeof connectedWallet !== 'undefined') {
+    if (connectedWallet &&  dispatch  ) {
       setLoading(true)
       dispatch(getAccountAssets({ walletAddr: connectedWallet.walletAddress }));
       setTimeout(() => {
@@ -172,7 +173,7 @@ const Portfolio = () => {
   }, [dispatch, connectedWallet])
 
   useEffect(() => {
-    if (typeof playerList !== null) {
+    if (playerList) {
       if (playerList.tokens && playerList.tokens.length > 0) {
         const tempList = [...playerList.tokens]
         const filteredList = applySortFilter(tempList, filter, search).splice(limit*offset, limit)
@@ -237,7 +238,11 @@ const Portfolio = () => {
                                     <Link
                                       href={{
                                         pathname: '/AssetDetails',
-                                        query: { id: path.athlete_id, origin: 'Portfolio', token_id: player.token_id },
+                                        query: {
+                                          id: path.athlete_id,
+                                          origin: 'Portfolio',
+                                          token_id: player.token_id,
+                                        },
                                       }}
                                     >
                                       <div className="mb-4" key={i}>
@@ -245,7 +250,11 @@ const Portfolio = () => {
                                           AthleteName={path.name}
                                           AvgScore={player.fantasy_score}
                                           id={path.athlete_id}
-                                          uri={player.nft_image}
+                                          uri={
+                                            player.nft_image || player.token_info
+                                              ? player.token_info.info.token_uri
+                                              : null
+                                          }
                                           rarity={path.rarity}
                                           status={player.is_locked}
                                         />

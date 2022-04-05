@@ -1,16 +1,14 @@
-import React, { useEffect, useState } from 'react'
-import PlayerContainer from '../components/PlayerContainer';
+import React, { useState } from 'react'
 import underline from '../public/images/underline.png'
 import blackunderline from '../public/images/blackunderline.png'
 import emptyToken from '../public/images/emptyToken.png'
 import emptyGoldToken from '../public/images/emptyGoldToken.png'
-import tokenOutline from '../public/images/tokenOutline.png'
 import whiteTokenOutline from '../public/images/whiteTokenOutline.png'
-import HeaderBack from '../components/HeaderBack';
+import HeaderBack from '../components/headers/HeaderBack';
 import { useRouter } from 'next/router';
 import Main from '../components/Main';
-import PortfolioContainer from '../components/PortfolioContainer';
 import Link from 'next/link'
+import PlayerContainer from '../components/containers/PlayerContainer'
 
 const playerList = [ // player list for testing purposes
     {
@@ -189,10 +187,6 @@ const MintScreenMobile = () => {
 
                                     <div>
                                         <div>
-                                            <div className="font-thin text-sm mt-6">
-                                                #{playerToFind.id}/25000
-                                            </div>
-
                                             <div className="text-md font-bold">
                                                 {playerToFind.name}
                                             </div>

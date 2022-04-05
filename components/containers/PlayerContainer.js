@@ -1,10 +1,8 @@
-import React, { Component, useState } from 'react';
-import PropTypes from 'prop-types';
-import Image from 'next/image'
+import React from 'react';
 
 
 const PlayerContainer = (props) =>{
-    const {playerID, children, rarity, img = null} = props;
+    const {img = null} = props;
 
     return (
         <div className="overflow-hidden ease-in-out">
@@ -35,10 +33,5 @@ const PlayerContainer = (props) =>{
         </div>
     )
 }
-
-PlayerContainer.propTypes = {
-    playerID: PropTypes.number.isRequired,
-    children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
-  };
 
 export default PlayerContainer;

@@ -37,11 +37,11 @@ const baseballPos = [
     },
     {
         name: 'IF',
-        value: 'InField'
+        value: 'InFielder'
     },
     {
         name: 'OF',
-        value: 'OutField'
+        value: 'OutFielder'
     },
     {
         name: 'SP',
