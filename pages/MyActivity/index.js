@@ -70,6 +70,8 @@ const MyActivity = () => {
       );
       if (teams.status === 200 && teams.data.length > 0) {
         return data;
+      } else {
+        return []
       }
     });
 
