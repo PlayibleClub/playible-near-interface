@@ -18,7 +18,6 @@ TimeAgo.addDefaultLocale(en)
 import win from '../../public/images/myactivitywin.png';
 import BackButton from '../../components/buttons/BackFunction';
 
-import { allGames, PlayHistory } from './data';
 import { axiosInstance } from '../../utils/playible';
 import { useRouter } from 'next/router';
 
