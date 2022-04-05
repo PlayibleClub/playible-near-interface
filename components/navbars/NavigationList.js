@@ -1,5 +1,9 @@
 const navigation = [
   {
+    name: 'Playible Club',
+    path: 'http://playible.club',
+  },
+  {
     name: 'HOME',
     path: '/',
     img: '/images/navicons/icon_home.png',
