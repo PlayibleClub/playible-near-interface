@@ -10,7 +10,7 @@ const BaseModal = (props) => {
       <Transition appear show={visible} as={Fragment}>
         <Dialog
           as="div"
-          className="fixed inset-0 z-10 overflow-y-auto font-montserrat"
+          className="fixed inset-0 z-50 overflow-y-auto font-montserrat"
           onClose={() => {onClose ? onClose() : undefined}}
         >
           <div className="min-h-screen px-4 text-center">
