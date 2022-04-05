@@ -20,7 +20,7 @@ export const getAccountAssets = createAsyncThunk('getAccountAssets', async (payl
       `/account/athlete_tokens/${walletAddr}/collection/${contracts.ATHLETE}`
     );
 
-    console.log('res', result              f)
+    console.log('res', result              )
 
     return {
       response: result,

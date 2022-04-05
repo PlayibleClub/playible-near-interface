@@ -175,8 +175,9 @@ export default function PlayDetails() {
                       <a href={`/CreateLineup?id=${gameData.id}`}>
                         <button
                           className={
-                            new Date(gameData.start_datetime) <= new Date() &&
-                            new Date(gameData.end_datetime) > new Date()||gameEnd
+                            (new Date(gameData.start_datetime) <= new Date() &&
+                              new Date(gameData.end_datetime) > new Date()) ||
+                            gameEnd
                               ? 'bg-indigo-lightblue text-indigo-buttonblue cursor-not-allowed w-64 h-12 text-center font-bold text-md mt-8 mr-4 hidden'
                               : 'bg-indigo-buttonblue text-indigo-white w-64 h-12 text-center font-bold text-md mt-8'
                           }
