@@ -128,7 +128,7 @@ export default function Home(props) {
       const performers = await Promise.all(performersList);
 
       setTopAthletes(performers);
-      setAthletesLoading(false)
+      setAthletesLoading(false);
     }
   };
 
@@ -247,7 +247,6 @@ export default function Home(props) {
                           AvgScore={player.fantasy_score}
                           id={player.athlete.id}
                           uri={null || player.nft_image}
-                          // uri={null}
                           hoverable={false}
                         />
                       </div>
