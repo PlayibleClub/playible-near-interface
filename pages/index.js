@@ -137,6 +137,14 @@ export default function Home(props) {
     getTopPerformers();
   }, []);
 
+  useEffect(() => {
+    const id = setInterval(() => {
+      fetchActiveGames();
+      console.log('checking')
+    }, 1000);
+    return () => clearInterval(id);
+  }, [activeGames]);
+
   return (
     <Container>
       <div className="flex flex-col w-screen md:w-full overflow-y-auto h-screen justify-center self-center md:pb-12 text-indigo-black">
