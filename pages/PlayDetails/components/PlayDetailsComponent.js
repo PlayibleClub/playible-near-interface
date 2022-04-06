@@ -46,7 +46,7 @@ const PlayDetailsComponent = (props) => {
       console.log(totalSeconds)
       if(Math.floor(totalSeconds) < 0)
       {
-        gameEnd();
+        game();
       }
     }, 1000);
     return () => clearInterval(id);
