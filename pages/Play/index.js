@@ -415,7 +415,12 @@ const Play = () => {
                     </div>
                   </>
                 ) : (
-                  <></>
+                  <>
+                    <div className="ml-7 mt-7 text-xl">
+                      There are no {activeCategory} games to be
+                      displayed
+                    </div>
+                  </>
                 )}
               </div>
             </div>
