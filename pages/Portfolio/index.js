@@ -280,7 +280,7 @@ const Portfolio = () => {
                             </div>
                           </>
                         ) : (
-                          <div>No assets in your portfolio</div>
+                          <div className='mt-7 ml-7 text-xl'>There are no assets in your portfolio</div>
                         )}
                     </>
                   ) : (
@@ -333,7 +333,7 @@ const Portfolio = () => {
                               </div>
                             </div>
                           </>
-                        : <div>No packs available in your portfolio</div>}
+                        : <div className='mt-7 ml-7 text-xl'>There are no packs in your portfolio</div>}
                     </>
                   )}
                 </div>
