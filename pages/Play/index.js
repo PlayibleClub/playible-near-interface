@@ -23,7 +23,9 @@ import LoadingPageDark from '../../components/loading/LoadingPageDark';
 const Play = () => {
   const { status, connect, disconnect, availableConnectTypes } = useWallet();
   const [activeCategory, setCategory] = useState('new');
+  const [rewardsCategory, setRewardsCategory] = useState('winning')
   const [claimModal, showClaimModal] = useState(false);
+  const [claimData, setClaimData] = useState(null);
   const [claimTeam, showClaimTeam] = useState(false);
   const [modalView, switchView] = useState(true);
   const [failedTransactionModal, showFailedModal] = useState(false);
@@ -160,10 +162,66 @@ const Play = () => {
 
       const completedGames = await Promise.all(rewardsList);
 
-
       setGames(completedGames);
     }
     setloading(false);
+  };
+
+  const fetchTeamPlacements = async (gameId) => {
+    if (connectedWallet) {
+      let winningPlacements = [];
+      let noPlacements = [];
+
+      const teams = await axiosInstance.get(
+        `/fantasy/game/${gameId}/registered_teams_detail/?wallet_addr=${connectedWallet.walletAddress}`
+      );
+
+      const leaderboards = await axiosInstance.get(`/fantasy/game/${gameId}/leaderboard/`);
+
+      console.log('teams', teams);
+      console.log('leaderboards', leaderboards);
+
+      if (leaderboards.status === 200 && teams.status === 200 && teams.data.length > 0) {
+        if (leaderboards.data.length > 0) {
+          winningPlacements = leaderboards.data.map((wallet, rank) => {
+            if (wallet.account.wallet_addr === connectedWallet.walletAddress) {
+              console.log('rank', rank+1)
+              return {
+                ...wallet,
+                rank: rank + 1,
+              };
+            }
+          }).filter(item => item);
+
+          noPlacements = teams.data
+            .map((team) => {
+              let exists = false;
+              if (winningPlacements.length > 0) {
+                winningPlacements.forEach((item) => {
+                  if (item.name === team.name) {
+                    exists = true;
+                  }
+                });
+              }
+
+              if (!exists) {
+                return team;
+              }
+            })
+            .filter((item) => item);
+
+          setClaimData({
+            winning_placements: [...winningPlacements],
+            no_placements: [...noPlacements],
+          });
+
+          console.log('winningPlacements', winningPlacements);
+          console.log('noPlacements', noPlacements);
+
+          showClaimModal(true);
+        }
+      }
+    }
   };
 
   function fetchGamesLoading() {
@@ -210,6 +268,12 @@ const Play = () => {
     }
   }, [router]);
 
+  useEffect(() => {
+    if (!claimModal) {
+      setClaimData(null);
+    }
+  }, [claimModal]);
+
   if (!connectedWallet) {
     return <div></div>;
   }
@@ -230,67 +294,67 @@ const Play = () => {
               </button>
 
               <div className="mt-16 text-sm">
-                <div className="flex font-monument">
-                  <div className="mr-8 tracking-wider border-b-8 pb-2 border-indigo-buttonblue cursor-pointer">
+                <div className="flex font-monument select-none">
+                  <div
+                    className={`mr-8 tracking-wider cursor-pointer ${
+                      rewardsCategory === 'winning'
+                        ? 'border-b-8 pb-2 border-indigo-buttonblue'
+                        : ''
+                    }`}
+                    onClick={() => setRewardsCategory('winning')}
+                  >
                     WINNING TEAMS
                   </div>
-                  <div className="tracking-wider cursor-pointer">NO PLACEMENT</div>
+                  <div
+                    className={`mr-8 tracking-wider cursor-pointer ${
+                      rewardsCategory !== 'winning'
+                        ? 'border-b-8 pb-2 border-indigo-buttonblue'
+                        : ''
+                    }`}
+                    onClick={() => setRewardsCategory('lost')}
+                  >
+                    NO PLACEMENT
+                  </div>
                 </div>
                 <hr className="opacity-50 -mx-8" />
 
                 <div className="w-full">
-                  <div className="p-8 py-10">
-                    <div className="flex justify-between items-center">
-                      <div>
-                        <p className="bg-indigo-black w-min p-3 text-indigo-white font-monument uppercase py-1">
-                          COOLKIDS
-                        </p>
-                        <div className="mt-3 flex items-end font-monument">
-                          <div className="flex items-end text-xs">
-                            <img src={coin} className="mr-2" />
-                            <p>500 UST</p>
-                          </div>
-                          <div className="flex items-end text-xs ml-3">
-                            <img src={bars} className="h-4 w-5 mr-2" />
-                            <p>03</p>
-                          </div>
-                        </div>
-                      </div>
-                      <div>
-                        <button className="text-indigo-white w-40 text-xs font-bold text-center bg-indigo-buttonblue p-3 px-5">
-                          CLAIM REWARD
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                  <hr className="opacity-50" />
-                  <div className="p-8 py-10">
-                    <div className="flex justify-between items-center">
-                      <div>
-                        <p className="bg-indigo-black w-min p-3 text-indigo-white font-monument uppercase py-1">
-                          COOLKIDS
-                        </p>
-                        <div className="mt-3 flex items-end font-monument">
-                          <div className="flex items-end text-xs">
-                            <img src={coin} className="mr-2" />
-                            <p>500 UST</p>
-                          </div>
-                          <div className="flex items-end text-xs ml-3">
-                            <img src={bars} className="h-4 w-5 mr-2" />
-                            <p>03</p>
-                          </div>
-                        </div>
-                      </div>
-                      <div>
-                        <div className="text-indigo-white text-xs font-bold text-center w-40 bg-opacity-60 flex justify-center gap-3 bg-indigo-buttonblue p-4 px-5">
-                          <div className="w-2 h-2 animate-bounce rounded-full bg-indigo-white"></div>
-                          <div className="w-2 h-2 animate-bounce rounded-full bg-indigo-white"></div>
-                          <div className="w-2 h-2 animate-bounce rounded-full bg-indigo-white"></div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <hr className="opacity-50" />
+                  {claimData
+                    ? (rewardsCategory === 'winning'
+                        ? claimData.winning_placements
+                        : claimData.no_placements
+                      ).map((item) =>
+                        item && (
+                          <>
+                            <div className="p-8 py-10">
+                              <div className="flex justify-between items-center">
+                                <div>
+                                  <p className="bg-indigo-black w-max p-3 text-indigo-white font-monument uppercase py-1">
+                                    {item.name}
+                                  </p>
+                                  <div className="mt-3 flex items-end font-monument">
+                                    <div className="flex items-end text-xs">
+                                      <img src={coin} className="mr-2" />
+                                      <p>500 UST</p>
+                                    </div>
+                                    <div className="flex items-end text-xs ml-3">
+                                      <img src={bars} className="h-4 w-5 mr-2" />
+                                      <p>{item.rank}</p>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div>
+                                  <button className="text-indigo-white w-40 text-xs font-bold text-center bg-indigo-buttonblue p-3 px-5">
+                                    CLAIM REWARD
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                            <hr className="opacity-50" />
+                          </>
+                        )
+                      )
+                    : ''}
                 </div>
                 {/* <div className="text-indigo-white w-36 text-center bg-indigo-buttonblue py-2 px-2">
                     CLAIM REWARD
@@ -406,14 +470,14 @@ const Play = () => {
                                   {data.hasRewards ? (
                                     <button
                                       className="bg-indigo-buttonblue w-full h-12 text-center font-bold rounded-md text-sm mt-4 self-center"
-                                      onClick={() => showClaimModal(true)}
+                                      onClick={() => fetchTeamPlacements(data.id)}
                                     >
                                       <div className="text-indigo-white">CLAIM REWARD</div>
                                     </button>
                                   ) : data.hasAthletes ? (
                                     <button
                                       className="bg-indigo-buttonblue w-full h-12 text-center font-bold rounded-md text-sm mt-4 self-center"
-                                      onClick={() => showClaimModal(true)}
+                                      onClick={() => fetchTeamPlacements(data.id)}
                                     >
                                       <div className="text-indigo-white">CLAIM TEAM</div>
                                     </button>
