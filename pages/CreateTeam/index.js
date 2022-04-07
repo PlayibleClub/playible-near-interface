@@ -9,19 +9,20 @@ import 'regenerator-runtime/runtime';
 
 import { useRouter } from 'next/router';
 
-import Lineup from '../../components/Lineup'
+import Lineup from '../../components/Lineup';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { useConnectedWallet } from '@terra-money/wallet-provider';
 import { getAccountAssets } from '../../redux/reducers/external/playible/assets';
 import PerformerContainer from '../../components/containers/PerformerContainer';
 import PerformerContainerSelectable from '../../components/containers/PerformerContainerSelectable';
-import { CW721 } from '../../data/constants/contracts';
+import { CW721, GAME } from '../../data/constants/contracts';
 import BaseModal from '../../components/modals/BaseModal';
 import { position } from '../../utils/athlete/position';
 import Modal from '../../components/modals/Modal';
 import { axiosInstance } from '../../utils/playible';
 import { route } from 'next/dist/next-server/server/router';
+import { executeContract } from '../../utils/terra';
 
 export default function CreateLineup() {
   const router = useRouter();
@@ -60,6 +61,11 @@ export default function CreateLineup() {
   const [createLoading, setCreateLoading] = useState(false);
   const [timerUp, setTimerUp] = useState(false);
   const [startDate, setStartDate] = useState();
+  const [modal, setModal] = useState(false);
+  const [msg, setMsg] = useState({
+    title: '',
+    content: '',
+  });
 
   const { list: playerList } = useSelector((state) => state.assets);
 
@@ -239,16 +245,46 @@ export default function CreateLineup() {
           },
         };
 
-        const res = await axiosInstance.post('/fantasy/game_team/', formData);
-        setCreateLoading(false);
-        if (res.status === 201) {
-          setSuccessModal(true);
-          router.replace(`/CreateLineup/?id=${router.query.id}`);
+        const resContract = await executeContract(connectedWallet, GAME, [
+          {
+            contractAddr: GAME,
+            msg: {
+              lock_team: {
+                game_id: router.query.id,
+                team_name: teamName,
+                token_ids: [trimmedAthleteData.map((item) => item.token_id)],
+              },
+            },
+          },
+        ]);
+
+        if (
+          !resContract.txResult ||
+          (resContract.txResult && !resContract.txResult.success) ||
+          resContract.txError
+        ) {
+          setMsg({
+            title: 'Failed',
+            content:
+              resContract.txResult && !resContract.txResult.success
+                ? 'Blockchain error! Please try again later.'
+                : resContract.txError,
+          });
         } else {
-          alert('An error occurred! Refresh the page and try again.');
+          const res = await axiosInstance.post('/fantasy/game_team/', formData);
+          setCreateLoading(false);
+          if (res.status === 201) {
+            setSuccessModal(true);
+            router.replace(`/CreateLineup/?id=${router.query.id}`);
+          } else {
+            alert('An error occurred! Refresh the page and try again.');
+          }
         }
       } else {
-        alert('You must fill up all the slots to proceed.');
+        setMsg({
+          title: 'Notice',
+          content: 'You must fill up all the slots to proceed.',
+        });
       }
     } else {
       alert('Please connect your wallet first!');
@@ -278,7 +314,7 @@ export default function CreateLineup() {
   useEffect(() => {
     prepareSlots();
     fetchGameData();
-  }, [router, startDate ,timerUp]);
+  }, [router, startDate, timerUp]);
 
   useEffect(() => {
     if (dispatch && connectedWallet) {
@@ -303,14 +339,14 @@ export default function CreateLineup() {
         setSelectModal(false);
       }
     }
-  }, [playerList, limit, offset,timerUp]);
+  }, [playerList, limit, offset, timerUp]);
 
   useEffect(() => {
     const id = setInterval(() => {
       const currentDate = new Date();
       const end = new Date(startDate);
       const totalSeconds = (end - currentDate) / 1000;
-      console.log(Math.floor(totalSeconds))
+      console.log(Math.floor(totalSeconds));
       if (Math.floor(totalSeconds) < 0) {
         setTimerUp(true);
         clearInterval(id);
@@ -575,6 +611,9 @@ export default function CreateLineup() {
           </Modal>
         </>
       )}
+      <BaseModal title={msg.title} visible={modal} onClose={() => setModal(false)}>
+        <p className="mt-5">{msg.content}</p>
+      </BaseModal>
     </>
   );
 }

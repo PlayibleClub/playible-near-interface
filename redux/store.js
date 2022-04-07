@@ -27,7 +27,7 @@ let middlewares = [];
 if (process.env.NODE_ENV === 'production') {
   middlewares = [...middlewares, reduxThunk];
 } else {
-  middlewares = [...middlewares, reduxThunk, logger];
+  middlewares = [...middlewares, reduxThunk];
 }
 
 const pReducer = persistReducer(persistConfig, rootReducer);

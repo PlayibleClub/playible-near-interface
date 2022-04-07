@@ -118,38 +118,48 @@ const MyActivity = () => {
                     {type === 'activeplays' ? 'ACTIVE PLAYS' : 'PLAY HISTORY'}
                   </div>
                 ))}
-                <hr className="opacity-50" />
               </div>
-              <div className="mt-8 ml-12 mr-8 md:w-1/3">
+              <hr className="opacity-50" />
+              <div className="mt-8 ml-12 mr-8 md:w-2/3">
                 <div>
-                  {(activeCategory === 'activeplays' ? allGames : completedGames).map(function (
-                    data,
-                    i
-                  ) {
-                    if ((activeCategory === 'activeplays' ? allGames : completedGames).length > 0) {
-                      return (
-                        <Link
-                          href={{
-                            pathname: '/EntrySummary',
-                            query: {
-                              game_id: data.id,
-                              team_id: data.team_id[0].id,
-                              origin: 'MyActivity',
-                            },
-                          }}
-                        >
-                          <div className="flex mt-2 flex-col cursor-pointer" key={i}>
-                            <div className="flex justify-between text-sm">
-                              <div className="font-bold">{data.name}</div>
-                              <img src={myactivityicon} />
-                            </div>
-
-                            <hr className="w-full self-center opacity-25 mt-8" />
+                  {(activeCategory === 'activeplays' ? allGames : completedGames).map((data, i) =>
+                    data ? (
+                      <div className="flex flex-col " key={i}>
+                        <div className="flex justify-between item-center p-8 text-sm">
+                          <div className="relative w-full">
+                            <p className="font-bold uppercase">{data.name}</p>
+                            <p>
+                              <ReactTimeAgo
+                                future={activeCategory === 'activeplays'}
+                                timeStyle="round-minute"
+                                date={data.end_datetime}
+                                locale="en-US"
+                              />
+                            </p>
+                            <Link
+                              href={{
+                                pathname: '/EntrySummary',
+                                query: {
+                                  game_id: data.id,
+                                  team_id: data.team_id[0].id,
+                                  origin: 'MyActivity',
+                                },
+                              }}
+                            >
+                              <img
+                                className="absolute top-0 right-0 cursor-pointer"
+                                src={myactivityicon}
+                              />
+                            </Link>
                           </div>
-                        </Link>
-                      );
-                    }
-                  })}
+                        </div>
+
+                        <hr className="w-full self-center opacity-25" />
+                      </div>
+                    ) : (
+                      ''
+                    )
+                  )}
                 </div>
               </div>
             </div>

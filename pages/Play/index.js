@@ -12,6 +12,8 @@ import HorizontalScrollContainer from '../../components/containers/HorizontalScr
 import Container from '../../components/containers/Container';
 import BaseModal from '../../components/modals/BaseModal';
 import claimreward from '../../public/images/claimreward.png';
+import coin from '../../public/images/coin.png';
+import bars from '../../public/images/bars.png';
 import ModalComponent from './components/ModalComponent';
 import { useRouter } from 'next/router';
 import 'regenerator-runtime/runtime';
@@ -116,17 +118,58 @@ const Play = () => {
     const res = await axiosInstance.get(`/fantasy/game/${type}/`);
 
     if (res.status === 200) {
+      if (type === 'completed') {
+        return fetchRewardsInfo(res.data);
+      }
+
       setGames(res.data);
+      setloading(false);
     }
+  };
+
+  const fetchRewardsInfo = async (list) => {
+    if (list.length > 0) {
+      const rewardsList = list.map(async (item) => {
+        let hasRewards = false;
+        let hasAthletes = false;
+        const res = await axiosInstance.get(`/fantasy/game/${item.id}/leaderboard/`);
+        const teams = await axiosInstance.get(
+          `/fantasy/game/${item.id}/registered_teams_detail/?wallet_addr=${connectedWallet.walletAddress}`
+        );
+
+        if (res.status === 200 && teams.status === 200) {
+          if (res.data.length > 0) {
+            const teamsWithPlacement = res.data.filter(
+              (item) => item.account.wallet_addr === connectedWallet.walletAddress
+            );
+            if (teamsWithPlacement.length > 0) {
+              hasRewards = true;
+            }
+          }
+          if (teams.data.length > 0) {
+            hasAthletes = true;
+          }
+        }
+
+        return {
+          ...item,
+          hasAthletes,
+          hasRewards,
+        };
+      });
+
+      const completedGames = await Promise.all(rewardsList);
+
+
+      setGames(completedGames);
+    }
+    setloading(false);
   };
 
   function fetchGamesLoading() {
     setloading(true);
     setSortedList([]);
     fetchGames(activeCategory);
-    setTimeout(() => {
-      setloading(false);
-    }, 500);
   }
 
   useEffect(() => {
@@ -153,8 +196,7 @@ const Play = () => {
   }, [games, gamesLimit, gamesOffset]);
 
   useEffect(() => {
-    if (typeof connectedWallet !== 'undefined')
-      dispatch(getPortfolio({ walletAddr: connectedWallet.walletAddress }));
+    if (connectedWallet) dispatch(getPortfolio({ walletAddr: connectedWallet.walletAddress }));
   }, [connectedWallet]);
 
   useEffect(() => {
@@ -168,70 +210,91 @@ const Play = () => {
     }
   }, [router]);
 
+  if (!connectedWallet) {
+    return <div></div>;
+  }
+
   return (
     <>
       {claimModal === true && (
         <>
           <div className="fixed w-screen h-screen bg-opacity-70 z-50 overflow-auto bg-indigo-gray flex font-montserrat">
-            <div className="relative p-8 bg-indigo-white w-11/12 md:w-96 h-10/12 md:h-auto m-auto flex-col flex rounded-lg">
+            <div className="relative p-8 bg-indigo-white w-11/12 md:w-1/3 md:h-auto m-auto flex-col flex rounded-lg">
               <button
+                className="absolute top-0 right-0 "
                 onClick={() => {
                   showClaimModal(false);
                 }}
               >
-                <div className="absolute top-0 right-0 p-4 font-black">X</div>
+                <div className="p-4 font-black">X</div>
               </button>
 
-              <div className="mt-6 text-sm">
-                {modalView === true && (
-                  <>
-                    <div className="flex font-bold font-monument">
-                      <div className="mr-4 border-b-8 pb-2 border-indigo-buttonblue cursor-pointer">
-                        WINNING TEAMS
-                      </div>
-                      <div
-                        className="cursor-pointer"
-                        onClick={() => {
-                          switchView(false);
-                        }}
-                      >
-                        NO PLACEMENT
-                      </div>
-                    </div>
-                    <hr className="opacity-50" />
+              <div className="mt-16 text-sm">
+                <div className="flex font-monument">
+                  <div className="mr-8 tracking-wider border-b-8 pb-2 border-indigo-buttonblue cursor-pointer">
+                    WINNING TEAMS
+                  </div>
+                  <div className="tracking-wider cursor-pointer">NO PLACEMENT</div>
+                </div>
+                <hr className="opacity-50 -mx-8" />
 
-                    <div className="w-full flex justify-center">
-                      <div className="text-indigo-white w-36 text-center bg-indigo-buttonblue py-2 px-2">
-                        CLAIM REWARD
+                <div className="w-full">
+                  <div className="p-8 py-10">
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <p className="bg-indigo-black w-min p-3 text-indigo-white font-monument uppercase py-1">
+                          COOLKIDS
+                        </p>
+                        <div className="mt-3 flex items-end font-monument">
+                          <div className="flex items-end text-xs">
+                            <img src={coin} className="mr-2" />
+                            <p>500 UST</p>
+                          </div>
+                          <div className="flex items-end text-xs ml-3">
+                            <img src={bars} className="h-4 w-5 mr-2" />
+                            <p>03</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div>
+                        <button className="text-indigo-white w-40 text-xs font-bold text-center bg-indigo-buttonblue p-3 px-5">
+                          CLAIM REWARD
+                        </button>
                       </div>
                     </div>
-                  </>
-                )}
-                {modalView === false && (
-                  <>
-                    <div className="flex font-bold font-monument">
-                      <div
-                        className="mr-4 cursor-pointer"
-                        onClick={() => {
-                          switchView(true);
-                        }}
-                      >
-                        WINNING TEAMS
+                  </div>
+                  <hr className="opacity-50" />
+                  <div className="p-8 py-10">
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <p className="bg-indigo-black w-min p-3 text-indigo-white font-monument uppercase py-1">
+                          COOLKIDS
+                        </p>
+                        <div className="mt-3 flex items-end font-monument">
+                          <div className="flex items-end text-xs">
+                            <img src={coin} className="mr-2" />
+                            <p>500 UST</p>
+                          </div>
+                          <div className="flex items-end text-xs ml-3">
+                            <img src={bars} className="h-4 w-5 mr-2" />
+                            <p>03</p>
+                          </div>
+                        </div>
                       </div>
-
-                      <div className="border-b-8 pb-2 border-indigo-buttonblue cursor-pointer">
-                        NO PLACEMENT
+                      <div>
+                        <div className="text-indigo-white text-xs font-bold text-center w-40 bg-opacity-60 flex justify-center gap-3 bg-indigo-buttonblue p-4 px-5">
+                          <div className="w-2 h-2 animate-bounce rounded-full bg-indigo-white"></div>
+                          <div className="w-2 h-2 animate-bounce rounded-full bg-indigo-white"></div>
+                          <div className="w-2 h-2 animate-bounce rounded-full bg-indigo-white"></div>
+                        </div>
                       </div>
                     </div>
-                    <hr className="opacity-50" />
-
-                    <div className="w-full flex justify-center">
-                      <div className="text-indigo-white w-36 text-center bg-indigo-buttonblue py-2 px-2">
-                        CLAIM REWARD
-                      </div>
-                    </div>
-                  </>
-                )}
+                  </div>
+                  <hr className="opacity-50" />
+                </div>
+                {/* <div className="text-indigo-white w-36 text-center bg-indigo-buttonblue py-2 px-2">
+                    CLAIM REWARD
+                  </div> */}
               </div>
             </div>
           </div>
@@ -338,31 +401,26 @@ const Play = () => {
                                   />
                                 </div>
                               </a>
-                              {activeCategory === 'completed' ? (
+                              {activeCategory === 'completed' && (
                                 <div className="">
-                                  <button
-                                    className={
-                                      data.id % 2 === 0
-                                        ? 'bg-indigo-buttonblue w-full h-12 text-center font-bold rounded-md text-sm mt-4 self-center hidden'
-                                        : 'bg-indigo-buttonblue w-full h-12 text-center font-bold rounded-md text-sm mt-4 self-center'
-                                    }
-                                    onClick={() => showClaimModal(true)}
-                                  >
-                                    <div className="text-indigo-white">CLAIM REWARD</div>
-                                  </button>
-                                  <button
-                                    className={
-                                      data.id % 2 === 0
-                                        ? 'bg-indigo-buttonblue w-full h-12 text-center font-bold rounded-md text-sm mt-4 self-center'
-                                        : 'bg-indigo-buttonblue w-full h-12 text-center font-bold rounded-md text-sm mt-4 self-center hidden'
-                                    }
-                                    onClick={() => showClaimTeam(true)}
-                                  >
-                                    <div className="text-indigo-white">CLAIM TEAM</div>
-                                  </button>
+                                  {data.hasRewards ? (
+                                    <button
+                                      className="bg-indigo-buttonblue w-full h-12 text-center font-bold rounded-md text-sm mt-4 self-center"
+                                      onClick={() => showClaimModal(true)}
+                                    >
+                                      <div className="text-indigo-white">CLAIM REWARD</div>
+                                    </button>
+                                  ) : data.hasAthletes ? (
+                                    <button
+                                      className="bg-indigo-buttonblue w-full h-12 text-center font-bold rounded-md text-sm mt-4 self-center"
+                                      onClick={() => showClaimModal(true)}
+                                    >
+                                      <div className="text-indigo-white">CLAIM TEAM</div>
+                                    </button>
+                                  ) : (
+                                    ''
+                                  )}
                                 </div>
-                              ) : (
-                                ''
                               )}
                             </div>
                           </div>
