@@ -207,7 +207,18 @@ const Portfolio = () => {
             <div className="flex flex-col w-full overflow-y-auto overflow-x-hidden h-screen self-center text-indigo-black">
               <div className="ml-6 flex flex-col md:flex-row md:justify-between">
                 <PortfolioContainer title="SQUAD" textcolor="text-indigo-black" />
-                { displayMode ? <Sorter list={sortedList} setList={setSortedList} resetOffset={() => setOffset(0)} setSearchText={setSearch} filterValue={filter} filterHandler={(val) => setFilter(val)} /> : ''}
+                {displayMode ? (
+                  <Sorter
+                    list={sortedList}
+                    setList={setSortedList}
+                    resetOffset={() => setOffset(0)}
+                    setSearchText={setSearch}
+                    filterValue={filter}
+                    filterHandler={(val) => setFilter(val)}
+                  />
+                ) : (
+                  ''
+                )}
               </div>
               <div className="flex flex-col w-full">
                 <div className="justify-center self-center w-full md:mt-4">
@@ -230,58 +241,98 @@ const Portfolio = () => {
                         </div>
                       </div>
                       <hr className="opacity-50" />
-                        {sortedList.length > 0 ? (
-                          <>
-                            <div className="grid grid-cols-2 md:grid-cols-4 mt-12">
-                              {sortedList.map(function (player, i) {
-                                const path = player.token_info.info.extension
-                                  return (
-                                    <Link
-                                      href={{
-                                        pathname: '/AssetDetails',
-                                        query: {
-                                          id: path.athlete_id,
-                                          origin: 'Portfolio',
-                                          token_id: player.token_id,
-                                        },
-                                      }}
-                                    >
-                                      <div className="mb-4" key={i}>
-                                        <PerformerContainer
-                                          AthleteName={path.name}
-                                          AvgScore={player.fantasy_score}
-                                          id={path.athlete_id}
-                                          uri={
-                                            player.nft_image || player.token_info
-                                              ? player.token_info.info.token_uri
-                                              : null
-                                          }
-                                          rarity={path.rarity}
-                                          status={player.is_locked}
-                                        />
-                                      </div>
-                                    </Link>
-                                  );
-                              })}
+                      {sortedList.length > 0 ? (
+                        <>
+                          {console.log('sortedList', sortedList)}
+                          <div className="grid grid-cols-2 md:grid-cols-4 mt-12">
+                            {sortedList.map(function (player, i) {
+                              const path = player.token_info.info.extension;
+                              return (
+                                <Link
+                                  href={{
+                                    pathname: '/AssetDetails',
+                                    query: {
+                                      id: path.athlete_id,
+                                      origin: 'Portfolio',
+                                      token_id: player.token_id,
+                                    },
+                                  }}
+                                >
+                                  <div className="mb-4" key={i}>
+                                    <PerformerContainer
+                                      AthleteName={path.name}
+                                      AvgScore={player.fantasy_score}
+                                      id={path.athlete_id}
+                                      uri={
+                                        player.nft_image || player.token_info
+                                          ? player.token_info.info.token_uri
+                                          : null
+                                      }
+                                      rarity={path.rarity}
+                                      status={player.is_locked}
+                                    />
+                                  </div>
+                                </Link>
+                              );
+                            })}
+                          </div>
+                          <div className="flex justify-between md:mt-5 md:mr-6 p-5">
+                            <div className="bg-indigo-white mr-1 h-11 flex items-center font-thin border-indigo-lightgray border-opacity-40 p-2">
+                              {pageCount > 1 && (
+                                <button
+                                  className="px-2 border mr-2"
+                                  onClick={() => changeIndex('first')}
+                                >
+                                  First
+                                </button>
+                              )}
+                              {pageCount !== 0 && canPrevious() && (
+                                <button
+                                  className="px-2 border mr-2"
+                                  onClick={() => changeIndex('previous')}
+                                >
+                                  Previous
+                                </button>
+                              )}
+                              <p className="mr-2">
+                                Page {offset + 1} of {pageCount}
+                              </p>
+                              {pageCount !== 0 && canNext() && (
+                                <button
+                                  className="px-2 border mr-2"
+                                  onClick={() => changeIndex('next')}
+                                >
+                                  Next
+                                </button>
+                              )}
+                              {pageCount > 1 && (
+                                <button
+                                  className="px-2 border mr-2"
+                                  onClick={() => changeIndex('last')}
+                                >
+                                  Last
+                                </button>
+                              )}
                             </div>
-                            <div className="flex justify-between md:mt-5 md:mr-6 p-5">
-                              <div className="bg-indigo-white mr-1 h-11 flex items-center font-thin border-indigo-lightgray border-opacity-40 p-2">
-                                {pageCount > 1 && <button className='px-2 border mr-2' onClick={() => changeIndex('first')}>First</button>}
-                                {pageCount !== 0 && canPrevious() && <button className='px-2 border mr-2' onClick={() => changeIndex('previous')}>Previous</button>}
-                                <p className='mr-2'>Page {offset + 1} of {pageCount}</p>
-                                {pageCount !== 0 && canNext() && <button className='px-2 border mr-2' onClick={() => changeIndex('next')}>Next</button>}
-                                {pageCount  > 1 && <button className='px-2 border mr-2' onClick={() => changeIndex('last')}>Last</button>}
-                              </div>
-                              <div className="bg-indigo-white mr-1 h-11 w-64 flex font-thin border-2 border-indigo-lightgray border-opacity-40 p-2">
-                                  <select value={limit} className="bg-indigo-white text-lg w-full outline-none" onChange={(e) => {setLimit(e.target.value); setOffset(0)}}>
-                                    {limitOptions.map((option) => <option value={option}>{option}</option>)}
-                                  </select>
-                              </div>
+                            <div className="bg-indigo-white mr-1 h-11 w-64 flex font-thin border-2 border-indigo-lightgray border-opacity-40 p-2">
+                              <select
+                                value={limit}
+                                className="bg-indigo-white text-lg w-full outline-none"
+                                onChange={(e) => {
+                                  setLimit(e.target.value);
+                                  setOffset(0);
+                                }}
+                              >
+                                {limitOptions.map((option) => (
+                                  <option value={option}>{option}</option>
+                                ))}
+                              </select>
                             </div>
-                          </>
-                        ) : (
-                          <div>No assets in your portfolio</div>
-                        )}
+                          </div>
+                        </>
+                      ) : (
+                        <div>No assets in your portfolio</div>
+                      )}
                     </>
                   ) : (
                     <>
@@ -296,44 +347,86 @@ const Portfolio = () => {
                           ATHLETES
                         </div>
 
-                        <div className="border-b-8 pb-2 border-indigo-buttonblue cursor-pointer">PACKS</div>
+                        <div className="border-b-8 pb-2 border-indigo-buttonblue cursor-pointer">
+                          PACKS
+                        </div>
                       </div>
                       <hr className="opacity-50" />
-                      
-                        {sortedPacks.length > 0 ? 
-                          <>
-                            <div className="md:ml-16 grid grid-cols-0 md:grid-cols-4 mt-12 justify-center">
-                              {sortedPacks.map((data, i) => {
-                                  const path = data.token_info.info.extension
-                                  return (
-                                      <div className="mb-4 cursor-pointer" key={i}>
-                                        <SquadPackComponent
-                                          imagesrc={null}
-                                          packName={data.token_id}
-                                          // releaseValue={path.release[1]}
-                                          link={`?token_id=${data.token_id}&origin=Portfolio`}
-                                        />
-                                      </div>
-                                  );
-                                })
-                              }
+
+                      {sortedPacks.length > 0 ? (
+                        <>
+                          <div className="md:ml-16 grid grid-cols-0 md:grid-cols-4 mt-12 justify-center">
+                            {sortedPacks.map((data, i) => {
+                              const path = data.token_info.info.extension;
+                              console.log('data', data);
+                              return (
+                                <div className="mb-4 cursor-pointer" key={i}>
+                                  <SquadPackComponent
+                                    imagesrc={null}
+                                    packName={data.token_id}
+                                    // releaseValue={path.release[1]}
+                                    link={`?token_id=${data.token_id}&origin=Portfolio`}
+                                  />
+                                </div>
+                              );
+                            })}
+                          </div>
+                          <div className="flex justify-between md:mt-5 md:mr-6 p-5">
+                            <div className="bg-indigo-white mr-1 h-11 flex items-center font-thin border-indigo-lightgray border-opacity-40 p-2">
+                              {packPageCount > 1 && (
+                                <button
+                                  className="px-2 border mr-2"
+                                  onClick={() => changeIndexPack('first')}
+                                >
+                                  First
+                                </button>
+                              )}
+                              {packPageCount !== 0 && canPreviousPack() && (
+                                <button
+                                  className="px-2 border mr-2"
+                                  onClick={() => changeIndexPack('previous')}
+                                >
+                                  Previous
+                                </button>
+                              )}
+                              <p className="mr-2">
+                                Page {packOffset + 1} of {packPageCount}
+                              </p>
+                              {packPageCount !== 0 && canNextPack() && (
+                                <button
+                                  className="px-2 border mr-2"
+                                  onClick={() => changeIndexPack('next')}
+                                >
+                                  Next
+                                </button>
+                              )}
+                              {packPageCount > 1 && (
+                                <button
+                                  className="px-2 border mr-2"
+                                  onClick={() => changeIndexPack('last')}
+                                >
+                                  Last
+                                </button>
+                              )}
                             </div>
-                            <div className="flex justify-between md:mt-5 md:mr-6 p-5">
-                              <div className="bg-indigo-white mr-1 h-11 flex items-center font-thin border-indigo-lightgray border-opacity-40 p-2">
-                                {packPageCount > 1 && <button className='px-2 border mr-2' onClick={() => changeIndexPack('first')}>First</button>}
-                                {packPageCount !== 0 && canPreviousPack() && <button className='px-2 border mr-2' onClick={() => changeIndexPack('previous')}>Previous</button>}
-                                <p className='mr-2'>Page {packOffset + 1} of {packPageCount}</p>
-                                {packPageCount !== 0 && canNextPack() && <button className='px-2 border mr-2' onClick={() => changeIndexPack('next')}>Next</button>}
-                                {packPageCount  > 1 && <button className='px-2 border mr-2' onClick={() => changeIndexPack('last')}>Last</button>}
-                              </div>
-                              <div className="bg-indigo-white mr-1 h-11 w-64 flex font-thin border-2 border-indigo-lightgray border-opacity-40 p-2">
-                                  <select value={packLimit} className="bg-indigo-white text-lg w-full outline-none" onChange={(e) => {setPackLimit(e.target.value), setPackOffset(0)}}>
-                                    {limitOptions.map((option) => <option value={option}>{option}</option>)}
-                                  </select>
-                              </div>
+                            <div className="bg-indigo-white mr-1 h-11 w-64 flex font-thin border-2 border-indigo-lightgray border-opacity-40 p-2">
+                              <select
+                                value={packLimit}
+                                className="bg-indigo-white text-lg w-full outline-none"
+                                onChange={(e) => {
+                                  setPackLimit(e.target.value), setPackOffset(0);
+                                }}
+                              >
+                                {limitOptions.map((option) => (
+                                  <option value={option}>{option}</option>
+                                ))}
+                              </select>
                             </div>
-                          </>
-                        : <div>No packs available in your portfolio</div>}
+                          </div>
+                        </>
+                      ) : (
+                        <div>No packs available in your portfolio</div>
+                      )}
                     </>
                   )}
                 </div>

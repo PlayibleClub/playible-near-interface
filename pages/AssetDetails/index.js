@@ -42,6 +42,8 @@ const AssetDetails = (props) => {
   const [Data, setData] = useState(null);
   const [stats, setStats] = useState(null);
 
+  console.log('assetData', assetData);
+
   const [matchedId, setMatchedId] = useState([]);
 
   const [statfilter, setFilter] = useState('sevendays');

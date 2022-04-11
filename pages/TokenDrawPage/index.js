@@ -70,6 +70,9 @@ const TokenDrawPage = (props) => {
       const imgRes = await axiosInstance.get(
         `/fantasy/athlete/${parseInt(res.info.extension.athlete_id)}/`
       );
+
+      console.log('details', details)
+      console.log('imgRes', imgRes);
       let stats = null;
       let img = imgRes.status === 200 ? imgRes.data.nft_image : null;
 

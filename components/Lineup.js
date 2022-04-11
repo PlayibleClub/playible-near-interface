@@ -18,7 +18,7 @@ const Lineup = (props) => {
       </div>
       <div className="flex justify-center">
         <div className="flex flex-col mt-4">
-          <div className="mb-3 text-sm ">{player === '' ? '-' : player}</div>
+          <div className="mb-3 text-sm uppercase">{player === '' ? '-' : player}</div>
           <div className="text-xs font-thin">FANTASY SCORE </div>
           <div className="text-xs">{score === '' ? '-' : score}</div>
         </div>

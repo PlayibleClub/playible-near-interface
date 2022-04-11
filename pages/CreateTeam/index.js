@@ -116,7 +116,9 @@ export default function CreateLineup() {
     let slots = positions.map((item) => {
       return {
         ...athlete,
-        position: item,
+        position: {
+          value: item,
+        },
       };
     });
 
@@ -137,14 +139,13 @@ export default function CreateLineup() {
       let filteredList = tempList
         .filter((item) => {
           if (pos === 'P') {
-            return (
-              item.position === 'RP' ||
-              item.position === 'SP'
-            );
-          } else if (pos === 'OF') {
+            return item.position === 'RP' || item.position === 'SP';
+          } else if (pos === 'OF' || pos === 'LF' || pos === 'CF' || pos === 'RF') {
             return (
               item.position === 'LF' ||
-              item.position === 'CF'
+              item.position === 'CF' ||
+              item.position === 'OF' ||
+              item.position === 'RF'
             );
           } else {
             return item.position === pos;
@@ -174,9 +175,13 @@ export default function CreateLineup() {
     if (slotIndex !== null && chosenAthlete !== null) {
       const athleteInfo = {
         ...chosenAthlete,
-        athlete_id: chosenAthlete.token_info.info.extension.attributes.filter(item => item.trait_type === 'athlete_id')[0],
+        athlete_id: chosenAthlete.token_info.info.extension.attributes.filter(
+          (item) => item.trait_type === 'athlete_id'
+        )[0],
         contract_addr: CW721,
-        position: chosenAthlete.token_info.info.extension.attributes.filter(item => item.trait_type === 'position')[0],
+        position: chosenAthlete.token_info.info.extension.attributes.filter(
+          (item) => item.trait_type === 'position'
+        )[0],
       };
       tempSlots[slotIndex] = athleteInfo;
 
@@ -221,10 +226,12 @@ export default function CreateLineup() {
 
       if (!hasEmptySlot()) {
         setCreateLoading(true);
-        console.log("no empty slot")
+        console.log('no empty slot');
         const trimmedAthleteData = team.map(({ token_info, token_id, contract_addr }) => {
           return {
-            athlete_id: (token_info.info.extension.attributes.filter(item => item.trait_type === 'athlete_id'))[0],
+            athlete_id: token_info.info.extension.attributes.filter(
+              (item) => item.trait_type === 'athlete_id'
+            )[0].value,
             token_id,
             contract_addr,
           };
@@ -258,6 +265,8 @@ export default function CreateLineup() {
           },
         ]);
 
+        console.log('resContract', resContract);
+
         console.log({
           game_id: router.query.id.toString(),
           team_name: teamName,
@@ -287,7 +296,7 @@ export default function CreateLineup() {
           if (res.status === 201) {
             alert('Successful');
             setSuccessModal(true);
-            router.replace(`/CreateLineup/?id=${router.query.id}`);
+            // router.replace(`/CreateLineup/?id=${router.query.id}`);
           } else {
             alert('An error occurred! Refresh the page and try again.');
           }
@@ -396,14 +405,21 @@ export default function CreateLineup() {
                     <div className="grid grid-cols-2 gap-y-4 mt-4 md:grid-cols-4 md:ml-7 md:mt-12">
                       {athleteList.map((player, i) => {
                         const path = player.token_info.info.extension;
+
                         return (
                           <div className="mb-4" key={i}>
                             <PerformerContainerSelectable
-                              AthleteName={path.name}
+                              AthleteName={
+                                path.attributes.filter((item) => item.trait_type === 'name')[0]
+                                  .value
+                              }
                               AvgScore={player.fantasy_score}
                               id={path.athlete_id}
                               uri={player.token_info.info.token_uri || player.nft_image}
-                              rarity={path.rarity}
+                              rarity={
+                                path.attributes.filter((item) => item.trait_type === 'rarity')[0]
+                                  .value
+                              }
                               status="ingame"
                               index={i}
                               token_id={player.token_id}
@@ -487,20 +503,20 @@ export default function CreateLineup() {
                               return (
                                 <div>
                                   <Lineup
-                                    position={data.position}
+                                    position={data.position.value}
                                     player={
-                                      data.token_info ? data.token_info.info.extension.name : ''
+                                      data.token_info
+                                        ? data.token_info.info.extension.attributes.filter(
+                                            (item) => item.trait_type === 'name'
+                                          )[0].value
+                                        : ''
                                     }
                                     score={data.score || 0}
                                     onClick={() => {
-                                      filterAthleteByPos(data.position);
+                                      filterAthleteByPos(data.position.value);
                                       setSlotIndex(i);
                                     }}
-                                    img={
-                                      data.nft_image || data.token_info
-                                        ? data.token_info.info.token_uri
-                                        : null
-                                    }
+                                    img={data.token_info ? data.token_info.info.token_uri : null}
                                   />
                                 </div>
                               );
@@ -524,16 +540,36 @@ export default function CreateLineup() {
           <BaseModal
             title={'Confirm selection'}
             visible={confirmModal}
-            onClose={() => setConfirmModal(false)}
+            onClose={() => {
+              setChosenAthlete(null);
+              setConfirmModal(false);
+            }}
           >
             {chosenAthlete ? (
               <div>
-                <p>Are you sure to select {chosenAthlete.token_info.info.extension.name} ?</p>
+                <p>
+                  Are you sure to select{' '}
+                  {
+                    chosenAthlete.token_info.info.extension.attributes.filter(
+                      (item) => item.trait_type === 'name'
+                    )[0].value
+                  }{' '}
+                  ?
+                </p>
                 <button
                   className="bg-indigo-green font-monument tracking-widest text-indigo-white w-full h-16 text-center text-sm mt-4"
                   onClick={updateTeamSlots}
                 >
                   CONFIRM
+                </button>
+                <button
+                  className="bg-red-pastel font-monument tracking-widest text-indigo-white w-full h-16 text-center text-sm mt-4"
+                  onClick={() => {
+                    setChosenAthlete(null);
+                    setConfirmModal(false);
+                  }}
+                >
+                  CANCEL
                 </button>
               </div>
             ) : (
