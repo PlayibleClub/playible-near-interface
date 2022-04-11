@@ -35,7 +35,7 @@ const TokenComponent = (props) =>{
     
     else {
         return (
-            <div className="w-32 h-48 overflow-hidden transform cursor-pointer animate-bounce">
+            <div className="w-32 h-48 overflow-hidden transform cursor-pointer">
             {/* remove animation bounce when proceeding */}
                     <Image
                         src= {"/../public/images/tokens/0.png"}

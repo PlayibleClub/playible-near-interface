@@ -43,7 +43,6 @@ const PlayDetailsComponent = (props) => {
         fetch();
         game();
       }
-      console.log(totalSeconds)
       if(Math.floor(totalSeconds) < 0)
       {
         game();

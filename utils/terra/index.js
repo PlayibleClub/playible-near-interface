@@ -37,8 +37,10 @@ export const estimateFee = async (
         { msgs: executeContractMsg, gasPrices: gasPrices, feeDenoms: feeDenoms } //use UST as gas by default
       );
     } catch (err) {
+      console.log('estimatedFee err', err);
       estimatedFee = null;
     }
+    // console.log('estimatedFee', estimatedFee);
   }
 
   return estimatedFee;
@@ -108,7 +110,7 @@ export const executeContract = async (
   await connectedWallet
     .post({
       msgs: executeContractMsg,
-      fee: estimatedFee,
+      // fee: estimatedFee,
       //fee: new StdFee(1_000_000, { uusd: 90_000_000 })
       // gasAdjustment: 1.1,
     })

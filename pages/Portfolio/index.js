@@ -310,7 +310,7 @@ const Portfolio = () => {
                                         <SquadPackComponent
                                           imagesrc={null}
                                           packName={data.token_id}
-                                          releaseValue={path.release[1]}
+                                          // releaseValue={path.release[1]}
                                           link={`?token_id=${data.token_id}&origin=Portfolio`}
                                         />
                                       </div>

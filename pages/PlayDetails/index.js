@@ -36,7 +36,6 @@ export default function PlayDetails() {
     const res = await axiosInstance.get(
       `/fantasy/game/${router.query.id}/registered_teams_detail/?wallet_addr=${connectedWallet.walletAddress}`
     );
-    console.log('res', res);
 
     if (res.status === 200 && res.data.length > 0) {
       setRegisteredTeams(res.data);
@@ -155,7 +154,6 @@ export default function PlayDetails() {
                             </div>
                           </div>
                         </div>
-                        {console.log(gameEnd)}
 
                         {gameEnd ? (
                           <></>

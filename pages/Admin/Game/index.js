@@ -163,12 +163,15 @@ const Index = (props) => {
       const formData = {
         ...details,
         // DURATION IS EXPRESSED IN DAYS BUT WILL BE CONVERTED TO MINUTES
-        duration: parseInt(details.duration) * 60 * 24,
+        // duration: parseInt(details.duration) * 60 * 24,
+        duration: 5,
       };
 
       setLoading(true);
 
       const res = await axiosInstance.post('/fantasy/game/', formData);
+
+      console.log('res',res)
 
       if (res.status === 201) {
         setMsg({
@@ -183,53 +186,83 @@ const Index = (props) => {
               percentage: (parseInt(item.percentage) / 100) * 1000000,
             };
           });
-
-        const resContract = await executeContract(connectedWallet, ORACLE, [
-          {
-            contractAddr: ORACLE,
-            msg: {
-              add_game: {
-                game_id: res.data.id.toString(),
-                prize: parseInt(res.data.prize),
-                distribution: filteredDistribution,
+        const fee = await estimateFee(
+          connectedWallet.walletAddress,
+          [
+            {
+              contractAddr: ORACLE,
+              msg: {
+                add_game: {
+                  game_id: res.data.id.toString(),
+                  prize: parseInt(res.data.prize),
+                  distribution: filteredDistribution,
+                },
               },
             },
-          },
-          {
-            contractAddr: GAME,
-            msg: {
-              add_game: {
-                game_id: res.data.id.toString(),
-                game_time_start: convertToMinutes(formData.start_datetime),
-                duration: formData.duration,
-                whitelist: ['terra1h0mq6ktwrd0fgez5xrhwlcyf0p3w3nm94fc40j'],
+            {
+              contractAddr: GAME,
+              msg: {
+                add_game: {
+                  game_id: res.data.id.toString(),
+                  game_time_start: convertToMinutes(formData.start_datetime),
+                  duration: formData.duration,
+                  whitelist: ['terra1h0mq6ktwrd0fgez5xrhwlcyf0p3w3nm94fc40j'],
+                },
               },
             },
-          },
-        ]);
+          ]
+        );
 
-        if (
-          !resContract.txResult ||
-          (resContract.txResult && !resContract.txResult.success) ||
-          resContract.txError
-        ) {
-          let deleteSuccess = false;
-          while (!deleteSuccess) {
-            const deleteRes = await axiosInstance.delete(`/fantasy/game/${res.data.id}/`);
+        console.log('fee', fee)
 
-            if (deleteRes.status === 204) {
-              deleteSuccess = true;
-            }
-          }
+        // const resContract = await executeContract(connectedWallet, ORACLE, [
+        //   {
+        //     contractAddr: ORACLE,
+        //     msg: {
+        //       add_game: {
+        //         game_id: res.data.id.toString(),
+        //         prize: parseInt(res.data.prize),
+        //         distribution: filteredDistribution,
+        //       },
+        //     },
+        //   },
+        //   {
+        //     contractAddr: GAME,
+        //     msg: {
+        //       add_game: {
+        //         game_id: res.data.id.toString(),
+        //         game_time_start: convertToMinutes(formData.start_datetime),
+        //         duration: formData.duration,
+        //         whitelist: ['terra1h0mq6ktwrd0fgez5xrhwlcyf0p3w3nm94fc40j'],
+        //       },
+        //     },
+        //   },
+        // ]);
 
-          setMsg({
-            title: 'Failed',
-            content:
-              resContract.txResult && !resContract.txResult.success
-                ? 'Blockchain error! Please try again later.'
-                : resContract.txError,
-          });
-        }
+        // console.log('resContract', resContract);
+
+        // if (
+        //   !resContract.txResult ||
+        //   (resContract.txResult && !resContract.txResult.success) ||
+        //   resContract.txError
+        // ) {
+        //   let deleteSuccess = false;
+        //   while (!deleteSuccess) {
+        //     const deleteRes = await axiosInstance.delete(`/fantasy/game/${res.data.id}/`);
+
+        //     if (deleteRes.status === 204) {
+        //       deleteSuccess = true;
+        //     }
+        //   }
+
+        //   setMsg({
+        //     title: 'Failed',
+        //     content:
+        //       resContract.txResult && !resContract.txResult.success
+        //         ? 'Blockchain error! Please try again later.'
+        //         : resContract.txError,
+        //   });
+        // }
         resetForm();
         fetchGames();
       } else {
@@ -250,11 +283,8 @@ const Index = (props) => {
     const now = new Date()
     const gameStart = new Date(time)
     const timeDiff = ((gameStart/1000) - (now/1000))
-    if (timeDiff<60) {
-      return 1
-    } else {
-      return timeDiff/60
-    }
+
+    return timeDiff / 60;
   }
 
   const fetchGames = async () => {

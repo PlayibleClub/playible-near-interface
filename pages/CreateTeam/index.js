@@ -71,7 +71,6 @@ export default function CreateLineup() {
 
   const fetchGameData = async () => {
     const res = await axiosInstance.get(`/fantasy/game/${router.query.id}/`);
-    console.log(res);
     if (res.status === 200) {
       setStartDate(res.data.start_datetime);
     }
@@ -139,16 +138,16 @@ export default function CreateLineup() {
         .filter((item) => {
           if (pos === 'P') {
             return (
-              item.token_info.info.extension.position === 'RP' ||
-              item.token_info.info.extension.position === 'SP'
+              item.position === 'RP' ||
+              item.position === 'SP'
             );
           } else if (pos === 'OF') {
             return (
-              item.token_info.info.extension.position === 'LF' ||
-              item.token_info.info.extension.position === 'CF'
+              item.position === 'LF' ||
+              item.position === 'CF'
             );
           } else {
-            return item.token_info.info.extension.position === pos;
+            return item.position === pos;
           }
         })
         .map((item) => {
@@ -175,9 +174,9 @@ export default function CreateLineup() {
     if (slotIndex !== null && chosenAthlete !== null) {
       const athleteInfo = {
         ...chosenAthlete,
-        athlete_id: chosenAthlete.token_info.info.extension.athlete_id,
+        athlete_id: chosenAthlete.token_info.info.extension.attributes.filter(item => item.trait_type === 'athlete_id')[0],
         contract_addr: CW721,
-        position: chosenAthlete.token_info.info.extension.position,
+        position: chosenAthlete.token_info.info.extension.attributes.filter(item => item.trait_type === 'position')[0],
       };
       tempSlots[slotIndex] = athleteInfo;
 
@@ -222,9 +221,10 @@ export default function CreateLineup() {
 
       if (!hasEmptySlot()) {
         setCreateLoading(true);
-        const trimmedAthleteData = team.map(({ athlete_id, token_id, contract_addr }) => {
+        console.log("no empty slot")
+        const trimmedAthleteData = team.map(({ token_info, token_id, contract_addr }) => {
           return {
-            athlete_id,
+            athlete_id: (token_info.info.extension.attributes.filter(item => item.trait_type === 'athlete_id'))[0],
             token_id,
             contract_addr,
           };
@@ -250,13 +250,19 @@ export default function CreateLineup() {
             contractAddr: GAME,
             msg: {
               lock_team: {
-                game_id: router.query.id,
+                game_id: router.query.id.toString(),
                 team_name: teamName,
-                token_ids: [trimmedAthleteData.map((item) => item.token_id)],
+                token_ids: trimmedAthleteData.map((item) => item.token_id),
               },
             },
           },
         ]);
+
+        console.log({
+          game_id: router.query.id.toString(),
+          team_name: teamName,
+          token_ids: trimmedAthleteData.map((item) => item.token_id),
+        });
 
         if (
           !resContract.txResult ||
@@ -270,10 +276,16 @@ export default function CreateLineup() {
                 ? 'Blockchain error! Please try again later.'
                 : resContract.txError,
           });
+          alert(
+            resContract.txResult && !resContract.txResult.success
+              ? 'Blockchain error! Please try again later.'
+              : resContract.txError
+          );
         } else {
           const res = await axiosInstance.post('/fantasy/game_team/', formData);
           setCreateLoading(false);
           if (res.status === 201) {
+            alert('Successful');
             setSuccessModal(true);
             router.replace(`/CreateLineup/?id=${router.query.id}`);
           } else {
@@ -285,6 +297,7 @@ export default function CreateLineup() {
           title: 'Notice',
           content: 'You must fill up all the slots to proceed.',
         });
+        alert('You must fill up all the slots to proceed.');
       }
     } else {
       alert('Please connect your wallet first!');
@@ -346,7 +359,6 @@ export default function CreateLineup() {
       const currentDate = new Date();
       const end = new Date(startDate);
       const totalSeconds = (end - currentDate) / 1000;
-      console.log(Math.floor(totalSeconds));
       if (Math.floor(totalSeconds) < 0) {
         setTimerUp(true);
         clearInterval(id);
