@@ -23,11 +23,14 @@ export default function PlayDetails() {
   const connectedWallet = useConnectedWallet();
   const [gameOngoing, setgameOngoing] = useState(false);
   const [gameEnd, setgameEnd] = useState(false);
+  const [timesUp, setTimesUp] = useState(false)
+  const [startDate, setStartDate] = useState();
 
   async function fetchGameData() {
     const res = await axiosInstance.get(`/fantasy/game/${router.query.id}/`);
     if (res.status === 200) {
       setGameData(res.data);
+      setStartDate(res.data.end_datetime)
     } else {
     }
   }
@@ -80,13 +83,28 @@ export default function PlayDetails() {
       fetchGameData();
       setgameOngoing(false);
     }
-  }, [router, gameOngoing]);
+  }, [router, gameOngoing, gameEnd]);
 
   useEffect(() => {
     if (router && router.query.id && connectedWallet) {
       fetchRegisteredTeams();
     }
   }, [router, connectedWallet]);
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      const currentDate = new Date();
+      const end = new Date(startDate);
+      const totalSeconds = (end - currentDate) / 1000;
+      console.log(Math.floor(totalSeconds))
+      if (Math.floor(totalSeconds) < 0) {
+        clearInterval(id)
+        setTimesUp(true)
+        isEnd()
+      }
+    }, 1000);
+    return () => clearInterval(id);
+  }, [startDate]);
 
   if (!router) {
     return;
@@ -112,8 +130,8 @@ export default function PlayDetails() {
                     />
                   </div>
                   <div className="mt-4">
-                    {new Date(gameData.start_datetime) <= new Date() &&
-                    new Date(gameData.end_datetime) > new Date() ? (
+                    {((new Date(gameData.start_datetime) <= new Date() &&
+                    new Date(gameData.end_datetime) > new Date())&&timesUp===false) ? (
                       <>
                         <ModalPortfolioContainer textcolor="indigo-black" title="VIEW TEAMS" />
                         {registeredTeams.length > 0
@@ -156,36 +174,35 @@ export default function PlayDetails() {
                         </div>
 
                         {gameEnd ? (
-                          <></>
-                        ) : (
                           <>
-                            <div>REGISTRATION ENDS IN</div>
-                            <PlayDetailsComponent
-                              startDate={gameData.start_datetime}
-                              fetch={() => fetchGameData()}
-                              game={() => isOngoing()}
-                              gameEnd={() => isEnd()}
-                            />
                           </>
+                        ) : (
+                          <><div>REGISTRATION ENDS IN</div>
+                          <PlayDetailsComponent
+                            startDate={gameData.start_datetime}
+                            endDate={gameData.end_d}
+                            fetch={() => fetchGameData()}
+                            game={() => isOngoing()}
+                            gameEnd={() => isEnd()}
+                          />
+                          <div className="flex justify-center md:justify-start">
+                            <a href={`/CreateLineup?id=${gameData.id}`}>
+                              <button
+                                className={
+                                  (new Date(gameData.start_datetime) <= new Date() &&
+                                    new Date(gameData.end_datetime) > new Date()) ||
+                                  gameEnd
+                                    ? 'bg-indigo-lightblue text-indigo-buttonblue cursor-not-allowed w-64 h-12 text-center font-bold text-md mt-8 mr-4 hidden'
+                                    : 'bg-indigo-buttonblue text-indigo-white w-64 h-12 text-center font-bold text-md mt-8'
+                                }
+                              >
+                                ENTER GAME
+                              </button>
+                            </a>
+                          </div></>
                         )}
                       </>
                     )}
-
-                    <div className="flex justify-center md:justify-start">
-                      <a href={`/CreateLineup?id=${gameData.id}`}>
-                        <button
-                          className={
-                            (new Date(gameData.start_datetime) <= new Date() &&
-                              new Date(gameData.end_datetime) > new Date()) ||
-                            gameEnd
-                              ? 'bg-indigo-lightblue text-indigo-buttonblue cursor-not-allowed w-64 h-12 text-center font-bold text-md mt-8 mr-4 hidden'
-                              : 'bg-indigo-buttonblue text-indigo-white w-64 h-12 text-center font-bold text-md mt-8'
-                          }
-                        >
-                          ENTER GAME
-                        </button>
-                      </a>
-                    </div>
                   </div>
                 </div>
                 <div className="flex flex-col">

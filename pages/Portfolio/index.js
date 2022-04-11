@@ -19,12 +19,12 @@ const Portfolio = () => {
   const [searchText, setSearchText] = useState('');
   const [displayMode, setDisplay] = useState(true);
   const [loading, setLoading] = useState(true);
-  const [limit, setLimit] = useState(10)
-  const [offset, setOffset] = useState(0)
-  const [pageCount, setPageCount] = useState(0)
-  const [packLimit, setPackLimit] = useState(10)
-  const [packOffset, setPackOffset] = useState(0)
-  const [packPageCount, setPackPageCount] = useState(0)
+  const [limit, setLimit] = useState(10);
+  const [offset, setOffset] = useState(0);
+  const [pageCount, setPageCount] = useState(0);
+  const [packLimit, setPackLimit] = useState(10);
+  const [packOffset, setPackOffset] = useState(0);
+  const [packPageCount, setPackPageCount] = useState(0);
 
   const { list: playerList, status } = useSelector((state) => state.assets);
 
@@ -32,138 +32,147 @@ const Portfolio = () => {
   const connectedWallet = useConnectedWallet();
   const lcd = useLCDClient();
   const [sortedList, setSortedList] = useState([]);
-  const [packs, setPacks] = useState([])
-  const [sortedPacks, setSortedPacks] = useState([])
-  const limitOptions = [5,10,30,50]
-  const [filter, setFilter] = useState(null)
-  const [search, setSearch] = useState('')
+  const [packs, setPacks] = useState([]);
+  const [sortedPacks, setSortedPacks] = useState([]);
+  const limitOptions = [5, 10, 30, 50];
+  const [filter, setFilter] = useState(null);
+  const [search, setSearch] = useState('');
 
   const fetchPacks = async () => {
     if (connectedWallet) {
-      const formData = { 
+      const formData = {
         owner_tokens_info: {
-          owner: connectedWallet.walletAddress
-        }
-      }
-      const res = await lcd.wasm.contractQuery(PACK, formData)
+          owner: connectedWallet.walletAddress,
+        },
+      };
+      const res = await lcd.wasm.contractQuery(PACK, formData);
 
       if (res && res.length > 0) {
-        setPacks(res)
+        setPacks(res);
       } else {
-        setPacks([])
+        setPacks([]);
       }
     }
-  }
+  };
 
   const changeIndex = (index) => {
     switch (index) {
       case 'next':
-          setOffset(offset + 1)
-          break
+        setOffset(offset + 1);
+        break;
       case 'previous':
-          setOffset(offset - 1)
-          break
+        setOffset(offset - 1);
+        break;
       case 'first':
-          setOffset(0)
-          break
+        setOffset(0);
+        break;
       case 'last':
-          setOffset(pageCount - 1)
-          break
+        setOffset(pageCount - 1);
+        break;
 
       default:
-          break
-      }
-  }
+        break;
+    }
+  };
 
   const changeIndexPack = (index) => {
     switch (index) {
       case 'next':
-          setPackOffset(packOffset + 1)
-          break
+        setPackOffset(packOffset + 1);
+        break;
       case 'previous':
-          setPackOffset(packOffset - 1)
-          break
+        setPackOffset(packOffset - 1);
+        break;
       case 'first':
-          setPackOffset(0)
-          break
+        setPackOffset(0);
+        break;
       case 'last':
-          setPackOffset(packPageCount - 1)
-          break
+        setPackOffset(packPageCount - 1);
+        break;
 
       default:
-          break
-      }
-  }
+        break;
+    }
+  };
 
   const canNext = () => {
     if (offset + 1 === pageCount) {
-        return false
+      return false;
     } else {
-        return true
+      return true;
     }
-  }
+  };
 
   const canNextPack = () => {
     if (packOffset + 1 === packPageCount) {
-        return false
+      return false;
     } else {
-        return true
+      return true;
     }
-  }
+  };
 
   const canPrevious = () => {
     if (offset === 0) {
-      return false
+      return false;
     } else {
-      return true
+      return true;
     }
-  }
+  };
 
   const canPreviousPack = () => {
     if (packOffset === 0) {
-      return false
+      return false;
     } else {
-      return true
+      return true;
     }
-  }
+  };
 
   const applySortFilter = (list, filter, search = '') => {
-    let tempList = [...list]
+    let tempList = [...list];
     if (tempList.length > 0) {
-        let filteredList = tempList.filter(item => item.token_info.info.extension.name.toLowerCase().indexOf(search.toLowerCase()) > -1)
-        switch(filter) {
-          case 'name':
-            filteredList.sort((a,b) => a.token_info.info.extension.name.localeCompare(b.token_info.info.extension.name))
-            return filteredList
-          case 'team':
-            filteredList.sort((a,b) => a.token_info.info.extension.team.localeCompare(b.token_info.info.extension.team))
-            return filteredList
-          case 'position':
-            filteredList.sort((a,b) => a.token_info.info.extension.position.localeCompare(b.token_info.info.extension.position))
-            return filteredList
-          default:
-            return filteredList
+      let filteredList = tempList.filter(
+        (item) =>
+          item.token_info.info.extension.name.toLowerCase().indexOf(search.toLowerCase()) > -1
+      );
+      switch (filter) {
+        case 'name':
+          filteredList.sort((a, b) =>
+            a.token_info.info.extension.name.localeCompare(b.token_info.info.extension.name)
+          );
+          return filteredList;
+        case 'team':
+          filteredList.sort((a, b) =>
+            a.token_info.info.extension.team.localeCompare(b.token_info.info.extension.team)
+          );
+          return filteredList;
+        case 'position':
+          filteredList.sort((a, b) =>
+            a.token_info.info.extension.position.localeCompare(b.token_info.info.extension.position)
+          );
+          return filteredList;
+        default:
+          return filteredList;
       }
     } else {
-      return tempList
+      return tempList;
     }
-  }
+  };
 
   const resetFilters = (type = 'athlete') => {
     if (type === 'pack') {
-      setPackOffset(0)
+      setPackOffset(0);
     } else {
-      setOffset(0)
+      setOffset(0);
     }
-  }
+  };
 
   useEffect(() => {
     if (connectedWallet && dispatch) {
-      setLoading(true)
+      setLoading(true);
       dispatch(getAccountAssets({ walletAddr: connectedWallet.walletAddress }));
       setTimeout(() => {
-        setLoading(false)
-      },500)
+        setLoading(false);
+      }, 500);
     }
   }, [dispatch, connectedWallet]);
 
@@ -171,29 +180,32 @@ const Portfolio = () => {
     if (connectedWallet) {
       fetchPacks();
     }
-  }, [dispatch, connectedWallet])
+  }, [dispatch, connectedWallet]);
 
   useEffect(() => {
     if (playerList) {
       if (playerList.tokens && playerList.tokens.length > 0) {
-        const tempList = [...playerList.tokens]
-        const filteredList = applySortFilter(tempList, filter, search).splice(limit*offset, limit)
-        setSortedList(filteredList)
+        const tempList = [...playerList.tokens];
+        const filteredList = applySortFilter(tempList, filter, search).splice(
+          limit * offset,
+          limit
+        );
+        setSortedList(filteredList);
         if (search) {
-          setPageCount(Math.ceil(applySortFilter(tempList, filter, search).length / limit))
+          setPageCount(Math.ceil(applySortFilter(tempList, filter, search).length / limit));
         } else {
-          setPageCount(Math.ceil(playerList.tokens.length / limit))
+          setPageCount(Math.ceil(playerList.tokens.length / limit));
         }
-      } 
+      }
     }
   }, [playerList, limit, offset, filter, search]);
 
   useEffect(() => {
     if (packs.length > 0) {
-      const tempList = [...packs]
-      const filteredList = tempList.splice(packLimit*packOffset, packLimit)
-      setSortedPacks(filteredList)
-      setPackPageCount(Math.ceil(packs.length / packLimit))
+      const tempList = [...packs];
+      const filteredList = tempList.splice(packLimit * packOffset, packLimit);
+      setSortedPacks(filteredList);
+      setPackPageCount(Math.ceil(packs.length / packLimit));
     }
   }, [packs, packLimit, packOffset]);
 
@@ -243,7 +255,6 @@ const Portfolio = () => {
                       <hr className="opacity-50" />
                       {sortedList.length > 0 ? (
                         <>
-                          {console.log('sortedList', sortedList)}
                           <div className="grid grid-cols-2 md:grid-cols-4 mt-12">
                             {sortedList.map(function (player, i) {
                               const path = player.token_info.info.extension;
@@ -331,11 +342,13 @@ const Portfolio = () => {
                           </div>
                         </>
                       ) : (
-                        <div>No assets in your portfolio</div>
+                        <div className="mt-7 ml-7 text-xl">
+                          There are no assets in your portfolio
+                        </div>
                       )}
                     </>
                   ) : (
-                    <>
+                    <div>
                       <div className="flex md:ml-4 font-bold ml-8 md:ml-0 font-monument">
                         <div
                           className="md:ml-8 mr-6 cursor-pointer"
@@ -425,9 +438,11 @@ const Portfolio = () => {
                           </div>
                         </>
                       ) : (
-                        <div>No packs available in your portfolio</div>
+                        <div className="mt-7 ml-7 text-xl">
+                          There are no packs in your portfolio
+                        </div>
                       )}
-                    </>
+                    </div>
                   )}
                 </div>
               </div>
