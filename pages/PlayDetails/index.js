@@ -107,7 +107,7 @@ export default function PlayDetails() {
   }, [startDate]);
 
   if (!router) {
-    return;
+    return <div></div>;
   }
 
   return (
