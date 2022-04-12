@@ -163,15 +163,13 @@ const Index = (props) => {
       const formData = {
         ...details,
         // DURATION IS EXPRESSED IN DAYS BUT WILL BE CONVERTED TO MINUTES
-        // duration: parseInt(details.duration) * 60 * 24,
-        duration: 5,
+        duration: parseInt(details.duration) * 60 * 24,
+        // duration: 5,
       };
 
       setLoading(true);
 
       const res = await axiosInstance.post('/fantasy/game/', formData);
-
-      console.log('res',res)
 
       if (res.status === 201) {
         setMsg({
@@ -186,33 +184,6 @@ const Index = (props) => {
               percentage: (parseInt(item.percentage) / 100) * 1000000,
             };
           });
-        // const fee = await estimateFee(
-        //   connectedWallet.walletAddress,
-        //   [
-        //     {
-        //       contractAddr: ORACLE,
-        //       msg: {
-        //         add_game: {
-        //           game_id: res.data.id.toString(),
-        //           prize: parseInt(res.data.prize),
-        //           distribution: filteredDistribution,
-        //         },
-        //       },
-        //     },
-        //     {
-        //       contractAddr: GAME,
-        //       msg: {
-        //         add_game: {
-        //           game_id: res.data.id.toString(),
-        //           game_time_start: convertToMinutes(formData.start_datetime),
-        //           duration: formData.duration,
-        //           whitelist: ['terra1h0mq6ktwrd0fgez5xrhwlcyf0p3w3nm94fc40j'],
-        //         },
-        //       },
-        //     },
-        //   ]
-        // );
-
 
         const resContract = await executeContract(connectedWallet, ORACLE, [
           {
@@ -237,32 +208,6 @@ const Index = (props) => {
             },
           },
         ]);
-
-        console.log(
-          'ORACLE',
-          {
-            contractAddr: ORACLE,
-            msg: {
-              add_game: {
-                game_id: res.data.id.toString(),
-                prize: parseInt(res.data.prize),
-                distribution: filteredDistribution,
-              },
-            },
-          },
-          'GAME',
-          {
-            contractAddr: GAME,
-            msg: {
-              add_game: {
-                game_id: res.data.id.toString(),
-                game_time_start: Math.ceil(convertToMinutes(formData.start_datetime)),
-                duration: formData.duration,
-                whitelist: ['terra1h0mq6ktwrd0fgez5xrhwlcyf0p3w3nm94fc40j'],
-              },
-            },
-          }
-        );
 
         if (
           !resContract.txResult ||

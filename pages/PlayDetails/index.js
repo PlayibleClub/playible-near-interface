@@ -49,8 +49,8 @@ export default function PlayDetails() {
     const res = await axiosInstance.get(`/fantasy/game/${router.query.id}/leaderboard/`);
     if (res.status === 200) {
       const removedAdminWallet = res.data.filter(function (data) {
-        // return data.account.wallet_addr !== ADMIN;
-        return data
+        return data.account.wallet_addr !== ADMIN;
+        // return data
       });
       setLeaderboard(removedAdminWallet);
     } else {
@@ -96,7 +96,6 @@ export default function PlayDetails() {
       const currentDate = new Date();
       const end = new Date(startDate);
       const totalSeconds = (end - currentDate) / 1000;
-      console.log(Math.floor(totalSeconds))
       if (Math.floor(totalSeconds) < 0) {
         clearInterval(id)
         setTimesUp(true)
@@ -130,8 +129,9 @@ export default function PlayDetails() {
                     />
                   </div>
                   <div className="mt-4">
-                    {((new Date(gameData.start_datetime) <= new Date() &&
-                    new Date(gameData.end_datetime) > new Date())&&timesUp===false) ? (
+                    {new Date(gameData.start_datetime) <= new Date() &&
+                    new Date(gameData.end_datetime) > new Date() &&
+                    timesUp === false ? (
                       <>
                         <ModalPortfolioContainer textcolor="indigo-black" title="VIEW TEAMS" />
                         {registeredTeams.length > 0
@@ -174,32 +174,33 @@ export default function PlayDetails() {
                         </div>
 
                         {gameEnd ? (
-                          <>
-                          </>
+                          <></>
                         ) : (
-                          <><div>REGISTRATION ENDS IN</div>
-                          <PlayDetailsComponent
-                            startDate={gameData.start_datetime}
-                            endDate={gameData.end_d}
-                            fetch={() => fetchGameData()}
-                            game={() => isOngoing()}
-                            gameEnd={() => isEnd()}
-                          />
-                          <div className="flex justify-center md:justify-start">
-                            <a href={`/CreateLineup?id=${gameData.id}`}>
-                              <button
-                                className={
-                                  (new Date(gameData.start_datetime) <= new Date() &&
-                                    new Date(gameData.end_datetime) > new Date()) ||
-                                  gameEnd
-                                    ? 'bg-indigo-lightblue text-indigo-buttonblue cursor-not-allowed w-64 h-12 text-center font-bold text-md mt-8 mr-4 hidden'
-                                    : 'bg-indigo-buttonblue text-indigo-white w-64 h-12 text-center font-bold text-md mt-8'
-                                }
-                              >
-                                ENTER GAME
-                              </button>
-                            </a>
-                          </div></>
+                          <>
+                            <div>REGISTRATION ENDS IN</div>
+                            <PlayDetailsComponent
+                              startDate={gameData.start_datetime}
+                              endDate={gameData.end_d}
+                              fetch={() => fetchGameData()}
+                              game={() => isOngoing()}
+                              gameEnd={() => isEnd()}
+                            />
+                            <div className="flex justify-center md:justify-start">
+                              <a href={`/CreateLineup?id=${gameData.id}`}>
+                                <button
+                                  className={
+                                    (new Date(gameData.start_datetime) <= new Date() &&
+                                      new Date(gameData.end_datetime) > new Date()) ||
+                                    gameEnd
+                                      ? 'bg-indigo-lightblue text-indigo-buttonblue cursor-not-allowed w-64 h-12 text-center font-bold text-md mt-8 mr-4 hidden'
+                                      : 'bg-indigo-buttonblue text-indigo-white w-64 h-12 text-center font-bold text-md mt-8'
+                                  }
+                                >
+                                  ENTER GAME
+                                </button>
+                              </a>
+                            </div>
+                          </>
                         )}
                       </>
                     )}

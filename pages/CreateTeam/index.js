@@ -163,6 +163,8 @@ export default function CreateLineup() {
         });
       }
 
+      filteredList = filteredList.filter(item => !item.is_locked)
+
       return filteredList;
     } else {
       return [];

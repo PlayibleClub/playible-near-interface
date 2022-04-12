@@ -20,16 +20,18 @@ export default function EntrySummary() {
   const [gameData, setGameData] = useState(null);
   const [teamModal, setTeamModal] = useState(false);
   const connectedWallet = useConnectedWallet();
-  const [team, setTeam] = useState(null);
+  const [team, setTeam] = useState([]);
   const [gameEnd,  setGameEnd] = useState(false);
 
   const fetchGameData = async () => {
     const res = await axiosInstance.get(`/fantasy/game/${router.query.game_id}/`);
 
-    const teams = await axiosInstance.get(`/fantasy/game_team/${router.query.team_id}/`);
+    const allTeams = await axiosInstance.get(
+      `/fantasy/game/${router.query.game_id}/registered_teams_detail/?wallet_addr=${connectedWallet.walletAddress}`
+    );
 
-    if (teams.status === 200) {
-      setTeam(teams.data);
+    if (allTeams.status === 200) {
+      setTeam(allTeams.data);
     }
 
     if (res.status === 200) {
@@ -155,30 +157,30 @@ export default function EntrySummary() {
                   </div>
                 </div>
               </div>
-              {team ? (
-                <>
-                  <div className="mt-10 flex items-center ml-7">
-                    <p className="text-2xl font-bold font-monument">{team.name}</p>
-                  </div>
-                  <div className="grid grid-cols-4 gap-y-4 mt-4 md:grid-cols-4 md:ml-7 md:mt-12">
-                    {team.athletes.map((player, i) => {
-                      return (
-                        <div className="mb-4" key={i}>
-                          <PerformerContainer
-                            AthleteName={`${player.first_name} ${player.last_name}`}
-                            AvgScore={player.fantasy_score}
-                            id={player.id}
-                            uri={player.nft_image || null}
-                            hoverable={false}
-                          />
-                        </div>
-                      );
-                    })}
-                  </div>
-                </>
-              ) : (
-                ''
-              )}
+              {team.length > 0
+                ? team.map((item) => (
+                    <>
+                      <div className="mt-10 flex items-center ml-7">
+                        <p className="text-2xl font-bold font-monument">{item.name}</p>
+                      </div>
+                      <div className="grid grid-cols-4 gap-y-4 mt-4 md:grid-cols-4 md:ml-7 md:mt-12">
+                        {item.athletes.map((player, i) => {
+                          return (
+                            <div className="mb-4" key={i}>
+                              <PerformerContainer
+                                AthleteName={`${player.first_name} ${player.last_name}`}
+                                AvgScore={player.fantasy_score}
+                                id={player.id}
+                                uri={player.nft_image || null}
+                                hoverable={false}
+                              />
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </>
+                  ))
+                : ''}
             </>
           </Main>
         </div>

@@ -1,4 +1,4 @@
-import { useWallet, WalletStatus } from '@terra-money/wallet-provider';
+import { useLCDClient, useWallet, WalletStatus } from '@terra-money/wallet-provider';
 // import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import Main from '../../components/Main';
@@ -19,17 +19,20 @@ import { useRouter } from 'next/router';
 import 'regenerator-runtime/runtime';
 import { axiosInstance } from '../../utils/playible';
 import LoadingPageDark from '../../components/loading/LoadingPageDark';
+import { LCDClient } from '@terra-money/terra.js';
+import { ORACLE } from '../../data/constants/contracts';
 
 const Play = () => {
   const { status, connect, disconnect, availableConnectTypes } = useWallet();
   const [activeCategory, setCategory] = useState('new');
-  const [rewardsCategory, setRewardsCategory] = useState('winning')
+  const [rewardsCategory, setRewardsCategory] = useState('winning');
   const [claimModal, showClaimModal] = useState(false);
   const [claimData, setClaimData] = useState(null);
   const [claimTeam, showClaimTeam] = useState(false);
   const [modalView, switchView] = useState(true);
   const [failedTransactionModal, showFailedModal] = useState(false);
   const router = useRouter();
+  const lcd = useLCDClient();
 
   const interactWallet = () => {
     if (status === WalletStatus.WALLET_CONNECTED) {
@@ -168,9 +171,21 @@ const Play = () => {
   };
 
   const fetchTeamPlacements = async (gameId) => {
-    if (connectedWallet) {
+    if (connectedWallet && lcd) {
       let winningPlacements = [];
       let noPlacements = [];
+      let prize = 0;
+      let distribution = [];
+
+      const gameInfo = await lcd.wasm.contractQuery(ORACLE, {
+        game_info: { game_id: gameId.toString() },
+      });
+
+      console.log('gameInfo', gameInfo);
+      if (gameInfo.prize && gameInfo.distribution) {
+        prize = gameInfo.prize;
+        distribution = gameInfo.distribution;
+      }
 
       const teams = await axiosInstance.get(
         `/fantasy/game/${gameId}/registered_teams_detail/?wallet_addr=${connectedWallet.walletAddress}`
@@ -178,20 +193,23 @@ const Play = () => {
 
       const leaderboards = await axiosInstance.get(`/fantasy/game/${gameId}/leaderboard/`);
 
-      console.log('teams', teams);
-      console.log('leaderboards', leaderboards);
-
       if (leaderboards.status === 200 && teams.status === 200 && teams.data.length > 0) {
         if (leaderboards.data.length > 0) {
-          winningPlacements = leaderboards.data.map((wallet, rank) => {
-            if (wallet.account.wallet_addr === connectedWallet.walletAddress) {
-              console.log('rank', rank+1)
-              return {
-                ...wallet,
-                rank: rank + 1,
-              };
-            }
-          }).filter(item => item);
+          winningPlacements = leaderboards.data
+            .map((wallet, rank) => {
+              if (wallet.account.wallet_addr === connectedWallet.walletAddress) {
+                console.log('rank', rank + 1);
+                return {
+                  ...wallet,
+                  rank: rank + 1,
+                  prize:
+                    prize > 0 && distribution.length > 0
+                      ? computePrize(rank + 1, distribution, prize)
+                      : 0,
+                };
+              }
+            })
+            .filter((item) => item);
 
           noPlacements = teams.data
             .map((team) => {
@@ -222,6 +240,16 @@ const Play = () => {
         }
       }
     }
+  };
+
+  const computePrize = (rank, distribution, prize) => {
+    const achievedRank = distribution.filter((item) => parseInt(item.rank) === parseInt(rank));
+
+    if (achievedRank.length > 0) {
+      return (achievedRank[0].percentage / 1000000) * prize;
+    }
+
+    return 0;
   };
 
   function fetchGamesLoading() {
@@ -318,43 +346,56 @@ const Play = () => {
                 </div>
                 <hr className="opacity-50 -mx-8" />
 
-                <div className="w-full">
-                  {claimData
-                    ? (rewardsCategory === 'winning'
+                <div className="w-full pb-10">
+                  {claimData ? (
+                    <>
+                      {(rewardsCategory === 'winning'
                         ? claimData.winning_placements
                         : claimData.no_placements
-                      ).map((item) =>
-                        item && (
-                          <>
-                            <div className="p-8 py-10">
-                              <div className="flex justify-between items-center">
-                                <div>
-                                  <p className="bg-indigo-black w-max p-3 text-indigo-white font-monument uppercase py-1">
-                                    {item.name}
-                                  </p>
-                                  <div className="mt-3 flex items-end font-monument">
-                                    <div className="flex items-end text-xs">
-                                      <img src={coin} className="mr-2" />
-                                      <p>500 UST</p>
-                                    </div>
-                                    <div className="flex items-end text-xs ml-3">
-                                      <img src={bars} className="h-4 w-5 mr-2" />
-                                      <p>{item.rank}</p>
+                      ).map(
+                        (item, i) =>
+                          item && (
+                            <>
+                              <div className="p-8 py-10">
+                                <div className="flex justify-between items-center">
+                                  <div>
+                                    <p className="bg-indigo-black w-max p-3 text-indigo-white font-monument uppercase py-1">
+                                      {item.name}
+                                    </p>
+                                    <div className="mt-3 flex items-end font-monument">
+                                      <div className="flex items-end text-xs">
+                                        <img src={coin} className="mr-2" />
+                                        <p>{item.prize} UST</p>
+                                      </div>
+                                      <div className="flex items-end text-xs ml-3">
+                                        <img src={bars} className="h-4 w-5 mr-2" />
+                                        <p>{item.rank}</p>
+                                      </div>
                                     </div>
                                   </div>
                                 </div>
-                                <div>
-                                  <button className="text-indigo-white w-40 text-xs font-bold text-center bg-indigo-buttonblue p-3 px-5">
-                                    CLAIM REWARD
-                                  </button>
-                                </div>
                               </div>
-                            </div>
-                            <hr className="opacity-50" />
-                          </>
-                        )
-                      )
-                    : ''}
+                              {(rewardsCategory === 'winning'
+                                ? claimData.winning_placements
+                                : claimData.no_placements
+                              ).length ===
+                              i + 1 ? (
+                                ''
+                              ) : (
+                                <hr className="opacity-50" />
+                              )}
+                            </>
+                          )
+                      )}
+                      <div className="flex justify-center mt-10">
+                        <button className="text-indigo-white w-full text-sm font-bold text-center bg-indigo-buttonblue p-3 px-5">
+                          CLAIM {claimData.winning_placements.length > 0 ? 'REWARDS' : 'TEAM'}
+                        </button>
+                      </div>
+                    </>
+                  ) : (
+                    ''
+                  )}
                 </div>
                 {/* <div className="text-indigo-white w-36 text-center bg-indigo-buttonblue py-2 px-2">
                     CLAIM REWARD
@@ -539,8 +580,7 @@ const Play = () => {
                 ) : (
                   <>
                     <div className="ml-7 mt-7 text-xl">
-                      There are no {activeCategory} games to be
-                      displayed
+                      There are no {activeCategory} games to be displayed
                     </div>
                   </>
                 )}

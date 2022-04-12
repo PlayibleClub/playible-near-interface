@@ -25,7 +25,7 @@ const TokenDrawPage = (props) => {
   const connectedWallet = useConnectedWallet();
 
   const [isClosed, setClosed] = useState(true);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const { drawList: tokenList, status } = useSelector((state) => state.contract.pack);
 
@@ -48,10 +48,16 @@ const TokenDrawPage = (props) => {
 
   const prepareNewAthletes = async () => {
     if (assets.length > 0) {
-      assets.forEach((id, i) => {
-        getAthleteInfo(id);
+      const detailedAssets = assets.map(async (id, i) => {
+        return await getAthleteInfo(id);
       });
+
+      const tempAthletes = await Promise.all(detailedAssets);
+
+      setAthletes(tempAthletes.filter(item => item));
     }
+
+    setLoading(false)
   };
 
   const getAthleteInfo = async (id) => {
@@ -61,18 +67,18 @@ const TokenDrawPage = (props) => {
       },
     });
 
-    console.log('res', res)
-
-    if (!res.error) {
+    if (res.info) {
       const details = await axiosInstance.get(
-        `/fantasy/athlete/${res.info.extension.athlete_id + 1}/stats/`
+        `/fantasy/athlete/${
+          res.info.extension.attributes.filter((item) => item.trait_type === 'athlete_id')[0].value
+        }/stats/`
       );
       const imgRes = await axiosInstance.get(
-        `/fantasy/athlete/${parseInt(res.info.extension.athlete_id)}/`
+        `/fantasy/athlete/${parseInt(
+          res.info.extension.attributes.filter((item) => item.trait_type === 'athlete_id')[0].value
+        )}/`
       );
 
-      console.log('details', details)
-      console.log('imgRes', imgRes);
       let stats = null;
       let img = imgRes.status === 200 ? imgRes.data.nft_image : null;
 
@@ -86,8 +92,11 @@ const TokenDrawPage = (props) => {
         isOpen: false,
         img,
       };
-      setAthletes((prevState) => [...prevState, newAthlete]);
+
+      return newAthlete;
     }
+
+    return
   };
 
   useEffect(() => {
@@ -143,9 +152,11 @@ const TokenDrawPage = (props) => {
                 </div>
                 <div className="flex h-full pt-8">
                   <div className="bg-indigo-black w-full justify-end flex opacity-5"></div>
-                  <button className="bg-indigo-buttonblue text-indigo-white w-5/6 md:w-80 h-14 text-center font-bold text-md">
-                    GO TO MY SQUAD
-                  </button>
+                  <Link href='/Portfolio' replace>
+                    <button className="bg-indigo-buttonblue text-indigo-white w-5/6 md:w-80 h-14 text-center font-bold text-md">
+                      GO TO MY SQUAD
+                    </button>
+                  </Link>
                 </div>
               </>
             )}
@@ -168,7 +179,6 @@ export async function getServerSideProps(ctx) {
     queryObj = query;
     if (query.txHash) {
       const response = await retrieveTxInfo(query.txHash);
-
 
       if (response && response.logs) {
         const tokenList = response.logs[1].eventsByType.wasm.token_id;
