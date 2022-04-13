@@ -13,6 +13,7 @@ import 'regenerator-runtime/runtime';
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en.json';
 import ReactTimeAgo from 'react-time-ago';
+import BackFunction from '../../components/buttons/BackFunction';
 TimeAgo.addDefaultLocale(en);
 
 import win from '../../public/images/myactivitywin.png';
@@ -106,6 +107,11 @@ const MyActivity = () => {
       <Container>
         <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
           <Main color="indigo-white">
+          <div className="mt-8">
+                <BackFunction
+                  prev='/Play'
+                />
+              </div>
             <PortfolioContainer title="MY ACTIVITY" textcolor="text-indigo-black" />
             <div className="flex flex-col">
               <div className="flex font-bold ml-8 mt-8 md:ml-0 font-monument">
