@@ -26,12 +26,19 @@ export default function EntrySummary() {
   const fetchGameData = async () => {
     const res = await axiosInstance.get(`/fantasy/game/${router.query.game_id}/`);
 
-    const allTeams = await axiosInstance.get(
+    const allTeams = router.query.team_id ? await axiosInstance.get(`/fantasy/game_team/${router.query.team_id}/`) : await axiosInstance.get(
       `/fantasy/game/${router.query.game_id}/registered_teams_detail/?wallet_addr=${connectedWallet.walletAddress}`
     );
 
+    console.log(router.query.team_id ? 'has team id' : 'no team id', allTeams);
+
     if (allTeams.status === 200) {
-      setTeam(allTeams.data);
+
+      if (router.query.team_id) {
+        setTeam([allTeams.data]);
+      } else {
+        setTeam(allTeams.data);
+      }
     }
 
     if (res.status === 200) {
