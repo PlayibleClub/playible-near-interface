@@ -53,7 +53,7 @@ const TokenDrawPage = (props) => {
       });
 
       const tempAthletes = await Promise.all(detailedAssets);
-
+      console.log('tempAthletes', tempAthletes)
       setAthletes(tempAthletes.filter(item => item));
     }
 
@@ -79,8 +79,11 @@ const TokenDrawPage = (props) => {
         )}/`
       );
 
+      console.log('imgRes', imgRes)
+
       let stats = null;
       let img = imgRes.status === 200 ? imgRes.data.nft_image : null;
+      let animation = imgRes.status === 200 ? imgRes.data.animation : null;
 
       if (details.status === 200) {
         stats = details.data.athlete_stat;
@@ -91,6 +94,7 @@ const TokenDrawPage = (props) => {
         ...stats,
         isOpen: false,
         img,
+        animation
       };
 
       return newAthlete;
@@ -115,33 +119,32 @@ const TokenDrawPage = (props) => {
             ) : (
               <>
                 <div
-                  className="flex justify-center self-center w-10/12 mt-4"
+                  className="flex justify-center self-center mt-4"
                   style={{ backgroundColor: 'white' }}
                 >
                   {error ? (
                     <p>{error}</p>
                   ) : (
-                    <div className="flex flex-row w-4/5 flex-wrap justify-center">
+                    <div className="flex flex-row flex-wrap justify-center">
                       {athletes.length > 0
                         ? athletes.map((data, key) => (
-                            <div className="flex px-14 py-10" key={key}>
+                            <div className="flex px-14 py-10 m-10" key={key}>
                               <div
-                                className="px-10 py-10"
                                 onClick={() => {
                                   changecard(key);
                                 }}
                               >
                                 <TokenComponent
-                                  athlete_id={data.athlete_id}
-                                  position={data.position}
-                                  rarity={data.rarity}
-                                  release={data.release}
-                                  team={data.team}
-                                  usage={data.useage}
+                                  athlete_id={data.attributes.filter(item => item.trait_type === 'athlete_id')[0].value}
+                                  position={data.attributes.filter(item => item.trait_type === 'position')[0].value}
+                                  rarity={data.attributes.filter(item => item.trait_type === 'rarity')[0].value}
+                                  release={data.attributes.filter(item => item.trait_type === 'release')[0].value}
+                                  team={data.attributes.filter(item => item.trait_type === 'team')[0].value}
+                                  usage={data.attributes.filter(item => item.trait_type === 'usage')[0].value}
                                   isOpen={data.isOpen}
-                                  name={data.name}
+                                  name={data.attributes.filter(item => item.trait_type === 'name')[0].value}
                                   fantasy_score={data.fantasy_score}
-                                  img={data.img}
+                                  img={data.animation}
                                 />
                               </div>
                             </div>
@@ -150,7 +153,7 @@ const TokenDrawPage = (props) => {
                     </div>
                   )}
                 </div>
-                <div className="flex h-full pt-8">
+                <div className="flex h-full mt-16">
                   <div className="bg-indigo-black w-full justify-end flex opacity-5"></div>
                   <Link href='/Portfolio' replace>
                     <button className="bg-indigo-buttonblue text-indigo-white w-5/6 md:w-80 h-14 text-center font-bold text-md">

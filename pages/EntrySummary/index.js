@@ -44,7 +44,7 @@ export default function EntrySummary() {
   }
 
   useEffect(() => {
-    if (router && router.query.game_id && router.query.team_id && connectedWallet) {
+    if (router && router.query.game_id && connectedWallet) {
       fetchGameData();
       setGameEnd(false)
     }
