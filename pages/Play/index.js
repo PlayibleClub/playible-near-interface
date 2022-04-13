@@ -308,7 +308,7 @@ const Play = () => {
       {claimModal === true && (
         <>
           <div className="fixed w-screen h-screen bg-opacity-70 z-50 overflow-auto bg-indigo-gray flex font-montserrat">
-            <div className="relative p-8 bg-indigo-white w-11/12 md:w-2/5 md:h-auto m-auto flex-col flex rounded-lg">
+            <div className="relative p-8 bg-indigo-white w-11/12 md:w-2/5 md:h-96 m-auto flex-col flex rounded-lg">
               <button
                 className="absolute top-0 right-0 "
                 onClick={() => {
@@ -318,7 +318,7 @@ const Play = () => {
                 <div className="p-4 font-black">X</div>
               </button>
 
-              <div className="mt-16 text-sm">
+              <div className="text-sm">
                 <div className="flex font-monument select-none">
                   <div
                     className={`mr-8 tracking-wider cursor-pointer text-xs ${
@@ -381,6 +381,16 @@ const Play = () => {
                               )}
                             </>
                           )
+                      )}
+                      {(rewardsCategory === 'winning'
+                        ? claimData.winning_placements
+                        : claimData.no_placements
+                      ).length === 0 ? (
+                        <>
+                          <div className="p-8 mt-8 font-monument flex flex-col justify-between">There are no teams to display</div>
+                        </>
+                      ) : (
+                        ''
                       )}
                       <div className="flex justify-center mt-8">
                         <button className="text-indigo-white w-full text-sm font-bold text-center bg-indigo-buttonblue p-3 px-5">
