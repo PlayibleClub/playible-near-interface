@@ -53,7 +53,6 @@ const TokenDrawPage = (props) => {
       });
 
       const tempAthletes = await Promise.all(detailedAssets);
-      console.log('tempAthletes', tempAthletes)
       setAthletes(tempAthletes.filter(item => item));
     }
 
@@ -79,7 +78,6 @@ const TokenDrawPage = (props) => {
         )}/`
       );
 
-      console.log('imgRes', imgRes)
 
       let stats = null;
       let img = imgRes.status === 200 ? imgRes.data.nft_image : null;
@@ -186,7 +184,6 @@ export async function getServerSideProps(ctx) {
       if (response && response.logs) {
         const tokenList = response.logs[1].eventsByType.wasm.token_id;
 
-        console.log('response', response);
         if (tokenList && tokenList.length > 0) {
           tokenList.forEach((id, i) => {
             if (i !== 0) {

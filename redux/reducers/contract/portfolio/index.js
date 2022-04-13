@@ -22,7 +22,6 @@ export const getPortfolio = createAsyncThunk('getPortfolio', async (payload, thu
         }
       }`;
     const result = await queryContract(contractAddr, queryMsg);
-    console.log(result)
     if(result.length === 0){
       return thunkAPI.rejectWithValue({
         response: "This wallet does not hold any athlete tokens yet",

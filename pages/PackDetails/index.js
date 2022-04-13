@@ -214,7 +214,6 @@ export default function PackDetails(props) {
     }
   };
 
-  data ? console.log('data', data) : ''
 
   return (
     <Container>

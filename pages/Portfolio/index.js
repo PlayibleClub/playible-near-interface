@@ -371,7 +371,6 @@ const Portfolio = () => {
                           <div className="md:ml-16 grid grid-cols-0 md:grid-cols-4 mt-12 justify-center">
                             {sortedPacks.map((data, i) => {
                               const path = data.token_info.info.extension;
-                              console.log('data', data);
                               return (
                                 <div className="mb-4 cursor-pointer" key={i}>
                                   <SquadPackComponent

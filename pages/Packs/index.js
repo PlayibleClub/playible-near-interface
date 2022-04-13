@@ -41,7 +41,6 @@ export default function Packs() {
             setPosFilter(data.positions)
         else setPosFilter("")
 
-        console.log(data)
     }
     const [isNarrowScreen, setIsNarrowScreen] = useState(false);
 

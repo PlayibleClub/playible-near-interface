@@ -163,7 +163,7 @@ export default function CreateLineup() {
         });
       }
 
-      filteredList = filteredList.filter(item => !item.is_locked)
+      filteredList = filteredList.filter((item) => !item.is_locked);
 
       return filteredList;
     } else {
@@ -228,7 +228,6 @@ export default function CreateLineup() {
 
       if (!hasEmptySlot()) {
         setCreateLoading(true);
-        console.log('no empty slot');
         const trimmedAthleteData = team.map(({ token_info, token_id, contract_addr }) => {
           return {
             athlete_id: token_info.info.extension.attributes.filter(
@@ -266,14 +265,6 @@ export default function CreateLineup() {
             },
           },
         ]);
-
-        console.log('resContract', resContract);
-
-        console.log({
-          game_id: router.query.id.toString(),
-          team_name: teamName,
-          token_ids: trimmedAthleteData.map((item) => item.token_id),
-        });
 
         if (
           !resContract.txResult ||
@@ -612,7 +603,7 @@ export default function CreateLineup() {
               </button>
             </div>
           </Modal>
-          <Modal title={'LOADING'} visible={createLoading} onClose={() => console.log()}>
+          <Modal title={'LOADING'} visible={createLoading}>
             <div>
               <p className="mb-5 text-center">Creating your team</p>
               <div className="flex gap-5 justify-center mb-5">
@@ -622,7 +613,7 @@ export default function CreateLineup() {
               </div>
             </div>
           </Modal>
-          <Modal title={'SUCCESS'} visible={successModal} onClose={() => console.log()}>
+          <Modal title={'SUCCESS'} visible={successModal}>
             <div className="mt-2">
               <p className="text-center font-montserrat mb-5">Team created successfully!</p>
             </div>

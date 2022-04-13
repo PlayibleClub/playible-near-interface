@@ -181,7 +181,6 @@ const Play = () => {
         game_info: { game_id: gameId.toString() },
       });
 
-      console.log('gameInfo', gameInfo);
       if (gameInfo.prize && gameInfo.distribution) {
         prize = gameInfo.prize;
         distribution = gameInfo.distribution;
@@ -198,7 +197,6 @@ const Play = () => {
           winningPlacements = leaderboards.data
             .map((wallet, rank) => {
               if (wallet.account.wallet_addr === connectedWallet.walletAddress) {
-                console.log('rank', rank + 1);
                 return {
                   ...wallet,
                   rank: rank + 1,
@@ -233,8 +231,6 @@ const Play = () => {
             no_placements: [...noPlacements],
           });
 
-          console.log('winningPlacements', winningPlacements);
-          console.log('noPlacements', noPlacements);
 
           showClaimModal(true);
         }
