@@ -128,8 +128,10 @@ const Play = () => {
       }
 
       setGames(res.data);
-      setloading(false);
     }
+    setTimeout(() => {
+      setloading(false);
+    }, 1000);
   };
 
   const fetchRewardsInfo = async (list) => {
@@ -230,7 +232,6 @@ const Play = () => {
             winning_placements: [...winningPlacements],
             no_placements: [...noPlacements],
           });
-
 
           showClaimModal(true);
         }

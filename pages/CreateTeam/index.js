@@ -323,6 +323,8 @@ export default function CreateLineup() {
       } else {
         setSelectModal(false);
       }
+    } else {
+      alert('No athletes available. Refresh the page and try again.');
     }
   };
 
@@ -518,7 +520,7 @@ export default function CreateLineup() {
                       </div>
                       <div className="flex mt-10 bg-indigo-black bg-opacity-5 w-full justify-end">
                         <button
-                          className="bg-indigo-buttonblue text-indigo-white w-full md:w-5/6 md:w-80 h-14 text-center font-bold text-md"
+                          className="bg-indigo-buttonblue text-indigo-white w-full md:w-80 h-14 text-center font-bold text-md"
                           onClick={() => setSubmitModal(true)}
                         >
                           CONFIRM TEAM
@@ -569,23 +571,6 @@ export default function CreateLineup() {
               ''
             )}
           </BaseModal>
-          {/* <BaseModal title={'Submit Team'} visible={submitModal} onClose={() => setSubmitModal(false)}>
-        <div className="mt-5">
-          <p>Confirm team lineup</p>
-          <button
-            className="bg-indigo-green font-monument tracking-widest text-indigo-white w-full h-16 text-center text-sm mt-4"
-            onClick={() => setSubmitModal(false)}
-          >
-            CONFIRM
-          </button>
-          <button
-            className="bg-red-pastel font-monument tracking-widest text-indigo-white w-full h-16 text-center text-sm mt-4"
-            onClick={() => setSubmitModal(false)}
-          >
-            CANCEL
-          </button>
-        </div>
-      </BaseModal> */}
           <Modal title={'Submit Team'} visible={submitModal} onClose={() => setSubmitModal(false)}>
             <div className="mt-2">
               <p className="">Confirm team lineup</p>
@@ -625,7 +610,7 @@ export default function CreateLineup() {
               </p>
             </div>
           </Modal>
-          <Modal title={'EDIT TEAM NAME'} visible={editModal} onClose={() => setEditModal(false)}>
+          <Modal title={'EDIT TEAM NAME'} visible={editModal} onClose={() => {setEditModal(false); setEditInput(teamName) }}>
             <div className="mt-2 px-5">
               <p className="text-xs uppercase font-thin mb-2" style={{ fontFamily: 'Montserrat' }}>
                 EDIT TEAM NAME
@@ -639,13 +624,13 @@ export default function CreateLineup() {
               />
               <div className="flex mt-16 mb-5 bg-opacity-5 w-full">
                 <button
-                  className="bg-indigo-buttonblue text-indigo-white w-full h-14 text-center font-bold text-md"
+                  className="bg-indigo-buttonblue text-indigo-white w-full h-14 text-center tracking-widest text-md font-monument"
                   onClick={() => {
                     setTeamName(editInput);
                     setEditModal(false);
                   }}
                 >
-                  CONFIRM TEAM
+                  CONFIRM
                 </button>
               </div>
             </div>

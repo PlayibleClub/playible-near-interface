@@ -117,7 +117,7 @@ const TokenDrawPage = (props) => {
             ) : (
               <>
                 <div
-                  className="flex justify-center self-center mt-4"
+                  className="flex justify-center self-center"
                   style={{ backgroundColor: 'white' }}
                 >
                   {error ? (

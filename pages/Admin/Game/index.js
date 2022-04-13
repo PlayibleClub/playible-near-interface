@@ -163,8 +163,8 @@ const Index = (props) => {
       const formData = {
         ...details,
         // DURATION IS EXPRESSED IN DAYS BUT WILL BE CONVERTED TO MINUTES
-        duration: parseInt(details.duration) * 60 * 24,
-        // duration: 5,
+        // duration: parseInt(details.duration) * 60 * 24,
+        duration: 5,
       };
 
       setLoading(true);
@@ -222,6 +222,8 @@ const Index = (props) => {
               deleteSuccess = true;
             }
           }
+
+          console.log('res', resContract);
 
           setMsg({
             title: 'Failed',
