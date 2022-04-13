@@ -255,6 +255,37 @@ const Play = () => {
     fetchGames(activeCategory);
   }
 
+  const renderPlacements = (item, i) => {
+    return (
+      <>
+        <div className="p-8 py-10">
+          <div className="flex justify-between items-center">
+            <p className="bg-indigo-black w-max p-3 text-indigo-white font-monument uppercase py-1">
+              {item.name}
+            </p>
+            <div className="flex items-end font-monument">
+              <div className="flex items-end text-xs">
+                <img src={coin} className="mr-2" />
+                <p>{item.prize} UST</p>
+              </div>
+              <div className="flex items-end text-xs ml-3">
+                <img src={bars} className="h-4 w-5 mr-2" />
+                <p>{item.rank}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        {(rewardsCategory === 'winning' ? claimData.winning_placements : claimData.no_placements)
+          .length ===
+        i + 1 ? (
+          ''
+        ) : (
+          <hr className="opacity-50" />
+        )}
+      </>
+    );
+  };
+
   useEffect(() => {
     if (games && games.length > 0) {
       const tempList = [...games];
@@ -308,7 +339,7 @@ const Play = () => {
       {claimModal === true && (
         <>
           <div className="fixed w-screen h-screen bg-opacity-70 z-50 overflow-auto bg-indigo-gray flex font-montserrat">
-            <div className="relative p-8 bg-indigo-white w-11/12 md:w-2/5 md:h-96 m-auto flex-col flex rounded-lg">
+            <div className="relative p-8 bg-indigo-white w-11/12 md:w-2/5 m-auto flex-col flex rounded-lg">
               <button
                 className="absolute top-0 right-0 "
                 onClick={() => {
@@ -319,7 +350,7 @@ const Play = () => {
               </button>
 
               <div className="text-sm">
-                <div className="flex font-monument select-none">
+                <div className="flex font-monument select-none mt-5">
                   <div
                     className={`mr-8 tracking-wider cursor-pointer text-xs ${
                       rewardsCategory === 'winning'
@@ -346,53 +377,33 @@ const Play = () => {
                 <div className="w-full">
                   {claimData ? (
                     <>
-                      {(rewardsCategory === 'winning'
-                        ? claimData.winning_placements
-                        : claimData.no_placements
-                      ).map(
-                        (item, i) =>
-                          item && (
-                            <>
-                              <div className="p-8 py-10">
-                                <div className="flex justify-between items-center">
-                                  <p className="bg-indigo-black w-max p-3 text-indigo-white font-monument uppercase py-1">
-                                    {item.name}
-                                  </p>
-                                  <div className="flex items-end font-monument">
-                                    <div className="flex items-end text-xs">
-                                      <img src={coin} className="mr-2" />
-                                      <p>{item.prize} UST</p>
-                                    </div>
-                                    <div className="flex items-end text-xs ml-3">
-                                      <img src={bars} className="h-4 w-5 mr-2" />
-                                      <p>{item.rank}</p>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                              {(rewardsCategory === 'winning'
-                                ? claimData.winning_placements
-                                : claimData.no_placements
-                              ).length ===
-                              i + 1 ? (
-                                ''
-                              ) : (
-                                <hr className="opacity-50" />
-                              )}
-                            </>
+                      {rewardsCategory === 'winning' &&
+                        (claimData.winning_placements.length > 0 ? (
+                          claimData.winning_placements.map(
+                            (item, i) => item && renderPlacements(item, i)
                           )
-                      )}
-                      {(rewardsCategory === 'winning'
-                        ? claimData.winning_placements
-                        : claimData.no_placements
-                      ).length === 0 ? (
-                        <>
-                          <div className="p-8 mt-8 font-monument flex flex-col justify-between">There are no teams to display</div>
-                        </>
-                      ) : (
-                        ''
-                      )}
-                      <div className="flex justify-center mt-8">
+                        ) : (
+                          <>
+                            <div className="mt-8 font-monument tracking-wider text-indigo-lightgray text-center mb-5">
+                              There are no teams to display
+                            </div>
+                          </>
+                        ))}
+
+                      {rewardsCategory !== 'winning' &&
+                        (claimData.no_placements.length > 0 ? (
+                          claimData.no_placements.map(
+                            (item, i) => item && renderPlacements(item, i)
+                          )
+                        ) : (
+                          <>
+                            <div className="mt-8 font-monument tracking-wider text-indigo-lightgray text-center mb-5">
+                              There are no teams to display
+                            </div>
+                          </>
+                        ))}
+
+                      <div className="flex justify-center">
                         <button className="text-indigo-white w-full text-sm font-bold text-center bg-indigo-buttonblue p-3 px-5">
                           CLAIM {claimData.winning_placements.length > 0 ? 'REWARDS' : 'TEAM'}
                         </button>
