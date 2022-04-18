@@ -25,7 +25,7 @@ const TokenComponent = (props) =>{
             <div style={{ maxHeight: '210px', maxWidth: '150px', height: '210px', width: '150px'}}>
                 {
                     !isOpen ? 
-                    <img src={"/images/tokens/0.png"}
+                    <object data="/images/tokens/0.png"
                     style={{ maxHeight: '210px', maxWidth: '150px', height: '210px', width: '150px'}} />
                     : 
                     <object data={picLink}
