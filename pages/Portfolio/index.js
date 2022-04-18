@@ -199,7 +199,7 @@ const Portfolio = () => {
       } else {
         setSortedList([]);
       }
-    } 
+    }
   }, [playerList, limit, offset, filter, search]);
 
   useEffect(() => {
@@ -265,18 +265,27 @@ const Portfolio = () => {
                                   href={{
                                     pathname: '/AssetDetails',
                                     query: {
-                                      id: path.attributes[0].value,
+                                      id: path.attributes.filter(
+                                        (item) => item.trait_type === 'athlete_id'
+                                      )[0].value,
                                       origin: 'Portfolio',
                                       token_id: player.token_id,
                                     },
                                   }}
                                 >
-
                                   <div className="mb-4" key={i}>
                                     <PerformerContainer
-                                      AthleteName={path.name}
+                                      AthleteName={
+                                        path.attributes.filter(
+                                          (item) => item.trait_type === 'name'
+                                        )[0].value
+                                      }
                                       AvgScore={player.fantasy_score}
-                                      id={path.attributes[0].value}
+                                      id={
+                                        path.attributes.filter(
+                                          (item) => item.trait_type === 'athlete_id'
+                                        )[0].value
+                                      }
                                       uri={
                                         player.nft_image || player.token_info
                                           ? player.nft_image
