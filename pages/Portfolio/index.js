@@ -188,7 +188,7 @@ const Portfolio = () => {
       setSortedPacks([]);
     }
     setLoading(false)
-  }, [dispatch, connectedWallet?.walletAddress]);
+  }, [dispatch, connectedWallet, connectedWallet?.walletAddress]);
 
   useEffect(() => {
     if (playerList && connectedWallet) {
@@ -219,7 +219,6 @@ const Portfolio = () => {
       setSortedPacks(filteredList);
       setPackPageCount(Math.ceil(packs.length / packLimit));
     } else {
-      setPacks([]);
       setSortedPacks([]);
     }
   }, [packs, packLimit, packOffset, connectedWallet?.walletAddress]);
