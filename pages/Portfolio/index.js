@@ -25,6 +25,7 @@ const Portfolio = () => {
   const [packLimit, setPackLimit] = useState(10);
   const [packOffset, setPackOffset] = useState(0);
   const [packPageCount, setPackPageCount] = useState(0);
+  const [wallet, setWallet] = useState(null)
 
   const { list: playerList, status } = useSelector((state) => state.assets);
 
@@ -129,25 +130,44 @@ const Portfolio = () => {
 
   const applySortFilter = (list, filter, search = '') => {
     let tempList = [...list];
+
     if (tempList.length > 0) {
       let filteredList = tempList.filter(
         (item) =>
-          item.token_info.info.extension.name.toLowerCase().indexOf(search.toLowerCase()) > -1
+          item.token_info.info.extension.attributes.filter(data => data.trait_type === 'name')[0].value.toLowerCase().indexOf(search.toLowerCase()) > -1
       );
       switch (filter) {
         case 'name':
           filteredList.sort((a, b) =>
-            a.token_info.info.extension.name.localeCompare(b.token_info.info.extension.name)
+            a.token_info.info.extension.attributes
+              .filter((data) => data.trait_type === 'name')[0]
+              .value.localeCompare(
+                b.token_info.info.extension.attributes.filter(
+                  (data) => data.trait_type === 'name'
+                )[0].value
+              )
           );
           return filteredList;
         case 'team':
           filteredList.sort((a, b) =>
-            a.token_info.info.extension.team.localeCompare(b.token_info.info.extension.team)
+            a.token_info.info.extension.attributes
+              .filter((data) => data.trait_type === 'team')[0]
+              .value.localeCompare(
+                b.token_info.info.extension.attributes.filter(
+                  (data) => data.trait_type === 'team'
+                )[0].value
+              )
           );
           return filteredList;
         case 'position':
           filteredList.sort((a, b) =>
-            a.token_info.info.extension.position.localeCompare(b.token_info.info.extension.position)
+            a.token_info.info.extension.attributes
+              .filter((data) => data.trait_type === 'position')[0]
+              .value.localeCompare(
+                b.token_info.info.extension.attributes.filter(
+                  (data) => data.trait_type === 'position'
+                )[0].value
+              )
           );
           return filteredList;
         default:
@@ -166,29 +186,20 @@ const Portfolio = () => {
     }
   };
 
-  useEffect(() => {
+  useEffect(async () => {
     setLoading(true);
     setSortedList([]);
     if (!!connectedWallet && !!dispatch) {
-      setLoading(true);
-      dispatch(getAccountAssets({ walletAddr: connectedWallet.walletAddress }));
-      setLoading(false);
-    } else {
-      setSortedList([]);
-      setLoading(false);
-    }
-  }, [dispatch, connectedWallet?.walletAddress]);
-
-  useEffect(() => {
-    setLoading(true)
-    if (!!connectedWallet) {
+      await dispatch(getAccountAssets({ walletAddr: connectedWallet.walletAddress }));
       fetchPacks();
     } else {
+      await dispatch(getAccountAssets({ clear: true }));
+      setSortedList([]);
       setPacks([]);
       setSortedPacks([]);
     }
-    setLoading(false)
-  }, [dispatch, connectedWallet, connectedWallet?.walletAddress]);
+    setLoading(false);
+  }, [dispatch, connectedWallet]);
 
   useEffect(() => {
     if (playerList && connectedWallet) {
