@@ -167,23 +167,31 @@ const Portfolio = () => {
   };
 
   useEffect(() => {
-    if (connectedWallet && dispatch) {
+    setLoading(true);
+    setSortedList([]);
+    if (!!connectedWallet && !!dispatch) {
       setLoading(true);
       dispatch(getAccountAssets({ walletAddr: connectedWallet.walletAddress }));
-      setTimeout(() => {
-        setLoading(false);
-      }, 500);
+      setLoading(false);
+    } else {
+      setSortedList([]);
+      setLoading(false);
     }
-  }, [dispatch, connectedWallet]);
+  }, [dispatch, connectedWallet?.walletAddress]);
 
   useEffect(() => {
-    if (connectedWallet) {
+    setLoading(true)
+    if (!!connectedWallet) {
       fetchPacks();
+    } else {
+      setPacks([]);
+      setSortedPacks([]);
     }
-  }, [dispatch, connectedWallet]);
+    setLoading(false)
+  }, [dispatch, connectedWallet?.walletAddress]);
 
   useEffect(() => {
-    if (playerList) {
+    if (playerList && connectedWallet) {
       if (playerList.tokens && playerList.tokens.length > 0) {
         const tempList = [...playerList.tokens];
         const filteredList = applySortFilter(tempList, filter, search).splice(
@@ -199,8 +207,10 @@ const Portfolio = () => {
       } else {
         setSortedList([]);
       }
+    } else {
+      setSortedList([]);
     }
-  }, [playerList, limit, offset, filter, search]);
+  }, [playerList, limit, offset, filter, search, connectedWallet?.walletAddress]);
 
   useEffect(() => {
     if (packs.length > 0) {
@@ -208,8 +218,11 @@ const Portfolio = () => {
       const filteredList = tempList.splice(packLimit * packOffset, packLimit);
       setSortedPacks(filteredList);
       setPackPageCount(Math.ceil(packs.length / packLimit));
+    } else {
+      setPacks([]);
+      setSortedPacks([]);
     }
-  }, [packs, packLimit, packOffset]);
+  }, [packs, packLimit, packOffset, connectedWallet?.walletAddress]);
 
   return (
     <Container>
@@ -221,7 +234,7 @@ const Portfolio = () => {
             <div className="flex flex-col w-full overflow-y-auto overflow-x-hidden h-screen self-center text-indigo-black">
               <div className="ml-6 flex flex-col md:flex-row md:justify-between">
                 <PortfolioContainer title="SQUAD" textcolor="text-indigo-black" />
-                {displayMode ? (
+                {sortedList.length > 0 && displayMode ? (
                   <Sorter
                     list={sortedList}
                     setList={setSortedList}

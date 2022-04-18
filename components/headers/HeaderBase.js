@@ -8,8 +8,6 @@ import Header from '../headers/Header.js';
 
 const HeaderBase = () => {
   const { status, connect, disconnect, availableConnectTypes } = useWallet();
-  console.log('availableConnectTypes', availableConnectTypes);
-
 	const connectedWallet = useConnectedWallet();
   const [walletAddress, setWalletAddress] = useState("Connect Wallet")
 	const [displayModal, setModal] = useState(false);
