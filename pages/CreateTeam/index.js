@@ -610,7 +610,14 @@ export default function CreateLineup() {
               </p>
             </div>
           </Modal>
-          <Modal title={'EDIT TEAM NAME'} visible={editModal} onClose={() => {setEditModal(false); setEditInput(teamName) }}>
+          <Modal
+            title={'EDIT TEAM NAME'}
+            visible={editModal}
+            onClose={() => {
+              setEditModal(false);
+              setEditInput(teamName);
+            }}
+          >
             <div className="mt-2 px-5">
               <p className="text-xs uppercase font-thin mb-2" style={{ fontFamily: 'Montserrat' }}>
                 EDIT TEAM NAME
