@@ -15,11 +15,19 @@ const HeaderBase = () => {
 
   useEffect(() => {
     if (status === WalletStatus.WALLET_CONNECTED) {
-      setWalletAddress(`${connectedWallet?.walletAddress.substring(0,6)}... ${connectedWallet?.walletAddress.substring(connectedWallet?.walletAddress.length - 6,connectedWallet?.walletAddress.length)}`)
+      setWalletAddress(
+        `${connectedWallet?.walletAddress.substring(
+          0,
+          6
+        )}... ${connectedWallet?.walletAddress.substring(
+          connectedWallet?.walletAddress.length - 6,
+          connectedWallet?.walletAddress.length
+        )}`
+      );
     } else {
-      setWalletAddress("Connect Wallet");
+      setWalletAddress('Connect Wallet');
     }
-	}, [status])
+  }, [status, connectedWallet?.walletAddress]);
 
   const connectWallet = (connectionType) => {
     setModal(false)
