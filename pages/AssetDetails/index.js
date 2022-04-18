@@ -91,6 +91,8 @@ const AssetDetails = (props) => {
         token_id: queryObj.token_id,
       },
     });
+
+    console.log('res', res)
     const imgRes = await axiosInstance.get(`/fantasy/athlete/${parseInt(queryObj.id)}/`);
     let img = imgRes.status === 200 ? imgRes.data.nft_image : null;
     if (res.info !== undefined) {

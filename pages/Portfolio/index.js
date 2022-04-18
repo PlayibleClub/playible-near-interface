@@ -200,7 +200,6 @@ const Portfolio = () => {
         setSortedList([]);
       }
     } 
-    console.log()
   }, [playerList, limit, offset, filter, search]);
 
   useEffect(() => {
@@ -258,7 +257,6 @@ const Portfolio = () => {
                       <hr className="opacity-50" />
                       {sortedList.length > 0 ? (
                         <>
-                          {console.log('sortedList', sortedList)}
                           <div className="grid grid-cols-2 md:grid-cols-4 mt-12">
                             {sortedList.map(function (player, i) {
                               const path = player.token_info.info.extension;
@@ -267,20 +265,21 @@ const Portfolio = () => {
                                   href={{
                                     pathname: '/AssetDetails',
                                     query: {
-                                      id: path.athlete_id,
+                                      id: path.attributes[0].value,
                                       origin: 'Portfolio',
                                       token_id: player.token_id,
                                     },
                                   }}
                                 >
+
                                   <div className="mb-4" key={i}>
                                     <PerformerContainer
                                       AthleteName={path.name}
                                       AvgScore={player.fantasy_score}
-                                      id={path.athlete_id}
+                                      id={path.attributes[0].value}
                                       uri={
                                         player.nft_image || player.token_info
-                                          ? player.token_info.info.token_uri
+                                          ? player.nft_image
                                           : null
                                       }
                                       rarity={path.rarity}
