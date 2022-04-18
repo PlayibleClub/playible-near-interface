@@ -29,7 +29,7 @@ const PerformerContainer = (props) => {
               data={uri}
               width={120}
               height={160}
-            ></object>
+            />
           </div>
         ) : (
           <Image src={'/images/tokensMLB/SP.png'} width={120} height={160} />

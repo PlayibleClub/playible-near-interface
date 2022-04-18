@@ -1,12 +1,11 @@
 import React from 'react';
 
+const PlayerContainer = (props) => {
+  const { img = null } = props;
 
-const PlayerContainer = (props) =>{
-    const {img = null} = props;
-
-    return (
-        <div className="overflow-hidden ease-in-out">
-            {/* {rarity === 'gold' && 
+  return (
+    <div className="overflow-hidden ease-in-out">
+      {/* {rarity === 'gold' && 
                 <Image
                     src={"/../public/images/tokens/"+playerID+"g.png"}
                     width={125}
@@ -29,9 +28,18 @@ const PlayerContainer = (props) =>{
                     height={160}
                 />
             } */}
-            <img src={img || '/images/tokensMLB/SP.png'} width={125} height={160} />
-        </div>
-    )
-}
+      {img ? (
+        <object
+          type="image/svg+xml"
+          data={img}
+          width={120}
+          height={160}
+        />
+      ) : (
+        <Image src={'/images/tokensMLB/SP.png'} width={120} height={160} />
+      )}
+    </div>
+  );
+};
 
 export default PlayerContainer;
