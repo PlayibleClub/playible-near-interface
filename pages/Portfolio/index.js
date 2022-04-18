@@ -196,8 +196,11 @@ const Portfolio = () => {
         } else {
           setPageCount(Math.ceil(playerList.tokens.length / limit));
         }
+      } else {
+        setSortedList([]);
       }
-    }
+    } 
+    console.log()
   }, [playerList, limit, offset, filter, search]);
 
   useEffect(() => {
@@ -255,6 +258,7 @@ const Portfolio = () => {
                       <hr className="opacity-50" />
                       {sortedList.length > 0 ? (
                         <>
+                          {console.log('sortedList', sortedList)}
                           <div className="grid grid-cols-2 md:grid-cols-4 mt-12">
                             {sortedList.map(function (player, i) {
                               const path = player.token_info.info.extension;

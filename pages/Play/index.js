@@ -20,7 +20,9 @@ import 'regenerator-runtime/runtime';
 import { axiosInstance } from '../../utils/playible';
 import LoadingPageDark from '../../components/loading/LoadingPageDark';
 import { LCDClient } from '@terra-money/terra.js';
-import { ORACLE } from '../../data/constants/contracts';
+import { GAME, ORACLE } from '../../data/constants/contracts';
+import Modal from '../../components/modals/Modal';
+import { executeContract } from '../../utils/terra';
 
 const Play = () => {
   const { status, connect, disconnect, availableConnectTypes } = useWallet();
@@ -31,6 +33,7 @@ const Play = () => {
   const [claimTeam, showClaimTeam] = useState(false);
   const [modalView, switchView] = useState(true);
   const [failedTransactionModal, showFailedModal] = useState(false);
+  const [claimLoading, setClaimLoading] = useState(false);
   const router = useRouter();
   const lcd = useLCDClient();
 
@@ -139,6 +142,7 @@ const Play = () => {
       const rewardsList = list.map(async (item) => {
         let hasRewards = false;
         let hasAthletes = false;
+        let isClaimed = 'unclaimed';
         const res = await axiosInstance.get(`/fantasy/game/${item.id}/leaderboard/`);
         const teams = await axiosInstance.get(
           `/fantasy/game/${item.id}/registered_teams_detail/?wallet_addr=${connectedWallet.walletAddress}`
@@ -155,6 +159,16 @@ const Play = () => {
           }
           if (teams.data.length > 0) {
             hasAthletes = true;
+            const claimedRes = await lcd.wasm.contractQuery(GAME, {
+              player_info: {
+                game_id: item.id.toString(),
+                player_addr: connectedWallet.walletAddress.toString(),
+              },
+            });
+
+            if (claimedRes.team_names) {
+              isClaimed = claimedRes.is_claimed ? 'claimed' : 'unclaimed';
+            }
           }
         }
 
@@ -162,6 +176,7 @@ const Play = () => {
           ...item,
           hasAthletes,
           hasRewards,
+          isClaimed,
         };
       });
 
@@ -196,6 +211,18 @@ const Play = () => {
 
       if (leaderboards.status === 200 && teams.status === 200 && teams.data.length > 0) {
         if (leaderboards.data.length > 0) {
+          let isClaimed = true;
+          const claimedRes = await lcd.wasm.contractQuery(GAME, {
+            player_info: {
+              game_id: gameId.toString(),
+              player_addr: connectedWallet.walletAddress.toString(),
+            },
+          });
+
+          if (claimedRes.team_names) {
+            isClaimed = claimedRes.is_claimed;
+          }
+
           winningPlacements = leaderboards.data
             .map((wallet, rank) => {
               if (wallet.account.wallet_addr === connectedWallet.walletAddress) {
@@ -231,10 +258,14 @@ const Play = () => {
           setClaimData({
             winning_placements: [...winningPlacements],
             no_placements: [...noPlacements],
+            isClaimed,
+            gameId,
           });
 
           showClaimModal(true);
         }
+      } else {
+        showClaimModal(false);
       }
     }
   };
@@ -284,6 +315,21 @@ const Play = () => {
         )}
       </>
     );
+  };
+
+  const claimRewards = async (gameId) => {
+    setClaimLoading(true);
+
+    const claimRes = await executeContract(connectedWallet, GAME, [
+      {
+        claim_rewards: { game_id: gameId },
+      },
+    ]);
+
+    console.log('claimRes', claimRes);
+    showClaimModal(false);
+    await fetchGames(activeCategory);
+    setClaimLoading(false);
   };
 
   useEffect(() => {
@@ -340,14 +386,18 @@ const Play = () => {
         <>
           <div className="fixed w-screen h-screen bg-opacity-70 z-50 overflow-auto bg-indigo-gray flex font-montserrat">
             <div className="relative p-8 bg-indigo-white w-11/12 md:w-2/5 m-auto flex-col flex rounded-lg">
-              <button
-                className="absolute top-0 right-0 "
-                onClick={() => {
-                  showClaimModal(false);
-                }}
-              >
-                <div className="p-4 font-black">X</div>
-              </button>
+              {!claimLoading ? (
+                <button
+                  className="absolute top-0 right-0 "
+                  onClick={() => {
+                    showClaimModal(false);
+                  }}
+                >
+                  <div className="p-4 font-black">X</div>
+                </button>
+              ) : (
+                ''
+              )}
 
               <div className="text-sm">
                 <div className="flex font-monument select-none mt-5">
@@ -375,7 +425,16 @@ const Play = () => {
                 <hr className="opacity-50 -mx-8" />
 
                 <div className="w-full">
-                  {claimData ? (
+                  {claimLoading ? (
+                    <div className="mt-8">
+                      <p className="mb-5 text-center font-montserrat">Please wait</p>
+                      <div className="flex gap-5 justify-center mb-5">
+                        <div className="bg-indigo-buttonblue animate-bounce w-5 h-5 rounded-full"></div>
+                        <div className="bg-indigo-buttonblue animate-bounce w-5 h-5 rounded-full"></div>
+                        <div className="bg-indigo-buttonblue animate-bounce w-5 h-5 rounded-full"></div>
+                      </div>
+                    </div>
+                  ) : claimData ? (
                     <>
                       {rewardsCategory === 'winning' &&
                         (claimData.winning_placements.length > 0 ? (
@@ -403,19 +462,21 @@ const Play = () => {
                           </>
                         ))}
 
-                      <div className="flex justify-center">
-                        <button className="text-indigo-white w-full text-sm font-bold text-center bg-indigo-buttonblue p-3 px-5">
-                          CLAIM {claimData.winning_placements.length > 0 ? 'REWARDS' : 'TEAM'}
-                        </button>
-                      </div>
+                      {!claimData.isClaimed && (
+                        <div className="flex justify-center">
+                          <button
+                            className="text-indigo-white w-full text-sm font-bold text-center bg-indigo-buttonblue p-3 px-5"
+                            onClick={() => claimRewards(claimData.gameId)}
+                          >
+                            CLAIM {claimData.winning_placements.length > 0 ? 'REWARDS' : 'TEAM'}
+                          </button>
+                        </div>
+                      )}
                     </>
                   ) : (
                     ''
                   )}
                 </div>
-                {/* <div className="text-indigo-white w-36 text-center bg-indigo-buttonblue py-2 px-2">
-                    CLAIM REWARD
-                  </div> */}
               </div>
             </div>
           </div>
@@ -452,17 +513,27 @@ const Play = () => {
                 <div className="absolute top-0 right-0 p-4 font-black">X</div>
               </button>
               <img src={claimreward} className="h-20 w-20" />
-              <div className="mt-4 bg-indigo-yellow p-2 text-center font-bold text-xl rounded">
+              <div className="mt-4 bg-indigo-yellow p-2 text-center text-lg rounded font-monument">
                 FAILED TRANSACTION
               </div>
-              <div className="mt-4 p-2 font-bold text-xl">
+              <div className="mt-4 p-2 text-sm">
                 We're sorry, unfortunately we've experienced a problem loading your request.
               </div>
-              <div className="p-2 font-bold text-xl">Please try again.</div>
+              <div className="px-2 text-sm">Please try again.</div>
             </div>
           </div>
         </>
       )}
+      {/* <Modal title={'LOADING'} visible={!claimLoading}>
+        <div>
+          <p className="mb-5 text-center font-montserrat">Please wait</p>
+          <div className="flex gap-5 justify-center mb-5">
+            <div className="bg-indigo-buttonblue animate-bounce w-5 h-5 rounded-full"></div>
+            <div className="bg-indigo-buttonblue animate-bounce w-5 h-5 rounded-full"></div>
+            <div className="bg-indigo-buttonblue animate-bounce w-5 h-5 rounded-full"></div>
+          </div>
+        </div>
+      </Modal> */}
       <Container>
         <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
           <Main color="indigo-white">
@@ -524,7 +595,7 @@ const Play = () => {
                               </a>
                               {activeCategory === 'completed' && (
                                 <div className="">
-                                  {data.hasRewards ? (
+                                  {data.isClaimed === 'unclaimed' && data.hasRewards ? (
                                     <button
                                       className="bg-indigo-buttonblue w-full h-12 text-center font-bold rounded-md text-sm mt-4 self-center"
                                       onClick={() => fetchTeamPlacements(data.id)}

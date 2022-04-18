@@ -101,6 +101,8 @@ export const executeContract = async (
     );
   }
 
+  console.log(executeContractMsg);
+
 
   if (estimatedFee == null) {
     estimatedFee = await estimateFee(connectedWallet.walletAddress, executeContractMsg);
