@@ -61,12 +61,12 @@ const MyActivity = () => {
           `/fantasy/game/${data.id}/registered_teams_detail/?wallet_addr=${connectedWallet.walletAddress}`
         );
         if (teams.status === 200 && teams.data.length > 0) {
-          return { ...data, team_id: teams.data };
+          return data;
         }
       });
       const promiseObject = await Promise.all(connectedWalletGames);
       const filteredPromiseObject = promiseObject.filter((check) => check);
-      console.log(filteredPromiseObject);
+
       setCompletedGames([]);
       setCompletedGames(filteredPromiseObject);
     }
@@ -74,18 +74,21 @@ const MyActivity = () => {
 
   async function fetchRegisteredTeams(allGames) {
     if (allGames.length > 0) {
+      setAllGames([]);
+
       const connectedWalletGames = allGames.map(async (data) => {
         const teams = await axiosInstance.get(
           `/fantasy/game/${data.id}/registered_teams_detail/?wallet_addr=${connectedWallet.walletAddress}`
         );
         if (teams.status === 200 && teams.data.length > 0) {
-          return { ...data, team_id: teams.data };
+
+          return data;
         }
       });
 
       const promiseObject = await Promise.all(connectedWalletGames);
       const filteredPromiseObject = promiseObject.filter((check) => check);
-      setAllGames([]);
+      
       setAllGames(filteredPromiseObject);
     }
   }
@@ -141,7 +144,6 @@ const MyActivity = () => {
                                 pathname: '/EntrySummary',
                                 query: {
                                   game_id: data.id,
-                                  team_id: data.team_id[0].id,
                                   origin: 'MyActivity',
                                 },
                               }}

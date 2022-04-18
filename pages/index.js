@@ -140,7 +140,6 @@ export default function Home(props) {
   useEffect(() => {
     const id = setInterval(() => {
       fetchActiveGames();
-      console.log('checking')
     }, 1000);
     return () => clearInterval(id);
   }, [activeGames]);

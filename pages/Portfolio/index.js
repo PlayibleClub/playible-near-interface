@@ -196,8 +196,11 @@ const Portfolio = () => {
         } else {
           setPageCount(Math.ceil(playerList.tokens.length / limit));
         }
+      } else {
+        setSortedList([]);
       }
-    }
+    } 
+    console.log()
   }, [playerList, limit, offset, filter, search]);
 
   useEffect(() => {
@@ -255,6 +258,7 @@ const Portfolio = () => {
                       <hr className="opacity-50" />
                       {sortedList.length > 0 ? (
                         <>
+                          {console.log('sortedList', sortedList)}
                           <div className="grid grid-cols-2 md:grid-cols-4 mt-12">
                             {sortedList.map(function (player, i) {
                               const path = player.token_info.info.extension;
@@ -371,7 +375,6 @@ const Portfolio = () => {
                           <div className="md:ml-16 grid grid-cols-0 md:grid-cols-4 mt-12 justify-center">
                             {sortedPacks.map((data, i) => {
                               const path = data.token_info.info.extension;
-                              console.log('data', data);
                               return (
                                 <div className="mb-4 cursor-pointer" key={i}>
                                   <SquadPackComponent

@@ -182,7 +182,6 @@ export default function History(props) {
     const [isActivePlay, setActive] = useState(false)
     const [isClosed, setClosed] = useState(true)
     const { query } = useRouter();
-    // console.log("Game ID: "+query.id)
     
     return (
         <Container>

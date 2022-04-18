@@ -17,7 +17,7 @@ const DesktopHeaderBase = () => {
     } else {
       setWalletAddress("Connect Wallet");
     }
-	}, [status])
+	}, [status, connectedWallet?.walletAddress ])
 
   const connectWallet = (connectionType) => {
     setModal(false)

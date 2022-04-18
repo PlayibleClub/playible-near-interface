@@ -37,10 +37,8 @@ export const estimateFee = async (
         { msgs: executeContractMsg, gasPrices: gasPrices, feeDenoms: feeDenoms } //use UST as gas by default
       );
     } catch (err) {
-      console.log('estimatedFee err', err);
       estimatedFee = null;
     }
-    // console.log('estimatedFee', estimatedFee);
   }
 
   return estimatedFee;
@@ -103,7 +101,8 @@ export const executeContract = async (
     );
   }
 
-  console.log('executeContractMsg', executeContractMsg);
+  console.log(executeContractMsg);
+
 
   if (estimatedFee == null) {
     estimatedFee = await estimateFee(connectedWallet.walletAddress, executeContractMsg);

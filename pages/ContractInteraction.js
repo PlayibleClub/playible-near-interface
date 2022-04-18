@@ -37,7 +37,6 @@ const ContractInteraction = () => {
     try {
       const { result, success } = await signBytes(Buffer.from("ngmi"))
     } catch (error) {
-      console.log(`Unknown Error: ${error instanceof Error ? error.message : String(error)}`);
     }
   }
 

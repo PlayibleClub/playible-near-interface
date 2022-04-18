@@ -36,7 +36,6 @@ describe('connectVerifyWallet', () => {
 
     return store.dispatch(connectVerifyWallet()).then(() => {
       const result  = store.getState().account_number;
-      console.log(result)
     })
   })
 })
