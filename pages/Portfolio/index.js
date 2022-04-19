@@ -264,7 +264,7 @@ const Portfolio = () => {
                 <div className="justify-center self-center w-full md:mt-4">
                   {displayMode ? (
                     <>
-                      <div className="flex md:ml-4 font-bold ml-8 md:ml-0 font-monument">
+                      <div className="flex md:ml-4 font-bold ml-8 font-monument">
                         <div className="mr-6 md:ml-8 border-b-8 pb-2 border-indigo-buttonblue cursor-pointer">
                           ATHLETES
                         </div>
@@ -387,7 +387,7 @@ const Portfolio = () => {
                     </>
                   ) : (
                     <div>
-                      <div className="flex md:ml-4 font-bold ml-8 md:ml-0 font-monument">
+                      <div className="flex md:ml-4 font-bold ml-8 font-monument">
                         <div
                           className="md:ml-8 mr-6 cursor-pointer"
                           onClick={() => {
