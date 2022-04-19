@@ -111,8 +111,6 @@ const TokenDrawPage = (props) => {
       setErr('Please connect your wallet');
       setLoading(false)
     }
-
-    console.log('connectedWallet', connectedWallet)
   }, [connectedWallet]);
 
   return (
