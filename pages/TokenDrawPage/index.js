@@ -121,7 +121,7 @@ const TokenDrawPage = (props) => {
       <Container>
         <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
           <Main color="indigo-white">
-            {videoPlaying
+            {!videoPlaying
               ? <div className='player-wrapper'>
                 <video className='open-pack-video' autoPlay playsinline muted onEnded={onVideoEnded}>
                   <source src="/videos/starter-pack-white.mp4" type="video/mp4"/>
