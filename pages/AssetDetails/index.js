@@ -42,7 +42,6 @@ const AssetDetails = (props) => {
   const [Data, setData] = useState(null);
   const [stats, setStats] = useState(null);
 
-
   const [matchedId, setMatchedId] = useState([]);
 
   const [statfilter, setFilter] = useState('sevendays');
@@ -92,7 +91,6 @@ const AssetDetails = (props) => {
       },
     });
 
-    console.log('res', res)
     const imgRes = await axiosInstance.get(`/fantasy/athlete/${parseInt(queryObj.id)}/`);
     let img = imgRes.status === 200 ? imgRes.data.nft_image : null;
     if (res.info !== undefined) {
@@ -133,14 +131,21 @@ const AssetDetails = (props) => {
             <div className="flex flex-col mt-4 items-center">
               <div className="">
                 <PlayerContainer
-                  playerID={assetData.token_info.info.extension.athlete_id}
+                  playerID={
+                    assetData.attributes.filter((item) => item.trait_type === 'athlete_id')[0].value
+                  }
                   rarity="base"
                 />
               </div>
               <div>
                 <div>
                   <div className="font-thin text-xs mt-4">
-                    #{assetData.token_info.info.extension.athlete_id}/25000
+                    #
+                    {
+                      assetData.attributes.filter((item) => item.trait_type === 'athlete_id')[0]
+                        .value
+                    }
+                    /25000
                   </div>
 
                   <div className="text-sm font-bold">
@@ -203,7 +208,10 @@ const AssetDetails = (props) => {
               <div className="flex flex-col mt-4 items-center">
                 <div className="">
                   <PlayerContainer
-                    playerID={assetData.token_info.info.extension.athlete_id}
+                    playerID={
+                      assetData.attributes.filter((item) => item.trait_type === 'athlete_id')[0]
+                        .value
+                    }
                     rarity="base"
                   />
                 </div>
@@ -212,7 +220,12 @@ const AssetDetails = (props) => {
               <div className="flex justify-between mt-4">
                 <div>
                   <div className="font-bold">
-                    #{assetData.token_info.info.extension.athlete_id}/25000
+                    #
+                    {
+                      assetData.attributes.filter((item) => item.trait_type === 'athlete_id')[0]
+                        .value
+                    }
+                    /25000
                   </div>
 
                   <div className="font-thin">SERIAL NUMBER</div>
@@ -264,13 +277,7 @@ const AssetDetails = (props) => {
                     <div className="flex flex-col overflow-y-auto overflow-x-hidden">
                       <div className="md:ml-8">
                         <div className="mt-8">
-                          <BackFunction
-                            prev={
-                              query.origin.toLowerCase() === 'portfolio'
-                                ? '/Portfolio/'
-                                : '/Marketplace/'
-                            }
-                          />
+                          <BackFunction prev={query.origin || '/Portfolio/'} />
                         </div>
 
                         <PortfolioContainer textcolor="indigo-black" title="PLAYER DETAILS">
@@ -279,8 +286,16 @@ const AssetDetails = (props) => {
                               <div>
                                 <div className="ml-8 md:ml-6 mr-16">
                                   <PlayerContainer
-                                    img={matchedId.length > 0 && matchedId[0].token_info.info.token_uri || assetData.token_uri}
-                                    playerID={assetData.athlete_id}
+                                    img={
+                                      matchedId.length > 0 && matchedId[0].token_info.info.token_uri
+                                        ? assetData.token_uri
+                                        : null
+                                    }
+                                    playerID={
+                                      assetData.attributes.filter(
+                                        (item) => item.trait_type === 'athlete_id'
+                                      )[0].value
+                                    }
                                     rarity="base"
                                   />
                                 </div>
@@ -289,11 +304,23 @@ const AssetDetails = (props) => {
                                 <div className="ml-8 md:ml-0 mb-4 md:mb-0 mt-8 md:mt-0">
                                   {query.origin.toLowerCase() === 'portfolio' && (
                                     <div className="font-thin text-sm">
-                                      #{assetData.athlete_id}/25000
+                                      #
+                                      {
+                                        assetData.attributes.filter(
+                                          (item) => item.trait_type === 'athlete_id'
+                                        )[0].value
+                                      }
+                                      /25000
                                     </div>
                                   )}
 
-                                  <div className="text-sm">{assetData.name}</div>
+                                  <div className="text-sm">
+                                    {
+                                      assetData.attributes.filter(
+                                        (item) => item.trait_type === 'name'
+                                      )[0].value
+                                    }
+                                  </div>
 
                                   <div className="font-thin mt-4 text-sm">FANTASY SCORE</div>
 
@@ -368,7 +395,11 @@ const AssetDetails = (props) => {
                           </div>
                         </div>
                         <div className="text-indigo-white bg-indigo-black w-max font-monument p-4 text-3xl font-thin uppercase text-center ml-6 mt-8 md:mt-5">
-                          {position('baseball', assetData.position)}
+                          {position(
+                            'baseball',
+                            assetData.attributes.filter((item) => item.trait_type === 'position')[0]
+                              .value
+                          )}
                         </div>
                         <div className="flex flex-col justify-center self-center md:mr-24 mb-8 md:ml-6">
                           <div className="mt-8 mb-16 self-center">

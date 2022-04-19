@@ -8,7 +8,6 @@ import Header from '../headers/Header.js';
 
 const HeaderBase = () => {
   const { status, connect, disconnect, availableConnectTypes } = useWallet();
-
 	const connectedWallet = useConnectedWallet();
   const [walletAddress, setWalletAddress] = useState("Connect Wallet")
 	const [displayModal, setModal] = useState(false);
@@ -56,27 +55,31 @@ const HeaderBase = () => {
     } else {
       return (
         <>
-          {availableConnectTypes.includes("EXTENSION") &&
+          {availableConnectTypes.includes('EXTENSION') && (
             <button
               type="button"
               className="bg-indigo-buttonblue w-full h-12 text-center text-indigo-white font-bold rounded-md text-md mt-4 self-center"
-              onClick={() => { connectWallet(availableConnectTypes.indexOf("EXTENSION"))} }
+              onClick={() => {
+                connectWallet(availableConnectTypes.indexOf('EXTENSION'));
+              }}
             >
               Terra Station (Web Extension)
             </button>
-          }
+          )}
 
-          {availableConnectTypes.includes("WALLETCONNECT") &&
+          {availableConnectTypes.includes('WALLETCONNECT') && (
             <button
               type="button"
               className="bg-indigo-buttonblue w-full h-12 text-center text-indigo-white font-bold rounded-md text-md mt-4 self-center"
-              onClick={() => { connectWallet(availableConnectTypes.indexOf("WALLETCONNECT")) }}
+              onClick={() => {
+                connectWallet(availableConnectTypes.indexOf('WALLETCONNECT'));
+              }}
             >
               Terra Station (Mobile)
             </button>
-          }
+          )}
         </>
-      )
+      );
     }
   }
 

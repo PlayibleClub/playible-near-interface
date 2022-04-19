@@ -14,13 +14,16 @@ const initialState = {
 
 export const getAccountAssets = createAsyncThunk('getAccountAssets', async (payload, thunkAPI) => {
   try {
-    const { walletAddr, limit, start_after } = payload;
-    const result = await axiosInstance.get(
-      // `/account/athlete_tokens/${walletAddr}/collection/${contracts.ATHLETE}`
-      `/account/athlete_tokens/${walletAddr}/collection/${contracts.ATHLETE}`
-    );
-
-    console.log('res', result)
+    const { walletAddr, limit, start_after, clear = false } = payload;
+    let result = null
+    if (clear) {
+      result = null
+    } else {
+      result = await axiosInstance.get(
+        // `/account/athlete_tokens/${walletAddr}/collection/${contracts.ATHLETE}`
+        `/account/athlete_tokens/${walletAddr}/collection/${contracts.ATHLETE}`
+      );
+    }
 
     return {
       response: result,
@@ -56,7 +59,7 @@ const assetSlice = createSlice({
     [getAccountAssets.fulfilled]: (state, action) => {
       return {
         ...state,
-        list: processAssetListData(action.payload.response.data),
+        list: processAssetListData(action.payload.response ? action.payload.response.data : null),
         status: action.payload.status,
         action: actionType.GET,
       };
@@ -64,6 +67,7 @@ const assetSlice = createSlice({
     [getAccountAssets.rejected]: (state, action) => {
       return {
         ...state,
+        list: null,
         status: action.payload.status,
         action: actionType.GET,
       };

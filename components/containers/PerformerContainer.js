@@ -1,9 +1,22 @@
 import PropTypes from 'prop-types';
-import Image from 'next/image'
-import React from 'react'
+import Image from 'next/image';
+import React from 'react';
 
 const PerformerContainer = (props) => {
-  const { children, color, imagesrc, uri, AthleteName, TeamName, CoinValue, AvgScore, id = null, rarity, status, hoverable = true } = props;
+  const {
+    children,
+    color,
+    imagesrc,
+    uri,
+    AthleteName,
+    TeamName,
+    CoinValue,
+    AvgScore,
+    id = null,
+    rarity,
+    status,
+    hoverable = true,
+  } = props;
 
   return (
     <div data-test="PerformerContainer" className={`justify-center flex flex-col w-full h-full`}>
@@ -20,7 +33,7 @@ const PerformerContainer = (props) => {
         }`}
       >
         {uri ? (
-          <div className='relative' style={{ width: '120px', height: '160px' }}>
+          <div className="relative" style={{ width: '120px', height: '160px' }}>
             <div className="absolute z-50" style={{ width: '120px', height: '160px' }}></div>
             <object
               className="absolute z-10"
@@ -28,7 +41,7 @@ const PerformerContainer = (props) => {
               data={uri}
               width={120}
               height={160}
-            ></object>
+            />
           </div>
         ) : (
           <Image src={'/images/tokensMLB/SP.png'} width={120} height={160} />
