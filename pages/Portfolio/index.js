@@ -25,7 +25,7 @@ const Portfolio = () => {
   const [packLimit, setPackLimit] = useState(10);
   const [packOffset, setPackOffset] = useState(0);
   const [packPageCount, setPackPageCount] = useState(0);
-  const [wallet, setWallet] = useState(null)
+  const [wallet, setWallet] = useState(null);
 
   const { list: playerList, status } = useSelector((state) => state.assets);
 
@@ -134,7 +134,10 @@ const Portfolio = () => {
     if (tempList.length > 0) {
       let filteredList = tempList.filter(
         (item) =>
-          item.token_info.info.extension.attributes.filter(data => data.trait_type === 'name')[0].value.toLowerCase().indexOf(search.toLowerCase()) > -1
+          item.token_info.info.extension.attributes
+            .filter((data) => data.trait_type === 'name')[0]
+            .value.toLowerCase()
+            .indexOf(search.toLowerCase()) > -1
       );
       switch (filter) {
         case 'name':
@@ -241,7 +244,7 @@ const Portfolio = () => {
           {loading ? (
             <LoadingPageDark />
           ) : (
-            <div className="flex flex-col w-full overflow-y-auto overflow-x-hidden h-screen self-center text-indigo-black">
+            <div className="flex flex-col w-full overflow-y-auto overflow-x-hidden h-full self-center text-indigo-black">
               <div className="ml-6 flex flex-col md:flex-row md:justify-between">
                 <PortfolioContainer title="SQUAD" textcolor="text-indigo-black" />
                 {sortedList.length > 0 && displayMode ? (
@@ -322,7 +325,7 @@ const Portfolio = () => {
                               );
                             })}
                           </div>
-                          <div className="flex justify-between md:mt-5 md:mr-6 p-5">
+                          <div className="flex justify-between md:mt-5 mb-12 md:mr-6 p-5 mx-10">
                             <div className="bg-indigo-white mr-1 h-11 flex items-center font-thin border-indigo-lightgray border-opacity-40 p-2">
                               {pageCount > 1 && (
                                 <button
@@ -403,22 +406,32 @@ const Portfolio = () => {
 
                       {sortedPacks.length > 0 ? (
                         <>
-                          <div className="md:ml-16 grid grid-cols-0 md:grid-cols-4 mt-12 justify-center">
+                          {console.log('sortedPacks', sortedPacks)}
+                          <div className="grid grid-cols-2 md:grid-cols-4 mt-12">
                             {sortedPacks.map((data, i) => {
                               const path = data.token_info.info.extension;
                               return (
                                 <div className="mb-4 cursor-pointer" key={i}>
                                   <SquadPackComponent
                                     imagesrc={null}
-                                    packName={data.token_id}
-                                    // releaseValue={path.release[1]}
+                                    packName={path.name}
+                                    releaseValue={
+                                      path.attributes.filter(
+                                        (item) => item.trait_type === 'release'
+                                      )[0].value[1]
+                                    }
                                     link={`?token_id=${data.token_id}&origin=Portfolio`}
+                                    type={
+                                      path.attributes.filter(
+                                        (item) => item.trait_type === 'pack_type'
+                                      )[0].value
+                                    }
                                   />
                                 </div>
                               );
                             })}
                           </div>
-                          <div className="flex justify-between md:mt-5 md:mr-6 p-5">
+                          <div className="flex justify-between md:mt-5 mb-12 md:mr-6 p-5 mx-10">
                             <div className="bg-indigo-white mr-1 h-11 flex items-center font-thin border-indigo-lightgray border-opacity-40 p-2">
                               {packPageCount > 1 && (
                                 <button

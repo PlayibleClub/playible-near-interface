@@ -24,6 +24,8 @@ const TokenDrawPage = (props) => {
   const lcd = useLCDClient();
   const connectedWallet = useConnectedWallet();
 
+  const [err, setErr] = useState(error)
+
   const [isClosed, setClosed] = useState(true);
   const [loading, setLoading] = useState(true);
 
@@ -104,7 +106,13 @@ const TokenDrawPage = (props) => {
   useEffect(() => {
     if (connectedWallet) {
       prepareNewAthletes();
+      setErr(null)
+    } else {
+      setErr('Please connect your wallet');
+      setLoading(false)
     }
+
+    console.log('connectedWallet', connectedWallet)
   }, [connectedWallet]);
 
   return (
@@ -115,13 +123,13 @@ const TokenDrawPage = (props) => {
             {loading ? (
               <LoadingPageDark />
             ) : (
-              <>
+              <div className="mb-10">
                 <div
                   className="flex justify-center self-center"
                   style={{ backgroundColor: 'white' }}
                 >
-                  {error ? (
-                    <p>{error}</p>
+                  {!!err ? (
+                    <p className="py-10">{err}</p>
                   ) : (
                     <div className="flex flex-row flex-wrap justify-center">
                       {athletes.length > 0
@@ -133,14 +141,39 @@ const TokenDrawPage = (props) => {
                                 }}
                               >
                                 <TokenComponent
-                                  athlete_id={data.attributes.filter(item => item.trait_type === 'athlete_id')[0].value}
-                                  position={data.attributes.filter(item => item.trait_type === 'position')[0].value}
-                                  rarity={data.attributes.filter(item => item.trait_type === 'rarity')[0].value}
-                                  release={data.attributes.filter(item => item.trait_type === 'release')[0].value}
-                                  team={data.attributes.filter(item => item.trait_type === 'team')[0].value}
-                                  usage={data.attributes.filter(item => item.trait_type === 'usage')[0].value}
+                                  athlete_id={
+                                    data.attributes.filter(
+                                      (item) => item.trait_type === 'athlete_id'
+                                    )[0].value
+                                  }
+                                  position={
+                                    data.attributes.filter(
+                                      (item) => item.trait_type === 'position'
+                                    )[0].value
+                                  }
+                                  rarity={
+                                    data.attributes.filter(
+                                      (item) => item.trait_type === 'rarity'
+                                    )[0].value
+                                  }
+                                  release={
+                                    data.attributes.filter(
+                                      (item) => item.trait_type === 'release'
+                                    )[0].value
+                                  }
+                                  team={
+                                    data.attributes.filter((item) => item.trait_type === 'team')[0]
+                                      .value
+                                  }
+                                  usage={
+                                    data.attributes.filter((item) => item.trait_type === 'usage')[0]
+                                      .value
+                                  }
                                   isOpen={data.isOpen}
-                                  name={data.attributes.filter(item => item.trait_type === 'name')[0].value}
+                                  name={
+                                    data.attributes.filter((item) => item.trait_type === 'name')[0]
+                                      .value
+                                  }
                                   fantasy_score={data.fantasy_score}
                                   img={data.animation}
                                 />
@@ -151,15 +184,15 @@ const TokenDrawPage = (props) => {
                     </div>
                   )}
                 </div>
-                <div className="flex h-full mt-16">
+                <div className="flex h-14 mt-16">
                   <div className="bg-indigo-black w-full justify-end flex opacity-5"></div>
-                  <Link href='/Portfolio' replace>
-                    <button className="bg-indigo-buttonblue text-indigo-white w-5/6 md:w-80 h-14 text-center font-bold text-md">
+                  <Link href="/Portfolio" replace>
+                    <button className="bg-indigo-buttonblue cursor-pointer text-indigo-white w-5/6 md:w-80 h-14 text-center font-bold text-md">
                       GO TO MY SQUAD
                     </button>
                   </Link>
                 </div>
-              </>
+              </div>
             )}
           </Main>
         </div>
