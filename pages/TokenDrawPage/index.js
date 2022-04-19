@@ -103,9 +103,14 @@ const TokenDrawPage = (props) => {
     return
   };
 
-  useEffect(() => {
+  useEffect(async () => {
+    setLoading(true)
     if (connectedWallet) {
-      prepareNewAthletes();
+      await prepareNewAthletes();
+      setErr(null);
+    } else {
+      setErr('Waiting for wallet connection...')
+      setLoading(false)
     }
   }, [connectedWallet]);
 

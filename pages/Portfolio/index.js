@@ -18,7 +18,7 @@ import 'regenerator-runtime/runtime';
 const Portfolio = () => {
   const [searchText, setSearchText] = useState('');
   const [displayMode, setDisplay] = useState(true);
-  const [loading, setLoading] = useState(true);
+
   const [limit, setLimit] = useState(10);
   const [offset, setOffset] = useState(0);
   const [pageCount, setPageCount] = useState(0);
@@ -38,6 +38,7 @@ const Portfolio = () => {
   const limitOptions = [5, 10, 30, 50];
   const [filter, setFilter] = useState(null);
   const [search, setSearch] = useState('');
+  const [loading, setLoading] = useState(!!connectedWallet);
 
   const fetchPacks = async () => {
     if (connectedWallet) {
@@ -194,14 +195,17 @@ const Portfolio = () => {
     setSortedList([]);
     if (!!connectedWallet && !!dispatch) {
       await dispatch(getAccountAssets({ walletAddr: connectedWallet.walletAddress }));
-      fetchPacks();
+      await fetchPacks();
+      setLoading(false);
+      setWallet(connectedWallet.walletAddress);
     } else {
       await dispatch(getAccountAssets({ clear: true }));
       setSortedList([]);
       setPacks([]);
       setSortedPacks([]);
+      setWallet(null);
+      setLoading(false);
     }
-    setLoading(false);
   }, [dispatch, connectedWallet]);
 
   useEffect(() => {
@@ -243,6 +247,8 @@ const Portfolio = () => {
         <Main color="indigo-white">
           {loading ? (
             <LoadingPageDark />
+          ) : !wallet ? (
+            <p className="ml-12 mt-5">Waiting for wallet connection...</p>
           ) : (
             <div className="flex flex-col w-full overflow-y-auto overflow-x-hidden h-full self-center text-indigo-black">
               <div className="ml-6 flex flex-col md:flex-row md:justify-between">
@@ -406,7 +412,6 @@ const Portfolio = () => {
 
                       {sortedPacks.length > 0 ? (
                         <>
-                          {console.log('sortedPacks', sortedPacks)}
                           <div className="grid grid-cols-2 md:grid-cols-4 mt-12">
                             {sortedPacks.map((data, i) => {
                               const path = data.token_info.info.extension;
