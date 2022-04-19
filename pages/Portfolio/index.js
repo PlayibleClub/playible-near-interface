@@ -206,6 +206,8 @@ const Portfolio = () => {
       setWallet(null);
       setLoading(false);
     }
+
+    console.log('connectedWallet', connectedWallet);
   }, [dispatch, connectedWallet]);
 
   useEffect(() => {
