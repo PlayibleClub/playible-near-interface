@@ -139,7 +139,19 @@ export default function Home(props) {
 
   useEffect(() => {
     const id = setInterval(() => {
-      fetchActiveGames();
+        const currentDate = new Date();
+        var end
+        if (activeGames[1] && activeGames.length>0)
+        {
+          end = new Date(activeGames[1].end_datetime)
+        }
+        else {
+          end = new Date(activeGames[0].end_datetime)
+        }
+        const totalSeconds = (end - currentDate) / 1000;
+        if (Math.floor(totalSeconds) < 0 || activeGames.length === 0) {
+          fetchActiveGames();
+        }
     }, 1000);
     return () => clearInterval(id);
   }, [activeGames]);
