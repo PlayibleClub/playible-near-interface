@@ -11,7 +11,7 @@ function MyApp ({ Component, pageProps }) {
     chainID: 'columbus-4',
     lcd: 'https://lcd.terra.dev'
   }
-  console.log('before testnet')
+
   const testnet = {
     name: 'testnet',
     lcd: 'https://bombay-lcd.terra.dev',

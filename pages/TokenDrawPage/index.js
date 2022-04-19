@@ -56,7 +56,7 @@ const TokenDrawPage = (props) => {
       })
 
       const tempAthletes = await Promise.all(detailedAssets)
-      setAthletes(tempAthletes.filter(item => item))
+      setAthletes(tempAthletes.filter((item) => item))
     }
 
     setLoading(false)
@@ -113,6 +113,7 @@ const TokenDrawPage = (props) => {
   }, [connectedWallet])
 
   const onVideoEnded = () => {
+    console.log('ended')
     setVideoPlaying(false)
   }
 
@@ -121,14 +122,21 @@ const TokenDrawPage = (props) => {
       <Container>
         <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
           <Main color="indigo-white">
-            {!videoPlaying
-              ? <div className='player-wrapper'>
-                <video className='open-pack-video' autoPlay playsinline muted onEnded={onVideoEnded}>
-                  <source src="/videos/starter-pack-white.mp4" type="video/mp4"/>
-                Your browser does not support HTML5 video.
-                </video>
+            {videoPlaying ? (
+              <div className="player-wrapper">
+                {/* <video
+                  className="open-pack-video"
+                  autoPlay
+                  loop
+                  muted
+                  onEnded={onVideoEnded}
+                >
+                  <source src="/videos/starter-pack-white.mp4" type="video/mp4" />
+                  Your browser does not support HTML5 video.
+                </video> */}
               </div>
-              : <>
+            ) : (
+              <>
                 {loading ? (
                   <LoadingPageDark />
                 ) : (
@@ -137,7 +145,7 @@ const TokenDrawPage = (props) => {
                       className="flex justify-center self-center"
                       style={{ backgroundColor: 'white' }}
                     >
-                      {err ? (
+                      {!err ? (
                         <p className="py-10">{err}</p>
                       ) : (
                         <div className="flex flex-row flex-wrap justify-center">
@@ -171,17 +179,20 @@ const TokenDrawPage = (props) => {
                                       )[0].value
                                     }
                                     team={
-                                      data.attributes.filter((item) => item.trait_type === 'team')[0]
-                                        .value
+                                      data.attributes.filter(
+                                        (item) => item.trait_type === 'team'
+                                      )[0].value
                                     }
                                     usage={
-                                      data.attributes.filter((item) => item.trait_type === 'usage')[0]
-                                        .value
+                                      data.attributes.filter(
+                                        (item) => item.trait_type === 'usage'
+                                      )[0].value
                                     }
                                     isOpen={data.isOpen}
                                     name={
-                                      data.attributes.filter((item) => item.trait_type === 'name')[0]
-                                        .value
+                                      data.attributes.filter(
+                                        (item) => item.trait_type === 'name'
+                                      )[0].value
                                     }
                                     fantasy_score={data.fantasy_score}
                                     img={data.animation}
@@ -197,16 +208,15 @@ const TokenDrawPage = (props) => {
                       <div className="bg-indigo-black w-full justify-end flex opacity-5"></div>
                       <Link href="/Portfolio" replace>
                         <button className="bg-indigo-buttonblue cursor-pointer text-indigo-white w-5/6 md:w-80 h-14 text-center font-bold text-md">
-                        GO TO MY SQUAD
+                          GO TO MY SQUAD
                         </button>
                       </Link>
                     </div>
                   </div>
                 )}
               </>
-            }
+            )}
           </Main>
-
         </div>
       </Container>
     </>
