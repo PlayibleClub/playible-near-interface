@@ -32,3 +32,16 @@ select {
     text-indent: 1px;
     text-overflow: '';
   }
+
+.player-wrapper {
+    display: flex;
+    justify-content: center;
+    padding-top: 3rem;
+    width: 100%;
+    height: 100%;
+}
+
+.open-pack-video {
+    width: 80%;
+    height: 80%;
+}
