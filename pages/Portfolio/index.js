@@ -193,10 +193,9 @@ const Portfolio = () => {
   useEffect(async () => {
     setLoading(true);
     setSortedList([]);
-    if (!!connectedWallet && !!dispatch) {
+    if (connectedWallet && dispatch) {
       await dispatch(getAccountAssets({ walletAddr: connectedWallet.walletAddress }));
       await fetchPacks();
-      setLoading(false);
       setWallet(connectedWallet.walletAddress);
     } else {
       await dispatch(getAccountAssets({ clear: true }));
@@ -204,11 +203,12 @@ const Portfolio = () => {
       setPacks([]);
       setSortedPacks([]);
       setWallet(null);
-      setLoading(false);
     }
-  }, [dispatch, connectedWallet]);
+    setLoading(false);
+  }, [dispatch, connectedWallet?.walletAddress]);
 
   useEffect(() => {
+    setLoading(true);
     if (playerList && connectedWallet) {
       if (playerList.tokens && playerList.tokens.length > 0) {
         const tempList = [...playerList.tokens];
@@ -228,6 +228,7 @@ const Portfolio = () => {
     } else {
       setSortedList([]);
     }
+    setLoading(false)
   }, [playerList, limit, offset, filter, search, connectedWallet?.walletAddress]);
 
   useEffect(() => {
@@ -247,7 +248,7 @@ const Portfolio = () => {
         <Main color="indigo-white">
           {loading ? (
             <LoadingPageDark />
-          ) : !wallet ? (
+          ) : (!wallet ? (
             <p className="ml-12 mt-5">Waiting for wallet connection...</p>
           ) : (
             <div className="flex flex-col w-full overflow-y-auto overflow-x-hidden h-full self-center text-indigo-black">
@@ -499,7 +500,7 @@ const Portfolio = () => {
                 </div>
               </div>
             </div>
-          )}
+          ))}
         </Main>
       </div>
     </Container>
