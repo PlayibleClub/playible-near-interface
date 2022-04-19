@@ -124,7 +124,7 @@ const TokenDrawPage = (props) => {
             {videoPlaying
               ? <div className='player-wrapper'>
                 <video className='open-pack-video' autoPlay playsinline muted onEnded={onVideoEnded}>
-                  <source src="/videos/starter-pack_v4-white-explosion.mp4" type="video/mp4"/>
+                  <source src="/videos/starter-pack-white.mp4" type="video/mp4"/>
                 Your browser does not support HTML5 video.
                 </video>
               </div>
