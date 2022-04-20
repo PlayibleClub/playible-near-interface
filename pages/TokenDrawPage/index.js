@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useDispatch, useSelector } from 'react-redux';
-import { BrowserView, MobileView } from 'react-device-detect';
 import LoadingPageDark from '../../components/loading/LoadingPageDark';
 import Container from '../../components/containers/Container';
 import HeaderBase from '../../components/headers/HeaderBase';
@@ -14,6 +13,7 @@ import { executeContract, queryContract, retrieveTxInfo } from '../../utils/terr
 import { OPENPACK, PACK, ATHLETE } from '../../data/constants/contracts';
 import { axiosInstance } from '../../utils/playible';
 import 'regenerator-runtime/runtime';
+import { BrowserView, MobileView, isBrowser, isMobile } from 'react-device-detect';
 
 const sampleList = [0, 1, 2, 3, 4, 5];
 
@@ -115,6 +115,12 @@ const TokenDrawPage = (props) => {
   const onVideoEnded = () => {
     setVideoPlaying(false);
   };
+
+  useEffect(() => {
+    if (isMobile) {
+      setVideoPlaying(false);
+    }
+  }, [])
 
   return (
     <>
