@@ -208,7 +208,6 @@ const Portfolio = () => {
   }, [dispatch, connectedWallet?.walletAddress]);
 
   useEffect(() => {
-    setLoading(true);
     if (playerList && connectedWallet) {
       if (playerList.tokens && playerList.tokens.length > 0) {
         const tempList = [...playerList.tokens];
@@ -228,7 +227,6 @@ const Portfolio = () => {
     } else {
       setSortedList([]);
     }
-    setLoading(false)
   }, [playerList, limit, offset, filter, search, connectedWallet?.walletAddress]);
 
   useEffect(() => {
