@@ -152,12 +152,10 @@ const Play = () => {
 
         if (res.status === 200 && teams.status === 200) {
           if (res.data.length > 0) {
-            console.log('res.data', res.data);
             const teamsWithPlacement = res.data.filter(
               (item) => item.player_addr === connectedWallet.walletAddress
             )
             if (teamsWithPlacement.length > 0) {
-              console.log('teamsWithPlacement', teamsWithPlacement);
               hasRewards = true
             }
           }
@@ -210,8 +208,6 @@ const Play = () => {
       const teams = await axiosInstance.get(
         `/fantasy/game/${gameId}/registered_teams_detail/?wallet_addr=${connectedWallet.walletAddress}`
       )
-
-      console.log('teams', teams);
 
       const leaderboards = await axiosInstance.get(`/fantasy/game/${gameId}/leaderboard/`)
 
@@ -331,8 +327,6 @@ const Play = () => {
         claim_rewards: { game_id: gameId.toString() }
       }
     ])
-
-    console.log('claimRes', claimRes)
     showClaimModal(false)
     await fetchGames(activeCategory)
     setClaimLoading(false)

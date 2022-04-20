@@ -47,7 +47,6 @@ export default function PlayDetails() {
 
   async function fetchLeaderboard() {
     const res = await axiosInstance.get(`/fantasy/game/${router.query.id}/leaderboard/`);
-    console.log('res', res)
     if (res.status === 200) {
       const removedAdminWallet = res.data.filter(function (data) {
         return data.account.wallet_addr !== ADMIN;

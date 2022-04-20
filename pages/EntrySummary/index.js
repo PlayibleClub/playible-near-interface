@@ -30,8 +30,6 @@ export default function EntrySummary() {
       `/fantasy/game/${router.query.game_id}/registered_teams_detail/?wallet_addr=${connectedWallet.walletAddress}`
     );
 
-    console.log(router.query.team_id ? 'has team id' : 'no team id', allTeams);
-
     if (allTeams.status === 200) {
 
       if (router.query.team_id) {

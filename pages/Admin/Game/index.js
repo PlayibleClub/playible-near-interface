@@ -222,8 +222,6 @@ const Index = (props) => {
             }
           }
 
-          console.log('res', resContract);
-
           setMsg({
             title: 'Failed',
             content:
