@@ -189,9 +189,7 @@ const TokenDrawPage = (props) => {
                                       }
                                       isOpen={data.isOpen}
                                       name={
-                                        data.attributes.filter(
-                                          (item) => item.trait_type === 'name'
-                                        )[0].value
+                                        ''
                                       }
                                       fantasy_score={data.fantasy_score}
                                       img={data.animation}
