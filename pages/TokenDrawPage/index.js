@@ -113,7 +113,6 @@ const TokenDrawPage = (props) => {
   }, [connectedWallet]);
 
   const onVideoEnded = () => {
-    console.log('ended');
     setVideoPlaying(false);
   };
 
