@@ -152,10 +152,12 @@ const Play = () => {
 
         if (res.status === 200 && teams.status === 200) {
           if (res.data.length > 0) {
+            console.log('res.data', res.data);
             const teamsWithPlacement = res.data.filter(
-              (item) => item.account.wallet_addr === connectedWallet.walletAddress
+              (item) => item.player_addr === connectedWallet.walletAddress
             )
             if (teamsWithPlacement.length > 0) {
+              console.log('teamsWithPlacement', teamsWithPlacement);
               hasRewards = true
             }
           }
@@ -209,6 +211,8 @@ const Play = () => {
         `/fantasy/game/${gameId}/registered_teams_detail/?wallet_addr=${connectedWallet.walletAddress}`
       )
 
+      console.log('teams', teams);
+
       const leaderboards = await axiosInstance.get(`/fantasy/game/${gameId}/leaderboard/`)
 
       if (leaderboards.status === 200 && teams.status === 200 && teams.data.length > 0) {
@@ -227,7 +231,7 @@ const Play = () => {
 
           winningPlacements = leaderboards.data
             .map((wallet, rank) => {
-              if (wallet.account.wallet_addr === connectedWallet.walletAddress) {
+              if (wallet.player_addr === connectedWallet.walletAddress) {
                 return {
                   ...wallet,
                   rank: rank + 1,
@@ -245,7 +249,7 @@ const Play = () => {
               let exists = false
               if (winningPlacements.length > 0) {
                 winningPlacements.forEach((item) => {
-                  if (item.name === team.name) {
+                  if (item.team_name === team.name) {
                     exists = true
                   }
                 })
@@ -294,7 +298,7 @@ const Play = () => {
         <div className="p-8 py-10">
           <div className="flex justify-between items-center">
             <p className="bg-indigo-black w-max p-3 text-indigo-white font-monument uppercase py-1">
-              {item.name}
+              {item.team_name}
             </p>
             <div className="flex items-end font-monument">
               <div className="flex items-end text-xs">
@@ -324,7 +328,7 @@ const Play = () => {
 
     const claimRes = await executeContract(connectedWallet, GAME, [
       {
-        claim_rewards: { game_id: gameId }
+        claim_rewards: { game_id: gameId.toString() }
       }
     ])
 
@@ -619,7 +623,7 @@ const Play = () => {
                               )}
                             </div>
                           </div>
-                        )
+                        );
                       })}
                     </div>
                     <div className="flex justify-between md:mt-5 md:mr-6 p-5">
