@@ -369,7 +369,7 @@ const AssetDetails = (props) => {
                             title="PLAYER STATS"
                             stats={String(stats.fantasy_score || 0)}
                           />
-                          <div className="self-center md:mr-24">
+                          {/* <div className="self-center md:mr-24">
                             <div className="bg-indigo-white h-11 flex justify-between self-center font-thin w-80 mt-6 border-2 border-indigo-lightgray border-opacity-50">
                               <div className="text-lg ml-4 mt-2 text-indigo-black">
                                 <form onSubmit={handleSubmit(handleFilter)}>
@@ -392,7 +392,7 @@ const AssetDetails = (props) => {
                               </div>
                               <img src={filterIcon} className="object-none w-4 mr-4" />
                             </div>
-                          </div>
+                          </div> */}
                         </div>
                         <div className="text-indigo-white bg-indigo-black w-max font-monument p-4 text-3xl font-thin uppercase text-center ml-6 mt-8 md:mt-5">
                           {position(
