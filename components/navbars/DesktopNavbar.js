@@ -19,7 +19,7 @@ const DesktopNavbar = (props) => {
       <div className="flex justify-center mt-10">
         <div className="flex flex-col h-1/5 w-4/6 font-monument">
           {
-            getNavigation(isAdmin).map(({name, img, path}) => <button><NavButtonContainer imagesrc={img} Title={name} path={path}></NavButtonContainer></button>)
+            getNavigation(false).map(({name, img, path}) => <button><NavButtonContainer imagesrc={img} Title={name} path={path}></NavButtonContainer></button>)
           }
         </div>
       </div>

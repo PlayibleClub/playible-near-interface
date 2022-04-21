@@ -246,13 +246,13 @@ const Portfolio = () => {
         <Main color="indigo-white">
           {loading ? (
             <LoadingPageDark />
-          ) : (!wallet ? (
+          ) : !wallet ? (
             <p className="ml-12 mt-5">Waiting for wallet connection...</p>
           ) : (
             <div className="flex flex-col w-full overflow-y-auto overflow-x-hidden h-full self-center text-indigo-black">
               <div className="ml-6 flex flex-col md:flex-row md:justify-between">
                 <PortfolioContainer title="SQUAD" textcolor="text-indigo-black" />
-                {sortedList.length > 0 && displayMode ? (
+                {(sortedList.length > 0 || playerList.tokens.length > 0) && displayMode ? (
                   <Sorter
                     list={sortedList}
                     setList={setSortedList}
@@ -386,7 +386,7 @@ const Portfolio = () => {
                         </>
                       ) : (
                         <div className="mt-7 ml-7 text-xl">
-                          There are no assets in your portfolio
+                          There are no assets to show
                         </div>
                       )}
                     </>
@@ -490,7 +490,7 @@ const Portfolio = () => {
                         </>
                       ) : (
                         <div className="mt-7 ml-7 text-xl">
-                          There are no packs in your portfolio
+                          There are no packs to show
                         </div>
                       )}
                     </div>
@@ -498,7 +498,7 @@ const Portfolio = () => {
                 </div>
               </div>
             </div>
-          ))}
+          )}
         </Main>
       </div>
     </Container>

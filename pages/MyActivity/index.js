@@ -172,3 +172,12 @@ const MyActivity = () => {
   );
 };
 export default MyActivity;
+
+export async function getServerSideProps() {
+  return {
+    redirect: {
+      destination: '/Portfolio',
+      permanent: false,
+    },
+  };
+}

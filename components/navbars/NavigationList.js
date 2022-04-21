@@ -14,11 +14,6 @@ const navigation = [
     path: '/Portfolio',
     img: '/images/navicons/icon_portfolio.png',
   },
-  {
-    name: 'PLAY',
-    path: '/Play',
-    img: '/images/navicons/icon_play.png',
-  },
 ];
 
 const navigationAdmin = [

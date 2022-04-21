@@ -321,14 +321,19 @@ const Play = () => {
 
   const claimRewards = async (gameId) => {
     setClaimLoading(true)
-
     const claimRes = await executeContract(connectedWallet, GAME, [
       {
-        claim_rewards: { game_id: gameId.toString() }
+        contractAddr: GAME,
+        msg: {
+          claim_rewards: { 
+            game_id: gameId.toString() 
+          }
+        }
       }
-    ])
+    ]);
+
     showClaimModal(false)
-    await fetchGames(activeCategory)
+    fetchGames(activeCategory)
     setClaimLoading(false)
   }
 
@@ -681,3 +686,12 @@ const Play = () => {
   )
 }
 export default Play
+
+export async function getServerSideProps() {
+  return {
+    redirect: {
+      destination: '/Portfolio',
+      permanent: false,
+    },
+  };
+}
