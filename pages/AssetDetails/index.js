@@ -30,7 +30,6 @@ const AssetDetails = (props) => {
   const { register, handleSubmit } = useForm();
   const connectedWallet = useConnectedWallet();
   const lcd = useLCDClient();
-
   const dispatch = useDispatch();
 
   const [loading, setLoading] = useState(true);
@@ -153,7 +152,6 @@ const AssetDetails = (props) => {
                   </div>
 
                   <div className="font-thin mt-4 text-xs">FANTASY SCORE</div>
-
                   <div className="text-sm font-bold">{assetData.fantasy_score}</div>
                 </div>
               </div>
@@ -440,7 +438,7 @@ export async function getServerSideProps(ctx) {
   }
 
   let playerStats = null;
-  const res = await axiosInstance.get(`/fantasy/athlete/${parseInt(queryObj.id) + 1}/stats/`);
+  const res = await axiosInstance.get(`/fantasy/athlete/${parseInt(queryObj.id)}/stats/`);
 
   if (res.status === 200) {
     playerStats = res.data;

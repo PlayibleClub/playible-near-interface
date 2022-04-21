@@ -203,7 +203,6 @@ const Index = (props) => {
                 game_id: res.data.id.toString(),
                 game_time_start: Math.ceil(convertToMinutes(formData.start_datetime)),
                 duration: Math.ceil(formData.duration),
-                whitelist: ['terra1h0mq6ktwrd0fgez5xrhwlcyf0p3w3nm94fc40j'],
               },
             },
           },
@@ -222,8 +221,6 @@ const Index = (props) => {
               deleteSuccess = true;
             }
           }
-
-          console.log('res', resContract);
 
           setMsg({
             title: 'Failed',

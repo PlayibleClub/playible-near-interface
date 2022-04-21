@@ -16,7 +16,7 @@ import { useConnectedWallet } from '@terra-money/wallet-provider';
 import { getAccountAssets } from '../../redux/reducers/external/playible/assets';
 import PerformerContainer from '../../components/containers/PerformerContainer';
 import PerformerContainerSelectable from '../../components/containers/PerformerContainerSelectable';
-import { CW721, GAME } from '../../data/constants/contracts';
+import { ATHLETE, CW721, GAME } from '../../data/constants/contracts';
 import BaseModal from '../../components/modals/BaseModal';
 import { position } from '../../utils/athlete/position';
 import Modal from '../../components/modals/Modal';
@@ -255,12 +255,28 @@ export default function CreateLineup() {
 
         const resContract = await executeContract(connectedWallet, GAME, [
           {
+            contractAddr: ATHLETE,
+            msg: {
+              approve_all: {
+                operator: GAME,
+              },
+            },
+          },
+          {
             contractAddr: GAME,
             msg: {
               lock_team: {
                 game_id: router.query.id.toString(),
                 team_name: teamName,
                 token_ids: trimmedAthleteData.map((item) => item.token_id),
+              },
+            },
+          },
+          {
+            contractAddr: ATHLETE,
+            msg: {
+              revoke_all: {
+                operator: GAME,
               },
             },
           },
@@ -287,9 +303,8 @@ export default function CreateLineup() {
           const res = await axiosInstance.post('/fantasy/game_team/', formData);
           setCreateLoading(false);
           if (res.status === 201) {
-            alert('Successful');
             setSuccessModal(true);
-            // router.replace(`/CreateLineup/?id=${router.query.id}`);
+            router.replace(`/CreateLineup/?id=${router.query.id}`);
           } else {
             alert('An error occurred! Refresh the page and try again.');
           }
