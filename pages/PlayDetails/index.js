@@ -23,14 +23,14 @@ export default function PlayDetails() {
   const connectedWallet = useConnectedWallet();
   const [gameOngoing, setgameOngoing] = useState(false);
   const [gameEnd, setgameEnd] = useState(false);
-  const [timesUp, setTimesUp] = useState(false)
+  const [timesUp, setTimesUp] = useState(false);
   const [startDate, setStartDate] = useState();
 
   async function fetchGameData() {
     const res = await axiosInstance.get(`/fantasy/game/${router.query.id}/`);
     if (res.status === 200) {
       setGameData(res.data);
-      setStartDate(res.data.end_datetime)
+      setStartDate(res.data.end_datetime);
     } else {
     }
   }
@@ -49,8 +49,8 @@ export default function PlayDetails() {
     const res = await axiosInstance.get(`/fantasy/game/${router.query.id}/leaderboard/`);
     if (res.status === 200) {
       const removedAdminWallet = res.data.filter(function (data) {
-        // return data.account.wallet_addr !== ADMIN;
-        return data
+        return data.account.wallet_addr !== ADMIN;
+        // return data
       });
       setLeaderboard(removedAdminWallet);
     } else {
@@ -74,7 +74,16 @@ export default function PlayDetails() {
   }
 
   function isEnd() {
-    setgameEnd(true);
+    setgameEnd(false);
+  }
+
+  function isNew() {
+    const currentDate = new Date();
+    const end = new Date(startDate);
+    const totalSeconds = (end - currentDate) / 1000;
+    if (totalSeconds > 0) {
+      setgameEnd(true);
+    }
   }
 
   useEffect(() => {
@@ -82,8 +91,9 @@ export default function PlayDetails() {
       fetchLeaderboard();
       fetchGameData();
       setgameOngoing(false);
+      isNew();
     }
-  }, [router, gameOngoing, gameEnd]);
+  }, [router, gameOngoing, gameEnd, timesUp]);
 
   useEffect(() => {
     if (router && router.query.id && connectedWallet) {
@@ -96,11 +106,11 @@ export default function PlayDetails() {
       const currentDate = new Date();
       const end = new Date(startDate);
       const totalSeconds = (end - currentDate) / 1000;
-      console.log(Math.floor(totalSeconds))
+      isNew();
       if (Math.floor(totalSeconds) < 0) {
-        clearInterval(id)
-        setTimesUp(true)
-        isEnd()
+        clearInterval(id);
+        setTimesUp(true);
+        isEnd();
       }
     }, 1000);
     return () => clearInterval(id);
@@ -129,81 +139,104 @@ export default function PlayDetails() {
                       height={220}
                     />
                   </div>
-                  <div className="mt-4">
-                    {((new Date(gameData.start_datetime) <= new Date() &&
-                    new Date(gameData.end_datetime) > new Date())&&timesUp===false) ? (
-                      <>
-                        <ModalPortfolioContainer textcolor="indigo-black" title="VIEW TEAMS" />
-                        {registeredTeams.length > 0
-                          ? registeredTeams.map(function (data, i) {
-                              return (
-                                <div className="p-5 px-6 bg-black-dark text-indigo-white mb-5 flex justify-between">
-                                  <p className="font-monument">{data.name}</p>
-                                  <Link
-                                    href={{
-                                      pathname: '/EntrySummary',
-                                      query: {
-                                        team_id: data.id,
-                                        game_id: router.query.id,
-                                        origin: `/PlayDetails/?id=${router.query.id}`,
-                                      },
-                                    }}
-                                  >
-                                    <a>
-                                      <img src={'/images/arrow-top-right.png'} />
-                                    </a>
-                                  </Link>
+                  {!timesUp ? (
+                    <div className="mt-4">
+                      {new Date(gameData.start_datetime) <= new Date() &&
+                      new Date(gameData.end_datetime) > new Date() ? (
+                        <>
+                          <ModalPortfolioContainer textcolor="indigo-black" title="VIEW TEAMS" />
+                          {registeredTeams.length > 0
+                            ? registeredTeams.map(function (data, i) {
+                                return (
+                                  <div className="p-5 px-6 bg-black-dark text-indigo-white mb-5 flex justify-between">
+                                    <p className="font-monument">{data.name}</p>
+                                    <Link
+                                      href={{
+                                        pathname: '/EntrySummary',
+                                        query: {
+                                          team_id: data.id,
+                                          game_id: router.query.id,
+                                          origin: `/PlayDetails/?id=${router.query.id}`,
+                                        },
+                                      }}
+                                    >
+                                      <a>
+                                        <img src={'/images/arrow-top-right.png'} />
+                                      </a>
+                                    </Link>
+                                  </div>
+                                );
+                              })
+                            : 'No teams created for this game.'}
+                        </>
+                      ) : (
+                        <>
+                          {gameEnd ? (
+                            <>
+                              <div className="flex space-x-14 mt-4">
+                                <div>
+                                  <div>PRIZE POOL</div>
+                                  <div className="text-base font-monument text-lg">
+                                    ${gameData.prize}
+                                  </div>
                                 </div>
-                              );
-                            })
-                          : 'No teams created for this game.'}
-                      </>
-                    ) : (
-                      <>
-                        <div className="flex space-x-14 mt-4">
-                          <div>
-                            <div>PRIZE POOL</div>
-                            <div className="text-base font-monument text-lg">${gameData.prize}</div>
-                          </div>
-                          <div>
-                            <div>START DATE</div>
-                            <div className="text-base font-monument text-lg">
-                              {moment(gameData.start_datetime).format('MM/DD/YYYY')}
-                            </div>
-                          </div>
-                        </div>
-
-                        {gameEnd ? (
-                          <>
-                          </>
-                        ) : (
-                          <><div>REGISTRATION ENDS IN</div>
-                          <PlayDetailsComponent
-                            startDate={gameData.start_datetime}
-                            endDate={gameData.end_d}
-                            fetch={() => fetchGameData()}
-                            game={() => isOngoing()}
-                            gameEnd={() => isEnd()}
-                          />
-                          <div className="flex justify-center md:justify-start">
-                            <a href={`/CreateLineup?id=${gameData.id}`}>
-                              <button
-                                className={
-                                  (new Date(gameData.start_datetime) <= new Date() &&
-                                    new Date(gameData.end_datetime) > new Date()) ||
-                                  gameEnd
-                                    ? 'bg-indigo-lightblue text-indigo-buttonblue cursor-not-allowed w-64 h-12 text-center font-bold text-md mt-8 mr-4 hidden'
-                                    : 'bg-indigo-buttonblue text-indigo-white w-64 h-12 text-center font-bold text-md mt-8'
-                                }
-                              >
-                                ENTER GAME
-                              </button>
-                            </a>
-                          </div></>
-                        )}
-                      </>
-                    )}
-                  </div>
+                                <div>
+                                  <div>START DATE</div>
+                                  <div className="text-base font-monument text-lg">
+                                    {moment(gameData.start_datetime).format('MM/DD/YYYY')}
+                                  </div>
+                                </div>
+                              </div>
+                              <div>REGISTRATION ENDS IN</div>
+                              <PlayDetailsComponent
+                                startDate={gameData.start_datetime}
+                                endDate={gameData.end_d}
+                                fetch={() => fetchGameData()}
+                                game={() => isOngoing()}
+                                gameEnd={() => isEnd()}
+                              />
+                              <div className="flex justify-center md:justify-start">
+                                <a href={`/CreateLineup?id=${gameData.id}`}>
+                                  <button className="bg-indigo-buttonblue text-indigo-white w-64 h-12 text-center font-bold text-md mt-8">
+                                    ENTER GAME
+                                  </button>
+                                </a>
+                              </div>
+                            </>
+                          ) : (
+                            <></>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  ) : (
+                    <>
+                      <ModalPortfolioContainer textcolor="indigo-black" title="VIEW TEAMS" />
+                      {registeredTeams.length > 0
+                        ? registeredTeams.map(function (data, i) {
+                            return (
+                              <div className="p-5 px-6 bg-black-dark text-indigo-white mb-5 flex justify-between">
+                                <p className="font-monument">{data.name}</p>
+                                <Link
+                                  href={{
+                                    pathname: '/EntrySummary',
+                                    query: {
+                                      team_id: data.id,
+                                      game_id: router.query.id,
+                                      origin: `/PlayDetails/?id=${router.query.id}`,
+                                    },
+                                  }}
+                                >
+                                  <a>
+                                    <img src={'/images/arrow-top-right.png'} />
+                                  </a>
+                                </Link>
+                              </div>
+                            );
+                          })
+                        : 'No teams created for this game.'}
+                    </>
+                  )}
                 </div>
                 <div className="flex flex-col">
                   {hasLeaderboard(gameData.start_datetime, gameData.end_datetime) ? (

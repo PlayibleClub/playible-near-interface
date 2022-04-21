@@ -18,13 +18,14 @@ import 'regenerator-runtime/runtime';
 const Portfolio = () => {
   const [searchText, setSearchText] = useState('');
   const [displayMode, setDisplay] = useState(true);
-  const [loading, setLoading] = useState(true);
+
   const [limit, setLimit] = useState(10);
   const [offset, setOffset] = useState(0);
   const [pageCount, setPageCount] = useState(0);
   const [packLimit, setPackLimit] = useState(10);
   const [packOffset, setPackOffset] = useState(0);
   const [packPageCount, setPackPageCount] = useState(0);
+  const [wallet, setWallet] = useState(null);
 
   const { list: playerList, status } = useSelector((state) => state.assets);
 
@@ -37,6 +38,7 @@ const Portfolio = () => {
   const limitOptions = [5, 10, 30, 50];
   const [filter, setFilter] = useState(null);
   const [search, setSearch] = useState('');
+  const [loading, setLoading] = useState(!!connectedWallet);
 
   const fetchPacks = async () => {
     if (connectedWallet) {
@@ -129,25 +131,47 @@ const Portfolio = () => {
 
   const applySortFilter = (list, filter, search = '') => {
     let tempList = [...list];
+
     if (tempList.length > 0) {
       let filteredList = tempList.filter(
         (item) =>
-          item.token_info.info.extension.name.toLowerCase().indexOf(search.toLowerCase()) > -1
+          item.token_info.info.extension.attributes
+            .filter((data) => data.trait_type === 'name')[0]
+            .value.toLowerCase()
+            .indexOf(search.toLowerCase()) > -1
       );
       switch (filter) {
         case 'name':
           filteredList.sort((a, b) =>
-            a.token_info.info.extension.name.localeCompare(b.token_info.info.extension.name)
+            a.token_info.info.extension.attributes
+              .filter((data) => data.trait_type === 'name')[0]
+              .value.localeCompare(
+                b.token_info.info.extension.attributes.filter(
+                  (data) => data.trait_type === 'name'
+                )[0].value
+              )
           );
           return filteredList;
         case 'team':
           filteredList.sort((a, b) =>
-            a.token_info.info.extension.team.localeCompare(b.token_info.info.extension.team)
+            a.token_info.info.extension.attributes
+              .filter((data) => data.trait_type === 'team')[0]
+              .value.localeCompare(
+                b.token_info.info.extension.attributes.filter(
+                  (data) => data.trait_type === 'team'
+                )[0].value
+              )
           );
           return filteredList;
         case 'position':
           filteredList.sort((a, b) =>
-            a.token_info.info.extension.position.localeCompare(b.token_info.info.extension.position)
+            a.token_info.info.extension.attributes
+              .filter((data) => data.trait_type === 'position')[0]
+              .value.localeCompare(
+                b.token_info.info.extension.attributes.filter(
+                  (data) => data.trait_type === 'position'
+                )[0].value
+              )
           );
           return filteredList;
         default:
@@ -166,24 +190,25 @@ const Portfolio = () => {
     }
   };
 
-  useEffect(() => {
+  useEffect(async () => {
+    setLoading(true);
+    setSortedList([]);
     if (connectedWallet && dispatch) {
-      setLoading(true);
-      dispatch(getAccountAssets({ walletAddr: connectedWallet.walletAddress }));
-      setTimeout(() => {
-        setLoading(false);
-      }, 500);
+      await dispatch(getAccountAssets({ walletAddr: connectedWallet.walletAddress }));
+      await fetchPacks();
+      setWallet(connectedWallet.walletAddress);
+    } else {
+      await dispatch(getAccountAssets({ clear: true }));
+      setSortedList([]);
+      setPacks([]);
+      setSortedPacks([]);
+      setWallet(null);
     }
-  }, [dispatch, connectedWallet]);
+    setLoading(false);
+  }, [dispatch, connectedWallet?.walletAddress]);
 
   useEffect(() => {
-    if (connectedWallet) {
-      fetchPacks();
-    }
-  }, [dispatch, connectedWallet]);
-
-  useEffect(() => {
-    if (playerList) {
+    if (playerList && connectedWallet) {
       if (playerList.tokens && playerList.tokens.length > 0) {
         const tempList = [...playerList.tokens];
         const filteredList = applySortFilter(tempList, filter, search).splice(
@@ -196,9 +221,13 @@ const Portfolio = () => {
         } else {
           setPageCount(Math.ceil(playerList.tokens.length / limit));
         }
+      } else {
+        setSortedList([]);
       }
+    } else {
+      setSortedList([]);
     }
-  }, [playerList, limit, offset, filter, search]);
+  }, [playerList, limit, offset, filter, search, connectedWallet?.walletAddress]);
 
   useEffect(() => {
     if (packs.length > 0) {
@@ -206,8 +235,10 @@ const Portfolio = () => {
       const filteredList = tempList.splice(packLimit * packOffset, packLimit);
       setSortedPacks(filteredList);
       setPackPageCount(Math.ceil(packs.length / packLimit));
+    } else {
+      setSortedPacks([]);
     }
-  }, [packs, packLimit, packOffset]);
+  }, [packs, packLimit, packOffset, connectedWallet?.walletAddress]);
 
   return (
     <Container>
@@ -215,11 +246,13 @@ const Portfolio = () => {
         <Main color="indigo-white">
           {loading ? (
             <LoadingPageDark />
+          ) : (!wallet ? (
+            <p className="ml-12 mt-5">Waiting for wallet connection...</p>
           ) : (
-            <div className="flex flex-col w-full overflow-y-auto overflow-x-hidden h-screen self-center text-indigo-black">
+            <div className="flex flex-col w-full overflow-y-auto overflow-x-hidden h-full self-center text-indigo-black">
               <div className="ml-6 flex flex-col md:flex-row md:justify-between">
                 <PortfolioContainer title="SQUAD" textcolor="text-indigo-black" />
-                {displayMode ? (
+                {sortedList.length > 0 && displayMode ? (
                   <Sorter
                     list={sortedList}
                     setList={setSortedList}
@@ -236,7 +269,7 @@ const Portfolio = () => {
                 <div className="justify-center self-center w-full md:mt-4">
                   {displayMode ? (
                     <>
-                      <div className="flex md:ml-4 font-bold ml-8 md:ml-0 font-monument">
+                      <div className="flex md:ml-4 font-bold ml-8 font-monument">
                         <div className="mr-6 md:ml-8 border-b-8 pb-2 border-indigo-buttonblue cursor-pointer">
                           ATHLETES
                         </div>
@@ -263,7 +296,9 @@ const Portfolio = () => {
                                   href={{
                                     pathname: '/AssetDetails',
                                     query: {
-                                      id: path.athlete_id,
+                                      id: path.attributes.filter(
+                                        (item) => item.trait_type === 'athlete_id'
+                                      )[0].value,
                                       origin: 'Portfolio',
                                       token_id: player.token_id,
                                     },
@@ -271,12 +306,20 @@ const Portfolio = () => {
                                 >
                                   <div className="mb-4" key={i}>
                                     <PerformerContainer
-                                      AthleteName={path.name}
+                                      AthleteName={
+                                        path.attributes.filter(
+                                          (item) => item.trait_type === 'name'
+                                        )[0].value
+                                      }
                                       AvgScore={player.fantasy_score}
-                                      id={path.athlete_id}
+                                      id={
+                                        path.attributes.filter(
+                                          (item) => item.trait_type === 'athlete_id'
+                                        )[0].value
+                                      }
                                       uri={
                                         player.nft_image || player.token_info
-                                          ? player.token_info.info.token_uri
+                                          ? player.nft_image
                                           : null
                                       }
                                       rarity={path.rarity}
@@ -287,7 +330,7 @@ const Portfolio = () => {
                               );
                             })}
                           </div>
-                          <div className="flex justify-between md:mt-5 md:mr-6 p-5">
+                          <div className="flex justify-between md:mt-5 mb-12 md:mr-6 p-5 mx-10">
                             <div className="bg-indigo-white mr-1 h-11 flex items-center font-thin border-indigo-lightgray border-opacity-40 p-2">
                               {pageCount > 1 && (
                                 <button
@@ -349,7 +392,7 @@ const Portfolio = () => {
                     </>
                   ) : (
                     <div>
-                      <div className="flex md:ml-4 font-bold ml-8 md:ml-0 font-monument">
+                      <div className="flex md:ml-4 font-bold ml-8 font-monument">
                         <div
                           className="md:ml-8 mr-6 cursor-pointer"
                           onClick={() => {
@@ -368,23 +411,31 @@ const Portfolio = () => {
 
                       {sortedPacks.length > 0 ? (
                         <>
-                          <div className="md:ml-16 grid grid-cols-0 md:grid-cols-4 mt-12 justify-center">
+                          <div className="grid grid-cols-2 md:grid-cols-4 mt-12">
                             {sortedPacks.map((data, i) => {
                               const path = data.token_info.info.extension;
-                              console.log('data', data);
                               return (
                                 <div className="mb-4 cursor-pointer" key={i}>
                                   <SquadPackComponent
                                     imagesrc={null}
-                                    packName={data.token_id}
-                                    // releaseValue={path.release[1]}
+                                    packName={path.name}
+                                    releaseValue={
+                                      path.attributes.filter(
+                                        (item) => item.trait_type === 'release'
+                                      )[0].value[1]
+                                    }
                                     link={`?token_id=${data.token_id}&origin=Portfolio`}
+                                    type={
+                                      path.attributes.filter(
+                                        (item) => item.trait_type === 'pack_type'
+                                      )[0].value
+                                    }
                                   />
                                 </div>
                               );
                             })}
                           </div>
-                          <div className="flex justify-between md:mt-5 md:mr-6 p-5">
+                          <div className="flex justify-between md:mt-5 mb-12 md:mr-6 p-5 mx-10">
                             <div className="bg-indigo-white mr-1 h-11 flex items-center font-thin border-indigo-lightgray border-opacity-40 p-2">
                               {packPageCount > 1 && (
                                 <button
@@ -447,7 +498,7 @@ const Portfolio = () => {
                 </div>
               </div>
             </div>
-          )}
+          ))}
         </Main>
       </div>
     </Container>

@@ -11,7 +11,16 @@ const Lineup = (props) => {
     <>
       <div className="flex justify-center cursor-pointer" onClick={onClick || undefined}>
         {img ? (
-          <img src={img} width={143} height={190} />
+          <div className="relative mb-7" style={{ width: '120px', height: '162px' }}>
+            <div className="absolute z-50" style={{ width: '120px', height: '160px' }}></div>
+            <object
+              className="absolute z-10"
+              type="image/svg+xml"
+              data={img}
+              width={143}
+              height={190}
+            />
+          </div>
         ) : (
           <Image src={lineupPosition} width={143} height={190} />
         )}

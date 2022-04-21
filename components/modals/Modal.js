@@ -14,7 +14,11 @@ const Modal = (props) => {
   return (
     <>
       <Transition appear show={visible} as={Fragment}>
-        <Dialog as="div" className="fixed inset-0 z-10 overflow-y-auto" onClose={onClose || undefined}>
+        <Dialog
+          as="div"
+          className="fixed inset-0 z-10 overflow-y-auto"
+          onClose={() => onClose || console.log()}
+        >
           <div className="min-h-screen px-4 text-center">
             <Transition.Child
               as={Fragment}

@@ -41,7 +41,7 @@ export default function PackDetails(props) {
   const [msgModal, setMsgModal] = useState(false);
   const [txLoading, setTxLoading] = useState(false);
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [loadingMessage, setLoadingMessage] = useState('');
   const [isNarrowScreen, setIsNarrowScreen] = useState(false);
   const [displayModal, setModal] = useState(false);
@@ -157,15 +157,29 @@ export default function PackDetails(props) {
     };
     const res = await lcd.wasm.contractQuery(PACK, formData);
     if (res.info) {
+      if (res.access.owner !== connectedWallet.walletAddress) {
+        return router.replace('/Portfolio');
+      }
       setData(res);
     }
   };
 
-  useEffect(() => {
+  useEffect(async () => {
     if (connectedWallet && queryObj.token_id) {
-      fetchPacks(queryObj.token_id);
+      await fetchPacks(queryObj.token_id);
     }
+    setLoading(false)
   }, [connectedWallet]);
+
+  useEffect(() => {
+    if (data) {
+      if (!connectedWallet) {
+        return router.replace('/Portfolio');
+      } else if (data.access.owner !== connectedWallet.walletAddress) {
+        return router.replace('/Portfolio');
+      }
+    }
+  }, [data, connectedWallet])
 
   const openPack = async () => {
     if (connectedWallet && queryObj.token_id) {
@@ -214,7 +228,6 @@ export default function PackDetails(props) {
     }
   };
 
-  data ? console.log('data', data) : ''
 
   return (
     <Container>

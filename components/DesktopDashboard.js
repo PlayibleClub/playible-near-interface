@@ -68,8 +68,6 @@ export default function Home() {
         if (data.positions)
             setPosFilter(data.positions)
         else setPosFilter("")
-
-        console.log(data)
     }
     const key1 = 'team'
 

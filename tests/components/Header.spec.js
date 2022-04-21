@@ -14,7 +14,6 @@ describe('Header', () => {
   it('should have children', () => {
     const wrapper = shallow(<Header><div>Fantasy Investar</div></Header>);
     const component = findByTestAttr(wrapper, 'header');
-    //console.log(component.debug());
     expect(component.children().length).toBe(1);
   });
 

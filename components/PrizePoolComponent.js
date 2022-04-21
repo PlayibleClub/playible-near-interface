@@ -14,7 +14,7 @@ const playList = [
 
 const PrizePoolComponent = (props) => {
   const { icon, prizePool, gameName, gameId, children } = props;
-  const nexticon = '/../public/images/prizepoolthumbnails/nextbutton.png';
+  const nexticon = '/images/prizepoolthumbnails/nextbutton.png';
 
   return (
     <div className="">
