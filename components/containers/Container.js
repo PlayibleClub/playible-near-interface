@@ -12,21 +12,25 @@ const Container = (props) => {
     <div className="font-montserrat h-screen relative bg-indigo-white flex overflow-x-hidden overflow-y-hidden">
       <div className="invisible w-0 md:visible md:w-full">
         <div className="flex bg-indigo-white">
-          <DesktopNavbar isAdmin={isAdmin} color="indigo-navbargrad2" secondcolor="indigo-navbargrad1"/>
+          <DesktopNavbar
+            isAdmin={isAdmin}
+            color="indigo-navbargrad2"
+            secondcolor="indigo-navbargrad1"
+          />
           <div className="flex flex-col w-screen h-full overflow-y-hidden">
-            <DesktopHeaderBase/>
-            <DisclaimerHeader/>
+            <DesktopHeaderBase />
+            <DisclaimerHeader />
             {children}
           </div>
         </div>
       </div>
 
       <div className="visible md:invisible h-screen overflow-x-auto z-40">
-          <Navbar/>
-          <HeaderBase/>
-          <DisclaimerHeader/>
+        <Navbar isAdmin={isAdmin} />
+        <HeaderBase />
+        <DisclaimerHeader />
 
-          {children}
+        {children}
       </div>
     </div>
   );

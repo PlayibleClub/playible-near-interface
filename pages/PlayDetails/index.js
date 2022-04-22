@@ -309,12 +309,3 @@ export default function PlayDetails() {
     </Container>
   );
 }
-
-export async function getServerSideProps() {
-  return {
-    redirect: {
-      destination: '/Portfolio',
-      permanent: false,
-    },
-  };
-}
