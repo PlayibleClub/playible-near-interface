@@ -3,173 +3,179 @@ import {
   useWallet,
   WalletStatus,
   useConnectedWallet,
-} from '@terra-money/wallet-provider'
+} from '@terra-money/wallet-provider';
 // import Image from 'next/image'
-import React, { useEffect, useState } from 'react'
-import Main from '../../components/Main'
-import PortfolioContainer from '../../components/containers/PortfolioContainer'
-import { useDispatch } from 'react-redux'
-import { getPortfolio } from '../../redux/reducers/contract/portfolio'
+import React, { useEffect, useState } from 'react';
+import Main from '../../components/Main';
+import PortfolioContainer from '../../components/containers/PortfolioContainer';
+import { useDispatch } from 'react-redux';
+import { getPortfolio } from '../../redux/reducers/contract/portfolio';
 
-import Link from 'next/link'
-import PlayComponent from './components/PlayComponent'
-import Container from '../../components/containers/Container'
-import claimreward from '../../public/images/claimreward.png'
-import coin from '../../public/images/coin.png'
-import bars from '../../public/images/bars.png'
-import { useRouter } from 'next/router'
-import 'regenerator-runtime/runtime'
-import { axiosInstance } from '../../utils/playible'
-import LoadingPageDark from '../../components/loading/LoadingPageDark'
-import { LCDClient } from '@terra-money/terra.js'
-import { GAME, ORACLE } from '../../data/constants/contracts'
-import Modal from '../../components/modals/Modal'
-import { executeContract } from '../../utils/terra'
+import Link from 'next/link';
+import PlayComponent from './components/PlayComponent';
+import Container from '../../components/containers/Container';
+import claimreward from '../../public/images/claimreward.png';
+import coin from '../../public/images/coin.png';
+import bars from '../../public/images/bars.png';
+import { useRouter } from 'next/router';
+import 'regenerator-runtime/runtime';
+import { axiosInstance } from '../../utils/playible';
+import LoadingPageDark from '../../components/loading/LoadingPageDark';
+import { LCDClient } from '@terra-money/terra.js';
+import { GAME, ORACLE } from '../../data/constants/contracts';
+import Modal from '../../components/modals/Modal';
+import { executeContract } from '../../utils/terra';
 
 const Play = () => {
-  const { status, connect, disconnect, availableConnectTypes } = useWallet()
-  const [activeCategory, setCategory] = useState('new')
-  const [rewardsCategory, setRewardsCategory] = useState('winning')
-  const [claimModal, showClaimModal] = useState(false)
-  const [claimData, setClaimData] = useState(null)
-  const [claimTeam, showClaimTeam] = useState(false)
-  const [modalView, switchView] = useState(true)
-  const [failedTransactionModal, showFailedModal] = useState(false)
-  const [claimLoading, setClaimLoading] = useState(false)
-  const router = useRouter()
-  const lcd = useLCDClient()
+  const { status, connect, disconnect, availableConnectTypes } = useWallet();
+  const [activeCategory, setCategory] = useState('new');
+  const [rewardsCategory, setRewardsCategory] = useState('winning');
+  const [claimModal, showClaimModal] = useState(false);
+  const [claimData, setClaimData] = useState(null);
+  const [claimTeam, showClaimTeam] = useState(false);
+  const [modalView, switchView] = useState(true);
+  const [failedTransactionModal, showFailedModal] = useState(false);
+  const [claimLoading, setClaimLoading] = useState(false);
+  const router = useRouter();
+  const lcd = useLCDClient();
 
   const interactWallet = () => {
     if (status === WalletStatus.WALLET_CONNECTED) {
-      disconnect()
+      disconnect();
     } else {
-      connect(availableConnectTypes[1])
+      connect(availableConnectTypes[1]);
     }
-  }
-  const dispatch = useDispatch()
-  const connectedWallet = useConnectedWallet()
-  const [games, setGames] = useState([])
-  const [loading, setloading] = useState(true)
+  };
+  const dispatch = useDispatch();
+  const connectedWallet = useConnectedWallet();
+  const [games, setGames] = useState([]);
+  const [loading, setloading] = useState(true);
 
-  const [limit, setLimit] = useState(10)
-  const [offset, setOffset] = useState(0)
-  const [pageCount, setPageCount] = useState(0)
-  const [gamesLimit, setgamesLimit] = useState(10)
-  const [gamesOffset, setgamesOffset] = useState(0)
-  const [gamePageCount, setgamePageCount] = useState(0)
-  const [sortedList, setSortedList] = useState([])
-  const [sortedgames, setSortedgames] = useState([])
-  const limitOptions = [5, 10, 30, 50]
-  const [filter, setFilter] = useState(null)
-  const [search, setSearch] = useState('')
+  const [limit, setLimit] = useState(10);
+  const [offset, setOffset] = useState(0);
+  const [pageCount, setPageCount] = useState(0);
+  const [gamesLimit, setgamesLimit] = useState(10);
+  const [gamesOffset, setgamesOffset] = useState(0);
+  const [gamePageCount, setgamePageCount] = useState(0);
+  const [sortedList, setSortedList] = useState([]);
+  const [sortedgames, setSortedgames] = useState([]);
+  const limitOptions = [5, 10, 30, 50];
+  const [filter, setFilter] = useState(null);
+  const [search, setSearch] = useState('');
 
-  const categoryList = ['new', 'active', 'completed']
+  const categoryList = ['new', 'active', 'completed'];
 
   const changeIndex = (index) => {
     switch (index) {
       case 'next':
-        setOffset(offset + 1)
-        break
+        setOffset(offset + 1);
+        break;
       case 'previous':
-        setOffset(offset - 1)
-        break
+        setOffset(offset - 1);
+        break;
       case 'first':
-        setOffset(0)
-        break
+        setOffset(0);
+        break;
       case 'last':
-        setOffset(pageCount - 1)
-        break
+        setOffset(pageCount - 1);
+        break;
 
       default:
-        break
+        break;
     }
-  }
+  };
 
   const canNext = () => {
     if (offset + 1 === pageCount) {
-      return false
+      return false;
     } else {
-      return true
+      return true;
     }
-  }
+  };
 
   const canPrevious = () => {
     if (offset === 0) {
-      return false
+      return false;
     } else {
-      return true
+      return true;
     }
-  }
+  };
 
   const applySortFilter = (list, filter, search = '') => {
-    const tempList = [...list]
+    const tempList = [...list];
     if (tempList.length > 0) {
-      const filteredList = tempList.filter((item) => item.id)
+      const filteredList = tempList.filter((item) => item.id);
       switch (filter) {
         case 'id':
-          filteredList.sort((a, b) => a.id.localeCompare(b.id))
-          return filteredList
+          filteredList.sort((a, b) => a.id.localeCompare(b.id));
+          return filteredList;
         case 'name':
-          filteredList.sort((a, b) => a.name.localeCompare(b.name))
-          return filteredList
+          filteredList.sort((a, b) => a.name.localeCompare(b.name));
+          return filteredList;
         case 'start':
-          filteredList.sort((a, b) => a.start_datetime.localeCompare(b.start_datetime))
-          return filteredList
+          filteredList.sort((a, b) => a.start_datetime.localeCompare(b.start_datetime));
+          return filteredList;
         default:
-          return filteredList
+          return filteredList;
       }
     } else {
-      return tempList
+      return tempList;
     }
-  }
+  };
 
   const fetchGames = async (type) => {
-    setGames([])
-    const res = await axiosInstance.get(`/fantasy/game/${type}/`)
+    setGames([]);
+    const res = await axiosInstance.get(`/fantasy/game/${type}/`);
 
     if (res.status === 200) {
       if (type === 'completed') {
-        return fetchRewardsInfo(res.data)
+        return fetchRewardsInfo(res.data);
       }
-
-      setGames(res.data)
+      setGames(res.data);
     }
     setTimeout(() => {
-      setloading(false)
-    }, 1000)
-  }
+      setloading(false);
+    }, 1000);
+  };
 
   const fetchRewardsInfo = async (list) => {
     if (list.length > 0) {
       const rewardsList = list.map(async (item) => {
-        let hasRewards = false
-        let hasAthletes = false
-        let isClaimed = 'unclaimed'
-        const res = await axiosInstance.get(`/fantasy/game/${item.id}/leaderboard/`)
+        let hasRewards = false;
+        let hasAthletes = false;
+        let hasEnded = false;
+        let isClaimed = 'claimed';
+        const res = await axiosInstance.get(`/fantasy/game/${item.id}/leaderboard/`);
         const teams = await axiosInstance.get(
           `/fantasy/game/${item.id}/registered_teams_detail/?wallet_addr=${connectedWallet.walletAddress}`
-        )
+        );
 
         if (res.status === 200 && teams.status === 200) {
           if (res.data.length > 0) {
             const teamsWithPlacement = res.data.filter(
               (item) => item.player_addr === connectedWallet.walletAddress
-            )
+            );
             if (teamsWithPlacement.length > 0) {
-              hasRewards = true
+              hasRewards = true;
             }
           }
           if (teams.data.length > 0) {
-            hasAthletes = true
+            hasAthletes = true;
             const claimedRes = await lcd.wasm.contractQuery(GAME, {
               player_info: {
                 game_id: item.id.toString(),
                 player_addr: connectedWallet.walletAddress.toString(),
               },
-            })
+            });
+
+            const endedRes = await lcd.wasm.contractQuery(GAME, {
+              game_info: { game_id: item.id.toString() },
+            });
+
+            hasEnded = endedRes?.has_ended;
 
             if (claimedRes.team_names) {
-              isClaimed = claimedRes.is_claimed ? 'claimed' : 'unclaimed'
+              isClaimed = claimedRes.is_claimed ? 'claimed' : 'unclaimed';
             }
           }
         }
@@ -179,52 +185,60 @@ const Play = () => {
           hasAthletes,
           hasRewards,
           isClaimed,
-        }
-      })
+          hasEnded,
+        };
+      });
 
-      const completedGames = await Promise.all(rewardsList)
+      const completedGames = await Promise.all(rewardsList);
 
-      setGames(completedGames)
+      setGames(completedGames);
     }
-    setloading(false)
-  }
+    setloading(false);
+  };
 
   const fetchTeamPlacements = async (gameId) => {
     if (connectedWallet && lcd) {
-      let winningPlacements = []
-      let noPlacements = []
-      let prize = 0
-      let distribution = []
+      let winningPlacements = [];
+      let noPlacements = [];
+      let prize = 0;
+      let distribution = [];
+      let leaderboards = []
 
       const gameInfo = await lcd.wasm.contractQuery(ORACLE, {
         game_info: { game_id: gameId.toString() },
-      })
+      });
 
       if (gameInfo.prize && gameInfo.distribution) {
-        prize = gameInfo.prize
-        distribution = gameInfo.distribution
+        prize = gameInfo.prize;
+        distribution = gameInfo.distribution;
+      }
+
+      if (gameInfo.leaderboard.length > 0) {
+        leaderboards = {
+          status: 200,
+          data: gameInfo.leaderboard
+        }
+      } else {
+        leaderboards = await axiosInstance.get(`/fantasy/game/${gameId}/leaderboard/`);
       }
 
       const teams = await axiosInstance.get(
         `/fantasy/game/${gameId}/registered_teams_detail/?wallet_addr=${connectedWallet.walletAddress}`
-      )
-
-      const leaderboards = await axiosInstance.get(`/fantasy/game/${gameId}/leaderboard/`)
+      );
 
       if (leaderboards.status === 200 && teams.status === 200 && teams.data.length > 0) {
         if (leaderboards.data.length > 0) {
-          let isClaimed = true
+          let isClaimed = false;
           const claimedRes = await lcd.wasm.contractQuery(GAME, {
             player_info: {
               game_id: gameId.toString(),
               player_addr: connectedWallet.walletAddress.toString(),
             },
-          })
+          });
 
           if (claimedRes.team_names) {
-            isClaimed = claimedRes.is_claimed
+            isClaimed = claimedRes.is_claimed;
           }
-
           winningPlacements = leaderboards.data
             .map((wallet, rank) => {
               if (wallet.player_addr === connectedWallet.walletAddress) {
@@ -235,58 +249,58 @@ const Play = () => {
                     prize > 0 && distribution.length > 0
                       ? computePrize(rank + 1, distribution, prize)
                       : 0,
-                }
+                };
               }
             })
-            .filter((item) => item)
-
+            .filter((item) => item);
+           
           noPlacements = teams.data
             .map((team) => {
-              let exists = false
+              let exists = false;
               if (winningPlacements.length > 0) {
                 winningPlacements.forEach((item) => {
                   if (item.team_name === team.name) {
-                    exists = true
+                    exists = true;
                   }
-                })
+                });
               }
 
               if (!exists) {
-                return team
+                return team;
               }
             })
-            .filter((item) => item)
+            .filter((item) => item);
 
           setClaimData({
             winning_placements: [...winningPlacements],
             no_placements: [...noPlacements],
             isClaimed,
             gameId,
-          })
+          });
 
-          showClaimModal(true)
+          showClaimModal(true);
         }
       } else {
-        showClaimModal(false)
+        showClaimModal(false);
       }
     }
-  }
+  };
 
   const computePrize = (rank, distribution, prize) => {
-    const achievedRank = distribution.filter((item) => parseInt(item.rank) === parseInt(rank))
+    const achievedRank = distribution.filter((item) => parseInt(item.rank) === parseInt(rank));
 
     if (achievedRank.length > 0) {
-      return (achievedRank[0].percentage / 1000000) * prize
+      return (achievedRank[0].percentage / 1000000) * prize;
     }
 
-    return 0
-  }
+    return 0;
+  };
 
   const fetchGamesLoading = () => {
-    setloading(true)
-    setSortedList([])
-    fetchGames(activeCategory)
-  }
+    setloading(true);
+    setSortedList([]);
+    fetchGames(activeCategory);
+  };
 
   const renderPlacements = (item, i) => {
     return (
@@ -316,69 +330,70 @@ const Play = () => {
           <hr className="opacity-50" />
         )}
       </>
-    )
-  }
+    );
+  };
 
   const claimRewards = async (gameId) => {
-    setClaimLoading(true)
-
+    setClaimLoading(true);
     const claimRes = await executeContract(connectedWallet, GAME, [
       {
-        claim_rewards: { game_id: gameId.toString() }
-      }
-    ])
-    showClaimModal(false)
-    await fetchGames(activeCategory)
-    setClaimLoading(false)
-  }
+        contractAddr: GAME,
+        msg: {
+          claim_rewards: {
+            game_id: gameId.toString(),
+          },
+        },
+      },
+    ]);
+
+    showClaimModal(false);
+    await fetchGames(activeCategory);
+    setClaimLoading(false);
+  };
 
   useEffect(() => {
     if (games && games.length > 0) {
-      const tempList = [...games]
-      const filteredList = applySortFilter(tempList, filter, search).splice(limit * offset, limit)
-      setSortedList(filteredList)
+      const tempList = [...games];
+      const filteredList = applySortFilter(tempList, filter, search).splice(limit * offset, limit);
+      setSortedList(filteredList);
       if (search) {
-        setPageCount(Math.ceil(applySortFilter(tempList, filter, search).length / limit))
+        setPageCount(Math.ceil(applySortFilter(tempList, filter, search).length / limit));
       } else {
-        setPageCount(Math.ceil(games.length / limit))
+        setPageCount(Math.ceil(games.length / limit));
       }
     }
-  }, [games, limit, offset, filter, search])
+  }, [games, limit, offset, filter, search]);
 
   useEffect(() => {
     if (games.length > 0) {
-      const tempList = [...games]
-      const filteredList = tempList.splice(gamesLimit * gamesOffset, gamesLimit)
+      const tempList = [...games];
+      const filteredList = tempList.splice(gamesLimit * gamesOffset, gamesLimit);
 
-      setSortedgames(filteredList)
-      setgamePageCount(Math.ceil(games.length / gamesLimit))
+      setSortedgames(filteredList);
+      setgamePageCount(Math.ceil(games.length / gamesLimit));
     }
-  }, [games, gamesLimit, gamesOffset])
+  }, [games, gamesLimit, gamesOffset]);
 
   useEffect(() => {
-    if (connectedWallet) dispatch(getPortfolio({ walletAddr: connectedWallet.walletAddress }))
-  }, [connectedWallet])
+    if (connectedWallet) dispatch(getPortfolio({ walletAddr: connectedWallet.walletAddress }));
+  }, [connectedWallet]);
 
   useEffect(() => {
-    fetchGamesLoading()
-    setOffset(0)
-  }, [activeCategory])
+    fetchGamesLoading();
+    setOffset(0);
+  }, [activeCategory]);
 
   useEffect(() => {
     if (router && router.query.type) {
-      setCategory(router.query.type)
+      setCategory(router.query.type);
     }
-  }, [router])
+  }, [router]);
 
   useEffect(() => {
     if (!claimModal) {
-      setClaimData(null)
+      setClaimData(null);
     }
-  }, [claimModal])
-
-  if (!connectedWallet) {
-    return <div></div>
-  }
+  }, [claimModal]);
 
   return (
     <>
@@ -390,7 +405,7 @@ const Play = () => {
                 <button
                   className="absolute top-0 right-0 "
                   onClick={() => {
-                    showClaimModal(false)
+                    showClaimModal(false);
                   }}
                 >
                   <div className="p-4 font-black">X</div>
@@ -488,7 +503,7 @@ const Play = () => {
             <div className="relative p-8 bg-indigo-white w-11/12 md:w-96 h-10/12 md:h-auto m-auto flex-col flex rounded-lg">
               <button
                 onClick={() => {
-                  showClaimTeam(false)
+                  showClaimTeam(false);
                 }}
               >
                 <div className="absolute top-0 right-0 p-4 font-black">X</div>
@@ -507,7 +522,7 @@ const Play = () => {
             <div className="relative p-8 bg-indigo-white w-11/12 md:w-96 h-10/12 md:h-auto m-auto flex-col flex rounded-lg">
               <button
                 onClick={() => {
-                  showFailedModal(false)
+                  showFailedModal(false);
                 }}
               >
                 <div className="absolute top-0 right-0 p-4 font-black">X</div>
@@ -558,7 +573,7 @@ const Play = () => {
                         activeCategory === type ? 'border-b-8 pb-2 border-indigo-buttonblue' : ''
                       }`}
                       onClick={() => {
-                        setCategory(type)
+                        setCategory(type);
                       }}
                     >
                       {type}
@@ -572,7 +587,7 @@ const Play = () => {
                   <LoadingPageDark />
                 ) : sortedList.length > 0 ? (
                   <>
-                    <div className="mt-4 flex ml-6 grid grid-cols-0 md:grid-cols-3">
+                    <div className="mt-4 ml-6 grid grid-cols-0 md:grid-cols-3">
                       {sortedList.map(function (data, i) {
                         return (
                           <div key={i} className="flex">
@@ -594,22 +609,29 @@ const Play = () => {
                                   />
                                 </div>
                               </a>
-                              {activeCategory === 'completed' && (
+                              {activeCategory === 'completed' && data.hasAthletes && (
                                 <div className="">
-                                  {data.isClaimed === 'unclaimed' && data.hasRewards ? (
-                                    <button
-                                      className="bg-indigo-buttonblue w-full h-12 text-center font-bold rounded-md text-sm mt-4 self-center"
-                                      onClick={() => fetchTeamPlacements(data.id)}
-                                    >
-                                      <div className="text-indigo-white">CLAIM REWARD</div>
-                                    </button>
-                                  ) : data.hasAthletes ? (
-                                    <button
-                                      className="bg-indigo-buttonblue w-full h-12 text-center font-bold rounded-md text-sm mt-4 self-center"
-                                      onClick={() => fetchTeamPlacements(data.id)}
-                                    >
-                                      <div className="text-indigo-white">CLAIM TEAM</div>
-                                    </button>
+                                  {data.isClaimed === 'unclaimed' ? (
+                                    data.hasEnded ? (
+                                      <button
+                                        className={`bg-indigo-buttonblue w-full h-12 text-center font-bold rounded-md text-sm mt-4 self-center`}
+                                        onClick={() =>
+                                          data.hasEnded ? fetchTeamPlacements(data.id) : undefined
+                                        }
+                                      >
+                                        <div className="text-indigo-white">
+                                          CLAIM {data.hasRewards ? 'REWARD' : 'TEAM'}
+                                        </div>
+                                      </button>
+                                    ) : (
+                                      <button
+                                        className={`bg-indigo-lightblue cursor-not-allowed  w-full h-12 text-center font-bold rounded-md text-sm mt-4 self-center`}
+                                      >
+                                        <div className="text-indigo-white">
+                                          Please wait for the game to end
+                                        </div>
+                                      </button>
+                                    )
                                   ) : (
                                     ''
                                   )}
@@ -654,8 +676,8 @@ const Play = () => {
                           value={limit}
                           className="bg-indigo-white text-lg w-full outline-none"
                           onChange={(e) => {
-                            setLimit(e.target.value)
-                            setOffset(0)
+                            setLimit(e.target.value);
+                            setOffset(0);
                           }}
                         >
                           {limitOptions.map((option) => (
@@ -678,6 +700,6 @@ const Play = () => {
         </div>
       </Container>
     </>
-  )
-}
-export default Play
+  );
+};
+export default Play;

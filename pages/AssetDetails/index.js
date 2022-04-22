@@ -138,14 +138,7 @@ const AssetDetails = (props) => {
               </div>
               <div>
                 <div>
-                  <div className="font-thin text-xs mt-4">
-                    #
-                    {
-                      assetData.attributes.filter((item) => item.trait_type === 'athlete_id')[0]
-                        .value
-                    }
-                    /25000
-                  </div>
+                  <div className="font-thin text-xs mt-4"></div>
 
                   <div className="text-sm font-bold">
                     {assetData.token_info.info.extension.name}
@@ -217,15 +210,6 @@ const AssetDetails = (props) => {
 
               <div className="flex justify-between mt-4">
                 <div>
-                  <div className="font-bold">
-                    #
-                    {
-                      assetData.attributes.filter((item) => item.trait_type === 'athlete_id')[0]
-                        .value
-                    }
-                    /25000
-                  </div>
-
                   <div className="font-thin">SERIAL NUMBER</div>
                 </div>
 
@@ -300,18 +284,6 @@ const AssetDetails = (props) => {
                               </div>
                               <div className="flex flex-col">
                                 <div className="ml-8 md:ml-0 mb-4 md:mb-0 mt-8 md:mt-0">
-                                  {query.origin.toLowerCase() === 'portfolio' && (
-                                    <div className="font-thin text-sm">
-                                      #
-                                      {
-                                        assetData.attributes.filter(
-                                          (item) => item.trait_type === 'athlete_id'
-                                        )[0].value
-                                      }
-                                      /25000
-                                    </div>
-                                  )}
-
                                   <div className="text-sm">
                                     {
                                       assetData.attributes.filter(

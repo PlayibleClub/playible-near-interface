@@ -49,7 +49,7 @@ export default function PlayDetails() {
     const res = await axiosInstance.get(`/fantasy/game/${router.query.id}/leaderboard/`);
     if (res.status === 200) {
       const removedAdminWallet = res.data.filter(function (data) {
-        return data.account.wallet_addr !== ADMIN;
+        return data.player_addr !== ADMIN;
         // return data
       });
       setLeaderboard(removedAdminWallet);
@@ -252,7 +252,7 @@ export default function PlayDetails() {
                                     {key + 1 <= 9 ? '0' + (key + 1) : key + 1}
                                   </div>
                                   <div className="bg-indigo-black text-indigo-white w-40 text-center p-1 text-base font-monument">
-                                    {truncate(data.account.wallet_addr, 11)}
+                                    {truncate(data.player_addr, 11)}
                                   </div>
                                   <div className="ml-16 w-10 text-center font-black">
                                     {data.fantasy_score}
@@ -275,7 +275,7 @@ export default function PlayDetails() {
                                     {key + 1 <= 9 ? '0' + (key + 1) : key + 1}
                                   </div>
                                   <div className="bg-indigo-black text-indigo-white w-40 text-center p-1 text-base font-monument">
-                                    {truncate(data.account.wallet_addr, 11)}
+                                    {truncate(data.player_addr, 11)}
                                   </div>
                                   <div className="ml-16 w-10 text-center font-black">
                                     {data.fantasy_score}

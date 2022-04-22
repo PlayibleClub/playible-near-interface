@@ -50,7 +50,6 @@ const PerformerContainer = (props) => {
       {children}
       <div className="h-1/2 flex justify-center mb-6">
         <div className="flex flex-col mt-4">
-          {id ? <div className="mt-4 text-xs font-thin"># {id}/25000</div> : '-'}
           <div className="mt-2 text-xs font-bold">{AthleteName}</div>
           <div className="mt-4 text-xs font-thin">FANTASY SCORE</div>
           <div className="text-xs font-bold">{AvgScore}</div>
