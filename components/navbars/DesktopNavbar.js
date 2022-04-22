@@ -11,7 +11,7 @@ const DesktopNavbar = (props) => {
       data-test="DesktopNavbar"
       className={`bg-gradient-to-b from-${color} to-${secondcolor} text-white-light flex flex-col w-80 h-screen`}
     >
-      <div className="flex justify-center h-16 mt-10">
+      <div className="flex justify-left ml-11 h-16 mt-10">
         <button>
           <Link href="/">
             <img className="w-8 h-8.5" src="/images/logo.png" alt="Img" />
