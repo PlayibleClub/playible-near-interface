@@ -163,7 +163,8 @@ const Index = (props) => {
       const formData = {
         ...details,
         // DURATION IS EXPRESSED IN DAYS BUT WILL BE CONVERTED TO MINUTES
-        duration: parseInt(details.duration) * 60 * 24,
+        // duration: parseInt(details.duration) * 60 * 24,
+        duration: 5,
       };
 
       setLoading(true);
@@ -200,9 +201,8 @@ const Index = (props) => {
             msg: {
               add_game: {
                 game_id: res.data.id.toString(),
-                game_time_start: convertToMinutes(formData.start_datetime),
-                duration: formData.duration,
-                whitelist: ['terra1h0mq6ktwrd0fgez5xrhwlcyf0p3w3nm94fc40j'],
+                game_time_start: Math.ceil(convertToMinutes(formData.start_datetime)),
+                duration: Math.ceil(formData.duration),
               },
             },
           },
@@ -250,11 +250,8 @@ const Index = (props) => {
     const now = new Date()
     const gameStart = new Date(time)
     const timeDiff = ((gameStart/1000) - (now/1000))
-    if (timeDiff<60) {
-      return 1
-    } else {
-      return timeDiff/60
-    }
+
+    return timeDiff / 60;
   }
 
   const fetchGames = async () => {
@@ -468,3 +465,12 @@ const Index = (props) => {
 };
 
 export default Index;
+
+export async function getServerSideProps() {
+  return {
+    redirect: {
+     destination: '/Portfolio',
+      permanent: false,
+    },
+  };
+}

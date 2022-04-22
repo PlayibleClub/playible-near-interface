@@ -4,7 +4,7 @@ import Image from 'next/image';
 import moment from 'moment';
 
 const PlayDetailsComponent = (props) => {
-  const { startDate, fetch, game, gameEnd } = props;
+  const { startDate, endDate, fetch, game, gameEnd } = props;
 
   const [day, setDay] = useState(0);
   const [hour, setHour] = useState(0);
@@ -38,15 +38,9 @@ const PlayDetailsComponent = (props) => {
       setMinute(formatTime(minutes));
       setSecond(formatTime(seconds));
 
-      if (Math.floor(totalSeconds) === 0){
-        setGetGames(true);
-        fetch();
-        game();
-      }
-      console.log(totalSeconds)
-      if(Math.floor(totalSeconds) < 0)
+      if(Math.floor(totalSeconds) > 0)
       {
-        gameEnd();
+        game();
       }
     }, 1000);
     return () => clearInterval(id);

@@ -29,13 +29,11 @@ export default function EnterPlayers(props) {
         body:JSON.stringify({gameId:router.query.id})
     })
     const res = await response.json()
-    console.log(res)
     }
 
 
     return (
         <>
-        {console.log(query)}
             <Container>
                 <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
                     <Main color="indigo-white">

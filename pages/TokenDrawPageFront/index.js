@@ -35,13 +35,10 @@ const TokenDrawPageFront = () => {
             var newassets = []
             newassets = assets
 
-            console.log(newassets)
 
             newassets[position] = true
             setassets(newassets.concat())
 
-            console.log(assets[position])
-            console.log(assets)
             
         }
         else {
@@ -49,13 +46,10 @@ const TokenDrawPageFront = () => {
             var newassets = []
             newassets = assets
 
-            console.log(newassets)
 
             newassets[position] = false
             setassets(newassets.concat())
 
-            console.log(assets[position])
-            console.log(assets)
 
         }
         return 

@@ -8,7 +8,7 @@ import PlayerContainer from '../../components/containers/PlayerContainer';
 import PlayerStats from '../../components/PlayerStats';
 import Container from '../../components/containers/Container';
 
-import filterIcon from '../../public/images/filterblack.png';
+import filterIcon from '../../public/images/filterBlack.png';
 import underlineIcon from '../../public/images/blackunderline.png';
 
 import { useRouter } from 'next/router';
@@ -17,7 +17,7 @@ import { useConnectedWallet, useLCDClient } from '@terra-money/wallet-provider';
 import { connect, useDispatch, useSelector } from 'react-redux';
 
 import ListingModal from './forms/ListingModal';
-import CongratsModal from './components/congratsModal';
+import CongratsModal from './components/CongratsModal';
 import LoadingPageDark from '../../components/loading/LoadingPageDark';
 import BackFunction from '../../components/buttons/BackFunction';
 
@@ -30,7 +30,6 @@ const AssetDetails = (props) => {
   const { register, handleSubmit } = useForm();
   const connectedWallet = useConnectedWallet();
   const lcd = useLCDClient();
-
   const dispatch = useDispatch();
 
   const [loading, setLoading] = useState(true);
@@ -90,6 +89,7 @@ const AssetDetails = (props) => {
         token_id: queryObj.token_id,
       },
     });
+
     const imgRes = await axiosInstance.get(`/fantasy/athlete/${parseInt(queryObj.id)}/`);
     let img = imgRes.status === 200 ? imgRes.data.nft_image : null;
     if (res.info !== undefined) {
@@ -130,22 +130,21 @@ const AssetDetails = (props) => {
             <div className="flex flex-col mt-4 items-center">
               <div className="">
                 <PlayerContainer
-                  playerID={assetData.token_info.info.extension.athlete_id}
+                  playerID={
+                    assetData.attributes.filter((item) => item.trait_type === 'athlete_id')[0].value
+                  }
                   rarity="base"
                 />
               </div>
               <div>
                 <div>
-                  <div className="font-thin text-xs mt-4">
-                    #{assetData.token_info.info.extension.athlete_id}/25000
-                  </div>
+                  <div className="font-thin text-xs mt-4"></div>
 
                   <div className="text-sm font-bold">
                     {assetData.token_info.info.extension.name}
                   </div>
 
                   <div className="font-thin mt-4 text-xs">FANTASY SCORE</div>
-
                   <div className="text-sm font-bold">{assetData.fantasy_score}</div>
                 </div>
               </div>
@@ -200,7 +199,10 @@ const AssetDetails = (props) => {
               <div className="flex flex-col mt-4 items-center">
                 <div className="">
                   <PlayerContainer
-                    playerID={assetData.token_info.info.extension.athlete_id}
+                    playerID={
+                      assetData.attributes.filter((item) => item.trait_type === 'athlete_id')[0]
+                        .value
+                    }
                     rarity="base"
                   />
                 </div>
@@ -208,10 +210,6 @@ const AssetDetails = (props) => {
 
               <div className="flex justify-between mt-4">
                 <div>
-                  <div className="font-bold">
-                    #{assetData.token_info.info.extension.athlete_id}/25000
-                  </div>
-
                   <div className="font-thin">SERIAL NUMBER</div>
                 </div>
 
@@ -261,13 +259,7 @@ const AssetDetails = (props) => {
                     <div className="flex flex-col overflow-y-auto overflow-x-hidden">
                       <div className="md:ml-8">
                         <div className="mt-8">
-                          <BackFunction
-                            prev={
-                              query.origin.toLowerCase() === 'portfolio'
-                                ? '/Portfolio/'
-                                : '/Marketplace/'
-                            }
-                          />
+                          <BackFunction prev={query.origin || '/Portfolio/'} />
                         </div>
 
                         <PortfolioContainer textcolor="indigo-black" title="PLAYER DETAILS">
@@ -276,21 +268,29 @@ const AssetDetails = (props) => {
                               <div>
                                 <div className="ml-8 md:ml-6 mr-16">
                                   <PlayerContainer
-                                    img={matchedId.length > 0 && matchedId[0].token_info.info.token_uri || assetData.token_uri}
-                                    playerID={assetData.athlete_id}
+                                    img={
+                                      matchedId.length > 0 && matchedId[0].token_info.info.token_uri
+                                        ? assetData.token_uri
+                                        : null
+                                    }
+                                    playerID={
+                                      assetData.attributes.filter(
+                                        (item) => item.trait_type === 'athlete_id'
+                                      )[0].value
+                                    }
                                     rarity="base"
                                   />
                                 </div>
                               </div>
                               <div className="flex flex-col">
                                 <div className="ml-8 md:ml-0 mb-4 md:mb-0 mt-8 md:mt-0">
-                                  {query.origin.toLowerCase() === 'portfolio' && (
-                                    <div className="font-thin text-sm">
-                                      #{assetData.athlete_id}/25000
-                                    </div>
-                                  )}
-
-                                  <div className="text-sm">{assetData.name}</div>
+                                  <div className="text-sm">
+                                    {
+                                      assetData.attributes.filter(
+                                        (item) => item.trait_type === 'name'
+                                      )[0].value
+                                    }
+                                  </div>
 
                                   <div className="font-thin mt-4 text-sm">FANTASY SCORE</div>
 
@@ -339,7 +339,7 @@ const AssetDetails = (props) => {
                             title="PLAYER STATS"
                             stats={String(stats.fantasy_score || 0)}
                           />
-                          <div className="self-center md:mr-24">
+                          {/* <div className="self-center md:mr-24">
                             <div className="bg-indigo-white h-11 flex justify-between self-center font-thin w-80 mt-6 border-2 border-indigo-lightgray border-opacity-50">
                               <div className="text-lg ml-4 mt-2 text-indigo-black">
                                 <form onSubmit={handleSubmit(handleFilter)}>
@@ -362,10 +362,14 @@ const AssetDetails = (props) => {
                               </div>
                               <img src={filterIcon} className="object-none w-4 mr-4" />
                             </div>
-                          </div>
+                          </div> */}
                         </div>
                         <div className="text-indigo-white bg-indigo-black w-max font-monument p-4 text-3xl font-thin uppercase text-center ml-6 mt-8 md:mt-5">
-                          {position('baseball', assetData.position)}
+                          {position(
+                            'baseball',
+                            assetData.attributes.filter((item) => item.trait_type === 'position')[0]
+                              .value
+                          )}
                         </div>
                         <div className="flex flex-col justify-center self-center md:mr-24 mb-8 md:ml-6">
                           <div className="mt-8 mb-16 self-center">
@@ -406,7 +410,7 @@ export async function getServerSideProps(ctx) {
   }
 
   let playerStats = null;
-  const res = await axiosInstance.get(`/fantasy/athlete/${parseInt(queryObj.id) + 1}/stats/`);
+  const res = await axiosInstance.get(`/fantasy/athlete/${parseInt(queryObj.id)}/stats/`);
 
   if (res.status === 200) {
     playerStats = res.data;

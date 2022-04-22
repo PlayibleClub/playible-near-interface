@@ -34,3 +34,4 @@ yarn-error.log*
 .env.test.local
 .env.production.local
 
+data/constants/contracts.js

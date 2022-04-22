@@ -14,11 +14,6 @@ const navigation = [
     path: '/Portfolio',
     img: '/images/navicons/icon_portfolio.png',
   },
-  {
-    name: 'PLAY',
-    path: '/Play',
-    img: '/images/navicons/icon_play.png',
-  },
 ];
 
 const navigationAdmin = [
@@ -30,9 +25,9 @@ const navigationAdmin = [
 ];
 
 export const getNavigation = (admin = false) => {
-  if (admin) {
-    return navigationAdmin;
-  } else {
-    return navigation;
-  }
+  // if (admin) {
+  //   return navigationAdmin;
+  // } else {
+    // }
+  return navigation;
 };
