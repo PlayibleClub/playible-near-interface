@@ -703,3 +703,12 @@ const Play = () => {
   );
 };
 export default Play;
+
+export async function getServerSideProps() {
+  return {
+    redirect: {
+     destination: '/Portfolio',
+      permanent: false,
+    },
+  };
+}
