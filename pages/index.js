@@ -176,12 +176,17 @@ export default function Home(props) {
                         <div className="text-xl font-bold font-monument">ACTIVE GAMES</div>
                         <img src={underlineIcon} className="mt-1" />
                       </div>
-
+{activeGames.length>0 ?
+<>
                       <Link href="/Play?type=active">
                         <a className="ml-12 md:ml-16 text-indigo-black underline text-xs font-bold md:mb-2">
                           VIEW ALL
                         </a>
                       </Link>
+                      </>
+                      :
+                      <></>}
+
                     </div>
 
                     <div className="flex flex-row md:grid-cols-2 gap-x-6 gap-y-6 mt-8 ml-8 md:ml-0 pr-8 overflow-x-auto">
@@ -202,7 +207,7 @@ export default function Home(props) {
                         </>
                       ) : (
                         <>
-                          <div>No Active Games Currently</div>
+                          <div>Contests opening soon...</div>
                         </>
                       )}
                     </div>

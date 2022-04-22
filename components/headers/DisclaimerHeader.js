@@ -7,7 +7,7 @@ const DisclaimerHeader = (props) => {
   const { children, color } = props;
 
   return (
-    <div data-test="DisclaimerHeader" className={`flex flex-row h-20 md:h-16 w-full px-6 md:px-10 mt-28 md:mt-14`}>
+    <div data-test="DisclaimerHeader" className={`flex flex-row h-20 md:h-16 w-full px-6 md:px-10 mt-28 md:mt-14 md:ml-2`}>
         <div className="w-full h-full flex items-center bg-indigo-buttonblue font-montserrat text-indigo-white p-4 pl-5">
             <div className="mr-8 flex justify-center md:h-auto md:w-auto h-auto w-20">
                 <img src={disclaimer} className=""/>
