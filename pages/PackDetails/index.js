@@ -332,7 +332,7 @@ export async function getServerSideProps(ctx) {
   let queryObj = null;
 
   if (query) {
-    if (query.id && query.token_id) {
+    if (query.token_id) {
       queryObj = query;
     } else {
       return {
