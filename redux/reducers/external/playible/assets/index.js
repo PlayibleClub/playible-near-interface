@@ -23,6 +23,10 @@ export const getAccountAssets = createAsyncThunk('getAccountAssets', async (payl
         // `/account/athlete_tokens/${walletAddr}/collection/${contracts.ATHLETE}`
         `/account/athlete_tokens/${walletAddr}/collection/${contracts.ATHLETE}`
       )
+
+      if (result.status !== 200) {
+        result = null
+      }
     }
 
     return {
@@ -39,6 +43,11 @@ export const getAccountAssets = createAsyncThunk('getAccountAssets', async (payl
 
 const processAssetListData = (data) => {
   const processedData = data
+
+  if (Array.isArray(data)) {
+    alert('you are in testnet')
+    return null
+  }
   return processedData
 }
 
