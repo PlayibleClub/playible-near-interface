@@ -72,7 +72,7 @@ const AssetDetails = (props) => {
   }, [dispatch, connectedWallet]);
 
   useEffect(() => {
-    if (query && query.token_id) {
+    if (query && query.token_id && dispatch) {
       if (!playerList) {
         if (connectedWallet) {
           dispatch(getAccountAssets({ walletAddr: connectedWallet.walletAddress }));
