@@ -103,9 +103,15 @@ const TokenDrawPage = (props) => {
 
   useEffect(async () => {
     setLoading(true);
+    setErr(null);
     if (connectedWallet) {
-      await prepareNewAthletes();
-      setErr(null);
+      if (connectedWallet?.network?.name === 'mainnet') {
+        await prepareNewAthletes();
+        setErr(null);
+      } else {
+        setErr('You are connected to testnet');
+        setLoading(false);
+      }
     } else {
       setErr('Waiting for wallet connection...');
       setLoading(false);

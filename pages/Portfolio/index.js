@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import Main from '../../components/Main';
 import PortfolioContainer from '../../components/containers/PortfolioContainer';
 import PerformerContainer from '../../components/containers/PerformerContainer';
-import { useDispatch, useSelector } from 'react-redux';
+import { connect, useDispatch, useSelector } from 'react-redux';
 import { getAccountAssets, clearData } from '../../redux/reducers/external/playible/assets';
 import { useConnectedWallet, useLCDClient } from '@terra-money/wallet-provider';
 import LoadingPageDark from '../../components/loading/LoadingPageDark';
@@ -41,7 +41,7 @@ const Portfolio = () => {
   const [loading, setLoading] = useState(!!connectedWallet);
 
   const fetchPacks = async () => {
-    if (connectedWallet) {
+    if (connectedWallet && connectedWallet?.network?.name === 'mainnet') {
       const formData = {
         owner_tokens_info: {
           owner: connectedWallet.walletAddress,
@@ -193,9 +193,12 @@ const Portfolio = () => {
   useEffect(async () => {
     setLoading(true);
     setSortedList([]);
-    if (connectedWallet && dispatch) {
-      await dispatch(getAccountAssets({ walletAddr: connectedWallet.walletAddress }));
-      await fetchPacks();
+    await dispatch(getAccountAssets({ clear: true }));
+    if (connectedWallet && dispatch ) {
+      if (connectedWallet?.network?.name === 'mainnet') {
+        await dispatch(getAccountAssets({ walletAddr: connectedWallet.walletAddress }));
+        await fetchPacks();
+      }
       setWallet(connectedWallet.walletAddress);
     } else {
       await dispatch(getAccountAssets({ clear: true }));
@@ -252,7 +255,8 @@ const Portfolio = () => {
             <div className="flex flex-col w-full overflow-y-auto overflow-x-hidden h-full self-center text-indigo-black">
               <div className="ml-6 flex flex-col md:flex-row md:justify-between">
                 <PortfolioContainer title="SQUAD" textcolor="text-indigo-black" />
-                {(sortedList.length > 0 || playerList.tokens.length > 0) && displayMode ? (
+                {playerList &&(sortedList.length > 0 || playerList.tokens.length > 0) &&
+                displayMode ? (
                   <Sorter
                     list={sortedList}
                     setList={setSortedList}
@@ -385,9 +389,7 @@ const Portfolio = () => {
                           </div>
                         </>
                       ) : (
-                        <div className="mt-7 ml-7 text-xl">
-                          There are no assets to show
-                        </div>
+                        <div className="mt-7 ml-7 text-xl">There are no assets to show</div>
                       )}
                     </>
                   ) : (
@@ -489,9 +491,7 @@ const Portfolio = () => {
                           </div>
                         </>
                       ) : (
-                        <div className="mt-7 ml-7 text-xl">
-                          There are no packs to show
-                        </div>
+                        <div className="mt-7 ml-7 text-xl">There are no packs to show</div>
                       )}
                     </div>
                   )}
