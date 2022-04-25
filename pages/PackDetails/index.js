@@ -330,9 +330,20 @@ export default function PackDetails(props) {
 export async function getServerSideProps(ctx) {
   const { query } = ctx;
   let queryObj = null;
+
   if (query) {
-    queryObj = query;
+    if (query.token_id) {
+      queryObj = query;
+    } else {
+      return {
+        redirect: {
+          destination: query.origin || '/Portfolio',
+          permanent: false,
+        },
+      };
+    }
   }
+
   return {
     props: { queryObj },
   };
