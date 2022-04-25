@@ -109,8 +109,8 @@ const TokenDrawPage = (props) => {
         await prepareNewAthletes();
         setErr(null);
       } else {
-        setErr('You are connected to testnet');
-        setLoading(false);
+         setErr('You are connected to testnet. Please connect to mainnet');
+         setLoading(false);
       }
     } else {
       setErr('Waiting for wallet connection...');

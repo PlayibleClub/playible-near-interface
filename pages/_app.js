@@ -42,7 +42,7 @@ function MyApp ({ Component, pageProps }) {
 
   return process.browser ? (
     <WalletProvider
-      defaultNetwork={testnet}
+      defaultNetwork={mainnet}
       walletConnectChainIds={{
         0: testnet,
         1: mainnet
@@ -54,7 +54,7 @@ function MyApp ({ Component, pageProps }) {
     </WalletProvider>
   ) : (
     <StaticWalletProvider
-      defaultNetwork={testnet}
+      defaultNetwork={mainnet}
     >
       <Provider store={store}>
         <Component {...pageProps} />
