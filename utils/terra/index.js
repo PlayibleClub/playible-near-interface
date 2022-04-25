@@ -8,8 +8,8 @@ import {
 import { MsgExecuteContract, LCDClient, StdFee, Coins } from '@terra-money/terra.js';
 
 export const terra = new LCDClient({
-  URL: 'https://bombay-lcd.terra.dev',
-  chainID: 'bombay-12',
+  URL: 'https://lcd.terra.dev',
+  chainID: 'columbus-5',
 });
 
 export const queryContract = async (contractAddr, queryMsg) => {
