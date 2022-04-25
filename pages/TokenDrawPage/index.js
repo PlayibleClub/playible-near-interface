@@ -105,11 +105,11 @@ const TokenDrawPage = (props) => {
     setLoading(true);
     setErr(null);
     if (connectedWallet) {
-      if (connectedWallet?.network?.name === 'mainnet') {
+      if (connectedWallet?.network?.name === 'testnet') {
         await prepareNewAthletes();
         setErr(null);
       } else {
-         setErr('You are connected to testnet. Please connect to mainnet');
+         setErr('You are connected to mainnet. Please connect to testnet');
          setLoading(false);
       }
     } else {
