@@ -183,6 +183,7 @@ export default function PackDetails(props) {
 
   const openPack = async () => {
     if (connectedWallet && queryObj.token_id) {
+      console.log('connectedWallet', connectedWallet);
       setTxLoading(true);
       
       const res = await executeContract(connectedWallet, PACK, [
