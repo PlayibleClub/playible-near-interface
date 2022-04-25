@@ -59,6 +59,9 @@ const Navbar = (props) => {
             <Link href={path}>{name}</Link>
           </a>
         ))}
+        <a id="contract" className="menu-item">
+          <Link href="/ContractInteraction">(ContractInteraction)</Link>
+        </a>
       </Menu>
     </div>
   );

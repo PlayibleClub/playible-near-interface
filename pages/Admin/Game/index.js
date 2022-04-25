@@ -465,12 +465,3 @@ const Index = (props) => {
 };
 
 export default Index;
-
-export async function getServerSideProps() {
-  return {
-    redirect: {
-     destination: '/Portfolio',
-      permanent: false,
-    },
-  };
-}

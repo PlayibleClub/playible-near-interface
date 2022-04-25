@@ -1,6 +1,6 @@
 const navigation = [
   {
-    name: 'Playible Club',
+    name: 'PLAYIBLE CLUB',
     path: 'http://playible.club',
     img: '/images/navicons/icon_home.png',
   },
@@ -14,6 +14,11 @@ const navigation = [
     path: '/Portfolio',
     img: '/images/navicons/icon_portfolio.png',
   },
+  {
+    name: 'GET PACKS',
+    path: 'https://www.oneplanetnft.io/launchpad/randombox/624b0f4039ef0b06630a7cfd',
+    img: '/images/navicons/icon_portfolio.png',
+  },
 ];
 
 const navigationAdmin = [
@@ -25,9 +30,9 @@ const navigationAdmin = [
 ];
 
 export const getNavigation = (admin = false) => {
-  // if (admin) {
-  //   return navigationAdmin;
-  // } else {
-    // }
-  return navigation;
+  if (admin) {
+    return navigationAdmin;
+  } else {
+    return navigation;
+  }
 };

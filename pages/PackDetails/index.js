@@ -165,7 +165,7 @@ export default function PackDetails(props) {
   };
 
   useEffect(async () => {
-    if (connectedWallet && queryObj.token_id && connectedWallet?.network?.name === 'mainnet') {
+    if (connectedWallet && queryObj.token_id && connectedWallet?.network?.name === 'testnet') {
       await fetchPacks(queryObj.token_id);
     }
     setLoading(false)

@@ -15,6 +15,7 @@ import banner from '../public/images/promotionheader.png';
 import bannerDesktop from '../public/images/promotionheaderDesktop.png';
 import { axiosInstance } from '../utils/playible';
 import 'regenerator-runtime/runtime';
+import Head from 'next/head'
 
 const playerList = [
   // player list for testing purposes
@@ -145,6 +146,18 @@ export default function Home(props) {
   }, [activeGames]);
 
   return (
+    <>
+    <Head>
+      <title>Playible - Next Generation of Sports Collectibles</title>
+      <link rel="icon" type="image/png" sizes="16x16" href="images/favicon.png" />
+      {/* <meta name="description" content="Playible - Next Generation of Sports Collectibles" />
+      <meta name="keywords" content="fantasy, sports, draft, crypto, cryptocurrency, play"/>
+
+      <meta property="og:title" content="Playible - Next Generation of Sports Collectibles"/>
+      <meta property="og:description" content="Playible - Next Generation of Sports Collectibles"/>
+      <meta property="og:url" content="https://playible.io/"/>
+      <meta property="og:type" content="website"/> */}
+    </Head>
     <Container>
       <div className="flex flex-col w-screen md:w-full overflow-y-auto h-screen justify-center self-center md:pb-12 text-indigo-black">
         <Main color="indigo-white">
@@ -176,12 +189,17 @@ export default function Home(props) {
                         <div className="text-xl font-bold font-monument">ACTIVE GAMES</div>
                         <img src={underlineIcon} className="mt-1" />
                       </div>
-
-                      {/* <Link href="/Play?type=active">
-                        <a className="ml-12 md:ml-16 text-indigo-black underline text-xs font-bold md:mb-2">
-                          VIEW ALL
-                        </a>
-                      </Link> */}
+                      {activeGames.length > 0 ? (
+                        <>
+                          <Link href="/Play?type=active">
+                            <a className="ml-12 md:ml-16 text-indigo-black underline text-xs font-bold md:mb-2">
+                              VIEW ALL
+                            </a>
+                          </Link>
+                        </>
+                      ) : (
+                        <></>
+                      )}
                     </div>
 
                     <div className="flex flex-row md:grid-cols-2 gap-x-6 gap-y-6 mt-8 ml-8 md:ml-0 pr-8 overflow-x-auto">
@@ -267,7 +285,7 @@ export default function Home(props) {
           </div>
         </Main>
       </div>
-    </Container>
+    </Container></>
   );
 }
 
