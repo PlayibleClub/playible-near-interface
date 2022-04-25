@@ -15,6 +15,7 @@ import banner from '../public/images/promotionheader.png';
 import bannerDesktop from '../public/images/promotionheaderDesktop.png';
 import { axiosInstance } from '../utils/playible';
 import 'regenerator-runtime/runtime';
+import Head from 'next/head'
 
 const playerList = [
   // player list for testing purposes
@@ -145,6 +146,18 @@ export default function Home(props) {
   }, [activeGames]);
 
   return (
+    <>
+    <Head>
+      <title>Playible - Next Generation of Sports Collectibles</title>
+      <link rel="icon" type="image/png" sizes="16x16" href="images/favicon.png" />
+      {/* <meta name="description" content="Playible - Next Generation of Sports Collectibles" />
+      <meta name="keywords" content="fantasy, sports, draft, crypto, cryptocurrency, play"/>
+
+      <meta property="og:title" content="Playible - Next Generation of Sports Collectibles"/>
+      <meta property="og:description" content="Playible - Next Generation of Sports Collectibles"/>
+      <meta property="og:url" content="https://playible.io/"/>
+      <meta property="og:type" content="website"/> */}
+    </Head>
     <Container>
       <div className="flex flex-col w-screen md:w-full overflow-y-auto h-screen justify-center self-center md:pb-12 text-indigo-black">
         <Main color="indigo-white">
@@ -272,7 +285,7 @@ export default function Home(props) {
           </div>
         </Main>
       </div>
-    </Container>
+    </Container></>
   );
 }
 
