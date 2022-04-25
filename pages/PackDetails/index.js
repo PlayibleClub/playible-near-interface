@@ -156,7 +156,6 @@ export default function PackDetails(props) {
       },
     };
     const res = await lcd.wasm.contractQuery(PACK, formData);
-    console.log('fetch pack info', res)
     if (res.info) {
       if (res.access.owner !== connectedWallet.walletAddress) {
         return router.replace('/Portfolio');
@@ -184,12 +183,8 @@ export default function PackDetails(props) {
 
   const openPack = async () => {
     if (connectedWallet && queryObj.token_id) {
-      console.log('connectedWallet', connectedWallet);
       setTxLoading(true);
 
-      console.log('PACK', PACK);
-      console.log('OPENPACK', OPENPACK);
-      
       const res = await executeContract(connectedWallet, PACK, [
         {
           contractAddr: PACK,
