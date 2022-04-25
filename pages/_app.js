@@ -8,7 +8,7 @@ import React from 'react'
 function MyApp ({ Component, pageProps }) {
   const mainnet = {
     name: 'mainnet',
-    chainID: 'columbus-4',
+    chainID: 'columbus-5',
     lcd: 'https://lcd.terra.dev'
   }
 
