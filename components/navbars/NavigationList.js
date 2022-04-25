@@ -1,6 +1,6 @@
 const navigation = [
   {
-    name: 'Playible Club',
+    name: 'PLAYIBLE CLUB',
     path: 'http://playible.club',
     img: '/images/navicons/icon_home.png',
   },
@@ -18,6 +18,11 @@ const navigation = [
     name: 'PLAY',
     path: '/Play',
     img: '/images/navicons/icon_play.png',
+  },
+  {
+    name: 'GET PACKS',
+    path: 'https://www.oneplanetnft.io/launchpad/randombox/624b0f4039ef0b06630a7cfd',
+    img: '/images/navicons/icon_portfolio.png',
   },
 ];
 
