@@ -65,13 +65,14 @@ const AssetDetails = (props) => {
   }
 
   useEffect(() => {
-    if (typeof connectedWallet !== 'undefined') {
+    setLoading(true)
+    if (connectedWallet && connectedWallet?.network?.name === 'testnet') {
       getAthleteInfo();
     }
   }, [dispatch, connectedWallet]);
 
   useEffect(() => {
-    if (query && query.token_id) {
+    if (query && query.token_id && dispatch) {
       if (!playerList) {
         if (connectedWallet) {
           dispatch(getAccountAssets({ walletAddr: connectedWallet.walletAddress }));
@@ -269,9 +270,7 @@ const AssetDetails = (props) => {
                                 <div className="ml-8 md:ml-6 mr-16">
                                   <PlayerContainer
                                     img={
-                                      matchedId.length > 0 && matchedId[0].token_info.info.token_uri
-                                        ? assetData.token_uri
-                                        : null
+                                      assetData.image || null
                                     }
                                     playerID={
                                       assetData.attributes.filter(

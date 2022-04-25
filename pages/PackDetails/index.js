@@ -165,7 +165,7 @@ export default function PackDetails(props) {
   };
 
   useEffect(async () => {
-    if (connectedWallet && queryObj.token_id) {
+    if (connectedWallet && queryObj.token_id && connectedWallet?.network?.name === 'testnet') {
       await fetchPacks(queryObj.token_id);
     }
     setLoading(false)
@@ -184,7 +184,7 @@ export default function PackDetails(props) {
   const openPack = async () => {
     if (connectedWallet && queryObj.token_id) {
       setTxLoading(true);
-      
+
       const res = await executeContract(connectedWallet, PACK, [
         {
           contractAddr: PACK,
@@ -330,9 +330,20 @@ export default function PackDetails(props) {
 export async function getServerSideProps(ctx) {
   const { query } = ctx;
   let queryObj = null;
+
   if (query) {
-    queryObj = query;
+    if (query.token_id) {
+      queryObj = query;
+    } else {
+      return {
+        redirect: {
+          destination: query.origin || '/Portfolio',
+          permanent: false,
+        },
+      };
+    }
   }
+
   return {
     props: { queryObj },
   };
