@@ -15,7 +15,7 @@ import banner from '../public/images/promotionheader.png';
 import bannerDesktop from '../public/images/promotionheaderDesktop.png';
 import { axiosInstance } from '../utils/playible';
 import 'regenerator-runtime/runtime';
-import Head from 'next/head'
+import Head from 'next/head';
 
 const playerList = [
   // player list for testing purposes
@@ -147,23 +147,23 @@ export default function Home(props) {
 
   return (
     <>
-    <Head>
-      <title>Playible - Next Generation of Sports Collectibles</title>
-      <link rel="icon" type="image/png" sizes="16x16" href="images/favicon.png" />
-      {/* <meta name="description" content="Playible - Next Generation of Sports Collectibles" />
+      <Head>
+        <title>Playible - Next Generation of Sports Collectibles</title>
+        <link rel="icon" type="image/png" sizes="16x16" href="images/favicon.png" />
+        {/* <meta name="description" content="Playible - Next Generation of Sports Collectibles" />
       <meta name="keywords" content="fantasy, sports, draft, crypto, cryptocurrency, play"/>
 
       <meta property="og:title" content="Playible - Next Generation of Sports Collectibles"/>
       <meta property="og:description" content="Playible - Next Generation of Sports Collectibles"/>
       <meta property="og:url" content="https://playible.io/"/>
       <meta property="og:type" content="website"/> */}
-    </Head>
-    <Container>
-      <div className="flex flex-col w-screen md:w-full overflow-y-auto h-screen justify-center self-center md:pb-12 text-indigo-black">
-        <Main color="indigo-white">
-          <div className="flex flex-col md:flex-row md:ml-12">
-            <div className="md:w-2/3">
-              {/* <div className="flex flex-col md:border rounded-lg md:p-6 md:mr-8">
+      </Head>
+      <Container>
+        <div className="flex flex-col w-screen md:w-full overflow-y-auto h-screen justify-center self-center md:pb-12 text-indigo-black">
+          <Main color="indigo-white">
+            <div className="flex flex-col md:flex-row md:ml-12">
+              <div className="md:w-2/3">
+                {/* <div className="flex flex-col md:border rounded-lg md:p-6 md:mr-8">
                 <div className="flex">
                   <div className="ml-8 md:ml-0">
                     <div className="text-l font-bold font-monument">PLAYIBLE TOTAL VALUE</div>
@@ -173,71 +173,71 @@ export default function Home(props) {
                   </div>
                 </div>
               </div> */}
-              <div className="md:mr-8">
-                <img className="object-fill h-48 w-full visible md:hidden" src={banner} />
-                <img
-                  className="object-fit h-96 w-full hidden md:flex overflow-hidden"
-                  src={bannerDesktop}
-                />
-              </div>
+                <div className="md:mr-8">
+                  <img className="object-fill h-48 w-full visible md:hidden" src={banner} />
+                  <img
+                    className="object-fit h-96 w-full hidden md:flex overflow-hidden"
+                    src={bannerDesktop}
+                  />
+                </div>
 
-              {activeGames ? (
-                <>
-                  <div className="flex flex-col md:border md:border-indigo-slate rounded-lg md:p-6 md:mr-8 mt-8">
-                    <div className="flex items-center">
-                      <div className="ml-8 md:ml-0">
-                        <div className="text-xl font-bold font-monument">ACTIVE GAMES</div>
-                        <img src={underlineIcon} className="mt-1" />
+                {activeGames ? (
+                  <>
+                    <div className="flex flex-col md:border md:border-indigo-slate rounded-lg md:p-6 md:mr-8 mt-8">
+                      <div className="flex items-center">
+                        <div className="ml-8 md:ml-0">
+                          <div className="text-xl font-bold font-monument">ACTIVE GAMES</div>
+                          <img src={underlineIcon} className="mt-1" />
+                        </div>
+                        {activeGames.length > 0 ? (
+                          <>
+                            <Link href="/Play?type=active">
+                              <a className="ml-12 md:ml-16 text-indigo-black underline text-xs font-bold md:mb-2">
+                                VIEW ALL
+                              </a>
+                            </Link>
+                          </>
+                        ) : (
+                          <></>
+                        )}
                       </div>
-                      {activeGames.length > 0 ? (
-                        <>
-                          <Link href="/Play?type=active">
-                            <a className="ml-12 md:ml-16 text-indigo-black underline text-xs font-bold md:mb-2">
-                              VIEW ALL
-                            </a>
-                          </Link>
-                        </>
-                      ) : (
-                        <></>
-                      )}
-                    </div>
 
-                    <div className="flex flex-row md:grid-cols-2 gap-x-6 gap-y-6 mt-8 ml-8 md:ml-0 pr-8 overflow-x-auto">
-                      {activeGames.length > 0 ? (
-                        <>
-                          {activeGames.map(function (data, i) {
-                            return (
-                              <>
-                                <PrizePoolComponent
-                                  icon={i}
-                                  prizePool={data.prize}
-                                  gameName={data.name}
-                                  gameId={data.id}
-                                />
-                              </>
-                            );
-                          })}
-                        </>
-                      ) : (
-                        <>
-                          <div>Contests opening soon...</div>
-                        </>
-                      )}
+                      <div className="flex flex-row md:grid-cols-2 gap-x-6 gap-y-6 mt-8 ml-8 md:ml-0 pr-8 overflow-x-auto">
+                        {activeGames.length > 0 ? (
+                          <>
+                            {activeGames.map(function (data, i) {
+                              return (
+                                <>
+                                  <PrizePoolComponent
+                                    icon={i}
+                                    prizePool={data.prize}
+                                    gameName={data.name}
+                                    gameId={data.id}
+                                  />
+                                </>
+                              );
+                            })}
+                          </>
+                        ) : (
+                          <>
+                            <div>Contests opening soon...</div>
+                          </>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                </>
-              ) : (
-                ''
-              )}
-            </div>
-
-            <div className="flex flex-col rounded-lg md:w-1/3 md:border md:border-indigo-slate md:p-6 md:mr-8 md:mt-0 mt-8 md:mb-4">
-              <div className="ml-8 md:ml-0">
-                <div className="text-xl font-bold font-monument">TOP PERFORMERS</div>
-                <img src={underlineIcon} className="mt-1" />
+                  </>
+                ) : (
+                  ''
+                )}
               </div>
 
-              {/* <div className="bg-indigo-white h-11 flex justify-between self-center font-thin w-72 mt-6 border-2 border-indigo-lightgray border-opacity-50">
+              <div className="flex flex-col rounded-lg md:w-1/3 md:border md:border-indigo-slate md:p-6 md:mr-8 md:mt-0 mt-8 md:mb-4">
+                <div className="ml-8 md:ml-0">
+                  <div className="text-xl font-bold font-monument">TOP PERFORMERS</div>
+                  <img src={underlineIcon} className="mt-1" />
+                </div>
+
+                {/* <div className="bg-indigo-white h-11 flex justify-between self-center font-thin w-72 mt-6 border-2 border-indigo-lightgray border-opacity-50">
                 <div className="text-lg ml-4 mt-1.5 md:mb-1.5 text-indigo-black">
                   <form>
                     <select className="filter-select bg-white">
@@ -256,36 +256,37 @@ export default function Home(props) {
                 <img src={filterIcon} className="object-none w-4 mr-4" />
               </div> */}
 
-              {athletesLoading ? (
-                <div className="flex justify-center w-full mt-10">
-                  <div className="w-5 h-5 rounded-full bg-indigo-buttonblue animate-bounce mr-5"></div>
-                  <div className="w-5 h-5 rounded-full bg-indigo-buttonblue animate-bounce mr-5"></div>
-                  <div className="w-5 h-5 rounded-full bg-indigo-buttonblue animate-bounce"></div>
-                </div>
-              ) : topAthletes.length > 0 ? (
-                <div className="grid grid-cols-2 gap-x-4 mt-8">
-                  {topAthletes.map(function (player, i) {
-                    return (
-                      <div className="" key={i}>
-                        <PerformerContainer
-                          AthleteName={`${player.athlete.first_name} ${player.athlete.last_name}`}
-                          AvgScore={player.fantasy_score}
-                          id={player.athlete.id}
-                          uri={null || player.nft_image}
-                          hoverable={false}
-                        />
-                      </div>
-                    );
-                  })}
-                </div>
-              ) : (
-                <p className="text-indigo-lightgray font-monument mt-10 text-center">No Data</p>
-              )}
+                {athletesLoading ? (
+                  <div className="flex justify-center w-full mt-10">
+                    <div className="w-5 h-5 rounded-full bg-indigo-buttonblue animate-bounce mr-5"></div>
+                    <div className="w-5 h-5 rounded-full bg-indigo-buttonblue animate-bounce mr-5"></div>
+                    <div className="w-5 h-5 rounded-full bg-indigo-buttonblue animate-bounce"></div>
+                  </div>
+                ) : topAthletes.length > 0 ? (
+                  <div className="grid grid-cols-2 gap-x-4 mt-8">
+                    {topAthletes.map(function (player, i) {
+                      return (
+                        <div className="" key={i}>
+                          <PerformerContainer
+                            AthleteName={`${player.athlete.first_name} ${player.athlete.last_name}`}
+                            AvgScore={player.fantasy_score}
+                            id={player.athlete.id}
+                            uri={null || player.nft_image}
+                            hoverable={false}
+                          />
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <p className="text-indigo-lightgray font-monument mt-10 text-center">No Data</p>
+                )}
+              </div>
             </div>
-          </div>
-        </Main>
-      </div>
-    </Container></>
+          </Main>
+        </div>
+      </Container>
+    </>
   );
 }
 

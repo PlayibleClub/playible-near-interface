@@ -308,6 +308,7 @@ const Portfolio = () => {
                                     },
                                   }}
                                 >
+
                                   <div className="mb-4" key={i}>
                                     <PerformerContainer
                                       AthleteName={
@@ -315,7 +316,7 @@ const Portfolio = () => {
                                           (item) => item.trait_type === 'name'
                                         )[0].value
                                       }
-                                      AvgScore={player.fantasy_score}
+                                      AvgScore={parseFloat(player.fantasy_score).toFixed(2)}
                                       id={
                                         path.attributes.filter(
                                           (item) => item.trait_type === 'athlete_id'
