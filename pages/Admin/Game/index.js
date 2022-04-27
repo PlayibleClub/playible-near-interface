@@ -8,15 +8,18 @@ import BaseModal from '../../../components/modals/BaseModal';
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en.json';
 import ReactTimeAgo from 'react-time-ago';
-import { useConnectedWallet } from '@terra-money/wallet-provider';
+import { useConnectedWallet, useLCDClient } from '@terra-money/wallet-provider';
 import { estimateFee, estimateMultipleFees, executeContract } from '../../../utils/terra';
 import { GAME, ORACLE } from '../../../data/constants/contracts';
 import 'regenerator-runtime/runtime';
+import { format } from 'prettier';
 TimeAgo.addDefaultLocale(en);
 
 const Index = (props) => {
   const connectedWallet = useConnectedWallet();
+  const lcd = useLCDClient();
   const [loading, setLoading] = useState(false);
+  const [gameType, setGameType] = useState('new');
   const [tabs, setTabs] = useState([
     {
       name: 'GAMES',
@@ -24,6 +27,16 @@ const Index = (props) => {
     },
     {
       name: 'CREATE',
+      isActive: false,
+    },
+  ]);
+  const [gameTabs, setGameTabs] = useState([
+    {
+      name: 'UPCOMING',
+      isActive: true,
+    },
+    {
+      name: 'COMPLETED',
       isActive: false,
     },
   ]);
@@ -43,10 +56,19 @@ const Index = (props) => {
   ]);
 
   const [games, setGames] = useState([]);
+  const [completedGames, setCompletedGames] = useState([]);
+  const [gameId, setGameId] = useState(null);
 
   const [modal, setModal] = useState(false);
+  const [endLoading, setEndLoading] = useState(false);
   const [confirmModal, setConfirmModal] = useState(false);
+  const [endModal, setEndModal] = useState(false);
   const [msg, setMsg] = useState({
+    title: '',
+    content: '',
+  });
+
+  const [endMsg, setEndMsg] = useState({
     title: '',
     content: '',
   });
@@ -65,6 +87,20 @@ const Index = (props) => {
     });
 
     setTabs([...tabList]);
+  };
+
+  const changeGameTab = (name) => {
+    const tabList = [...gameTabs];
+
+    tabList.forEach((item) => {
+      if (item.name === name) {
+        item.isActive = true;
+      } else {
+        item.isActive = false;
+      }
+    });
+
+    setGameTabs([...tabList]);
   };
 
   const modifyRankList = (type, rankNum, percentVal) => {
@@ -138,7 +174,7 @@ const Index = (props) => {
 
     for (let i = 0; i < distribution.length; i++) {
       if (distribution[i].rank !== sortPercentage[i].rank) {
-        errors.push('Higher rank must have a higher percentage than next one');
+        errors.push('Higher rank must have a higher percentage than the rest below');
         break;
       }
     }
@@ -155,6 +191,67 @@ const Index = (props) => {
       );
     } else {
       setConfirmModal(true);
+    }
+  };
+
+  const endGame = async (id) => {
+    if (connectedWallet) {
+      setEndLoading(true);
+
+      setEndMsg({
+        title: 'Ending Game',
+        content: 'Officially ending game',
+      });
+
+      setEndModal(true);
+
+      console.log('id', id);
+
+      const leaderboard = await axiosInstance.get(`/fantasy/game/${id}/leaderboard/`);
+
+      console.log('leaderboard', leaderboard);
+
+      if (leaderboard.status === 200) {
+        const endGameRes = await executeContract(connectedWallet, ORACLE, [
+          {
+            contractAddr: ORACLE,
+            msg: {
+              add_leaderboard: {
+                game_id: id.toString(),
+                leaderboard: leaderboard.data,
+              },
+            },
+          },
+          {
+            contractAddr: GAME,
+            msg: {
+              end_game: {
+                game_id: id.toString(),
+              },
+            },
+          },
+        ]);
+
+        console.log('endGameRes', endGameRes);
+
+        setMsg({
+          title: 'SUCCESS',
+          content: 'Successfully ended game',
+        });
+
+        setModal(true);
+        setEndModal(false);
+        fetchGames();
+      } else {
+        setMsg({
+          title: 'Error',
+          content: 'An error occurred when ending the game',
+        });
+        setModal(true);
+        setEndModal(false);
+      }
+
+      setEndLoading(false);
     }
   };
 
@@ -176,14 +273,28 @@ const Index = (props) => {
           title: 'Success',
           content: `${res.data.name} created!`,
         });
-        const filteredDistribution = distribution
-          .filter((item) => item.percentage !== 0)
-          .map((item) => {
-            return {
-              ...item,
-              percentage: (parseInt(item.percentage) / 100) * 1000000,
-            };
-          });
+        let finalDistribution = [];
+        const distributionList = distribution.map((item) => {
+          return {
+            ...item,
+            percentage: (parseInt(item.percentage) / 100) * 1000000,
+          };
+        });
+
+        if (distributionList.length < 10) {
+          const blankPlacements = 10 - distributionList.length;
+
+          let tempDistribution = distributionList;
+          let blankDistribution = [];
+          for (let i = 0; i < blankPlacements; i++) {
+            blankDistribution.push({
+              rank: distributionList.length + i + 1,
+              percentage: 0,
+            });
+          }
+
+          finalDistribution = [...tempDistribution, ...blankDistribution];
+        }
 
         const resContract = await executeContract(connectedWallet, ORACLE, [
           {
@@ -192,7 +303,7 @@ const Index = (props) => {
               add_game: {
                 game_id: res.data.id.toString(),
                 prize: parseInt(res.data.prize),
-                distribution: filteredDistribution,
+                distribution: finalDistribution,
               },
             },
           },
@@ -247,22 +358,40 @@ const Index = (props) => {
   };
 
   const convertToMinutes = (time) => {
-    const now = new Date()
-    const gameStart = new Date(time)
-    const timeDiff = ((gameStart/1000) - (now/1000))
+    const now = new Date();
+    const gameStart = new Date(time);
+    const timeDiff = gameStart / 1000 - now / 1000;
 
     return timeDiff / 60;
-  }
+  };
 
   const fetchGames = async () => {
     setLoading(true);
     const res = await axiosInstance.get('/fantasy/game/new/');
+    const completedRes = await axiosInstance.get('/fantasy/game/completed/');
 
     if (res.status === 200 && res.data.length > 0) {
       const data = [...res.data].sort(
         (a, b) => new Date(a.start_datetime) - new Date(b.start_datetime)
       );
       setGames(data);
+    }
+    if (completedRes.status === 200 && completedRes.data.length > 0) {
+      const data = completedRes.data;
+      const completedList = data.map(async (item) => {
+        const hasEnded = await lcd.wasm.contractQuery(GAME, {
+          game_info: { game_id: item.id.toString() },
+        });
+
+        return {
+          ...item,
+          hasEnded: hasEnded?.has_ended,
+        };
+      });
+
+      const completedGamesList = await Promise.all(completedList);
+
+      setCompletedGames(completedGamesList);
     }
     setLoading(false);
   };
@@ -313,20 +442,48 @@ const Index = (props) => {
                 <LoadingPageDark />
               ) : tabs[0].isActive ? (
                 <div>
-                  <p className="font-monument font-bold text-xl">UPCOMING GAMES</p>
-                  {games.length > 0 &&
-                    games.map(function (data, i) {
+                  <div className="flex md:ml-4 font-bold ml-8 font-monument mt-5">
+                    {gameTabs.map(({ name, isActive }) => (
+                      <div
+                        className={`cursor-pointer mr-6 ${
+                          isActive ? 'border-b-8 border-indigo-buttonblue' : ''
+                        }`}
+                        onClick={() => changeGameTab(name)}
+                      >
+                        {name}
+                      </div>
+                    ))}
+                  </div>
+                  {(gameTabs[0].isActive ? games : completedGames).length > 0 &&
+                    (gameTabs[0].isActive ? games : completedGames).map(function (data, i) {
                       return (
                         <div className="border-b p-5 py-8">
-                          <p className="font-bold text-lg">{data.name}</p>
                           <div className="flex justify-between">
-                            <ReactTimeAgo
-                              future
-                              timeStyle="round-minute"
-                              date={data.start_datetime}
-                              locale="en-US"
-                            />
-                            <p>Prize: $ {data.prize}</p>
+                            <div>
+                              <p className="font-bold text-lg">{data.name}</p>
+                              {gameTabs[0].isActive ? (
+                                <ReactTimeAgo
+                                  future
+                                  timeStyle="round-minute"
+                                  date={data.start_datetime}
+                                  locale="en-US"
+                                />
+                              ) : (
+                                ''
+                              )}
+                              <p>Prize: $ {data.prize}</p>
+                            </div>
+                            <div>
+                              <button
+                                className="bg-indigo-green font-monument tracking-widest  text-indigo-white w-5/6 md:w-64 h-16 text-center text-sm"
+                                onClick={() => {
+                                  setGameId(data.id);
+                                  setEndModal(true);
+                                }}
+                              >
+                                END GAME
+                              </button>
+                            </div>
                           </div>
                         </div>
                       );
@@ -415,14 +572,18 @@ const Index = (props) => {
                       />
                     ))}
 
-                    <div className="flex justify-start">
-                      <button
-                        className="bg-indigo-darkgray text-indigo-white w-5/6 md:w-48 h-10 text-center font-bold text-sm mt-4"
-                        onClick={() => modifyRankList('add')}
-                      >
-                        Add New Rank
-                      </button>
-                    </div>
+                    {distribution.length < 10 ? (
+                      <div className="flex justify-start">
+                        <button
+                          className="bg-indigo-darkgray text-indigo-white w-5/6 md:w-48 h-10 text-center font-bold text-sm mt-4"
+                          onClick={() => modifyRankList('add')}
+                        >
+                          Add New Rank
+                        </button>
+                      </div>
+                    ) : (
+                      ''
+                    )}
                   </div>
 
                   <div className="flex justify-center mt-8">
@@ -442,6 +603,20 @@ const Index = (props) => {
       <BaseModal title={msg.title} visible={modal} onClose={() => setModal(false)}>
         <p className="mt-5">{msg.content}</p>
       </BaseModal>
+      <BaseModal title={endMsg.title} visible={endLoading} onClose={() => console.log()}>
+        {endMsg.content ? (
+          <div>
+            <p className="mt-5">{endMsg.content}</p>
+            <div className="flex gap-5 justify-center mb-5">
+              <div className="bg-indigo-buttonblue animate-bounce w-5 h-5 rounded-full"></div>
+              <div className="bg-indigo-buttonblue animate-bounce w-5 h-5 rounded-full"></div>
+              <div className="bg-indigo-buttonblue animate-bounce w-5 h-5 rounded-full"></div>
+            </div>
+          </div>
+        ) : (
+          ''
+        )}
+      </BaseModal>
       <BaseModal title={'Confirm'} visible={confirmModal} onClose={() => setConfirmModal(false)}>
         <p className="mt-5">Are you sure?</p>
         <button
@@ -456,6 +631,24 @@ const Index = (props) => {
         <button
           className="bg-red-pastel font-monument tracking-widest text-indigo-white w-full h-16 text-center text-sm mt-4"
           onClick={() => setConfirmModal(false)}
+        >
+          CANCEL
+        </button>
+      </BaseModal>
+      <BaseModal title={'End game'} visible={endModal} onClose={() => setEndModal(false)}>
+        <p className="mt-5">Are you sure?</p>
+        <button
+          className="bg-indigo-green font-monument tracking-widest text-indigo-white w-full h-16 text-center text-sm mt-4"
+          onClick={() => {
+            endGame(gameId);
+            setEndModal(false);
+          }}
+        >
+          END GAME
+        </button>
+        <button
+          className="bg-red-pastel font-monument tracking-widest text-indigo-white w-full h-16 text-center text-sm mt-4"
+          onClick={() => setEndModal(false)}
         >
           CANCEL
         </button>

@@ -202,7 +202,7 @@ const Play = () => {
       let noPlacements = [];
       let prize = 0;
       let distribution = [];
-      let leaderboards = []
+      let leaderboards = [];
 
       const gameInfo = await lcd.wasm.contractQuery(ORACLE, {
         game_info: { game_id: gameId.toString() },
@@ -216,8 +216,8 @@ const Play = () => {
       if (gameInfo.leaderboard.length > 0) {
         leaderboards = {
           status: 200,
-          data: gameInfo.leaderboard
-        }
+          data: gameInfo.leaderboard,
+        };
       } else {
         leaderboards = await axiosInstance.get(`/fantasy/game/${gameId}/leaderboard/`);
       }
@@ -253,7 +253,7 @@ const Play = () => {
               }
             })
             .filter((item) => item);
-           
+
           noPlacements = teams.data
             .map((team) => {
               let exists = false;
@@ -296,30 +296,36 @@ const Play = () => {
     return 0;
   };
 
-  const fetchGamesLoading = () => {
+  const fetchGamesLoading = async () => {
     setloading(true);
-    setSortedList([]);
+    await setSortedList([]);
     fetchGames(activeCategory);
   };
 
-  const renderPlacements = (item, i) => {
+  const renderPlacements = (item, i, winning = false) => {
     return (
       <>
         <div className="p-8 py-10">
           <div className="flex justify-between items-center">
             <p className="bg-indigo-black w-max p-3 text-indigo-white font-monument uppercase py-1">
-              {item.team_name}
+              {winning ? item.team_name : item.name}
             </p>
-            <div className="flex items-end font-monument">
-              <div className="flex items-end text-xs">
-                <img src={coin} className="mr-2" />
-                <p>{item.prize} UST</p>
-              </div>
-              <div className="flex items-end text-xs ml-3">
-                <img src={bars} className="h-4 w-5 mr-2" />
-                <p>{item.rank}</p>
-              </div>
-            </div>
+            {winning ? (
+              <>
+                <div className="flex items-end font-monument">
+                  <div className="flex items-end text-xs">
+                    <img src={coin} className="mr-2" />
+                    <p>{item.prize} UST</p>
+                  </div>
+                  <div className="flex items-end text-xs ml-3">
+                    <img src={bars} className="h-4 w-5 mr-2" />
+                    <p>{item.rank}</p>
+                  </div>
+                </div>
+              </>
+            ) : (
+              ''
+            )}
           </div>
         </div>
         {(rewardsCategory === 'winning' ? claimData.winning_placements : claimData.no_placements)
@@ -335,6 +341,15 @@ const Play = () => {
 
   const claimRewards = async (gameId) => {
     setClaimLoading(true);
+    let totalPrize = 0;
+
+    if (claimData && claimData.winning_placements.length > 0) {
+      totalPrize = claimData.winning_placements.reduce((total, num) => {
+        let acc = total + Math.round(num.prize);
+        return acc;
+      }, 0);
+    }
+
     const claimRes = await executeContract(connectedWallet, GAME, [
       {
         contractAddr: GAME,
@@ -346,8 +361,20 @@ const Play = () => {
       },
     ]);
 
+    console.log('claimRes', claimRes);
+
+    if (!claimRes.txError) {
+      const fetchTx = await retrieveTxInfo(claimRes.txHash);
+
+      if (fetchTx && fetchTx.logs) {
+        setloading(true);
+        fetchGamesLoading();
+      }
+    } else {
+      showFailedModal(true);
+      fetchGamesLoading();
+    }
     showClaimModal(false);
-    await fetchGames(activeCategory);
     setClaimLoading(false);
   };
 
@@ -454,7 +481,7 @@ const Play = () => {
                       {rewardsCategory === 'winning' &&
                         (claimData.winning_placements.length > 0 ? (
                           claimData.winning_placements.map(
-                            (item, i) => item && renderPlacements(item, i)
+                            (item, i) => item && renderPlacements(item, i, true)
                           )
                         ) : (
                           <>
@@ -604,7 +631,7 @@ const Play = () => {
                                     date={data.date}
                                     year={data.year}
                                     img={data.image}
-                                    fetchGames={() => fetchGamesLoading(activeCategory)}
+                                    fetchGames={fetchGamesLoading}
                                     index={() => changeIndex()}
                                   />
                                 </div>

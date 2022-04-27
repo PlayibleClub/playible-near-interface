@@ -22,10 +22,10 @@ export const estimateFee = async (
   gasPrices = { uusd: 0.456 },
   feeDenoms = ['uusd']
 ) => {
-  const accountInfo = await terra.auth.accountInfo(walletAddress);
+  let estimatedFee = null;
+  try {
+    const accountInfo = await terra.auth.accountInfo(walletAddress);
 
-  let estimatedFee = null
-  while (estimatedFee === null) {
     try {
       estimatedFee = await terra.tx.estimateFee(
         [
@@ -36,9 +36,13 @@ export const estimateFee = async (
         ],
         { msgs: executeContractMsg, gasPrices: gasPrices, feeDenoms: feeDenoms } //use UST as gas by default
       );
+
+      console.log(estimatedFee);
     } catch (err) {
       estimatedFee = null;
     }
+  } catch (err) {
+    estimatedFee = null;
   }
 
   return estimatedFee;
@@ -103,6 +107,10 @@ export const executeContract = async (
 
   if (estimatedFee == null) {
     estimatedFee = await estimateFee(connectedWallet.walletAddress, executeContractMsg);
+    if (estimatedFee == null) {
+      txResult.txError = 'Fee estimation failed. Check your wallet and try again.';
+      return txResult;
+    }
   }
 
   await connectedWallet

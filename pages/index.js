@@ -220,7 +220,7 @@ export default function Home(props) {
                         </>
                       ) : (
                         <>
-                          <div>Contests opening soon...</div>
+                          <div>No active games to display.</div>
                         </>
                       )}
                     </div>
