@@ -51,7 +51,43 @@ const Index = (props) => {
   const [distribution, setDistribution] = useState([
     {
       rank: 1,
-      percentage: 0,
+      percentage: 50,
+    },
+    {
+      rank: 2,
+      percentage: 30,
+    },
+    {
+      rank: 3,
+      percentage: 16,
+    },
+    {
+      rank: 4,
+      percentage: 2,
+    },
+    {
+      rank: 5,
+      percentage: 2,
+    },
+    {
+      rank: 6,
+      percentage: 2,
+    },
+    {
+      rank: 7,
+      percentage: 2,
+    },
+    {
+      rank: 8,
+      percentage: 2,
+    },
+    {
+      rank: 9,
+      percentage: 2,
+    },
+    {
+      rank: 10,
+      percentage: 2,
     },
   ]);
 
@@ -172,6 +208,14 @@ const Index = (props) => {
       errors.push('Total percent distribution must be equal to 100');
     }
 
+    if (distribution.length < 10) {
+      errors.push('Exactly 10 rank distribution must be provided. (Only ' + distribution.length + ' was provided)')
+    }
+
+    if (distribution.filter(item => item.percentage === 0 || item.percentage < 0).length > 0) {
+      errors.push('A distribution percentage of 0% is not allowed')
+    }
+
     for (let i = 0; i < distribution.length; i++) {
       if (distribution[i].rank !== sortPercentage[i].rank) {
         errors.push('Higher rank must have a higher percentage than the rest below');
@@ -208,8 +252,6 @@ const Index = (props) => {
       console.log('id', id);
 
       const leaderboard = await axiosInstance.get(`/fantasy/game/${id}/leaderboard/`);
-
-      console.log('leaderboard', leaderboard);
 
       if (leaderboard.status === 200) {
         const endGameRes = await executeContract(connectedWallet, ORACLE, [
@@ -281,21 +323,6 @@ const Index = (props) => {
           };
         });
 
-        if (distributionList.length < 10) {
-          const blankPlacements = 10 - distributionList.length;
-
-          let tempDistribution = distributionList;
-          let blankDistribution = [];
-          for (let i = 0; i < blankPlacements; i++) {
-            blankDistribution.push({
-              rank: distributionList.length + i + 1,
-              percentage: 0,
-            });
-          }
-
-          finalDistribution = [...tempDistribution, ...blankDistribution];
-        }
-
         const resContract = await executeContract(connectedWallet, ORACLE, [
           {
             contractAddr: ORACLE,
@@ -303,7 +330,7 @@ const Index = (props) => {
               add_game: {
                 game_id: res.data.id.toString(),
                 prize: parseInt(res.data.prize),
-                distribution: finalDistribution,
+                distribution: distributionList,
               },
             },
           },
@@ -586,7 +613,7 @@ const Index = (props) => {
                     )}
                   </div>
 
-                  <div className="flex justify-center mt-8">
+                  <div className="flex justify-center mt-8 mb-10">
                     <button
                       className="bg-indigo-green font-monument tracking-widest ml-7 text-indigo-white w-5/6 md:w-80 h-16 text-center text-sm mt-4"
                       onClick={validateGame}
