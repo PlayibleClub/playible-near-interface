@@ -283,7 +283,7 @@ const Index = (props) => {
 
         setModal(true);
         setEndModal(false);
-        fetchGames();
+        await fetchGames();
       } else {
         setMsg({
           title: 'Error',
@@ -398,10 +398,10 @@ const Index = (props) => {
     const completedRes = await axiosInstance.get('/fantasy/game/completed/');
 
     if (res.status === 200 && res.data.length > 0) {
-      const data = [...res.data].sort(
+      const sortedData = [...res.data].sort(
         (a, b) => new Date(a.start_datetime) - new Date(b.start_datetime)
       );
-      setGames(data);
+      setGames(sortedData);
     }
     if (completedRes.status === 200 && completedRes.data.length > 0) {
       const data = completedRes.data;
@@ -410,15 +410,16 @@ const Index = (props) => {
           game_info: { game_id: item.id.toString() },
         });
 
+
         return {
           ...item,
-          hasEnded: hasEnded?.has_ended,
+          hasEnded: !!hasEnded?.has_ended,
         };
       });
 
       const completedGamesList = await Promise.all(completedList);
 
-      setCompletedGames(completedGamesList);
+      setCompletedGames(completedGamesList.filter(item => !item.hasEnded));
     }
     setLoading(false);
   };

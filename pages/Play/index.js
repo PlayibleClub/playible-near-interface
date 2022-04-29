@@ -24,7 +24,7 @@ import LoadingPageDark from '../../components/loading/LoadingPageDark';
 import { LCDClient } from '@terra-money/terra.js';
 import { GAME, ORACLE } from '../../data/constants/contracts';
 import Modal from '../../components/modals/Modal';
-import { executeContract } from '../../utils/terra';
+import { executeContract, retrieveTxInfo } from '../../utils/terra';
 
 const Play = () => {
   const { status, connect, disconnect, availableConnectTypes } = useWallet();
