@@ -158,7 +158,7 @@ export default function Home(props) {
       <meta property="og:url" content="https://playible.io/"/>
       <meta property="og:type" content="website"/> */}
       </Head>
-      <Container>
+      <Container activeName="HOME">
         <div className="flex flex-col w-screen md:w-full overflow-y-auto h-screen justify-center self-center md:pb-12 text-indigo-black">
           <Main color="indigo-white">
             <div className="flex flex-col md:flex-row md:ml-12">
@@ -174,7 +174,7 @@ export default function Home(props) {
                 </div>
               </div> */}
                 <div className="md:mr-8">
-                  <img className="object-fill h-48 w-full visible md:hidden" src={banner} />
+                  <img className="object-fill h-48 w-full visible md:hidden rounded-lg" src={banner} />
                   <img
                     className="object-fit h-96 w-full hidden md:flex overflow-hidden rounded-lg"
                     src={bannerDesktop}

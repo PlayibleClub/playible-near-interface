@@ -250,7 +250,7 @@ const AssetDetails = (props) => {
           </div>
         </>
       )}
-      <Container>
+      <Container activeName="SQUAD">
         {loading ? (
           <LoadingPageDark />
         ) : (
