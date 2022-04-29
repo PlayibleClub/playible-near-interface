@@ -37,6 +37,31 @@ const TokenDrawPage = (props) => {
 
   const [packs, setpacks] = useState(true);
 
+  const activeChecker = () => {
+    if (athletes.length > 0) {
+      const notRevealed = athletes.filter((item) => !item.isOpen);
+
+      if (notRevealed.length > 0) {
+        return true;
+      } else {
+        false;
+      }
+    } else {
+      return false;
+    }
+  };
+
+  const revealAll = () => {
+    const tempAthletes = athletes.map((item) => {
+      return {
+        ...item,
+        isOpen: true,
+      };
+    });
+
+    setAthletes(tempAthletes);
+  };
+
   const changecard = (position) => {
     if (athletes[position].isOpen === false) {
       const updatedList = [...athletes];
@@ -109,8 +134,8 @@ const TokenDrawPage = (props) => {
         await prepareNewAthletes();
         setErr(null);
       } else {
-         setErr('You are connected to mainnet. Please connect to testnet');
-         setLoading(false);
+        setErr('You are connected to mainnet. Please connect to testnet');
+        setLoading(false);
       }
     } else {
       setErr('Waiting for wallet connection...');
@@ -126,7 +151,7 @@ const TokenDrawPage = (props) => {
     if (isMobile) {
       setVideoPlaying(false);
     }
-  }, [])
+  }, []);
 
   return (
     <>
@@ -146,65 +171,77 @@ const TokenDrawPage = (props) => {
                   <LoadingPageDark />
                 ) : (
                   <div className="mb-10">
-                    <div
-                      className="flex justify-center self-center"
-                      style={{ backgroundColor: 'white' }}
-                    >
+                    <div>
                       {err ? (
                         <p className="py-10">{err}</p>
                       ) : (
-                        <div className="flex flex-row flex-wrap justify-center">
-                          {athletes.length > 0
-                            ? athletes.map((data, key) => (
-                                <div className="flex px-14 py-10 m-10" key={key}>
-                                  <div
-                                    onClick={() => {
-                                      changecard(key);
-                                    }}
-                                  >
-                                    <TokenComponent
-                                      athlete_id={
-                                        data.attributes.filter(
-                                          (item) => item.trait_type === 'athlete_id'
-                                        )[0].value
-                                      }
-                                      position={
-                                        data.attributes.filter(
-                                          (item) => item.trait_type === 'position'
-                                        )[0].value
-                                      }
-                                      rarity={
-                                        data.attributes.filter(
-                                          (item) => item.trait_type === 'rarity'
-                                        )[0].value
-                                      }
-                                      release={
-                                        data.attributes.filter(
-                                          (item) => item.trait_type === 'release'
-                                        )[0].value
-                                      }
-                                      team={
-                                        data.attributes.filter(
-                                          (item) => item.trait_type === 'team'
-                                        )[0].value
-                                      }
-                                      usage={
-                                        data.attributes.filter(
-                                          (item) => item.trait_type === 'usage'
-                                        )[0].value
-                                      }
-                                      isOpen={data.isOpen}
-                                      name={
-                                        ''
-                                      }
-                                      fantasy_score={data.fantasy_score}
-                                      img={data.animation}
-                                    />
-                                  </div>
-                                </div>
-                              ))
-                            : ''}
-                        </div>
+                        <>
+                          {athletes.length > 0 && activeChecker() && (
+                            <div className="flex justify-center my-2 w-full">
+                              <button
+                                className="bg-indigo-buttonblue cursor-pointer text-indigo-white w-5/6 md:w-80 h-14 text-center font-bold text-md uppercase"
+                                onClick={revealAll}
+                              >
+                                Reveal all
+                              </button>
+                            </div>
+                          )}
+                          <div
+                            className="flex justify-center self-center"
+                            style={{ backgroundColor: 'white' }}
+                          >
+                            <div className="flex flex-row flex-wrap justify-center">
+                              {athletes.length > 0
+                                ? athletes.map((data, key) => (
+                                    <div className="flex px-14 py-10 m-10" key={key}>
+                                      <div
+                                        onClick={() => {
+                                          changecard(key);
+                                        }}
+                                      >
+                                        <TokenComponent
+                                          athlete_id={
+                                            data.attributes.filter(
+                                              (item) => item.trait_type === 'athlete_id'
+                                            )[0].value
+                                          }
+                                          position={
+                                            data.attributes.filter(
+                                              (item) => item.trait_type === 'position'
+                                            )[0].value
+                                          }
+                                          rarity={
+                                            data.attributes.filter(
+                                              (item) => item.trait_type === 'rarity'
+                                            )[0].value
+                                          }
+                                          release={
+                                            data.attributes.filter(
+                                              (item) => item.trait_type === 'release'
+                                            )[0].value
+                                          }
+                                          team={
+                                            data.attributes.filter(
+                                              (item) => item.trait_type === 'team'
+                                            )[0].value
+                                          }
+                                          usage={
+                                            data.attributes.filter(
+                                              (item) => item.trait_type === 'usage'
+                                            )[0].value
+                                          }
+                                          isOpen={data.isOpen}
+                                          name={''}
+                                          fantasy_score={data.fantasy_score}
+                                          img={data.animation}
+                                        />
+                                      </div>
+                                    </div>
+                                  ))
+                                : ''}
+                            </div>
+                          </div>
+                        </>
                       )}
                     </div>
                     <div className="flex h-14 mt-16">

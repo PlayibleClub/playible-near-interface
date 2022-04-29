@@ -8,7 +8,7 @@ import { getPortfolio } from '../../redux/reducers/contract/portfolio';
 import { useConnectedWallet } from '@terra-money/wallet-provider';
 import Link from 'next/link';
 import Container from '../../components/containers/Container';
-import myactivityicon from '../../public/images/myactivity.png';
+import myactivityicon from '../../public/images/icons/Arrow.svg';
 import 'regenerator-runtime/runtime';
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en.json';
@@ -149,7 +149,7 @@ const MyActivity = () => {
                               }}
                             >
                               <img
-                                className="absolute top-0 right-0 cursor-pointer"
+                                className="absolute top-0 right-0 cursor-pointer w-8 h-8"
                                 src={myactivityicon}
                               />
                             </Link>

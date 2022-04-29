@@ -4,8 +4,8 @@ import Image from 'next/image'
 
 const PlayComponent = (props) =>{
     const {teamName, reward, score, win} = props;
-    const rewardicon = "/../public/images/claimreward.png"
-    const bars = "/../public/images/bars.png"
+    const rewardicon = "/../public/images/icons/Reward.svg"
+    const bars = "/../public/images/icons/Ranking.png"
 
     return (
         <>
