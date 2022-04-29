@@ -176,7 +176,7 @@ export default function Home(props) {
                 <div className="md:mr-8">
                   <img className="object-fill h-48 w-full visible md:hidden" src={banner} />
                   <img
-                    className="object-fit h-96 w-full hidden md:flex overflow-hidden"
+                    className="object-fit h-96 w-full hidden md:flex overflow-hidden rounded-lg"
                     src={bannerDesktop}
                   />
                 </div>
