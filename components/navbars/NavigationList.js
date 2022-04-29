@@ -15,11 +15,6 @@ const navigation = [
     img: '/images/icons/My_Squad.svg',
   },
   {
-    name: 'PLAY',
-    path: '/Play',
-    img: '/images/icons/Play.svg',
-  },
-  {
     name: 'GET PACKS',
     path: 'https://www.oneplanetnft.io/launchpad/randombox/624b0f4039ef0b06630a7cfd',
     img: '/images/icons/My_Squad.svg',
