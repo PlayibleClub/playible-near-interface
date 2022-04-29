@@ -62,7 +62,7 @@ export default function Packs() {
     
     // if (isNarrowScreen) {
     return (
-        <Container>
+        <Container activeName="SQUAD">
             <div className="flex flex-col w-full overflow-y-auto h-screen md:pb-12">
                 <Main color="indigo-white">
                     <div className="md:ml-6">

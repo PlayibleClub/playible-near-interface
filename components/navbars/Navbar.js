@@ -53,7 +53,7 @@ const Navbar = (props) => {
   const { isAdmin } = props
   return (
     <div className="font-monument">
-      <Menu styles={styles} customBurgerIcon={<img src="images/Hamburger.png" />}>
+      <Menu styles={styles} customBurgerIcon={<img src="images/icons/Hamburger.svg" />}>
         {getNavigation(isAdmin).map(({ name, img, path }) => (
           <a id={name.toLowerCase()} className="menu-item">
             <Link href={path}>{name}</Link>
