@@ -1,23 +1,23 @@
 const navigation = [
   {
-    name: 'PLAYIBLE CLUB',
+    name: 'CLUBHOUSE',
     path: 'http://playible.club',
-    img: '/images/navicons/icon_home.png',
+    img: '/images/icons/Home.svg',
   },
   {
     name: 'HOME',
     path: '/',
-    img: '/images/navicons/icon_home.png',
+    img: '/images/icons/Home.svg',
   },
   {
     name: 'SQUAD',
     path: '/Portfolio',
-    img: '/images/navicons/icon_portfolio.png',
+    img: '/images/icons/My_Squad.svg',
   },
   {
     name: 'GET PACKS',
     path: 'https://www.oneplanetnft.io/launchpad/randombox/624b0f4039ef0b06630a7cfd',
-    img: '/images/navicons/icon_portfolio.png',
+    img: '/images/icons/My_Squad.svg',
   },
 ];
 
@@ -25,7 +25,7 @@ const navigationAdmin = [
   {
     name: 'GAME',
     path: '/Admin/Game',
-    img: '/images/navicons/icon_play.png',
+    img: '/images/icons/Play.svg',
   },
 ];
 

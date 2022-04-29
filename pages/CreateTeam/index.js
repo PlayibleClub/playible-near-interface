@@ -393,7 +393,7 @@ export default function CreateLineup() {
   return (
     <>
       {timerUp ? (
-        <Container>
+        <Container activeName="PLAY">
           <PortfolioContainer
             title="GAME HAS STARTED"
             textcolor="text-indigo-black"
@@ -402,7 +402,7 @@ export default function CreateLineup() {
         </Container>
       ) : (
         <>
-          <Container>
+          <Container activeName="PLAY">
             <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
               <Main color="indigo-white">
                 {selectModal ? (

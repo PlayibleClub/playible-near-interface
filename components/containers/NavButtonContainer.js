@@ -1,15 +1,20 @@
 import PropTypes from 'prop-types';
-import React from 'react'
-import Link from 'next/link'
+import React from 'react';
+import Link from 'next/link';
 
 const NavButtonContainer = (props) => {
-  const { children, color, imagesrc, Title, TeamName, CoinValue, path } = props;
+  const { children, color, imagesrc, Title, TeamName, CoinValue, path, activeName } = props;
 
   return (
     <Link href={path}>
-      <div data-test="NavButtonContainer" className="text-sm font-thin flex flex-row justify-left mt-6">
-        <img className="h-4 w-4 mr-5 place-self-center" src={imagesrc} alt="Img" />
-        <a>{Title}</a>
+      <div className={Title === activeName ? 'border-l-4' : 'pl-1'}>
+        <div
+          data-test="NavButtonContainer"
+          className="text-sm font-thin flex flex-row justify-left mt-4 ml-12 py-2"
+        >
+          <img className="h-4 w-4 mr-5 place-self-center" src={imagesrc} alt="Img" />
+          <a>{Title}</a>
+        </div>
       </div>
     </Link>
   );

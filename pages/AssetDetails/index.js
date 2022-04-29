@@ -91,6 +91,8 @@ const AssetDetails = (props) => {
       },
     });
 
+    console.log('res', res)
+
     const imgRes = await axiosInstance.get(`/fantasy/athlete/${parseInt(queryObj.id)}/`);
     let img = imgRes.status === 200 ? imgRes.data.nft_image : null;
     if (res.info !== undefined) {
@@ -248,7 +250,7 @@ const AssetDetails = (props) => {
           </div>
         </>
       )}
-      <Container>
+      <Container activeName="SQUAD">
         {loading ? (
           <LoadingPageDark />
         ) : (
@@ -372,7 +374,15 @@ const AssetDetails = (props) => {
                         </div>
                         <div className="flex flex-col justify-center self-center md:mr-24 mb-8 md:ml-6">
                           <div className="mt-8 mb-16 self-center">
-                            <PlayerStats player={stats} />
+                            <PlayerStats
+                              player={stats}
+                              position={position(
+                                'baseball',
+                                assetData.attributes.filter(
+                                  (item) => item.trait_type === 'position'
+                                )[0].value
+                              )}
+                            />
                           </div>
                         </div>
                       </div>
