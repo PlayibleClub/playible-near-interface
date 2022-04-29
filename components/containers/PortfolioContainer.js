@@ -41,7 +41,7 @@ const PortfolioContainer = (props) => {
               <img src={'/images/blackunderline.png'} className="object-none" />
             </div>
             <div className="w-32 h-32 flex justify-center items-center ml-10" style={{
-              backgroundImage: `url('/images/avgscore.png')`,
+              backgroundImage: `url('/images/icons/FantasyAverageScore.svg')`,
               backgroundRepeat: 'no-repeat',
               width: '135px',
               height: '135px'

@@ -393,7 +393,7 @@ export default function CreateLineup() {
   return (
     <>
       {timerUp ? (
-        <Container>
+        <Container activeName="PLAY">
           <PortfolioContainer
             title="GAME HAS STARTED"
             textcolor="text-indigo-black"
@@ -402,7 +402,7 @@ export default function CreateLineup() {
         </Container>
       ) : (
         <>
-          <Container>
+          <Container activeName="PLAY">
             <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
               <Main color="indigo-white">
                 {selectModal ? (
@@ -665,41 +665,49 @@ export default function CreateLineup() {
     </>
   );
 }
-
 export async function getServerSideProps(ctx) {
-  const { query } = ctx;
-  let queryObj = null;
-  if (query) {
-    if (query.id) {
-      queryObj = query;
-      const res = await axiosInstance.get(`/fantasy/game/${query.id}/`);
-      if (res.status === 200) {
-        if (new Date(res.data.start_datetime) < new Date()) {
-          return {
-            redirect: {
-              destination: `/PlayDetails/?id=${query.id}`,
-              permanent: false,
-            },
-          };
-        }
-      }
-    } else {
-      return {
-        redirect: {
-          destination: query.origin || '/Portfolio',
-          permanent: false,
-        },
-      };
-    }
-  }
-
-  let playerStats = null;
-  const res = await axiosInstance.get(`/fantasy/athlete/${parseInt(queryObj.id) + 1}/stats/`);
-
-  if (res.status === 200) {
-    playerStats = res.data;
-  }
   return {
-    props: { queryObj, playerStats },
+    redirect: {
+      destination: '/Portfolio',
+      permanent: false,
+    },
   };
 }
+
+// export async function getServerSideProps(ctx) {
+//   const { query } = ctx;
+//   let queryObj = null;
+//   if (query) {
+//     if (query.id) {
+//       queryObj = query;
+//       const res = await axiosInstance.get(`/fantasy/game/${query.id}/`);
+//       if (res.status === 200) {
+//         if (new Date(res.data.start_datetime) < new Date()) {
+//           return {
+//             redirect: {
+//               destination: `/PlayDetails/?id=${query.id}`,
+//               permanent: false,
+//             },
+//           };
+//         }
+//       }
+//     } else {
+//       return {
+//         redirect: {
+//           destination: query.origin || '/Portfolio',
+//           permanent: false,
+//         },
+//       };
+//     }
+//   }
+
+//   let playerStats = null;
+//   const res = await axiosInstance.get(`/fantasy/athlete/${parseInt(queryObj.id) + 1}/stats/`);
+
+//   if (res.status === 200) {
+//     playerStats = res.data;
+//   }
+//   return {
+//     props: { queryObj, playerStats },
+//   };
+// }

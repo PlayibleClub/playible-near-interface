@@ -8,7 +8,7 @@ import { getPortfolio } from '../../redux/reducers/contract/portfolio';
 import { useConnectedWallet } from '@terra-money/wallet-provider';
 import Link from 'next/link';
 import Container from '../../components/containers/Container';
-import myactivityicon from '../../public/images/myactivity.png';
+import myactivityicon from '../../public/images/icons/Arrow.svg';
 import 'regenerator-runtime/runtime';
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en.json';
@@ -103,7 +103,7 @@ const MyActivity = () => {
 
   return (
     <>
-      <Container>
+      <Container activeName="PLAY">
         <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
           <Main color="indigo-white">
             <PortfolioContainer title="MY ACTIVITY" textcolor="text-indigo-black" />
@@ -149,7 +149,7 @@ const MyActivity = () => {
                               }}
                             >
                               <img
-                                className="absolute top-0 right-0 cursor-pointer"
+                                className="absolute top-0 right-0 cursor-pointer w-8 h-8"
                                 src={myactivityicon}
                               />
                             </Link>
@@ -172,3 +172,12 @@ const MyActivity = () => {
   );
 };
 export default MyActivity;
+
+export async function getServerSideProps(ctx) {
+  return {
+    redirect: {
+      destination: '/Portfolio',
+      permanent: false,
+    },
+  };
+}

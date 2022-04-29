@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import filterIcon from '../../../public/images/filterBlack.png';
+import filterIcon from '../../../public/images/icons/Filter.svg';
 import searchIcon from '../../../public/images/searchBlack.png';
 
 const Sorter = (props) => {
@@ -56,7 +56,7 @@ const Sorter = (props) => {
               <option value={option.value}>{option.name}</option>
             ))}
           </select>
-          <img src={filterIcon} className="object-none w-1/12 absolute right-0 mr-2" />
+          <img src={filterIcon} className="w-6 h-6 mr-2" />
         </div>
         <div className="bg-indigo-white border-2 border-indigo-lightgray border-opacity-40 ml-1 h-11 w-60">
           <div className="mt-1.5 relative flex items-center">

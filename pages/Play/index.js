@@ -24,7 +24,7 @@ import LoadingPageDark from '../../components/loading/LoadingPageDark';
 import { LCDClient } from '@terra-money/terra.js';
 import { GAME, ORACLE } from '../../data/constants/contracts';
 import Modal from '../../components/modals/Modal';
-import { executeContract } from '../../utils/terra';
+import { executeContract, retrieveTxInfo } from '../../utils/terra';
 
 const Play = () => {
   const { status, connect, disconnect, availableConnectTypes } = useWallet();
@@ -34,7 +34,8 @@ const Play = () => {
   const [claimData, setClaimData] = useState(null);
   const [claimTeam, showClaimTeam] = useState(false);
   const [modalView, switchView] = useState(true);
-  const [failedTransactionModal, showFailedModal] = useState(false);
+  const [failedTransactionModal, showFailedModal] = useState(null);
+  const [successTransactionModal, showSuccessModal] = useState(null);
   const [claimLoading, setClaimLoading] = useState(false);
   const router = useRouter();
   const lcd = useLCDClient();
@@ -202,7 +203,7 @@ const Play = () => {
       let noPlacements = [];
       let prize = 0;
       let distribution = [];
-      let leaderboards = []
+      let leaderboards = [];
 
       const gameInfo = await lcd.wasm.contractQuery(ORACLE, {
         game_info: { game_id: gameId.toString() },
@@ -216,8 +217,8 @@ const Play = () => {
       if (gameInfo.leaderboard.length > 0) {
         leaderboards = {
           status: 200,
-          data: gameInfo.leaderboard
-        }
+          data: gameInfo.leaderboard,
+        };
       } else {
         leaderboards = await axiosInstance.get(`/fantasy/game/${gameId}/leaderboard/`);
       }
@@ -253,7 +254,7 @@ const Play = () => {
               }
             })
             .filter((item) => item);
-           
+
           noPlacements = teams.data
             .map((team) => {
               let exists = false;
@@ -296,30 +297,36 @@ const Play = () => {
     return 0;
   };
 
-  const fetchGamesLoading = () => {
+  const fetchGamesLoading = async () => {
     setloading(true);
-    setSortedList([]);
+    await setSortedList([]);
     fetchGames(activeCategory);
   };
 
-  const renderPlacements = (item, i) => {
+  const renderPlacements = (item, i, winning = false) => {
     return (
       <>
         <div className="p-8 py-10">
           <div className="flex justify-between items-center">
             <p className="bg-indigo-black w-max p-3 text-indigo-white font-monument uppercase py-1">
-              {item.team_name}
+              {winning ? item.team_name : item.name}
             </p>
-            <div className="flex items-end font-monument">
-              <div className="flex items-end text-xs">
-                <img src={coin} className="mr-2" />
-                <p>{item.prize} UST</p>
-              </div>
-              <div className="flex items-end text-xs ml-3">
-                <img src={bars} className="h-4 w-5 mr-2" />
-                <p>{item.rank}</p>
-              </div>
-            </div>
+            {winning ? (
+              <>
+                <div className="flex items-end font-monument">
+                  <div className="flex items-end text-xs">
+                    <img src={coin} className="mr-2" />
+                    <p>{item.prize} UST</p>
+                  </div>
+                  <div className="flex items-end text-xs ml-3">
+                    <img src={bars} className="h-4 w-5 mr-2" />
+                    <p>{item.rank}</p>
+                  </div>
+                </div>
+              </>
+            ) : (
+              ''
+            )}
           </div>
         </div>
         {(rewardsCategory === 'winning' ? claimData.winning_placements : claimData.no_placements)
@@ -335,6 +342,15 @@ const Play = () => {
 
   const claimRewards = async (gameId) => {
     setClaimLoading(true);
+    let totalPrize = 0;
+
+    if (claimData && claimData.winning_placements.length > 0) {
+      totalPrize = claimData.winning_placements.reduce((total, num) => {
+        let acc = total + Math.round(num.prize);
+        return acc;
+      }, 0);
+    }
+
     const claimRes = await executeContract(connectedWallet, GAME, [
       {
         contractAddr: GAME,
@@ -346,8 +362,26 @@ const Play = () => {
       },
     ]);
 
+    if (!claimRes.txError) {
+      const fetchTx = await retrieveTxInfo(claimRes.txHash);
+
+      if (fetchTx && fetchTx.logs) {
+        showSuccessModal({
+          prize: totalPrize,
+        });
+        setloading(true);
+        fetchGamesLoading();
+      }
+    } else {
+      showFailedModal({
+        msg:
+          claimRes.txError.indexOf('Un') !== -1 && claimRes.txError.indexOf('Un') < 2
+            ? null
+            : claimRes.txError,
+      });
+      fetchGamesLoading();
+    }
     showClaimModal(false);
-    await fetchGames(activeCategory);
     setClaimLoading(false);
   };
 
@@ -400,15 +434,15 @@ const Play = () => {
       {claimModal === true && (
         <>
           <div className="fixed w-screen h-screen bg-opacity-70 z-50 overflow-auto bg-indigo-gray flex font-montserrat">
-            <div className="relative p-8 bg-indigo-white w-11/12 md:w-2/5 m-auto flex-col flex rounded-lg">
+            <div className="relative p-8 bg-indigo-white w-11/12 md:w-2/5 m-auto flex-col flex">
               {!claimLoading ? (
                 <button
-                  className="absolute top-0 right-0 "
+                  className="absolute top-0 right-0 mt-6 mr-6 h-4 w-4"
                   onClick={() => {
                     showClaimModal(false);
                   }}
                 >
-                  <div className="p-4 font-black">X</div>
+                  <img className="h-4 w-4 " src={'/images/x.png'} />
                 </button>
               ) : (
                 ''
@@ -417,22 +451,26 @@ const Play = () => {
               <div className="text-sm">
                 <div className="flex font-monument select-none mt-5">
                   <div
-                    className={`mr-8 tracking-wider cursor-pointer text-xs ${
+                    className={`mr-8 tracking-wider text-xs ${
+                      claimLoading ? 'cursor-not-allowed text-indigo-lightgray' : 'cursor-pointer'
+                    } ${
                       rewardsCategory === 'winning'
                         ? 'border-b-8 pb-2 border-indigo-buttonblue'
                         : ''
                     }`}
-                    onClick={() => setRewardsCategory('winning')}
+                    onClick={!claimLoading ? () => setRewardsCategory('winning') : undefined}
                   >
                     WINNING TEAMS
                   </div>
                   <div
-                    className={`mr-8 tracking-wider cursor-pointer text-xs ${
+                    className={`mr-8 tracking-wider text-xs ${
+                      claimLoading ? 'cursor-not-allowed text-indigo-lightgray' : 'cursor-pointer'
+                    } ${
                       rewardsCategory !== 'winning'
                         ? 'border-b-8 pb-2 border-indigo-buttonblue'
                         : ''
                     }`}
-                    onClick={() => setRewardsCategory('lost')}
+                    onClick={!claimLoading ? () => setRewardsCategory('lost') : undefined}
                   >
                     NO PLACEMENT
                   </div>
@@ -454,7 +492,7 @@ const Play = () => {
                       {rewardsCategory === 'winning' &&
                         (claimData.winning_placements.length > 0 ? (
                           claimData.winning_placements.map(
-                            (item, i) => item && renderPlacements(item, i)
+                            (item, i) => item && renderPlacements(item, i, true)
                           )
                         ) : (
                           <>
@@ -516,39 +554,53 @@ const Play = () => {
           </div>
         </>
       )}
-      {failedTransactionModal === true && (
+      {successTransactionModal !== null && (
         <>
           <div className="fixed w-screen h-screen bg-opacity-70 z-50 overflow-auto bg-indigo-gray flex font-montserrat">
-            <div className="relative p-8 bg-indigo-white w-11/12 md:w-96 h-10/12 md:h-auto m-auto flex-col flex rounded-lg">
+            <div className="relative p-8 bg-indigo-white w-11/12 md:w-96 h-10/12 md:h-auto m-auto flex-col flex">
               <button
+                className="absolute top-0 right-0 mt-6 mr-6 h-4 w-4"
                 onClick={() => {
-                  showFailedModal(false);
+                  showSuccessModal(null);
                 }}
               >
-                <div className="absolute top-0 right-0 p-4 font-black">X</div>
+                <img className="h-4 w-4 " src={'/images/x.png'} />
               </button>
-              <img src={claimreward} className="h-20 w-20" />
-              <div className="mt-4 bg-indigo-yellow p-2 text-center text-lg rounded font-monument">
+              <img src={claimreward} className="h-20 w-20 mt-5" />
+              <div className="mt-4 bg-indigo-yellow w-min p-2 px-3 text-center text-lg font-monument">
+                CONGRATULATIONS
+              </div>
+              <div className="p-2 text-4xl font-monument">{showSuccessModal.prize || 0} UST</div>
+              <div className="p-2 text-lg font-monument -mt-4">EARNED</div>
+            </div>
+          </div>
+        </>
+      )}
+      {failedTransactionModal !== null && (
+        <>
+          <div className="fixed w-screen h-screen bg-opacity-70 z-50 overflow-auto bg-indigo-gray flex font-montserrat">
+            <div className="relative p-8 bg-indigo-white w-11/12 md:w-96 h-10/12 md:h-auto m-auto flex-col flex">
+              <button
+                className="absolute top-0 right-0 mt-6 mr-6 h-4 w-4"
+                onClick={() => {
+                  showFailedModal(null);
+                }}
+              >
+                <img className="h-4 w-4 " src={'/images/x.png'} />
+              </button>
+              <img src={claimreward} className="h-20 w-20 mt-5" />
+              <div className="mt-4 bg-indigo-yellow w-min p-2 px-3 text-center text-lg font-monument">
                 FAILED TRANSACTION
               </div>
               <div className="mt-4 p-2 text-sm">
-                We're sorry, unfortunately we've experienced a problem loading your request.
+                {failedTransactionModal.msg ||
+                  "We're sorry, unfortunately we've experienced a problem loading your request."}
               </div>
               <div className="px-2 text-sm">Please try again.</div>
             </div>
           </div>
         </>
       )}
-      {/* <Modal title={'LOADING'} visible={!claimLoading}>
-        <div>
-          <p className="mb-5 text-center font-montserrat">Please wait</p>
-          <div className="flex gap-5 justify-center mb-5">
-            <div className="bg-indigo-buttonblue animate-bounce w-5 h-5 rounded-full"></div>
-            <div className="bg-indigo-buttonblue animate-bounce w-5 h-5 rounded-full"></div>
-            <div className="bg-indigo-buttonblue animate-bounce w-5 h-5 rounded-full"></div>
-          </div>
-        </div>
-      </Modal> */}
       <Container>
         <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
           <Main color="indigo-white">
@@ -604,7 +656,7 @@ const Play = () => {
                                     date={data.date}
                                     year={data.year}
                                     img={data.image}
-                                    fetchGames={() => fetchGamesLoading(activeCategory)}
+                                    fetchGames={fetchGamesLoading}
                                     index={() => changeIndex()}
                                   />
                                 </div>
@@ -703,3 +755,12 @@ const Play = () => {
   );
 };
 export default Play;
+
+export async function getServerSideProps(ctx) {
+  return {
+    redirect: {
+      destination: '/Portfolio',
+      permanent: false,
+    },
+  };
+}

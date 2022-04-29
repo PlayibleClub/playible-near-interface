@@ -230,7 +230,7 @@ export default function PackDetails(props) {
 
 
   return (
-    <Container>
+    <Container activeName="SQUAD">
       {displayModal && (
         <TransactionModal
           title={modalHeader}

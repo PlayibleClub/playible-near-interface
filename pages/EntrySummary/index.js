@@ -95,7 +95,7 @@ export default function EntrySummary() {
         </div>
         </>
         } */}
-      <Container>
+      <Container activeName="PLAY">
         <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
           <Main color="indigo-white">
             <>
@@ -192,4 +192,13 @@ export default function EntrySummary() {
       </Container>
     </>
   );
+}
+
+export async function getServerSideProps(ctx) {
+  return {
+    redirect: {
+      destination: '/Portfolio',
+      permanent: false,
+    },
+  };
 }
