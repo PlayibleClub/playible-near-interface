@@ -6,4 +6,4 @@ export const PACK = 'terra1nfv2j3vxlgtvg98mupjmzsvamfgw3dc7xtd262'; //Pack Contr
 export const OPENPACK = 'terra1hvxtzdw23fvj9y33tsasadhvrw4w48aazxt8f7'; //OpenPack Contract
 export const ORACLE = 'terra1h6l3075vw043ncvqw72pdmtgte4tntfru2kk42'; //Oracle Contract
 export const CONTROLLER = 'terra1w0t73qkkj50zdq5fkqcedm3ewwz2smm9g8hwns'; // Controller Contract
-export const GAME = 'terra18yjk2zew9rx8p6v8nx47p0vxgs2fchfqllpz38'; //Game Contract
+export const GAME = 'terra1tmgq3rveknx02s84yf9e55dfly5ex9l2vu2464'; //Game Contract

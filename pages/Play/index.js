@@ -755,3 +755,12 @@ const Play = () => {
   );
 };
 export default Play;
+
+export async function getServerSideProps(ctx) {
+  return {
+    redirect: {
+      destination: '/Portfolio',
+      permanent: false,
+    },
+  };
+}
