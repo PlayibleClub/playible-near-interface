@@ -36,8 +36,6 @@ export const estimateFee = async (
         ],
         { msgs: executeContractMsg, gasPrices: gasPrices, feeDenoms: feeDenoms } //use UST as gas by default
       );
-
-      console.log(estimatedFee);
     } catch (err) {
       estimatedFee = null;
     }

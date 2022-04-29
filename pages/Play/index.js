@@ -34,7 +34,8 @@ const Play = () => {
   const [claimData, setClaimData] = useState(null);
   const [claimTeam, showClaimTeam] = useState(false);
   const [modalView, switchView] = useState(true);
-  const [failedTransactionModal, showFailedModal] = useState(false);
+  const [failedTransactionModal, showFailedModal] = useState(null);
+  const [successTransactionModal, showSuccessModal] = useState(null);
   const [claimLoading, setClaimLoading] = useState(false);
   const router = useRouter();
   const lcd = useLCDClient();
@@ -361,17 +362,23 @@ const Play = () => {
       },
     ]);
 
-    console.log('claimRes', claimRes);
-
     if (!claimRes.txError) {
       const fetchTx = await retrieveTxInfo(claimRes.txHash);
 
       if (fetchTx && fetchTx.logs) {
+        showSuccessModal({
+          prize: totalPrize,
+        });
         setloading(true);
         fetchGamesLoading();
       }
     } else {
-      showFailedModal(true);
+      showFailedModal({
+        msg:
+          claimRes.txError.indexOf('Un') !== -1 && claimRes.txError.indexOf('Un') < 2
+            ? null
+            : claimRes.txError,
+      });
       fetchGamesLoading();
     }
     showClaimModal(false);
@@ -427,15 +434,15 @@ const Play = () => {
       {claimModal === true && (
         <>
           <div className="fixed w-screen h-screen bg-opacity-70 z-50 overflow-auto bg-indigo-gray flex font-montserrat">
-            <div className="relative p-8 bg-indigo-white w-11/12 md:w-2/5 m-auto flex-col flex rounded-lg">
+            <div className="relative p-8 bg-indigo-white w-11/12 md:w-2/5 m-auto flex-col flex">
               {!claimLoading ? (
                 <button
-                  className="absolute top-0 right-0 "
+                  className="absolute top-0 right-0 mt-6 mr-6 h-4 w-4"
                   onClick={() => {
                     showClaimModal(false);
                   }}
                 >
-                  <div className="p-4 font-black">X</div>
+                  <img className="h-4 w-4 " src={'/images/x.png'} />
                 </button>
               ) : (
                 ''
@@ -444,22 +451,26 @@ const Play = () => {
               <div className="text-sm">
                 <div className="flex font-monument select-none mt-5">
                   <div
-                    className={`mr-8 tracking-wider cursor-pointer text-xs ${
+                    className={`mr-8 tracking-wider text-xs ${
+                      claimLoading ? 'cursor-not-allowed text-indigo-lightgray' : 'cursor-pointer'
+                    } ${
                       rewardsCategory === 'winning'
                         ? 'border-b-8 pb-2 border-indigo-buttonblue'
                         : ''
                     }`}
-                    onClick={() => setRewardsCategory('winning')}
+                    onClick={!claimLoading ? () => setRewardsCategory('winning') : undefined}
                   >
                     WINNING TEAMS
                   </div>
                   <div
-                    className={`mr-8 tracking-wider cursor-pointer text-xs ${
+                    className={`mr-8 tracking-wider text-xs ${
+                      claimLoading ? 'cursor-not-allowed text-indigo-lightgray' : 'cursor-pointer'
+                    } ${
                       rewardsCategory !== 'winning'
                         ? 'border-b-8 pb-2 border-indigo-buttonblue'
                         : ''
                     }`}
-                    onClick={() => setRewardsCategory('lost')}
+                    onClick={!claimLoading ? () => setRewardsCategory('lost') : undefined}
                   >
                     NO PLACEMENT
                   </div>
@@ -543,39 +554,53 @@ const Play = () => {
           </div>
         </>
       )}
-      {failedTransactionModal === true && (
+      {successTransactionModal !== null && (
         <>
           <div className="fixed w-screen h-screen bg-opacity-70 z-50 overflow-auto bg-indigo-gray flex font-montserrat">
-            <div className="relative p-8 bg-indigo-white w-11/12 md:w-96 h-10/12 md:h-auto m-auto flex-col flex rounded-lg">
+            <div className="relative p-8 bg-indigo-white w-11/12 md:w-96 h-10/12 md:h-auto m-auto flex-col flex">
               <button
+                className="absolute top-0 right-0 mt-6 mr-6 h-4 w-4"
                 onClick={() => {
-                  showFailedModal(false);
+                  showSuccessModal(null);
                 }}
               >
-                <div className="absolute top-0 right-0 p-4 font-black">X</div>
+                <img className="h-4 w-4 " src={'/images/x.png'} />
               </button>
-              <img src={claimreward} className="h-20 w-20" />
-              <div className="mt-4 bg-indigo-yellow p-2 text-center text-lg rounded font-monument">
+              <img src={claimreward} className="h-20 w-20 mt-5" />
+              <div className="mt-4 bg-indigo-yellow w-min p-2 px-3 text-center text-lg font-monument">
+                CONGRATULATIONS
+              </div>
+              <div className="p-2 text-4xl font-monument">{showSuccessModal.prize || 0} UST</div>
+              <div className="p-2 text-lg font-monument -mt-4">EARNED</div>
+            </div>
+          </div>
+        </>
+      )}
+      {failedTransactionModal !== null && (
+        <>
+          <div className="fixed w-screen h-screen bg-opacity-70 z-50 overflow-auto bg-indigo-gray flex font-montserrat">
+            <div className="relative p-8 bg-indigo-white w-11/12 md:w-96 h-10/12 md:h-auto m-auto flex-col flex">
+              <button
+                className="absolute top-0 right-0 mt-6 mr-6 h-4 w-4"
+                onClick={() => {
+                  showFailedModal(null);
+                }}
+              >
+                <img className="h-4 w-4 " src={'/images/x.png'} />
+              </button>
+              <img src={claimreward} className="h-20 w-20 mt-5" />
+              <div className="mt-4 bg-indigo-yellow w-min p-2 px-3 text-center text-lg font-monument">
                 FAILED TRANSACTION
               </div>
               <div className="mt-4 p-2 text-sm">
-                We're sorry, unfortunately we've experienced a problem loading your request.
+                {failedTransactionModal.msg ||
+                  "We're sorry, unfortunately we've experienced a problem loading your request."}
               </div>
               <div className="px-2 text-sm">Please try again.</div>
             </div>
           </div>
         </>
       )}
-      {/* <Modal title={'LOADING'} visible={!claimLoading}>
-        <div>
-          <p className="mb-5 text-center font-montserrat">Please wait</p>
-          <div className="flex gap-5 justify-center mb-5">
-            <div className="bg-indigo-buttonblue animate-bounce w-5 h-5 rounded-full"></div>
-            <div className="bg-indigo-buttonblue animate-bounce w-5 h-5 rounded-full"></div>
-            <div className="bg-indigo-buttonblue animate-bounce w-5 h-5 rounded-full"></div>
-          </div>
-        </div>
-      </Modal> */}
       <Container>
         <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
           <Main color="indigo-white">

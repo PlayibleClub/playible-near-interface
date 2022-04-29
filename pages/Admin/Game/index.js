@@ -249,8 +249,6 @@ const Index = (props) => {
 
       setEndModal(true);
 
-      console.log('id', id);
-
       const leaderboard = await axiosInstance.get(`/fantasy/game/${id}/leaderboard/`);
 
       if (leaderboard.status === 200) {
@@ -273,8 +271,6 @@ const Index = (props) => {
             },
           },
         ]);
-
-        console.log('endGameRes', endGameRes);
 
         setMsg({
           title: 'SUCCESS',
