@@ -41,7 +41,7 @@ const Portfolio = () => {
   const [loading, setLoading] = useState(!!connectedWallet);
 
   const fetchPacks = async () => {
-    if (connectedWallet && connectedWallet?.network?.name === 'testnet') {
+    if (connectedWallet && connectedWallet?.network?.name === 'mainnet') {
       const formData = {
         owner_tokens_info: {
           owner: connectedWallet.walletAddress,
@@ -195,7 +195,7 @@ const Portfolio = () => {
     setSortedList([]);
     await dispatch(getAccountAssets({ clear: true }));
     if (connectedWallet && dispatch ) {
-      if (connectedWallet?.network?.name === 'testnet') {
+      if (connectedWallet?.network?.name === 'mainnet') {
         await dispatch(getAccountAssets({ walletAddr: connectedWallet.walletAddress }));
         await fetchPacks();
       }

@@ -1,9 +1,9 @@
 export const CW721 = 'terra1ja00hdxr9f0gn4l77vrv3uck3h2ev4tpvtn2ux'; //NFT Contract
 export const PLAYIBLE = 'terra19378qfrlwr7zvzq66htytu6cxr5lmry2e89uw3'; //Playible/Fantasy Contract
 export const MARKETPLACE = 'terra1he8gafpra00wth0uy5scwyclhm5t7rwacvhshp'; //Marketplace Contract
-export const ATHLETE = 'terra14zul5grszjl5es0c8r25fhc8m2xrztrj7a8f9h'; //Athlete Contract
-export const PACK = 'terra1nfv2j3vxlgtvg98mupjmzsvamfgw3dc7xtd262'; //Pack Contract
-export const OPENPACK = 'terra1hvxtzdw23fvj9y33tsasadhvrw4w48aazxt8f7'; //OpenPack Contract
-export const ORACLE = 'terra1h6l3075vw043ncvqw72pdmtgte4tntfru2kk42'; //Oracle Contract
+export const ATHLETE = 'terra16umtnxhqjhjd5jdglwtp4znef25q76v6rendyf'; //Athlete Contract
+export const PACK = 'terra1xzqmc6uy9v0aslumjawqe2qfnym9ag2gy5zj8x'; //Pack Contract
+export const OPENPACK = 'terra1xjem7umxnv9ddetzdearr5k0dmrehgzshkl9gw'; //OpenPack Contract
+export const ORACLE = 'terra14hxlu3yy0a43t7sfhq6ucsq97u8jtrntsgd9s2'; //Oracle Contract
 export const CONTROLLER = 'terra1w0t73qkkj50zdq5fkqcedm3ewwz2smm9g8hwns'; // Controller Contract
 export const GAME = 'terra1tmgq3rveknx02s84yf9e55dfly5ex9l2vu2464'; //Game Contract
