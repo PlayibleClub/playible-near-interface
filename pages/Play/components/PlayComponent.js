@@ -21,6 +21,7 @@ const PlayComponent = (props) => {
     index,
   } = props
   const playicon = '/images/playthumbnails/key.png'
+  const ranking = '/images/icons/Ranking.svg'
 
   const [day, setDay] = useState(0)
   const [hour, setHour] = useState(0)
@@ -79,6 +80,15 @@ const PlayComponent = (props) => {
               <div className="">
                 <div className="font-thin text-sm">STATUS</div>
                 <div className="text-base font-monument">COMPLETE</div>
+              </div>
+            </div>
+
+            <div className="mt-4 flex justify-between">
+              <div className="">
+                <div className="font-thin text-sm">RANKING</div>
+                <div className="text-base font-monument"><img src={ranking} className="w-3 h-3"/>
+                  {/*  */}
+                </div>
               </div>
             </div>
           </div>
