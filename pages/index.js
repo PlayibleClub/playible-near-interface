@@ -158,7 +158,7 @@ export default function Home(props) {
       <meta property="og:url" content="https://playible.io/"/>
       <meta property="og:type" content="website"/> */}
       </Head>
-      <Container>
+      <Container activeName="HOME">
         <div className="flex flex-col w-screen md:w-full overflow-y-auto h-screen justify-center self-center md:pb-12 text-indigo-black">
           <Main color="indigo-white">
             <div className="flex flex-col md:flex-row md:ml-12">

@@ -184,7 +184,7 @@ export default function History(props) {
     const { query } = useRouter();
     
     return (
-        <Container>
+        <Container activeName="PLAY">
             <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
                 <Main color="indigo-white">
                     <div className="flex flex-col ml-6">
