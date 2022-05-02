@@ -518,7 +518,7 @@ export default function CreateLineup() {
                                       data.token_info
                                         ? data.token_info.info.extension.attributes.filter(
                                             (item) => item.trait_type === 'name'
-                                          )[0].value
+                                          )[0].value 
                                         : ''
                                     }
                                     score={data.score || 0}
