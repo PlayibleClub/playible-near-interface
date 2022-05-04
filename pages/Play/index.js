@@ -570,7 +570,9 @@ const Play = () => {
               <div className="mt-4 bg-indigo-yellow w-min p-2 px-3 text-center text-lg font-monument">
                 CONGRATULATIONS
               </div>
-              <div className="p-2 text-4xl font-monument">{showSuccessModal.prize || 0} UST</div>
+              <div className="p-2 text-4xl font-monument">
+                {successTransactionModal.prize.toString()} UST
+              </div>
               <div className="p-2 text-lg font-monument -mt-4">EARNED</div>
             </div>
           </div>
