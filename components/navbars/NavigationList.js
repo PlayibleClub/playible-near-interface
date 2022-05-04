@@ -12,6 +12,11 @@ const navigation = [
   {
     name: 'SQUAD',
     path: '/Portfolio',
+    img: '/images/icons/Play.svg',
+  },
+  {
+    name: 'PLAY',
+    path: '/Play',
     img: '/images/icons/My_Squad.svg',
   },
   {

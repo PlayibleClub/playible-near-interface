@@ -303,8 +303,8 @@ const Index = (props) => {
       };
 
       setLoading(true);
-
-      const res = await axiosInstance.post('/fantasy/game/', formData);
+const res = await axiosInstance.post('/fantasy/game/', formData);
+      
 
       if (res.status === 201) {
         setMsg({

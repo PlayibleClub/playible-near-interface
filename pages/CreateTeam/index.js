@@ -113,7 +113,7 @@ export default function CreateLineup() {
   };
 
   const prepareSlots = () => {
-    let slots = positions.map((item) => {
+    const slots = positions.map((item) => {
       return {
         ...athlete,
         position: {
@@ -126,10 +126,10 @@ export default function CreateLineup() {
   };
 
   const filterAthletes = (list, pos) => {
-    let tempList = [...list];
+    const tempList = [...list];
 
     if (tempList.length > 0 && pos) {
-      let token_ids = team
+      const token_ids = team
         .map(({ athlete_id, token_id, contract_addr }) => {
           if (token_id) {
             return token_id;
@@ -172,7 +172,7 @@ export default function CreateLineup() {
   };
 
   const updateTeamSlots = () => {
-    let tempSlots = [...team];
+    const tempSlots = [...team];
 
     if (slotIndex !== null && chosenAthlete !== null) {
       const athleteInfo = {
@@ -282,6 +282,8 @@ export default function CreateLineup() {
           },
         ]);
 
+        console.log('resContract', resContract);
+
         if (
           !resContract.txResult ||
           (resContract.txResult && !resContract.txResult.success) ||
@@ -300,13 +302,21 @@ export default function CreateLineup() {
               : resContract.txError
           );
         } else {
-          const res = await axiosInstance.post('/fantasy/game_team/', formData);
-          setCreateLoading(false);
-          if (res.status === 201) {
-            setSuccessModal(true);
-            router.replace(`/CreateLineup/?id=${router.query.id}`);
-          } else {
-            alert('An error occurred! Refresh the page and try again.');
+          let success = false;
+          let ctr = 0;
+          while (!success) {
+            ctr += 1;
+            console.log('count loop', ctr)
+            const res = await axiosInstance.post('/fantasy/game_team/', formData);
+            console.log('django team response', res)
+            setCreateLoading(false);
+            if (res.status === 201) {
+              success = true;
+              setSuccessModal(true);
+              router.replace(`/CreateLineup/?id=${router.query.id}`);
+            } else {
+              alert('An error occurred! Refresh the page and try again.');
+            }
           }
         }
       } else {
