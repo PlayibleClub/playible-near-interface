@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import filterIcon from '../../../public/images/icons/Filter.svg';
-import searchIcon from '../../../public/images/searchBlack.png';
+import searchIcon from '../../../public/images/icons/Search.svg';
 
 const Sorter = (props) => {
   const {
