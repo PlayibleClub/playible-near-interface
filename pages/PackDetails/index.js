@@ -293,10 +293,9 @@ export default function PackDetails(props) {
                         </div>
                       </div>
                       <button
-                        className="bg-indigo-buttonblue ml-7 text-indigo-white w-5/6 md:w-80 h-10 text-center font-bold text-sm mt-4"
-                        onClick={openPack}
+                        className="bg-indigo-lightblue text-indigo-buttonblue ml-7 w-5/6 md:w-80 text-center font-bold text-sm mt-4 p-2 cursor-not-allowed"
                       >
-                        OPEN PACK
+                        Pack openings are currently paused while we update our player list to include newly added athletes. Pack opening will resume shortly, apologies for the inconvenience.
                       </button>
                     </div>
                   </div>
