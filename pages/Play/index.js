@@ -345,8 +345,8 @@ const Play = () => {
     let totalPrize = 0;
 
     if (claimData && claimData.winning_placements.length > 0) {
-      totalPrize = claimData.winning_placements.reduce((total, num) => {
-        let acc = total + Math.round(num.prize);
+      totalPrize = claimData.winning_placements.reduce((total,   num) => {
+        let acc = parseInt(total) + parseInt(num.prize);
         return acc;
       }, 0);
     }

@@ -299,19 +299,18 @@ const Index = (props) => {
         ...details,
         // DURATION IS EXPRESSED IN DAYS BUT WILL BE CONVERTED TO MINUTES
         // duration: parseInt(details.duration) * 60 * 24,
-        duration: 5,
+        duration: 2,
       };
 
       setLoading(true);
-const res = await axiosInstance.post('/fantasy/game/', formData);
-      
+
+      const res = await axiosInstance.post('/fantasy/game/', formData);
 
       if (res.status === 201) {
         setMsg({
           title: 'Success',
           content: `${res.data.name} created!`,
         });
-        let finalDistribution = [];
         const distributionList = distribution.map((item) => {
           return {
             ...item,
