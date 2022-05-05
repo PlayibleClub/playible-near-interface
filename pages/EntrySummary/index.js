@@ -13,25 +13,30 @@ import moment from 'moment';
 import Link from 'next/link';
 import PerformerContainer from '../../components/containers/PerformerContainer';
 import 'regenerator-runtime/runtime';
+import LoadingPageDark from '../../components/loading/LoadingPageDark';
 
-export default function EntrySummary() {
+export default function EntrySummary(props) {
   const router = useRouter();
   const [name, setName] = useState('');
   const [gameData, setGameData] = useState(null);
   const [teamModal, setTeamModal] = useState(false);
   const connectedWallet = useConnectedWallet();
   const [team, setTeam] = useState([]);
-  const [gameEnd,  setGameEnd] = useState(false);
+  const [gameEnd, setGameEnd] = useState(false);
+  const { error } = props;
+  const [loading, setLoading] = useState(true);
+  const [err, setErr] = useState(error);
 
   const fetchGameData = async () => {
     const res = await axiosInstance.get(`/fantasy/game/${router.query.game_id}/`);
 
-    const allTeams = router.query.team_id ? await axiosInstance.get(`/fantasy/game_team/${router.query.team_id}/`) : await axiosInstance.get(
-      `/fantasy/game/${router.query.game_id}/registered_teams_detail/?wallet_addr=${connectedWallet.walletAddress}`
-    );
+    const allTeams = router.query.team_id
+      ? await axiosInstance.get(`/fantasy/game_team/${router.query.team_id}/`)
+      : await axiosInstance.get(
+          `/fantasy/game/${router.query.game_id}/registered_teams_detail/?wallet_addr=${connectedWallet.walletAddress}`
+        );
 
     if (allTeams.status === 200) {
-
       if (router.query.team_id) {
         setTeam([allTeams.data]);
       } else {
@@ -44,16 +49,32 @@ export default function EntrySummary() {
     }
   };
 
-  function gameEnded(){
+  function gameEnded() {
     setGameEnd(true);
   }
 
   useEffect(() => {
     if (router && router.query.game_id && connectedWallet) {
       fetchGameData();
-      setGameEnd(false)
+      setGameEnd(false);
     }
-  }, [router, connectedWallet,gameEnd]);
+  }, [router, connectedWallet, gameEnd]);
+
+  useEffect(async () => {
+    setErr(null);
+    if (connectedWallet) {
+      if (connectedWallet?.network?.name === 'testnet') {
+        await fetchGameData();
+        setErr(null);
+      } else {
+        setErr('You are connected to mainnet. Please connect to testnet');
+        setLoading(false);
+      }
+    } else {
+      setErr('Waiting for wallet connection...');
+      setLoading(false);
+    }
+  }, [connectedWallet]);
 
   if (!router) {
     return;
@@ -99,93 +120,106 @@ export default function EntrySummary() {
         <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
           <Main color="indigo-white">
             <>
-              <div className="mt-8">
-                <BackFunction
-                  prev={router.query.origin || `/CreateLineup?id=${router.query.game_id}`}
-                />
-              </div>
-              <PortfolioContainer textcolor="indigo-black" title="ENTRY SUMMARY" />
-              <div className="md:ml-7 flex flex-row md:flex-row">
-                <div className="md:mr-12">
-                  <div className="mt-7 justify-center md:self-left md:mr-8">
-                    <Image src="/images/game.png" width={550} height={220} />
-                  </div>
-                  <div className="flex space-x-14 mt-4">
-                    <div>
-                      <div>PRIZE POOL</div>
-                      <div className="text-base font-monument text-lg">
-                        {(gameData && gameData.prize) || 'N/A'}
-                      </div>
-                    </div>
-                    <div>
-                      <div>START DATE</div>
-                      <div className="text-base font-monument text-lg">
-                        {(gameData && moment(gameData.start_datetime).format('MM/DD/YYYY')) ||
-                          'N/A'}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="mt-4">
-                    {gameData &&
-                      (new Date(gameData.start_datetime) <= new Date() &&
-                      new Date(gameData.end_datetime) > new Date() ? (
-                        <>
-                          <p>ENDS IN</p>
-                          {gameData ? (
-                            <PlayDetailsComponent
-                              prizePool={gameData.prize}
-                              startDate={gameData.end_datetime}
-                              fetch={() => fetchGameData()}
-                              game={() => gameEnded()}
-                            />
-                          ) : (
-                            ''
-                          )}
-                        </>
-                      ) : new Date(gameData.start_datetime) > new Date() ? (
-                        <>
-                          <p>REGISTRATION ENDS IN</p>
-                          {gameData ? (
-                            <PlayDetailsComponent
-                              prizePool={gameData.prize}
-                              startDate={gameData.start_datetime}
-                              fetch={() => fetchGameData()}
-                              game={() => gameEnded()}
-                            />
-                          ) : (
-                            ''
-                          )}
-                        </>
-                      ) : (
-                        ''
-                      ))}
-                  </div>
-                </div>
-              </div>
-              {team.length > 0
-                ? team.map((item) => (
+              {loading ? (
+                <LoadingPageDark />
+              ) : (
+                <>
+                  {err ? (
+                    <p className="py-10 ml-7">{err}</p>
+                  ) : (
                     <>
-                      <div className="mt-10 flex items-center ml-7">
-                        <p className="text-2xl font-bold font-monument">{item.name}</p>
+                      <div className="mt-8">
+                        <BackFunction
+                          prev={router.query.origin || `/CreateLineup?id=${router.query.game_id}`}
+                        />
                       </div>
-                      <div className="grid grid-cols-4 gap-y-4 mt-4 md:grid-cols-4 md:ml-7 md:mt-12">
-                        {item.athletes.map((player, i) => {
-                          return (
-                            <div className="mb-4" key={i}>
-                              <PerformerContainer
-                                AthleteName={`${player.first_name} ${player.last_name}`}
-                                AvgScore={player.fantasy_score}
-                                id={player.id}
-                                uri={player.nft_image || null}
-                                hoverable={false}
-                              />
+                      <PortfolioContainer textcolor="indigo-black" title="ENTRY SUMMARY" />
+                      <div className="md:ml-7 flex flex-row md:flex-row">
+                        <div className="md:mr-12">
+                          <div className="mt-7 justify-center md:self-left md:mr-8">
+                            <Image src="/images/game.png" width={550} height={220} />
+                          </div>
+                          <div className="flex space-x-14 mt-4">
+                            <div>
+                              <div>PRIZE POOL</div>
+                              <div className="text-base font-monument text-lg">
+                                {(gameData && gameData.prize) || 'N/A'}
+                              </div>
                             </div>
-                          );
-                        })}
+                            <div>
+                              <div>START DATE</div>
+                              <div className="text-base font-monument text-lg">
+                                {(gameData &&
+                                  moment(gameData.start_datetime).format('MM/DD/YYYY')) ||
+                                  'N/A'}
+                              </div>
+                            </div>
+                          </div>
+                          <div className="mt-4">
+                            {gameData &&
+                              (new Date(gameData.start_datetime) <= new Date() &&
+                              new Date(gameData.end_datetime) > new Date() ? (
+                                <>
+                                  <p>ENDS IN</p>
+                                  {gameData ? (
+                                    <PlayDetailsComponent
+                                      prizePool={gameData.prize}
+                                      startDate={gameData.end_datetime}
+                                      fetch={() => fetchGameData()}
+                                      game={() => gameEnded()}
+                                    />
+                                  ) : (
+                                    ''
+                                  )}
+                                </>
+                              ) : new Date(gameData.start_datetime) > new Date() ? (
+                                <>
+                                  <p>REGISTRATION ENDS IN</p>
+                                  {gameData ? (
+                                    <PlayDetailsComponent
+                                      prizePool={gameData.prize}
+                                      startDate={gameData.start_datetime}
+                                      fetch={() => fetchGameData()}
+                                      game={() => gameEnded()}
+                                    />
+                                  ) : (
+                                    ''
+                                  )}
+                                </>
+                              ) : (
+                                ''
+                              ))}
+                          </div>
+                        </div>
                       </div>
+                      {team.length > 0
+                        ? team.map((item) => (
+                            <>
+                              <div className="mt-10 flex items-center ml-7">
+                                <p className="text-2xl font-bold font-monument">{item.name}</p>
+                              </div>
+                              <div className="grid grid-cols-4 gap-y-4 mt-4 md:grid-cols-4 md:ml-7 md:mt-12">
+                                {item.athletes.map((player, i) => {
+                                  return (
+                                    <div className="mb-4" key={i}>
+                                      <PerformerContainer
+                                        AthleteName={`${player.first_name} ${player.last_name}`}
+                                        AvgScore={player.fantasy_score}
+                                        id={player.id}
+                                        uri={player.nft_image || null}
+                                        hoverable={false}
+                                      />
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            </>
+                          ))
+                        : ''}
                     </>
-                  ))
-                : ''}
+                  )}
+                </>
+              )}
             </>
           </Main>
         </div>

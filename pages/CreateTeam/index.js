@@ -23,8 +23,9 @@ import Modal from '../../components/modals/Modal';
 import { axiosInstance } from '../../utils/playible';
 import { route } from 'next/dist/next-server/server/router';
 import { executeContract } from '../../utils/terra';
+import LoadingPageDark from '../../components/loading/LoadingPageDark';
 
-export default function CreateLineup() {
+export default function CreateLineup(props) {
   const router = useRouter();
   const dispatch = useDispatch();
   const connectedWallet = useConnectedWallet();
@@ -66,6 +67,10 @@ export default function CreateLineup() {
     title: '',
     content: '',
   });
+
+  const { error } = props;
+  const [loading, setLoading] = useState(true);
+  const [err, setErr] = useState(error);
 
   const { list: playerList } = useSelector((state) => state.assets);
 
@@ -306,9 +311,9 @@ export default function CreateLineup() {
           let ctr = 0;
           while (!success) {
             ctr += 1;
-            console.log('count loop', ctr)
+            console.log('count loop', ctr);
             const res = await axiosInstance.post('/fantasy/game_team/', formData);
-            console.log('django team response', res)
+            console.log('django team response', res);
             setCreateLoading(false);
             if (res.status === 201) {
               success = true;
@@ -396,282 +401,340 @@ export default function CreateLineup() {
     return () => clearInterval(id);
   }, [timerUp, startDate]);
 
+  useEffect(async () => {
+    setErr(null);
+    if (connectedWallet) {
+      if (connectedWallet?.network?.name === 'testnet') {
+        await fetchGameData();
+        setErr(null);
+      } else {
+        setErr('You are connected to mainnet. Please connect to testnet');
+        setLoading(false);
+      }
+    } else {
+      setErr('Waiting for wallet connection...');
+      setLoading(false);
+    }
+  }, [connectedWallet]);
+
   if (!(router && router.query.id)) {
     return '';
   }
 
   return (
     <>
-      {timerUp ? (
-        <Container activeName="PLAY">
-          <PortfolioContainer
-            title="GAME HAS STARTED"
-            textcolor="text-indigo-black"
-          ></PortfolioContainer>
-          <p className="ml-7">Please refresh the page or go to Play page</p>
-        </Container>
+      {loading ? (
+        <LoadingPageDark />
       ) : (
         <>
-          <Container activeName="PLAY">
-            <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
-              <Main color="indigo-white">
-                {selectModal ? (
+          {err ? (
+            <>
+            <Container activeName="PLAY">
+            <p className="py-10 ml-7">{err}</p>
+            </Container>
+            </>
+          ) : (
+            <>
+              {timerUp ? (
+                <Container activeName="PLAY">
                   <PortfolioContainer
-                    title={`SELECT YOUR ${
-                      position('baseball', filterPos).toUpperCase() || 'No filtered'
-                    }`}
+                    title="GAME HAS STARTED"
                     textcolor="text-indigo-black"
-                  >
-                    <div className="grid grid-cols-2 gap-y-4 mt-4 md:grid-cols-4 md:ml-7 md:mt-12">
-                      {athleteList.map((player, i) => {
-                        const path = player.token_info.info.extension;
-
-                        return (
-                          <div className="mb-4" key={i}>
-                            <PerformerContainerSelectable
-                              AthleteName={
-                                path.attributes.filter((item) => item.trait_type === 'name')[0]
-                                  .value
-                              }
-                              AvgScore={player.fantasy_score}
-                              id={path.athlete_id}
-                              uri={player.token_info.info.token_uri || player.nft_image}
-                              rarity={
-                                path.attributes.filter((item) => item.trait_type === 'rarity')[0]
-                                  .value
-                              }
-                              status="ingame"
-                              index={i}
-                              token_id={player.token_id}
-                              selected={chosenAthlete}
-                              selectorFunction={() => setChosenAthlete(player)}
-                            />
-                          </div>
-                        );
-                      })}
-                    </div>
-                    <div className="flex justify-between md:mt-5 md:mr-6 p-5">
-                      <div className="bg-indigo-white mr-1 h-11 flex items-center font-thin border-indigo-lightgray border-opacity-40 p-2">
-                        {pageCount > 1 && (
-                          <button className="px-2 border mr-2" onClick={() => changeIndex('first')}>
-                            First
-                          </button>
-                        )}
-                        {pageCount !== 0 && canPrevious() && (
-                          <button
-                            className="px-2 border mr-2"
-                            onClick={() => changeIndex('previous')}
+                  ></PortfolioContainer>
+                  <p className="ml-7">Please refresh the page or go to Play page</p>
+                </Container>
+              ) : (
+                <>
+                  <Container activeName="PLAY">
+                    <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
+                      <Main color="indigo-white">
+                        {selectModal ? (
+                          <PortfolioContainer
+                            title={`SELECT YOUR ${
+                              position('baseball', filterPos).toUpperCase() || 'No filtered'
+                            }`}
+                            textcolor="text-indigo-black"
                           >
-                            Previous
-                          </button>
+                            <div className="grid grid-cols-2 gap-y-4 mt-4 md:grid-cols-4 md:ml-7 md:mt-12">
+                              {athleteList.map((player, i) => {
+                                const path = player.token_info.info.extension;
+
+                                return (
+                                  <div className="mb-4" key={i}>
+                                    <PerformerContainerSelectable
+                                      AthleteName={
+                                        path.attributes.filter(
+                                          (item) => item.trait_type === 'name'
+                                        )[0].value
+                                      }
+                                      AvgScore={player.fantasy_score}
+                                      id={path.athlete_id}
+                                      uri={player.token_info.info.token_uri || player.nft_image}
+                                      rarity={
+                                        path.attributes.filter(
+                                          (item) => item.trait_type === 'rarity'
+                                        )[0].value
+                                      }
+                                      status="ingame"
+                                      index={i}
+                                      token_id={player.token_id}
+                                      selected={chosenAthlete}
+                                      selectorFunction={() => setChosenAthlete(player)}
+                                    />
+                                  </div>
+                                );
+                              })}
+                            </div>
+                            <div className="flex justify-between md:mt-5 md:mr-6 p-5">
+                              <div className="bg-indigo-white mr-1 h-11 flex items-center font-thin border-indigo-lightgray border-opacity-40 p-2">
+                                {pageCount > 1 && (
+                                  <button
+                                    className="px-2 border mr-2"
+                                    onClick={() => changeIndex('first')}
+                                  >
+                                    First
+                                  </button>
+                                )}
+                                {pageCount !== 0 && canPrevious() && (
+                                  <button
+                                    className="px-2 border mr-2"
+                                    onClick={() => changeIndex('previous')}
+                                  >
+                                    Previous
+                                  </button>
+                                )}
+                                <p className="mr-2">
+                                  Page {offset + 1} of {pageCount}
+                                </p>
+                                {pageCount !== 0 && canNext() && (
+                                  <button
+                                    className="px-2 border mr-2"
+                                    onClick={() => changeIndex('next')}
+                                  >
+                                    Next
+                                  </button>
+                                )}
+                                {pageCount > 1 && (
+                                  <button
+                                    className="px-2 border mr-2"
+                                    onClick={() => changeIndex('last')}
+                                  >
+                                    Last
+                                  </button>
+                                )}
+                              </div>
+                              <div className="bg-indigo-white mr-1 h-11 w-64 flex font-thin border-2 border-indigo-lightgray border-opacity-40 p-2">
+                                <select
+                                  value={limit}
+                                  className="bg-indigo-white text-lg w-full outline-none"
+                                  onChange={(e) => {
+                                    setLimit(e.target.value);
+                                    setOffset(0);
+                                  }}
+                                >
+                                  {limitOptions.map((option) => (
+                                    <option value={option}>{option}</option>
+                                  ))}
+                                </select>
+                              </div>
+                            </div>
+                            <div className="flex mt-10 bg-indigo-black bg-opacity-5 w-full justify-end">
+                              <button
+                                className="bg-indigo-buttonblue text-indigo-white w-5/6 md:w-80 h-14 text-center font-bold text-md"
+                                onClick={proceedChanges}
+                              >
+                                PROCEED
+                              </button>
+                            </div>
+                          </PortfolioContainer>
+                        ) : (
+                          <>
+                            <BackFunction prev={`/CreateLineup?id=${router.query.id}`} />
+                            <PortfolioContainer title="CREATE LINEUP" textcolor="text-indigo-black">
+                              <div className="flex flex-col">
+                                <div className="flex items-end pt-10 pb-3 ml-7">
+                                  <div className="font-monument text-xl">{teamName}</div>
+                                  <p
+                                    className="ml-5 underline text-sm pb-1 cursor-pointer"
+                                    onClick={() => setEditModal(true)}
+                                  >
+                                    EDIT TEAM NAME
+                                  </p>
+                                </div>
+                                <div className="grid grid-cols-2 gap-y-4 mt-4 md:grid-cols-4 md:ml-7 md:mt-12">
+                                  {team.length > 0 &&
+                                    team.map((data, i) => {
+                                      return (
+                                        <div>
+                                          <Lineup
+                                            position={data.position.value}
+                                            player={
+                                              data.token_info
+                                                ? data.token_info.info.extension.attributes.filter(
+                                                    (item) => item.trait_type === 'name'
+                                                  )[0].value
+                                                : ''
+                                            }
+                                            score={data.score || 0}
+                                            onClick={() => {
+                                              filterAthleteByPos(data.position.value);
+                                              setSlotIndex(i);
+                                            }}
+                                            img={
+                                              data.token_info
+                                                ? data.token_info.info.token_uri
+                                                : null
+                                            }
+                                          />
+                                        </div>
+                                      );
+                                    })}
+                                </div>
+                              </div>
+                              <div className="flex mt-10 bg-indigo-black bg-opacity-5 w-full justify-end">
+                                <button
+                                  className="bg-indigo-buttonblue text-indigo-white w-full md:w-80 h-14 text-center font-bold text-md"
+                                  onClick={() => setSubmitModal(true)}
+                                >
+                                  CONFIRM TEAM
+                                </button>
+                              </div>
+                            </PortfolioContainer>
+                          </>
                         )}
-                        <p className="mr-2">
-                          Page {offset + 1} of {pageCount}
+                      </Main>
+                    </div>
+                  </Container>
+                  <BaseModal
+                    title={'Confirm selection'}
+                    visible={confirmModal}
+                    onClose={() => {
+                      setChosenAthlete(null);
+                      setConfirmModal(false);
+                    }}
+                  >
+                    {chosenAthlete ? (
+                      <div>
+                        <p>
+                          Are you sure to select{' '}
+                          {
+                            chosenAthlete.token_info.info.extension.attributes.filter(
+                              (item) => item.trait_type === 'name'
+                            )[0].value
+                          }{' '}
+                          ?
                         </p>
-                        {pageCount !== 0 && canNext() && (
-                          <button className="px-2 border mr-2" onClick={() => changeIndex('next')}>
-                            Next
-                          </button>
-                        )}
-                        {pageCount > 1 && (
-                          <button className="px-2 border mr-2" onClick={() => changeIndex('last')}>
-                            Last
-                          </button>
-                        )}
-                      </div>
-                      <div className="bg-indigo-white mr-1 h-11 w-64 flex font-thin border-2 border-indigo-lightgray border-opacity-40 p-2">
-                        <select
-                          value={limit}
-                          className="bg-indigo-white text-lg w-full outline-none"
-                          onChange={(e) => {
-                            setLimit(e.target.value);
-                            setOffset(0);
+                        <button
+                          className="bg-indigo-green font-monument tracking-widest text-indigo-white w-full h-16 text-center text-sm mt-4"
+                          onClick={updateTeamSlots}
+                        >
+                          CONFIRM
+                        </button>
+                        <button
+                          className="bg-red-pastel font-monument tracking-widest text-indigo-white w-full h-16 text-center text-sm mt-4"
+                          onClick={() => {
+                            setChosenAthlete(null);
+                            setConfirmModal(false);
                           }}
                         >
-                          {limitOptions.map((option) => (
-                            <option value={option}>{option}</option>
-                          ))}
-                        </select>
-                      </div>
-                    </div>
-                    <div className="flex mt-10 bg-indigo-black bg-opacity-5 w-full justify-end">
-                      <button
-                        className="bg-indigo-buttonblue text-indigo-white w-5/6 md:w-80 h-14 text-center font-bold text-md"
-                        onClick={proceedChanges}
-                      >
-                        PROCEED
-                      </button>
-                    </div>
-                  </PortfolioContainer>
-                ) : (
-                  <>
-                    <BackFunction prev={`/CreateLineup?id=${router.query.id}`} />
-                    <PortfolioContainer title="CREATE LINEUP" textcolor="text-indigo-black">
-                      <div className="flex flex-col">
-                        <div className="flex items-end pt-10 pb-3 ml-7">
-                          <div className="font-monument text-xl">{teamName}</div>
-                          <p
-                            className="ml-5 underline text-sm pb-1 cursor-pointer"
-                            onClick={() => setEditModal(true)}
-                          >
-                            EDIT TEAM NAME
-                          </p>
-                        </div>
-                        <div className="grid grid-cols-2 gap-y-4 mt-4 md:grid-cols-4 md:ml-7 md:mt-12">
-                          {team.length > 0 &&
-                            team.map((data, i) => {
-                              return (
-                                <div>
-                                  <Lineup
-                                    position={data.position.value}
-                                    player={
-                                      data.token_info
-                                        ? data.token_info.info.extension.attributes.filter(
-                                            (item) => item.trait_type === 'name'
-                                          )[0].value
-                                        : ''
-                                    }
-                                    score={data.score || 0}
-                                    onClick={() => {
-                                      filterAthleteByPos(data.position.value);
-                                      setSlotIndex(i);
-                                    }}
-                                    img={data.token_info ? data.token_info.info.token_uri : null}
-                                  />
-                                </div>
-                              );
-                            })}
-                        </div>
-                      </div>
-                      <div className="flex mt-10 bg-indigo-black bg-opacity-5 w-full justify-end">
-                        <button
-                          className="bg-indigo-buttonblue text-indigo-white w-full md:w-80 h-14 text-center font-bold text-md"
-                          onClick={() => setSubmitModal(true)}
-                        >
-                          CONFIRM TEAM
+                          CANCEL
                         </button>
                       </div>
-                    </PortfolioContainer>
-                  </>
-                )}
-              </Main>
-            </div>
-          </Container>
-          <BaseModal
-            title={'Confirm selection'}
-            visible={confirmModal}
-            onClose={() => {
-              setChosenAthlete(null);
-              setConfirmModal(false);
-            }}
-          >
-            {chosenAthlete ? (
-              <div>
-                <p>
-                  Are you sure to select{' '}
-                  {
-                    chosenAthlete.token_info.info.extension.attributes.filter(
-                      (item) => item.trait_type === 'name'
-                    )[0].value
-                  }{' '}
-                  ?
-                </p>
-                <button
-                  className="bg-indigo-green font-monument tracking-widest text-indigo-white w-full h-16 text-center text-sm mt-4"
-                  onClick={updateTeamSlots}
-                >
-                  CONFIRM
-                </button>
-                <button
-                  className="bg-red-pastel font-monument tracking-widest text-indigo-white w-full h-16 text-center text-sm mt-4"
-                  onClick={() => {
-                    setChosenAthlete(null);
-                    setConfirmModal(false);
-                  }}
-                >
-                  CANCEL
-                </button>
-              </div>
-            ) : (
-              ''
-            )}
-          </BaseModal>
-          <Modal title={'Submit Team'} visible={submitModal} onClose={() => setSubmitModal(false)}>
-            <div className="mt-2">
-              <p className="">Confirm team lineup</p>
-              <button
-                className="bg-indigo-green font-monument tracking-widest text-indigo-white w-full h-16 text-center text-sm mt-4"
-                onClick={confirmTeam}
-              >
-                CONFIRM
-              </button>
-              <button
-                className="bg-red-pastel font-monument tracking-widest text-indigo-white w-full h-16 text-center text-sm mt-4"
-                onClick={() => setSubmitModal(false)}
-              >
-                CANCEL
-              </button>
-            </div>
-          </Modal>
-          <Modal title={'LOADING'} visible={createLoading}>
-            <div>
-              <p className="mb-5 text-center">Creating your team</p>
-              <div className="flex gap-5 justify-center mb-5">
-                <div className="bg-indigo-buttonblue animate-bounce w-5 h-5 rounded-full"></div>
-                <div className="bg-indigo-buttonblue animate-bounce w-5 h-5 rounded-full"></div>
-                <div className="bg-indigo-buttonblue animate-bounce w-5 h-5 rounded-full"></div>
-              </div>
-            </div>
-          </Modal>
-          <Modal title={'SUCCESS'} visible={successModal}>
-            <div className="mt-2">
-              <p className="text-center font-montserrat mb-5">Team created successfully!</p>
-            </div>
-          </Modal>
-          <Modal title={'FAILED'} visible={failedModal} onClose={() => setFailedModal(false)}>
-            <div className="mt-2">
-              <p className="text-center font-montserrat mb-5">
-                An error occured. Please try again later.
-              </p>
-            </div>
-          </Modal>
-          <Modal
-            title={'EDIT TEAM NAME'}
-            visible={editModal}
-            onClose={() => {
-              setEditModal(false);
-              setEditInput(teamName);
-            }}
-          >
-            <div className="mt-2 px-5">
-              <p className="text-xs uppercase font-thin mb-2" style={{ fontFamily: 'Montserrat' }}>
-                EDIT TEAM NAME
-              </p>
-              <input
-                className="border p-2 w-full"
-                placeholder={teamName}
-                style={{ fontFamily: 'Montserrat' }}
-                value={editInput}
-                onChange={(e) => setEditInput(e.target.value)}
-              />
-              <div className="flex mt-16 mb-5 bg-opacity-5 w-full">
-                <button
-                  className="bg-indigo-buttonblue text-indigo-white w-full h-14 text-center tracking-widest text-md font-monument"
-                  onClick={() => {
-                    setTeamName(editInput);
-                    setEditModal(false);
-                  }}
-                >
-                  CONFIRM
-                </button>
-              </div>
-            </div>
-          </Modal>
+                    ) : (
+                      ''
+                    )}
+                  </BaseModal>
+                  <Modal
+                    title={'Submit Team'}
+                    visible={submitModal}
+                    onClose={() => setSubmitModal(false)}
+                  >
+                    <div className="mt-2">
+                      <p className="">Confirm team lineup</p>
+                      <button
+                        className="bg-indigo-green font-monument tracking-widest text-indigo-white w-full h-16 text-center text-sm mt-4"
+                        onClick={confirmTeam}
+                      >
+                        CONFIRM
+                      </button>
+                      <button
+                        className="bg-red-pastel font-monument tracking-widest text-indigo-white w-full h-16 text-center text-sm mt-4"
+                        onClick={() => setSubmitModal(false)}
+                      >
+                        CANCEL
+                      </button>
+                    </div>
+                  </Modal>
+                  <Modal title={'LOADING'} visible={createLoading}>
+                    <div>
+                      <p className="mb-5 text-center">Creating your team</p>
+                      <div className="flex gap-5 justify-center mb-5">
+                        <div className="bg-indigo-buttonblue animate-bounce w-5 h-5 rounded-full"></div>
+                        <div className="bg-indigo-buttonblue animate-bounce w-5 h-5 rounded-full"></div>
+                        <div className="bg-indigo-buttonblue animate-bounce w-5 h-5 rounded-full"></div>
+                      </div>
+                    </div>
+                  </Modal>
+                  <Modal title={'SUCCESS'} visible={successModal}>
+                    <div className="mt-2">
+                      <p className="text-center font-montserrat mb-5">Team created successfully!</p>
+                    </div>
+                  </Modal>
+                  <Modal
+                    title={'FAILED'}
+                    visible={failedModal}
+                    onClose={() => setFailedModal(false)}
+                  >
+                    <div className="mt-2">
+                      <p className="text-center font-montserrat mb-5">
+                        An error occured. Please try again later.
+                      </p>
+                    </div>
+                  </Modal>
+                  <Modal
+                    title={'EDIT TEAM NAME'}
+                    visible={editModal}
+                    onClose={() => {
+                      setEditModal(false);
+                      setEditInput(teamName);
+                    }}
+                  >
+                    <div className="mt-2 px-5">
+                      <p
+                        className="text-xs uppercase font-thin mb-2"
+                        style={{ fontFamily: 'Montserrat' }}
+                      >
+                        EDIT TEAM NAME
+                      </p>
+                      <input
+                        className="border p-2 w-full"
+                        placeholder={teamName}
+                        style={{ fontFamily: 'Montserrat' }}
+                        value={editInput}
+                        onChange={(e) => setEditInput(e.target.value)}
+                      />
+                      <div className="flex mt-16 mb-5 bg-opacity-5 w-full">
+                        <button
+                          className="bg-indigo-buttonblue text-indigo-white w-full h-14 text-center tracking-widest text-md font-monument"
+                          onClick={() => {
+                            setTeamName(editInput);
+                            setEditModal(false);
+                          }}
+                        >
+                          CONFIRM
+                        </button>
+                      </div>
+                    </div>
+                  </Modal>
+                </>
+              )}
+              <BaseModal title={msg.title} visible={modal} onClose={() => setModal(false)}>
+                <p className="mt-5">{msg.content}</p>
+              </BaseModal>
+            </>
+          )}
         </>
       )}
-      <BaseModal title={msg.title} visible={modal} onClose={() => setModal(false)}>
-        <p className="mt-5">{msg.content}</p>
-      </BaseModal>
     </>
   );
 }
