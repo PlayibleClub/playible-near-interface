@@ -411,8 +411,12 @@ const Play = (props) => {
   }, [games, gamesLimit, gamesOffset]);
 
   useEffect(() => {
-    if (connectedWallet) dispatch(getPortfolio({ walletAddr: connectedWallet.walletAddress }));
-  }, [connectedWallet]);
+    if (connectedWallet) {
+      if (connectedWallet?.network?.name === 'testnet') {
+        dispatch(getPortfolio({ walletAddr: connectedWallet.walletAddress }));
+      }
+    }
+  }, [connectedWallet, dispatch]);
 
   useEffect(async () => {
     setLoading(true);
