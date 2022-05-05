@@ -429,12 +429,13 @@ const Play = (props) => {
       setErr('Waiting for wallet connection...');
       setLoading(false);
     }
-  }, [connectedWallet]);
-
-  useEffect(() => {
-    fetchGamesLoading();
     setOffset(0);
-  }, [activeCategory]);
+  }, [connectedWallet, activeCategory]);
+
+  // useEffect(() => {
+  //   fetchGamesLoading();
+  //   setOffset(0);
+  // }, [activeCategory]);
 
   useEffect(() => {
     if (router && router.query.type) {
