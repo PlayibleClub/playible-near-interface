@@ -13,13 +13,18 @@ import { estimateFee, estimateMultipleFees, executeContract } from '../../../uti
 import { GAME, ORACLE } from '../../../data/constants/contracts';
 import 'regenerator-runtime/runtime';
 import { format } from 'prettier';
+import { NEWADMIN } from '../../../data/constants/address';
+import { useRouter } from 'next/router';
 TimeAgo.addDefaultLocale(en);
 
 const Index = (props) => {
   const connectedWallet = useConnectedWallet();
   const lcd = useLCDClient();
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [contentLoading, setContentLoading] = useState(true);
   const [gameType, setGameType] = useState('new');
+  const [content, setContent] = useState(false);
   const [tabs, setTabs] = useState([
     {
       name: 'GAMES',
@@ -94,7 +99,8 @@ const Index = (props) => {
   const [games, setGames] = useState([]);
   const [completedGames, setCompletedGames] = useState([]);
   const [gameId, setGameId] = useState(null);
-
+  const [wallet, setWallet] = useState(null);
+  const [err, setErr] = useState(null);
   const [modal, setModal] = useState(false);
   const [endLoading, setEndLoading] = useState(false);
   const [confirmModal, setConfirmModal] = useState(false);
@@ -192,6 +198,10 @@ const Index = (props) => {
     let errors = [];
     let sortPercentage = [...distribution].sort((a, b) => b.percentage - a.percentage);
 
+    if (!Number.isInteger(details.duration)) {
+      errors.push('Duration must be a positive integer that is expressed in days');
+    }
+
     if (!details.name) {
       errors.push('Game is missing a title');
     }
@@ -209,11 +219,15 @@ const Index = (props) => {
     }
 
     if (distribution.length < 10) {
-      errors.push('Exactly 10 rank distribution must be provided. (Only ' + distribution.length + ' was provided)')
+      errors.push(
+        'Exactly 10 rank distribution must be provided. (Only ' +
+          distribution.length +
+          ' was provided)'
+      );
     }
 
-    if (distribution.filter(item => item.percentage === 0 || item.percentage < 0).length > 0) {
-      errors.push('A distribution percentage of 0% is not allowed')
+    if (distribution.filter((item) => item.percentage === 0 || item.percentage < 0).length > 0) {
+      errors.push('A distribution percentage of 0% is not allowed');
     }
 
     for (let i = 0; i < distribution.length; i++) {
@@ -272,14 +286,28 @@ const Index = (props) => {
           },
         ]);
 
-        setMsg({
-          title: 'SUCCESS',
-          content: 'Successfully ended game',
-        });
-
+        if (
+          !endGameRes.txResult ||
+          (endGameRes.txResult && !endGameRes.txResult.success) ||
+          endGameRes.txError
+        ) {
+          setMsg({
+            title: 'Failed',
+            content:
+              endGameRes.txResult && !endGameRes.txResult.success
+                ? 'Blockchain error! Please try again later.'
+                : endGameRes.txError,
+          });
+        } else {
+          setMsg({
+            title: 'SUCCESS',
+            content: 'Successfully ended game',
+          });
+        }
+        fetchGames();
         setModal(true);
         setEndModal(false);
-        await fetchGames();
+        router.reload()
       } else {
         setMsg({
           title: 'Error',
@@ -299,7 +327,7 @@ const Index = (props) => {
         ...details,
         // DURATION IS EXPRESSED IN DAYS BUT WILL BE CONVERTED TO MINUTES
         // duration: parseInt(details.duration) * 60 * 24,
-        duration: 2,
+        duration: 1,
       };
 
       setLoading(true);
@@ -317,6 +345,7 @@ const Index = (props) => {
             percentage: (parseInt(item.percentage) / 100) * 1000000,
           };
         });
+        
 
         const resContract = await executeContract(connectedWallet, ORACLE, [
           {
@@ -388,7 +417,7 @@ const Index = (props) => {
   };
 
   const fetchGames = async () => {
-    setLoading(true);
+    setContentLoading(true);
     const res = await axiosInstance.get('/fantasy/game/new/');
     const completedRes = await axiosInstance.get('/fantasy/game/completed/');
 
@@ -405,7 +434,6 @@ const Index = (props) => {
           game_info: { game_id: item.id.toString() },
         });
 
-
         return {
           ...item,
           hasEnded: !!hasEnded?.has_ended,
@@ -414,9 +442,9 @@ const Index = (props) => {
 
       const completedGamesList = await Promise.all(completedList);
 
-      setCompletedGames(completedGamesList.filter(item => !item.hasEnded));
+      setCompletedGames(completedGamesList.filter((item) => !item.hasEnded));
     }
-    setLoading(false);
+    setContentLoading(false);
   };
 
   const resetForm = () => {
@@ -439,188 +467,215 @@ const Index = (props) => {
   }, [distribution]);
 
   useEffect(() => {
-    fetchGames();
-  }, []);
+    if (connectedWallet) {
+      if (connectedWallet.walletAddress === NEWADMIN) {
+        if (connectedWallet?.network?.name === 'testnet') {
+          fetchGames();
+          setErr(null);
+          setContent(true);
+        } else {
+          setErr('You are connected to mainnet. Please connect to testnet');
+        }
+      } else {
+        return router.replace('/');
+      }
+    } else {
+      setGames([]);
+      setCompletedGames([]);
+      setErr('Waiting for wallet connection...');
+    }
+  }, [connectedWallet]);
 
   return (
     <Container isAdmin>
       <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
         <Main color="indigo-white">
-          <div className="flex flex-col w-full overflow-y-auto overflow-x-hidden h-screen self-center text-indigo-black">
-            <div className="flex md:ml-4 font-bold ml-8 font-monument mt-5">
-              {tabs.map(({ name, isActive }) => (
-                <div
-                  className={`cursor-pointer mr-6 ${
-                    isActive ? 'border-b-8 border-indigo-buttonblue' : ''
-                  }`}
-                  onClick={() => changeTab(name)}
-                >
-                  {name}
+          {content &&
+            (contentLoading ? (
+              <LoadingPageDark />
+            ) : err ? (
+              <p className="ml-12 mt-5">{err}</p>
+            ) : (
+              <div className="flex flex-col w-full overflow-y-auto overflow-x-hidden h-screen self-center text-indigo-black">
+                <div className="flex md:ml-4 font-bold ml-8 font-monument mt-5">
+                  {tabs.map(({ name, isActive }) => (
+                    <div
+                      className={`cursor-pointer mr-6 ${
+                        isActive ? 'border-b-8 border-indigo-buttonblue' : ''
+                      }`}
+                      onClick={() => changeTab(name)}
+                    >
+                      {name}
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-            <hr className="opacity-50" />
-            <div className="p-8 px-32">
-              {loading ? (
-                <LoadingPageDark />
-              ) : tabs[0].isActive ? (
-                <div>
-                  <div className="flex md:ml-4 font-bold ml-8 font-monument mt-5">
-                    {gameTabs.map(({ name, isActive }) => (
-                      <div
-                        className={`cursor-pointer mr-6 ${
-                          isActive ? 'border-b-8 border-indigo-buttonblue' : ''
-                        }`}
-                        onClick={() => changeGameTab(name)}
-                      >
-                        {name}
-                      </div>
-                    ))}
-                  </div>
-                  {(gameTabs[0].isActive ? games : completedGames).length > 0 &&
-                    (gameTabs[0].isActive ? games : completedGames).map(function (data, i) {
-                      return (
-                        <div className="border-b p-5 py-8">
-                          <div className="flex justify-between">
-                            <div>
-                              <p className="font-bold text-lg">{data.name}</p>
-                              {gameTabs[0].isActive ? (
-                                <ReactTimeAgo
-                                  future
-                                  timeStyle="round-minute"
-                                  date={data.start_datetime}
-                                  locale="en-US"
-                                />
-                              ) : (
-                                ''
-                              )}
-                              <p>Prize: $ {data.prize}</p>
-                            </div>
-                            <div>
-                              <button
-                                className="bg-indigo-green font-monument tracking-widest  text-indigo-white w-5/6 md:w-64 h-16 text-center text-sm"
-                                onClick={() => {
-                                  setGameId(data.id);
-                                  setEndModal(true);
-                                }}
-                              >
-                                END GAME
-                              </button>
-                            </div>
+                <hr className="opacity-50" />
+                <div className="p-8 px-32">
+                  {loading ? (
+                    <LoadingPageDark />
+                  ) : tabs[0].isActive ? (
+                    <div>
+                      <div className="flex md:ml-4 font-bold ml-8 font-monument mt-5">
+                        {gameTabs.map(({ name, isActive }) => (
+                          <div
+                            className={`cursor-pointer mr-6 ${
+                              isActive ? 'border-b-8 border-indigo-buttonblue' : ''
+                            }`}
+                            onClick={() => changeGameTab(name)}
+                          >
+                            {name}
                           </div>
+                        ))}
+                      </div>
+                      {(gameTabs[0].isActive ? games : completedGames).length > 0 &&
+                        (gameTabs[0].isActive ? games : completedGames).map(function (data, i) {
+                          return (
+                            <div className="border-b p-5 py-8">
+                              <div className="flex justify-between">
+                                <div>
+                                  <p className="font-bold text-lg">{data.name}</p>
+                                  {gameTabs[0].isActive ? (
+                                    <ReactTimeAgo
+                                      future
+                                      timeStyle="round-minute"
+                                      date={data.start_datetime}
+                                      locale="en-US"
+                                    />
+                                  ) : (
+                                    ''
+                                  )}
+                                  <p>Prize: $ {data.prize}</p>
+                                </div>
+                                {gameTabs[0].isActive ? (
+                                  ''
+                                ) : (
+                                  <div>
+                                    <button
+                                      className="bg-indigo-green font-monument tracking-widest  text-indigo-white w-5/6 md:w-64 h-16 text-center text-sm"
+                                      onClick={() => {
+                                        setGameId(data.id);
+                                        setEndModal(true);
+                                      }}
+                                    >
+                                      END GAME
+                                    </button>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          );
+                        })}
+                    </div>
+                  ) : (
+                    <>
+                      <div className="flex">
+                        {/* GAME TITLE */}
+                        <div className="flex flex-col lg:w-1/2 lg:mr-10">
+                          <label className="font-monument" htmlFor="title">
+                            TITLE
+                          </label>
+                          <input
+                            className="border outline-none rounded-lg px-3 p-2"
+                            id="title"
+                            name="name"
+                            placeholder="Enter title"
+                            onChange={(e) => onChange(e)}
+                            value={details.name}
+                          />
                         </div>
-                      );
-                    })}
-                </div>
-              ) : (
-                <>
-                  <div className="flex">
-                    {/* GAME TITLE */}
-                    <div className="flex flex-col lg:w-1/2 lg:mr-10">
-                      <label className="font-monument" htmlFor="title">
-                        TITLE
-                      </label>
-                      <input
-                        className="border outline-none rounded-lg px-3 p-2"
-                        id="title"
-                        name="name"
-                        placeholder="Enter title"
-                        onChange={(e) => onChange(e)}
-                        value={details.name}
-                      />
-                    </div>
 
-                    {/* DATE & TIME */}
-                    <div className="flex flex-col lg:w-1/2">
-                      <label className="font-monument" htmlFor="datetime">
-                        DATE & TIME
-                      </label>
-                      <input
-                        className="border outline-none rounded-lg px-3 p-2"
-                        id="datetime"
-                        type="datetime-local"
-                        name="start_datetime"
-                        onChange={(e) => onChange(e)}
-                        value={details.start_datetime}
-                      />
-                    </div>
-                  </div>
+                        {/* DATE & TIME */}
+                        <div className="flex flex-col lg:w-1/2">
+                          <label className="font-monument" htmlFor="datetime">
+                            DATE & TIME
+                          </label>
+                          <input
+                            className="border outline-none rounded-lg px-3 p-2"
+                            id="datetime"
+                            type="datetime-local"
+                            name="start_datetime"
+                            onChange={(e) => onChange(e)}
+                            value={details.start_datetime}
+                          />
+                        </div>
+                      </div>
 
-                  <div className="flex mt-8">
-                    {/* DURATION */}
-                    <div className="flex flex-col lg:w-1/2 lg:mr-10">
-                      <label className="font-monument" htmlFor="duration">
-                        DURATION <span className="text-indigo-lightgray">(DAYS)</span>
-                      </label>
-                      <input
-                        className="border outline-none rounded-lg px-3 p-2"
-                        id="duration"
-                        name="duration"
-                        type="number"
-                        min={1}
-                        placeholder="Express in days"
-                        onChange={(e) => onChange(e)}
-                        value={details.duration}
-                      />
-                    </div>
+                      <div className="flex mt-8">
+                        {/* DURATION */}
+                        <div className="flex flex-col lg:w-1/2 lg:mr-10">
+                          <label className="font-monument" htmlFor="duration">
+                            DURATION <span className="text-indigo-lightgray">(DAYS)</span>
+                          </label>
+                          <input
+                            className="border outline-none rounded-lg px-3 p-2"
+                            id="duration"
+                            name="duration"
+                            type="number"
+                            min={1}
+                            placeholder="Express in days"
+                            onChange={(e) => onChange(e)}
+                            value={details.duration}
+                          />
+                        </div>
 
-                    {/* PRIZE */}
-                    <div className="flex flex-col lg:w-1/2">
-                      <label className="font-monument" htmlFor="prize">
-                        PRIZE
-                      </label>
-                      <input
-                        className="border outline-none rounded-lg px-3 p-2"
-                        id="prize"
-                        type="number"
-                        name="prize"
-                        min={1}
-                        placeholder="Enter amount"
-                        onChange={(e) => onChange(e)}
-                        value={details.prize}
-                      />
-                    </div>
-                  </div>
+                        {/* PRIZE */}
+                        <div className="flex flex-col lg:w-1/2">
+                          <label className="font-monument" htmlFor="prize">
+                            PRIZE
+                          </label>
+                          <input
+                            className="border outline-none rounded-lg px-3 p-2"
+                            id="prize"
+                            type="number"
+                            name="prize"
+                            min={1}
+                            placeholder="Enter amount"
+                            onChange={(e) => onChange(e)}
+                            value={details.prize}
+                          />
+                        </div>
+                      </div>
 
-                  {/* DISTRIBUTION FORM */}
-                  <div className="mt-8">
-                    <p className="font-monument">DISTRIBUTION</p>
-                    {distribution.map(({ rank, percentage }) => (
-                      <Distribution
-                        rank={rank}
-                        value={percentage}
-                        handleChange={modifyRankList}
-                        showDelete={rank === distribution.length && distribution.length > 1}
-                        percentTotal={percentTotal}
-                      />
-                    ))}
+                      {/* DISTRIBUTION FORM */}
+                      <div className="mt-8">
+                        <p className="font-monument">DISTRIBUTION</p>
+                        {distribution.map(({ rank, percentage }) => (
+                          <Distribution
+                            rank={rank}
+                            value={percentage}
+                            handleChange={modifyRankList}
+                            showDelete={rank === distribution.length && distribution.length > 1}
+                            percentTotal={percentTotal}
+                          />
+                        ))}
 
-                    {distribution.length < 10 ? (
-                      <div className="flex justify-start">
+                        {distribution.length < 10 ? (
+                          <div className="flex justify-start">
+                            <button
+                              className="bg-indigo-darkgray text-indigo-white w-5/6 md:w-48 h-10 text-center font-bold text-sm mt-4"
+                              onClick={() => modifyRankList('add')}
+                            >
+                              Add New Rank
+                            </button>
+                          </div>
+                        ) : (
+                          ''
+                        )}
+                      </div>
+
+                      <div className="flex justify-center mt-8 mb-10">
                         <button
-                          className="bg-indigo-darkgray text-indigo-white w-5/6 md:w-48 h-10 text-center font-bold text-sm mt-4"
-                          onClick={() => modifyRankList('add')}
+                          className="bg-indigo-green font-monument tracking-widest ml-7 text-indigo-white w-5/6 md:w-80 h-16 text-center text-sm mt-4"
+                          onClick={validateGame}
                         >
-                          Add New Rank
+                          CREATE GAME
                         </button>
                       </div>
-                    ) : (
-                      ''
-                    )}
-                  </div>
-
-                  <div className="flex justify-center mt-8 mb-10">
-                    <button
-                      className="bg-indigo-green font-monument tracking-widest ml-7 text-indigo-white w-5/6 md:w-80 h-16 text-center text-sm mt-4"
-                      onClick={validateGame}
-                    >
-                      CREATE GAME
-                    </button>
-                  </div>
-                </>
-              )}
-            </div>
-          </div>
+                    </>
+                  )}
+                </div>
+              </div>
+            ))}
         </Main>
       </div>
       <BaseModal title={msg.title} visible={modal} onClose={() => setModal(false)}>

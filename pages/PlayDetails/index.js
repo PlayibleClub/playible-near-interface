@@ -10,7 +10,7 @@ import PlayDetailsComponent from './components/PlayDetailsComponent.js';
 import { axiosInstance } from '../../utils/playible/';
 import moment from 'moment';
 import { truncate } from '../../utils/wallet/index.js';
-import { ADMIN } from '../../data/constants/address.js';
+import { ADMIN, NEWADMIN } from '../../data/constants/address.js';
 import { useConnectedWallet } from '@terra-money/wallet-provider';
 import Link from 'next/link';
 import 'regenerator-runtime/runtime';
@@ -54,8 +54,7 @@ export default function PlayDetails(props) {
     const res = await axiosInstance.get(`/fantasy/game/${router.query.id}/leaderboard/`);
     if (res.status === 200) {
       const removedAdminWallet = res.data.filter(function (data) {
-        // return data.player_addr !== ADMIN;
-        return data;
+        return data.player_addr !== NEWADMIN;
       });
       setLeaderboard(removedAdminWallet);
     } else {
@@ -301,7 +300,7 @@ export default function PlayDetails(props) {
                                             >
                                               {key + 1 <= 9 ? '0' + (key + 1) : key + 1}
                                             </div>
-                                            <div className="bg-indigo-black text-indigo-white w-40 text-center p-1 text-base font-monument">
+                                            <div className="bg-indigo-black text-indigo-white px-3 text-center p-1 text-base font-monument">
                                               {truncate(data.player_addr, 11)}
                                             </div>
                                             <div className="ml-16 w-10 text-center font-black">
