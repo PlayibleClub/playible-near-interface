@@ -98,18 +98,13 @@ const MyActivity = (props) => {
     }
   }
 
-  useEffect(() => {
-    if (connectedWallet && dispatch) {
-      dispatch(getPortfolio({ walletAddr: connectedWallet.walletAddress }));
-      fetchActiveGames();
-      fetchCompletedGames();
-    }
-  }, [connectedWallet, dispatch, activeCategory]);
-
   useEffect(async () => {
     setErr(null);
-    if (connectedWallet) {
+    setAllGames([])
+    setCompletedGames([])
+    if (connectedWallet && dispatch) {
       if (connectedWallet?.network?.name === 'testnet') {
+        dispatch(getPortfolio({ walletAddr: connectedWallet.walletAddress }));
         await fetchActiveGames();
         await fetchCompletedGames();
         setErr(null);
@@ -121,7 +116,7 @@ const MyActivity = (props) => {
       setErr('Waiting for wallet connection...');
       setLoading(false);
     }
-  }, [connectedWallet]);
+  }, [connectedWallet, dispatch]);
 
   return (
     <>
