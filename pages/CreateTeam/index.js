@@ -195,17 +195,16 @@ export default function CreateLineup(props) {
       setTeam(tempSlots);
     }
     setConfirmModal(false);
-    setTimeout(() => {
-      setSelectModal(false);
-      setSlotIndex(null);
-      setChosenAthlete(null);
-      setFilterPos(null);
-    }, 300);
+    setSelectModal(false);
+    setSlotIndex(null);
+    setChosenAthlete(null);
+    setFilterPos(null);
   };
 
-  const proceedChanges = () => {
+  const proceedChanges = async () => {
     if (chosenAthlete) {
-      setConfirmModal(true);
+      await updateTeamSlots()
+      await setChosenAthlete(null);
       setLimit(5);
       setOffset(0);
     } else {
@@ -287,8 +286,6 @@ export default function CreateLineup(props) {
           },
         ]);
 
-        console.log('resContract', resContract);
-
         if (
           !resContract.txResult ||
           (resContract.txResult && !resContract.txResult.success) ||
@@ -311,9 +308,7 @@ export default function CreateLineup(props) {
           let ctr = 0;
           while (!success) {
             ctr += 1;
-            console.log('count loop', ctr);
             const res = await axiosInstance.post('/fantasy/game_team/', formData);
-            console.log('django team response', res);
             setCreateLoading(false);
             if (res.status === 201) {
               success = true;
@@ -429,9 +424,9 @@ export default function CreateLineup(props) {
         <>
           {err ? (
             <>
-            <Container activeName="PLAY">
-            <p className="py-10 ml-7">{err}</p>
-            </Container>
+              <Container activeName="PLAY">
+                <p className="py-10 ml-7">{err}</p>
+              </Container>
             </>
           ) : (
             <>
@@ -447,108 +442,113 @@ export default function CreateLineup(props) {
                 <>
                   <Container activeName="PLAY">
                     <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
-                      <Main color="indigo-white">
-                        {selectModal ? (
-                          <PortfolioContainer
-                            title={`SELECT YOUR ${
-                              position('baseball', filterPos).toUpperCase() || 'No filtered'
-                            }`}
-                            textcolor="text-indigo-black"
-                          >
-                            <div className="grid grid-cols-2 gap-y-4 mt-4 md:grid-cols-4 md:ml-7 md:mt-12">
-                              {athleteList.map((player, i) => {
-                                const path = player.token_info.info.extension;
-
-                                return (
-                                  <div className="mb-4" key={i}>
-                                    <PerformerContainerSelectable
-                                      AthleteName={
-                                        path.attributes.filter(
-                                          (item) => item.trait_type === 'name'
-                                        )[0].value
-                                      }
-                                      AvgScore={player.fantasy_score}
-                                      id={path.athlete_id}
-                                      uri={player.token_info.info.token_uri || player.nft_image}
-                                      rarity={
-                                        path.attributes.filter(
-                                          (item) => item.trait_type === 'rarity'
-                                        )[0].value
-                                      }
-                                      status="ingame"
-                                      index={i}
-                                      token_id={player.token_id}
-                                      selected={chosenAthlete}
-                                      selectorFunction={() => setChosenAthlete(player)}
-                                    />
-                                  </div>
-                                );
-                              })}
-                            </div>
-                            <div className="flex justify-between md:mt-5 md:mr-6 p-5">
-                              <div className="bg-indigo-white mr-1 h-11 flex items-center font-thin border-indigo-lightgray border-opacity-40 p-2">
-                                {pageCount > 1 && (
-                                  <button
-                                    className="px-2 border mr-2"
-                                    onClick={() => changeIndex('first')}
-                                  >
-                                    First
-                                  </button>
-                                )}
-                                {pageCount !== 0 && canPrevious() && (
-                                  <button
-                                    className="px-2 border mr-2"
-                                    onClick={() => changeIndex('previous')}
-                                  >
-                                    Previous
-                                  </button>
-                                )}
-                                <p className="mr-2">
-                                  Page {offset + 1} of {pageCount}
-                                </p>
-                                {pageCount !== 0 && canNext() && (
-                                  <button
-                                    className="px-2 border mr-2"
-                                    onClick={() => changeIndex('next')}
-                                  >
-                                    Next
-                                  </button>
-                                )}
-                                {pageCount > 1 && (
-                                  <button
-                                    className="px-2 border mr-2"
-                                    onClick={() => changeIndex('last')}
-                                  >
-                                    Last
-                                  </button>
-                                )}
-                              </div>
-                              <div className="bg-indigo-white mr-1 h-11 w-64 flex font-thin border-2 border-indigo-lightgray border-opacity-40 p-2">
-                                <select
-                                  value={limit}
-                                  className="bg-indigo-white text-lg w-full outline-none"
-                                  onChange={(e) => {
-                                    setLimit(e.target.value);
-                                    setOffset(0);
-                                  }}
-                                >
-                                  {limitOptions.map((option) => (
-                                    <option value={option}>{option}</option>
-                                  ))}
-                                </select>
-                              </div>
-                            </div>
-                            <div className="flex mt-10 bg-indigo-black bg-opacity-5 w-full justify-end">
-                              <button
-                                className="bg-indigo-buttonblue text-indigo-white w-5/6 md:w-80 h-14 text-center font-bold text-md"
-                                onClick={proceedChanges}
+                      <Main color="indigo-white h-screen  overflow-y-auto pb-10">
+                        <div className="flex flex-col w-full overflow-y-auto overflow-x-hidden h-full self-center text-indigo-black relative">
+                          {selectModal ? (
+                            <div className="absolute top-0 left-0 bottom-0 right-0 bg-indigo-white z-50">
+                              <PortfolioContainer
+                                title={`SELECT YOUR ${
+                                  position('baseball', filterPos).toUpperCase() || 'No filtered'
+                                }`}
+                                textcolor="text-indigo-black"
                               >
-                                PROCEED
-                              </button>
+                                <div className="grid grid-cols-2 gap-y-4 mt-4 md:grid-cols-4 md:ml-7 md:mt-12">
+                                  {athleteList.map((player, i) => {
+                                    const path = player.token_info.info.extension;
+
+                                    return (
+                                      <div className="mb-4" key={i}>
+                                        <PerformerContainerSelectable
+                                          AthleteName={
+                                            path.attributes.filter(
+                                              (item) => item.trait_type === 'name'
+                                            )[0].value
+                                          }
+                                          AvgScore={player.fantasy_score}
+                                          id={path.athlete_id}
+                                          uri={player.token_info.info.token_uri || player.nft_image}
+                                          rarity={
+                                            path.attributes.filter(
+                                              (item) => item.trait_type === 'rarity'
+                                            )[0].value
+                                          }
+                                          status="ingame"
+                                          index={i}
+                                          token_id={player.token_id}
+                                          selected={chosenAthlete}
+                                          selectorFunction={() => setChosenAthlete(player)}
+                                        />
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+                                <div className="flex justify-between md:mt-5 md:mr-6 p-5">
+                                  <div className="bg-indigo-white mr-1 h-11 flex items-center font-thin border-indigo-lightgray border-opacity-40 p-2">
+                                    {pageCount > 1 && (
+                                      <button
+                                        className="px-2 border mr-2"
+                                        onClick={() => changeIndex('first')}
+                                      >
+                                        First
+                                      </button>
+                                    )}
+                                    {pageCount !== 0 && canPrevious() && (
+                                      <button
+                                        className="px-2 border mr-2"
+                                        onClick={() => changeIndex('previous')}
+                                      >
+                                        Previous
+                                      </button>
+                                    )}
+                                    <p className="mr-2">
+                                      Page {offset + 1} of {pageCount}
+                                    </p>
+                                    {pageCount !== 0 && canNext() && (
+                                      <button
+                                        className="px-2 border mr-2"
+                                        onClick={() => changeIndex('next')}
+                                      >
+                                        Next
+                                      </button>
+                                    )}
+                                    {pageCount > 1 && (
+                                      <button
+                                        className="px-2 border mr-2"
+                                        onClick={() => changeIndex('last')}
+                                      >
+                                        Last
+                                      </button>
+                                    )}
+                                  </div>
+                                  <div className="bg-indigo-white mr-1 h-11 w-64 flex font-thin border-2 border-indigo-lightgray border-opacity-40 p-2">
+                                    <select
+                                      value={limit}
+                                      className="bg-indigo-white text-lg w-full outline-none"
+                                      onChange={(e) => {
+                                        setLimit(e.target.value);
+                                        setOffset(0);
+                                      }}
+                                    >
+                                      {limitOptions.map((option) => (
+                                        <option value={option}>{option}</option>
+                                      ))}
+                                    </select>
+                                  </div>
+                                </div>
+                                <div className="flex mt-10 bg-indigo-black bg-opacity-5 w-full justify-end">
+                                  <button
+                                    className="bg-indigo-buttonblue text-indigo-white w-5/6 md:w-80 h-14 text-center font-bold text-md"
+                                    onClick={proceedChanges}
+                                  >
+                                    PROCEED
+                                  </button>
+                                </div>
+                              </PortfolioContainer>
                             </div>
-                          </PortfolioContainer>
-                        ) : (
-                          <>
+                          ) : (
+                            ''
+                          )}
+                          <div className={`${selectModal ? 'hidden' : ''}`}>
                             <BackFunction prev={`/CreateLineup?id=${router.query.id}`} />
                             <PortfolioContainer title="CREATE LINEUP" textcolor="text-indigo-black">
                               <div className="flex flex-col">
@@ -575,7 +575,7 @@ export default function CreateLineup(props) {
                                                   )[0].value
                                                 : ''
                                             }
-                                            score={data.score || 0}
+                                            score={data.fantasy_score || 0}
                                             onClick={() => {
                                               filterAthleteByPos(data.position.value);
                                               setSlotIndex(i);
@@ -600,8 +600,8 @@ export default function CreateLineup(props) {
                                 </button>
                               </div>
                             </PortfolioContainer>
-                          </>
-                        )}
+                          </div>
+                        </div>
                       </Main>
                     </div>
                   </Container>

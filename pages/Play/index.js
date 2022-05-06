@@ -605,7 +605,7 @@ const Play = (props) => {
       {failedTransactionModal !== null && (
         <>
           <div className="fixed w-screen h-screen bg-opacity-70 z-50 overflow-auto bg-indigo-gray flex font-montserrat">
-            <div className="relative p-8 bg-indigo-white w-11/12 md:w-96 h-10/12 md:h-auto m-auto flex-col flex">
+            <div className="relative p-8 bg-indigo-white w-11/12 md:w-min h-10/12 md:h-auto m-auto flex-col flex">
               <button
                 className="absolute top-0 right-0 mt-6 mr-6 h-4 w-4"
                 onClick={() => {
@@ -615,14 +615,15 @@ const Play = (props) => {
                 <img className="h-4 w-4 " src={'/images/x.png'} />
               </button>
               <img src={claimreward} className="h-20 w-20 mt-5" />
-              <div className="mt-4 bg-indigo-yellow w-min p-2 px-3 text-center text-lg font-monument">
+              <div className="mt-4 bg-indigo-yellow w-max p-2 px-3 text-center text-lg font-monument">
                 FAILED TRANSACTION
               </div>
-              <div className="mt-4 p-2 text-sm">
+              <div className="mt-4 p-2 text-xs">
                 {failedTransactionModal.msg ||
                   "We're sorry, unfortunately we've experienced a problem loading your request."}
+                <br />
+                Please try again.
               </div>
-              <div className="px-2 text-sm">Please try again.</div>
             </div>
           </div>
         </>
