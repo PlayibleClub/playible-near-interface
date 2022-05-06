@@ -43,7 +43,7 @@ export default function CreateLineup(props) {
 
   useEffect(() => {
     if (router && router.query.id && connectedWallet) {
-      setTeams([])
+      setTeams([]);
       fetchGameData();
     }
   }, [router, connectedWallet]);
@@ -140,13 +140,12 @@ export default function CreateLineup(props) {
                           tournament and compete for cash prizes.
                         </div>
                         <div className="mt-7 ml-7 w-2/5">
-                        <ModalPortfolioContainer
-                                title="VIEW TEAMS"
-                                textcolor="text-indigo-black mb-5"
-                              />
+                          <ModalPortfolioContainer
+                            title="VIEW TEAMS"
+                            textcolor="text-indigo-black mb-5"
+                          />
                           {teams.length > 0 ? (
                             <div>
-
                               {teams.map(function (data, i) {
                                 return (
                                   <div className="p-5 px-6 bg-black-dark text-indigo-white mb-5 flex justify-between">
