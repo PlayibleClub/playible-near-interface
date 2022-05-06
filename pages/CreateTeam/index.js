@@ -400,7 +400,11 @@ export default function CreateLineup(props) {
     setErr(null);
     if (connectedWallet) {
       if (connectedWallet?.network?.name === 'testnet') {
+        setLoading(true)
         await fetchGameData();
+        await prepareSlots();
+        await setTeamName('Team 1');
+        setLoading(false)
         setErr(null);
       } else {
         setErr('You are connected to mainnet. Please connect to testnet');
@@ -419,7 +423,9 @@ export default function CreateLineup(props) {
   return (
     <>
       {loading ? (
+        <Container>
         <LoadingPageDark />
+        </Container>
       ) : (
         <>
           {err ? (

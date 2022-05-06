@@ -35,7 +35,6 @@ export default function EntrySummary(props) {
       : await axiosInstance.get(
           `/fantasy/game/${router.query.game_id}/registered_teams_detail/?wallet_addr=${connectedWallet.walletAddress}`
         );
-
     if (allTeams.status === 200) {
       if (router.query.team_id) {
         setTeam([allTeams.data]);
@@ -72,6 +71,7 @@ export default function EntrySummary(props) {
       }
     } else {
       setErr('Waiting for wallet connection...');
+      setTeam([]);
       setLoading(false);
     }
   }, [connectedWallet]);
