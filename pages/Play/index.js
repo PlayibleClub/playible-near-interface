@@ -26,7 +26,8 @@ import { GAME, ORACLE } from '../../data/constants/contracts';
 import Modal from '../../components/modals/Modal';
 import { executeContract, retrieveTxInfo } from '../../utils/terra';
 
-const Play = () => {
+const Play = (props) => {
+  const { error } = props;
   const { status, connect, disconnect, availableConnectTypes } = useWallet();
   const [activeCategory, setCategory] = useState('new');
   const [rewardsCategory, setRewardsCategory] = useState('winning');
@@ -50,7 +51,7 @@ const Play = () => {
   const dispatch = useDispatch();
   const connectedWallet = useConnectedWallet();
   const [games, setGames] = useState([]);
-  const [loading, setloading] = useState(true);
+  const [loading, setLoading] = useState(true);
 
   const [limit, setLimit] = useState(10);
   const [offset, setOffset] = useState(0);
@@ -63,6 +64,7 @@ const Play = () => {
   const limitOptions = [5, 10, 30, 50];
   const [filter, setFilter] = useState(null);
   const [search, setSearch] = useState('');
+  const [err, setErr] = useState(error);
 
   const categoryList = ['new', 'active', 'completed'];
 
@@ -135,7 +137,7 @@ const Play = () => {
       setGames(res.data);
     }
     setTimeout(() => {
-      setloading(false);
+      setLoading(false);
     }, 1000);
   };
 
@@ -194,7 +196,7 @@ const Play = () => {
 
       setGames(completedGames);
     }
-    setloading(false);
+    setLoading(false);
   };
 
   const fetchTeamPlacements = async (gameId) => {
@@ -298,7 +300,7 @@ const Play = () => {
   };
 
   const fetchGamesLoading = async () => {
-    setloading(true);
+    setLoading(true);
     await setSortedList([]);
     fetchGames(activeCategory);
   };
@@ -345,8 +347,8 @@ const Play = () => {
     let totalPrize = 0;
 
     if (claimData && claimData.winning_placements.length > 0) {
-      totalPrize = claimData.winning_placements.reduce((total, num) => {
-        let acc = total + Math.round(num.prize);
+      totalPrize = claimData.winning_placements.reduce((total,   num) => {
+        let acc = parseInt(total) + parseInt(num.prize);
         return acc;
       }, 0);
     }
@@ -369,7 +371,7 @@ const Play = () => {
         showSuccessModal({
           prize: totalPrize,
         });
-        setloading(true);
+        setLoading(true);
         fetchGamesLoading();
       }
     } else {
@@ -409,13 +411,35 @@ const Play = () => {
   }, [games, gamesLimit, gamesOffset]);
 
   useEffect(() => {
-    if (connectedWallet) dispatch(getPortfolio({ walletAddr: connectedWallet.walletAddress }));
-  }, [connectedWallet]);
+    if (connectedWallet) {
+      if (connectedWallet?.network?.name === 'testnet') {
+        dispatch(getPortfolio({ walletAddr: connectedWallet.walletAddress }));
+      }
+    }
+  }, [connectedWallet, dispatch]);
 
-  useEffect(() => {
-    fetchGamesLoading();
+  useEffect(async () => {
+    setLoading(true);
+    setErr(null);
+    if (connectedWallet) {
+      if (connectedWallet?.network?.name === 'testnet') {
+        await fetchGamesLoading();
+        setErr(null);
+      } else {
+        setErr('You are connected to mainnet. Please connect to testnet');
+        setLoading(false);
+      }
+    } else {
+      setErr('Waiting for wallet connection...');
+      setLoading(false);
+    }
     setOffset(0);
-  }, [activeCategory]);
+  }, [connectedWallet, activeCategory]);
+
+  // useEffect(() => {
+  //   fetchGamesLoading();
+  //   setOffset(0);
+  // }, [activeCategory]);
 
   useEffect(() => {
     if (router && router.query.type) {
@@ -570,7 +594,9 @@ const Play = () => {
               <div className="mt-4 bg-indigo-yellow w-min p-2 px-3 text-center text-lg font-monument">
                 CONGRATULATIONS
               </div>
-              <div className="p-2 text-4xl font-monument">{showSuccessModal.prize || 0} UST</div>
+              <div className="p-2 text-4xl font-monument">
+                {successTransactionModal.prize.toString()} UST
+              </div>
               <div className="p-2 text-lg font-monument -mt-4">EARNED</div>
             </div>
           </div>
@@ -579,7 +605,7 @@ const Play = () => {
       {failedTransactionModal !== null && (
         <>
           <div className="fixed w-screen h-screen bg-opacity-70 z-50 overflow-auto bg-indigo-gray flex font-montserrat">
-            <div className="relative p-8 bg-indigo-white w-11/12 md:w-96 h-10/12 md:h-auto m-auto flex-col flex">
+            <div className="relative p-8 bg-indigo-white w-11/12 md:w-min h-10/12 md:h-auto m-auto flex-col flex">
               <button
                 className="absolute top-0 right-0 mt-6 mr-6 h-4 w-4"
                 onClick={() => {
@@ -589,19 +615,20 @@ const Play = () => {
                 <img className="h-4 w-4 " src={'/images/x.png'} />
               </button>
               <img src={claimreward} className="h-20 w-20 mt-5" />
-              <div className="mt-4 bg-indigo-yellow w-min p-2 px-3 text-center text-lg font-monument">
+              <div className="mt-4 bg-indigo-yellow w-max p-2 px-3 text-center text-lg font-monument">
                 FAILED TRANSACTION
               </div>
-              <div className="mt-4 p-2 text-sm">
+              <div className="mt-4 p-2 text-xs">
                 {failedTransactionModal.msg ||
                   "We're sorry, unfortunately we've experienced a problem loading your request."}
+                <br />
+                Please try again.
               </div>
-              <div className="px-2 text-sm">Please try again.</div>
             </div>
           </div>
         </>
       )}
-      <Container>
+      <Container activeName="PLAY">
         <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
           <Main color="indigo-white">
             <div className="flex flex-col">
@@ -632,118 +659,137 @@ const Play = () => {
                     </div>
                   ))}
                 </div>
-
                 <hr className="opacity-50" />
-
                 {loading ? (
                   <LoadingPageDark />
-                ) : sortedList.length > 0 ? (
-                  <>
-                    <div className="mt-4 ml-6 grid grid-cols-0 md:grid-cols-3">
-                      {sortedList.map(function (data, i) {
-                        return (
-                          <div key={i} className="flex">
-                            <div className="mr-6">
-                              <a href={`/PlayDetails?id=${data.id}`}>
-                                <div className="mr-6">
-                                  <PlayComponent
-                                    type={activeCategory}
-                                    icon={data.icon}
-                                    prizePool={data.prize}
-                                    startDate={data.start_datetime}
-                                    endDate={data.end_datetime}
-                                    month={data.month}
-                                    date={data.date}
-                                    year={data.year}
-                                    img={data.image}
-                                    fetchGames={fetchGamesLoading}
-                                    index={() => changeIndex()}
-                                  />
-                                </div>
-                              </a>
-                              {activeCategory === 'completed' && data.hasAthletes && (
-                                <div className="">
-                                  {data.isClaimed === 'unclaimed' ? (
-                                    data.hasEnded ? (
-                                      <button
-                                        className={`bg-indigo-buttonblue w-full h-12 text-center font-bold rounded-md text-sm mt-4 self-center`}
-                                        onClick={() =>
-                                          data.hasEnded ? fetchTeamPlacements(data.id) : undefined
-                                        }
-                                      >
-                                        <div className="text-indigo-white">
-                                          CLAIM {data.hasRewards ? 'REWARD' : 'TEAM'}
-                                        </div>
-                                      </button>
-                                    ) : (
-                                      <button
-                                        className={`bg-indigo-lightblue cursor-not-allowed  w-full h-12 text-center font-bold rounded-md text-sm mt-4 self-center`}
-                                      >
-                                        <div className="text-indigo-white">
-                                          Please wait for the game to end
-                                        </div>
-                                      </button>
-                                    )
-                                  ) : (
-                                    ''
-                                  )}
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                    <div className="flex justify-between md:mt-5 md:mr-6 p-5">
-                      <div className="bg-indigo-white mr-1 h-11 flex items-center font-thin border-indigo-lightgray border-opacity-40 p-2">
-                        {pageCount > 1 && (
-                          <button className="px-2 border mr-2" onClick={() => changeIndex('first')}>
-                            First
-                          </button>
-                        )}
-                        {pageCount !== 0 && canPrevious() && (
-                          <button
-                            className="px-2 border mr-2"
-                            onClick={() => changeIndex('previous')}
-                          >
-                            Previous
-                          </button>
-                        )}
-                        <p className="mr-2">
-                          Page {offset + 1} of {pageCount}
-                        </p>
-                        {pageCount !== 0 && canNext() && (
-                          <button className="px-2 border mr-2" onClick={() => changeIndex('next')}>
-                            Next
-                          </button>
-                        )}
-                        {pageCount > 1 && (
-                          <button className="px-2 border mr-2" onClick={() => changeIndex('last')}>
-                            Last
-                          </button>
-                        )}
-                      </div>
-                      <div className="bg-indigo-white mr-1 h-11 w-64 flex font-thin border-2 border-indigo-lightgray border-opacity-40 p-2">
-                        <select
-                          value={limit}
-                          className="bg-indigo-white text-lg w-full outline-none"
-                          onChange={(e) => {
-                            setLimit(e.target.value);
-                            setOffset(0);
-                          }}
-                        >
-                          {limitOptions.map((option) => (
-                            <option value={option}>{option}</option>
-                          ))}
-                        </select>
-                      </div>
-                    </div>
-                  </>
                 ) : (
                   <>
-                    <div className="ml-7 mt-7 text-xl">
-                      There are no {activeCategory} games to be displayed
-                    </div>
+                    {err ? (
+                      <p className="py-10 ml-7">{err}</p>
+                    ) : (
+                      <>
+                        {sortedList.length > 0 ? (
+                          <>
+                            <div className="mt-4 ml-6 grid grid-cols-0 md:grid-cols-3">
+                              {sortedList.map(function (data, i) {
+                                return (
+                                  <div key={i} className="flex">
+                                    <div className="mr-6">
+                                      <a href={`/PlayDetails?id=${data.id}`}>
+                                        <div className="mr-6">
+                                          <PlayComponent
+                                            type={activeCategory}
+                                            icon={data.icon}
+                                            prizePool={data.prize}
+                                            startDate={data.start_datetime}
+                                            endDate={data.end_datetime}
+                                            month={data.month}
+                                            date={data.date}
+                                            year={data.year}
+                                            img={data.image}
+                                            fetchGames={fetchGamesLoading}
+                                            index={() => changeIndex()}
+                                          />
+                                        </div>
+                                      </a>
+                                      {activeCategory === 'completed' && data.hasAthletes && (
+                                        <div className="">
+                                          {data.isClaimed === 'unclaimed' ? (
+                                            data.hasEnded ? (
+                                              <button
+                                                className={`bg-indigo-buttonblue w-full h-12 text-center font-bold rounded-md text-sm mt-4 self-center`}
+                                                onClick={() =>
+                                                  data.hasEnded
+                                                    ? fetchTeamPlacements(data.id)
+                                                    : undefined
+                                                }
+                                              >
+                                                <div className="text-indigo-white">
+                                                  CLAIM {data.hasRewards ? 'REWARD' : 'TEAM'}
+                                                </div>
+                                              </button>
+                                            ) : (
+                                              <button
+                                                className={`bg-indigo-lightblue cursor-not-allowed  w-full h-12 text-center font-bold rounded-md text-sm mt-4 self-center`}
+                                              >
+                                                <div className="text-indigo-white">
+                                                  Please wait for the game to end
+                                                </div>
+                                              </button>
+                                            )
+                                          ) : (
+                                            ''
+                                          )}
+                                        </div>
+                                      )}
+                                    </div>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                            <div className="flex justify-between md:mt-5 md:mr-6 p-5">
+                              <div className="bg-indigo-white mr-1 h-11 flex items-center font-thin border-indigo-lightgray border-opacity-40 p-2">
+                                {pageCount > 1 && (
+                                  <button
+                                    className="px-2 border mr-2"
+                                    onClick={() => changeIndex('first')}
+                                  >
+                                    First
+                                  </button>
+                                )}
+                                {pageCount !== 0 && canPrevious() && (
+                                  <button
+                                    className="px-2 border mr-2"
+                                    onClick={() => changeIndex('previous')}
+                                  >
+                                    Previous
+                                  </button>
+                                )}
+                                <p className="mr-2">
+                                  Page {offset + 1} of {pageCount}
+                                </p>
+                                {pageCount !== 0 && canNext() && (
+                                  <button
+                                    className="px-2 border mr-2"
+                                    onClick={() => changeIndex('next')}
+                                  >
+                                    Next
+                                  </button>
+                                )}
+                                {pageCount > 1 && (
+                                  <button
+                                    className="px-2 border mr-2"
+                                    onClick={() => changeIndex('last')}
+                                  >
+                                    Last
+                                  </button>
+                                )}
+                              </div>
+                              <div className="bg-indigo-white mr-1 h-11 w-64 flex font-thin border-2 border-indigo-lightgray border-opacity-40 p-2">
+                                <select
+                                  value={limit}
+                                  className="bg-indigo-white text-lg w-full outline-none"
+                                  onChange={(e) => {
+                                    setLimit(e.target.value);
+                                    setOffset(0);
+                                  }}
+                                >
+                                  {limitOptions.map((option) => (
+                                    <option value={option}>{option}</option>
+                                  ))}
+                                </select>
+                              </div>
+                            </div>
+                          </>
+                        ) : (
+                          <>
+                            <div className="ml-7 mt-7 text-xl">
+                              There are no {activeCategory} games to be displayed
+                            </div>
+                          </>
+                        )}
+                      </>
+                    )}
                   </>
                 )}
               </div>

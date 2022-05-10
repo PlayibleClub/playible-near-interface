@@ -21,13 +21,19 @@ import BackButton from '../../components/buttons/BackFunction';
 import { axiosInstance } from '../../utils/playible';
 import { useRouter } from 'next/router';
 
-const MyActivity = () => {
+import LoadingPageDark from '../../components/loading/LoadingPageDark';
+
+const MyActivity = (props) => {
   const router = useRouter();
   const [activeCategory, setCategory] = useState('activeplays');
   const [allGames, setAllGames] = useState([]);
   const [completedGames, setCompletedGames] = useState([]);
   const connectedWallet = useConnectedWallet();
   const dispatch = useDispatch();
+
+  const { error } = props;
+  const [loading, setLoading] = useState(true);
+  const [err, setErr] = useState(error);
 
   const categoryList = ['activeplays', 'playhistory'];
 
@@ -81,25 +87,36 @@ const MyActivity = () => {
           `/fantasy/game/${data.id}/registered_teams_detail/?wallet_addr=${connectedWallet.walletAddress}`
         );
         if (teams.status === 200 && teams.data.length > 0) {
-
           return data;
         }
       });
 
       const promiseObject = await Promise.all(connectedWalletGames);
       const filteredPromiseObject = promiseObject.filter((check) => check);
-      
+
       setAllGames(filteredPromiseObject);
     }
   }
 
-  useEffect(() => {
+  useEffect(async () => {
+    setErr(null);
+    setAllGames([])
+    setCompletedGames([])
     if (connectedWallet && dispatch) {
-      dispatch(getPortfolio({ walletAddr: connectedWallet.walletAddress }));
-      fetchActiveGames();
-      fetchCompletedGames();
+      if (connectedWallet?.network?.name === 'testnet') {
+        dispatch(getPortfolio({ walletAddr: connectedWallet.walletAddress }));
+        await fetchActiveGames();
+        await fetchCompletedGames();
+        setErr(null);
+      } else {
+        setErr('You are connected to mainnet. Please connect to testnet');
+        setLoading(false);
+      }
+    } else {
+      setErr('Waiting for wallet connection...');
+      setLoading(false);
     }
-  }, [connectedWallet, dispatch, activeCategory]);
+  }, [connectedWallet, dispatch]);
 
   return (
     <>
@@ -107,64 +124,79 @@ const MyActivity = () => {
         <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
           <Main color="indigo-white">
             <PortfolioContainer title="MY ACTIVITY" textcolor="text-indigo-black" />
-            <div className="flex flex-col">
-              <div className="flex font-bold ml-8 mt-8 md:ml-0 font-monument">
-                {categoryList.map((type) => (
-                  <div
-                    className={`mr-6 uppercase cursor-pointer md:ml-8 ${
-                      activeCategory === type ? 'border-b-8 pb-2 border-indigo-buttonblue' : ''
-                    }`}
-                    onClick={() => {
-                      setCategory(type);
-                    }}
-                  >
-                    {type === 'activeplays' ? 'ACTIVE PLAYS' : 'PLAY HISTORY'}
-                  </div>
-                ))}
-              </div>
-              <hr className="opacity-50" />
-              <div className="mt-8 ml-12 mr-8 md:w-2/3">
-                <div>
-                  {(activeCategory === 'activeplays' ? allGames : completedGames).map((data, i) =>
-                    data ? (
-                      <div className="flex flex-col " key={i}>
-                        <div className="flex justify-between item-center p-8 text-sm">
-                          <div className="relative w-full">
-                            <p className="font-bold uppercase">{data.name}</p>
-                            <p>
-                              <ReactTimeAgo
-                                future={activeCategory === 'activeplays'}
-                                timeStyle="round-minute"
-                                date={data.end_datetime}
-                                locale="en-US"
-                              />
-                            </p>
-                            <Link
-                              href={{
-                                pathname: '/EntrySummary',
-                                query: {
-                                  game_id: data.id,
-                                  origin: 'MyActivity',
-                                },
-                              }}
-                            >
-                              <img
-                                className="absolute top-0 right-0 cursor-pointer w-8 h-8"
-                                src={myactivityicon}
-                              />
-                            </Link>
+            {loading ? (
+              <LoadingPageDark />
+            ) : (
+              <>
+                {err ? (
+                  <p className="py-10 ml-7">{err}</p>
+                ) : (
+                  <>
+                    <div className="flex flex-col">
+                      <div className="flex font-bold ml-8 mt-8 md:ml-0 font-monument">
+                        {categoryList.map((type) => (
+                          <div
+                            className={`mr-6 uppercase cursor-pointer md:ml-8 ${
+                              activeCategory === type
+                                ? 'border-b-8 pb-2 border-indigo-buttonblue'
+                                : ''
+                            }`}
+                            onClick={() => {
+                              setCategory(type);
+                            }}
+                          >
+                            {type === 'activeplays' ? 'ACTIVE PLAYS' : 'PLAY HISTORY'}
                           </div>
-                        </div>
-
-                        <hr className="w-full self-center opacity-25" />
+                        ))}
                       </div>
-                    ) : (
-                      ''
-                    )
-                  )}
-                </div>
-              </div>
-            </div>
+                      <hr className="opacity-50" />
+                      <div className="mt-8 ml-12 mr-8 md:w-2/3">
+                        <div>
+                          {(activeCategory === 'activeplays' ? allGames : completedGames).map(
+                            (data, i) =>
+                              data ? (
+                                <div className="flex flex-col " key={i}>
+                                  <div className="flex justify-between item-center p-8 text-sm">
+                                    <div className="relative w-full">
+                                      <p className="font-bold uppercase">{data.name}</p>
+                                      <p>
+                                        <ReactTimeAgo
+                                          future={activeCategory === 'activeplays'}
+                                          timeStyle="round-minute"
+                                          date={data.end_datetime}
+                                          locale="en-US"
+                                        />
+                                      </p>
+                                      <Link
+                                        href={{
+                                          pathname: '/EntrySummary',
+                                          query: {
+                                            game_id: data.id,
+                                            origin: 'MyActivity',
+                                          },
+                                        }}
+                                      >
+                                        <img
+                                          className="absolute top-0 right-0 cursor-pointer w-8 h-8"
+                                          src={myactivityicon}
+                                        />
+                                      </Link>
+                                    </div>
+                                  </div>
+
+                                  <hr className="w-full self-center opacity-25" />
+                                </div>
+                              ) : (
+                                ''
+                              )
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </>
+                )}
+              </>
+            )}
           </Main>
         </div>
       </Container>

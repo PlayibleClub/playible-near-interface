@@ -25,6 +25,7 @@ import BackFunction from '../../components/buttons/BackFunction';
 import { executeContract } from '../../utils/terra';
 import { OPENPACK, PACK } from '../../data/constants/contracts';
 import BaseModal from '../../components/modals/BaseModal';
+import claimreward from '../../public/images/claimreward.png';
 
 export default function PackDetails(props) {
   const { queryObj } = props;
@@ -230,89 +231,117 @@ export default function PackDetails(props) {
 
 
   return (
-    <Container activeName="SQUAD">
-      {displayModal && (
-        <TransactionModal
-          title={modalHeader}
-          visible={displayModal}
-          modalData={modalData}
-          modalStatus={modalStatus}
-          onClose={() => {
-            setModal(false);
-          }}
-        />
-      )}
-      {loading ? (
-        <LoadingPageDark message={loadingMessage} />
-      ) : (
-        <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
-          <Main color="indigo-white">
-            <div className="md:ml-6">
-              <div className="mt-8">
-                <BackFunction prev={queryObj.origin ? `/${queryObj.origin}` : '/Portfolio'} />
+    <>
+      {msgModal && (
+        <>
+          <div className="fixed w-screen h-screen bg-opacity-70 z-50 overflow-auto bg-indigo-gray flex font-montserrat">
+            <div className="relative p-8 py-10 bg-indigo-white w-11/12 md:w-min h-10/12 md:h-auto m-auto flex-col flex">
+              <button
+                className="absolute top-0 right-0 mt-6 mr-6 h-4 w-4"
+                onClick={() => {
+                  txLoading ? undefined : msg.title === 'Success' ? undefined : setMsgModal(false);
+                }}
+              >
+                <img className="h-4 w-4 " src={'/images/x.png'} />
+              </button>
+              <img src={claimreward} className="h-20 w-20 mt-5" />
+              <div className="mt-4 bg-indigo-yellow w-max p-2 px-3 text-center text-lg font-monument mr-16">
+                FAILED TRANSACTION
               </div>
-              {data && (
-                <>
-                  <div className="mt-8 md:ml-7 flex flex-row md:flex-row">
-                    <div className="mt-7 justify-center md:self-left md:mr-16">
-                      <Image
-                        src={
-                          data.info.extension.attributes.filter(
-                            (item) => item.trait_type === 'pack_type'
-                          )[0].value === 'booster'
-                            ? '/images/packimages/BoosterPack1.png'
-                            : '/images/packimages/StarterPack1.png'
-                        }
-                        width={125}
-                        height={160}
-                      />
-                    </div>
-                    <div className="flex flex-col">
-                      <PortfolioContainer
-                        textcolor="indigo-black"
-                        title={`${
-                          data.info.extension.attributes.filter(
-                            (item) => item.trait_type === 'sport'
-                          )[0].value
-                        } ${data.info.extension.attributes
-                          .filter((item) => item.trait_type === 'pack_type')[0]
-                          .value.toUpperCase()} Pack`}
-                      />
-                      <div className="ml-12 md:ml-0 mt-4 md:mt-0">
-                        <div className="ml-7 mt-7 font-bold text-base">{`${
-                          data.info.extension.attributes.filter(
-                            (item) => item.trait_type === 'sport'
-                          )[0].value
-                        } ${data.info.extension.attributes
-                          .filter((item) => item.trait_type === 'pack_type')[0]
-                          .value.toUpperCase()} Pack`}</div>
-                        <div className="ml-7 mb-6">
-                          {data.info.extension.attributes
-                            .filter((item) => item.trait_type === 'release')[0]
-                            .value.toUpperCase()}
-                        </div>
-                      </div>
-                      <button
-                        className="bg-indigo-buttonblue ml-7 text-indigo-white w-5/6 md:w-80 h-10 text-center font-bold text-sm mt-4"
-                        onClick={openPack}
-                      >
-                        OPEN PACK
-                      </button>
-                    </div>
-                  </div>
-                  <div className="mt-8">
-                    <PortfolioContainer textcolor="indigo-black" title="PACK DETAILS" />
-                  </div>
-                  <div className="ml-7 mt-5 font-normal pr-16">
-                    {data.info.extension.description}
-                  </div>
-                </>
-              )}
+              <div className="mt-4 p-2 text-xs">
+                {txLoading
+                  ? 'Loading...'
+                  : msg.content ||
+                    "We're sorry, unfortunately we've experienced a problem loading your request."}
+                <br/>Please try again.
+              </div>
             </div>
-          </Main>
-        </div>
+          </div>
+        </>
       )}
-      <BaseModal
+      <Container activeName="SQUAD">
+        {displayModal && (
+          <TransactionModal
+            title={modalHeader}
+            visible={displayModal}
+            modalData={modalData}
+            modalStatus={modalStatus}
+            onClose={() => {
+              setModal(false);
+            }}
+          />
+        )}
+        {loading ? (
+          <LoadingPageDark message={loadingMessage} />
+        ) : (
+          <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
+            <Main color="indigo-white">
+              <div className="md:ml-6">
+                <div className="mt-8">
+                  <BackFunction prev={queryObj.origin ? `/${queryObj.origin}` : '/Portfolio'} />
+                </div>
+                {data && (
+                  <>
+                    <div className="mt-8 md:ml-7 flex flex-row md:flex-row">
+                      <div className="mt-7 justify-center md:self-left md:mr-16">
+                        <Image
+                          src={
+                            data.info.extension.attributes.filter(
+                              (item) => item.trait_type === 'pack_type'
+                            )[0].value === 'booster'
+                              ? '/images/packimages/BoosterPack1.png'
+                              : '/images/packimages/StarterPack1.png'
+                          }
+                          width={125}
+                          height={160}
+                        />
+                      </div>
+                      <div className="flex flex-col">
+                        <PortfolioContainer
+                          textcolor="indigo-black"
+                          title={`${
+                            data.info.extension.attributes.filter(
+                              (item) => item.trait_type === 'sport'
+                            )[0].value
+                          } ${data.info.extension.attributes
+                            .filter((item) => item.trait_type === 'pack_type')[0]
+                            .value.toUpperCase()} Pack`}
+                        />
+                        <div className="ml-12 md:ml-0 mt-4 md:mt-0">
+                          <div className="ml-7 mt-7 font-bold text-base">{`${
+                            data.info.extension.attributes.filter(
+                              (item) => item.trait_type === 'sport'
+                            )[0].value
+                          } ${data.info.extension.attributes
+                            .filter((item) => item.trait_type === 'pack_type')[0]
+                            .value.toUpperCase()} Pack`}</div>
+                          <div className="ml-7 mb-6">
+                            {data.info.extension.attributes
+                              .filter((item) => item.trait_type === 'release')[0]
+                              .value.toUpperCase()}
+                          </div>
+                        </div>
+                        <button
+                          className="bg-indigo-buttonblue ml-7 text-indigo-white w-5/6 md:w-80 h-10 text-center font-bold text-sm mt-4"
+                          onClick={openPack}
+                        >
+                          OPEN PACK
+                        </button>
+                      </div>
+                    </div>
+                    <div className="mt-8">
+                      <PortfolioContainer textcolor="indigo-black" title="PACK DETAILS" />
+                    </div>
+                    <div className="ml-7 mt-5 font-normal pr-16">
+                      {data.info.extension.description}
+                    </div>
+                  </>
+                )}
+              </div>
+            </Main>
+          </div>
+        )}
+        {/* <BaseModal
         title={msg.title}
         visible={msgModal}
         onClose={() => {
@@ -320,10 +349,11 @@ export default function PackDetails(props) {
         }}
       >
         <div className="mt-5">
-          <p className="flex flex-col items-center">{txLoading ? 'Loading...' : msg.content}</p>
+          <p>{txLoading ? 'Loading...' : msg.content}</p>
         </div>
-      </BaseModal>
-    </Container>
+      </BaseModal> */}
+      </Container>
+    </>
   );
 }
 
