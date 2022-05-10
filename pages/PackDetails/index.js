@@ -206,7 +206,7 @@ export default function PackDetails(props) {
         },
       ]);
 
-      if (res.txHash) {
+      if (res.txHash && !res.txError) {
           setMsg({
             title: 'Success',
             content: 'You are now being redirected. Please wait...',
@@ -214,8 +214,7 @@ export default function PackDetails(props) {
           setTxLoading(false);
           setMsgModal(true)
           return router.replace(`/TokenDrawPage/?txHash=${res.txHash}`)
-      }
-      if (res.txError) {
+      } else {
         setMsg({
           title: 'Failed',
           content:

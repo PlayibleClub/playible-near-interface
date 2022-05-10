@@ -313,7 +313,7 @@ export default function CreateLineup(props) {
             if (res.status === 201) {
               success = true;
               setSuccessModal(true);
-              router.replace(`/CreateLineup/?id=${router.query.id}`);
+              return window.location.href(`/CreateLineup/?id=${router.query.id}`);
             } else {
               alert('An error occurred! Refresh the page and try again.');
             }

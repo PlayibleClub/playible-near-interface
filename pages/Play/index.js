@@ -348,7 +348,7 @@ const Play = (props) => {
 
     if (claimData && claimData.winning_placements.length > 0) {
       totalPrize = claimData.winning_placements.reduce((total,   num) => {
-        let acc = parseInt(total) + parseInt(num.prize);
+        let acc = parseFloat(total) + parseFloat(num.prize);
         return acc;
       }, 0);
     }
@@ -368,9 +368,11 @@ const Play = (props) => {
       const fetchTx = await retrieveTxInfo(claimRes.txHash);
 
       if (fetchTx && fetchTx.logs) {
-        showSuccessModal({
-          prize: totalPrize,
-        });
+        if (claimData && claimData.winning_placements.length > 0) {
+          showSuccessModal({
+            prize: totalPrize,
+          });
+        }
         setLoading(true);
         fetchGamesLoading();
       }
