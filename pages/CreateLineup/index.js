@@ -39,6 +39,8 @@ export default function CreateLineup(props) {
       setGameData(res.data);
       setStartDate(res.data.start_datetime);
     }
+
+    setLoading(false)
   };
 
   useEffect(() => {

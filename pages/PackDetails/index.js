@@ -169,7 +169,7 @@ export default function PackDetails(props) {
     if (connectedWallet && queryObj.token_id && connectedWallet?.network?.name === 'testnet') {
       await fetchPacks(queryObj.token_id);
     }
-    setLoading(false)
+    setLoading(false);
   }, [connectedWallet]);
 
   useEffect(() => {
@@ -180,7 +180,7 @@ export default function PackDetails(props) {
         return router.replace('/Portfolio');
       }
     }
-  }, [data, connectedWallet])
+  }, [data, connectedWallet]);
 
   const openPack = async () => {
     if (connectedWallet && queryObj.token_id) {
@@ -207,18 +207,18 @@ export default function PackDetails(props) {
       ]);
 
       if (res.txHash && !res.txError) {
-          setMsg({
-            title: 'Success',
-            content: 'You are now being redirected. Please wait...',
-          });
-          setTxLoading(false);
-          setMsgModal(true)
-          return router.replace(`/TokenDrawPage/?txHash=${res.txHash}`)
+        setMsg({
+          title: 'Success',
+          content: 'You are now being redirected. Please wait...',
+        });
+        setTxLoading(false);
+        setMsgModal(true);
+        return router.replace(`/TokenDrawPage/?txHash=${res.txHash}`);
       } else {
         setMsg({
           title: 'Failed',
           content:
-            (res.txResult && !res.txResult.success)
+            res.txResult && !res.txResult.success
               ? 'Blockchain error! Please try again later.'
               : res.txError,
         });
@@ -227,7 +227,6 @@ export default function PackDetails(props) {
       setMsgModal(true);
     }
   };
-
 
   return (
     <>
@@ -245,14 +244,19 @@ export default function PackDetails(props) {
               </button>
               <img src={claimreward} className="h-20 w-20 mt-5" />
               <div className="mt-4 bg-indigo-yellow w-max p-2 px-3 text-center text-lg font-monument mr-16">
-                FAILED TRANSACTION
+                {msg.title === 'Success' ? 'SUCCESS' : 'FAILED TRANSACTION'}
               </div>
               <div className="mt-4 p-2 text-xs">
                 {txLoading
                   ? 'Loading...'
                   : msg.content ||
                     "We're sorry, unfortunately we've experienced a problem loading your request."}
-                <br/>Please try again.
+                {msg.title !== 'Success' && (
+                  <>
+                    <br />
+                    Please try again.
+                  </>
+                )}
               </div>
             </div>
           </div>

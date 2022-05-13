@@ -313,7 +313,7 @@ export default function CreateLineup(props) {
             if (res.status === 201) {
               success = true;
               setSuccessModal(true);
-              return window.location.href(`/CreateLineup/?id=${router.query.id}`);
+              return router.replace(`/CreateLineup/?id=${router.query.id}`);
             } else {
               alert('An error occurred! Refresh the page and try again.');
             }
@@ -424,7 +424,7 @@ export default function CreateLineup(props) {
     <>
       {loading ? (
         <Container>
-        <LoadingPageDark />
+          <LoadingPageDark />
         </Container>
       ) : (
         <>
@@ -447,9 +447,9 @@ export default function CreateLineup(props) {
               ) : (
                 <>
                   <Container activeName="PLAY">
-                    <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
-                      <Main color="indigo-white h-screen  overflow-y-auto pb-10">
-                        <div className="flex flex-col w-full overflow-y-auto overflow-x-hidden h-full self-center text-indigo-black relative">
+                    <div className="flex flex-col w-full hide-scroll max-h-screen justify-center self-center md:pb-12">
+                      <Main color="indigo-white md:pb-10">
+                        <div className="flex flex-col w-full hide-scroll overflow-x-hidden h-full md:h-min self-center text-indigo-black relative">
                           {selectModal ? (
                             <div className="absolute top-0 left-0 bottom-0 right-0 bg-indigo-white z-50">
                               <PortfolioContainer
@@ -458,7 +458,7 @@ export default function CreateLineup(props) {
                                 }`}
                                 textcolor="text-indigo-black"
                               >
-                                <div className="grid grid-cols-2 gap-y-4 mt-4 md:grid-cols-4 md:ml-7 md:mt-12">
+                                <div className="grid grid-cols-2 gap-y-4 mt-4 p-2 md:p-0 md:grid-cols-4 md:mx-7 md:mt-12">
                                   {athleteList.map((player, i) => {
                                     const path = player.token_info.info.extension;
 
@@ -488,8 +488,8 @@ export default function CreateLineup(props) {
                                     );
                                   })}
                                 </div>
-                                <div className="flex justify-between md:mt-5 md:mr-6 p-5">
-                                  <div className="bg-indigo-white mr-1 h-11 flex items-center font-thin border-indigo-lightgray border-opacity-40 p-2">
+                                <div className="flex md:flex-row flex-col justify-between md:mt-5 md:mr-6 p-5">
+                                  <div className="bg-indigo-white md:mr-1 h-11 flex justify-center md:justify-start items-center font-thin border-indigo-lightgray border-opacity-40 p-2">
                                     {pageCount > 1 && (
                                       <button
                                         className="px-2 border mr-2"
@@ -526,7 +526,7 @@ export default function CreateLineup(props) {
                                       </button>
                                     )}
                                   </div>
-                                  <div className="bg-indigo-white mr-1 h-11 w-64 flex font-thin border-2 border-indigo-lightgray border-opacity-40 p-2">
+                                  <div className="bg-indigo-white mr-1 h-11 md:w-64 flex font-thin border-2 border-indigo-lightgray border-opacity-40 p-2">
                                     <select
                                       value={limit}
                                       className="bg-indigo-white text-lg w-full outline-none"
@@ -541,9 +541,17 @@ export default function CreateLineup(props) {
                                     </select>
                                   </div>
                                 </div>
+                                {/* <div className="flex mt-5 md:mt-16 mb-5 bg-opacity-5 w-full">
+                                  <button
+                                    className="bg-indigo-buttonblue text-indigo-white w-full h-14 text-center tracking-widest text-md font-monument"
+                                    onClick={proceedChanges}
+                                  >
+                                    PROCEED
+                                  </button>
+                                </div> */}
                                 <div className="flex mt-10 bg-indigo-black bg-opacity-5 w-full justify-end">
                                   <button
-                                    className="bg-indigo-buttonblue text-indigo-white w-5/6 md:w-80 h-14 text-center font-bold text-md"
+                                    className="bg-indigo-buttonblue text-indigo-white w-full md:w-80 h-14 text-center font-bold text-md"
                                     onClick={proceedChanges}
                                   >
                                     PROCEED
@@ -554,12 +562,14 @@ export default function CreateLineup(props) {
                           ) : (
                             ''
                           )}
-                          <div className={`${selectModal ? 'hidden' : ''}`}>
+                          <div className={`${selectModal ? 'hidden h-0' : ''}`}>
                             <BackFunction prev={`/CreateLineup?id=${router.query.id}`} />
                             <PortfolioContainer title="CREATE LINEUP" textcolor="text-indigo-black">
                               <div className="flex flex-col">
                                 <div className="flex items-end pt-10 pb-3 ml-7">
-                                  <div className="font-monument text-xl">{teamName}</div>
+                                  <div className="font-monument text-xl truncate w-40 md:w-min md:max-w-xs">
+                                    {teamName}
+                                  </div>
                                   <p
                                     className="ml-5 underline text-sm pb-1 cursor-pointer"
                                     onClick={() => setEditModal(true)}
@@ -567,7 +577,7 @@ export default function CreateLineup(props) {
                                     EDIT TEAM NAME
                                   </p>
                                 </div>
-                                <div className="grid grid-cols-2 gap-y-4 mt-4 md:grid-cols-4 md:ml-7 md:mt-12">
+                                <div className="grid grid-cols-2 gap-y-4 mt-4 mb-5 md:mb-10 md:grid-cols-4 md:ml-7 md:mt-12">
                                   {team.length > 0 &&
                                     team.map((data, i) => {
                                       return (
@@ -597,7 +607,7 @@ export default function CreateLineup(props) {
                                     })}
                                 </div>
                               </div>
-                              <div className="flex mt-10 bg-indigo-black bg-opacity-5 w-full justify-end">
+                              <div className="flex bg-indigo-black bg-opacity-5 w-full justify-end">
                                 <button
                                   className="bg-indigo-buttonblue text-indigo-white w-full md:w-80 h-14 text-center font-bold text-md"
                                   onClick={() => setSubmitModal(true)}
