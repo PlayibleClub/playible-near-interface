@@ -47,3 +47,7 @@ select {
     width: 80%;
     height: 80%;
 }
+
+svg:hover{
+    fill: white
+}

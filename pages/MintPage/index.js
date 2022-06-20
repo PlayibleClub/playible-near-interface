@@ -8,6 +8,12 @@ import Head from 'next/head';
 import Select from 'react-select'
 import mint from '../../public/images/mintpage.png';
 import ProgressBar from "@ramonak/react-progress-bar";
+import Usdt from '../../public/images/SVG/usdt';
+import Usdc from '../../public/images/SVG/usdc';
+import Dai from '../../public/images/SVG/dai';
+import usdtcoin from '../../public/images/usdt.svg';
+import usdccoin from '../../public/images/usdc.svg';
+import daicoin from '../../public/images/dai.svg';
 
 
 
@@ -30,32 +36,56 @@ export default function Home(props) {
         <div className="flex flex-col w-screen md:w-full overflow-y-auto h-screen justify-center self-center md:pb-12 text-indigo-black">
           <Main color="indigo-white">
             <div className="flex flex-col md:flex-row md:ml-12">
-              <div className="md:w-full">
-                <div className="flex justify-between w-full bg-lime-600 mt-8">
-                  <div className="text-xl font-bold font-monument ">
+              <div className="md:w-full ">
+                <div className="flex-col flex justify-center align-center md:flex-row md:flex md:justify-between w-full ml-4 mt-8">
+                  <div className="text-xl mt-5 font-bold font-monument ">
                     MINT PACKS
                     <hr className="w-10 border-4"></hr>
                   </div>
-                  <Select options={options} className='w-1/3 mr-9' />
+                  
+                    <Select options={options} className='md:w-1/3 w-4/5 mr-9 mt-5' />
+                  
                 </div>
-                <div className="flex flex-row mt-12">
-                  <div className="w-1/2">
+                <div className="flex md:flex-row flex-col mt-12">
+                  <div className="md:w-1/2 w-full ">
                     <img src={mint}></img>
                   </div>
-                  <div className="w-1/2 ml-8  ">
+                  <div className="md:w-1/2 w-full md:mt-0 mt-5 ml-8  ">
                     <div className="text-xl font-bold font-monument ">
                     WHITELIST MINT
                     <hr className="w-10 border-4"></hr>
                     </div>
-                    <div className="flex justify-between w-1/2 mt-5">
+                    <div className="flex justify-between w-4/5 md:w-1/2 mt-5">
                       <div>
                         <div className="text-xs">PRICE</div>
                         <div className="font-black"> $200 USDT</div>
                       </div>
-                      <div className=""> hii </div>
+                      <div className="border">
+                        <button className=" p-3 hover:bg-indigo-black "><Usdt></Usdt></button>
+                        <button className=" p-3 hover:bg-indigo-black"><Usdc></Usdc></button>
+                        <button className=" p-3 hover:bg-indigo-black"><Dai></Dai></button>
+                      </div>
                     </div>
                     <div className="text-xs mt-8">MINT STARTS IN</div>
-                    <div className="border border-gray-100 rounded-2xl text-center p-4 w-40 flex flex-col justify-center  mt-8" >
+                    <div className="flex mt-3">
+                      <div className='p-3 rounded-lg bg-indigo-black text-indigo-white'>
+                        02
+                      </div>
+                      <div className='p-3 '>
+                        :
+                      </div>
+                      <div className='p-3 rounded-lg  bg-indigo-black text-indigo-white'>
+                        29
+                      </div>
+                      <div className='p-3 '>
+                        :
+                      </div>
+                      <div className='p-3  rounded-lg bg-indigo-black text-indigo-white'>
+                        01
+                      </div>
+                    
+                    </div>
+                    <div className="border border-indigo-lightgray rounded-2xl text-center p-4 w-40 flex flex-col justify-center  mt-8" >
                       <div className="text-2xl font-black font-monument ">0/7</div>
                       <div className="text-xs">YOU HAVE MINTED</div>
                     </div>
@@ -67,8 +97,7 @@ export default function Home(props) {
                       </div>
                   </div>
                 </div>
-                
-
+              <div className="ml-8 md:ml-2">
                 <div className="text-xl font-bold font-monument mt-12 ">
                     PUBLIC MINT
                     <hr className="w-10 border-4"></hr>
@@ -94,10 +123,8 @@ export default function Home(props) {
                     <li>1 Flex (RB/WR/TE) </li>
                     <li>1 Super Flex (QB/RB/WR/TE) </li>
                   </ul>
-
-
-                  
                 </div>
+              </div>
                 
               </div>
             </div>
