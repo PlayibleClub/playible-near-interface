@@ -166,7 +166,7 @@ export default function PackDetails(props) {
   };
 
   useEffect(async () => {
-    if (connectedWallet && queryObj.token_id && connectedWallet?.network?.name === 'testnet') {
+    if (connectedWallet && queryObj.token_id && connectedWallet?.network?.name === 'mainnet') {
       await fetchPacks(queryObj.token_id);
     }
     setLoading(false)
@@ -254,6 +254,62 @@ export default function PackDetails(props) {
                     "We're sorry, unfortunately we've experienced a problem loading your request."}
                 <br/>Please try again.
               </div>
+              {data && (
+                <>
+                  <div className="mt-8 md:ml-7 flex flex-row md:flex-row">
+                    <div className="mt-7 justify-center md:self-left md:mr-16">
+                      <Image
+                        src={
+                          data.info.extension.attributes.filter(
+                            (item) => item.trait_type === 'pack_type'
+                          )[0].value === 'booster'
+                            ? '/images/packimages/BoosterPack1.png'
+                            : '/images/packimages/StarterPack1.png'
+                        }
+                        width={125}
+                        height={160}
+                      />
+                    </div>
+                    <div className="flex flex-col">
+                      <PortfolioContainer
+                        textcolor="indigo-black"
+                        title={`${
+                          data.info.extension.attributes.filter(
+                            (item) => item.trait_type === 'sport'
+                          )[0].value
+                        } ${data.info.extension.attributes
+                          .filter((item) => item.trait_type === 'pack_type')[0]
+                          .value.toUpperCase()} Pack`}
+                      />
+                      <div className="ml-12 md:ml-0 mt-4 md:mt-0">
+                        <div className="ml-7 mt-7 font-bold text-base">{`${
+                          data.info.extension.attributes.filter(
+                            (item) => item.trait_type === 'sport'
+                          )[0].value
+                        } ${data.info.extension.attributes
+                          .filter((item) => item.trait_type === 'pack_type')[0]
+                          .value.toUpperCase()} Pack`}</div>
+                        <div className="ml-7 mb-6">
+                          {data.info.extension.attributes
+                            .filter((item) => item.trait_type === 'release')[0]
+                            .value.toUpperCase()}
+                        </div>
+                      </div>
+                      <button
+                        className="bg-indigo-lightblue text-indigo-buttonblue ml-7 w-5/6 md:w-80 text-center font-bold text-sm mt-4 p-2 cursor-not-allowed"
+                      >
+                        Pack openings are currently paused while we update our player list to include newly added athletes. Pack opening will resume shortly, apologies for the inconvenience.
+                      </button>
+                    </div>
+                  </div>
+                  <div className="mt-8">
+                    <PortfolioContainer textcolor="indigo-black" title="PACK DETAILS" />
+                  </div>
+                  <div className="ml-7 mt-5 font-normal pr-16">
+                    {data.info.extension.description}
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </>

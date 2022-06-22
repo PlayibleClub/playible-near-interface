@@ -66,7 +66,7 @@ const AssetDetails = (props) => {
 
   useEffect(() => {
     setLoading(true)
-    if (connectedWallet && connectedWallet?.network?.name === 'testnet') {
+    if (connectedWallet && connectedWallet?.network?.name === 'mainnet') {
       getAthleteInfo();
     }
   }, [dispatch, connectedWallet]);

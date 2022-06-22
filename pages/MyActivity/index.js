@@ -204,3 +204,12 @@ const MyActivity = (props) => {
   );
 };
 export default MyActivity;
+
+export async function getServerSideProps(ctx) {
+  return {
+    redirect: {
+      destination: '/Portfolio',
+      permanent: false,
+    },
+  };
+}
