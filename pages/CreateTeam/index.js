@@ -203,7 +203,7 @@ export default function CreateLineup(props) {
 
   const proceedChanges = async () => {
     if (chosenAthlete) {
-      await updateTeamSlots()
+      await updateTeamSlots();
       await setChosenAthlete(null);
       setLimit(5);
       setOffset(0);
@@ -400,11 +400,11 @@ export default function CreateLineup(props) {
     setErr(null);
     if (connectedWallet) {
       if (connectedWallet?.network?.name === 'testnet') {
-        setLoading(true)
+        setLoading(true);
         await fetchGameData();
         await prepareSlots();
         await setTeamName('Team 1');
-        setLoading(false)
+        setLoading(false);
         setErr(null);
       } else {
         setErr('You are connected to mainnet. Please connect to testnet');
@@ -424,7 +424,7 @@ export default function CreateLineup(props) {
     <>
       {loading ? (
         <Container>
-        <LoadingPageDark />
+          <LoadingPageDark />
         </Container>
       ) : (
         <>
