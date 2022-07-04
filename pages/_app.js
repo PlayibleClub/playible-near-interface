@@ -4,8 +4,10 @@ import { store } from '../redux/store'
 import { StaticWalletProvider, WalletProvider } from '@terra-money/wallet-provider'
 import 'regenerator-runtime/runtime'
 import React from 'react'
+import { ApolloProvider } from "@apollo/client"
+import client from "../apollo-client.ts"
 
-function MyApp ({ Component, pageProps }) {
+function MyApp({ Component, pageProps }) {
   const mainnet = {
     name: 'mainnet',
     chainID: 'columbus-5',
@@ -41,25 +43,29 @@ function MyApp ({ Component, pageProps }) {
   // }
 
   return process.browser ? (
-    <WalletProvider
-      defaultNetwork={mainnet}
-      walletConnectChainIds={{
-        0: testnet,
-        1: mainnet
-      }}
-    >
-      <Provider store={store}>
-        <Component {...pageProps} />
-      </Provider>
-    </WalletProvider>
+    <ApolloProvider client={client}>
+      <WalletProvider
+        defaultNetwork={mainnet}
+        walletConnectChainIds={{
+          0: testnet,
+          1: mainnet
+        }}
+      >
+        <Provider store={store}>
+          <Component {...pageProps} />
+        </Provider>
+      </WalletProvider>
+    </ApolloProvider>
   ) : (
-    <StaticWalletProvider
-      defaultNetwork={mainnet}
-    >
-      <Provider store={store}>
-        <Component {...pageProps} />
-      </Provider>
-    </StaticWalletProvider>
+    <ApolloProvider client={client}>
+      <StaticWalletProvider
+        defaultNetwork={mainnet}
+      >
+        <Provider store={store}>
+          <Component {...pageProps} />
+        </Provider>
+      </StaticWalletProvider>
+    </ApolloProvider>
   )
 }
 
