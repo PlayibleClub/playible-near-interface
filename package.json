@@ -9,6 +9,7 @@
         "redux-devtools": "redux-devtools --hostname=localhost --port=8000"
     },
     "dependencies": {
+        "@apollo/client": "^3.6.9",
         "@babel/core": "^7.17.8",
         "@headlessui/react": "^1.4.1",
         "@heroicons/react": "^1.0.1",
@@ -17,6 +18,7 @@
         "@terra-money/wallet-provider": "^3.3.0",
         "axios": "^0.21.4",
         "crypto-js": "^4.1.1",
+        "graphql": "^16.5.0",
         "javascript-time-ago": "^2.3.13",
         "moment": "^2.29.1",
         "next": "10.2.3",
