@@ -66,7 +66,7 @@ const Sorter = (props) => {
               placeholder="Search..."
             />
             <button className="flex items-center absolute right-0 mr-5" onClick={searchHandler}>
-              <img className='ml-2' src={searchIcon} />
+              <img className="ml-2 w-6 h-6" src={searchIcon} />
             </button>
           </div>
         </div>

@@ -368,9 +368,11 @@ const Play = (props) => {
       const fetchTx = await retrieveTxInfo(claimRes.txHash);
 
       if (fetchTx && fetchTx.logs) {
-        showSuccessModal({
-          prize: totalPrize,
-        });
+        if (claimData && claimData.winning_placements.length > 0) {
+          showSuccessModal({
+            prize: totalPrize,
+          });
+        }
         setLoading(true);
         fetchGamesLoading();
       }
@@ -801,3 +803,12 @@ const Play = (props) => {
   );
 };
 export default Play;
+
+export async function getServerSideProps(ctx) {
+  return {
+    redirect: {
+      destination: '/Portfolio',
+      permanent: false,
+    },
+  };
+}

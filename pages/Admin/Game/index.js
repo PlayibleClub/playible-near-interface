@@ -718,7 +718,6 @@ const Index = (props) => {
         <button
           className="bg-indigo-green font-monument tracking-widest text-indigo-white w-full h-16 text-center text-sm mt-4"
           onClick={() => {
-            endGame(gameId);
             setEndModal(false);
           }}
         >
@@ -736,3 +735,12 @@ const Index = (props) => {
 };
 
 export default Index;
+
+export async function getServerSideProps(ctx) {
+  return {
+    redirect: {
+      destination: '/Portfolio',
+      permanent: false,
+    },
+  };
+}

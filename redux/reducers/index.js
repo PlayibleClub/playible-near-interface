@@ -6,5 +6,5 @@ import assets from './external/playible/assets';
 export default combineReducers({
   contract,
   external,
-  assets
+  assets,
 });

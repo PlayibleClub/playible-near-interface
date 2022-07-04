@@ -1,11 +1,12 @@
 import '../styles/globals.css'
-import { Provider } from 'react-redux'
+import { Provider, useDispatch } from 'react-redux'
 import { store } from '../redux/store'
 import { StaticWalletProvider, WalletProvider } from '@terra-money/wallet-provider'
 import 'regenerator-runtime/runtime'
-import React from 'react'
+import client from "../apollo-client.ts"
+import { ApolloProvider } from "@apollo/client"
 
-function MyApp ({ Component, pageProps }) {
+function MyApp({ Component, pageProps }) {
   const mainnet = {
     name: 'mainnet',
     chainID: 'columbus-5',
@@ -18,48 +19,30 @@ function MyApp ({ Component, pageProps }) {
     chainID: 'bombay-12'
   }
 
-  // if(typeof document !== 'undefined') {
-  //   return (
-  //       <WalletProvider
-  //         defaultNetwork={testnet}
-  //         walletConnectChainIds={{
-  //           0: testnet,
-  //           1: mainnet,
-  //         }}
-  //       >
-  //         <Provider store={store}>
-  //           <Component {...pageProps} />
-  //         </Provider>
-  //       </WalletProvider>
-  //   )
-  // } else {
-  //   return (
-  //     <Provider store={store}>
-  //       <Component {...pageProps} />
-  //     </Provider>
-  //   )
-  // }
-
   return process.browser ? (
-    <WalletProvider
-      defaultNetwork={testnet}
-      walletConnectChainIds={{
-        0: testnet,
-        1: mainnet
-      }}
-    >
-      <Provider store={store}>
-        <Component {...pageProps} />
-      </Provider>
-    </WalletProvider>
+    <ApolloProvider client={client}>
+      <WalletProvider
+        defaultNetwork={mainnet}
+        walletConnectChainIds={{
+          0: testnet,
+          1: mainnet
+        }}
+      >
+        <Provider store={store}>
+          <Component {...pageProps} />
+        </Provider>
+      </WalletProvider>
+    </ApolloProvider>
   ) : (
-    <StaticWalletProvider
-      defaultNetwork={testnet}
-    >
-      <Provider store={store}>
-        <Component {...pageProps} />
-      </Provider>
-    </StaticWalletProvider>
+    <ApolloProvider client={client}>
+      <StaticWalletProvider
+        defaultNetwork={mainnet}
+      >
+        <Provider store={store}>
+          <Component {...pageProps} />
+        </Provider>
+      </StaticWalletProvider>
+    </ApolloProvider>
   )
 }
 

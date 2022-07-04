@@ -1,17 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
 import Main from '../../components/Main';
 import PortfolioContainer from '../../components/containers/PortfolioContainer';
 import PerformerContainer from '../../components/containers/PerformerContainer';
-import { connect, useDispatch, useSelector } from 'react-redux';
-import { getAccountAssets, clearData } from '../../redux/reducers/external/playible/assets';
-import { useConnectedWallet, useLCDClient } from '@terra-money/wallet-provider';
+import { useDispatch, useSelector } from 'react-redux';
 import LoadingPageDark from '../../components/loading/LoadingPageDark';
 import Link from 'next/link';
 import SquadPackComponent from '../../components/SquadPackComponent';
 import Container from '../../components/containers/Container';
 import Sorter from './components/Sorter';
-import { ATHLETE, PACK } from '../../data/constants/contracts';
 import { axiosInstance } from '../../utils/playible';
 import 'regenerator-runtime/runtime';
 
@@ -27,35 +23,16 @@ const Portfolio = () => {
   const [packPageCount, setPackPageCount] = useState(0);
   const [wallet, setWallet] = useState(null);
 
-  const { list: playerList, status } = useSelector((state) => state.assets);
-
   const dispatch = useDispatch();
-  const connectedWallet = useConnectedWallet();
-  const lcd = useLCDClient();
   const [sortedList, setSortedList] = useState([]);
   const [packs, setPacks] = useState([]);
   const [sortedPacks, setSortedPacks] = useState([]);
   const limitOptions = [5, 10, 30, 50];
   const [filter, setFilter] = useState(null);
   const [search, setSearch] = useState('');
-  const [loading, setLoading] = useState(!!connectedWallet);
+  const [loading, setLoading] = useState(true);
 
-  const fetchPacks = async () => {
-    if (connectedWallet && connectedWallet?.network?.name === 'testnet') {
-      const formData = {
-        owner_tokens_info: {
-          owner: connectedWallet.walletAddress,
-        },
-      };
-      const res = await lcd.wasm.contractQuery(PACK, formData);
-
-      if (res && res.length > 0) {
-        setPacks(res);
-      } else {
-        setPacks([]);
-      }
-    }
-  };
+  const walletConnection = useSelector((state) => state.external.playible.wallet.data);
 
   const changeIndex = (index) => {
     switch (index) {
@@ -193,55 +170,15 @@ const Portfolio = () => {
   useEffect(async () => {
     setLoading(true);
     setSortedList([]);
-    await dispatch(getAccountAssets({ clear: true }));
-    if (connectedWallet && dispatch ) {
-      if (connectedWallet?.network?.name === 'testnet') {
-        await dispatch(getAccountAssets({ walletAddr: connectedWallet.walletAddress }));
-        await fetchPacks();
-      }
-      setWallet(connectedWallet.walletAddress);
-    } else {
-      await dispatch(getAccountAssets({ clear: true }));
-      setSortedList([]);
-      setPacks([]);
-      setSortedPacks([]);
-      setWallet(null);
-    }
+   
     setLoading(false);
-  }, [dispatch, connectedWallet?.walletAddress]);
+  }, [dispatch]);
 
   useEffect(() => {
-    if (playerList && connectedWallet) {
-      if (playerList.tokens && playerList.tokens.length > 0) {
-        const tempList = [...playerList.tokens];
-        const filteredList = applySortFilter(tempList, filter, search).splice(
-          limit * offset,
-          limit
-        );
-        setSortedList(filteredList);
-        if (search) {
-          setPageCount(Math.ceil(applySortFilter(tempList, filter, search).length / limit));
-        } else {
-          setPageCount(Math.ceil(playerList.tokens.length / limit));
-        }
-      } else {
-        setSortedList([]);
-      }
-    } else {
-      setSortedList([]);
-    }
-  }, [playerList, limit, offset, filter, search, connectedWallet?.walletAddress]);
+  }, [limit, offset, filter, search]);
 
   useEffect(() => {
-    if (packs.length > 0) {
-      const tempList = [...packs];
-      const filteredList = tempList.splice(packLimit * packOffset, packLimit);
-      setSortedPacks(filteredList);
-      setPackPageCount(Math.ceil(packs.length / packLimit));
-    } else {
-      setSortedPacks([]);
-    }
-  }, [packs, packLimit, packOffset, connectedWallet?.walletAddress]);
+  }, [packs, packLimit, packOffset]);
 
   return (
     <Container activeName="SQUAD">

@@ -28,7 +28,7 @@ const PerformerContainerSelectable = (props) => {
       className={`justify-center flex flex-col w-full h-full relative select-none`}
     >
       <div
-        className={`absolute top-0 right-0 mr-10 text-sm border border-indigo-buttonblue rounded-full flex justify-center items-center ${
+        className={`absolute top-0 right-0 text-sm border z-50 border-indigo-buttonblue rounded-full flex justify-center items-center ${
           selected && selected.token_id === token_id ? 'bg-indigo-buttonblue text-indigo-white' : ''
         }`}
         style={{ width: '25px', height: '25px' }}

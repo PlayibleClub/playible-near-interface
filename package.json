@@ -9,6 +9,7 @@
         "redux-devtools": "redux-devtools --hostname=localhost --port=8000"
     },
     "dependencies": {
+        "@apollo/client": "^3.6.9",
         "@babel/core": "^7.17.8",
         "@headlessui/react": "^1.4.1",
         "@heroicons/react": "^1.0.1",
@@ -17,8 +18,10 @@
         "@terra-money/wallet-provider": "^3.3.0",
         "axios": "^0.21.4",
         "crypto-js": "^4.1.1",
+        "graphql": "^16.5.0",
         "javascript-time-ago": "^2.3.13",
         "moment": "^2.29.1",
+        "near-api-js": "^0.45.1",
         "next": "10.2.3",
         "next-images": "^1.8.1",
         "prop-types": "^15.7.2",
@@ -27,6 +30,7 @@
         "react-device-detect": "^2.2.2",
         "react-dom": "17.0.2",
         "react-hook-form": "^7.13.0",
+        "react-icons": "^4.3.1",
         "react-redux": "^7.2.4",
         "react-router-dom": "^5.3.1",
         "react-snap-scroll": "0.0.5",

@@ -8,8 +8,8 @@ import {
 import { MsgExecuteContract, LCDClient, StdFee, Coins } from '@terra-money/terra.js';
 
 export const terra = new LCDClient({
-  URL: 'https://lcd.terra.dev',
-  chainID: 'columbus-5',
+  URL: 'https://bombay-lcd.terra.dev',
+  chainID: 'bombay-12',
 });
 
 export const queryContract = async (contractAddr, queryMsg) => {
@@ -34,7 +34,7 @@ export const estimateFee = async (
             publicKey: accountInfo.getPublicKey(),
           },
         ],
-        { msgs: executeContractMsg, gasPrices: gasPrices, feeDenoms: feeDenoms } // use UST as gas by default
+        { msgs: executeContractMsg, gasPrices: gasPrices, feeDenoms: feeDenoms } //use UST as gas by default
       );
     } catch (err) {
       estimatedFee = null;
@@ -51,7 +51,7 @@ export const retrieveTxInfo = async (txHash) => {
   let txInfo = null;
 
   while (!hasTxInfo) {
-    // try to query transaction info every 2 seconds until the transaction is reflected in the block
+    //try to query transaction info every 2 seconds until the transaction is reflected in the block
     await terra.tx
       .txInfo(txHash)
       .then((result) => {
@@ -115,13 +115,13 @@ export const executeContract = async (
     .post({
       msgs: executeContractMsg,
       fee: estimatedFee,
-      // fee: new StdFee(1_000_000, { uusd: 90_000_000 })
+      //fee: new StdFee(1_000_000, { uusd: 90_000_000 })
       // gasAdjustment: 1.1,
     })
     .then(async (result) => {
       txResult.txResult = result;
       txResult.txHash = result.result.txhash;
-      // txResult.txInfo = await retrieveTxInfo(result.result.txhash)
+      //txResult.txInfo = await retrieveTxInfo(result.result.txhash)
     })
     .catch((error) => {
       if (error instanceof UserDenied) {

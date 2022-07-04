@@ -16,6 +16,12 @@ import bannerDesktop from '../public/images/promotionheaderDesktop.png';
 import { axiosInstance } from '../utils/playible';
 import 'regenerator-runtime/runtime';
 import Head from 'next/head';
+import { AiOutlineVerticalRight, AiOutlineVerticalLeft } from 'react-icons/ai';
+
+// import { GET_ATHLETE_DATA } from '../utils/queries/index.ts';
+// import { useLazyQuery } from '@apollo/client';
+
+let count = 0;
 
 const playerList = [
   // player list for testing purposes
@@ -97,6 +103,7 @@ export default function Home(props) {
   const [activeGames, setActiveGames] = useState([]);
   const [topAthletes, setTopAthletes] = useState([]);
   const [athletesLoading, setAthletesLoading] = useState(true);
+  // const [getAthlete, { loading, error, data }] = useLazyQuery(GET_ATHLETE_DATA);
 
   const interactWallet = () => {
     if (status === WalletStatus.WALLET_CONNECTED) {
@@ -108,10 +115,11 @@ export default function Home(props) {
 
   async function fetchActiveGames() {
     const res = await axiosInstance.get(`/fantasy/game/active/?limit=2`);
-    if (res.status === 200) {
-      setActiveGames(res.data.results);
-    } else {
-    }
+    // if (res.status === 200) {
+    //   setActiveGames(res.data.results);
+    // }
+    // const gqldata = await getAthlete({ variables: { getAthleteByIdId: 2163 } });
+    // console.log(gqldata.data.getAthleteById);
   }
 
   const getImage = async (player) => {
@@ -134,16 +142,49 @@ export default function Home(props) {
   };
 
   useEffect(() => {
-    fetchActiveGames();
-    getTopPerformers();
+    // fetchActiveGames();
+    // getTopPerformers();
   }, []);
 
   useEffect(() => {
-    const id = setInterval(() => {
-      fetchActiveGames();
-    }, 1000);
-    return () => clearInterval(id);
+    // const id = setInterval(() => {
+    //   fetchActiveGames();
+    // }, 1000);
+    // return () => clearInterval(id);
   }, [activeGames]);
+
+  const handleOnNextClick = () => {
+    count = (count + 1) % featuredImagesMobile.length;
+    setCurrentIndex(count);
+  };
+  const handleOnPrevClick = () => {
+    const productsLength = featuredImagesMobile.length;
+    count = (currentIndex + productsLength - 1) % productsLength;
+    setCurrentIndex(count);
+  };
+
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const featuredImagesDesktop = [
+    '/images/promotionheaderDesktop.png',
+    '/images/promotionheaderDesktop2.png',
+    '/images/promotionheaderDesktop3.png',
+  ];
+
+  const featuredImagesMobile = [
+    '/images/promotionheader.png',
+    '/images/promotionheader2.png',
+    '/images/promotionheader3.png',
+  ];
+
+  useEffect(() => {
+    startSlider();
+  }, []);
+
+  const startSlider = () => {
+    setInterval(() => {
+      handleOnNextClick();
+    }, 5000);
+  };
 
   return (
     <>
@@ -173,12 +214,33 @@ export default function Home(props) {
                   </div>
                 </div>
               </div> */}
+
                 <div className="md:mr-8">
-                  <img className="object-fill h-48 w-full visible md:hidden rounded-lg" src={banner} />
-                  <img
-                    className="object-fit h-96 w-full hidden md:flex overflow-hidden rounded-lg"
-                    src={bannerDesktop}
-                  />
+                  <div className="w-full relative select-none mx-2">
+                    <img
+                      className="object-fill h-48 w-full visible md:hidden rounded-lg"
+                      src={featuredImagesMobile[currentIndex]}
+                    />
+                    <img
+                      className="object-fit h-96 w-full hidden md:flex overflow-hidden rounded-lg"
+                      src={featuredImagesDesktop[currentIndex]}
+                    />
+
+                    <div className="absolute w-full top-1/2 transform -translate-y-1/2 flex justify-between items-start px-3">
+                      <button
+                        className="bg-black text-indigo-white p-1 rounded-full bg-opacity-50 cursor-pointer hover:bg-opacity-100 transition"
+                        onClick={handleOnPrevClick}
+                      >
+                        <AiOutlineVerticalRight size={35} />
+                      </button>
+                      <button
+                        className="bg-black text-indigo-white p-1 rounded-full bg-opacity-50 cursor-pointer hover:bg-opacity-100 transition"
+                        onClick={handleOnNextClick}
+                      >
+                        <AiOutlineVerticalLeft size={35} />
+                      </button>
+                    </div>
+                  </div>
                 </div>
 
                 {activeGames ? (
