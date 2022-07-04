@@ -18,6 +18,9 @@ import 'regenerator-runtime/runtime';
 import Head from 'next/head';
 import { AiOutlineVerticalRight, AiOutlineVerticalLeft } from 'react-icons/ai';
 
+// import { GET_ATHLETE_DATA } from '../utils/queries/index.ts';
+// import { useLazyQuery } from '@apollo/client';
+
 let count = 0;
 
 const playerList = [
@@ -100,6 +103,7 @@ export default function Home(props) {
   const [activeGames, setActiveGames] = useState([]);
   const [topAthletes, setTopAthletes] = useState([]);
   const [athletesLoading, setAthletesLoading] = useState(true);
+  // const [getAthlete, { loading, error, data }] = useLazyQuery(GET_ATHLETE_DATA);
 
   const interactWallet = () => {
     if (status === WalletStatus.WALLET_CONNECTED) {
@@ -111,10 +115,11 @@ export default function Home(props) {
 
   async function fetchActiveGames() {
     const res = await axiosInstance.get(`/fantasy/game/active/?limit=2`);
-    if (res.status === 200) {
-      setActiveGames(res.data.results);
-    } else {
-    }
+    // if (res.status === 200) {
+    //   setActiveGames(res.data.results);
+    // }
+    // const gqldata = await getAthlete({ variables: { getAthleteByIdId: 2163 } });
+    // console.log(gqldata.data.getAthleteById);
   }
 
   const getImage = async (player) => {
