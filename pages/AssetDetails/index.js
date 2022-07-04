@@ -25,6 +25,14 @@ import { position } from '../../utils/athlete/position';
 import { axiosInstance } from '../../utils/playible';
 import { ATHLETE } from '../../data/constants/contracts';
 
+import {
+  GET_ATHLETEDATA_QB,
+  GET_ATHLETEDATA_RB,
+  GET_ATHLETEDATA_WR,
+  GET_ATHLETEDATA_TE,
+} from '../../utils/queries/index.ts';
+import { useLazyQuery } from '@apollo/client';
+
 const AssetDetails = (props) => {
   const { queryObj, playerStats, playerImg } = props;
   const { register, handleSubmit } = useForm();
@@ -32,7 +40,7 @@ const AssetDetails = (props) => {
   const lcd = useLCDClient();
   const dispatch = useDispatch();
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [tokenCongrats, setTokenCongrats] = useState(false);
   const [displayModal, setModal] = useState(false);
   const [congratsModal, displayCongrats] = useState(false);
@@ -58,59 +66,96 @@ const AssetDetails = (props) => {
 
   const { list: playerList } = useSelector((state) => state.assets);
 
-  function getAthleteStatus() {
-    if (playerList.tokens && playerList.tokens.length > 0) {
-      setMatchedId(playerList.tokens.filter((athlete) => athlete.token_id === query.token_id));
+  const [athleteData, setAthleteData] = useState([]);
+
+  const tempPos = 'QB';
+  const tempId = 2163;
+
+  const [getAthleteQB, { loadingQB, errorQB, dataQB }] = useLazyQuery(GET_ATHLETEDATA_QB);
+  const [getAthleteRB, { loadingRB, errorRB, dataRB }] = useLazyQuery(GET_ATHLETEDATA_RB);
+  const [getAthleteWR, { loadingWR, errorWR, dataWR }] = useLazyQuery(GET_ATHLETEDATA_WR);
+  const [getAthleteTE, { loadingTE, errorTE, dataTE }] = useLazyQuery(GET_ATHLETEDATA_TE);
+
+  async function getData(x) {
+    switch (x) {
+      case 'QB':
+        const QBdata = await getAthleteQB({ variables: { getAthleteByIdId: tempId } });
+        setAthleteData(QBdata.data.getAthleteById);
+        console.log(athleteData);
+        console.log(QBdata.data.getAthleteById);
+        break;
+      case 'RB':
+        const RBdata = await getAthleteRB({ variables: { getAthleteByIdId: tempId } });
+        console.log(RBdata.data.getAthleteById);
+        break;
+      case 'WR':
+        const WRdata = await getAthleteWR({ variables: { getAthleteByIdId: tempId } });
+        console.log(WRdata.data.getAthleteById);
+        break;
+      case 'TE':
+        const TEdata = await getAthleteTE({ variables: { getAthleteByIdId: tempId } });
+        console.log(TEdata.data.getAthleteById);
+        break;
     }
   }
 
   useEffect(() => {
-    setLoading(true)
-    if (connectedWallet && connectedWallet?.network?.name === 'mainnet') {
-      getAthleteInfo();
-    }
-  }, [dispatch, connectedWallet]);
+    getData(tempPos);
+  }, [athleteData]);
 
-  useEffect(() => {
-    if (query && query.token_id && dispatch) {
-      if (!playerList) {
-        if (connectedWallet) {
-          dispatch(getAccountAssets({ walletAddr: connectedWallet.walletAddress }));
-        }
-      } else {
-        getAthleteStatus();
-      }
-    }
-  }, [playerList, dispatch, connectedWallet, query]);
+  // function getAthleteStatus() {
+  //   if (playerList.tokens && playerList.tokens.length > 0) {
+  //     setMatchedId(playerList.tokens.filter((athlete) => athlete.token_id === query.token_id));
+  //   }
+  // }
 
-  const getAthleteInfo = async () => {
-    setLoading(true);
-    const res = await lcd.wasm.contractQuery(ATHLETE, {
-      all_nft_info: {
-        token_id: queryObj.token_id,
-      },
-    });
+  // useEffect(() => {
+  //   setLoading(true);
+  //   if (connectedWallet && connectedWallet?.network?.name === 'mainnet') {
+  //     getAthleteInfo();
+  //   }
+  // }, [dispatch, connectedWallet]);
 
-    console.log('res', res)
+  // useEffect(() => {
+  //   if (query && query.token_id && dispatch) {
+  //     if (!playerList) {
+  //       if (connectedWallet) {
+  //         dispatch(getAccountAssets({ walletAddr: connectedWallet.walletAddress }));
+  //       }
+  //     } else {
+  //       getAthleteStatus();
+  //     }
+  //   }
+  // }, [playerList, dispatch, connectedWallet, query]);
 
-    const imgRes = await axiosInstance.get(`/fantasy/athlete/${parseInt(queryObj.id)}/`);
-    let img = imgRes.status === 200 ? imgRes.data.nft_image : null;
-    if (res.info !== undefined) {
-      setAssetData({
-        ...res.info.extension,
-        token_uri: img,
-      });
-      setData(imgRes);
-    }
-    if (playerStats) {
-      setStats(playerStats.athlete_stat);
-    }
-    setLoading(false);
-  };
+  // const getAthleteInfo = async () => {
+  //   setLoading(true);
+  //   const res = await lcd.wasm.contractQuery(ATHLETE, {
+  //     all_nft_info: {
+  //       token_id: queryObj.token_id,
+  //     },
+  //   });
 
-  const handleFilter = (event) => {
-    setFilter(event.target.value);
-  };
+  //   console.log('res', res);
+
+  //   const imgRes = await axiosInstance.get(`/fantasy/athlete/${parseInt(queryObj.id)}/`);
+  //   let img = imgRes.status === 200 ? imgRes.data.nft_image : null;
+  //   if (res.info !== undefined) {
+  //     setAssetData({
+  //       ...res.info.extension,
+  //       token_uri: img,
+  //     });
+  //     setData(imgRes);
+  //   }
+  //   if (playerStats) {
+  //     setStats(playerStats.athlete_stat);
+  //   }
+  //   setLoading(false);
+  // };
+
+  // const handleFilter = (event) => {
+  //   setFilter(event.target.value);
+  // };
 
   return (
     <div className={`font-montserrat`}>
@@ -133,9 +178,9 @@ const AssetDetails = (props) => {
             <div className="flex flex-col mt-4 items-center">
               <div className="">
                 <PlayerContainer
-                  playerID={
-                    assetData.attributes.filter((item) => item.trait_type === 'athlete_id')[0].value
-                  }
+                  // playerID={
+                  //   assetData.attributes.filter((item) => item.trait_type === 'athlete_id')[0].value
+                  // }
                   rarity="base"
                 />
               </div>
@@ -144,11 +189,11 @@ const AssetDetails = (props) => {
                   <div className="font-thin text-xs mt-4"></div>
 
                   <div className="text-sm font-bold">
-                    {assetData.token_info.info.extension.name}
+                    {/* {assetData.token_info.info.extension.name} */}
                   </div>
 
                   <div className="font-thin mt-4 text-xs">FANTASY SCORE</div>
-                  <div className="text-sm font-bold">{assetData.fantasy_score}</div>
+                  {/* <div className="text-sm font-bold">{assetData.fantasy_score}</div> */}
                 </div>
               </div>
             </div>
@@ -170,7 +215,7 @@ const AssetDetails = (props) => {
       )}
       {listingModal && (
         <ListingModal
-          asset={assetData}
+          // asset={assetData}
           onClose={() => {
             setListingModal(false);
           }}
@@ -202,10 +247,10 @@ const AssetDetails = (props) => {
               <div className="flex flex-col mt-4 items-center">
                 <div className="">
                   <PlayerContainer
-                    playerID={
-                      assetData.attributes.filter((item) => item.trait_type === 'athlete_id')[0]
-                        .value
-                    }
+                    // playerID={
+                    //   assetData.attributes.filter((item) => item.trait_type === 'athlete_id')[0]
+                    //     .value
+                    // }
                     rarity="base"
                   />
                 </div>
@@ -217,7 +262,7 @@ const AssetDetails = (props) => {
                 </div>
 
                 <div className="text-right">
-                  <div className="font-bold">{assetData.silvercost}</div>
+                  {/* <div className="font-bold">{assetData.silvercost}</div> */}
 
                   <div className="font-thin">PRICE</div>
                 </div>
@@ -244,7 +289,7 @@ const AssetDetails = (props) => {
                   setTokenCongrats(true);
                 }}
               >
-                <div className="text-indigo-white">PURCHASE NOW - {assetData.silvercost}</div>
+                {/* <div className="text-indigo-white">PURCHASE NOW - {assetData.silvercost}</div> */}
               </button>
             </div>
           </div>
@@ -258,12 +303,12 @@ const AssetDetails = (props) => {
             <div className="flex">
               <div className="flex flex-col w-full h-screen">
                 <Main color="indigo-white">
-                  {stats && assetData ? (
+                  {athleteData ? (
                     <div className="flex flex-col overflow-y-auto overflow-x-hidden">
                       <div className="md:ml-8">
-                        <div className="mt-8">
+                        {/* <div className="mt-8">
                           <BackFunction prev={query.origin || '/Portfolio/'} />
-                        </div>
+                        </div> */}
 
                         <PortfolioContainer textcolor="indigo-black" title="PLAYER DETAILS">
                           <div className="flex flex-col mt-2 mb-8">
@@ -271,31 +316,29 @@ const AssetDetails = (props) => {
                               <div>
                                 <div className="ml-8 md:ml-6 mr-16">
                                   <PlayerContainer
-                                    img={
-                                      assetData.image || null
-                                    }
-                                    playerID={
-                                      assetData.attributes.filter(
-                                        (item) => item.trait_type === 'athlete_id'
-                                      )[0].value
-                                    }
+                                    img={athleteData.nftImage || null}
+                                    // playerID={
+                                    //   assetData.attributes.filter(
+                                    //     (item) => item.trait_type === 'athlete_id'
+                                    //   )[0].value
+                                    // }
                                     rarity="base"
                                   />
                                 </div>
                               </div>
                               <div className="flex flex-col">
                                 <div className="ml-8 md:ml-0 mb-4 md:mb-0 mt-8 md:mt-0">
-                                  <div className="text-sm">
-                                    {
-                                      assetData.attributes.filter(
-                                        (item) => item.trait_type === 'name'
-                                      )[0].value
-                                    }
-                                  </div>
+                                  {/* <div className="text-sm">
+                                  {
+                                    assetData.attributes.filter(
+                                      (item) => item.trait_type === 'name'
+                                    )[0].value
+                                  }
+                                </div> */}
 
                                   <div className="font-thin mt-4 text-sm">FANTASY SCORE</div>
 
-                                  <div className="text-sm mb-4">{stats.fantasy_score || 0}</div>
+                                  {/* <div className="text-sm mb-4">{stats.fantasy_score || 0}</div> */}
                                 </div>
 
                                 {/* <div className="flex flex-col md:flex-row md:justify-between mb-2 text-sm ml-8 md:ml-0">                         
@@ -338,7 +381,7 @@ const AssetDetails = (props) => {
                           <PortfolioContainer
                             textcolor="indigo-black font-monument"
                             title="PLAYER STATS"
-                            stats={String(stats.fantasy_score || 0)}
+                            // stats={String(stats.fantasy_score || 0)}
                           />
                           {/* <div className="self-center md:mr-24">
                             <div className="bg-indigo-white h-11 flex justify-between self-center font-thin w-80 mt-6 border-2 border-indigo-lightgray border-opacity-50">
@@ -366,23 +409,23 @@ const AssetDetails = (props) => {
                           </div> */}
                         </div>
                         <div className="text-indigo-white bg-indigo-black w-max font-monument p-4 text-3xl font-thin uppercase text-center ml-6 mt-8 md:mt-5">
-                          {position(
+                          {/* {position(
                             'baseball',
                             assetData.attributes.filter((item) => item.trait_type === 'position')[0]
                               .value
-                          )}
+                          )} */}
                         </div>
                         <div className="flex flex-col justify-center self-center md:mr-24 mb-8 md:ml-6">
                           <div className="mt-8 mb-16 self-center">
-                            <PlayerStats
-                              player={stats}
-                              position={position(
-                                'baseball',
-                                assetData.attributes.filter(
-                                  (item) => item.trait_type === 'position'
-                                )[0].value
-                              )}
-                            />
+                            {/* <PlayerStats
+                              // player={stats}
+                              // position={position(
+                              //   'baseball',
+                              //   assetData.attributes.filter(
+                              //     (item) => item.trait_type === 'position'
+                              //   )[0].value
+                              // )}
+                            /> */}
                           </div>
                         </div>
                       </div>
@@ -402,29 +445,29 @@ const AssetDetails = (props) => {
 
 export default AssetDetails;
 
-export async function getServerSideProps(ctx) {
-  const { query } = ctx;
-  let queryObj = null;
-  if (query) {
-    if (query.id && query.token_id) {
-      queryObj = query;
-    } else {
-      return {
-        redirect: {
-          destination: query.origin || '/Portfolio',
-          permanent: false,
-        },
-      };
-    }
-  }
+// export async function getServerSideProps(ctx) {
+//   const { query } = ctx;
+//   let queryObj = null;
+//   if (query) {
+//     if (query.id && query.token_id) {
+//       queryObj = query;
+//     } else {
+//       return {
+//         redirect: {
+//           destination: query.origin || '/Portfolio',
+//           permanent: false,
+//         },
+//       };
+//     }
+//   }
 
-  let playerStats = null;
-  const res = await axiosInstance.get(`/fantasy/athlete/${parseInt(queryObj.id)}/stats/`);
+//   let playerStats = null;
+//   const res = await axiosInstance.get(`/fantasy/athlete/${parseInt(queryObj.id)}/stats/`);
 
-  if (res.status === 200) {
-    playerStats = res.data;
-  }
-  return {
-    props: { queryObj, playerStats },
-  };
-}
+//   if (res.status === 200) {
+//     playerStats = res.data;
+//   }
+//   return {
+//     props: { queryObj, playerStats },
+//   };
+// }
