@@ -322,7 +322,7 @@ const AssetDetails = (props) => {
                                     //     (item) => item.trait_type === 'athlete_id'
                                     //   )[0].value
                                     // }
-                                    rarity="base"
+                                    // rarity="base"
                                   />
                                 </div>
                               </div>
