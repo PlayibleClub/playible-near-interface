@@ -293,6 +293,10 @@ const AssetDetails = (props) => {
                                     }
                                   </div>
 
+                                  <div className="font-thin mt-4 text-sm">USAGE COUNTER</div>
+
+                                  <div className="text-sm mb-4">0 uses left</div>
+
                                   <div className="font-thin mt-4 text-sm">FANTASY SCORE</div>
 
                                   <div className="text-sm mb-4">{stats.fantasy_score || 0}</div>

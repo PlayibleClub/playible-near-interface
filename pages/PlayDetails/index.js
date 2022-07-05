@@ -299,10 +299,18 @@ export default function PlayDetails() {
                   ) : (
                     <>
                       <PortfolioContainer textcolor="indigo-black" title="GAMEPLAY" />
-                      <div className="ml-7 mt-5 font-normal">
+
+                      {/* if paid game */}
+                      <div className="ml-7 mt-5 font-normal font-bold text-indigo-red">*Participation in this game will reduce your player token's usage by 1.</div>
+
+                      {/* if free game */}
+                      <div className="ml-7 mt-5 font-normal font-bold text-indigo-green">*Winning in this game will reward your player token's usage by 1.</div>
+
+                      <div className="ml-7 mt-3 font-normal">
                         Enter a team into the Alley-oop tournament to compete for cash prizes.
                       </div>
-                      <div className="ml-7 mt-2 font-normal">
+
+                      <div className="ml-7 mt-1 font-normal">
                         Create a lineup by selecting five Playible Athlete Tokens now.
                       </div>
                     </>
