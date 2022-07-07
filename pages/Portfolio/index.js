@@ -31,8 +31,9 @@ const Portfolio = () => {
   const [filter, setFilter] = useState(null);
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
-
+  const [playerList, setPlayerList] = useState(null);
   const walletConnection = useSelector((state) => state.external.playible.wallet.data);
+  const { list } = useSelector((state) => state.assets);
 
   const changeIndex = (index) => {
     switch (index) {
@@ -170,15 +171,26 @@ const Portfolio = () => {
   useEffect(async () => {
     setLoading(true);
     setSortedList([]);
-   
     setLoading(false);
   }, [dispatch]);
 
-  useEffect(() => {
-  }, [limit, offset, filter, search]);
+  useEffect(() => {}, [limit, offset, filter, search]);
+
+  useEffect(() => {}, [packs, packLimit, packOffset]);
 
   useEffect(() => {
-  }, [packs, packLimit, packOffset]);
+    if (walletConnection) {
+      setWallet(walletConnection.walletConnection.isSignedIn());
+    } else {
+      setWallet(null);
+    }
+  }, [walletConnection]);
+
+  useEffect(() => {
+    if (list) {
+      setPlayerList(list);
+    }
+  }, [list]);
 
   return (
     <Container activeName="SQUAD">
@@ -192,7 +204,8 @@ const Portfolio = () => {
             <div className="flex flex-col w-full overflow-y-auto overflow-x-hidden h-full self-center text-indigo-black">
               <div className="ml-6 flex flex-col md:flex-row md:justify-between">
                 <PortfolioContainer title="SQUAD" textcolor="text-indigo-black" />
-                {playerList &&(sortedList.length > 0 || playerList.tokens.length > 0) &&
+                {playerList &&
+                (sortedList.length > 0 || playerList.tokens.length > 0) &&
                 displayMode ? (
                   <Sorter
                     list={sortedList}
@@ -245,7 +258,6 @@ const Portfolio = () => {
                                     },
                                   }}
                                 >
-
                                   <div className="mb-4" key={i}>
                                     <PerformerContainer
                                       AthleteName={

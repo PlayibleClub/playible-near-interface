@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
 import external from './external';
 import contract from './contract';
-import assets from './external/playible/assets';
+import assets from './assets';
 
 export default combineReducers({
   contract,

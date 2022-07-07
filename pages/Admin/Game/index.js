@@ -15,10 +15,15 @@ import 'regenerator-runtime/runtime';
 import { format } from 'prettier';
 import { NEWADMIN } from '../../../data/constants/address';
 import { useRouter } from 'next/router';
+import { useSelector } from 'react-redux';
+import { useMutation } from '@apollo/client';
+import { CREATE_GAME } from '../../../utils/mutations';
 TimeAgo.addDefaultLocale(en);
 
 const Index = (props) => {
   const connectedWallet = useConnectedWallet();
+  const [createNewGame, { data, error }] = useMutation(CREATE_GAME);
+  const { wallet } = useSelector((state) => state.external.playible);
   const lcd = useLCDClient();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -48,9 +53,10 @@ const Index = (props) => {
 
   const [details, setDetails] = useState({
     name: '',
-    start_datetime: '',
+    startTime: '',
     duration: 1,
     prize: 1,
+    description: '',
   });
 
   const [distribution, setDistribution] = useState([
@@ -99,7 +105,6 @@ const Index = (props) => {
   const [games, setGames] = useState([]);
   const [completedGames, setCompletedGames] = useState([]);
   const [gameId, setGameId] = useState(null);
-  const [wallet, setWallet] = useState(null);
   const [err, setErr] = useState(null);
   const [modal, setModal] = useState(false);
   const [endLoading, setEndLoading] = useState(false);
@@ -181,11 +186,14 @@ const Index = (props) => {
   };
 
   const onChange = (e) => {
-    if ((e.target.name === 'duration' || e.target.name === 'prize') && e.target.value < 1) {
-      setDetails({
-        ...details,
-        [e.target.name]: 1,
-      });
+    if (e.target.name === 'duration' || e.target.name === 'prize') {
+      console.log(e.target.name, e.target.value);
+      if (parseInt(e.target.value) > 0) {
+        setDetails({
+          ...details,
+          [e.target.name]: e.target.value,
+        });
+      }
     } else {
       setDetails({
         ...details,
@@ -197,8 +205,8 @@ const Index = (props) => {
   const checkValidity = () => {
     let errors = [];
     let sortPercentage = [...distribution].sort((a, b) => b.percentage - a.percentage);
-
-    if (!Number.isInteger(details.duration)) {
+    console.log('details.duration', typeof details.duration);
+    if (!Number.isInteger(parseInt(details.duration))) {
       errors.push('Duration must be a positive integer that is expressed in days');
     }
 
@@ -206,7 +214,7 @@ const Index = (props) => {
       errors.push('Game is missing a title');
     }
 
-    if (new Date(details.start_datetime) < new Date() || !details.start_datetime) {
+    if (new Date(details.startTime) < new Date() || !details.startTime) {
       errors.push('Invalid Date & Time values');
     }
 
@@ -304,10 +312,10 @@ const Index = (props) => {
             content: 'Successfully ended game',
           });
         }
-        fetchGames();
+        // fetchGames();
         setModal(true);
         setEndModal(false);
-        router.reload()
+        router.reload();
       } else {
         setMsg({
           title: 'Error',
@@ -345,7 +353,6 @@ const Index = (props) => {
             percentage: (parseInt(item.percentage) / 100) * 1000000,
           };
         });
-        
 
         const resContract = await executeContract(connectedWallet, ORACLE, [
           {
@@ -363,7 +370,7 @@ const Index = (props) => {
             msg: {
               add_game: {
                 game_id: res.data.id.toString(),
-                game_time_start: Math.ceil(convertToMinutes(formData.start_datetime)),
+                game_time_start: Math.ceil(convertToMinutes(formData.startTime)),
                 duration: Math.ceil(formData.duration),
               },
             },
@@ -393,7 +400,7 @@ const Index = (props) => {
           });
         }
         resetForm();
-        fetchGames();
+        // fetchGames();
       } else {
         setMsg({
           title: 'Failed',
@@ -406,6 +413,22 @@ const Index = (props) => {
     } else {
       alert('Connect to your wallet first');
     }
+  };
+
+  const newGame = async () => {
+    const formData = {
+      ...details,
+      duration: 1,
+    };
+
+    createNewGame({
+      variables: {
+        args: formData,
+      },
+    });
+
+    console.log('error', error);
+    console.log('data', data);
   };
 
   const convertToMinutes = (time) => {
@@ -423,7 +446,7 @@ const Index = (props) => {
 
     if (res.status === 200 && res.data.length > 0) {
       const sortedData = [...res.data].sort(
-        (a, b) => new Date(a.start_datetime) - new Date(b.start_datetime)
+        (a, b) => new Date(a.startTime) - new Date(b.startTime)
       );
       setGames(sortedData);
     }
@@ -450,7 +473,7 @@ const Index = (props) => {
   const resetForm = () => {
     setDetails({
       name: '',
-      start_datetime: '',
+      startTime: '',
       duration: 1,
       prize: 1,
     });
@@ -466,25 +489,37 @@ const Index = (props) => {
     getTotalPercent();
   }, [distribution]);
 
+  // useEffect(() => {
+  //   if (connectedWallet) {
+  //     if (connectedWallet.walletAddress === NEWADMIN) {
+  //       if (connectedWallet?.network?.name === 'testnet') {
+  //         // fetchGames();
+  //         setErr(null);
+  //         setContent(true);
+  //       } else {
+  //         setErr('You are connected to mainnet. Please connect to testnet');
+  //       }
+  //     } else {
+  //       return router.replace('/');
+  //     }
+  //   } else {
+  //     setGames([]);
+  //     setCompletedGames([]);
+  //     setErr('Waiting for wallet connection...');
+  //   }
+  // }, [connectedWallet]);
+
   useEffect(() => {
-    if (connectedWallet) {
-      if (connectedWallet.walletAddress === NEWADMIN) {
-        if (connectedWallet?.network?.name === 'testnet') {
-          fetchGames();
-          setErr(null);
-          setContent(true);
-        } else {
-          setErr('You are connected to mainnet. Please connect to testnet');
-        }
-      } else {
-        return router.replace('/');
+    if (wallet?.data) {
+      const isSignedIn = wallet.data.walletConnection.isSignedIn();
+      if (isSignedIn) {
+        setErr(null);
+        setContent(true);
+        setContentLoading(false);
       }
-    } else {
-      setGames([]);
-      setCompletedGames([]);
-      setErr('Waiting for wallet connection...');
+      console.log('walletInfo', wallet.data.walletConnection.isSignedIn());
     }
-  }, [connectedWallet]);
+  }, [wallet]);
 
   return (
     <Container isAdmin>
@@ -538,7 +573,7 @@ const Index = (props) => {
                                     <ReactTimeAgo
                                       future
                                       timeStyle="round-minute"
-                                      date={data.start_datetime}
+                                      date={data.startTime}
                                       locale="en-US"
                                     />
                                   ) : (
@@ -593,9 +628,9 @@ const Index = (props) => {
                             className="border outline-none rounded-lg px-3 p-2"
                             id="datetime"
                             type="datetime-local"
-                            name="start_datetime"
+                            name="startTime"
                             onChange={(e) => onChange(e)}
-                            value={details.start_datetime}
+                            value={details.startTime}
                           />
                         </div>
                       </div>
@@ -632,6 +667,27 @@ const Index = (props) => {
                             placeholder="Enter amount"
                             onChange={(e) => onChange(e)}
                             value={details.prize}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="flex mt-8">
+                        {/* DESCRIPTION */}
+                        <div className="flex flex-col w-full">
+                          <label className="font-monument" htmlFor="duration">
+                            DESCRIPTION
+                          </label>
+                          <textarea
+                            className="border outline-none rounded-lg px-3 p-2"
+                            id="description"
+                            name="description"
+                            type="text"
+                            placeholder="Description of game"
+                            onChange={(e) => onChange(e)}
+                            value={details.description}
+                            style={{
+                              minHeight: '220px',
+                            }}
                           />
                         </div>
                       </div>
@@ -700,7 +756,8 @@ const Index = (props) => {
         <button
           className="bg-indigo-green font-monument tracking-widest text-indigo-white w-full h-16 text-center text-sm mt-4"
           onClick={() => {
-            createGame();
+            // createGame();
+            newGame();
             setConfirmModal(false);
           }}
         >
@@ -736,11 +793,11 @@ const Index = (props) => {
 
 export default Index;
 
-export async function getServerSideProps(ctx) {
-  return {
-    redirect: {
-      destination: '/Portfolio',
-      permanent: false,
-    },
-  };
-}
+// export async function getServerSideProps(ctx) {
+//   return {
+//     redirect: {
+//       destination: '/Portfolio',
+//       permanent: false,
+//     },
+//   };
+// }

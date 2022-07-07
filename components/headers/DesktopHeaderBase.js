@@ -77,8 +77,6 @@ const DesktopHeaderBase = (props) => {
     connect(availableConnectTypes[connectionType]);
   };
 
-  console.log('wallet', wallet)
-
   const renderWalletModal = () => {
     if (isLoggedIn) {
       return (

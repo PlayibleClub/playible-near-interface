@@ -1,7 +1,7 @@
 import { useWallet, WalletStatus } from '@terra-money/wallet-provider';
 import Container from '../components/containers/Container';
 import Main from '../components/Main';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import underlineIcon from '../public/images/blackunderline.png';
 import viewall from '../public/images/viewall.png';
 import PrizePoolComponent from '../components/PrizePoolComponent';
@@ -17,101 +17,40 @@ import { axiosInstance } from '../utils/playible';
 import 'regenerator-runtime/runtime';
 import Head from 'next/head';
 import { AiOutlineVerticalRight, AiOutlineVerticalLeft } from 'react-icons/ai';
-
-// import { GET_ATHLETE_DATA } from '../utils/queries/index.ts';
-// import { useLazyQuery } from '@apollo/client';
+import { GET_ATHLETES_TOP } from '../utils/queries';
+import { useLazyQuery, useQuery } from '@apollo/client';
 
 let count = 0;
 
-const playerList = [
-  // player list for testing purposes
-  {
-    name: 'BRYAN REYNOLDS',
-    team: 'Golden State Warriors', //2
-    id: '320',
-    cost: '420 UST',
-    jersey: '30',
-    positions: ['PG', 'SG'],
-    avgscore: '86.3',
-    grad1: 'indigo-blue',
-    grad2: 'indigo-bluegrad',
-    listing: '12/12/2024', //4
-    rarity: 'base',
-    lowestask: '120 UST',
-  },
-  {
-    name: 'ZACK WHEELER',
-    team: 'Minnesota Timberwolves', //6
-    id: '14450',
-    cost: '41 UST',
-    jersey: '12',
-    positions: ['PG'],
-    avgscore: '66.5',
-    grad1: 'indigo-purple',
-    grad2: 'indigo-purplegrad',
-    listing: '12/12/2021', //3
-    rarity: 'base',
-    lowestask: '45 UST',
-  },
-  {
-    name: 'BO BICHETTE',
-    team: 'Los Angeles Lakers', //5
-    id: '25',
-    cost: '840 UST',
-    jersey: '23',
-    positions: ['PG', 'SG'],
-    avgscore: '96.0',
-    grad1: 'indigo-purple',
-    grad2: 'indigo-purplegrad',
-    listing: '11/12/2025', //6
-    rarity: 'base',
-    lowestask: '3 UST',
-  },
-  {
-    name: 'ROBBIE RAY',
-    team: 'Phoenix Suns', //7
-    id: '16450',
-    cost: '21 UST',
-    jersey: '01',
-    positions: ['SF', 'C'],
-    avgscore: '76.8',
-    grad1: 'indigo-darkblue',
-    grad2: 'indigo-darkbluegrad',
-    listing: '12/11/2025', //5
-    rarity: 'base',
-    lowestask: '354 UST',
-  },
-];
-
-const prizePoolSample = [
-  {
-    icon: '1',
-    prizePool: '7,484.10',
-    level: '1',
-  },
-  {
-    icon: '2',
-    prizePool: '16,923.98',
-    level: '2',
-  },
-];
-
 export default function Home(props) {
-  const { topPerformers = [] } = props;
-  const { status, connect, disconnect, availableConnectTypes } = useWallet();
-  const [playibleValue, setPlayibleValue] = useState('1,287,632.98');
   const [activeGames, setActiveGames] = useState([]);
   const [topAthletes, setTopAthletes] = useState([]);
   const [athletesLoading, setAthletesLoading] = useState(true);
-  // const [getAthlete, { loading, error, data }] = useLazyQuery(GET_ATHLETE_DATA);
+  // const { loading, error, data } = useQuery(GET_ATHLETES_TOP, {
 
-  const interactWallet = () => {
-    if (status === WalletStatus.WALLET_CONNECTED) {
-      disconnect();
-    } else {
-      connect(availableConnectTypes[1]);
-    }
-  };
+  // });
+  const [getAthletes, { loading, error, data }] = useLazyQuery(GET_ATHLETES_TOP);
+
+  const fetchTopAthletes = useCallback(() => {
+    getAthletes({
+      variables: {
+        args: {
+          filter: {
+            sport: 'nfl',
+          },
+          pagination: {
+            limit: 4,
+            offset: 0,
+          },
+          sort: 'score',
+        },
+      },
+    });
+  }, [loading]);
+
+  useEffect(() => {
+    fetchTopAthletes();
+  }, []);
 
   async function fetchActiveGames() {
     const res = await axiosInstance.get(`/fantasy/game/active/?limit=2`);
@@ -130,28 +69,6 @@ export default function Home(props) {
       nft_image: imgRes.status === 200 ? imgRes.data.nft_image : null,
     };
   };
-
-  const getTopPerformers = async () => {
-    if (topPerformers.length > 0) {
-      let performersList = topPerformers.map((player) => getImage(player));
-      const performers = await Promise.all(performersList);
-
-      setTopAthletes(performers);
-      setAthletesLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    // fetchActiveGames();
-    // getTopPerformers();
-  }, []);
-
-  useEffect(() => {
-    // const id = setInterval(() => {
-    //   fetchActiveGames();
-    // }, 1000);
-    // return () => clearInterval(id);
-  }, [activeGames]);
 
   const handleOnNextClick = () => {
     count = (count + 1) % featuredImagesMobile.length;
@@ -176,15 +93,16 @@ export default function Home(props) {
     '/images/promotionheader3.png',
   ];
 
-  useEffect(() => {
-    startSlider();
-  }, []);
-
   const startSlider = () => {
     setInterval(() => {
       handleOnNextClick();
     }, 5000);
   };
+
+  useEffect(() => {
+    // startSlider();
+  }, []);
+
 
   return (
     <>
@@ -318,22 +236,22 @@ export default function Home(props) {
                 <img src={filterIcon} className="object-none w-4 mr-4" />
               </div> */}
 
-                {athletesLoading ? (
+                {loading ? (
                   <div className="flex justify-center w-full mt-10">
                     <div className="w-5 h-5 rounded-full bg-indigo-buttonblue animate-bounce mr-5"></div>
                     <div className="w-5 h-5 rounded-full bg-indigo-buttonblue animate-bounce mr-5"></div>
                     <div className="w-5 h-5 rounded-full bg-indigo-buttonblue animate-bounce"></div>
                   </div>
-                ) : topAthletes.length > 0 ? (
+                ) : data?.getAthletes.length > 0 ? (
                   <div className="grid grid-cols-2 gap-x-4 mt-8">
-                    {topAthletes.map(function (player, i) {
+                    {data.getAthletes.map(function ({ firstName, lastName, id, nftImage}, i) {
                       return (
                         <div className="" key={i}>
                           <PerformerContainer
-                            AthleteName={`${player.athlete.first_name} ${player.athlete.last_name}`}
-                            AvgScore={player.fantasy_score}
-                            id={player.athlete.id}
-                            uri={null || player.nft_image}
+                            AthleteName={`${firstName} ${lastName}`}
+                            AvgScore={500}
+                            id={id}
+                            uri={nftImage || null}
                             hoverable={false}
                           />
                         </div>

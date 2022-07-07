@@ -30,7 +30,7 @@ import {
   GET_ATHLETEDATA_RB,
   GET_ATHLETEDATA_WR,
   GET_ATHLETEDATA_TE,
-} from '../../utils/queries/index.ts';
+} from '../../utils/queries';
 import { useLazyQuery } from '@apollo/client';
 
 const AssetDetails = (props) => {
@@ -331,9 +331,8 @@ const AssetDetails = (props) => {
                         </div>
                         <div className="text-indigo-white bg-indigo-black w-max font-monument p-4 text-3xl font-thin uppercase text-center ml-6 mt-8 md:mt-5">
                           {/* {position(
-                            'baseball',
-                            assetData.attributes.filter((item) => item.trait_type === 'position')[0]
-                              .value
+                            'football',
+                            "QB"
                           )} */}
                         </div>
                         <div className="flex flex-col justify-center self-center md:mr-24 mb-8 md:ml-6">

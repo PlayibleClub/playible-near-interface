@@ -18,24 +18,21 @@ import { BrowserView, MobileView, isBrowser, isMobile } from 'react-device-detec
 const sampleList = [0, 1, 2, 3, 4, 5];
 
 const TokenDrawPage = (props) => {
-  const { queryObj, newAthletes, error } = props;
+  const { queryObj, newAthletes, error = null } = props;
 
   const dispatch = useDispatch();
   const lcd = useLCDClient();
-  const connectedWallet = useConnectedWallet();
-
   const [err, setErr] = useState(error);
 
-  const [isClosed, setClosed] = useState(true);
-  const [loading, setLoading] = useState(true);
-  const [videoPlaying, setVideoPlaying] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [videoPlaying, setVideoPlaying] = useState(false);
 
-  const { drawList: tokenList, status } = useSelector((state) => state.contract.pack);
-
-  const [assets, setassets] = useState([...newAthletes]);
+  const [assets, setassets] = useState([]);
   const [athletes, setAthletes] = useState([]);
 
   const [packs, setpacks] = useState(true);
+  const walletConnection = useSelector((state) => state.external.playible.wallet.data);
+  const [wallet, setWallet] = useState(null);
 
   const activeChecker = () => {
     if (athletes.length > 0) {
@@ -127,21 +124,15 @@ const TokenDrawPage = (props) => {
   };
 
   useEffect(async () => {
-    setLoading(true);
-    setErr(null);
-    if (connectedWallet) {
-      if (connectedWallet?.network?.name === 'mainnet') {
-        await prepareNewAthletes();
-        setErr(null);
-      } else {
-         setErr('You are connected to testnet. Please connect to mainnet');
-         setLoading(false);
-      }
+    if (walletConnection) {
+      // walletConnection.nearConfig.networkId -> to determine what network (testnet or mainnet)
+      // setErr("You are not in the *intended network*") to notify user that they are not in the intended network
+      setWallet(walletConnection.walletConnection.isSignedIn());
     } else {
-      setErr('Waiting for wallet connection...');
       setLoading(false);
+      setWallet(null);
     }
-  }, [connectedWallet]);
+  }, [walletConnection]);
 
   const onVideoEnded = () => {
     setVideoPlaying(false);
@@ -172,8 +163,8 @@ const TokenDrawPage = (props) => {
                 ) : (
                   <div className="mb-10">
                     <div>
-                      {err ? (
-                        <p className="py-10">{err}</p>
+                      {!wallet || err ? (
+                        <p className="ml-12 mt-5">{err || 'Waiting for wallet connection...'}</p>
                       ) : (
                         <>
                           {athletes.length > 0 && activeChecker() && (
@@ -265,41 +256,41 @@ const TokenDrawPage = (props) => {
 
 export default TokenDrawPage;
 
-export async function getServerSideProps(ctx) {
-  const { query } = ctx;
-  let queryObj = null;
-  const newAthletes = [];
-  let error = null;
+// export async function getServerSideProps(ctx) {
+//   const { query } = ctx;
+//   let queryObj = null;
+//   const newAthletes = [];
+//   let error = null;
 
-  if (query.txHash) {
-    queryObj = query;
-    if (query.txHash) {
-      const response = await retrieveTxInfo(query.txHash);
+//   if (query.txHash) {
+//     queryObj = query;
+//     if (query.txHash) {
+//       const response = await retrieveTxInfo(query.txHash);
 
-      if (response && response.logs) {
-        const tokenList = response.logs[1].eventsByType.wasm.token_id;
+//       if (response && response.logs) {
+//         const tokenList = response.logs[1].eventsByType.wasm.token_id;
 
-        if (tokenList && tokenList.length > 0) {
-          tokenList.forEach((id, i) => {
-            if (i !== 0) {
-              newAthletes.push(id);
-            }
-          });
-        }
-      } else {
-        error = 'An error occurred. Please refresh the page';
-      }
-    }
-  } else {
-    return {
-      redirect: {
-        destination: '/Portfolio',
-        permanent: false,
-      },
-    };
-  }
+//         if (tokenList && tokenList.length > 0) {
+//           tokenList.forEach((id, i) => {
+//             if (i !== 0) {
+//               newAthletes.push(id);
+//             }
+//           });
+//         }
+//       } else {
+//         error = 'An error occurred. Please refresh the page';
+//       }
+//     }
+//   } else {
+//     return {
+//       redirect: {
+//         destination: '/Portfolio',
+//         permanent: false,
+//       },
+//     };
+//   }
 
-  return {
-    props: { queryObj, newAthletes, error },
-  };
-}
+//   return {
+//     props: { queryObj, newAthletes, error },
+//   };
+// }

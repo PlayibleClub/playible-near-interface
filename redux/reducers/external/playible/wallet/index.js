@@ -21,9 +21,6 @@ export const getConnection = createAsyncThunk('getConnection', async (payload, t
     } else {
       result = await connection
     }
-
-    console.log('connection', connection);
-
     return {
       response: result,
       status: statusCode.SUCCESS,

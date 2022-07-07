@@ -208,24 +208,24 @@ export default function PackDetails(props) {
   );
 }
 
-export async function getServerSideProps(ctx) {
-  const { query } = ctx;
-  let queryObj = null;
+// export async function getServerSideProps(ctx) {
+//   const { query } = ctx;
+//   let queryObj = null;
 
-  if (query) {
-    if (query.token_id) {
-      queryObj = query;
-    } else {
-      return {
-        redirect: {
-          destination: query.origin || '/Portfolio',
-          permanent: false,
-        },
-      };
-    }
-  }
+//   if (query) {
+//     if (query.token_id) {
+//       queryObj = query;
+//     } else {
+//       return {
+//         redirect: {
+//           destination: query.origin || '/Portfolio',
+//           permanent: false,
+//         },
+//       };
+//     }
+//   }
 
-  return {
-    props: { queryObj },
-  };
-}
+//   return {
+//     props: { queryObj },
+//   };
+// }
