@@ -89,3 +89,8 @@ export const signIn = (wallet) => {
 export const signOut = (wallet) => {
   wallet.signOut();
 };
+
+// Query minted amount
+export const getSupply = async () => {
+
+}

@@ -13,6 +13,7 @@
         "@babel/core": "^7.17.8",
         "@headlessui/react": "^1.4.1",
         "@heroicons/react": "^1.0.1",
+        "@ramonak/react-progress-bar": "^5.0.1",
         "@reduxjs/toolkit": "^1.6.0",
         "@terra-money/terra.js": "^3.0.1",
         "@terra-money/wallet-provider": "^3.3.0",

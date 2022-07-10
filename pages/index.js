@@ -270,17 +270,17 @@ export default function Home(props) {
   );
 }
 
-export const getServerSideProps = async () => {
-  let topPerformers = [];
-  const res = await axiosInstance.get('/fantasy/athlete/top_performers/?limit=4');
-
-  if (res.status === 200) {
-    topPerformers = res.data.results;
-  }
-
-  return {
-    props: {
-      topPerformers,
-    },
-  };
-};
+// export const getServerSideProps = async () => {
+//   let topPerformers = [];
+//   const res = await axiosInstance.get('/fantasy/athlete/top_performers/?limit=4');
+//
+//   if (res.status === 200) {
+//     topPerformers = res.data.results;
+//   }
+//
+//   return {
+//     props: {
+//       topPerformers,
+//     },
+//   };
+// };
