@@ -42,6 +42,7 @@ export default function Home(props) {
   });
   // Storage deposit is used to check if balance available to mint NFT and pay the required storage fee
   const [storageDepositAccountBalance, setStorageDepositAccountBalance] = useState(0)
+  const [selectedMintAmount, setSelectedMintAmount] = useState(0)
 
   async function query_config_contract() {
     // Init minter contract
@@ -73,33 +74,33 @@ export default function Home(props) {
     return {mint_cost: minterConfig.minting_price, storage_deposit: amount_to_deposit_near}
   }
 
-  async function execute_storage_deposit(amount){
+  async function execute_mint_token(){
+
     // Init minter contract
     const _minter = await initNear([MINTER, NEP141USDC, NEP141USDT]);
 
-    // Calculate amount to deposit for minting process
-    const amount_to_deposit_near = amount * MINT_STORAGE_COST;
-    const mint_cost = amount * Number(minterConfig.minting_price)
+    // FT amount to deposit for minting NFT
+    const mint_cost = selectedMintAmount * Number(minterConfig.minting_price)
 
-    // if (storageDepositAccountBalance < amount_to_deposit_near) {
-    //   return
-    // }
-    const data = Buffer.from(JSON.stringify({receiver_id: _minter.contractList[0].contractId, amount: Math.floor(mint_cost).toString(), msg: JSON.stringify({ mint_amount: amount}) }))
-    const register = Buffer.from(JSON.stringify({account_id:  _minter.contractList[0].contractId}))
-    //let c = await _minter.contractList[2].ft_transfer_call(data, "300000000000000", "1");
+    if (selectedMintAmount == 0) {
+      return
+    }
+    const data = Buffer.from(JSON.stringify({receiver_id: _minter.contractList[0].contractId, amount: Math.floor(mint_cost).toString(), msg: JSON.stringify({ mint_amount: selectedMintAmount}) }))
+    //const register = Buffer.from(JSON.stringify({account_id:  _minter.contractList[0].contractId}))
+    let tx = await _minter.contractList[2].ft_transfer_call(data, "300000000000000", "1");
     //console.log(c)
-    let res = await _minter.currentUser.account.signAndSendTransaction({
-      receiverId: _minter.contractList[2].contractId,
-      actions: [transactions.functionCall("storage_deposit", register,"100000000000000", utils.format.parseNearAmount("0.008").toString()),
-        transactions.functionCall("ft_transfer_call", data,"100000000000000", "1" )
-
-        ]
-    })
+    // let res = await _minter.currentUser.account.signAndSendTransaction({
+    //   receiverId: _minter.contractList[2].contractId,
+    //   actions: [transactions.functionCall("storage_deposit", register,"100000000000000", utils.format.parseNearAmount("0.008").toString()),
+    //     transactions.functionCall("ft_transfer_call", data,"100000000000000", "1" )
+    //     ]
+    // })
     // console.log(res)
   }
 
-  async function storage_deposit_near(amount) {
-
+  async function storage_deposit_near() {
+    // Calculate amount to deposit for minting process
+    const amount_to_deposit_near = selectedMintAmount * MINT_STORAGE_COST;
   }
 
   function selectMint() {
@@ -107,7 +108,7 @@ export default function Home(props) {
     for (let x = 1; x < 21; x++){
       optionMint.push( { value: x, label: `Get ${x} ${x > 1 ? 'packs': 'pack'}` })
     }
-    return (<Select options={optionMint} className="md:w-1/3 w-4/5 mr-9 mt-5" />)
+    return (<Select  onChange={event => setSelectedMintAmount(event.value)} options={optionMint} className="md:w-1/3 w-4/5 mr-9 mt-5" />)
   }
 
 
@@ -183,7 +184,7 @@ export default function Home(props) {
                     <div>
                       {selectMint()}
                     </div>
-                    <button onClick={() => execute_storage_deposit(2)}>Mint</button>
+                    <button onClick={() => execute_mint_token()}>Mint</button>
 
                     <div className="w-9/12 flex text-center justify-center items-center bg-indigo-buttonblue font-montserrat text-indigo-white p-4 text-xs mt-8 ">
                       MINT NFL STARTER PACK SOON
