@@ -7,15 +7,14 @@ import * as statusCode from '../../../../data/constants/status';
 import * as statusMessage from '../../../../data/constants/statusMessage';
 import * as actionType from '../../../../data/constants/actions';
 
-
 const initialState = {
   txInfo: null,
   txResponse: null,
   message: '',
   status: statusCode.IDLE,
   action: '',
-  txFee: 0
-}
+  txFee: 0,
+};
 
 export const purchaseToken = createAsyncThunk('purchaseToken', async (payload, thunkAPI) => {
   try {
@@ -27,8 +26,7 @@ export const purchaseToken = createAsyncThunk('purchaseToken', async (payload, t
     const tokenID = 'LBJC23';
     const tokenPrice = 10;
 
-    const executeMsg = 
-    `{
+    const executeMsg = `{
       "temp_transaction": {
           "contract_addr": ${contractAddr},
           "owner_addr": ${ownerAddr},
@@ -38,54 +36,64 @@ export const purchaseToken = createAsyncThunk('purchaseToken', async (payload, t
       }
     }`;
     const coins = {
-      uusd: tokenPrice
-    }
-    const result = await executeContract(connectedWallet, marketplaceData.contract_addr, executeMsg, coins);
+      uusd: tokenPrice,
+    };
+    const result = await executeContract(
+      connectedWallet,
+      marketplaceData.contract_addr,
+      executeMsg,
+      coins
+    );
     return {
       response: result,
-      status: statusCode.SUCCESS
-    }
+      status: statusCode.SUCCESS,
+    };
   } catch (err) {
     return thunkAPI.rejectWithValue({
       response: err,
-      status: statusCode.ERROR
+      status: statusCode.ERROR,
     });
   }
 });
 
-export const getPurchaseTokenResponse = createAsyncThunk('getPurchaseTokenResponse', async (payload, thunkAPI) => {
-  try {
-    const txInfo = thunkAPI.getState().contract.marketplace.txInfo;
-    const txResponse = await retrieveTxInfo(txInfo.txHash)
-    return {
-      response: txResponse.logs[0],
-      // drawList: txResponse.logs[0].eventsByType.wasm.token_id,
-      status: statusCode.CONFIRMED
+export const getPurchaseTokenResponse = createAsyncThunk(
+  'getPurchaseTokenResponse',
+  async (payload, thunkAPI) => {
+    try {
+      const txInfo = thunkAPI.getState().contract.marketplace.txInfo;
+      const txResponse = await retrieveTxInfo(txInfo.txHash);
+      return {
+        response: txResponse.logs[0],
+        // drawList: txResponse.logs[0].eventsByType.wasm.token_id,
+        status: statusCode.CONFIRMED,
+      };
+    } catch (err) {
+      return thunkAPI.rejectWithValue({
+        response: err,
+        status: statusCode.ERROR,
+      });
     }
-  } catch (err) {
-    return thunkAPI.rejectWithValue({
-      response: err,
-      status: statusCode.ERROR
-    });
   }
-});
+);
 
-export const estimatePurchaseFee = createAsyncThunk('estimatePurchaseFee', async (payload, thunkAPI) => {
-  try{
-    const { connectedWallet } = payload;
+export const estimatePurchaseFee = createAsyncThunk(
+  'estimatePurchaseFee',
+  async (payload, thunkAPI) => {
+    try {
+      const { connectedWallet } = payload;
 
-    const contractAddr = 'terra1c7sppnddt9kw4g3mcvvhm0awtvl65fvhsactup';
-    const ownerAddr = 'terra1f8wkdt7sms3c3tucaqle7yvn59v8qz27srlghj';
-    const buyerAddr = 'terra1jrg2hv92xpjl4wwgd84jcm4cs2pfmzdxl6y2sx';
-    const tokenID = 'LBJC23';
-    const tokenPrice = 10;
+      const contractAddr = 'terra1c7sppnddt9kw4g3mcvvhm0awtvl65fvhsactup';
+      const ownerAddr = 'terra1f8wkdt7sms3c3tucaqle7yvn59v8qz27srlghj';
+      const buyerAddr = 'terra1jrg2hv92xpjl4wwgd84jcm4cs2pfmzdxl6y2sx';
+      const tokenID = 'LBJC23';
+      const tokenPrice = 10;
 
-    const executeContractMsg = [
-      new MsgExecuteContract(
-        connectedWallet.walletAddress,         // Wallet Address
-        marketplaceData.contract_addr,         // Contract Address
-        JSON.parse(
-          `{
+      const executeContractMsg = [
+        new MsgExecuteContract(
+          connectedWallet.walletAddress, // Wallet Address
+          marketplaceData.contract_addr, // Contract Address
+          JSON.parse(
+            `{
             "temp_transaction": {
                 "contract_addr": ${contractAddr},
                 "owner_addr": ${ownerAddr},
@@ -94,31 +102,30 @@ export const estimatePurchaseFee = createAsyncThunk('estimatePurchaseFee', async
                 "price": ${tokenPrice}
             }
           }`
-        ), // ExecuteMsg
-        { uusd: tokenPrice }
-      ),  
-    ]
-    const response = await estimateFee(connectedWallet.walletAddress, executeContractMsg)
-    const amount = response.amount._coins.uusd.amount
+          ), // ExecuteMsg
+          { uusd: tokenPrice }
+        ),
+      ];
+      const response = await estimateFee(connectedWallet.walletAddress, executeContractMsg);
+      const amount = response.amount._coins.uusd.amount;
 
-    return {
-      response: amount.d / 10**amount.e //estimated transaction fee
+      return {
+        response: amount.d / 10 ** amount.e, //estimated transaction fee
+      };
+    } catch (err) {
+      return thunkAPI.rejectWithValue({
+        response: err,
+        status: statusCode.ERROR,
+      });
     }
-
-  } catch (err) {
-    return thunkAPI.rejectWithValue({
-      response: err,
-      status: statusCode.ERROR
-    });
   }
-})
+);
 
 const purchaseTokenSlice = createSlice({
   name: 'purchaseToken',
   initialState: initialState,
   reducers: {
     clearData: () => initialState,
-    
   },
   extraReducers: {
     [purchaseToken.pending]: (state) => {
@@ -126,7 +133,7 @@ const purchaseTokenSlice = createSlice({
         ...state,
         status: statusCode.PENDING,
         action: actionType.EXECUTE,
-        message: statusMessage.EXECUTE_MESSAGE_PENDING
+        message: statusMessage.EXECUTE_MESSAGE_PENDING,
       };
     },
     [purchaseToken.fulfilled]: (state, action) => {
@@ -135,7 +142,7 @@ const purchaseTokenSlice = createSlice({
         txInfo: action.payload.response,
         status: action.payload.status,
         action: actionType.EXECUTE,
-        message: statusMessage.EXECUTE_MESSAGE_SUCCESS
+        message: statusMessage.EXECUTE_MESSAGE_SUCCESS,
       };
     },
     [purchaseToken.rejected]: (state, action) => {
@@ -143,7 +150,7 @@ const purchaseTokenSlice = createSlice({
         ...state,
         status: action.payload.status,
         action: actionType.EXECUTE,
-        message: action.payload.response
+        message: action.payload.response,
       };
     },
     [getPurchaseTokenResponse.pending]: (state) => {
@@ -157,7 +164,7 @@ const purchaseTokenSlice = createSlice({
         txResponse: action.payload.response,
         status: action.payload.status,
         action: actionType.EXECUTE,
-        message: statusMessage.EXECUTE_MESSAGE_SUCCESS
+        message: statusMessage.EXECUTE_MESSAGE_SUCCESS,
       };
     },
     [getPurchaseTokenResponse.rejected]: (state, action) => {
@@ -165,14 +172,14 @@ const purchaseTokenSlice = createSlice({
         ...state,
         status: action.payload.status,
         action: actionType.EXECUTE,
-        message: action.payload.response
+        message: action.payload.response,
       };
     },
     [estimatePurchaseFee.pending]: (state) => {
       return {
         ...state,
         status: statusCode.PENDING,
-        action: actionType.GET
+        action: actionType.GET,
       };
     },
     [estimatePurchaseFee.fulfilled]: (state, action) => {
@@ -180,7 +187,7 @@ const purchaseTokenSlice = createSlice({
         ...state,
         txFee: action.payload.response,
         status: action.payload.status,
-        action: actionType.GET
+        action: actionType.GET,
       };
     },
     [estimatePurchaseFee.rejected]: (state, action) => {
@@ -188,7 +195,7 @@ const purchaseTokenSlice = createSlice({
         ...state,
         message: action.payload.response,
         status: action.payload.status,
-        action: actionType.GET
+        action: actionType.GET,
       };
     },
   },

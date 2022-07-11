@@ -2,7 +2,13 @@ export const MINTER = {
   testnet: 'minter.0xantman.testnet',
   mainnet: 'minter.0xantman.testnet',
   interface: {
-    viewMethods: ['get_config', 'get_account_whitelist', 'get_storage_balance_of', 'get_whitelist', 'get_minting_of'],
+    viewMethods: [
+      'get_config',
+      'get_account_whitelist',
+      'get_storage_balance_of',
+      'get_whitelist',
+      'get_minting_of',
+    ],
     changeMethods: ['storage_deposit', 'storage_withdraw_all'],
   },
 }; // Near Minter contract
@@ -10,7 +16,7 @@ export const NEP141USDC = {
   mainnet: 'usdc.fakes.testnet',
   interface: {
     viewMethods: ['ft_balance_of'],
-    changeMethods: ['ft_transfer_call'],
+    changeMethods: ['ft_transfer_call', 'storage_deposit'],
   },
 }; //Near NEP-141 equivalent CW-20 or ERC-20
 
@@ -18,10 +24,9 @@ export const NEP141USDT = {
   mainnet: 'usdt.fakes.testnet',
   interface: {
     viewMethods: ['ft_balance_of'],
-    changeMethods: ['ft_transfer_call'],
+    changeMethods: ['ft_transfer_call', 'storage_deposit'],
   },
 }; //Near NEP-141 equivalent CW-20 or ERC-20
-
 
 export const CW721 = {
   mainnet: 'guest-book.testnet',

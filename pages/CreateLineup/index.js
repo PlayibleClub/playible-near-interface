@@ -40,7 +40,7 @@ export default function CreateLineup(props) {
       setStartDate(res.data.start_datetime);
     }
 
-    setLoading(false)
+    setLoading(false);
   };
 
   useEffect(() => {

@@ -1,11 +1,14 @@
 import PropTypes from 'prop-types';
-import React from 'react'
+import React from 'react';
 
 const AthleteInformationContainer = (props) => {
   const { children, color } = props;
 
   return (
-    <div data-test="AthleteInformationContainer" className={`bg-${color}-500 flex rounded-md w-5/6 h-5/6 `}>
+    <div
+      data-test="AthleteInformationContainer"
+      className={`bg-${color}-500 flex rounded-md w-5/6 h-5/6 `}
+    >
       {children}
     </div>
   );

@@ -10,8 +10,7 @@ export const fantasy = createAsyncThunk('fantasy', async (payload, thunkAPI) => 
 
     if (valid) {
       return validatedResponse;
-    }
-    else {
+    } else {
       return thunkAPI.rejectWithValue(validatedResponse);
     }
   } catch (err) {
@@ -20,16 +19,12 @@ export const fantasy = createAsyncThunk('fantasy', async (payload, thunkAPI) => 
 });
 
 const processFantasyData = (data) => {
-  const processedData = []
-
-  
+  const processedData = [];
 
   return processedData;
-}
+};
 
-const initialState = {
-
-}
+const initialState = {};
 
 const fantasySlice = createSlice({
   name: 'player',

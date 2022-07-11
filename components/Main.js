@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 
 const Main = (props) => {
   const { children, color } = props;
@@ -12,6 +12,5 @@ const Main = (props) => {
     </div>
   );
 };
-
 
 export default Main;

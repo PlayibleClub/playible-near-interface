@@ -1,7 +1,7 @@
-import React, { Component, useState, useEffect } from 'react'
-import PropTypes from 'prop-types'
-import Image from 'next/image'
-import moment from 'moment'
+import React, { Component, useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
+import Image from 'next/image';
+import moment from 'moment';
 
 const PlayComponent = (props) => {
   const {
@@ -19,49 +19,49 @@ const PlayComponent = (props) => {
     img = null,
     fetchGames,
     index,
-  } = props
-  const playicon = '/images/playthumbnails/key.png'
-  const ranking = '/images/icons/Ranking.svg'
+  } = props;
+  const playicon = '/images/playthumbnails/key.png';
+  const ranking = '/images/icons/Ranking.svg';
 
-  const [day, setDay] = useState(0)
-  const [hour, setHour] = useState(0)
-  const [minute, setMinute] = useState(0)
-  const [second, setSecond] = useState(0)
+  const [day, setDay] = useState(0);
+  const [hour, setHour] = useState(0);
+  const [minute, setMinute] = useState(0);
+  const [second, setSecond] = useState(0);
 
-  const [getGames, setGetGames] = useState(false)
+  const [getGames, setGetGames] = useState(false);
 
   function formatTime(time) {
-    return time < 10 ? '0' + time : time
+    return time < 10 ? '0' + time : time;
   }
 
   useEffect(() => {
-    setGetGames(false)
-    setDay('')
-    setHour('')
-    setMinute('')
-    setSecond('')
+    setGetGames(false);
+    setDay('');
+    setHour('');
+    setMinute('');
+    setSecond('');
     const id = setInterval(() => {
-      const currentDate = new Date()
-      const end = new Date((type === 'ongoing' || type === 'active') ? endDate : startDate)
-      const totalSeconds = (end - currentDate) / 1000
+      const currentDate = new Date();
+      const end = new Date(type === 'ongoing' || type === 'active' ? endDate : startDate);
+      const totalSeconds = (end - currentDate) / 1000;
 
-      const days = Math.floor(totalSeconds / 2600 / 24)
-      const hours = Math.floor(totalSeconds / 3600) % 24
-      const minutes = Math.floor(totalSeconds / 60) % 60
-      const seconds = Math.floor(totalSeconds) % 60
+      const days = Math.floor(totalSeconds / 2600 / 24);
+      const hours = Math.floor(totalSeconds / 3600) % 24;
+      const minutes = Math.floor(totalSeconds / 60) % 60;
+      const seconds = Math.floor(totalSeconds) % 60;
 
-      setDay(formatTime(days))
-      setHour(formatTime(hours))
-      setMinute(formatTime(minutes))
-      setSecond(formatTime(seconds))
+      setDay(formatTime(days));
+      setHour(formatTime(hours));
+      setMinute(formatTime(minutes));
+      setSecond(formatTime(seconds));
 
       if (Math.floor(totalSeconds) === 0) {
-        setGetGames(true)
-        fetchGames()
+        setGetGames(true);
+        fetchGames();
       }
-    }, 1000)
-    return () => clearInterval(id)
-  }, [index, getGames])
+    }, 1000);
+    return () => clearInterval(id);
+  }, [index, getGames]);
 
   return (
     <>
@@ -86,7 +86,8 @@ const PlayComponent = (props) => {
             <div className="mt-4 flex justify-between">
               <div className="">
                 <div className="font-thin text-sm">RANKING</div>
-                <div className="text-base font-monument"><img src={ranking} className="w-3 h-3"/>
+                <div className="text-base font-monument">
+                  <img src={ranking} className="w-3 h-3" />
                   {/*  */}
                 </div>
               </div>
@@ -144,8 +145,8 @@ const PlayComponent = (props) => {
         </div>
       )}
     </>
-  )
-}
+  );
+};
 
 PlayComponent.propTypes = {
   icon: PropTypes.string.isRequired,
@@ -156,6 +157,6 @@ PlayComponent.propTypes = {
   timeLeft: PropTypes.string.isRequired,
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
   img: PropTypes.string,
-}
+};
 
-export default PlayComponent
+export default PlayComponent;

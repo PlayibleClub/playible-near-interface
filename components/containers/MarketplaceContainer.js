@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
-import Image from 'next/image'
-import React from 'react'
+import Image from 'next/image';
+import React from 'react';
 
 const MarketplaceContainer = (props) => {
   const { children, AthleteName, LowAsk, id } = props;
@@ -8,11 +8,7 @@ const MarketplaceContainer = (props) => {
   return (
     <div data-test="PerformerContainer" className={`justify-center flex flex-col w-full h-full`}>
       <div className="flex justify-center h-2/3">
-          <Image
-            src={"/../public/images/tokens/"+id+".png"}
-            width={120}
-            height={160}
-          />
+        <Image src={'/../public/images/tokens/' + id + '.png'} width={120} height={160} />
       </div>
       {children}
       <div className="h-1/2 flex justify-center mb-2">

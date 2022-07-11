@@ -19,7 +19,7 @@ export const getConnection = createAsyncThunk('getConnection', async (payload, t
     if (clear) {
       result = null;
     } else {
-      result = await connection
+      result = await connection;
     }
     return {
       response: result,
@@ -32,7 +32,6 @@ export const getConnection = createAsyncThunk('getConnection', async (payload, t
     });
   }
 });
-
 
 const assetSlice = createSlice({
   name: 'asset',

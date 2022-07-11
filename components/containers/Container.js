@@ -1,13 +1,13 @@
-import React from 'react'
-import DesktopNavbar from '../navbars/DesktopNavbar'
-import DesktopHeaderBase from '../headers/DesktopHeaderBase'
-import Navbar from '../navbars/Navbar'
-import HeaderBase from '../headers/HeaderBase'
-import DisclaimerHeader from '../headers/DisclaimerHeader'
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
+import React from 'react';
+import DesktopNavbar from '../navbars/DesktopNavbar';
+import DesktopHeaderBase from '../headers/DesktopHeaderBase';
+import Navbar from '../navbars/Navbar';
+import HeaderBase from '../headers/HeaderBase';
+import DisclaimerHeader from '../headers/DisclaimerHeader';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
 const Container = (props) => {
-  const { children, isAdmin, activeName, contracts = [] } = props
+  const { children, isAdmin, activeName, contracts = [] } = props;
 
   return (
     <div className="font-montserrat h-min md:h-screen relative hide-scroll bg-indigo-white flex overflow-x-hidden overflow-y-hidden">
@@ -35,7 +35,7 @@ const Container = (props) => {
         {children}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Container
+export default Container;

@@ -1,15 +1,19 @@
-import * as React from "react"
-import {useState, useEffect} from 'react'
+import * as React from 'react';
+import { useState, useEffect } from 'react';
 
 const SvgComponent = (props) => {
-  const [mode,setMode] = useState("#000")
-  return(
+  const [mode, setMode] = useState('#000');
+  return (
     <svg
       width={18}
       height={17}
       fill="none"
-      onMouseEnter={()=>{setMode("#fff")}}
-      onMouseLeave={()=>{setMode("#000")}}
+      onMouseEnter={() => {
+        setMode('#fff');
+      }}
+      onMouseLeave={() => {
+        setMode('#000');
+      }}
       xmlns="http://www.w3.org/2000/svg"
       {...props}
     >
@@ -24,7 +28,7 @@ const SvgComponent = (props) => {
         </clipPath>
       </defs>
     </svg>
-  )
-}
+  );
+};
 
-export default SvgComponent
+export default SvgComponent;

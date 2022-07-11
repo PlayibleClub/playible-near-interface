@@ -103,7 +103,6 @@ export default function Home(props) {
     // startSlider();
   }, []);
 
-
   return (
     <>
       <Head>
@@ -244,7 +243,7 @@ export default function Home(props) {
                   </div>
                 ) : data?.getAthletes.length > 0 ? (
                   <div className="grid grid-cols-2 gap-x-4 mt-8">
-                    {data.getAthletes.map(function ({ firstName, lastName, id, nftImage}, i) {
+                    {data.getAthletes.map(function ({ firstName, lastName, id, nftImage }, i) {
                       return (
                         <div className="" key={i}>
                           <PerformerContainer

@@ -71,7 +71,6 @@ const DesktopHeaderBase = (props) => {
     }
   }, [wallet]);
 
-
   const connectWallet = (connectionType) => {
     setModal(false);
     connect(availableConnectTypes[connectionType]);

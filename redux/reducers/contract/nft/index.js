@@ -1,6 +1,11 @@
 /* eslint-disable no-unused-vars */
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { executeContract, estimateFee, queryContract, retrieveTxInfo } from '../../../../utils/terra';
+import {
+  executeContract,
+  estimateFee,
+  queryContract,
+  retrieveTxInfo,
+} from '../../../../utils/terra';
 import { MsgExecuteContract } from '@terra-money/terra.js';
 import { fantasyData, tokenData } from '../../../../data';
 import * as statusCode from '../../../../data/constants/status';
@@ -8,25 +13,27 @@ import * as statusMessage from '../../../../data/constants/statusMessage';
 import * as actionType from '../../../../data/constants/actions';
 import * as contracts from '../../../../data/constants/contracts';
 
+export const approveMarketplace = createAsyncThunk(
+  'approveMarketplace',
+  async (payload, thunkAPI) => {
+    try {
+      const { connectedWallet, tokenID } = payload;
 
-export const approveMarketplace = createAsyncThunk('approveMarketplace', async (payload, thunkAPI) => {
-  try {
-    const { connectedWallet, tokenID } = payload;
+      const executeMsg = `{ "approve": { "spender": "${contracts.MARKETPLACE}", "token_id": "${tokenID}" } }`;
+      const result = await executeContract(connectedWallet, contracts.CW721, executeMsg);
 
-    const executeMsg = `{ "approve": { "spender": "${ contracts.MARKETPLACE }", "token_id": "${ tokenID }" } }`;
-    const result = await executeContract(connectedWallet, contracts.CW721, executeMsg);
-
-    return {
-      response: result,
-      status: statusCode.SUCCESS
+      return {
+        response: result,
+        status: statusCode.SUCCESS,
+      };
+    } catch (err) {
+      return thunkAPI.rejectWithValue({
+        response: err,
+        status: statusCode.ERROR,
+      });
     }
-  } catch (err) {
-    return thunkAPI.rejectWithValue({
-      response: err,
-      status: statusCode.ERROR
-    });
   }
-});
+);
 
 const initialState = {
   txInfo: null,
@@ -34,8 +41,8 @@ const initialState = {
   txFee: 0,
   message: '',
   status: statusCode.IDLE,
-  action: ''
-}
+  action: '',
+};
 
 const nftSlice = createSlice({
   name: 'nft',
@@ -49,7 +56,7 @@ const nftSlice = createSlice({
         ...state,
         status: statusCode.PENDING,
         action: actionType.EXECUTE,
-        message: statusMessage.EXECUTE_MESSAGE_PENDING
+        message: statusMessage.EXECUTE_MESSAGE_PENDING,
       };
     },
     [approveMarketplace.fulfilled]: (state, action) => {
@@ -58,7 +65,7 @@ const nftSlice = createSlice({
         txInfo: action.payload.response,
         status: action.payload.status,
         action: actionType.EXECUTE,
-        message: statusMessage.EXECUTE_MESSAGE_SUCCESS
+        message: statusMessage.EXECUTE_MESSAGE_SUCCESS,
       };
     },
     [approveMarketplace.rejected]: (state, action) => {
@@ -66,7 +73,7 @@ const nftSlice = createSlice({
         ...state,
         status: action.payload.status,
         action: actionType.EXECUTE,
-        message: action.payload.response
+        message: action.payload.response,
       };
     },
   },

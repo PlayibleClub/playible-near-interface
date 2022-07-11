@@ -46,6 +46,7 @@ export const initNear = async (contracts = []) => {
   // Initializing connection to the NEAR testnet
   const near = await connect({ keyStore, ...nearConfig });
 
+
   // Initialize wallet connection
   const walletConnection = new WalletConnection(near);
 
@@ -57,6 +58,7 @@ export const initNear = async (contracts = []) => {
       accountId: walletConnection.getAccountId(),
       // Gets the user's token balance
       balance: (await walletConnection.account().state()).amount,
+      account: walletConnection.account()
     };
   }
 
@@ -82,6 +84,14 @@ export const initNear = async (contracts = []) => {
   return { contractList, currentUser, nearConfig, walletConnection };
 };
 
+// export const sendTransactions = async (account_id, contract_id, actions) => {
+//   const res = account_id.signAndSendTransaction({
+//     receiverId: contract_id,
+//     actions
+//   })
+//   console.log(res)
+// }
+
 export const signIn = (wallet) => {
   wallet.requestSignIn(CONTRACT_NAME, 'Playible');
 };
@@ -91,6 +101,4 @@ export const signOut = (wallet) => {
 };
 
 // Query minted amount
-export const getSupply = async () => {
-
-}
+export const getSupply = async () => {};

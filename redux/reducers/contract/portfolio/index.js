@@ -8,57 +8,54 @@ import * as actionType from '../../../../data/constants/actions';
 const initialState = {
   tokenList: [],
   status: statusCode.PENDING,
-  action: ''
-}
+  action: '',
+};
 
 export const getPortfolio = createAsyncThunk('getPortfolio', async (payload, thunkAPI) => {
   try {
     const { walletAddr } = payload;
     const contractAddr = fantasyData.contract_addr;
-    const queryMsg = 
-      `{
+    const queryMsg = `{
         "user_tokens": {
-          "user_addr": "${ walletAddr }"
+          "user_addr": "${walletAddr}"
         }
       }`;
     const result = await queryContract(contractAddr, queryMsg);
-    if(result.length === 0){
+    if (result.length === 0) {
       return thunkAPI.rejectWithValue({
-        response: "This wallet does not hold any athlete tokens yet",
-        status: statusCode.WARNING
+        response: 'This wallet does not hold any athlete tokens yet',
+        status: statusCode.WARNING,
       });
-    }
-    else {
+    } else {
       return {
         response: result,
-        status: statusCode.SUCCESS
-      }
+        status: statusCode.SUCCESS,
+      };
     }
-
   } catch (err) {
     return thunkAPI.rejectWithValue({
       response: err,
-      status: statusCode.ERROR
+      status: statusCode.ERROR,
     });
   }
 });
 
 const processPortfolioData = (data) => {
-  const processedData = []
-  if(data !== null && data.length > 0){
+  const processedData = [];
+  if (data !== null && data.length > 0) {
     data.forEach((item) => {
-      const token = tokenData.find(token => token.symbol === item.slice(0, 3))
-      if(typeof token !== 'undefined'){
+      const token = tokenData.find((token) => token.symbol === item.slice(0, 3));
+      if (typeof token !== 'undefined') {
         processedData.push({
           ...token,
-          tokenID: item.charAt(item.length - 1)
-        })
+          tokenID: item.charAt(item.length - 1),
+        });
       }
-    })
+    });
   }
 
-  return processedData
-}
+  return processedData;
+};
 
 const packSlice = createSlice({
   name: 'pack',
@@ -71,7 +68,7 @@ const packSlice = createSlice({
       return {
         ...state,
         status: statusCode.PENDING,
-        action: actionType.GET
+        action: actionType.GET,
       };
     },
     [getPortfolio.fulfilled]: (state, action) => {
@@ -79,14 +76,14 @@ const packSlice = createSlice({
         ...state,
         tokenList: processPortfolioData(action.payload.response),
         status: action.payload.status,
-        action: actionType.GET
+        action: actionType.GET,
       };
     },
     [getPortfolio.rejected]: (state, action) => {
       return {
         ...state,
         status: action.payload.status,
-        action: actionType.GET
+        action: actionType.GET,
       };
     },
   },

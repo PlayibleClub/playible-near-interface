@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-@use "../pages/MintPage/style.css";
+@use '../pages/MintPage/style.css';
 
 @import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
 

@@ -54,7 +54,7 @@ export const ORACLE = {
     viewMethods: ['getMessages'],
     changeMethods: ['addMessage'],
   },
-}; 
+};
 export const CONTROLLER = {
   mainnet: 'guest-book.testnet',
   testnet: 'guest-book.mainnet',

@@ -7,5 +7,5 @@ import nft from './nft';
 export default combineReducers({
   pack,
   portfolio,
-  nft
+  nft,
 });

@@ -1,17 +1,21 @@
 import PropTypes from 'prop-types';
-import React from 'react'
+import React from 'react';
 
 const header = {
-  backgroundSize: "contain",
-  backgroundRepeat: "no-repeat",
-  backgroundPosition: "center",
-}
+  backgroundSize: 'contain',
+  backgroundRepeat: 'no-repeat',
+  backgroundPosition: 'center',
+};
 
 const Header = (props) => {
   const { children, color } = props;
 
   return (
-    <div data-test="header" className={`bg-${color} bg-gradient-to-r from-indigo-navbargrad2 to-indigo-navbargrad1 w-full h-24 flex flex-row justify-around fixed z-40`} style={header}>
+    <div
+      data-test="header"
+      className={`bg-${color} bg-gradient-to-r from-indigo-navbargrad2 to-indigo-navbargrad1 w-full h-24 flex flex-row justify-around fixed z-40`}
+      style={header}
+    >
       {children}
     </div>
   );
