@@ -22,6 +22,7 @@ import { initNear } from '../../utils/near';
 import { MINTER, NEP141USDC, NEP141USDT } from '../../data/constants/nearDevContracts';
 
 const MINT_STORAGE_COST = 5870000000000000000000;
+const STABLE_DECIMAL = 1000000;
 
 export default function Home(props) {
   const options = [
@@ -68,11 +69,6 @@ export default function Home(props) {
       setStorageDepositAccountBalance(0)
     }
   }
-  // Display the mint cost and storage deposit amount
-  async function precompute_minting_price_and_storage_deposit(amount){
-    const amount_to_deposit_near = amount * MINT_STORAGE_COST;
-    return {mint_cost: minterConfig.minting_price, storage_deposit: amount_to_deposit_near}
-  }
 
   async function execute_mint_token(){
 
@@ -98,7 +94,7 @@ export default function Home(props) {
     // console.log(res)
   }
 
-  async function storage_deposit_near() {
+  async function storage_deposit_near(mintAmount) {
     // Calculate amount to deposit for minting process
     const amount_to_deposit_near = selectedMintAmount * MINT_STORAGE_COST;
   }
@@ -148,7 +144,7 @@ export default function Home(props) {
                     <div className="flex justify-between w-4/5 md:w-1/2 mt-5">
                       <div>
                         <div className="text-xs">PRICE</div>
-                        <div className="font-black"> $200 USDT</div>
+                        <div className="font-black"> ${Math.floor(minterConfig.minting_price / STABLE_DECIMAL)}</div>
                       </div>
                       <div className="border">
                         <button className=" p-3 hover:bg-indigo-black ">
@@ -184,8 +180,13 @@ export default function Home(props) {
                     <div>
                       {selectMint()}
                     </div>
+                    {/*TODO: start styling */}
+                    <div>
+                      <p>Receipt total price {Math.floor(selectedMintAmount * parseInt(minterConfig.minting_price))}</p>
+                      <p>Gas price {utils.format.formatNearAmount(BigInt(selectedMintAmount * MINT_STORAGE_COST).toString()).toString()}N</p>
+                    </div>
                     <button onClick={() => execute_mint_token()}>Mint</button>
-
+                    {/*TODO: end */}
                     <div className="w-9/12 flex text-center justify-center items-center bg-indigo-buttonblue font-montserrat text-indigo-white p-4 text-xs mt-8 ">
                       MINT NFL STARTER PACK SOON
                     </div>
