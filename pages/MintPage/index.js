@@ -23,6 +23,7 @@ import { MINTER, NEP141USDC, NEP141USDT } from '../../data/constants/nearDevCont
 
 const MINT_STORAGE_COST = 5870000000000000000000;
 const STABLE_DECIMAL = 1000000;
+const DEFAULT_MAX_FEES = "300000000000000";
 
 export default function Home(props) {
   const options = [
@@ -45,11 +46,11 @@ export default function Home(props) {
   const [storageDepositAccountBalance, setStorageDepositAccountBalance] = useState(0);
   const [selectedMintAmount, setSelectedMintAmount] = useState(0);
   const [minted, setMinted] = useState(0);
+  const [useNEP141, setUseNEP141] =  useState(NEP141USDT)
 
   async function query_config_contract() {
     // Init minter contract
     const _minter = await initNear([MINTER]);
-    console.log(_minter)
     // Query minter contract for config info
     const config = await _minter.contractList[0].get_config();
     // Save minter config into state
@@ -88,7 +89,7 @@ export default function Home(props) {
   async function execute_mint_token(){
 
     // Init minter contract
-    const _minter = await initNear([MINTER, NEP141USDC, NEP141USDT]);
+    const _minter = await initNear([MINTER, useNEP141]);
 
     // FT amount to deposit for minting NFT
     const mint_cost = selectedMintAmount * Number(minterConfig.minting_price)
@@ -98,7 +99,7 @@ export default function Home(props) {
     }
     const data = Buffer.from(JSON.stringify({receiver_id: _minter.contractList[0].contractId, amount: Math.floor(mint_cost).toString(), msg: JSON.stringify({ mint_amount: selectedMintAmount}) }))
     //const register = Buffer.from(JSON.stringify({account_id:  _minter.contractList[0].contractId}))
-    let tx = await _minter.contractList[2].ft_transfer_call(data, "300000000000000", "1");
+    const tx = await _minter.contractList[1].ft_transfer_call(data, DEFAULT_MAX_FEES, "1");
     //console.log(c)
     // let res = await _minter.currentUser.account.signAndSendTransaction({
     //   receiverId: _minter.contractList[2].contractId,
@@ -109,9 +110,13 @@ export default function Home(props) {
     // console.log(res)
   }
 
-  async function storage_deposit_near(mintAmount) {
+  async function execute_storage_deposit() {
+    // Init minter contract
+    const _minter = await initNear([MINTER]);
     // Calculate amount to deposit for minting process
-    const amount_to_deposit_near = selectedMintAmount * MINT_STORAGE_COST;
+    const amount_to_deposit_near = BigInt(selectedMintAmount * MINT_STORAGE_COST).toString();
+    const tx = await _minter.contractList[0].storage_deposit({}, DEFAULT_MAX_FEES, amount_to_deposit_near);
+    console.log(tx)
   }
 
   function selectMint() {
@@ -121,7 +126,6 @@ export default function Home(props) {
     }
     return (<Select  onChange={event => setSelectedMintAmount(event.value)} options={optionMint} className="md:w-1/3 w-4/5 mr-9 mt-5" />)
   }
-
 
   useEffect(() => {
     query_config_contract();
@@ -163,15 +167,15 @@ export default function Home(props) {
                         <div className="font-black"> ${Math.floor(minterConfig.minting_price / STABLE_DECIMAL)}</div>
                       </div>
                       <div className="border">
-                        <button className=" p-3 hover:bg-indigo-black ">
+                        <button onClick={() => setUseNEP141(NEP141USDT)} className=" p-3 hover:bg-indigo-black">
                           <Usdt></Usdt>
                         </button>
-                        <button className=" p-3 hover:bg-indigo-black">
+                        <button onClick={() => setUseNEP141(NEP141USDC)} className=" p-3 hover:bg-indigo-black">
                           <Usdc></Usdc>
                         </button>
-                        <button className=" p-3 hover:bg-indigo-black">
-                          <Dai></Dai>
-                        </button>
+                        {/*<button className=" p-3 hover:bg-indigo-black">*/}
+                        {/*  <Dai></Dai>*/}
+                        {/*</button>*/}
                       </div>
                     </div>
                     <div className="text-xs mt-8">MINT STARTS IN</div>
@@ -201,9 +205,15 @@ export default function Home(props) {
                     {/*  <p>Receipt total price ${Math.floor((selectedMintAmount * parseInt(minterConfig.minting_price)) / STABLE_DECIMAL)}</p>*/}
                     {/*  <p>Gas price {utils.format.formatNearAmount(BigInt(selectedMintAmount * MINT_STORAGE_COST).toString()).toString()}N</p>*/}
                     {/*</div>*/}
-                    <button className="w-9/12 flex text-center justify-center items-center bg-indigo-buttonblue font-montserrat text-indigo-white p-4 text-xs mt-8 " onClick={() => execute_mint_token()}>
-                      Mint ${Math.floor((selectedMintAmount * parseInt(minterConfig.minting_price)) / STABLE_DECIMAL)} + fee {utils.format.formatNearAmount(BigInt(selectedMintAmount * MINT_STORAGE_COST).toString())}N
-                    </button>
+                    {
+                      parseInt(storageDepositAccountBalance) >= selectedMintAmount * MINT_STORAGE_COST ?
+                        <button className="w-9/12 flex text-center justify-center items-center bg-indigo-buttonblue font-montserrat text-indigo-white p-4 text-xs mt-8 " onClick={() => execute_mint_token()}>
+                          Mint ${Math.floor((selectedMintAmount * parseInt(minterConfig.minting_price)) / STABLE_DECIMAL)} + fee {utils.format.formatNearAmount(BigInt(selectedMintAmount * MINT_STORAGE_COST).toString())}N
+                        </button> : <button className="w-9/12 flex text-center justify-center items-center bg-indigo-buttonblue font-montserrat text-indigo-white p-4 text-xs mt-8 " onClick={() => execute_storage_deposit()}>
+                          Storage deposit required {utils.format.formatNearAmount(BigInt( (selectedMintAmount * MINT_STORAGE_COST) - parseInt(storageDepositAccountBalance)).toString())}N
+                        </button>
+                    }
+
                     {/*TODO: end */}
                     <div className="w-9/12 flex text-center justify-center items-center bg-indigo-buttonblue font-montserrat text-indigo-white p-4 text-xs mt-8 ">
                       MINT NFL STARTER PACK SOON
