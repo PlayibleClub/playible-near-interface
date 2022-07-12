@@ -6,7 +6,6 @@ import {
   queryContract,
   retrieveTxInfo,
 } from '../../../../utils/terra';
-import { MsgExecuteContract } from '@terra-money/terra.js';
 import { fantasyData, tokenData } from '../../../../data';
 import * as statusCode from '../../../../data/constants/status';
 import * as statusMessage from '../../../../data/constants/statusMessage';

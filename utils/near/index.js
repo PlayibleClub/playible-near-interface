@@ -1,5 +1,9 @@
 import { connect, Contract, keyStores, WalletConnection } from 'near-api-js';
 import * as contracts from '../../data/constants/nearContracts';
+import { setupWalletSelector } from "@near-wallet-selector/core";
+import { setupModal } from "@near-wallet-selector/modal-ui";
+import { setupNearWallet } from "@near-wallet-selector/near-wallet";
+import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
 
 const CONTRACT_NAME = undefined;
 
@@ -34,7 +38,7 @@ export const getConfig = (type) => {
   }
 };
 
-export const initNear = async (contracts = []) => {
+export const initNear = async (contract) => {
   // get network configuration values from config.js
   // based on the network ID we pass to getConfig()
   const nearConfig = getConfig(process.env.NEAR_ENV || 'development');
@@ -42,13 +46,6 @@ export const initNear = async (contracts = []) => {
   // create a keyStore for signing transactions using the user's key
   // which is located in the browser local storage after user logs in
   const keyStore = new keyStores.BrowserLocalStorageKeyStore();
-
-  // Initializing connection to the NEAR testnet
-  const near = await connect({ keyStore, ...nearConfig });
-
-
-  // Initialize wallet connection
-  const walletConnection = new WalletConnection(near);
 
   // Load in user's account data
   let currentUser;
@@ -62,26 +59,20 @@ export const initNear = async (contracts = []) => {
     };
   }
 
-  const contractList = await Promise.all(
-    contracts.map(async (item) => {
-      const contract = await new Contract(
-        // User's accountId as a string
-        walletConnection.account(),
-        // accountId of the contract we will be loading
-        // NOTE: All contracts on NEAR are deployed to an account and
-        // accounts can only have one contract deployed to them.
-        process.env.NEAR_ENV === 'development' ? item.testnet : item.mainnet,
-        {
-          ...item.interface,
-          sender: walletConnection.getAccountId(),
-        }
-      );
+  const selector = await setupWalletSelector({
+    network: nearConfig.networkId,
+    modules: [
+      setupNearWallet(),
+      setupMyNearWallet(),
+    ],
+  });
+  
+  const modal = setupModal(selector, {
+    contractId: contract
+  });
 
-      return contract;
-    })
-  );
 
-  return { contractList, currentUser, nearConfig, walletConnection };
+  return { currentUser, nearConfig, walletConnection };
 };
 
 // export const sendTransactions = async (account_id, contract_id, actions) => {
