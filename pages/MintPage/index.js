@@ -42,8 +42,9 @@ export default function Home(props) {
     nft_pack_supply: 0,
   });
   // Storage deposit is used to check if balance available to mint NFT and pay the required storage fee
-  const [storageDepositAccountBalance, setStorageDepositAccountBalance] = useState(0)
-  const [selectedMintAmount, setSelectedMintAmount] = useState(0)
+  const [storageDepositAccountBalance, setStorageDepositAccountBalance] = useState(0);
+  const [selectedMintAmount, setSelectedMintAmount] = useState(0);
+  const [minted, setMinted] = useState(0);
 
   async function query_config_contract() {
     // Init minter contract
@@ -53,6 +54,20 @@ export default function Home(props) {
     const config = await _minter.contractList[0].get_config();
     // Save minter config into state
     setMinterConfig({ ...config });
+  }
+
+  async function query_minting_of() {
+    try {
+      // Init minter contract
+      const _minter = await initNear([MINTER]);
+      // Query minter contract for config info
+      const _minted = await _minter.contractList[0].get_minting_of({account: _minter.currentUser.accountId});
+      // Save minted into state
+      setMinted(_minted)
+    }catch (e) {
+      // define default minted
+      setMinted(0)
+    }
   }
 
   async function query_storage_deposit_account_id() {
@@ -111,6 +126,7 @@ export default function Home(props) {
   useEffect(() => {
     query_config_contract();
     query_storage_deposit_account_id();
+    query_minting_of();
   }, []);
 
   return (
@@ -167,7 +183,7 @@ export default function Home(props) {
                       <div className="p-3  rounded-lg bg-indigo-black text-indigo-white">01</div>
                     </div>
                     <div className="border border-indigo-lightgray rounded-2xl text-center p-4 w-40 flex flex-col justify-center  mt-8">
-                      <div className="text-2xl font-black font-monument ">0/7</div>
+                      <div className="text-2xl font-black font-monument ">{minted}/{minterConfig.nft_pack_supply}</div>
                       <div className="text-xs">YOU HAVE MINTED</div>
                     </div>
                     <div className="mt-8 mb-0 p-0 w-4/5">
@@ -185,7 +201,7 @@ export default function Home(props) {
                       <p>Receipt total price {Math.floor(selectedMintAmount * parseInt(minterConfig.minting_price))}</p>
                       <p>Gas price {utils.format.formatNearAmount(BigInt(selectedMintAmount * MINT_STORAGE_COST).toString()).toString()}N</p>
                     </div>
-                    <button onClick={() => execute_mint_token()}>Mint</button>
+                    <button className="w-9/12 flex text-center justify-center items-center bg-indigo-buttonblue font-montserrat text-indigo-white p-4 text-xs mt-8 " onClick={() => execute_mint_token()}>Mint</button>
                     {/*TODO: end */}
                     <div className="w-9/12 flex text-center justify-center items-center bg-indigo-buttonblue font-montserrat text-indigo-white p-4 text-xs mt-8 ">
                       MINT NFL STARTER PACK SOON
