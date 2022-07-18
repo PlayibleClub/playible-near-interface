@@ -102,7 +102,7 @@ export default function Home(props) {
     const tx = await _minter.contractList[1].ft_transfer_call(data, DEFAULT_MAX_FEES, "1");
     //console.log(c)
     // let res = await _minter.currentUser.account.signAndSendTransaction({
-    //   receiverId: _minter.contractList[2].contractId,
+    //   receiverId: _minter.contractList[1].contractId,
     //   actions: [transactions.functionCall("storage_deposit", register,"100000000000000", utils.format.parseNearAmount("0.008").toString()),
     //     transactions.functionCall("ft_transfer_call", data,"100000000000000", "1" )
     //     ]

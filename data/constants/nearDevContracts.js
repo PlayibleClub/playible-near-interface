@@ -1,6 +1,6 @@
 export const MINTER = {
-  testnet: 'minter.0xantman.testnet',
-  mainnet: 'minter.0xantman.testnet',
+  testnet: 'dev-1658071079265.0xantman.testnet',
+  mainnet: 'dev-1658071079265.0xantman.testnet',
   interface: {
     viewMethods: [
       'get_config',
