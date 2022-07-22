@@ -19,7 +19,7 @@ import daicoin from '../../public/images/dai.svg';
 
 import { initNear } from '../../utils/near';
 
-import { MINTER, NEP141USDC, NEP141USDT } from '../../data/constants/nearDevContracts';
+import { MINTER, NEP141USDC, NEP141USDT, NEP141USN } from '../../data/constants/nearDevContracts';
 
 const MINT_STORAGE_COST = 5870000000000000000000;
 const STABLE_DECIMAL = 1000000;
@@ -172,6 +172,9 @@ export default function Home(props) {
                         </button>
                         <button onClick={() => setUseNEP141(NEP141USDC)} className=" p-3 hover:bg-indigo-black">
                           <Usdc></Usdc>
+                        </button>
+                        <button onClick={() => setUseNEP141(NEP141USN)} className=" p-3 hover:bg-indigo-black">
+                          <Dai></Dai>
                         </button>
                         {/*<button className=" p-3 hover:bg-indigo-black">*/}
                         {/*  <Dai></Dai>*/}

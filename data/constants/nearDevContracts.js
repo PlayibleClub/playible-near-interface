@@ -1,6 +1,6 @@
 export const MINTER = {
-  testnet: 'dev-1658071079265.0xantman.testnet',
-  mainnet: 'dev-1658071079265.0xantman.testnet',
+  testnet: 'dev-1658495539820-15092905607434',
+  mainnet: 'dev-1658495539820-15092905607434',
   interface: {
     viewMethods: [
       'get_config',
@@ -22,6 +22,13 @@ export const NEP141USDC = {
 
 export const NEP141USDT = {
   mainnet: 'usdt.fakes.testnet',
+  interface: {
+    viewMethods: ['ft_balance_of'],
+    changeMethods: ['ft_transfer_call', 'storage_deposit'],
+  },
+}; //Near NEP-141 equivalent CW-20 or ERC-20
+export const NEP141USN = {
+  mainnet: 'usdn.testnet',
   interface: {
     viewMethods: ['ft_balance_of'],
     changeMethods: ['ft_transfer_call', 'storage_deposit'],
