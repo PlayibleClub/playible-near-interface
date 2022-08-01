@@ -1,4 +1,3 @@
-import { useWallet, WalletStatus } from '@terra-money/wallet-provider';
 import Container from '../components/containers/Container';
 import Main from '../components/Main';
 import React, { useCallback, useEffect, useState } from 'react';
@@ -184,7 +183,7 @@ export default function Home(props) {
                       <div className="flex flex-row md:grid-cols-2 gap-x-6 gap-y-6 mt-8 ml-8 md:ml-0 pr-8 overflow-x-auto">
                         {activeGames.length > 0 ? (
                           <>
-                            {activeGames.map(function (data, i) {
+                            {activeGames.map((data: any, i) => {
                               return (
                                 <>
                                   <PrizePoolComponent

@@ -1,12 +1,15 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { map, distinctUntilChanged } from "rxjs";
 import { setupWalletSelector } from "@near-wallet-selector/core";
-import { WalletSelector, AccountState } from "@near-wallet-selector/core";
+import type { WalletSelector, AccountState } from "@near-wallet-selector/core";
 import { setupModal } from "@near-wallet-selector/modal-ui";
-import { WalletSelectorModal } from "@near-wallet-selector/modal-ui";
+import type { WalletSelectorModal } from "@near-wallet-selector/modal-ui";
 import { setupNearWallet } from "@near-wallet-selector/near-wallet";
 import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
 import { getConfig } from '../utils/near'
+import { PLAYIBLE } from '../data/constants/nearContracts'
+import myNearWalletIconUrl from "@near-wallet-selector/my-near-wallet/assets/my-near-wallet-icon.png";
+import nearWalletIconUrl from "@near-wallet-selector/near-wallet/assets/near-wallet-icon.png";
 
 declare global {
   interface Window {
@@ -31,14 +34,14 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
 
   const init = useCallback(async () => {
     const _selector = await setupWalletSelector({
-      network: getConfig(process.env.NEAR_ENV || 'development').networkId,
+      network: getConfig(process.env.NEAR_ENV || 'development'),
       debug: true,
       modules: [
-        setupNearWallet(),
-        setupMyNearWallet(),
+        setupNearWallet({iconUrl: nearWalletIconUrl}),
+        setupMyNearWallet({iconUrl: myNearWalletIconUrl }),
       ],
     });
-    const _modal = setupModal(_selector, { contractId: CONTRACT_ID });
+    const _modal = setupModal(_selector, { contractId: 'guest-book.testnet' });
     const state = _selector.store.getState();
 
     setAccounts(state.accounts);

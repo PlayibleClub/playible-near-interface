@@ -1,31 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { useWallet, WalletStatus, useConnectedWallet } from '@terra-money/wallet-provider';
 import Button from '../buttons/Button.js';
 import BaseModal from '../modals/BaseModal.js';
 import Header from '../headers/Header.js';
 
 const HeaderBase = () => {
-  const { status, connect, disconnect, availableConnectTypes } = useWallet();
-  const connectedWallet = useConnectedWallet();
+  
   const [walletAddress, setWalletAddress] = useState('Connect Wallet');
   const [displayModal, setModal] = useState(false);
 
   useEffect(() => {
-    if (status === WalletStatus.WALLET_CONNECTED) {
+    if (status === "") {
       setWalletAddress(
-        `${connectedWallet?.walletAddress.substring(
-          0,
-          6
-        )}... ${connectedWallet?.walletAddress.substring(
-          connectedWallet?.walletAddress.length - 6,
-          connectedWallet?.walletAddress.length
-        )}`
       );
     } else {
       setWalletAddress('Connect Wallet');
     }
-  }, [status, connectedWallet?.walletAddress]);
+  }, [status, ""]);
 
   const connectWallet = (connectionType) => {
     setModal(false);
@@ -33,10 +24,10 @@ const HeaderBase = () => {
   };
 
   const renderWalletModal = () => {
-    if (status === WalletStatus.WALLET_CONNECTED) {
+    if (status === "") {
       return (
         <>
-          <div className="mt-2">{`${connectedWallet.walletAddress}`}</div>
+          <div className="mt-2"></div>
           <button
             type="button"
             className="bg-indigo-buttonblue w-full h-12 text-center text-indigo-white font-bold rounded-md text-md mt-4 self-center"
@@ -52,29 +43,6 @@ const HeaderBase = () => {
     } else {
       return (
         <>
-          {availableConnectTypes.includes('EXTENSION') && (
-            <button
-              type="button"
-              className="bg-indigo-buttonblue w-full h-12 text-center text-indigo-white font-bold rounded-md text-md mt-4 self-center"
-              onClick={() => {
-                connectWallet(availableConnectTypes.indexOf('EXTENSION'));
-              }}
-            >
-              Terra Station (Web Extension)
-            </button>
-          )}
-
-          {availableConnectTypes.includes('WALLETCONNECT') && (
-            <button
-              type="button"
-              className="bg-indigo-buttonblue w-full h-12 text-center text-indigo-white font-bold rounded-md text-md mt-4 self-center"
-              onClick={() => {
-                connectWallet(availableConnectTypes.indexOf('WALLETCONNECT'));
-              }}
-            >
-              Terra Station (Mobile)
-            </button>
-          )}
         </>
       );
     }
@@ -84,7 +52,7 @@ const HeaderBase = () => {
     <Header>
       {displayModal && (
         <BaseModal
-          title={'Terra Wallet'}
+          title={'Near Wallet'}
           visible={displayModal}
           onClose={() => {
             setModal(false);
@@ -102,7 +70,7 @@ const HeaderBase = () => {
 
       <div className="mt-10">
         <Button
-          rounded="rounded-sm "
+          rounded="rounded-sm"
           textColor="white-light"
           color="null"
           onClick={() => {
@@ -110,8 +78,7 @@ const HeaderBase = () => {
           }}
           size="py-1 px-1"
         >
-          <img src="/images/icons/Wallet.svg" alt="Img" />
-          {status === WalletStatus.WALLET_CONNECTED ? '*' : '+'}
+          <img src="/images/icons/Wallet.svg" alt="Img" className="w-10 h-8"/>
         </Button>
       </div>
     </Header>
