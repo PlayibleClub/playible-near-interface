@@ -9,11 +9,11 @@ const Sorter = (props) => {
     setSearchText,
     filterHandler,
     filterValue,
-    resetOffset
+    resetOffset,
   } = props;
 
   const [sortMode, setSortMode] = useState(null);
-  const searchRef = useRef('')
+  const searchRef = useRef('');
 
   const sortOptions = [
     {
@@ -29,15 +29,15 @@ const Sorter = (props) => {
       value: 'position',
     },
   ];
-  
+
   const searchHandler = () => {
     if (searchRef.current.value) {
-      setSearchText(searchRef.current.value)
+      setSearchText(searchRef.current.value);
     } else {
-      setSearchText('')
+      setSearchText('');
     }
-    resetOffset()
-  }
+    resetOffset();
+  };
 
   return (
     <>
@@ -66,7 +66,7 @@ const Sorter = (props) => {
               placeholder="Search..."
             />
             <button className="flex items-center absolute right-0 mr-5" onClick={searchHandler}>
-              <img className='ml-2' src={searchIcon} />
+              <img className="ml-2 w-6 h-6" src={searchIcon} />
             </button>
           </div>
         </div>

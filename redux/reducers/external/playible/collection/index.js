@@ -10,8 +10,7 @@ export const listCollection = createAsyncThunk('listCollection', async (payload,
 
     if (valid) {
       return validatedResponse;
-    }
-    else {
+    } else {
       return thunkAPI.rejectWithValue(validatedResponse);
     }
   } catch (err) {

@@ -4,17 +4,7 @@ import Image from 'next/image';
 import { tokenDrawData } from '../data/index.js';
 
 const TokenComponent = (props) => {
-  const {
-    athlete_id,
-    usage,
-    name,
-    rarity,
-    release,
-    team,
-    isOpen,
-    fantasy_score,
-    img,
-  } = props;
+  const { athlete_id, usage, name, rarity, release, team, isOpen, fantasy_score, img } = props;
   const picLink = img || '/images/tokensMLB/SP.png';
   const [loading, setLoading] = useState(false);
 

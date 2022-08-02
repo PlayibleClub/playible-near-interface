@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import Link from 'next/link';
 import NavButtonContainer from '../containers/NavButtonContainer.js';
-import { getNavigation } from './NavigationList.js';
+import { getNavigation } from './NavigationList';
 import { BrowserRouter as Router, NavLink } from 'react-router-dom';
 const DesktopNavbar = (props) => {
   const { children, color, secondcolor, isAdmin, activeName } = props;
@@ -22,7 +22,7 @@ const DesktopNavbar = (props) => {
       <div className="flex mt-10">
         <div className="flex flex-col h-1/5 w-4/6 font-monument">
           {getNavigation(isAdmin).map(({ name, img, path }) => (
-            <button className=''>
+            <button key={name} className="">
               <NavButtonContainer
                 imagesrc={img}
                 Title={name}

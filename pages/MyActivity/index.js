@@ -100,8 +100,8 @@ const MyActivity = (props) => {
 
   useEffect(async () => {
     setErr(null);
-    setAllGames([])
-    setCompletedGames([])
+    setAllGames([]);
+    setCompletedGames([]);
     if (connectedWallet && dispatch) {
       if (connectedWallet?.network?.name === 'testnet') {
         dispatch(getPortfolio({ walletAddr: connectedWallet.walletAddress }));
@@ -204,3 +204,12 @@ const MyActivity = (props) => {
   );
 };
 export default MyActivity;
+
+export async function getServerSideProps(ctx) {
+  return {
+    redirect: {
+      destination: '/Portfolio',
+      permanent: false,
+    },
+  };
+}

@@ -1,8 +1,9 @@
-import React from 'react'
+import React from 'react';
 import PropTypes from 'prop-types';
 
 const Button = (props) => {
-  const { children,
+  const {
+    children,
     color,
     saturation,
     textColor,
@@ -10,7 +11,8 @@ const Button = (props) => {
     onClick,
     rounded,
     size,
-    ...other } = props;
+    ...other
+  } = props;
 
   return (
     <button
@@ -41,7 +43,7 @@ Button.defaultProps = {
   saturation: '500',
   textColor: 'gray',
   textSaturation: '100',
-  onClick: () => { },
+  onClick: () => {},
   rounded: 'rounded-sm',
   size: 'py-1 px-6  m-1',
 };

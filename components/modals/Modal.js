@@ -4,19 +4,19 @@ import * as statusCode from '../../data/constants/status';
 import LoadingModal from '../loading/LoadingModal';
 import underlineIcon from '../../public/images/blackunderline.png';
 
-//TODO: Make data presentable
-//TODO: Modal Design for dark mode and light mode
+// TODO: Make data presentable
+// TODO: Modal Design for dark mode and light mode
 
 const Modal = (props) => {
   const { title, children, visible, onClose = undefined } = props;
 
-  //TODO: Make the modal more presentable
+  // TODO: Make the modal more presentable
   return (
     <>
       <Transition appear show={visible} as={Fragment}>
         <Dialog
           as="div"
-          className="fixed inset-0 z-10 overflow-y-auto"
+          className="fixed inset-0 z-50 overflow-y-auto"
           onClose={() => onClose || console.log()}
         >
           <div className="min-h-screen px-4 text-center">

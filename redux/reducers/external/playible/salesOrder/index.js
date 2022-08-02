@@ -8,44 +8,41 @@ const initialState = {
   list: [],
   message: '',
   status: statusCode.IDLE,
-  action: ''
-}
+  action: '',
+};
 
 export const getSalesOrders = createAsyncThunk('getSalesOrders', async (payload, thunkAPI) => {
   try {
     const result = await axiosInstance.get('/account/sales/');
     return {
       response: result,
-      status: statusCode.SUCCESS
-    }
+      status: statusCode.SUCCESS,
+    };
   } catch (err) {
     return thunkAPI.rejectWithValue({
       response: err,
-      status: statusCode.ERROR
+      status: statusCode.ERROR,
     });
   }
 });
 
-export const createSalesOrder = createAsyncThunk(
-  'createSalesOrder',
-  async (payload, thunkAPI) => {
-    try {
-      const result = await axiosInstance.post(`/account/sales/`, payload);
-      return {
-        response: result,
-        status: statusCode.SUCCESS
-      }
-    } catch (err) {
-      return thunkAPI.rejectWithValue({
-        response: err,
-        status: statusCode.ERROR
-      });
-    }
+export const createSalesOrder = createAsyncThunk('createSalesOrder', async (payload, thunkAPI) => {
+  try {
+    const result = await axiosInstance.post(`/account/sales/`, payload);
+    return {
+      response: result,
+      status: statusCode.SUCCESS,
+    };
+  } catch (err) {
+    return thunkAPI.rejectWithValue({
+      response: err,
+      status: statusCode.ERROR,
+    });
   }
-);
+});
 
 const processSalesListData = (data) => {
-  const processedData = []
+  const processedData = [];
   data.forEach((item) => {
     processedData.push({
       id: item.asset,
@@ -66,11 +63,11 @@ const processSalesListData = (data) => {
       grad2: 'indigo-bluegrad',
       listing: '12/12/2024',
       rarity: 'base',
-    })
+    });
   });
 
-  return processedData
-}
+  return processedData;
+};
 
 const salesOrderSlice = createSlice({
   name: 'salesOrder',
@@ -83,7 +80,7 @@ const salesOrderSlice = createSlice({
       return {
         ...state,
         status: statusCode.PENDING,
-        action: actionType.GET
+        action: actionType.GET,
       };
     },
     [getSalesOrders.fulfilled]: (state, action) => {
@@ -91,35 +88,35 @@ const salesOrderSlice = createSlice({
         ...state,
         list: processSalesListData(action.payload.response.data),
         status: action.payload.status,
-        action: actionType.GET
+        action: actionType.GET,
       };
     },
     [getSalesOrders.rejected]: (state, action) => {
       return {
         ...state,
         status: action.payload.status,
-        action: actionType.GET
+        action: actionType.GET,
       };
     },
     [createSalesOrder.pending]: (state) => {
       return {
         ...state,
         status: statusCode.PENDING,
-        action: actionType.CREATE
+        action: actionType.CREATE,
       };
     },
     [createSalesOrder.fulfilled]: (state, action) => {
       return {
         ...state,
         status: action.payload.status,
-        action: actionType.CREATE
+        action: actionType.CREATE,
       };
     },
     [createSalesOrder.rejected]: (state, action) => {
       return {
         ...state,
         status: action.payload.status,
-        action: actionType.CREATE
+        action: actionType.CREATE,
       };
     },
   },

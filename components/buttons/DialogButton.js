@@ -1,20 +1,15 @@
-import React from 'react'
+import React from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import Button from './Button';
 
 const DialogButton = (props) => {
-  const { isOpen, onOpen, onClose,
-    children, closeBtnTitle, openBtnTitle,
-    title } = props;
+  const { isOpen, onOpen, onClose, children, closeBtnTitle, openBtnTitle, title } = props;
 
   return (
     <>
-      <Button
-        onClick={onOpen}
-        data-test="dialog-button"
-      >
+      <Button onClick={onOpen} data-test="dialog-button">
         {openBtnTitle}
       </Button>
       <Transition appear show={isOpen} as={Fragment}>
@@ -54,7 +49,8 @@ const DialogButton = (props) => {
               leaveFrom="opacity-100"
               leaveTo="opacity-0"
             >
-              <div className="
+              <div
+                className="
                 inline-block w-full max-w-md
                 p-6 my-8 overflow-hidden
                 text-left align-middle
@@ -73,10 +69,7 @@ const DialogButton = (props) => {
                   {children}
                 </div>
                 <div className="flex flex-row justify-end mt-4">
-                  <Button
-                    onClick={onClose}
-                    data-test="dialog-close-button"
-                  >
+                  <Button onClick={onClose} data-test="dialog-close-button">
                     {closeBtnTitle}
                   </Button>
                 </div>

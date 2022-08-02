@@ -38,8 +38,7 @@ const PlayDetailsComponent = (props) => {
       setMinute(formatTime(minutes));
       setSecond(formatTime(seconds));
 
-      if(Math.floor(totalSeconds) > 0)
-      {
+      if (Math.floor(totalSeconds) > 0) {
         game();
       }
     }, 1000);
