@@ -55,3 +55,8 @@ select {
 .hide-scroll ::-webkit-scrollbar {
   display: none;
 }
+
+
+svg:hover{
+    fill: white
+}
