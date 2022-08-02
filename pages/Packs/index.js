@@ -7,6 +7,14 @@ import Container from '../../components/containers/Container';
 import BackFunction from '../../components/buttons/BackFunction';
 import Main from '../../components/Main';
 import 'regenerator-runtime/runtime';
+import Link from 'next/link';
+import PackComponent from './components/PackComponent'
+import PlayComponent from '../Play/components/PlayComponent';
+
+const categoryList = ['starter', 'booster'];
+const starterList = ['NFL130','NFL420','NFL999'];
+const boosterList = ['NFL000','NFL555','NFL234'];
+
 
 export default function Packs() {
   const { status, connect, disconnect, availableConnectTypes } = useWallet();

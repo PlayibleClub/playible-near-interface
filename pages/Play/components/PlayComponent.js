@@ -124,7 +124,7 @@ const PlayComponent = (props) => {
                   <div className="font-thin text-sm">REGISTRATION ENDS IN</div>
                 )}
                 {(type === 'new' || type === 'ongoing' || type === 'active') && (
-                  <div className="text-sm font-montserrat font-normal flex mt-2 space-x-2">
+                  <div className="text-sm font-montserrat font-normal flex mt-2 space-x-3">
                     <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
                       {day}
                     </div>

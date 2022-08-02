@@ -357,11 +357,52 @@ export default function PlayDetails(props) {
                         </div>
                       </>
                     ) : (
-                      ''
-                    )}
-                  </>
-                )}
-              </>
+                      <>
+                        <PortfolioContainer textcolor="indigo-black" title="LEADERBOARD" />
+                        {leaderboard.map(function (data, key) {
+                          return (
+                            <>
+                              <div className="ml-12 md:ml-10 mt-4 md:mt-0">
+                                <div className="flex text-center items-center">
+                                  <div className="w-10  mr-2 font-monument text-xl">
+                                    {key + 1 <= 9 ? '0' + (key + 1) : key + 1}
+                                  </div>
+                                  <div className="bg-indigo-black text-indigo-white w-40 text-center p-1 text-base font-monument">
+                                    {truncate(data.player_addr, 11)}
+                                  </div>
+                                  <div className="ml-16 w-10 text-center font-black">
+                                    {data.fantasy_score}
+                                  </div>
+                                </div>
+                              </div>
+                            </>
+                          );
+                        })}
+                      </>
+                    )
+                  ) : (
+                    <>
+                      <PortfolioContainer textcolor="indigo-black" title="GAMEPLAY" />
+
+                      {/* if paid game */}
+                      <div className="ml-7 mt-5 font-normal font-bold text-indigo-red">*Participation in this game will reduce your player token's usage by 1.</div>
+
+                      {/* if free game */}
+                      <div className="ml-7 mt-5 font-normal font-bold text-indigo-green">*Winning in this game will reward your player token's usage by 1.</div>
+
+                      <div className="ml-7 mt-3 font-normal">
+                        Enter a team into the Alley-oop tournament to compete for cash prizes.
+                      </div>
+
+                      <div className="ml-7 mt-1 font-normal">
+                        Create a lineup by selecting five Playible Athlete Tokens now.
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
+            ) : (
+              ''
             )}
           </div>
         </Main>
