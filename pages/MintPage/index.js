@@ -19,10 +19,9 @@ import daicoin from '../../public/images/dai.svg';
 
 import { initNear } from '../../utils/near';
 
-import { MINTER, NEP141USDC, NEP141USDT } from '../../data/constants/nearDevContracts';
+import { MINTER, NEP141USDC, NEP141USDT, NEP141USN } from '../../data/constants/nearDevContracts';
 
 const MINT_STORAGE_COST = 5870000000000000000000;
-const STABLE_DECIMAL = 1000000;
 const DEFAULT_MAX_FEES = "300000000000000";
 
 export default function Home(props) {
@@ -33,7 +32,8 @@ export default function Home(props) {
   ];
   // Re-use this data to display the state
   const [minterConfig, setMinterConfig] = useState({
-    minting_price: '',
+    minting_price_decimals_6: '',
+    minting_price_decimals_18: '',
     admin: '',
     usdc_account_id: '',
     usdt_account_id: '',
@@ -92,7 +92,7 @@ export default function Home(props) {
     const _minter = await initNear([MINTER, useNEP141]);
 
     // FT amount to deposit for minting NFT
-    const mint_cost = selectedMintAmount * Number(minterConfig.minting_price)
+    const mint_cost = selectedMintAmount * Number(useNEP141.decimals == 1000000 ? minterConfig.minting_price_decimals_6 : minterConfig.minting_price_decimals_18)
 
     if (selectedMintAmount == 0) {
       return
@@ -102,7 +102,7 @@ export default function Home(props) {
     const tx = await _minter.contractList[1].ft_transfer_call(data, DEFAULT_MAX_FEES, "1");
     //console.log(c)
     // let res = await _minter.currentUser.account.signAndSendTransaction({
-    //   receiverId: _minter.contractList[2].contractId,
+    //   receiverId: _minter.contractList[1].contractId,
     //   actions: [transactions.functionCall("storage_deposit", register,"100000000000000", utils.format.parseNearAmount("0.008").toString()),
     //     transactions.functionCall("ft_transfer_call", data,"100000000000000", "1" )
     //     ]
@@ -125,6 +125,11 @@ export default function Home(props) {
       optionMint.push( { value: x, label: `Get ${x} ${x > 1 ? 'packs': 'pack'}` })
     }
     return (<Select  onChange={event => setSelectedMintAmount(event.value)} options={optionMint} className="md:w-1/3 w-4/5 mr-9 mt-5" />)
+  }
+
+  function format_price(){
+    let price = Math.floor(Number(useNEP141.decimals === 1000000 ? minterConfig.minting_price_decimals_6 : minterConfig.minting_price_decimals_18) / useNEP141.decimals)
+    return price
   }
 
   useEffect(() => {
@@ -164,7 +169,7 @@ export default function Home(props) {
                     <div className="flex justify-between w-4/5 md:w-1/2 mt-5">
                       <div>
                         <div className="text-xs">PRICE</div>
-                        <div className="font-black"> ${Math.floor(minterConfig.minting_price / STABLE_DECIMAL)}</div>
+                        <div className="font-black"> ${format_price()}</div>
                       </div>
                       <div className="border">
                         <button onClick={() => setUseNEP141(NEP141USDT)} className=" p-3 hover:bg-indigo-black">
@@ -172,6 +177,9 @@ export default function Home(props) {
                         </button>
                         <button onClick={() => setUseNEP141(NEP141USDC)} className=" p-3 hover:bg-indigo-black">
                           <Usdc></Usdc>
+                        </button>
+                        <button onClick={() => setUseNEP141(NEP141USN)} className=" p-3 hover:bg-indigo-black">
+                          <Dai></Dai>
                         </button>
                         {/*<button className=" p-3 hover:bg-indigo-black">*/}
                         {/*  <Dai></Dai>*/}
@@ -208,7 +216,7 @@ export default function Home(props) {
                     {
                       parseInt(storageDepositAccountBalance) >= selectedMintAmount * MINT_STORAGE_COST ?
                         <button className="w-9/12 flex text-center justify-center items-center bg-indigo-buttonblue font-montserrat text-indigo-white p-4 text-xs mt-8 " onClick={() => execute_mint_token()}>
-                          Mint ${Math.floor((selectedMintAmount * parseInt(minterConfig.minting_price)) / STABLE_DECIMAL)} + fee {utils.format.formatNearAmount(BigInt(selectedMintAmount * MINT_STORAGE_COST).toString())}N
+                          Mint ${Math.floor((selectedMintAmount * format_price()))} + fee {utils.format.formatNearAmount(BigInt(selectedMintAmount * MINT_STORAGE_COST).toString())}N
                         </button> : <button className="w-9/12 flex text-center justify-center items-center bg-indigo-buttonblue font-montserrat text-indigo-white p-4 text-xs mt-8 " onClick={() => execute_storage_deposit()}>
                           Storage deposit required {utils.format.formatNearAmount(BigInt( (selectedMintAmount * MINT_STORAGE_COST) - parseInt(storageDepositAccountBalance)).toString())}N
                         </button>
