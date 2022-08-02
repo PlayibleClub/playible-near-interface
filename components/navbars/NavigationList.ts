@@ -2,7 +2,7 @@ const navigation = [
   {
     name: 'CLUBHOUSE',
     path: 'http://playible.club',
-    img: '/images/icons/Home.svg',
+    img: '/images/icons/Clubhouse.svg',
   },
   {
     name: 'HOME',
@@ -12,22 +12,22 @@ const navigation = [
   {
     name: 'MINT',
     path: '/MintPage',
-    img: '/images/icons/Home.svg',
+    img: '/images/icons/Mint.svg',
   },
   {
-    name: 'SQUAD',
+    name: 'MY SQUAD',
     path: '/Portfolio',
-    img: '/images/icons/Play.svg',
+    img: '/images/icons/My_Squad.svg',
+  },
+  {
+    name: 'MY PACKS',
+    path: '/Packs',
+    img: '/images/icons/My_Packs.svg',
   },
   {
     name: 'PLAY',
     path: '/Play',
-    img: '/images/icons/My_Squad.svg',
-  },
-  {
-    name: 'GET PACKS',
-    path: 'https://www.oneplanetnft.io/launchpad/randombox/624b0f4039ef0b06630a7cfd',
-    img: '/images/icons/My_Squad.svg',
+    img: '/images/icons/Play.svg',
   },
 ];
 
