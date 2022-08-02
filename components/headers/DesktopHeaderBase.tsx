@@ -15,18 +15,12 @@ import { useRouter } from 'next/router.js';
 import { getConnection } from '../../redux/reducers/external/playible/wallet/index.js';
 import { useWalletSelector } from '../../contexts/WalletSelectorContext';
 
-const DesktopHeaderBase: React.FC = (props) => {
-  const { contractList = [] } = props;
+const DesktopHeaderBase: React.FC = () => {
 
   const { selector, modal, accounts, accountId } = useWalletSelector();
   const [account, setAccount] = useState<Account | null>(null);
   const [messages, setMessages] = useState<Array<Message>>([]);
   const [loading, setLoading] = useState<boolean>(false);
-
-  const { wallet } = useSelector((state) => state.external.playible);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const dispatch = useDispatch();
-  const router = useRouter();
 
   const getAccount = useCallback(async (): Promise<Account | null> => {
     if (!accountId) {
@@ -74,22 +68,44 @@ const DesktopHeaderBase: React.FC = (props) => {
     });
   }, [accountId, getAccount]);
 
+  const renderWallet = () => {
+    {
+      if(accountId) {
+        return (
+          <Button
+          textColor="white-light font-bold"
+          color="indigo-buttonblue"
+          rounded="rounded-md"
+          size="h-full py-1 px-1"
+              onClick={logOut}
+            >
+              {accountId}
+        </Button>
+        )
+      } else {
+        return  (
+          <Button
+          rounded="rounded-sm "
+          textColor="white-light"
+          color="indigo-buttonblue"
+          onClick={logIn}
+          size="py-1 px-1 h-full"
+        >
+          <div className="flex flex-row text-sm h-12 items-center">
+            <div className="text-xs text-light">
+              Connect Wallet
+            </div>
+            <img className="ml-3 h-4 w-4" src="/images/wallet.png" alt="Img" />
+          </div>
+        </Button>
+        )
+      }
+    }
+  }
+
   return (
     <DesktopHeader>
-      <Button
-        rounded="rounded-sm "
-        textColor="white-light"
-        color="indigo-buttonblue"
-        onClick={logIn}
-        size="py-1 px-1 h-full"
-      >
-        <div className="flex flex-row text-sm h-12 items-center">
-          <div className="text-xs text-light">
-            {wallet.data && wallet.data.currentUser ? wallet.data.currentUser.accountId : 'Sign In'}
-          </div>
-          <img className="ml-3 h-4 w-4" src="/images/wallet.png" alt="Img" />
-        </div>
-      </Button>
+      {renderWallet()}
     </DesktopHeader>
   );
 };
