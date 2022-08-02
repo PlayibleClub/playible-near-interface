@@ -327,7 +327,6 @@ const AssetDetails = (props) => {
                             title="PLAYER STATS"
                             // stats={String(stats.fantasy_score || 0)}
                           />
-                          
                         </div>
                         <div className="text-indigo-white bg-indigo-black w-max font-monument p-4 text-3xl font-thin uppercase text-center ml-6 mt-8 md:mt-5">
                           {/* {position(

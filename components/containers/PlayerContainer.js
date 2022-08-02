@@ -1,5 +1,5 @@
 import React from 'react';
-import Image from 'next/image'
+import Image from 'next/image';
 
 const PlayerContainer = (props) => {
   const { img = null } = props;
@@ -30,12 +30,7 @@ const PlayerContainer = (props) => {
                 />
             } */}
       {img ? (
-        <object
-          type="image/svg+xml"
-          data={img}
-          width={120}
-          height={160}
-        />
+        <object type="image/svg+xml" data={img} width={120} height={160} />
       ) : (
         <Image src={'/images/tokensMLB/SP.png'} width={120} height={160} />
       )}

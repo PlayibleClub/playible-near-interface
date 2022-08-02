@@ -9,11 +9,11 @@ const Sorter = (props) => {
     setSearchText,
     filterHandler,
     filterValue,
-    resetOffset
+    resetOffset,
   } = props;
 
   const [sortMode, setSortMode] = useState(null);
-  const searchRef = useRef('')
+  const searchRef = useRef('');
 
   const sortOptions = [
     {
@@ -29,15 +29,15 @@ const Sorter = (props) => {
       value: 'position',
     },
   ];
-  
+
   const searchHandler = () => {
     if (searchRef.current.value) {
-      setSearchText(searchRef.current.value)
+      setSearchText(searchRef.current.value);
     } else {
-      setSearchText('')
+      setSearchText('');
     }
-    resetOffset()
-  }
+    resetOffset();
+  };
 
   return (
     <>

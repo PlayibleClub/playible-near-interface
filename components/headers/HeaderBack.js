@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { useWallet } from '@terra-money/wallet-provider';
 import Header from '../headers//Header.js';
 import Button from '../buttons/Button.js';
-import Link from 'next/link'
+import Link from 'next/link';
 const HeaderBack = (props) => {
   const { link, color } = props;
   const { status, connect, disconnect, availableConnectTypes } = useWallet();
@@ -13,7 +13,10 @@ const HeaderBack = (props) => {
       <div className="w-full">
         <div className="mb-3 ml-3 float-left">
           <Link href={link}>
-            <Button color="clear" saturation="0" textColor="white-light" textSaturation="500"> &lt; Back</Button>
+            <Button color="clear" saturation="0" textColor="white-light" textSaturation="500">
+              {' '}
+              &lt; Back
+            </Button>
           </Link>
         </div>
       </div>

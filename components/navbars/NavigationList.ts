@@ -10,6 +10,11 @@ const navigation = [
     img: '/images/icons/Home.svg',
   },
   {
+    name: 'MINT',
+    path: '/MintPage',
+    img: '/images/icons/Home.svg',
+  },
+  {
     name: 'SQUAD',
     path: '/Portfolio',
     img: '/images/icons/Play.svg',

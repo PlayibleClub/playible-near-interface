@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React from 'react'
+import React from 'react';
 import RoundedContainer from './RoundedContainer';
 import GameResultContainer from './GameResultContainer';
 
@@ -34,14 +34,13 @@ const list = [
     rank: '03',
     points: '23.0',
   },
-]
+];
 
 const GameResultsComponent = (props) => {
   const { children, color, date, rank, points } = props;
 
   return (
     <div data-test="GameResultsComponent" className={`w-10/12 mt-5`}>
-
       <RoundedContainer>
         <select className="w-5/6 bg-indigo-light p-2" name="games" id="cars">
           <option value="All Games">All Games</option>
@@ -52,16 +51,21 @@ const GameResultsComponent = (props) => {
       </RoundedContainer>
 
       <div className="mt-6">
-        <RoundedContainer >
-
+        <RoundedContainer>
           <ul className="w-11/12">
             {list.map((data) => (
-              <li><GameResultContainer date={data.date} rank={data.rank} points={data.points} win={data.win}></GameResultContainer></li>
+              <li>
+                <GameResultContainer
+                  date={data.date}
+                  rank={data.rank}
+                  points={data.points}
+                  win={data.win}
+                ></GameResultContainer>
+              </li>
             ))}
           </ul>
         </RoundedContainer>
       </div>
-
     </div>
   );
 };
@@ -75,7 +79,6 @@ GameResultsComponent.propTypes = {
 };
 
 GameResultsComponent.defaultProps = {
-
   color: 'indigo-light',
   date: '07/12/21',
   rank: '07',

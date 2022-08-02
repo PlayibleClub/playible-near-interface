@@ -1,4 +1,3 @@
-import { useWallet, WalletStatus } from '@terra-money/wallet-provider';
 import Container from '../components/containers/Container';
 import Main from '../components/Main';
 import React, { useCallback, useEffect, useState } from 'react';
@@ -103,7 +102,6 @@ export default function Home(props) {
     // startSlider();
   }, []);
 
-
   return (
     <>
       <Head>
@@ -185,7 +183,7 @@ export default function Home(props) {
                       <div className="flex flex-row md:grid-cols-2 gap-x-6 gap-y-6 mt-8 ml-8 md:ml-0 pr-8 overflow-x-auto">
                         {activeGames.length > 0 ? (
                           <>
-                            {activeGames.map(function (data, i) {
+                            {activeGames.map((data: any, i) => {
                               return (
                                 <>
                                   <PrizePoolComponent
@@ -244,7 +242,7 @@ export default function Home(props) {
                   </div>
                 ) : data?.getAthletes.length > 0 ? (
                   <div className="grid grid-cols-2 gap-x-4 mt-8">
-                    {data.getAthletes.map(function ({ firstName, lastName, id, nftImage}, i) {
+                    {data.getAthletes.map(function ({ firstName, lastName, id, nftImage }, i) {
                       return (
                         <div className="" key={i}>
                           <PerformerContainer
@@ -270,17 +268,17 @@ export default function Home(props) {
   );
 }
 
-export const getServerSideProps = async () => {
-  let topPerformers = [];
-  const res = await axiosInstance.get('/fantasy/athlete/top_performers/?limit=4');
-
-  if (res.status === 200) {
-    topPerformers = res.data.results;
-  }
-
-  return {
-    props: {
-      topPerformers,
-    },
-  };
-};
+// export const getServerSideProps = async () => {
+//   let topPerformers = [];
+//   const res = await axiosInstance.get('/fantasy/athlete/top_performers/?limit=4');
+//
+//   if (res.status === 200) {
+//     topPerformers = res.data.results;
+//   }
+//
+//   return {
+//     props: {
+//       topPerformers,
+//     },
+//   };
+// };

@@ -102,10 +102,10 @@ export default function PackDetails(props) {
                             .value.toUpperCase()}
                         </div>
                       </div>
-                      <button
-                        className="bg-indigo-lightblue text-indigo-buttonblue ml-7 w-5/6 md:w-80 text-center font-bold text-sm mt-4 p-2 cursor-not-allowed"
-                      >
-                        Pack openings are currently paused while we update our player list to include newly added athletes. Pack opening will resume shortly, apologies for the inconvenience.
+                      <button className="bg-indigo-lightblue text-indigo-buttonblue ml-7 w-5/6 md:w-80 text-center font-bold text-sm mt-4 p-2 cursor-not-allowed">
+                        Pack openings are currently paused while we update our player list to
+                        include newly added athletes. Pack opening will resume shortly, apologies
+                        for the inconvenience.
                       </button>
                     </div>
                   </div>

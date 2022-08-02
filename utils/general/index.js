@@ -25,7 +25,7 @@ export const handleRequestResponse = (responseList, onSuccess, onFail) => {
       hasFailed = true;
       if (typeof onFail === 'function') {
         onFail();
-      } 
+      }
     }
   });
 
@@ -34,4 +34,4 @@ export const handleRequestResponse = (responseList, onSuccess, onFail) => {
       onSuccess();
     }
   }
-}
+};

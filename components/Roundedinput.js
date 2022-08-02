@@ -1,13 +1,17 @@
 import PropTypes from 'prop-types';
-import React from 'react'
+import React from 'react';
 
 const Roundedinput = (props) => {
   const { color, size, rounded, name, type } = props;
 
   return (
-
-    <input data-test="Roundedinput" className={`text-${color} text-${size} ${rounded}  items-center m-1 shadow-lg shadow-inner `} type={type} id={name} name="fname" />
-
+    <input
+      data-test="Roundedinput"
+      className={`text-${color} text-${size} ${rounded}  items-center m-1 shadow-lg shadow-inner `}
+      type={type}
+      id={name}
+      name="fname"
+    />
   );
 };
 

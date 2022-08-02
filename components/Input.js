@@ -3,16 +3,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 const Input = (props) => {
-  const {
-    name,
-    placeHolder,
-    label,
-    type,
-    ref,
-    onChange,
-    onBlur,
-    errors,
-  } = props;
+  const { name, placeHolder, label, type, ref, onChange, onBlur, errors } = props;
 
   const TypeText = () => (
     <div data-test="input-text" className="group flex flex-col gap-1 relative m-2">
@@ -36,18 +27,11 @@ const Input = (props) => {
         name={name}
         ref={ref}
       />
-      {
-        errors
-        && (
-        <span
-          className="ml-5 text-xs text-red-400"
-          data-test="error-container"
-        >
+      {errors && (
+        <span className="ml-5 text-xs text-red-400" data-test="error-container">
           {errors.message}
         </span>
-        )
-      }
-
+      )}
     </div>
   );
 

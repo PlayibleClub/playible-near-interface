@@ -347,7 +347,7 @@ const Play = (props) => {
     let totalPrize = 0;
 
     if (claimData && claimData.winning_placements.length > 0) {
-      totalPrize = claimData.winning_placements.reduce((total,   num) => {
+      totalPrize = claimData.winning_placements.reduce((total, num) => {
         let acc = parseFloat(total) + parseFloat(num.prize);
         return acc;
       }, 0);

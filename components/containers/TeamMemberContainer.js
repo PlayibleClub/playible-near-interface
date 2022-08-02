@@ -1,11 +1,14 @@
 import PropTypes from 'prop-types';
-import React from 'react'
+import React from 'react';
 
 const TeamMemberContainer = (props) => {
   const { children, color, imagesrc, player, TeamName, score, id, pos } = props;
 
   return (
-    <div data-test="TeamMemberContainer" className={`bg-${color}  sx-${TeamName} w-full h-full overflow-hidden flex flex-col`}>
+    <div
+      data-test="TeamMemberContainer"
+      className={`bg-${color}  sx-${TeamName} w-full h-full overflow-hidden flex flex-col`}
+    >
       <div className="flex justify-center h-2/4">
         <img src={imagesrc} alt="Img" className="flex" />
 
@@ -14,17 +17,14 @@ const TeamMemberContainer = (props) => {
         {/* conditional div for SG */}
         {/* conditional div for PG */}
         {/* conditional div for C */}
-
       </div>
       {children}
-      <div className="flex justify-center" >
+      <div className="flex justify-center">
         <div className="flex flex-col mt-4">
-        <div className="text-xs font-thin">
-            #{id === '' ? '0' : id}
-        </div>
-        <div className="mb-3 text-sm ">{player === '' ? '-' : player}</div>
-        <div className="text-xs font-thin">FANTASY SCORE </div>
-        <div className="text-xs">{score === '' ? '-' : score}</div>
+          <div className="text-xs font-thin">#{id === '' ? '0' : id}</div>
+          <div className="mb-3 text-sm ">{player === '' ? '-' : player}</div>
+          <div className="text-xs font-thin">FANTASY SCORE </div>
+          <div className="text-xs">{score === '' ? '-' : score}</div>
         </div>
       </div>
     </div>
