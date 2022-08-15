@@ -1,4 +1,12 @@
-const navigation = [
+const navigationGuest = [
+  {
+    name: 'MINT',
+    path: '/MintPage',
+    img: '/images/icons/Mint.svg',
+  }
+];
+
+const navigationLoggedIn = [
   {
     name: 'CLUBHOUSE',
     path: 'http://playible.club',
@@ -43,6 +51,6 @@ export const getNavigation = (admin = false) => {
   if (admin) {
     return navigationAdmin;
   } else {
-    return navigation;
+    return navigationGuest;
   }
 };

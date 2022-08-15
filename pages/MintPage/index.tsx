@@ -1,4 +1,3 @@
-//import { useWallet, WalletStatus } from '@terra-money/wallet-provider';
 import { transactions, utils } from 'near-api-js';
 import Container from '../../components/containers/Container';
 import Main from '../../components/Main';
@@ -16,8 +15,6 @@ import Dai from '../../public/images/SVG/dai';
 import usdtcoin from '../../public/images/usdt.svg';
 import usdccoin from '../../public/images/usdc.svg';
 import daicoin from '../../public/images/dai.svg';
-
-// import { initNear } from '../../utils/near';
 
 import { MINTER, NEP141USDC, NEP141USDT, NEP141USN } from '../../data/constants/nearDevContracts';
 
