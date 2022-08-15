@@ -6,9 +6,9 @@ import ModalPortfolioContainer from '../../components/containers/ModalPortfolioC
 import Container from '../../components/containers/Container';
 import BackFunction from '../../components/buttons/BackFunction';
 import { useRouter } from 'next/router';
-import PlayDetailsComponent from '../../pages/PlayDetails/components/PlayDetailsComponent.js';
+import PlayDetailsComponent from '../../pages/PlayDetails/components/PlayDetailsComponent';
 import { axiosInstance } from '../../utils/playible';
-import { useConnectedWallet } from '@terra-money/wallet-provider';
+// import { useConnectedWallet } from '@terra-money/wallet-provider';
 import moment from 'moment';
 import Link from 'next/link';
 import PerformerContainer from '../../components/containers/PerformerContainer';

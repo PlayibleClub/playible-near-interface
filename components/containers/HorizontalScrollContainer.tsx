@@ -5,8 +5,8 @@ const HorizontalScrollContainer = (props) => {
   const { children, color } = props;
 
   return (
-    <div class="flex overflow-x-auto">
-      <div class="flex flex-nowrap">{children}</div>
+    <div className="flex overflow-x-auto">
+      <div className="flex flex-nowrap">{children}</div>
     </div>
   );
 };

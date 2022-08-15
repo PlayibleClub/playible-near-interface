@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useWallet } from '@terra-money/wallet-provider';
-import Header from '../headers//Header.js';
-import Button from '../buttons/Button.js';
+import Header from '../headers//Header';
+import Button from '../buttons/Button';
 import Link from 'next/link';
 const HeaderBack = (props) => {
   const { link, color } = props;

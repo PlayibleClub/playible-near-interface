@@ -8,8 +8,8 @@ import BaseModal from '../../../components/modals/BaseModal';
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en.json';
 import ReactTimeAgo from 'react-time-ago';
-import { useConnectedWallet, useLCDClient } from '@terra-money/wallet-provider';
-import { estimateFee, estimateMultipleFees, executeContract } from '../../../utils/terra';
+// import { useConnectedWallet, useLCDClient } from '@terra-money/wallet-provider';
+// import { estimateFee, estimateMultipleFees, executeContract } from '../../../utils/terra';
 import { GAME, ORACLE } from '../../../data/constants/contracts';
 import 'regenerator-runtime/runtime';
 import { format } from 'prettier';
@@ -18,13 +18,14 @@ import { useRouter } from 'next/router';
 import { useSelector } from 'react-redux';
 import { useMutation } from '@apollo/client';
 import { CREATE_GAME } from '../../../utils/mutations';
+
 TimeAgo.addDefaultLocale(en);
 
 const Index = (props) => {
-  const connectedWallet = useConnectedWallet();
+  // const connectedWallet = useConnectedWallet();
   const [createNewGame, { data, error }] = useMutation(CREATE_GAME);
   const { wallet } = useSelector((state) => state.external.playible);
-  const lcd = useLCDClient();
+  // const lcd = useLCDClient();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [contentLoading, setContentLoading] = useState(true);

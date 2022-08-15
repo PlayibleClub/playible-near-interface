@@ -4,7 +4,7 @@ import {
   WalletStatus,
   useConnectedWallet,
 } from '@terra-money/wallet-provider';
-// import Image from 'next/image'
+import Image from 'next/image'
 import React, { useEffect, useState } from 'react';
 import Main from '../../components/Main';
 import PortfolioContainer from '../../components/containers/PortfolioContainer';

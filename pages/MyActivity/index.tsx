@@ -1,11 +1,11 @@
-import { useWallet, WalletStatus } from '@terra-money/wallet-provider';
+// import { useWallet, WalletStatus } from '@terra-money/wallet-provider';
 // import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import Main from '../../components/Main';
 import PortfolioContainer from '../../components/containers/PortfolioContainer';
 import { useDispatch } from 'react-redux';
-import { getPortfolio } from '../../redux/reducers/contract/portfolio';
-import { useConnectedWallet } from '@terra-money/wallet-provider';
+// import { getPortfolio } from '../../redux/reducers/contract/portfolio';
+// import { useConnectedWallet } from '@terra-money/wallet-provider';
 import Link from 'next/link';
 import Container from '../../components/containers/Container';
 import myactivityicon from '../../public/images/icons/Arrow.svg';

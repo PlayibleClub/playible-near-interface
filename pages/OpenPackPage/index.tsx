@@ -50,7 +50,7 @@ export default function OpenPackPage() {
                 </div>
                 <div className="">
                   <button
-                    onClick={executePurchasePack}
+                    // onClick={executePurchasePack}
                     className="bg-indigo-buttonblue w-full h-12 text-center rounded-md text-lg"
                   >
                     <div className="pt-2.5">OPEN PACK</div>

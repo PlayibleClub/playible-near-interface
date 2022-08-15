@@ -1,4 +1,4 @@
-import { useWallet, WalletStatus } from '@terra-money/wallet-provider';
+// import { useWallet, WalletStatus } from '@terra-money/wallet-provider';
 import React, { Component, useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import PortfolioContainer from '../../components/containers/PortfolioContainer';

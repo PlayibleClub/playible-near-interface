@@ -13,7 +13,7 @@ import underlineIcon from '../../public/images/blackunderline.png';
 
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import { useConnectedWallet, useLCDClient } from '@terra-money/wallet-provider';
+// import { useConnectedWallet, useLCDClient } from '@terra-money/wallet-provider';
 import { connect, useDispatch, useSelector } from 'react-redux';
 
 import ListingModal from './forms/ListingModal';

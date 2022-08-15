@@ -9,7 +9,7 @@ const RowContainer = (props) => {
       data-test="RowContainer"
       className={`bg-${color} flex overflow-x-scroll pb-10 hide-scroll-bar w-full h-64 `}
     >
-      <div class="flex flex-nowrap lg:ml-40 md:ml-20 ml-10 ">{children}</div>
+      <div className="flex flex-nowrap lg:ml-40 md:ml-20 ml-10 ">{children}</div>
     </div>
   );
 };

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import Button from '../buttons/Button.js';
-import BaseModal from '../modals/BaseModal.js';
-import Header from '../headers/Header.js';
+import Button from '../buttons/Button';
+import BaseModal from '../modals/BaseModal';
+import Header from '../headers/Header';
 
 const HeaderBase = () => {
   

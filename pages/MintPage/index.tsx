@@ -17,7 +17,7 @@ import usdtcoin from '../../public/images/usdt.svg';
 import usdccoin from '../../public/images/usdc.svg';
 import daicoin from '../../public/images/dai.svg';
 
-import { initNear } from '../../utils/near';
+// import { initNear } from '../../utils/near';
 
 import { MINTER, NEP141USDC, NEP141USDT, NEP141USN } from '../../data/constants/nearDevContracts';
 

@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import Link from 'next/link';
-import NavButtonContainer from '../containers/NavButtonContainer.js';
+import NavButtonContainer from '../containers/NavButtonContainer';
 import { getNavigation } from './NavigationList';
 import { BrowserRouter as Router, NavLink } from 'react-router-dom';
 const DesktopNavbar = (props) => {
@@ -42,6 +42,7 @@ DesktopNavbar.propTypes = {
   secondcolor: PropTypes.string,
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
   isAdmin: PropTypes.bool,
+  activeName: PropTypes.string
 };
 
 DesktopNavbar.defaultProps = {

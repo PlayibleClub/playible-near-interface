@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useConnectedWallet, useWallet } from '@terra-money/wallet-provider';
+// import { useConnectedWallet, useWallet } from '@terra-money/wallet-provider';
 import { createSalesOrder } from '../../../redux/reducers/external/playible/salesOrder';
-import { approveMarketplace, clearData } from '../../../redux/reducers/contract/nft';
+// import { approveMarketplace, clearData } from '../../../redux/reducers/contract/nft';
 import * as statusCode from '../../../data/constants/status';
-import { UserDenied } from '@terra-money/wallet-provider';
+// import { UserDenied } from '@terra-money/wallet-provider';
 
 import underlineIcon from '../../../public/images/blackunderline.png';
 import BaseModal from '../../../components/modals/BaseModal';
@@ -125,5 +125,6 @@ const ListingModal = (props) => {
       {status === statusCode.ERROR && errorMessage}
     </BaseModal>
   );
+
 };
 export default ListingModal;

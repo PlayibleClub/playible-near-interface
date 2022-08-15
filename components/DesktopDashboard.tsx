@@ -18,7 +18,7 @@ import TokenGridCol2 from './TokenGridCol2';
 import AthleteContainer from './AthleteContainer';
 import PerformerContainer from './PerformerContainer';
 import GameResultContainer from './GameResultContainer';
-import GameresultsComponent from '../components/GameresultsComponent';
+import GameresultsComponent from './GameresultsComponent';
 
 import RowContainer from './RowContainer';
 import HorizontalScrollContainer from './HorizontalScrollContainer';

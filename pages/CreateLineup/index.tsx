@@ -6,7 +6,7 @@ import Container from '../../components/containers/Container';
 import BackFunction from '../../components/buttons/BackFunction';
 import { useRouter } from 'next/router';
 import { axiosInstance } from '../../utils/playible/';
-import { useConnectedWallet } from '@terra-money/wallet-provider';
+// import { useConnectedWallet } from '@terra-money/wallet-provider';
 import Link from 'next/link';
 import 'regenerator-runtime/runtime';
 import LoadingPageDark from '../../components/loading/LoadingPageDark';
