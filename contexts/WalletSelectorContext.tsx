@@ -42,7 +42,7 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
         setupMyNearWallet({iconUrl: myNearWalletIconUrl }),
       ],
     });
-    const _modal = setupModal(_selector, { contractId: env == 'development' ? MINTER.testnet : MINTER.mainnet, methodNames: [...MINTER.interface.viewMethods, ...MINTER.interface.changeMethods] });
+    const _modal = setupModal(_selector, { contractId: env == 'development' ? MINTER.testnet : MINTER.mainnet, methodNames: [...MINTER.interface.viewMethods, ...MINTER.interface.changeMethods]  });
     const state = _selector.store.getState();
 
     setAccounts(state.accounts);
