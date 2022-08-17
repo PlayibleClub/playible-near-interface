@@ -50,7 +50,9 @@ export default function Home(props) {
     private_sale_start: 0,
     public_sale_start: 0,
     nft_pack_contract: '',
-    nft_pack_supply: 0,
+    nft_pack_supply_index: 0,
+    nft_pack_max_sale_supply: 0,
+    nft_pack_mint_counter: 0,
   });
   // Storage deposit is used to check if balance available to mint NFT and pay the required storage fee
   const [storageDepositAccountBalance, setStorageDepositAccountBalance] = useState(0);
@@ -73,11 +75,9 @@ export default function Home(props) {
     try {
       if (selector.isSignedIn()){
         const query = JSON.stringify({account: accountId})
-        provider.query({request_type: "call_function", finality: "optimistic", account_id: contract.contractId, method_name: "get_minting_of", args_base64: Buffer.from(query).toString("base64")}).then((data) =>{
-          const _minted = JSON.parse(Buffer.from(data.result).toString())
-          // Save minter config into state
-          setMinted(_minted)
-        })
+        const minting_of = await provider.query({request_type: "call_function", finality: "optimistic", account_id: contract.contractId, method_name: "get_minting_of", args_base64: Buffer.from(query).toString("base64")});
+        const _minted = JSON.parse(Buffer.from(minting_of.result).toString())
+        setMinted(_minted)
       }
 
     }catch (e) {
@@ -93,17 +93,17 @@ export default function Home(props) {
       if (selector.isSignedIn()) {
         // Get storage deposit on minter contract
         const query = JSON.stringify({account: accountId})
-        provider.query({
+
+        const storage_balance = await provider.query({
           request_type: "call_function",
           finality: "optimistic",
           account_id: contract.contractId,
           method_name: "get_storage_balance_of",
           args_base64: Buffer.from(query).toString("base64")
-        }).then((data) => {
-          const storageDeposit = JSON.parse(Buffer.from(data.result).toString())
-          // Set storage deposit of current minter account
-          setStorageDepositAccountBalance(storageDeposit)
-        })
+        });
+        const storageDeposit = JSON.parse(Buffer.from(storage_balance.result).toString())
+        setStorageDepositAccountBalance(storageDeposit)
+
       }
 
     }catch (e) {
@@ -304,7 +304,7 @@ export default function Home(props) {
                     }
 
                     <div className="border border-indigo-lightgray rounded-2xl text-center p-4 w-40 flex flex-col justify-center  mt-8">
-                      <div className="text-2xl font-black font-monument ">{minted}/{minterConfig.nft_pack_supply}</div>
+                      <div className="text-2xl font-black font-monument ">{minted}/{minterConfig.nft_pack_max_sale_supply}</div>
                       <div className="text-xs">YOU HAVE MINTED</div>
                     </div>
                     <div className="mt-8 mb-0 p-0 w-4/5">
@@ -312,7 +312,7 @@ export default function Home(props) {
                     </div>
                     <div className="text-xs ">
                       {' '}
-                      {minterConfig.nft_pack_supply}/5,000 packs remaining
+                      {minterConfig.nft_pack_max_sale_supply - minterConfig.nft_pack_mint_counter}/{minterConfig.nft_pack_max_sale_supply} packs remaining
                     </div>
                     <div>
                       {selectMint()}
