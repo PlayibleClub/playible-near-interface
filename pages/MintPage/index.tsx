@@ -1,5 +1,4 @@
-//import { useWallet, WalletStatus } from '@terra-money/wallet-provider';
-import { transactions, utils, WalletConnection, providers,  } from 'near-api-js';
+import { transactions, utils, WalletConnection, providers, } from '@near-wallet-selector/core/node_modules/near-api-js';
 import Container from '../../components/containers/Container';
 import Main from '../../components/Main';
 import React, { useEffect, useState } from 'react';
@@ -21,13 +20,11 @@ import daicoin from '../../public/images/dai.svg';
 import { getConfig } from "../../utils/near";
 
 import { MINTER, NEP141USDC, NEP141USDT, NEP141USN } from '../../data/constants/nearDevContracts';
-import { Action, functionCall } from 'near-api-js/lib/transaction'
+import { Action, functionCall } from '@near-wallet-selector/core/node_modules/near-api-js/lib/transaction';
 
 const MINT_STORAGE_COST = 5870000000000000000000;
 const DEFAULT_MAX_FEES = "300000000000000";
 const CONTRACT_MINTER_ACCOUNT_ID = process.env.NEAR_ENV == "development" ?  MINTER.testnet : MINTER.mainnet;
-
-
 
 export default function Home(props) {
   const { selector, modal, accounts, accountId } = useWalletSelector();
@@ -62,7 +59,7 @@ export default function Home(props) {
   async function query_config_contract() {
 
     provider.query({request_type: "call_function", finality: "optimistic", account_id: contract.contractId, method_name: "get_config", args_base64: ""}).then((data) =>{
-      const config = JSON.parse(Buffer.from(data.result).toString())
+      const config = JSON.parse(Buffer.from(data).toString())
       // Save minter config into state
       setMinterConfig({ ...config });
     })

@@ -4,12 +4,12 @@ import DesktopHeader from './DesktopHeader';
 import Button from '../buttons/Button';
 import BaseModal from '../modals/BaseModal';
 import * as contracts from '../../data/constants/nearContracts';
-import { providers, utils } from "near-api-js";
+import { providers, utils } from '@near-wallet-selector/core/node_modules/near-api-js';
 import type { Account, Message } from '../../interfaces'
 import type {
   AccountView,
   CodeResult,
-} from "near-api-js/lib/providers/provider";
+} from "@near-wallet-selector/core/node_modules/near-api-js/lib/providers/provider";
 import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/router.js';
 import { getConnection } from '../../redux/reducers/external/playible/wallet/index';
