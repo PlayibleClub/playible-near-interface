@@ -25,11 +25,13 @@ import { Action, functionCall } from '@near-wallet-selector/core/node_modules/ne
 const MINT_STORAGE_COST = 5870000000000000000000;
 const DEFAULT_MAX_FEES = "300000000000000";
 const CONTRACT_MINTER_ACCOUNT_ID = process.env.NEAR_ENV == "development" ?  MINTER.testnet : MINTER.mainnet;
+const env = process.env.NEAR_ENV || 'development';
+
 
 export default function Home(props) {
   const { selector, modal, accounts, accountId } = useWalletSelector();
-  const { network } = selector.options;
-  const provider = new providers.JsonRpcProvider({url: network.nodeUrl})
+  //const { network } = selector.options;
+  const provider = new providers.JsonRpcProvider({url: env == "development" ?"https://rpc.testnet.near.org" : "https://rpc.near.org"})
   const { contract } = selector.store.getState();
 
   const options = [
@@ -58,8 +60,8 @@ export default function Home(props) {
 
   async function query_config_contract() {
 
-    provider.query({request_type: "call_function", finality: "optimistic", account_id: contract.contractId, method_name: "get_config", args_base64: ""}).then((data) =>{
-      const config = JSON.parse(Buffer.from(data).toString())
+    provider.query({request_type: "call_function", finality: "optimistic", account_id: MINTER.mainnet, method_name: "get_config", args_base64: ""}).then((data) =>{
+      const config = JSON.parse(Buffer.from(data.result).toString())
       // Save minter config into state
       setMinterConfig({ ...config });
     })
@@ -68,12 +70,14 @@ export default function Home(props) {
 
   async function query_minting_of() {
     try {
-      const query = JSON.stringify({account: accountId})
-      provider.query({request_type: "call_function", finality: "optimistic", account_id: contract.contractId, method_name: "get_minting_of", args_base64: Buffer.from(query).toString("base64")}).then((data) =>{
-        const _minted = JSON.parse(Buffer.from(data.result).toString())
-        // Save minter config into state
-        setMinted(_minted)
-      })
+      if (selector.isSignedIn()){
+        const query = JSON.stringify({account: accountId})
+        provider.query({request_type: "call_function", finality: "optimistic", account_id: contract.contractId, method_name: "get_minting_of", args_base64: Buffer.from(query).toString("base64")}).then((data) =>{
+          const _minted = JSON.parse(Buffer.from(data.result).toString())
+          // Save minter config into state
+          setMinted(_minted)
+        })
+      }
 
     }catch (e) {
       // define default minted
@@ -84,13 +88,23 @@ export default function Home(props) {
   async function query_storage_deposit_account_id() {
 
     try {
-      // Get storage deposit on minter contract
-      const query = JSON.stringify({account: accountId})
-      provider.query({request_type: "call_function", finality: "optimistic", account_id: contract.contractId, method_name: "get_storage_balance_of", args_base64: Buffer.from(query).toString("base64")}).then((data) =>{
-        const storageDeposit = JSON.parse(Buffer.from(data.result).toString())
-        // Set storage deposit of current minter account
-        setStorageDepositAccountBalance(storageDeposit)
-      })
+
+      if (selector.isSignedIn()) {
+        // Get storage deposit on minter contract
+        const query = JSON.stringify({account: accountId})
+        provider.query({
+          request_type: "call_function",
+          finality: "optimistic",
+          account_id: contract.contractId,
+          method_name: "get_storage_balance_of",
+          args_base64: Buffer.from(query).toString("base64")
+        }).then((data) => {
+          const storageDeposit = JSON.parse(Buffer.from(data.result).toString())
+          // Set storage deposit of current minter account
+          setStorageDepositAccountBalance(storageDeposit)
+        })
+      }
+
     }catch (e) {
       // No account storage deposit found
       setStorageDepositAccountBalance(0)
@@ -307,17 +321,23 @@ export default function Home(props) {
                     {/*  <p>Receipt total price ${Math.floor((selectedMintAmount * parseInt(minterConfig.minting_price)) / STABLE_DECIMAL)}</p>*/}
                     {/*  <p>Gas price {utils.format.formatNearAmount(BigInt(selectedMintAmount * MINT_STORAGE_COST).toString()).toString()}N</p>*/}
                     {/*</div>*/}
-                    { minterConfig.public_sale_start * 1000 <= Date.now() ?
+                    {
+                      minterConfig.public_sale_start * 1000 <= Date.now() && selector.isSignedIn() ?
                       parseInt(String(storageDepositAccountBalance)) >= selectedMintAmount * MINT_STORAGE_COST ?
                         <button className="w-9/12 flex text-center justify-center items-center bg-indigo-buttonblue font-montserrat text-indigo-white p-4 text-xs mt-8 " onClick={() => execute_mint_token()}>
                           Mint ${Math.floor((selectedMintAmount * format_price()))} + fee {utils.format.formatNearAmount(BigInt(selectedMintAmount * MINT_STORAGE_COST).toString())}N
                         </button> : <button className="w-9/12 flex text-center justify-center items-center bg-indigo-buttonblue font-montserrat text-indigo-white p-4 text-xs mt-8 " onClick={() => execute_storage_deposit()}>
                           Storage deposit required {utils.format.formatNearAmount(BigInt( (selectedMintAmount * MINT_STORAGE_COST) - parseInt(storageDepositAccountBalance)).toString())}N
                         </button>
-                      :
-                        <div className="w-9/12 flex text-center justify-center items-center bg-indigo-buttonblue font-montserrat text-indigo-white p-4 text-xs mt-8 ">
-                          MINT NFL STARTER PACK SOON
-                        </div>
+                      : selector.isSignedIn() ?
+                            <div className="w-9/12 flex text-center justify-center items-center bg-indigo-buttonblue font-montserrat text-indigo-white p-4 text-xs mt-8 ">
+                              MINT NFL STARTER PACK SOON
+                            </div>
+                          :
+                            <div className="w-9/12 flex text-center justify-center items-center bg-indigo-buttonblue font-montserrat text-indigo-white p-4 text-xs mt-8 ">
+                              WALLET CONNECTION REQUIRED
+                            </div>
+
 
                     }
 
