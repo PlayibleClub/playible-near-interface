@@ -308,7 +308,7 @@ export default function Home(props) {
                       <div className="text-xs">YOU HAVE MINTED</div>
                     </div>
                     <div className="mt-8 mb-0 p-0 w-4/5">
-                      <ProgressBar completed={10} maxCompleted={100} bgColor={'#3B62F6'} />
+                      <ProgressBar completed={parseInt(((minterConfig.nft_pack_max_sale_supply - minterConfig.nft_pack_mint_counter) * 100 / minterConfig.nft_pack_max_sale_supply).toFixed(2))} maxCompleted={100} bgColor={'#3B62F6'} />
                     </div>
                     <div className="text-xs ">
                       {' '}
