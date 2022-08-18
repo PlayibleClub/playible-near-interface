@@ -66,7 +66,6 @@ export default function Home(props) {
     provider.query({request_type: "call_function", finality: "optimistic", account_id: MINTER.mainnet, method_name: "get_config", args_base64: ""}).then((data) =>{
       const config = JSON.parse(Buffer.from(data.result).toString())
       // Save minter config into state
-      config.public_sale_start = 1663668486
       setMinterConfig({ ...config });
 
     })
