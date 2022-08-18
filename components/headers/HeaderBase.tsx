@@ -66,7 +66,7 @@ const HeaderBase = () => {
       } else {
         return  (
           <Button
-          rounded="rounded-sm "
+          rounded="rounded-sm"
           textColor="white-light"
           color="indigo-buttonblue"
           onClick={logIn}
