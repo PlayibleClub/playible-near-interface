@@ -60,12 +60,13 @@ export default function Home(props) {
   const [useNEP141, setUseNEP141] =  useState(NEP141USDT)
   const [intervalSale, setIntervalSale ] = useState(0)
 
-  async function query_config_contract() {
+  function query_config_contract() {
 
     provider.query({request_type: "call_function", finality: "optimistic", account_id: MINTER.mainnet, method_name: "get_config", args_base64: ""}).then((data) =>{
       const config = JSON.parse(Buffer.from(data.result).toString())
       // Save minter config into state
       setMinterConfig({ ...config });
+
     })
 
   }
@@ -307,7 +308,7 @@ export default function Home(props) {
                       <div className="text-xs">YOU HAVE MINTED</div>
                     </div>
                     <div className="mt-8 mb-0 p-0 w-4/5">
-                      <ProgressBar completed={10} maxCompleted={100} bgColor={'#3B62F6'} />
+                      <ProgressBar completed={parseInt(((minterConfig.nft_pack_max_sale_supply - minterConfig.nft_pack_mint_counter) * 100 / minterConfig.nft_pack_max_sale_supply).toFixed(2))} maxCompleted={100} bgColor={'#3B62F6'} />
                     </div>
                     <div className="text-xs ">
                       {' '}
@@ -350,7 +351,7 @@ export default function Home(props) {
                     PUBLIC MINT
                     <hr className="w-10 border-4"></hr>
                   </div>
-                  <div className="mt-10 mb-10">Open: 14:00 UTC 25/08/22</div>
+                  <div className="mt-10 mb-10">Open {new Date(minterConfig.public_sale_start * 1000).getHours() < 10 ? '0' + new Date(minterConfig.public_sale_start * 1000).getHours() : new Date(minterConfig.public_sale_start * 1000).getHours()}:{new Date(minterConfig.public_sale_start * 1000).getMinutes() < 10 ? '0'+ new Date(minterConfig.public_sale_start * 1000).getMinutes() : new Date(minterConfig.public_sale_start * 1000).getMinutes()} UTC {new Date(minterConfig.public_sale_start * 1000).getUTCMonth() + 1 < 10 ? '0' + (new Date(minterConfig.public_sale_start * 1000).getUTCMonth() + 1) : (new Date(minterConfig.public_sale_start * 1000).getUTCMonth() + 1)}/{new Date(minterConfig.public_sale_start * 1000).getUTCDate() < 10 ? '0'+ new Date(minterConfig.public_sale_start * 1000).getUTCDate(): new Date(minterConfig.public_sale_start * 1000).getUTCDate()}/{new Date(minterConfig.public_sale_start * 1000).getFullYear()}</div>
                   <div className="text-xl font-bold font-monument ">
                     PACK DETAILS
                     <hr className="w-10 border-4"></hr>
