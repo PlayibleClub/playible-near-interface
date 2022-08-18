@@ -1,86 +1,92 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Button from '../buttons/Button';
+import { providers } from "near-api-js";
 import BaseModal from '../modals/BaseModal';
+import type { Account, Message } from '../../interfaces'
+import type {
+  AccountView,
+} from "near-api-js/lib/providers/provider";
 import Header from '../headers/Header';
+import { useWalletSelector } from '../../contexts/WalletSelectorContext';
 
 const HeaderBase = () => {
   
-  const [walletAddress, setWalletAddress] = useState('Connect Wallet');
-  const [displayModal, setModal] = useState(false);
+  const { selector, modal, accounts, accountId } = useWalletSelector();
+  const [account, setAccount] = useState<Account | null>(null);
 
-  useEffect(() => {
-    if (status === "") {
-      setWalletAddress(
-      );
-    } else {
-      setWalletAddress('Connect Wallet');
+  const getAccount = useCallback(async (): Promise<Account | null> => {
+    if (!accountId) {
+      return null;
     }
-  }, [status, ""]);
 
-  const connectWallet = (connectionType) => {
-    setModal(false);
-    connect(availableConnectTypes[connectionType]);
+    const { network } = selector.options;
+    const provider = new providers.JsonRpcProvider({ url: network.nodeUrl });
+
+    return provider
+      .query<AccountView>({
+        request_type: "view_account",
+        finality: "final",
+        account_id: accountId,
+      })
+      .then((data) => ({
+        ...data,
+        account_id: accountId,
+      }));
+  }, [accountId, selector.options]);
+
+
+  const logOut = async () => {
+    const wallet = await selector.wallet();
+
+    wallet.signOut().catch((err) => {
+      console.log('Failed to sign out');
+      console.error(err);
+    });
   };
 
-  const renderWalletModal = () => {
-    if (status === "") {
-      return (
-        <>
-          <div className="mt-2"></div>
-          <button
-            type="button"
-            className="bg-indigo-buttonblue w-full h-12 text-center text-indigo-white font-bold rounded-md text-md mt-4 self-center"
-            onClick={() => {
-              disconnect();
-              setModal(false);
-            }}
-          >
-            Disconnect
-          </button>
-        </>
-      );
-    } else {
-      return (
-        <>
-        </>
-      );
-    }
+  const logIn = () => {
+    modal.show();
   };
+
+  const renderWallet = () => {
+    {
+      if(accountId) {
+        return (
+          <Button
+          textColor="white-light font-bold"
+          color="indigo-buttonblue"
+          rounded="rounded-md"
+          size="h-full py-1 px-1"
+              onClick={logOut}
+            >
+              {accountId}
+        </Button>
+        )
+      } else {
+        return  (
+          <Button
+          rounded="rounded-sm "
+          textColor="white-light"
+          color="indigo-buttonblue"
+          onClick={logIn}
+          size="py-1 px-1 h-full"
+        >
+          <div className="flex flex-row text-sm h-12 items-center">
+            <div className="text-xs text-light">
+              Connect Wallet
+            </div>
+            <img className="ml-3 h-4 w-4" src="/images/wallet.png" alt="Img" />
+          </div>
+        </Button>
+        )
+      }
+    }
+  }
 
   return (
     <Header>
-      {displayModal && (
-        <BaseModal
-          title={'Near Wallet'}
-          visible={displayModal}
-          onClose={() => {
-            setModal(false);
-          }}
-        >
-          {renderWalletModal()}
-        </BaseModal>
-      )}
-      <div className="mr-16" />
-
-      <div className="text-white-light mt-11">
-        {' '}
-        <img src="/images/playibleheader.png" alt="Img" />
-      </div>
-
-      <div className="mt-10">
-        <Button
-          rounded="rounded-sm"
-          textColor="white-light"
-          color="null"
-          onClick={() => {
-            setModal(true);
-          }}
-          size="py-1 px-1"
-        >
-          <img src="/images/icons/Wallet.svg" alt="Img" className="w-10 h-8"/>
-        </Button>
-      </div>
+      {renderWallet()}
     </Header>
   );
 };
