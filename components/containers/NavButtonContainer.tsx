@@ -26,6 +26,8 @@ NavButtonContainer.propTypes = {
   TeamName: PropTypes.string,
   CoinValue: PropTypes.string,
   imagesrc: PropTypes.string,
+  path: PropTypes.string,
+  activeName: PropTypes.string,
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
 };
 

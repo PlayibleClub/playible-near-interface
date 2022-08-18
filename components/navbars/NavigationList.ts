@@ -1,9 +1,19 @@
 const navigationGuest = [
   {
+    name: 'CLUBHOUSE',
+    path: 'http://playible.club',
+    img: '/images/icons/Clubhouse.svg',
+  },
+  {
+    name: 'HOME',
+    path: '/',
+    img: '/images/icons/Home.svg',
+  },
+  {
     name: 'MINT',
     path: '/MintPage',
     img: '/images/icons/Mint.svg',
-  }
+  },
 ];
 
 const navigationLoggedIn = [

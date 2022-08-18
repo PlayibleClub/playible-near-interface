@@ -13,7 +13,7 @@ const Header = (props) => {
   return (
     <div
       data-test="header"
-      className={`bg-${color} bg-gradient-to-r from-indigo-navbargrad2 to-indigo-navbargrad1 w-full h-24 flex flex-row justify-around fixed z-40`}
+      className={`bg-${color} bg-gradient-to-r from-indigo-navbargrad2 to-indigo-navbargrad1 w-full h-24 flex flex-row justify-end fixed z-40`}
       style={header}
     >
       {children}

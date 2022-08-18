@@ -20,7 +20,7 @@ const Container = (props) => {
             activeName={activeName}
           />
           <div className="flex flex-col w-screen h-full">
-            <DesktopHeaderBase contractList={contracts} />
+            <DesktopHeaderBase/>
             <DisclaimerHeader />
             {children}
           </div>
@@ -29,7 +29,7 @@ const Container = (props) => {
 
       <div className="visible md:invisible h-fit overflow-x-auto z-40">
         <Navbar isAdmin={isAdmin} />
-        <HeaderBase contractList={contracts} />
+        <HeaderBase />
         <DisclaimerHeader />
 
         {children}

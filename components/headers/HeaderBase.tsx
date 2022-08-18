@@ -73,9 +73,6 @@ const HeaderBase = () => {
           size="py-1 px-1 h-full"
         >
           <div className="flex flex-row text-sm h-12 items-center">
-            <div className="text-xs text-light">
-              Connect Wallet
-            </div>
             <img className="ml-3 h-4 w-4" src="/images/wallet.png" alt="Img" />
           </div>
         </Button>
