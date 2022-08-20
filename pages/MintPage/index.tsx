@@ -278,7 +278,7 @@ export default function Home(props) {
                     <hr className="w-10 border-4"></hr>
                   </div>
 
-                  <Select options={options} className="md:w-1/3 w-4/5 mr-9 mt-5" />
+                  {/*<Select options={options} className="md:w-1/3 w-4/5 mr-9 mt-5" />*/}
                 </div>
                 <div className="flex md:flex-row flex-col mt-12">
                   <div className="md:w-1/2 w-full ">
@@ -295,14 +295,14 @@ export default function Home(props) {
                         <div className="font-black"> ${format_price()}</div>
                       </div>
                       <div className="border">
-                        <button onClick={() => setUseNEP141(NEP141USDT)} className=" p-3 hover:bg-indigo-black">
-                          <Usdt></Usdt>
+                        <button onClick={() => setUseNEP141(NEP141USDT)} className={"p-3 " + (useNEP141.mainnet == NEP141USDT.mainnet ? "bg-indigo-black": "hover:bg-indigo-slate") }>
+                          <Usdt hardCodeMode={useNEP141.mainnet == NEP141USDT.mainnet ? "#fff" : "#000"}></Usdt>
                         </button>
-                        <button onClick={() => setUseNEP141(NEP141USDC)} className=" p-3 hover:bg-indigo-black">
-                          <Usdc></Usdc>
+                        <button onClick={() => setUseNEP141(NEP141USDC)} className={" p-3 " + (useNEP141.mainnet == NEP141USDC.mainnet ? "bg-indigo-black": "hover:bg-indigo-slate")}>
+                          <Usdc hardCodeMode={useNEP141.mainnet == NEP141USDC.mainnet ? "#fff" : "#000"}></Usdc>
                         </button>
-                        <button onClick={() => setUseNEP141(NEP141USN)} className=" p-3 hover:bg-indigo-black">
-                          <Dai></Dai>
+                        <button onClick={() => setUseNEP141(NEP141USN)} className={" p-3 " + (useNEP141.mainnet == NEP141USN.mainnet ? "bg-indigo-black": "hover:bg-indigo-slate")}>
+                          <Dai hardCodeMode={useNEP141.mainnet == NEP141USN.mainnet ? "#fff" : "#000"}></Dai>
                         </button>
                         {/*<button className=" p-3 hover:bg-indigo-black">*/}
                         {/*  <Dai></Dai>*/}
