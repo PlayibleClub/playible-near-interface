@@ -286,7 +286,7 @@ export default function Home(props) {
                   </div>
                   <div className="md:w-1/2 w-full md:mt-0 mt-5 ml-8  ">
                     <div className="text-xl font-bold font-monument ">
-                      WHITELIST MINT
+                      STARTER PACK MINT
                       <hr className="w-10 border-4"></hr>
                     </div>
                     <div className="flex justify-between w-4/5 md:w-1/2 mt-5">
