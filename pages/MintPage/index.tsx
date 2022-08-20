@@ -26,6 +26,7 @@ import { Action, functionCall } from 'near-api-js/lib/transaction'
 const MINT_STORAGE_COST = 5870000000000000000000;
 const DEFAULT_MAX_FEES = "300000000000000";
 const RESERVED_AMOUNT = 200;
+const NANO_TO_SECONDS_DENOMINATOR = 1000000;
 const CONTRACT_MINTER_ACCOUNT_ID = process.env.NEAR_ENV == "development" ?  MINTER.testnet : MINTER.mainnet;
 const env = process.env.NEAR_ENV || 'development';
 
@@ -252,7 +253,7 @@ export default function Home(props) {
   useEffect(() => {
     const timer = setInterval(() => {
 
-      setIntervalSale(Math.floor(minterConfig.public_sale_start / 1000) - Date.now())
+      setIntervalSale(Math.floor(minterConfig.public_sale_start / NANO_TO_SECONDS_DENOMINATOR) - Date.now())
       if (intervalSale > 0) {
         counter()
       }
@@ -342,7 +343,7 @@ export default function Home(props) {
                     {/*  <p>Gas price {utils.format.formatNearAmount(BigInt(selectedMintAmount * MINT_STORAGE_COST).toString()).toString()}N</p>*/}
                     {/*</div>*/}
                     {
-                      Math.floor(minterConfig.public_sale_start / 1000) <= Date.now() && selector.isSignedIn() ?
+                      Math.floor(minterConfig.public_sale_start / NANO_TO_SECONDS_DENOMINATOR) <= Date.now() && selector.isSignedIn() ?
                           {/*parseInt(String(storageDepositAccountBalance)) >= selectedMintAmount * MINT_STORAGE_COST*/} ?
                         <button className="w-9/12 flex text-center justify-center items-center bg-indigo-buttonblue font-montserrat text-indigo-white p-4 text-xs mt-8 " onClick={() => execute_batch_transaction_storage_deposit_and_mint_token()}>
                           Mint ${Math.floor((selectedMintAmount * format_price()))} + fee {utils.format.formatNearAmount(BigInt(selectedMintAmount * MINT_STORAGE_COST).toString())}N
@@ -370,7 +371,7 @@ export default function Home(props) {
                     PUBLIC MINT
                     <hr className="w-10 border-4"></hr>
                   </div>
-                  <div className="mt-10 mb-10">Open {new Date(Math.floor(minterConfig.public_sale_start / 1000)).getHours() < 10 ? '0' + new Date(Math.floor(minterConfig.public_sale_start / 1000)).getHours() : new Date(Math.floor(minterConfig.public_sale_start / 1000)).getHours()}:{new Date(Math.floor(minterConfig.public_sale_start / 1000)).getMinutes() < 10 ? '0'+ new Date(Math.floor(minterConfig.public_sale_start / 1000)).getMinutes() : new Date(Math.floor(minterConfig.public_sale_start / 1000)).getMinutes()} UTC {new Date(Math.floor(minterConfig.public_sale_start / 1000)).getUTCMonth() + 1 < 10 ? '0' + (new Date(Math.floor(minterConfig.public_sale_start / 1000)).getUTCMonth() + 1) : (new Date(Math.floor(minterConfig.public_sale_start / 1000)).getUTCMonth() + 1)}/{new Date(Math.floor(minterConfig.public_sale_start / 1000)).getUTCDate() < 10 ? '0'+ new Date(Math.floor(minterConfig.public_sale_start / 1000)).getUTCDate(): new Date(Math.floor(minterConfig.public_sale_start / 1000)).getUTCDate()}/{new Date(Math.floor(minterConfig.public_sale_start / 1000)).getFullYear()}</div>
+                  <div className="mt-10 mb-10">Open {new Date(Math.floor(minterConfig.public_sale_start / NANO_TO_SECONDS_DENOMINATOR)).getHours() < 10 ? '0' + new Date(Math.floor(minterConfig.public_sale_start / NANO_TO_SECONDS_DENOMINATOR)).getHours() : new Date(Math.floor(minterConfig.public_sale_start / NANO_TO_SECONDS_DENOMINATOR)).getHours()}:{new Date(Math.floor(minterConfig.public_sale_start / NANO_TO_SECONDS_DENOMINATOR)).getMinutes() < 10 ? '0'+ new Date(Math.floor(minterConfig.public_sale_start / NANO_TO_SECONDS_DENOMINATOR)).getMinutes() : new Date(Math.floor(minterConfig.public_sale_start / NANO_TO_SECONDS_DENOMINATOR)).getMinutes()} UTC {new Date(Math.floor(minterConfig.public_sale_start / NANO_TO_SECONDS_DENOMINATOR)).getUTCMonth() + 1 < 10 ? '0' + (new Date(Math.floor(minterConfig.public_sale_start / NANO_TO_SECONDS_DENOMINATOR)).getUTCMonth() + 1) : (new Date(Math.floor(minterConfig.public_sale_start / NANO_TO_SECONDS_DENOMINATOR)).getUTCMonth() + 1)}/{new Date(Math.floor(minterConfig.public_sale_start / NANO_TO_SECONDS_DENOMINATOR)).getUTCDate() < 10 ? '0'+ new Date(Math.floor(minterConfig.public_sale_start / NANO_TO_SECONDS_DENOMINATOR)).getUTCDate(): new Date(Math.floor(minterConfig.public_sale_start / NANO_TO_SECONDS_DENOMINATOR)).getUTCDate()}/{new Date(Math.floor(minterConfig.public_sale_start / NANO_TO_SECONDS_DENOMINATOR)).getFullYear()}</div>
                   <div className="text-xl font-bold font-monument ">
                     PACK DETAILS
                     <hr className="w-10 border-4"></hr>
