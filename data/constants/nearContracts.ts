@@ -1,6 +1,6 @@
 export const MINTER = {
-  testnet: 'dev-1661008280649-17970487232903',
-  mainnet: 'dev-1661008280649-17970487232903',
+  testnet: 'dev-1661010070100-60338705780417',
+  mainnet: 'dev-1661010070100-60338705780417',
   interface: {
     viewMethods: [
       'get_config',

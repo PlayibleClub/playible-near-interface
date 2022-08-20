@@ -233,6 +233,8 @@ export default function Home(props) {
     const minutes = Math.floor((intervalSale / 1000 / 60) % 60)
     const hours = Math.floor((intervalSale / (1000 * 60 * 60)) % 24);
     const days = Math.floor(intervalSale / (1000 * 60 * 60 * 24));
+    console.log(seconds)
+    console.log(days)
 
     let format_seconds = seconds < 0 ? 0 : seconds < 10 ? '0' + seconds : seconds
     let format_minutes = minutes < 0 ? 0 : minutes < 10 ? '0' + minutes : minutes
@@ -250,7 +252,7 @@ export default function Home(props) {
   useEffect(() => {
     const timer = setInterval(() => {
 
-      setIntervalSale( Math.floor(minterConfig.public_sale_start / 1000) - Date.now())
+      setIntervalSale(Math.floor(minterConfig.public_sale_start / 1000) - Date.now())
       if (intervalSale > 0) {
         counter()
       }
@@ -307,7 +309,7 @@ export default function Home(props) {
                       </div>
                     </div>
                     {
-                      counter().days > 0 || counter().hours > 0 || counter().minute > 0 || counter().seconds > 0 &&
+                      (counter().days > 0 || counter().hours > 0 || counter().minute > 0 || counter().seconds > 0) &&
                           <>
                             <div className="text-xs mt-8">MINT STARTS IN</div>
                             <div className="flex mt-3">
