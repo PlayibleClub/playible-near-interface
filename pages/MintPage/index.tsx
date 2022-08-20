@@ -234,8 +234,6 @@ export default function Home(props) {
     const minutes = Math.floor((intervalSale / 1000 / 60) % 60)
     const hours = Math.floor((intervalSale / (1000 * 60 * 60)) % 24);
     const days = Math.floor(intervalSale / (1000 * 60 * 60 * 24));
-    console.log(seconds)
-    console.log(days)
 
     let format_seconds = seconds < 0 ? 0 : seconds < 10 ? '0' + seconds : seconds
     let format_minutes = minutes < 0 ? 0 : minutes < 10 ? '0' + minutes : minutes
