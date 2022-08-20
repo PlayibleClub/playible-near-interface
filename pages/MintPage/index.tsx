@@ -217,7 +217,7 @@ export default function Home(props) {
 
   function selectMint() {
     let optionMint = []
-    for (let x = 1; x < 21; x++){
+    for (let x = 1; x < 16; x++){
       optionMint.push( { value: x, label: `Get ${x} ${x > 1 ? 'packs': 'pack'}` })
     }
     return (<Select  onChange={event => setSelectedMintAmount(event.value)} options={optionMint} className="md:w-1/3 w-4/5 mr-9 mt-5" />)
