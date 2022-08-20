@@ -25,6 +25,7 @@ import { Action, functionCall } from 'near-api-js/lib/transaction'
 
 const MINT_STORAGE_COST = 5870000000000000000000;
 const DEFAULT_MAX_FEES = "300000000000000";
+const RESERVED_AMOUNT = 200;
 const CONTRACT_MINTER_ACCOUNT_ID = process.env.NEAR_ENV == "development" ?  MINTER.testnet : MINTER.mainnet;
 const env = process.env.NEAR_ENV || 'development';
 
@@ -113,6 +114,45 @@ export default function Home(props) {
     }
   }
 
+  async function execute_batch_transaction_storage_deposit_and_mint_token(){
+
+    const amount_to_deposit_near = BigInt(selectedMintAmount * MINT_STORAGE_COST).toString();
+
+    const data_one = Buffer.from(JSON.stringify({}))
+    const action_deposit_storage_near_token = {
+      type: "FunctionCall",
+      params: {
+        methodName: "storage_deposit",
+        args: data_one,
+        gas: DEFAULT_MAX_FEES,
+        deposit: amount_to_deposit_near
+      }
+    };
+
+    // FT amount to deposit for minting NFT
+    const mint_cost = selectedMintAmount * Number(useNEP141.decimals == 1000000 ? minterConfig.minting_price_decimals_6 : minterConfig.minting_price_decimals_18)
+
+    if (selectedMintAmount == 0) {
+      return
+    }
+
+    const data_two = Buffer.from(JSON.stringify({receiver_id: selector.store.getState().contract.contractId, amount: Math.floor(mint_cost).toString(), msg: JSON.stringify({ mint_amount: selectedMintAmount}) }))
+    //const register = Buffer.from(JSON.stringify({account_id:  _minter.contractList[0].contractId}))
+
+    const action_transfer_call = {
+      type: "FunctionCall",
+      params: {
+        methodName: "ft_transfer_call",
+        args: data_two,
+        gas: DEFAULT_MAX_FEES,
+        deposit:  "1"
+      }
+    };
+
+    const wallet = await selector.wallet();
+    const tx = wallet.signAndSendTransactions({transactions: [ {receiverId: selector.store.getState().contract.contractId, actions: [action_deposit_storage_near_token]}, {receiverId: useNEP141.mainnet, actions: [action_transfer_call]}]})
+  }
+
   async function execute_mint_token(){
 
     // Init minter contract
@@ -147,41 +187,18 @@ export default function Home(props) {
       console.log(e)
     })
 
-    //console.log(c)
-    // let res = await _minter.currentUser.account.signAndSendTransaction({
-    //   receiverId: _minter.contractList[1].contractId,
-    //   actions: [transactions.functionCall("storage_deposit", register,"100000000000000", utils.format.parseNearAmount("0.008").toString()),
-    //     transactions.functionCall("ft_transfer_call", data,"100000000000000", "1" )
-    //     ]
-    // })
-    // console.log(res)
   }
 
   async function execute_storage_deposit() {
-
-
-
     // Calculate amount to deposit for minting process
     const amount_to_deposit_near = BigInt(selectedMintAmount * MINT_STORAGE_COST).toString();
 
-    // const action_deposit_storage_near_token = {
-    //   receiverId: selector.store.getState().contract.contractId,
-    //   actions: [{
-    //     type: "FunctionCall",
-    //     params: {
-    //       methodName: "storage_deposit",
-    //       args: {},
-    //       gas: DEFAULT_MAX_FEES,
-    //       deposit: amount_to_deposit_near
-    //     }
-    //   }]}
-
-    const data = Buffer.from(JSON.stringify({}))
+    const _data = Buffer.from(JSON.stringify({}))
     const action_deposit_storage_near_token = {
         type: "FunctionCall",
         params: {
           methodName: "storage_deposit",
-          args: data,
+          args: _data,
           gas: DEFAULT_MAX_FEES,
           deposit: amount_to_deposit_near
         }
@@ -212,7 +229,6 @@ export default function Home(props) {
   }
 
   function counter(){
-
     const seconds = Math.floor((intervalSale / 1000) % 60)
     const minutes = Math.floor((intervalSale / 1000 / 60) % 60)
     const hours = Math.floor((intervalSale / (1000 * 60 * 60)) % 24);
@@ -305,15 +321,15 @@ export default function Home(props) {
                     }
 
                     <div className="border border-indigo-lightgray rounded-2xl text-center p-4 w-40 flex flex-col justify-center  mt-8">
-                      <div className="text-2xl font-black font-monument ">{minted}/{minterConfig.nft_pack_max_sale_supply}</div>
+                      <div className="text-2xl font-black font-monument ">{minted}/{minterConfig.nft_pack_max_sale_supply + RESERVED_AMOUNT}</div>
                       <div className="text-xs">YOU HAVE MINTED</div>
                     </div>
                     <div className="mt-8 mb-0 p-0 w-4/5">
-                      <ProgressBar completed={parseInt(((minterConfig.nft_pack_max_sale_supply - minterConfig.nft_pack_mint_counter) * 100 / minterConfig.nft_pack_max_sale_supply).toFixed(2))} maxCompleted={100} bgColor={'#3B62F6'} />
+                      <ProgressBar completed={parseInt(((minterConfig.nft_pack_max_sale_supply  - minterConfig.nft_pack_mint_counter) * 100 / (minterConfig.nft_pack_max_sale_supply  + RESERVED_AMOUNT)).toFixed(2))} maxCompleted={100} bgColor={'#3B62F6'} />
                     </div>
                     <div className="text-xs ">
                       {' '}
-                      {minterConfig.nft_pack_max_sale_supply - minterConfig.nft_pack_mint_counter}/{minterConfig.nft_pack_max_sale_supply} packs remaining
+                      {minterConfig.nft_pack_max_sale_supply  - minterConfig.nft_pack_mint_counter}/{minterConfig.nft_pack_max_sale_supply + RESERVED_AMOUNT} packs remaining
                     </div>
                     <div>
                       {selectMint()}
@@ -325,8 +341,8 @@ export default function Home(props) {
                     {/*</div>*/}
                     {
                       minterConfig.public_sale_start * 1000 <= Date.now() && selector.isSignedIn() ?
-                      parseInt(String(storageDepositAccountBalance)) >= selectedMintAmount * MINT_STORAGE_COST ?
-                        <button className="w-9/12 flex text-center justify-center items-center bg-indigo-buttonblue font-montserrat text-indigo-white p-4 text-xs mt-8 " onClick={() => execute_mint_token()}>
+                          {/*parseInt(String(storageDepositAccountBalance)) >= selectedMintAmount * MINT_STORAGE_COST*/} ?
+                        <button className="w-9/12 flex text-center justify-center items-center bg-indigo-buttonblue font-montserrat text-indigo-white p-4 text-xs mt-8 " onClick={() => execute_batch_transaction_storage_deposit_and_mint_token()}>
                           Mint ${Math.floor((selectedMintAmount * format_price()))} + fee {utils.format.formatNearAmount(BigInt(selectedMintAmount * MINT_STORAGE_COST).toString())}N
                         </button> : <button className="w-9/12 flex text-center justify-center items-center bg-indigo-buttonblue font-montserrat text-indigo-white p-4 text-xs mt-8 " onClick={() => execute_storage_deposit()}>
                           Storage deposit required {utils.format.formatNearAmount(BigInt( (selectedMintAmount * MINT_STORAGE_COST) - parseInt(storageDepositAccountBalance)).toString())}N
