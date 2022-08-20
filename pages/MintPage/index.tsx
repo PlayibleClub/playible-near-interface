@@ -250,7 +250,7 @@ export default function Home(props) {
   useEffect(() => {
     const timer = setInterval(() => {
 
-      setIntervalSale( minterConfig.public_sale_start / 1000 - Date.now())
+      setIntervalSale( Math.floor(minterConfig.public_sale_start / 1000) - Date.now())
       if (intervalSale > 0) {
         counter()
       }
