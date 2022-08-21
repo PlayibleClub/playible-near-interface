@@ -13,7 +13,7 @@ import ReactTimeAgo from 'react-time-ago';
 import { GAME, ORACLE } from '../../../data/constants/contracts';
 import 'regenerator-runtime/runtime';
 import { format } from 'prettier';
-import { NEWADMIN } from '../../../data/constants/address';
+import { ADMIN } from '../../../data/constants/address';
 import { useRouter } from 'next/router';
 import { useSelector } from 'react-redux';
 import { useMutation } from '@apollo/client';
@@ -492,7 +492,7 @@ const Index = (props) => {
 
   // useEffect(() => {
   //   if (connectedWallet) {
-  //     if (connectedWallet.walletAddress === NEWADMIN) {
+  //     if (connectedWallet.walletAddress === ADMIN) {
   //       if (connectedWallet?.network?.name === 'testnet') {
   //         // fetchGames();
   //         setErr(null);

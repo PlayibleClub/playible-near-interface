@@ -10,12 +10,8 @@ import mint from '../../public/images/mintpage.png';
 import ProgressBar from '@ramonak/react-progress-bar';
 import Usdt from '../../public/images/SVG/usdt';
 import Usdc from '../../public/images/SVG/usdc';
-import Dai from '../../public/images/SVG/dai';
+import USN from '../../public/images/SVG/usn';
 import { useWalletSelector } from '../../contexts/WalletSelectorContext';
-
-import usdtcoin from '../../public/images/usdt.svg';
-import usdccoin from '../../public/images/usdc.svg';
-import daicoin from '../../public/images/dai.svg';
 
 import { getConfig } from "../../utils/near";
 
@@ -257,8 +253,8 @@ export default function Home(props) {
                     MINT PACKS
                     <hr className="w-10 border-4"></hr>
                   </div>
-
-                  <Select options={options} className="md:w-1/3 w-4/5 mr-9 mt-5" />
+                  
+                  {/**<Select options={options} className="md:w-1/3 w-4/5 mr-9 mt-5" />**/}
                 </div>
                 <div className="flex md:flex-row flex-col mt-12">
                   <div className="md:w-1/2 w-full ">
@@ -282,7 +278,7 @@ export default function Home(props) {
                           <Usdc></Usdc>
                         </button>
                         <button onClick={() => setUseNEP141(NEP141USN)} className=" p-3 hover:bg-indigo-black">
-                          <Dai></Dai>
+                          <USN></USN>
                         </button>
                         {/*<button className=" p-3 hover:bg-indigo-black">*/}
                         {/*  <Dai></Dai>*/}

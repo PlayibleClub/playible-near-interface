@@ -5,7 +5,7 @@ import NavButtonContainer from '../containers/NavButtonContainer';
 import { getNavigation } from './NavigationList';
 import { BrowserRouter as Router, NavLink } from 'react-router-dom';
 const DesktopNavbar = (props) => {
-  const { children, color, secondcolor, isAdmin, activeName } = props;
+  const { children, color, secondcolor, isAdmin, activeName, isLoggedIn } = props;
 
   return (
     <div
@@ -21,7 +21,7 @@ const DesktopNavbar = (props) => {
       </div>
       <div className="flex mt-10">
         <div className="flex flex-col h-1/5 w-4/6 font-monument">
-          {getNavigation(isAdmin).map(({ name, img, path }) => (
+          {getNavigation(isAdmin, isLoggedIn).map(({ name, img, path }) => (
             <button key={name} className="">
               <NavButtonContainer
                 imagesrc={img}
@@ -42,7 +42,8 @@ DesktopNavbar.propTypes = {
   secondcolor: PropTypes.string,
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
   isAdmin: PropTypes.bool,
-  activeName: PropTypes.string
+  activeName: PropTypes.string,
+  isLoggedIn: PropTypes.bool
 };
 
 DesktopNavbar.defaultProps = {
@@ -51,6 +52,7 @@ DesktopNavbar.defaultProps = {
   // children: <div>Fantasy investr</div>
   children: <div />,
   isAdmin: false,
+  isLoggedIn: false
 };
 
 export default DesktopNavbar;
