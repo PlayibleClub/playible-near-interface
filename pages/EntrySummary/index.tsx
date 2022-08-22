@@ -8,7 +8,6 @@ import BackFunction from '../../components/buttons/BackFunction';
 import { useRouter } from 'next/router';
 import PlayDetailsComponent from '../../pages/PlayDetails/components/PlayDetailsComponent';
 import { axiosInstance } from '../../utils/playible';
-// import { useConnectedWallet } from '@terra-money/wallet-provider';
 import moment from 'moment';
 import Link from 'next/link';
 import PerformerContainer from '../../components/containers/PerformerContainer';
@@ -20,7 +19,6 @@ export default function EntrySummary(props) {
   const [name, setName] = useState('');
   const [gameData, setGameData] = useState(null);
   const [teamModal, setTeamModal] = useState(false);
-  const connectedWallet = useConnectedWallet();
   const [team, setTeam] = useState([]);
   const [gameEnd, setGameEnd] = useState(false);
   const { error } = props;
@@ -33,8 +31,9 @@ export default function EntrySummary(props) {
     const allTeams = router.query.team_id
       ? await axiosInstance.get(`/fantasy/game_team/${router.query.team_id}/`)
       : await axiosInstance.get(
-          `/fantasy/game/${router.query.game_id}/registered_teams_detail/?wallet_addr=${connectedWallet.walletAddress}`
+          `/fantasy/game/${router.query.game_id}/registered_teams_detail/?wallet_addr=`
         );
+
     if (allTeams.status === 200) {
       if (router.query.team_id) {
         setTeam([allTeams.data]);

@@ -1,9 +1,3 @@
-import {
-  useLCDClient,
-  useWallet,
-  WalletStatus,
-  useConnectedWallet,
-} from '@terra-money/wallet-provider';
 import Image from 'next/image'
 import React, { useEffect, useState } from 'react';
 import Main from '../../components/Main';
@@ -21,10 +15,8 @@ import { useRouter } from 'next/router';
 import 'regenerator-runtime/runtime';
 import { axiosInstance } from '../../utils/playible';
 import LoadingPageDark from '../../components/loading/LoadingPageDark';
-import { LCDClient } from '@terra-money/terra.js';
 import { GAME, ORACLE } from '../../data/constants/contracts';
 import Modal from '../../components/modals/Modal';
-import { executeContract, retrieveTxInfo } from '../../utils/terra';
 
 const Play = (props) => {
   const { error } = props;

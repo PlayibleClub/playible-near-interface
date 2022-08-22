@@ -11,7 +11,6 @@ import { axiosInstance } from '../../utils/playible';
 import moment from 'moment';
 import { truncate } from '../../utils/wallet/index';
 import { ADMIN } from '../../data/constants/address';
-import { useConnectedWallet } from '@terra-money/wallet-provider';
 import Link from 'next/link';
 import 'regenerator-runtime/runtime';
 import LoadingPageDark from '../../components/loading/LoadingPageDark';
@@ -21,7 +20,6 @@ export default function PlayDetails(props) {
   const [gameData, setGameData] = useState(null);
   const [leaderboard, setLeaderboard] = useState([]);
   const [registeredTeams, setRegisteredTeams] = useState([]);
-  const connectedWallet = useConnectedWallet();
   const [gameOngoing, setgameOngoing] = useState(false);
   const [gameEnd, setgameEnd] = useState(false);
   const [timesUp, setTimesUp] = useState(false);

@@ -8,8 +8,6 @@ import Navbar from '../../components/navbars/Navbar';
 import HorizontalScrollContainer from '../../components/containers/HorizontalScrollContainer';
 import TokenComponent from '../../components/TokenComponent';
 import Main from '../../components/Main';
-import { useConnectedWallet, useLCDClient } from '@terra-money/wallet-provider';
-import { executeContract, queryContract, retrieveTxInfo } from '../../utils/terra';
 import { OPENPACK, PACK, ATHLETE } from '../../data/constants/contracts';
 import { axiosInstance } from '../../utils/playible';
 import 'regenerator-runtime/runtime';
@@ -21,7 +19,6 @@ const TokenDrawPage = (props) => {
   const { queryObj, newAthletes, error = null } = props;
 
   const dispatch = useDispatch();
-  const lcd = useLCDClient();
   const [err, setErr] = useState(error);
 
   const [loading, setLoading] = useState(false);
@@ -85,11 +82,13 @@ const TokenDrawPage = (props) => {
   };
 
   const getAthleteInfo = async (id) => {
+    /*
     const res = await lcd.wasm.contractQuery(ATHLETE, {
       all_nft_info: {
         token_id: id,
       },
     });
+    */
 
     if (res.info) {
       const details = await axiosInstance.get(

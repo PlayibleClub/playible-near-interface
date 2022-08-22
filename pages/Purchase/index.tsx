@@ -7,8 +7,6 @@ import PackComponent from '../../components/PackComponent';
 import TitledContainer from '../../components/containers/TitledContainer';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { getLastRound, getRoundData, purchasePack } from '../../redux/reducers/contract/pack';
-import { useConnectedWallet } from '@terra-money/wallet-provider';
 import BaseModal from '../../components/modals/BaseModal';
 import * as statusCode from '../../data/constants/status';
 import * as actionType from '../../data/constants/actions';
@@ -17,7 +15,6 @@ import 'regenerator-runtime/runtime';
 const Purchase = () => {
   const router = useRouter();
   const dispatch = useDispatch();
-  const connectedWallet = useConnectedWallet();
 
   const { txInfo, status, message, action } = useSelector((state) => state.contract.pack);
 
@@ -66,7 +63,7 @@ const Purchase = () => {
                   </div>
                   <div className="">
                     <button
-                      onClick={() => dispatch(purchasePack({ connectedWallet }))}
+                      onClick={}
                       className="bg-indigo-buttonblue w-full h-12 text-center rounded-md text-lg mt-8"
                     >
                       <div className="pt-2.5">BUY PACK</div>

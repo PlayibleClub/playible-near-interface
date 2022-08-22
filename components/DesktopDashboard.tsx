@@ -1,4 +1,3 @@
-import { useWallet, WalletStatus } from '@terra-money/wallet-provider';
 // import Image from 'next/image';
 
 import React, { Component, useState } from 'react';
@@ -30,15 +29,6 @@ import searchIcon from '../public/images/search.png';
 import AthleteTokenContainer from './AthleteTokenContainer';
 
 export default function Home() {
-  const { status, connect, disconnect, availableConnectTypes } = useWallet();
-
-  const interactWallet = () => {
-    if (status === WalletStatus.WALLET_CONNECTED) {
-      disconnect();
-    } else {
-      connect(availableConnectTypes[1]);
-    }
-  };
 
   const [filterInfo, handleFilter] = React.useState(false);
 

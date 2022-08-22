@@ -8,8 +8,6 @@ import BaseModal from '../../../components/modals/BaseModal';
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en.json';
 import ReactTimeAgo from 'react-time-ago';
-// import { useConnectedWallet, useLCDClient } from '@terra-money/wallet-provider';
-// import { estimateFee, estimateMultipleFees, executeContract } from '../../../utils/terra';
 import { GAME, ORACLE } from '../../../data/constants/contracts';
 import 'regenerator-runtime/runtime';
 import { format } from 'prettier';
