@@ -15,9 +15,9 @@ import 'regenerator-runtime/runtime';
 const Purchase = () => {
   const router = useRouter();
   const dispatch = useDispatch();
-
-  const { txInfo, status, message, action } = useSelector((state) => state.contract.pack);
-
+  // @ts-ignore:next-line
+  const { txInfo, status, message, action } = useSelector();
+  const connectedWallet = {}
   const [isClosed, setClosed] = useState(true);
   const [displayModal, setDisplayModal] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
@@ -63,7 +63,7 @@ const Purchase = () => {
                   </div>
                   <div className="">
                     <button
-                      onClick={}
+                      // onClick={}
                       className="bg-indigo-buttonblue w-full h-12 text-center rounded-md text-lg mt-8"
                     >
                       <div className="pt-2.5">BUY PACK</div>

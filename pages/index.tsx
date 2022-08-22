@@ -187,7 +187,7 @@ export default function Home(props) {
                               return (
                                 <>
                                   <PrizePoolComponent
-                                    icon={i}
+                                    icon={i.toString()}
                                     prizePool={data.prize}
                                     gameName={data.name}
                                     gameId={data.id}

@@ -1,9 +1,9 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { map, distinctUntilChanged } from "rxjs";
 import { setupWalletSelector } from "@near-wallet-selector/core";
-import type { WalletSelector, AccountState } from "@near-wallet-selector/core";
+import { WalletSelector, AccountState } from "@near-wallet-selector/core";
 import { setupModal } from "@near-wallet-selector/modal-ui";
-import type { WalletSelectorModal } from "@near-wallet-selector/modal-ui";
+import { WalletSelectorModal } from "@near-wallet-selector/modal-ui";
 import { setupNearWallet } from "@near-wallet-selector/near-wallet";
 import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
 import { getConfig } from '../utils/near'

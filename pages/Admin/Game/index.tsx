@@ -20,10 +20,8 @@ import { CREATE_GAME } from '../../../utils/mutations';
 TimeAgo.addDefaultLocale(en);
 
 const Index = (props) => {
-  // const connectedWallet = useConnectedWallet();
   const [createNewGame, { data, error }] = useMutation(CREATE_GAME);
-  const { wallet } = useSelector((state) => state.external.playible);
-  // const lcd = useLCDClient();
+  const connectedWallet = {};
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [contentLoading, setContentLoading] = useState(true);
@@ -205,7 +203,7 @@ const Index = (props) => {
     let errors = [];
     let sortPercentage = [...distribution].sort((a, b) => b.percentage - a.percentage);
     console.log('details.duration', typeof details.duration);
-    if (!Number.isInteger(parseInt(details.duration))) {
+    if (!Number.isInteger(details.duration)) {
       errors.push('Duration must be a positive integer that is expressed in days');
     }
 
@@ -258,7 +256,7 @@ const Index = (props) => {
       setConfirmModal(true);
     }
   };
-
+  
   const endGame = async (id) => {
     if (connectedWallet) {
       setEndLoading(true);
@@ -272,62 +270,62 @@ const Index = (props) => {
 
       const leaderboard = await axiosInstance.get(`/fantasy/game/${id}/leaderboard/`);
 
-      if (leaderboard.status === 200) {
-        const endGameRes = await executeContract(connectedWallet, ORACLE, [
-          {
-            contractAddr: ORACLE,
-            msg: {
-              add_leaderboard: {
-                game_id: id.toString(),
-                leaderboard: leaderboard.data,
-              },
-            },
-          },
-          {
-            contractAddr: GAME,
-            msg: {
-              end_game: {
-                game_id: id.toString(),
-              },
-            },
-          },
-        ]);
+      // if (leaderboard.status === 200) {
+      //   const endGameRes = await executeContract(connectedWallet, ORACLE, [
+      //     {
+      //       contractAddr: ORACLE,
+      //       msg: {
+      //         add_leaderboard: {
+      //           game_id: id.toString(),
+      //           leaderboard: leaderboard.data,
+      //         },
+      //       },
+      //     },
+      //     {
+      //       contractAddr: GAME,
+      //       msg: {
+      //         end_game: {
+      //           game_id: id.toString(),
+      //         },
+      //       },
+      //     },
+      //   ]);
 
-        if (
-          !endGameRes.txResult ||
-          (endGameRes.txResult && !endGameRes.txResult.success) ||
-          endGameRes.txError
-        ) {
-          setMsg({
-            title: 'Failed',
-            content:
-              endGameRes.txResult && !endGameRes.txResult.success
-                ? 'Blockchain error! Please try again later.'
-                : endGameRes.txError,
-          });
-        } else {
-          setMsg({
-            title: 'SUCCESS',
-            content: 'Successfully ended game',
-          });
-        }
-        // fetchGames();
-        setModal(true);
-        setEndModal(false);
-        router.reload();
-      } else {
-        setMsg({
-          title: 'Error',
-          content: 'An error occurred when ending the game',
-        });
-        setModal(true);
-        setEndModal(false);
-      }
+      //   if (
+      //     !endGameRes.txResult ||
+      //     (endGameRes.txResult && !endGameRes.txResult.success) ||
+      //     endGameRes.txError
+      //   ) {
+      //     setMsg({
+      //       title: 'Failed',
+      //       content:
+      //         endGameRes.txResult && !endGameRes.txResult.success
+      //           ? 'Blockchain error! Please try again later.'
+      //           : endGameRes.txError,
+      //     });
+      //   } else {
+      //     setMsg({
+      //       title: 'SUCCESS',
+      //       content: 'Successfully ended game',
+      //     });
+      //   }
+      //   // fetchGames();
+      //   setModal(true);
+      //   setEndModal(false);
+      //   router.reload();
+      // } else {
+      //   setMsg({
+      //     title: 'Error',
+      //     content: 'An error occurred when ending the game',
+      //   });
+      //   setModal(true);
+      //   setEndModal(false);
+      // }
 
       setEndLoading(false);
     }
   };
-
+  
   const createGame = async () => {
     if (connectedWallet) {
       const formData = {
@@ -349,63 +347,63 @@ const Index = (props) => {
         const distributionList = distribution.map((item) => {
           return {
             ...item,
-            percentage: (parseInt(item.percentage) / 100) * 1000000,
+            percentage: (item.percentage) / 100 * 1000000,
           };
         });
 
-        const resContract = await executeContract(connectedWallet, ORACLE, [
-          {
-            contractAddr: ORACLE,
-            msg: {
-              add_game: {
-                game_id: res.data.id.toString(),
-                prize: parseInt(res.data.prize),
-                distribution: distributionList,
-              },
-            },
-          },
-          {
-            contractAddr: GAME,
-            msg: {
-              add_game: {
-                game_id: res.data.id.toString(),
-                game_time_start: Math.ceil(convertToMinutes(formData.startTime)),
-                duration: Math.ceil(formData.duration),
-              },
-            },
-          },
-        ]);
+      //   const resContract = await executeContract(connectedWallet, ORACLE, [
+      //     {
+      //       contractAddr: ORACLE,
+      //       msg: {
+      //         add_game: {
+      //           game_id: res.data.id.toString(),
+      //           prize: parseInt(res.data.prize),
+      //           distribution: distributionList,
+      //         },
+      //       },
+      //     },
+      //     {
+      //       contractAddr: GAME,
+      //       msg: {
+      //         add_game: {
+      //           game_id: res.data.id.toString(),
+      //           game_time_start: Math.ceil(convertToMinutes(formData.startTime)),
+      //           duration: Math.ceil(formData.duration),
+      //         },
+      //       },
+      //     },
+      //   ]);
 
-        if (
-          !resContract.txResult ||
-          (resContract.txResult && !resContract.txResult.success) ||
-          resContract.txError
-        ) {
-          let deleteSuccess = false;
-          while (!deleteSuccess) {
-            const deleteRes = await axiosInstance.delete(`/fantasy/game/${res.data.id}/`);
+      //   if (
+      //     !resContract.txResult ||
+      //     (resContract.txResult && !resContract.txResult.success) ||
+      //     resContract.txError
+      //   ) {
+      //     let deleteSuccess = false;
+      //     while (!deleteSuccess) {
+      //       const deleteRes = await axiosInstance.delete(`/fantasy/game/${res.data.id}/`);
 
-            if (deleteRes.status === 204) {
-              deleteSuccess = true;
-            }
-          }
+      //       if (deleteRes.status === 204) {
+      //         deleteSuccess = true;
+      //       }
+      //     }
 
-          setMsg({
-            title: 'Failed',
-            content:
-              resContract.txResult && !resContract.txResult.success
-                ? 'Blockchain error! Please try again later.'
-                : resContract.txError,
-          });
-        }
-        resetForm();
-        // fetchGames();
-      } else {
-        setMsg({
-          title: 'Failed',
-          content: 'An error occurred! Please try again later.',
-        });
-      }
+      //     setMsg({
+      //       title: 'Failed',
+      //       content:
+      //         resContract.txResult && !resContract.txResult.success
+      //           ? 'Blockchain error! Please try again later.'
+      //           : resContract.txError,
+      //     });
+      //   }
+      //   resetForm();
+      //   // fetchGames();
+      // } else {
+      //   setMsg({
+      //     title: 'Failed',
+      //     content: 'An error occurred! Please try again later.',
+      //   });
+      // }
 
       setModal(true);
       setLoading(false);
@@ -430,13 +428,13 @@ const Index = (props) => {
     console.log('data', data);
   };
 
-  const convertToMinutes = (time) => {
-    const now = new Date();
-    const gameStart = new Date(time);
-    const timeDiff = gameStart / 1000 - now / 1000;
+  // const convertToMinutes = (time) => {
+  //   const now = new Date();
+  //   const gameStart = new Date(time);
+  //   const timeDiff = gameStart / 1000 - now / 1000;
 
-    return timeDiff / 60;
-  };
+  //   return timeDiff / 60;
+  // };
 
   const fetchGames = async () => {
     setContentLoading(true);
@@ -444,22 +442,22 @@ const Index = (props) => {
     const completedRes = await axiosInstance.get('/fantasy/game/completed/');
 
     if (res.status === 200 && res.data.length > 0) {
-      const sortedData = [...res.data].sort(
-        (a, b) => new Date(a.startTime) - new Date(b.startTime)
-      );
-      setGames(sortedData);
+      // const sortedData = [...res.data].sort(
+      //   (a, b) => new Date(a.startTime) - new Date(b.startTime)
+      // );
+      // setGames(sortedData);
     }
     if (completedRes.status === 200 && completedRes.data.length > 0) {
       const data = completedRes.data;
       const completedList = data.map(async (item) => {
-        const hasEnded = await lcd.wasm.contractQuery(GAME, {
-          game_info: { game_id: item.id.toString() },
-        });
+        // const hasEnded = await lcd.wasm.contractQuery(GAME, {
+        //   game_info: { game_id: item.id.toString() },
+        // });
 
-        return {
-          ...item,
-          hasEnded: !!hasEnded?.has_ended,
-        };
+        // return {
+        //   ...item,
+        //   hasEnded: !!hasEnded?.has_ended,
+        // };
       });
 
       const completedGamesList = await Promise.all(completedList);
@@ -470,12 +468,12 @@ const Index = (props) => {
   };
 
   const resetForm = () => {
-    setDetails({
-      name: '',
-      startTime: '',
-      duration: 1,
-      prize: 1,
-    });
+    // setDetails({
+    //   name: '',
+    //   startTime: '',
+    //   duration: 1,
+    //   prize: 1,
+    // });
     setDistribution([
       {
         rank: 1,
@@ -508,17 +506,17 @@ const Index = (props) => {
   //   }
   // }, [connectedWallet]);
 
-  useEffect(() => {
-    if (wallet?.data) {
-      const isSignedIn = wallet.data.walletConnection.isSignedIn();
-      if (isSignedIn) {
-        setErr(null);
-        setContent(true);
-        setContentLoading(false);
-      }
-      console.log('walletInfo', wallet.data.walletConnection.isSignedIn());
-    }
-  }, [wallet]);
+  // useEffect(() => {
+  //   if (wallet?.data) {
+  //     const isSignedIn = wallet.data.walletConnection.isSignedIn();
+  //     if (isSignedIn) {
+  //       setErr(null);
+  //       setContent(true);
+  //       setContentLoading(false);
+  //     }
+  //     console.log('walletInfo', wallet.data.walletConnection.isSignedIn());
+  //   }
+  // }, [wallet]);
 
   return (
     <Container isAdmin>
@@ -680,7 +678,7 @@ const Index = (props) => {
                             className="border outline-none rounded-lg px-3 p-2"
                             id="description"
                             name="description"
-                            type="text"
+                            // type="text"
                             placeholder="Description of game"
                             onChange={(e) => onChange(e)}
                             value={details.description}
@@ -708,7 +706,7 @@ const Index = (props) => {
                           <div className="flex justify-start">
                             <button
                               className="bg-indigo-darkgray text-indigo-white w-5/6 md:w-48 h-10 text-center font-bold text-sm mt-4"
-                              onClick={() => modifyRankList('add')}
+                              // onClick={}
                             >
                               Add New Rank
                             </button>
@@ -789,6 +787,7 @@ const Index = (props) => {
     </Container>
   );
 };
+}
 
 export default Index;
 

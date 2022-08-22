@@ -31,8 +31,8 @@ const Sorter = (props) => {
   ];
 
   const searchHandler = () => {
-    if (searchRef.current.value) {
-      setSearchText(searchRef.current.value);
+    if (searchRef.current) {
+      setSearchText(searchRef.current);
     } else {
       setSearchText('');
     }
@@ -61,6 +61,7 @@ const Sorter = (props) => {
         <div className="bg-indigo-white border-2 border-indigo-lightgray border-opacity-40 ml-1 h-11 w-60">
           <div className="mt-1.5 relative flex items-center">
             <input
+              // @ts-ignore:next-line
               ref={searchRef}
               className="text-xl text-indigo-black ml-3 appearance-none bg-indigo-white focus:outline-none w-40"
               placeholder="Search..."

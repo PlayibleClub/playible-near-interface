@@ -3,20 +3,20 @@ import PropTypes from 'prop-types';
 import DesktopHeader from './DesktopHeader';
 import Button from '../buttons/Button';
 import { providers } from "near-api-js";
-import type { Account, Message } from '../../interfaces'
-import type {
+import { Account, Message } from 'interfaces'
+import {
   AccountView,
 } from "near-api-js/lib/providers/provider";
 import { useWalletSelector } from '../../contexts/WalletSelectorContext';
 
-const DesktopHeaderBase: React.FC = () => {
+const DesktopHeaderBase = () => {
 
   const { selector, modal, accounts, accountId } = useWalletSelector();
   const [account, setAccount] = useState<Account | null>(null);
   const [messages, setMessages] = useState<Array<Message>>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
-  const getAccount = useCallback(async (): Promise<Account | null> => {
+  const getAccount = useCallback(async () => {
     if (!accountId) {
       return null;
     }

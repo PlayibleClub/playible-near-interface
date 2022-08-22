@@ -45,6 +45,8 @@ PackContainer.propTypes = {
   releaseValue: PropTypes.string.isRequired,
   imagesrc: PropTypes.string,
   key: PropTypes.string,
+  link: PropTypes.string,
+  type: PropTypes.string,
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
 };
 

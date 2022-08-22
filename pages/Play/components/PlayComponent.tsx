@@ -36,29 +36,29 @@ const PlayComponent = (props) => {
 
   useEffect(() => {
     setGetGames(false);
-    setDay('');
-    setHour('');
-    setMinute('');
-    setSecond('');
+    setDay(0);
+    setHour(0);
+    setMinute(0);
+    setSecond(0);
     const id = setInterval(() => {
       const currentDate = new Date();
       const end = new Date(type === 'ongoing' || type === 'active' ? endDate : startDate);
-      const totalSeconds = (end - currentDate) / 1000;
+      // const totalSeconds = (end - currentDate) / 1000;
 
-      const days = Math.floor(totalSeconds / 2600 / 24);
-      const hours = Math.floor(totalSeconds / 3600) % 24;
-      const minutes = Math.floor(totalSeconds / 60) % 60;
-      const seconds = Math.floor(totalSeconds) % 60;
+      // const days = Math.floor(totalSeconds / 2600 / 24);
+      // const hours = Math.floor(totalSeconds / 3600) % 24;
+      // const minutes = Math.floor(totalSeconds / 60) % 60;
+      // const seconds = Math.floor(totalSeconds) % 60;
 
-      setDay(formatTime(days));
-      setHour(formatTime(hours));
-      setMinute(formatTime(minutes));
-      setSecond(formatTime(seconds));
+      // setDay(formatTime(days));
+      // setHour(formatTime(hours));
+      // setMinute(formatTime(minutes));
+      // setSecond(formatTime(seconds));
 
-      if (Math.floor(totalSeconds) === 0) {
-        setGetGames(true);
-        fetchGames();
-      }
+      // if (Math.floor(totalSeconds) === 0) {
+      //   setGetGames(true);
+      //   fetchGames();
+      // }
     }, 1000);
     return () => clearInterval(id);
   }, [index, getGames]);
@@ -155,6 +155,14 @@ PlayComponent.propTypes = {
   currPlayers: PropTypes.string.isRequired,
   maxPlayers: PropTypes.string.isRequired,
   timeLeft: PropTypes.string.isRequired,
+  type: PropTypes.string,
+  startDate: PropTypes.string,
+  endDate: PropTypes.string,
+  month: PropTypes.string,
+  date: PropTypes.string,
+  year: PropTypes.string,
+  fetchGames: PropTypes.func,
+  index: PropTypes.func,
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
   img: PropTypes.string,
 };

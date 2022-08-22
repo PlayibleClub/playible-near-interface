@@ -53,6 +53,7 @@ PrizePoolComponent.propTypes = {
   icon: PropTypes.string.isRequired,
   prizePool: PropTypes.string.isRequired,
   gameName: PropTypes.string.isRequired,
+  gameId: PropTypes.string,
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
 };
 

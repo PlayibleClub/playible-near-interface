@@ -19,28 +19,28 @@ const PlayDetailsComponent = (props) => {
 
   useEffect(() => {
     setGetGames(false);
-    setDay('');
-    setHour('');
-    setMinute('');
-    setSecond('');
+    setDay(null);
+    setHour(null);
+    setMinute(null);
+    setSecond(null);
     const id = setInterval(() => {
       const currentDate = new Date();
       const endDate = new Date(startDate);
-      const totalSeconds = (endDate - currentDate) / 1000;
+      // const totalSeconds = (endDate - currentDate) / 1000;
 
-      const days = Math.floor(totalSeconds / 2600 / 24);
-      const hours = Math.floor(totalSeconds / 3600) % 24;
-      const minutes = Math.floor(totalSeconds / 60) % 60;
-      const seconds = Math.floor(totalSeconds) % 60;
+      // const days = Math.floor(totalSeconds / 2600 / 24);
+      // const hours = Math.floor(totalSeconds / 3600) % 24;
+      // const minutes = Math.floor(totalSeconds / 60) % 60;
+      // const seconds = Math.floor(totalSeconds) % 60;
 
-      setDay(formatTime(days));
-      setHour(formatTime(hours));
-      setMinute(formatTime(minutes));
-      setSecond(formatTime(seconds));
+      // setDay(formatTime(days));
+      // setHour(formatTime(hours));
+      // setMinute(formatTime(minutes));
+      // setSecond(formatTime(seconds));
 
-      if (Math.floor(totalSeconds) > 0) {
-        game();
-      }
+      // if (Math.floor(totalSeconds) > 0) {
+      //   game();
+      // }
     }, 1000);
     return () => clearInterval(id);
   }, [getGames]);
@@ -49,16 +49,16 @@ const PlayDetailsComponent = (props) => {
     <div>
       <div className="flex space-x-2 mt-2">
         <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
-          {day}
+          {day || ''}
         </div>
         <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
-          {hour}
+          {hour || ''}
         </div>
         <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
-          {minute}
+          {minute || ''}
         </div>
         <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
-          {second}
+          {second  || ''}
         </div>
       </div>
     </div>

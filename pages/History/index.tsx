@@ -17,7 +17,7 @@ const playerList = [
     cost: '420 UST',
     jersey: '30',
     positions: ['PG', 'SG'],
-    avgscore: '86.3',
+    avgscore: 86.3,
     grad1: 'indigo-blue',
     grad2: 'indigo-bluegrad',
     listing: '12/12/2024', //4
@@ -30,7 +30,7 @@ const playerList = [
     cost: '41 UST',
     jersey: '12',
     positions: ['PG'],
-    avgscore: '66.5',
+    avgscore: 66.5,
     grad1: 'indigo-purple',
     grad2: 'indigo-purplegrad',
     listing: '12/12/2021', //3
@@ -43,7 +43,7 @@ const playerList = [
     cost: '840 UST',
     jersey: '23',
     positions: ['PG', 'SG'],
-    avgscore: '96.0',
+    avgscore: 96.0,
     grad1: 'indigo-purple',
     grad2: 'indigo-purplegrad',
     listing: '11/12/2025', //6
@@ -56,7 +56,7 @@ const playerList = [
     cost: '21 UST',
     jersey: '01',
     positions: ['SF', 'C'],
-    avgscore: '76.8',
+    avgscore: 76.8,
     grad1: 'indigo-darkblue',
     grad2: 'indigo-darkbluegrad',
     listing: '12/11/2025', //5
@@ -69,7 +69,7 @@ const playerList = [
     cost: '45.5 UST',
     jersey: '23',
     positions: ['SG', 'C'],
-    avgscore: '81.0',
+    avgscore: 81.0,
     grad1: 'indigo-blue',
     grad2: 'indigo-bluegrad',
     listing: '12/12/2001', //1
@@ -82,7 +82,7 @@ const playerList = [
     cost: '180 UST',
     jersey: '07',
     positions: ['PG'],
-    avgscore: '83.0',
+    avgscore: 83.0,
     grad1: 'indigo-black',
     grad2: 'indigo-red',
     listing: '10/12/2004', //2
@@ -95,7 +95,7 @@ const playerList = [
     cost: '999 UST',
     jersey: '24',
     positions: ['SG'],
-    avgscore: '96.0',
+    avgscore: 96.0,
     grad1: 'indigo-purple',
     grad2: 'indigo-purplegrad',
     listing: '12/12/2025', //7
@@ -203,7 +203,7 @@ export default function History(props) {
             <PortfolioContainer title="ENTRY SUMMARY" textcolor="text-indigo-black">
               {gameInfo.map(function (data, i) {
                 if (query.id === data.id) {
-                  if (!data.isActivePlay) {
+                  if (!data.isActive) {
                     const playicon = '/../public/images/playthumbnails/' + data.icon + '.png';
                     return (
                       <div className="mt-6">

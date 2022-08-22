@@ -51,29 +51,29 @@ export default function EntrySummary(props) {
     setGameEnd(true);
   }
 
-  useEffect(() => {
-    if (router && router.query.game_id && connectedWallet) {
-      fetchGameData();
-      setGameEnd(false);
-    }
-  }, [router, connectedWallet, gameEnd]);
+  // useEffect(() => {
+  //   if (router && router.query.game_id && connectedWallet) {
+  //     fetchGameData();
+  //     setGameEnd(false);
+  //   }
+  // }, [router, connectedWallet, gameEnd]);
 
-  useEffect(async () => {
-    setErr(null);
-    if (connectedWallet) {
-      if (connectedWallet?.network?.name === 'testnet') {
-        await fetchGameData();
-        setErr(null);
-      } else {
-        setErr('You are connected to mainnet. Please connect to testnet');
-        setLoading(false);
-      }
-    } else {
-      setErr('Waiting for wallet connection...');
-      setTeam([]);
-      setLoading(false);
-    }
-  }, [connectedWallet]);
+  // useEffect(async () => {
+  //   setErr(null);
+  //   if (connectedWallet) {
+  //     if (connectedWallet?.network?.name === 'testnet') {
+  //       await fetchGameData();
+  //       setErr(null);
+  //     } else {
+  //       setErr('You are connected to mainnet. Please connect to testnet');
+  //       setLoading(false);
+  //     }
+  //   } else {
+  //     setErr('Waiting for wallet connection...');
+  //     setTeam([]);
+  //     setLoading(false);
+  //   }
+  // }, [connectedWallet]);
 
   if (!router) {
     return;

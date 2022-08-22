@@ -52,7 +52,7 @@ export default function PackDetails(props) {
               <div className="mt-4 p-2 text-xs">
                 {txLoading
                   ? 'Loading...'
-                  : msg.content ||
+                  : msg.success ||
                     "We're sorry, unfortunately we've experienced a problem loading your request."}
                 {msg.title !== 'Success' && (
                   <>

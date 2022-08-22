@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import Button from '../buttons/Button';
 import { providers } from "near-api-js";
 import BaseModal from '../modals/BaseModal';
-import type { Account, Message } from '../../interfaces'
-import type {
+import { Account, Message } from '../../interfaces'
+import {
   AccountView,
 } from "near-api-js/lib/providers/provider";
 import Header from '../headers/Header';
@@ -15,7 +15,7 @@ const HeaderBase = () => {
   const { selector, modal, accounts, accountId } = useWalletSelector();
   const [account, setAccount] = useState<Account | null>(null);
 
-  const getAccount = useCallback(async (): Promise<Account | null> => {
+  const getAccount = useCallback(async () => {
     if (!accountId) {
       return null;
     }

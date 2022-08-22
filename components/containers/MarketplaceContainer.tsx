@@ -28,6 +28,7 @@ MarketplaceContainer.propTypes = {
   CoinValue: PropTypes.string,
   imagesrc: PropTypes.string,
   id: PropTypes.string,
+  LowAsk: PropTypes.string,
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
 };
 

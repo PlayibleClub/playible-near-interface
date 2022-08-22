@@ -61,6 +61,7 @@ export default function Home(props) {
   function query_config_contract() {
 
     provider.query({request_type: "call_function", finality: "optimistic", account_id: MINTER.mainnet, method_name: "get_config", args_base64: ""}).then((data) =>{
+      // @ts-ignore:next-line
       const config = JSON.parse(Buffer.from(data.result).toString())
       // Save minter config into state
       setMinterConfig({ ...config });
@@ -74,6 +75,7 @@ export default function Home(props) {
       if (selector.isSignedIn()){
         const query = JSON.stringify({account: accountId})
         const minting_of = await provider.query({request_type: "call_function", finality: "optimistic", account_id: contract.contractId, method_name: "get_minting_of", args_base64: Buffer.from(query).toString("base64")});
+        // @ts-ignore:next-line
         const _minted = JSON.parse(Buffer.from(minting_of.result).toString())
         setMinted(_minted)
       }
@@ -99,6 +101,7 @@ export default function Home(props) {
           method_name: "get_storage_balance_of",
           args_base64: Buffer.from(query).toString("base64")
         });
+        // @ts-ignore:next-line
         const storageDeposit = JSON.parse(Buffer.from(storage_balance.result).toString())
         setStorageDepositAccountBalance(storageDeposit)
 
@@ -146,6 +149,7 @@ export default function Home(props) {
     };
 
     const wallet = await selector.wallet();
+    // @ts-ignore:next-line
     const tx = wallet.signAndSendTransactions({transactions: [ {receiverId: selector.store.getState().contract.contractId, actions: [action_deposit_storage_near_token]}, {receiverId: useNEP141.mainnet, actions: [action_transfer_call]}]})
   }
 
@@ -175,8 +179,8 @@ export default function Home(props) {
     };
 
     const wallet = await selector.wallet();
-    // @ts-ignore
     const tx = wallet.signAndSendTransaction({signerId: accountId, receiverId: useNEP141.mainnet, actions: [
+      // @ts-ignore:next-line
         action_transfer_call
       ] }).catch(e => {
       console.log("error")
@@ -201,8 +205,8 @@ export default function Home(props) {
       };
 
     const wallet = await selector.wallet();
-    // @ts-ignore
     const tx = wallet.signAndSendTransaction({signerId: accountId, receiverId: selector.store.getState().contract.contractId, actions: [
+      // @ts-ignore:next-line
         action_deposit_storage_near_token
       ] }).catch(e => {
         console.log("error")
@@ -338,7 +342,7 @@ export default function Home(props) {
                         <button className="w-9/12 flex text-center justify-center items-center bg-indigo-buttonblue font-montserrat text-indigo-white p-4 text-xs mt-8 " onClick={() => execute_batch_transaction_storage_deposit_and_mint_token()}>
                           Mint ${Math.floor((selectedMintAmount * format_price()))} + fee {utils.format.formatNearAmount(BigInt(selectedMintAmount * MINT_STORAGE_COST).toString())}N
                         </button> : <button className="w-9/12 flex text-center justify-center items-center bg-indigo-buttonblue font-montserrat text-indigo-white p-4 text-xs mt-8 " onClick={() => execute_storage_deposit()}>
-                          Storage deposit required {utils.format.formatNearAmount(BigInt( (selectedMintAmount * MINT_STORAGE_COST) - parseInt(storageDepositAccountBalance)).toString())}N
+                          Storage deposit required {utils.format.formatNearAmount(BigInt( (selectedMintAmount * MINT_STORAGE_COST) - storageDepositAccountBalance).toString())}N
                         </button>
                       : selector.isSignedIn() ?
                             <div className="w-9/12 flex text-center justify-center items-center bg-indigo-buttonblue font-montserrat text-indigo-white p-4 text-xs mt-8 ">

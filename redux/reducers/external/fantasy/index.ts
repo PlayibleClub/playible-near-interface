@@ -1,9 +1,9 @@
 /* eslint-disable no-unused-vars */
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { axiosInstance, generateAuth } from '../../../../utils/statsperform';
-import { checkResponseValidity } from '../../../../utils/general';
+import { axiosInstance, generateAuth } from 'utils/statsperform';
+import { checkResponseValidity } from 'utils/general';
 
-export const listCollection = createAsyncThunk('listCollection', async (payload, thunkAPI) => {
+export const fantasy = createAsyncThunk('fantasy', async (payload, thunkAPI) => {
   try {
     const response = await axiosInstance.get('/participants' + generateAuth());
     const { response: validatedResponse, valid } = checkResponseValidity(response);
@@ -18,24 +18,35 @@ export const listCollection = createAsyncThunk('listCollection', async (payload,
   }
 });
 
-const collectionSlice = createSlice({
+const processFantasyData = (data) => {
+  const processedData = [];
+
+  return processedData;
+};
+
+const initialState = {};
+
+const fantasySlice = createSlice({
   name: 'player',
   initialState: initialState,
   reducers: {
     clearData: () => initialState,
   },
   extraReducers: {
-    [listCollection.pending]: (state) => {
+    // @ts-ignore:next-line
+    [fantasy.pending]: (state) => {
       return {
         ...state,
       };
     },
-    [listCollection.fulfilled]: (state, action) => {
+    // @ts-ignore:next-line
+    [fantasy.fulfilled]: (state, action) => {
       return {
         ...state,
       };
     },
-    [listCollection.rejected]: (state, action) => {
+    // @ts-ignore:next-line
+    [fantasy.rejected]: (state, action) => {
       return {
         ...state,
       };
@@ -43,4 +54,4 @@ const collectionSlice = createSlice({
   },
 });
 
-export default collectionSlice.reducer;
+export default fantasySlice.reducer;

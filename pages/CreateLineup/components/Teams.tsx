@@ -1,6 +1,5 @@
 import React, { Component, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { CommunityPoolSpendProposal } from '@terra-money/terra.js';
 
 const Teams = (props) => {
   const { teamName } = props;

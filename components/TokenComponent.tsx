@@ -1,10 +1,10 @@
 import React, { Component, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import Image from 'next/image';
-import { tokenDrawData } from '../data/index.js';
+import { tokenDrawData } from 'data/index';
 
 const TokenComponent = (props) => {
-  const { athlete_id, usage, name, rarity, release, team, isOpen, fantasy_score, img } = props;
+  const { athlete_id, usage, name, rarity, release, team, isOpen, fantasy_score, img, position } = props;
   const picLink = img || '/images/tokensMLB/SP.png';
   const [loading, setLoading] = useState(false);
 
@@ -54,6 +54,9 @@ TokenComponent.propTypes = {
   release: PropTypes.string.isRequired,
   team: PropTypes.string.isRequired,
   isOpen: PropTypes.bool.isRequired,
+  position: PropTypes.string.isRequired,
+  fantasy_score: PropTypes.string.isRequired,
+  img: PropTypes.string.isRequired,
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
 };
 

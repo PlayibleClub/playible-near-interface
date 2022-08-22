@@ -28,7 +28,7 @@ const TokenDrawPage = (props) => {
   const [athletes, setAthletes] = useState([]);
 
   const [packs, setpacks] = useState(true);
-  const walletConnection = useSelector((state) => state.external.playible.wallet.data);
+  const walletConnection = {};
   const [wallet, setWallet] = useState(null);
 
   const activeChecker = () => {
@@ -88,7 +88,7 @@ const TokenDrawPage = (props) => {
         token_id: id,
       },
     });
-    */
+    
 
     if (res.info) {
       const details = await axiosInstance.get(
@@ -120,13 +120,14 @@ const TokenDrawPage = (props) => {
 
       return newAthlete;
     }
+    */
   };
 
-  useEffect(async () => {
+  useEffect(() => {
     if (walletConnection) {
       // walletConnection.nearConfig.networkId -> to determine what network (testnet or mainnet)
       // setErr("You are not in the *intended network*") to notify user that they are not in the intended network
-      setWallet(walletConnection.walletConnection.isSignedIn());
+      // setWallet(walletConnection.walletConnection.isSignedIn());
     } else {
       setLoading(false);
       setWallet(null);

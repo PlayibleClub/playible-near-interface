@@ -25,7 +25,7 @@ const MyActivity = (props) => {
   const [activeCategory, setCategory] = useState('activeplays');
   const [allGames, setAllGames] = useState([]);
   const [completedGames, setCompletedGames] = useState([]);
-  const connectedWallet = useConnectedWallet();
+  const connectedWallet = {};
   const dispatch = useDispatch();
 
   const { error } = props;
@@ -61,7 +61,7 @@ const MyActivity = (props) => {
     if (allGames.length > 0) {
       const connectedWalletGames = allGames.map(async (data) => {
         const teams = await axiosInstance.get(
-          `/fantasy/game/${data.id}/registered_teams_detail/?wallet_addr=${connectedWallet.walletAddress}`
+          `/fantasy/game/${data.id}/registered_teams_detail/?wallet_addr=${"TODO"}`
         );
         if (teams.status === 200 && teams.data.length > 0) {
           return data;
@@ -81,7 +81,7 @@ const MyActivity = (props) => {
 
       const connectedWalletGames = allGames.map(async (data) => {
         const teams = await axiosInstance.get(
-          `/fantasy/game/${data.id}/registered_teams_detail/?wallet_addr=${connectedWallet.walletAddress}`
+          `/fantasy/game/${data.id}/registered_teams_detail/?wallet_addr=${"TODO"}`
         );
         if (teams.status === 200 && teams.data.length > 0) {
           return data;
@@ -95,25 +95,25 @@ const MyActivity = (props) => {
     }
   }
 
-  useEffect(async () => {
-    setErr(null);
-    setAllGames([]);
-    setCompletedGames([]);
-    if (connectedWallet && dispatch) {
-      if (connectedWallet?.network?.name === 'testnet') {
-        dispatch(getPortfolio({ walletAddr: connectedWallet.walletAddress }));
-        await fetchActiveGames();
-        await fetchCompletedGames();
-        setErr(null);
-      } else {
-        setErr('You are connected to mainnet. Please connect to testnet');
-        setLoading(false);
-      }
-    } else {
-      setErr('Waiting for wallet connection...');
-      setLoading(false);
-    }
-  }, [connectedWallet, dispatch]);
+  // useEffect(async () => {
+  //   setErr(null);
+  //   setAllGames([]);
+  //   setCompletedGames([]);
+  //   if (connectedWallet && dispatch) {
+  //     if (connectedWallet?.network?.name === 'testnet') {
+  //       dispatch(getPortfolio({ walletAddr: connectedWallet.walletAddress }));
+  //       await fetchActiveGames();
+  //       await fetchCompletedGames();
+  //       setErr(null);
+  //     } else {
+  //       setErr('You are connected to mainnet. Please connect to testnet');
+  //       setLoading(false);
+  //     }
+  //   } else {
+  //     setErr('Waiting for wallet connection...');
+  //     setLoading(false);
+  //   }
+  // }, [connectedWallet, dispatch]);
 
   return (
     <>
