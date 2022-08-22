@@ -38,14 +38,6 @@ export const NEP141USN = {
   },
 }; //Near NEP-141 equivalent CW-20 or ERC-20
 
-export const CW721 = {
-  mainnet: 'guest-book.testnet',
-  interface: {
-    viewMethods: ['getMessages'],
-    changeMethods: ['addMessage'],
-  },
-}; //NFT Contract
-
 export const PLAYIBLE = {
   mainnet: 'guest-book.testnet',
   testnet: 'guest-book.mainnet',
@@ -54,6 +46,7 @@ export const PLAYIBLE = {
     changeMethods: ['addMessage'],
   },
 }; //Playible/Fantasy Contract
+
 export const MARKETPLACE = {
   mainnet: 'guest-book.testnet',
   testnet: 'guest-book.mainnet',
@@ -71,8 +64,8 @@ export const ATHLETE = {
   },
 }; //Athlete Contract
 export const PACK = {
-  mainnet: 'guest-book.testnet',
-  testnet: 'guest-book.mainnet',
+  mainnet: 'nft.playible.testnet',
+  testnet: 'nft.playible.mainnet',
   interface: {
     viewMethods: ['getMessages'],
     changeMethods: ['addMessage'],

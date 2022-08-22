@@ -295,11 +295,8 @@ export default function Home(props) {
                           <Usdc hardCodeMode={useNEP141.mainnet == NEP141USDC.mainnet ? "#fff" : "#000"}></Usdc>
                         </button>
                         <button onClick={() => setUseNEP141(NEP141USN)} className=" p-3 hover:bg-indigo-black">
-                          <USN></USN>
+                          <USN hardCodeMode={useNEP141.mainnet == NEP141USDC.mainnet ? "#fff" : "#000"}></USN>
                         </button>
-                        {/*<button className=" p-3 hover:bg-indigo-black">*/}
-                        {/*  <Dai></Dai>*/}
-                        {/*</button>*/}
                       </div>
                     </div>
                     {
