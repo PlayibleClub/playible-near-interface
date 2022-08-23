@@ -1,5 +1,5 @@
 export const MINTER = {
-  testnet: 'dev-1661011342313-97717160257859',
+  testnet: 'pack_minter.playible.testnet',
   mainnet: 'dev-1661011342313-97717160257859',
   interface: {
     viewMethods: [

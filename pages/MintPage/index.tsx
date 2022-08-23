@@ -353,6 +353,14 @@ export default function Home(props) {
 
                   {/**<Select options={options} className="md:w-1/3 w-4/5 mr-9 mt-5" />**/}
                 </div>
+                <div className="flex-col w-full mt-8 ">
+                  <div className="align-center justify-center border-2 p-8 mr-8 rounded-lg">
+                    <div className="text-m">
+                      Early Bird Offer: The first 700 minted will receive an additional free
+                      promotional pack.
+                    </div>
+                  </div>
+                </div>
                 <div className="flex md:flex-row flex-col mt-12">
                   <div className="md:w-1/2 w-full ">
                     <img src={mint}></img>
