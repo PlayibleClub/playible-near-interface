@@ -1,21 +1,21 @@
-import React, { useCallback, useContext, useEffect, useState } from "react";
-import { map, distinctUntilChanged } from "rxjs";
-import { setupWalletSelector } from "@near-wallet-selector/core";
-import { WalletSelector, AccountState } from "@near-wallet-selector/core";
-import { setupModal } from "@near-wallet-selector/modal-ui";
-import { WalletSelectorModal } from "@near-wallet-selector/modal-ui";
-import { setupNearWallet } from "@near-wallet-selector/near-wallet";
-import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
-import { getConfig } from '../utils/near'
-import { PLAYIBLE, MINTER } from '../data/constants/nearContracts'
-import myNearWalletIconUrl from "@near-wallet-selector/my-near-wallet/assets/my-near-wallet-icon.png";
-import nearWalletIconUrl from "@near-wallet-selector/near-wallet/assets/near-wallet-icon.png";
+import React, { useCallback, useContext, useEffect, useState } from 'react';
+import { map, distinctUntilChanged } from 'rxjs';
+import { setupWalletSelector } from '@near-wallet-selector/core';
+import { WalletSelector, AccountState } from '@near-wallet-selector/core';
+import { setupModal } from '@near-wallet-selector/modal-ui';
+import { WalletSelectorModal } from '@near-wallet-selector/modal-ui';
+import { setupNearWallet } from '@near-wallet-selector/near-wallet';
+import { setupMyNearWallet } from '@near-wallet-selector/my-near-wallet';
+import { getConfig } from '../utils/near';
+import { PLAYIBLE, MINTER } from '../data/constants/nearContracts';
+import myNearWalletIconUrl from '@near-wallet-selector/my-near-wallet/assets/my-near-wallet-icon.png';
+import nearWalletIconUrl from '@near-wallet-selector/near-wallet/assets/near-wallet-icon.png';
 
 declare global {
   interface Window {
     selector: WalletSelector;
     modal: WalletSelectorModal;
-}
+  }
 }
 interface WalletSelectorContextValue {
   selector: WalletSelector;
@@ -24,8 +24,7 @@ interface WalletSelectorContextValue {
   accountId: string | null;
 }
 
-const WalletSelectorContext =
-  React.createContext<WalletSelectorContextValue | null>(null);
+const WalletSelectorContext = React.createContext<WalletSelectorContextValue | null>(null);
 
 export const WalletSelectorContextProvider: React.FC = ({ children }) => {
   const [selector, setSelector] = useState<WalletSelector | null>(null);
@@ -38,11 +37,14 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
       network: getConfig(env),
       debug: true,
       modules: [
-        setupNearWallet({iconUrl: nearWalletIconUrl}),
-        setupMyNearWallet({iconUrl: myNearWalletIconUrl }),
+        setupNearWallet({ iconUrl: nearWalletIconUrl }),
+        setupMyNearWallet({ iconUrl: myNearWalletIconUrl }),
       ],
     });
-    const _modal = setupModal(_selector, { contractId: env == 'development' ? MINTER.testnet : MINTER.mainnet, methodNames: [...MINTER.interface.viewMethods, ...MINTER.interface.changeMethods]  });
+    const _modal = setupModal(_selector, {
+      contractId: env == 'development' ? MINTER.testnet : MINTER.mainnet,
+      methodNames: [...MINTER.interface.viewMethods, ...MINTER.interface.changeMethods],
+    });
     const state = _selector.store.getState();
 
     setAccounts(state.accounts);
@@ -57,7 +59,7 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
   useEffect(() => {
     init().catch((err) => {
       console.error(err);
-      alert("Failed to initialise wallet selector");
+      alert('Failed to initialise wallet selector');
     });
   }, [init]);
 
@@ -72,7 +74,7 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
         distinctUntilChanged()
       )
       .subscribe((nextAccounts) => {
-        console.log("Accounts Update", nextAccounts);
+        console.log('Accounts Update', nextAccounts);
 
         setAccounts(nextAccounts);
       });
@@ -84,8 +86,7 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
     return null;
   }
 
-  const accountId =
-    accounts.find((account) => account.active)?.accountId || null;
+  const accountId = accounts.find((account) => account.active)?.accountId || null;
 
   return (
     <WalletSelectorContext.Provider
@@ -105,9 +106,7 @@ export function useWalletSelector() {
   const context = useContext(WalletSelectorContext);
 
   if (!context) {
-    throw new Error(
-      "useWalletSelector must be used within a WalletSelectorContextProvider"
-    );
+    throw new Error('useWalletSelector must be used within a WalletSelectorContextProvider');
   }
 
   return context;

@@ -29,7 +29,7 @@ export default function Home(props) {
   const { selector, modal, accounts, accountId } = useWalletSelector();
   //const { network } = selector.options;
   const provider = new providers.JsonRpcProvider({
-    url: env == 'development' ? 'https://rpc.testnet.near.org' : 'https://rpc.near.org',
+    url: env == 'development' ? 'https://rpc.testnet.near.org' : 'https://rpc.mainnet.near.org',
   });
   const { contract } = selector.store.getState();
 
