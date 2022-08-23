@@ -24,7 +24,6 @@
     "graphql": "^16.5.0",
     "javascript-time-ago": "^2.5.7",
     "moment": "^2.29.1",
-    "near-api-js": "^0.45.1",
     "next": "10.2.3",
     "next-images": "^1.8.1",
     "prop-types": "^15.7.2",

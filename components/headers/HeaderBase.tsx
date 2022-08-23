@@ -1,17 +1,14 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Button from '../buttons/Button';
-import { providers } from "near-api-js";
+import { providers } from '@near-wallet-selector/core/node_modules/near-api-js';
 import BaseModal from '../modals/BaseModal';
-import { Account, Message } from '../../interfaces'
-import {
-  AccountView,
-} from "near-api-js/lib/providers/provider";
+import { Account, Message } from '../../interfaces';
+import { AccountView } from '@near-wallet-selector/core/node_modules/near-api-js/lib/providers/provider';
 import Header from '../headers/Header';
 import { useWalletSelector } from '../../contexts/WalletSelectorContext';
 
 const HeaderBase = () => {
-  
   const { selector, modal, accounts, accountId } = useWalletSelector();
   const [account, setAccount] = useState<Account | null>(null);
 
@@ -25,8 +22,8 @@ const HeaderBase = () => {
 
     return provider
       .query<AccountView>({
-        request_type: "view_account",
-        finality: "final",
+        request_type: 'view_account',
+        finality: 'final',
         account_id: accountId,
       })
       .then((data) => ({
@@ -34,7 +31,6 @@ const HeaderBase = () => {
         account_id: accountId,
       }));
   }, [accountId, selector.options]);
-
 
   const logOut = async () => {
     const wallet = await selector.wallet();
@@ -51,41 +47,37 @@ const HeaderBase = () => {
 
   const renderWallet = () => {
     {
-      if(accountId) {
+      if (accountId) {
         return (
           <Button
-          textColor="white-light font-bold"
-          color="indigo-buttonblue"
-          rounded="rounded-md"
-          size="h-full py-1 px-1"
-              onClick={logOut}
-            >
-              {accountId}
-        </Button>
-        )
+            textColor="white-light font-bold"
+            color="indigo-buttonblue"
+            rounded="rounded-md"
+            size="h-full py-1 px-1"
+            onClick={logOut}
+          >
+            {accountId}
+          </Button>
+        );
       } else {
-        return  (
+        return (
           <Button
-          rounded="rounded-sm"
-          textColor="white-light"
-          color="indigo-buttonblue"
-          onClick={logIn}
-          size="py-1 px-1 h-full"
-        >
-          <div className="flex flex-row text-sm h-12 items-center">
-            <img className="ml-3 h-4 w-4" src="/images/wallet.png" alt="Img" />
-          </div>
-        </Button>
-        )
+            rounded="rounded-sm"
+            textColor="white-light"
+            color="indigo-buttonblue"
+            onClick={logIn}
+            size="py-1 px-1 h-full"
+          >
+            <div className="flex flex-row text-sm h-12 items-center">
+              <img className="ml-3 h-4 w-4" src="/images/wallet.png" alt="Img" />
+            </div>
+          </Button>
+        );
       }
     }
-  }
+  };
 
-  return (
-    <Header>
-      {renderWallet()}
-    </Header>
-  );
+  return <Header>{renderWallet()}</Header>;
 };
 
 HeaderBase.propTypes = {
