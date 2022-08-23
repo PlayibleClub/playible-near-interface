@@ -80,9 +80,12 @@ export default function Home(props) {
   };
 
   const [currentIndex, setCurrentIndex] = useState(0);
-  const featuredImagesDesktop = ['/images/promotionheaderDesktop.png'];
+  const featuredImagesDesktop = [
+    '/images/promotionheaderDesktop.png',
+    'images/promotionheaderDesktop2.png',
+  ];
 
-  const featuredImagesMobile = ['/images/promotionheader.png'];
+  const featuredImagesMobile = ['/images/promotionheader.png', '/images/promotionheader2.png'];
 
   const startSlider = () => {
     setInterval(() => {
