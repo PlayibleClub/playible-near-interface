@@ -1,6 +1,6 @@
 export const MINTER = {
-  testnet: 'pack_minter.playible.testnet',
-  mainnet: 'dev-1661011342313-97717160257859',
+  testnet: 'pack_minter.playible.near',
+  mainnet: 'pack_minter.playible.near',
   interface: {
     viewMethods: [
       'get_config',
