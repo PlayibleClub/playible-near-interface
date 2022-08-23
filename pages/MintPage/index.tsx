@@ -344,7 +344,7 @@ export default function Home(props) {
         <div className="flex flex-col w-screen md:w-full overflow-y-auto h-screen justify-center self-center md:pb-12 text-indigo-black">
           <Main color="indigo-white">
             <div className="flex flex-col md:flex-row md:ml-12">
-              <div className="md:w-full ">
+              <div className="md:w-full overflow-x-hidden">
                 <div className="flex-col flex justify-center align-center md:flex-row md:flex md:justify-between w-full ml-4 mt-8">
                   <div className="text-xl mt-5 font-bold font-monument ">
                     MINT PACKS
@@ -353,7 +353,7 @@ export default function Home(props) {
 
                   {/**<Select options={options} className="md:w-1/3 w-4/5 mr-9 mt-5" />**/}
                 </div>
-                <div className="flex-col w-full mt-8 ">
+                <div className="flex-col flex w-full mt-8 ">
                   <div className="align-center justify-center border-2 p-8 mr-8 rounded-lg">
                     <div className="text-m">
                       Early Bird Offer: The first 700 minted will receive an additional free
