@@ -2,9 +2,11 @@ import React, { useState, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import DesktopHeader from './DesktopHeader';
 import Button from '../buttons/Button';
-import { providers } from '@near-wallet-selector/core/node_modules/near-api-js';
-import { Account, Message } from 'interfaces';
-import { AccountView } from '@near-wallet-selector/core/node_modules/near-api-js/lib/providers/provider';
+import { providers } from "near-api-js";
+import type { Account, Message } from '../../interfaces'
+import type {
+  AccountView,
+} from "near-api-js/lib/providers/provider";
 import { useWalletSelector } from '../../contexts/WalletSelectorContext';
 
 const DesktopHeaderBase = () => {

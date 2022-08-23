@@ -3,7 +3,7 @@ import {
   utils,
   WalletConnection,
   providers,
-} from '@near-wallet-selector/core/node_modules/near-api-js';
+} from 'near-api-js';
 import Container from '../../components/containers/Container';
 import Main from '../../components/Main';
 import React, { useEffect, useState } from 'react';

@@ -1,12 +1,13 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Button from '../buttons/Button';
-import { providers } from '@near-wallet-selector/core/node_modules/near-api-js';
+import { providers } from 'near-api-js';
 import BaseModal from '../modals/BaseModal';
 import { Account, Message } from '../../interfaces';
-import { AccountView } from '@near-wallet-selector/core/node_modules/near-api-js/lib/providers/provider';
+
 import Header from '../headers/Header';
 import { useWalletSelector } from '../../contexts/WalletSelectorContext';
+import {AccountView} from "near-api-js/lib/providers/provider";
 
 const HeaderBase = () => {
   const { selector, modal, accounts, accountId } = useWalletSelector();
