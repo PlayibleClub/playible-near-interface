@@ -356,7 +356,7 @@ export default function Home(props) {
                 <div className="flex-col flex w-full mt-8 ">
                   <div className="align-center justify-center border-2 p-8 mr-8 rounded-lg">
                     <div className="text-m">
-                      Early Bird Offer: The first 700 minted will receive an additional free
+                      Early Bird Offer: The first 500 minted will receive an additional free
                       promotional pack.
                     </div>
                   </div>
@@ -513,63 +513,6 @@ export default function Home(props) {
                   </div>
                 </div>
                 <div className="ml-8 md:ml-2">
-                  <div className="text-xl font-bold font-monument mt-12 ">
-                    PUBLIC MINT
-                    <hr className="w-10 border-4"></hr>
-                  </div>
-                  <div className="mt-10 mb-10">
-                    Open{' '}
-                    {new Date(
-                      Math.floor(minterConfig.public_sale_start / NANO_TO_SECONDS_DENOMINATOR)
-                    ).getHours() < 10
-                      ? '0' +
-                        new Date(
-                          Math.floor(minterConfig.public_sale_start / NANO_TO_SECONDS_DENOMINATOR)
-                        ).getHours()
-                      : new Date(
-                          Math.floor(minterConfig.public_sale_start / NANO_TO_SECONDS_DENOMINATOR)
-                        ).getHours()}
-                    :
-                    {new Date(
-                      Math.floor(minterConfig.public_sale_start / NANO_TO_SECONDS_DENOMINATOR)
-                    ).getMinutes() < 10
-                      ? '0' +
-                        new Date(
-                          Math.floor(minterConfig.public_sale_start / NANO_TO_SECONDS_DENOMINATOR)
-                        ).getMinutes()
-                      : new Date(
-                          Math.floor(minterConfig.public_sale_start / NANO_TO_SECONDS_DENOMINATOR)
-                        ).getMinutes()}{' '}
-                    UTC{' '}
-                    {new Date(
-                      Math.floor(minterConfig.public_sale_start / NANO_TO_SECONDS_DENOMINATOR)
-                    ).getUTCMonth() +
-                      1 <
-                    10
-                      ? '0' +
-                        (new Date(
-                          Math.floor(minterConfig.public_sale_start / NANO_TO_SECONDS_DENOMINATOR)
-                        ).getUTCMonth() +
-                          1)
-                      : new Date(
-                          Math.floor(minterConfig.public_sale_start / NANO_TO_SECONDS_DENOMINATOR)
-                        ).getUTCMonth() + 1}
-                    /
-                    {new Date(
-                      Math.floor(minterConfig.public_sale_start / NANO_TO_SECONDS_DENOMINATOR)
-                    ).getUTCDate() < 10
-                      ? '0' +
-                        new Date(
-                          Math.floor(minterConfig.public_sale_start / NANO_TO_SECONDS_DENOMINATOR)
-                        ).getUTCDate()
-                      : new Date(
-                          Math.floor(minterConfig.public_sale_start / NANO_TO_SECONDS_DENOMINATOR)
-                        ).getUTCDate()}
-                    /
-                    {new Date(
-                      Math.floor(minterConfig.public_sale_start / NANO_TO_SECONDS_DENOMINATOR)
-                    ).getFullYear()}
-                  </div>
                   <div className="text-xl font-bold font-monument ">
                     PACK DETAILS
                     <hr className="w-10 border-4"></hr>
