@@ -29,7 +29,7 @@ export default function Home(props) {
   const { selector, modal, accounts, accountId } = useWalletSelector();
   //const { network } = selector.options;
   const provider = new providers.JsonRpcProvider({
-    url: env == 'development' ? 'https://rpc.testnet.near.org' : 'https://rpc.mainnet.near.org',
+    url: env == 'development' ? 'https://rpc.mainnet.near.org' : 'https://rpc.mainnet.near.org',
   });
   const { contract } = selector.store.getState();
 
@@ -432,7 +432,7 @@ export default function Home(props) {
 
                     <div className="border border-indigo-lightgray rounded-2xl text-center p-4 w-40 flex flex-col justify-center  mt-8">
                       <div className="text-2xl font-black font-monument ">
-                        {minted}/{minterConfig.nft_pack_max_sale_supply + RESERVED_AMOUNT}
+                        {minted }
                       </div>
                       <div className="text-xs">YOU HAVE MINTED</div>
                     </div>
