@@ -8,7 +8,7 @@ import DisclaimerHeader from '../headers/DisclaimerHeader';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
 const Container = (props) => {
-  const { activeName, children, isAdmin } = props
+  const { activeName, children, isAdmin } = props;
   const { selector } = useWalletSelector();
 
   return (
@@ -17,13 +17,13 @@ const Container = (props) => {
         <div className="flex bg-indigo-white">
           <DesktopNavbar
             isAdmin={isAdmin}
-            isLoggedIn = {selector.isSignedIn()}
+            isLoggedIn={selector.isSignedIn()}
             color="indigo-navbargrad2"
             secondcolor="indigo-navbargrad1"
             activeName={activeName}
           />
           <div className="flex flex-col w-screen h-full">
-            <DesktopHeaderBase/>
+            <DesktopHeaderBase />
             <DisclaimerHeader />
             {children}
           </div>
@@ -31,7 +31,7 @@ const Container = (props) => {
       </div>
 
       <div className="visible md:invisible h-fit overflow-x-auto z-40">
-        <Navbar isAdmin={isAdmin} isLoggedIn = {selector.isSignedIn()} />
+        <Navbar isAdmin={isAdmin} isLoggedIn={selector.isSignedIn()} />
         <HeaderBase />
         <DisclaimerHeader />
 
