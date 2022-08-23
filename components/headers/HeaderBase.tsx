@@ -19,7 +19,7 @@ const HeaderBase = () => {
     }
 
     const { network } = selector.options;
-    const provider = new providers.JsonRpcProvider({ url: network.nodeUrl });
+    const provider = new providers.JsonRpcProvider({ url: 'https://rpc.mainnet.near.org' });
 
     return provider
       .query<AccountView>({

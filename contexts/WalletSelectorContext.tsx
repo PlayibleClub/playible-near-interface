@@ -32,7 +32,7 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
   const [accounts, setAccounts] = useState<Array<AccountState>>([]);
 
   const init = useCallback(async () => {
-    const env = process.env.NEAR_ENV || 'development';
+    const env = process.env.NEAR_ENV || 'production';
     const _selector = await setupWalletSelector({
       network: getConfig(env),
       debug: true,
