@@ -1,9 +1,4 @@
-import {
-  transactions,
-  utils,
-  WalletConnection,
-  providers,
-} from 'near-api-js';
+import { transactions, utils, WalletConnection, providers } from 'near-api-js';
 import Container from '../../components/containers/Container';
 import Main from '../../components/Main';
 import React, { useEffect, useState } from 'react';
@@ -21,10 +16,6 @@ import { useWalletSelector } from '../../contexts/WalletSelectorContext';
 import { getConfig } from '../../utils/near';
 
 import { MINTER, NEP141USDC, NEP141USDT, NEP141USN } from '../../data/constants/nearDevContracts';
-import {
-  Action,
-  functionCall,
-} from '@near-wallet-selector/core/node_modules/near-api-js/lib/transaction';
 
 const MINT_STORAGE_COST = 5870000000000000000000;
 const DEFAULT_MAX_FEES = '300000000000000';
@@ -217,7 +208,7 @@ export default function Home(props) {
     //const register = Buffer.from(JSON.stringify({account_id:  _minter.contractList[0].contractId}))
 
     const action_transfer_call = {
-      type: 'FunctionCall',
+      functionCall: 'FunctionCall',
       params: {
         methodName: 'ft_transfer_call',
         args: data,
