@@ -155,6 +155,8 @@ export default function Home(props) {
         method_name: 'ft_balance_of',
         args_base64: Buffer.from(query).toString('base64'),
       });
+      // @ts-ignore:next-line
+
       const balance = JSON.parse(Buffer.from(ft_balance_of.result).toString());
       if (balance < mint_cost) {
         setBalanceErrorMsg('Error you need 200 ' + useNEP141.title);
