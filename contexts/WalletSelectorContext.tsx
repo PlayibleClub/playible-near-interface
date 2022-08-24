@@ -6,8 +6,8 @@ import { setupModal } from '@near-wallet-selector/modal-ui';
 import { WalletSelectorModal } from '@near-wallet-selector/modal-ui';
 import { setupNearWallet } from '@near-wallet-selector/near-wallet';
 import { setupMyNearWallet } from '@near-wallet-selector/my-near-wallet';
-import { getConfig } from '../utils/near';
-import { PLAYIBLE, MINTER } from '../data/constants/nearContracts';
+import { getConfig, getContract } from '../utils/near';
+import { MINTER } from '../data/constants/nearContracts';
 import myNearWalletIconUrl from '@near-wallet-selector/my-near-wallet/assets/my-near-wallet-icon.png';
 import nearWalletIconUrl from '@near-wallet-selector/near-wallet/assets/near-wallet-icon.png';
 
@@ -34,7 +34,7 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
   const init = useCallback(async () => {
     const env = process.env.NEAR_ENV || 'production';
     const _selector = await setupWalletSelector({
-      network: getConfig(env),
+      network: getConfig(),
       debug: true,
       modules: [
         setupNearWallet({ iconUrl: nearWalletIconUrl }),
@@ -42,7 +42,7 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
       ],
     });
     const _modal = setupModal(_selector, {
-      contractId: env == 'development' ? MINTER.testnet : MINTER.mainnet,
+      contractId: getContract(MINTER),
       methodNames: [...MINTER.interface.viewMethods, ...MINTER.interface.changeMethods],
     });
     const state = _selector.store.getState();

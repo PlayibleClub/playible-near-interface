@@ -13,9 +13,9 @@ import Usdc from '../../public/images/SVG/usdc';
 import USN from '../../public/images/SVG/usn';
 import { useWalletSelector } from '../../contexts/WalletSelectorContext';
 import BigNumber from 'bignumber.js';
-import { getConfig } from '../../utils/near';
+import { getConfig, getContract, getRPCProvider } from '../../utils/near';
 
-import { MINTER, NEP141USDC, NEP141USDT, NEP141USN } from '../../data/constants/nearDevContracts';
+import { MINTER, NEP141USDC, NEP141USDT, NEP141USN } from '../../data/constants/nearContracts';
 
 const MINT_STORAGE_COST_TESTNET = 5870000000000000000000;
 const MINT_STORAGE_COST = 9930000000000000000000;
@@ -23,16 +23,13 @@ const DECIMALS_NEAR = 1000000000000000000000000;
 const DEFAULT_MAX_FEES = '300000000000000';
 const RESERVED_AMOUNT = 200;
 const NANO_TO_SECONDS_DENOMINATOR = 1000000;
-const CONTRACT_MINTER_ACCOUNT_ID =
-  process.env.NEAR_ENV == 'development' ? MINTER.testnet : MINTER.mainnet;
-const env = process.env.NEAR_ENV || 'development';
 
 export default function Home(props) {
   const { selector, modal, accounts, accountId } = useWalletSelector();
 
   //const { network } = selector.options;
   const provider = new providers.JsonRpcProvider({
-    url: env == 'development' ? 'https://rpc.mainnet.near.org' : 'https://rpc.mainnet.near.org',
+    url: getRPCProvider(),
   });
   const { contract } = selector.store.getState();
 
@@ -68,7 +65,7 @@ export default function Home(props) {
       .query({
         request_type: 'call_function',
         finality: 'optimistic',
-        account_id: MINTER.mainnet,
+        account_id: getContract(MINTER),
         method_name: 'get_config',
         args_base64: '',
       })
@@ -154,7 +151,7 @@ export default function Home(props) {
       const ft_balance_of = await provider.query({
         request_type: 'call_function',
         finality: 'optimistic',
-        account_id: useNEP141.mainnet,
+        account_id: getContract(useNEP141),
         method_name: 'ft_balance_of',
         args_base64: Buffer.from(query).toString('base64'),
       });
@@ -202,7 +199,10 @@ export default function Home(props) {
           actions: [action_deposit_storage_near_token],
         },
         // @ts-ignore:next-line
-        { receiverId: useNEP141.mainnet, actions: [action_transfer_call] },
+        {
+          receiverId: getContract(useNEP141),
+          actions: [action_transfer_call],
+        },
       ],
     });
   }
@@ -247,7 +247,7 @@ export default function Home(props) {
     const tx = wallet
       .signAndSendTransaction({
         signerId: accountId,
-        receiverId: useNEP141.mainnet,
+        receiverId: getContract(useNEP141),
         actions: [
           // @ts-ignore:next-line
           action_transfer_call,
@@ -397,39 +397,39 @@ export default function Home(props) {
                           onClick={() => setUseNEP141(NEP141USDT)}
                           className={
                             'p-3 ' +
-                            (useNEP141.mainnet == NEP141USDT.mainnet
+                            (useNEP141.title == NEP141USDT.title
                               ? 'bg-indigo-black'
                               : 'hover:bg-indigo-slate')
                           }
                         >
                           <Usdt
-                            hardCodeMode={useNEP141.mainnet == NEP141USDT.mainnet ? '#fff' : '#000'}
+                            hardCodeMode={useNEP141.title == NEP141USDT.title ? '#fff' : '#000'}
                           ></Usdt>
                         </button>
                         <button
                           onClick={() => setUseNEP141(NEP141USDC)}
                           className={
                             'p-3 ' +
-                            (useNEP141.mainnet == NEP141USDC.mainnet
+                            (useNEP141.title == NEP141USDC.title
                               ? 'bg-indigo-black'
                               : 'hover:bg-indigo-slate')
                           }
                         >
                           <Usdc
-                            hardCodeMode={useNEP141.mainnet == NEP141USDC.mainnet ? '#fff' : '#000'}
+                            hardCodeMode={useNEP141.title == NEP141USDC.title ? '#fff' : '#000'}
                           ></Usdc>
                         </button>
                         <button
                           onClick={() => setUseNEP141(NEP141USN)}
                           className={
                             'p-3 ' +
-                            (useNEP141.mainnet == NEP141USN.mainnet
+                            (useNEP141.title == NEP141USN.title
                               ? 'bg-indigo-black'
                               : 'hover:bg-indigo-slate')
                           }
                         >
                           <USN
-                            hardCodeMode={useNEP141.mainnet == NEP141USN.mainnet ? '#fff' : '#000'}
+                            hardCodeMode={useNEP141.title == NEP141USN.title ? '#fff' : '#000'}
                           ></USN>
                         </button>
                       </div>

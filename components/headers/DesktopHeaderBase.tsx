@@ -2,11 +2,10 @@ import React, { useState, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import DesktopHeader from './DesktopHeader';
 import Button from '../buttons/Button';
-import { providers } from "near-api-js";
-import type { Account, Message } from '../../interfaces'
-import type {
-  AccountView,
-} from "near-api-js/lib/providers/provider";
+import { providers } from 'near-api-js';
+import type { Account, Message } from '../../interfaces';
+import type { AccountView } from 'near-api-js/lib/providers/provider';
+import { getRPCProvider } from 'utils/near';
 import { useWalletSelector } from '../../contexts/WalletSelectorContext';
 
 const DesktopHeaderBase = () => {
@@ -21,7 +20,7 @@ const DesktopHeaderBase = () => {
     }
 
     const { network } = selector.options;
-    const provider = new providers.JsonRpcProvider({ url: 'https://rpc.mainnet.near.org' });
+    const provider = new providers.JsonRpcProvider({ url: getRPCProvider() });
 
     return provider
       .query<AccountView>({

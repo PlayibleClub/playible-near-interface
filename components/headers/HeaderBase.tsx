@@ -7,7 +7,8 @@ import { Account, Message } from '../../interfaces';
 
 import Header from '../headers/Header';
 import { useWalletSelector } from '../../contexts/WalletSelectorContext';
-import {AccountView} from "near-api-js/lib/providers/provider";
+import { AccountView } from 'near-api-js/lib/providers/provider';
+import { getRPCProvider } from 'utils/near';
 
 const HeaderBase = () => {
   const { selector, modal, accounts, accountId } = useWalletSelector();
@@ -19,7 +20,7 @@ const HeaderBase = () => {
     }
 
     const { network } = selector.options;
-    const provider = new providers.JsonRpcProvider({ url: 'https://rpc.mainnet.near.org' });
+    const provider = new providers.JsonRpcProvider({ url: getRPCProvider() });
 
     return provider
       .query<AccountView>({
