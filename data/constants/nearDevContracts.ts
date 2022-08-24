@@ -13,6 +13,7 @@ export const MINTER = {
   },
 }; // Near Minter contract
 export const NEP141USDC = {
+  title: "USDC",
   mainnet: 'a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.factory.bridge.near',
   testnet: 'usdc.fakes.testnet',
   decimals: 1000000,
@@ -23,6 +24,7 @@ export const NEP141USDC = {
 }; //Near NEP-141 equivalent CW-20 or ERC-20
 
 export const NEP141USDT = {
+  title: "USDT",
   mainnet: 'dac17f958d2ee523a2206206994597c13d831ec7.factory.bridge.near',
   testnet: 'usdt.fakes.testnet',
   decimals: 1000000,
@@ -32,6 +34,7 @@ export const NEP141USDT = {
   },
 }; //Near NEP-141 equivalent CW-20 or ERC-20
 export const NEP141USN = {
+  title: "USN",
   mainnet: 'usn',
   testnet: 'usdn.testnet',
   decimals: 1000000000000000000,
