@@ -12,13 +12,14 @@ import Usdt from '../../public/images/SVG/usdt';
 import Usdc from '../../public/images/SVG/usdc';
 import USN from '../../public/images/SVG/usn';
 import { useWalletSelector } from '../../contexts/WalletSelectorContext';
-
+import BigNumber from "bignumber.js";
 import { getConfig } from '../../utils/near';
 
 import { MINTER, NEP141USDC, NEP141USDT, NEP141USN } from '../../data/constants/nearDevContracts';
 
 const MINT_STORAGE_COST_TESTNET = 5870000000000000000000;
 const MINT_STORAGE_COST = 9930000000000000000000;
+const DECIMALS_NEAR = 1000000000000000000000000
 const DEFAULT_MAX_FEES = '300000000000000';
 const RESERVED_AMOUNT = 200;
 const NANO_TO_SECONDS_DENOMINATOR = 1000000;
@@ -28,6 +29,7 @@ const env = process.env.NEAR_ENV || 'development';
 
 export default function Home(props) {
   const { selector, modal, accounts, accountId } = useWalletSelector();
+
   //const { network } = selector.options;
   const provider = new providers.JsonRpcProvider({
     url: env == 'development' ? 'https://rpc.mainnet.near.org' : 'https://rpc.mainnet.near.org',
@@ -122,7 +124,7 @@ export default function Home(props) {
   }
 
   async function execute_batch_transaction_storage_deposit_and_mint_token() {
-    const amount_to_deposit_near = BigInt(selectedMintAmount * MINT_STORAGE_COST).toString();
+    const amount_to_deposit_near = new BigNumber(selectedMintAmount).multipliedBy(new BigNumber( MINT_STORAGE_COST)).toFixed();
 
     const data_one = Buffer.from(JSON.stringify({}));
     const action_deposit_storage_near_token = {
@@ -473,7 +475,8 @@ export default function Home(props) {
                         >
                           Mint ${Math.floor(selectedMintAmount * format_price())} + fee{' '}
                           {utils.format.formatNearAmount(
-                            BigInt(selectedMintAmount * MINT_STORAGE_COST).toString()
+
+                              new BigNumber(selectedMintAmount).multipliedBy(new BigNumber( MINT_STORAGE_COST)).toFixed()
                           )}
                           N
                         </button>
