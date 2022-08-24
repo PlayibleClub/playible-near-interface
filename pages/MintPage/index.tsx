@@ -21,7 +21,7 @@ const MINT_STORAGE_COST_TESTNET = 5870000000000000000000;
 const MINT_STORAGE_COST = 9930000000000000000000;
 const DECIMALS_NEAR = 1000000000000000000000000;
 const DEFAULT_MAX_FEES = '300000000000000';
-const RESERVED_AMOUNT = 400;
+const RESERVED_AMOUNT = 200;
 const NANO_TO_SECONDS_DENOMINATOR = 1000000;
 const CONTRACT_MINTER_ACCOUNT_ID =
   process.env.NEAR_ENV == 'development' ? MINTER.testnet : MINTER.mainnet;
@@ -444,7 +444,8 @@ export default function Home(props) {
                         completed={parseInt(
                           (
                             ((minterConfig.nft_pack_max_sale_supply -
-                              minterConfig.nft_pack_mint_counter) *
+                              minterConfig.nft_pack_mint_counter -
+                              200) *
                               100) /
                             (minterConfig.nft_pack_max_sale_supply + RESERVED_AMOUNT)
                           ).toFixed(2)
@@ -455,8 +456,10 @@ export default function Home(props) {
                     </div>
                     <div className="text-xs ">
                       {' '}
-                      {minterConfig.nft_pack_max_sale_supply - minterConfig.nft_pack_mint_counter}/
-                      {minterConfig.nft_pack_max_sale_supply + RESERVED_AMOUNT} packs remaining
+                      {minterConfig.nft_pack_max_sale_supply -
+                        minterConfig.nft_pack_mint_counter -
+                        200}
+                      /{minterConfig.nft_pack_max_sale_supply + RESERVED_AMOUNT} packs remaining
                     </div>
                     <div>{selectMint()}</div>
                     {/*TODO: start styling */}
