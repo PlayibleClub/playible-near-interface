@@ -61,7 +61,7 @@ export default function Home(props) {
   const [minted, setMinted] = useState(0);
   const [useNEP141, setUseNEP141] = useState(NEP141USDT);
   const [intervalSale, setIntervalSale] = useState(0);
-  const [balanceErrorMsg, setBalanceErrorMsg] = useState("");
+  const [balanceErrorMsg, setBalanceErrorMsg] = useState('');
 
   function query_config_contract() {
     provider
@@ -125,7 +125,6 @@ export default function Home(props) {
   }
 
   async function execute_batch_transaction_storage_deposit_and_mint_token() {
-
     const amount_to_deposit_near = new BigNumber(selectedMintAmount)
       .multipliedBy(new BigNumber(MINT_STORAGE_COST))
       .toFixed();
@@ -161,14 +160,13 @@ export default function Home(props) {
       });
       const balance = JSON.parse(Buffer.from(ft_balance_of.result).toString());
       if (balance < mint_cost) {
-        setBalanceErrorMsg("Error you need " + useNEP141.title)
-        return
+        setBalanceErrorMsg('Error you need 200 ' + useNEP141.title);
+        return;
       }
-      setBalanceErrorMsg("")
-    }catch (e) {
-      console.log(e)
-      return
-
+      setBalanceErrorMsg('');
+    } catch (e) {
+      console.log(e);
+      return;
     }
 
     if (selectedMintAmount == 0) {
@@ -495,19 +493,24 @@ export default function Home(props) {
                       {
                         /*parseInt(String(storageDepositAccountBalance)) >= selectedMintAmount * MINT_STORAGE_COST*/
                       } ? (
-                             <> <button
-                          className="w-9/12 flex text-center justify-center items-center bg-indigo-buttonblue font-montserrat text-indigo-white p-4 text-xs mt-8 "
-                          onClick={() => execute_batch_transaction_storage_deposit_and_mint_token()}
-                        >
-                          Mint ${Math.floor(selectedMintAmount * format_price())} + fee{' '}
-                          {utils.format.formatNearAmount(
-                            new BigNumber(selectedMintAmount)
-                              .multipliedBy(new BigNumber(MINT_STORAGE_COST))
-                              .toFixed()
-                          )}
-                          N
-                        </button>
-                          <p>{balanceErrorMsg}</p> </>
+                        <>
+                          {' '}
+                          <button
+                            className="w-9/12 flex text-center justify-center items-center bg-indigo-buttonblue font-montserrat text-indigo-white p-4 text-xs mt-8 "
+                            onClick={() =>
+                              execute_batch_transaction_storage_deposit_and_mint_token()
+                            }
+                          >
+                            Mint ${Math.floor(selectedMintAmount * format_price())} + fee{' '}
+                            {utils.format.formatNearAmount(
+                              new BigNumber(selectedMintAmount)
+                                .multipliedBy(new BigNumber(MINT_STORAGE_COST))
+                                .toFixed()
+                            )}
+                            N
+                          </button>
+                          <p className="text-xs">{balanceErrorMsg}</p>
+                        </>
                       ) : (
                         <button
                           className="w-9/12 flex text-center justify-center items-center bg-indigo-buttonblue font-montserrat text-indigo-white p-4 text-xs mt-8 "
