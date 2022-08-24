@@ -511,7 +511,7 @@ export default function Home(props) {
                             )}
                             N
                           </button>
-                          <p className="text-xs">{balanceErrorMsg}</p>
+                          <p className="text-xs text-red-700">{balanceErrorMsg}</p>
                         </>
                       ) : (
                         <button
