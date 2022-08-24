@@ -32,8 +32,8 @@ const Portfolio = () => {
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
   const [playerList, setPlayerList] = useState(null);
-  const walletConnection = useSelector((state) => state.external.playible.wallet.data);
-  const { list } = useSelector((state) => state.assets);
+  // const walletConnection = useSelector((state) => state.external.playible.wallet.data);
+  // const { list } = useSelector((state) => state.assets);
 
   const changeIndex = (index) => {
     switch (index) {
@@ -168,7 +168,7 @@ const Portfolio = () => {
     }
   };
 
-  useEffect(async () => {
+  useEffect(() => {
     setLoading(true);
     setSortedList([]);
     setLoading(false);
@@ -178,19 +178,19 @@ const Portfolio = () => {
 
   useEffect(() => {}, [packs, packLimit, packOffset]);
 
-  useEffect(() => {
-    if (walletConnection) {
-      setWallet(walletConnection.walletConnection.isSignedIn());
-    } else {
-      setWallet(null);
-    }
-  }, [walletConnection]);
+  // useEffect(() => {
+  //   if (walletConnection) {
+  //     setWallet(walletConnection.walletConnection.isSignedIn());
+  //   } else {
+  //     setWallet(null);
+  //   }
+  // }, [walletConnection]);
 
-  useEffect(() => {
-    if (list) {
-      setPlayerList(list);
-    }
-  }, [list]);
+  // useEffect(() => {
+  //   if (list) {
+  //     setPlayerList(list);
+  //   }
+  // }, [list]);
 
   return (
     <Container activeName="SQUAD">
@@ -265,7 +265,7 @@ const Portfolio = () => {
                                           (item) => item.trait_type === 'name'
                                         )[0].value
                                       }
-                                      AvgScore={parseFloat(player.fantasy_score).toFixed(2)}
+                                      AvgScore={player.fantasy_score}
                                       id={
                                         path.attributes.filter(
                                           (item) => item.trait_type === 'athlete_id'
@@ -327,7 +327,7 @@ const Portfolio = () => {
                                 value={limit}
                                 className="bg-indigo-white text-lg w-full outline-none"
                                 onChange={(e) => {
-                                  setLimit(e.target.value);
+                                  // setLimit(e.target.value);
                                   setOffset(0);
                                 }}
                               >
@@ -370,7 +370,7 @@ const Portfolio = () => {
                                 <div className="mb-4 cursor-pointer" key={i}>
                                   <SquadPackComponent
                                     imagesrc={null}
-                                    packName={path.name}
+                                    PackName={path.name}
                                     releaseValue={
                                       path.attributes.filter(
                                         (item) => item.trait_type === 'release'
@@ -430,7 +430,8 @@ const Portfolio = () => {
                                 value={packLimit}
                                 className="bg-indigo-white text-lg w-full outline-none"
                                 onChange={(e) => {
-                                  setPackLimit(e.target.value), setPackOffset(0);
+                                  // setPackLimit(e.target.value)
+                                  setPackOffset(0);
                                 }}
                               >
                                 {limitOptions.map((option) => (

@@ -1,15 +1,9 @@
-import {
-  useLCDClient,
-  useWallet,
-  WalletStatus,
-  useConnectedWallet,
-} from '@terra-money/wallet-provider';
 import Image from 'next/image'
 import React, { useEffect, useState } from 'react';
 import Main from '../../components/Main';
 import PortfolioContainer from '../../components/containers/PortfolioContainer';
 import { useDispatch } from 'react-redux';
-import { getPortfolio } from '../../redux/reducers/contract/portfolio';
+// import { getPortfolio } from '../../redux/reducers/contract/portfolio';
 
 import Link from 'next/link';
 import PlayComponent from './components/PlayComponent';
@@ -21,14 +15,11 @@ import { useRouter } from 'next/router';
 import 'regenerator-runtime/runtime';
 import { axiosInstance } from '../../utils/playible';
 import LoadingPageDark from '../../components/loading/LoadingPageDark';
-import { LCDClient } from '@terra-money/terra.js';
 import { GAME, ORACLE } from '../../data/constants/contracts';
 import Modal from '../../components/modals/Modal';
-import { executeContract, retrieveTxInfo } from '../../utils/terra';
 
 const Play = (props) => {
   const { error } = props;
-  const { status, connect, disconnect, availableConnectTypes } = useWallet();
   const [activeCategory, setCategory] = useState('new');
   const [rewardsCategory, setRewardsCategory] = useState('winning');
   const [claimModal, showClaimModal] = useState(false);
@@ -39,17 +30,16 @@ const Play = (props) => {
   const [successTransactionModal, showSuccessModal] = useState(null);
   const [claimLoading, setClaimLoading] = useState(false);
   const router = useRouter();
-  const lcd = useLCDClient();
 
-  const interactWallet = () => {
-    if (status === WalletStatus.WALLET_CONNECTED) {
-      disconnect();
-    } else {
-      connect(availableConnectTypes[1]);
-    }
-  };
+  // const interactWallet = () => {
+  //   if (status === WalletStatus.WALLET_CONNECTED) {
+  //     disconnect();
+  //   } else {
+  //     connect(availableConnectTypes[1]);
+  //   }
+  // };
   const dispatch = useDispatch();
-  const connectedWallet = useConnectedWallet();
+  const connectedWallet = {};
   const [games, setGames] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -150,38 +140,38 @@ const Play = (props) => {
         let isClaimed = 'claimed';
         const res = await axiosInstance.get(`/fantasy/game/${item.id}/leaderboard/`);
         const teams = await axiosInstance.get(
-          `/fantasy/game/${item.id}/registered_teams_detail/?wallet_addr=${connectedWallet.walletAddress}`
+          `/fantasy/game/${item.id}/registered_teams_detail/?wallet_addr=${"TODO"}`
         );
 
-        if (res.status === 200 && teams.status === 200) {
-          if (res.data.length > 0) {
-            const teamsWithPlacement = res.data.filter(
-              (item) => item.player_addr === connectedWallet.walletAddress
-            );
-            if (teamsWithPlacement.length > 0) {
-              hasRewards = true;
-            }
-          }
-          if (teams.data.length > 0) {
-            hasAthletes = true;
-            const claimedRes = await lcd.wasm.contractQuery(GAME, {
-              player_info: {
-                game_id: item.id.toString(),
-                player_addr: connectedWallet.walletAddress.toString(),
-              },
-            });
+        // if (res.status === 200 && teams.status === 200) {
+        //   if (res.data.length > 0) {
+        //     const teamsWithPlacement = res.data.filter(
+        //       (item) => item.player_addr === connectedWallet.walletAddress
+        //     );
+        //     if (teamsWithPlacement.length > 0) {
+        //       hasRewards = true;
+        //     }
+        //   }
+        //   if (teams.data.length > 0) {
+        //     hasAthletes = true;
+        //     const claimedRes = await lcd.wasm.contractQuery(GAME, {
+        //       player_info: {
+        //         game_id: item.id.toString(),
+        //         player_addr: connectedWallet.walletAddress.toString(),
+        //       },
+        //     });
 
-            const endedRes = await lcd.wasm.contractQuery(GAME, {
-              game_info: { game_id: item.id.toString() },
-            });
+        //     const endedRes = await lcd.wasm.contractQuery(GAME, {
+        //       game_info: { game_id: item.id.toString() },
+        //     });
 
-            hasEnded = endedRes?.has_ended;
+        //     hasEnded = endedRes?.has_ended;
 
-            if (claimedRes.team_names) {
-              isClaimed = claimedRes.is_claimed ? 'claimed' : 'unclaimed';
-            }
-          }
-        }
+        //     if (claimedRes.team_names) {
+        //       isClaimed = claimedRes.is_claimed ? 'claimed' : 'unclaimed';
+        //     }
+        //   }
+        // }
 
         return {
           ...item,
@@ -200,93 +190,93 @@ const Play = (props) => {
   };
 
   const fetchTeamPlacements = async (gameId) => {
-    if (connectedWallet && lcd) {
-      let winningPlacements = [];
-      let noPlacements = [];
-      let prize = 0;
-      let distribution = [];
-      let leaderboards = [];
+    // if (connectedWallet && lcd) {
+    //   let winningPlacements = [];
+    //   let noPlacements = [];
+    //   let prize = 0;
+    //   let distribution = [];
+    //   let leaderboards = [];
 
-      const gameInfo = await lcd.wasm.contractQuery(ORACLE, {
-        game_info: { game_id: gameId.toString() },
-      });
+    //   const gameInfo = await lcd.wasm.contractQuery(ORACLE, {
+    //     game_info: { game_id: gameId.toString() },
+    //   });
 
-      if (gameInfo.prize && gameInfo.distribution) {
-        prize = gameInfo.prize;
-        distribution = gameInfo.distribution;
-      }
+    //   if (gameInfo.prize && gameInfo.distribution) {
+    //     prize = gameInfo.prize;
+    //     distribution = gameInfo.distribution;
+    //   }
 
-      if (gameInfo.leaderboard.length > 0) {
-        leaderboards = {
-          status: 200,
-          data: gameInfo.leaderboard,
-        };
-      } else {
-        leaderboards = await axiosInstance.get(`/fantasy/game/${gameId}/leaderboard/`);
-      }
+    //   if (gameInfo.leaderboard.length > 0) {
+    //     leaderboards = {
+    //       status: 200,
+    //       data: gameInfo.leaderboard,
+    //     };
+    //   } else {
+    //     leaderboards = await axiosInstance.get(`/fantasy/game/${gameId}/leaderboard/`);
+    //   }
 
-      const teams = await axiosInstance.get(
-        `/fantasy/game/${gameId}/registered_teams_detail/?wallet_addr=${connectedWallet.walletAddress}`
-      );
+    //   const teams = await axiosInstance.get(
+    //     `/fantasy/game/${gameId}/registered_teams_detail/?wallet_addr=${connectedWallet.walletAddress}`
+    //   );
 
-      if (leaderboards.status === 200 && teams.status === 200 && teams.data.length > 0) {
-        if (leaderboards.data.length > 0) {
-          let isClaimed = false;
-          const claimedRes = await lcd.wasm.contractQuery(GAME, {
-            player_info: {
-              game_id: gameId.toString(),
-              player_addr: connectedWallet.walletAddress.toString(),
-            },
-          });
+    //   if (leaderboards.status === 200 && teams.status === 200 && teams.data.length > 0) {
+    //     if (leaderboards.data.length > 0) {
+    //       let isClaimed = false;
+    //       const claimedRes = await lcd.wasm.contractQuery(GAME, {
+    //         player_info: {
+    //           game_id: gameId.toString(),
+    //           player_addr: connectedWallet.walletAddress.toString(),
+    //         },
+    //       });
 
-          if (claimedRes.team_names) {
-            isClaimed = claimedRes.is_claimed;
-          }
-          winningPlacements = leaderboards.data
-            .map((wallet, rank) => {
-              if (wallet.player_addr === connectedWallet.walletAddress) {
-                return {
-                  ...wallet,
-                  rank: rank + 1,
-                  prize:
-                    prize > 0 && distribution.length > 0
-                      ? computePrize(rank + 1, distribution, prize)
-                      : 0,
-                };
-              }
-            })
-            .filter((item) => item);
+    //       if (claimedRes.team_names) {
+    //         isClaimed = claimedRes.is_claimed;
+    //       }
+    //       winningPlacements = leaderboards.data
+    //         .map((wallet, rank) => {
+    //           if (wallet.player_addr === connectedWallet.walletAddress) {
+    //             return {
+    //               ...wallet,
+    //               rank: rank + 1,
+    //               prize:
+    //                 prize > 0 && distribution.length > 0
+    //                   ? computePrize(rank + 1, distribution, prize)
+    //                   : 0,
+    //             };
+    //           }
+    //         })
+    //         .filter((item) => item);
 
-          noPlacements = teams.data
-            .map((team) => {
-              let exists = false;
-              if (winningPlacements.length > 0) {
-                winningPlacements.forEach((item) => {
-                  if (item.team_name === team.name) {
-                    exists = true;
-                  }
-                });
-              }
+    //       noPlacements = teams.data
+    //         .map((team) => {
+    //           let exists = false;
+    //           if (winningPlacements.length > 0) {
+    //             winningPlacements.forEach((item) => {
+    //               if (item.team_name === team.name) {
+    //                 exists = true;
+    //               }
+    //             });
+    //           }
 
-              if (!exists) {
-                return team;
-              }
-            })
-            .filter((item) => item);
+    //           if (!exists) {
+    //             return team;
+    //           }
+    //         })
+    //         .filter((item) => item);
 
-          setClaimData({
-            winning_placements: [...winningPlacements],
-            no_placements: [...noPlacements],
-            isClaimed,
-            gameId,
-          });
+    //       setClaimData({
+    //         winning_placements: [...winningPlacements],
+    //         no_placements: [...noPlacements],
+    //         isClaimed,
+    //         gameId,
+    //       });
 
-          showClaimModal(true);
-        }
-      } else {
-        showClaimModal(false);
-      }
-    }
+    //       showClaimModal(true);
+    //     }
+    //   } else {
+    //     showClaimModal(false);
+    //   }
+    // }
   };
 
   const computePrize = (rank, distribution, prize) => {
@@ -353,41 +343,41 @@ const Play = (props) => {
       }, 0);
     }
 
-    const claimRes = await executeContract(connectedWallet, GAME, [
-      {
-        contractAddr: GAME,
-        msg: {
-          claim_rewards: {
-            game_id: gameId.toString(),
-          },
-        },
-      },
-    ]);
+  //   const claimRes = await executeContract(connectedWallet, GAME, [
+  //     {
+  //       contractAddr: GAME,
+  //       msg: {
+  //         claim_rewards: {
+  //           game_id: gameId.toString(),
+  //         },
+  //       },
+  //     },
+  //   ]);
 
-    if (!claimRes.txError) {
-      const fetchTx = await retrieveTxInfo(claimRes.txHash);
+  //   if (!claimRes.txError) {
+  //     const fetchTx = await retrieveTxInfo(claimRes.txHash);
 
-      if (fetchTx && fetchTx.logs) {
-        if (claimData && claimData.winning_placements.length > 0) {
-          showSuccessModal({
-            prize: totalPrize,
-          });
-        }
-        setLoading(true);
-        fetchGamesLoading();
-      }
-    } else {
-      showFailedModal({
-        msg:
-          claimRes.txError.indexOf('Un') !== -1 && claimRes.txError.indexOf('Un') < 2
-            ? null
-            : claimRes.txError,
-      });
-      fetchGamesLoading();
-    }
-    showClaimModal(false);
-    setClaimLoading(false);
-  };
+  //     if (fetchTx && fetchTx.logs) {
+  //       if (claimData && claimData.winning_placements.length > 0) {
+  //         showSuccessModal({
+  //           prize: totalPrize,
+  //         });
+  //       }
+  //       setLoading(true);
+  //       fetchGamesLoading();
+  //     }
+  //   } else {
+  //     showFailedModal({
+  //       msg:
+  //         claimRes.txError.indexOf('Un') !== -1 && claimRes.txError.indexOf('Un') < 2
+  //           ? null
+  //           : claimRes.txError,
+  //     });
+  //     fetchGamesLoading();
+  //   }
+  //   showClaimModal(false);
+  //   setClaimLoading(false);
+  // };
 
   useEffect(() => {
     if (games && games.length > 0) {
@@ -412,31 +402,31 @@ const Play = (props) => {
     }
   }, [games, gamesLimit, gamesOffset]);
 
-  useEffect(() => {
-    if (connectedWallet) {
-      if (connectedWallet?.network?.name === 'testnet') {
-        dispatch(getPortfolio({ walletAddr: connectedWallet.walletAddress }));
-      }
-    }
-  }, [connectedWallet, dispatch]);
+  // useEffect(() => {
+  //   if (connectedWallet) {
+  //     if (connectedWallet?.network?.name === 'testnet') {
+  //       dispatch(getPortfolio({ walletAddr: connectedWallet.walletAddress }));
+  //     }
+  //   }
+  // }, [connectedWallet, dispatch]);
 
-  useEffect(async () => {
-    setLoading(true);
-    setErr(null);
-    if (connectedWallet) {
-      if (connectedWallet?.network?.name === 'testnet') {
-        await fetchGamesLoading();
-        setErr(null);
-      } else {
-        setErr('You are connected to mainnet. Please connect to testnet');
-        setLoading(false);
-      }
-    } else {
-      setErr('Waiting for wallet connection...');
-      setLoading(false);
-    }
-    setOffset(0);
-  }, [connectedWallet, activeCategory]);
+  // useEffect(async () => {
+  //   setLoading(true);
+  //   setErr(null);
+  //   if (connectedWallet) {
+  //     if (connectedWallet?.network?.name === 'testnet') {
+  //       await fetchGamesLoading();
+  //       setErr(null);
+  //     } else {
+  //       setErr('You are connected to mainnet. Please connect to testnet');
+  //       setLoading(false);
+  //     }
+  //   } else {
+  //     setErr('Waiting for wallet connection...');
+  //     setLoading(false);
+  //   }
+  //   setOffset(0);
+  // }, [connectedWallet, activeCategory]);
 
   // useEffect(() => {
   //   fetchGamesLoading();
@@ -445,7 +435,7 @@ const Play = (props) => {
 
   useEffect(() => {
     if (router && router.query.type) {
-      setCategory(router.query.type);
+      // setCategory(router.query.type);
     }
   }, [router]);
 
@@ -690,7 +680,7 @@ const Play = (props) => {
                                             year={data.year}
                                             img={data.image}
                                             fetchGames={fetchGamesLoading}
-                                            index={() => changeIndex()}
+                                            index={() => changeIndex(1)}
                                           />
                                         </div>
                                       </a>
@@ -772,7 +762,7 @@ const Play = (props) => {
                                   value={limit}
                                   className="bg-indigo-white text-lg w-full outline-none"
                                   onChange={(e) => {
-                                    setLimit(e.target.value);
+                                    //setLimit(e.target.value);
                                     setOffset(0);
                                   }}
                                 >
@@ -802,6 +792,7 @@ const Play = (props) => {
     </>
   );
 };
+}
 export default Play;
 
 export async function getServerSideProps(ctx) {

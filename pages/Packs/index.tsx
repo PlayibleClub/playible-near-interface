@@ -1,4 +1,3 @@
-// import { useWallet, WalletStatus } from '@terra-money/wallet-provider';
 import React, { Component, useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import PortfolioContainer from '../../components/containers/PortfolioContainer';
@@ -17,15 +16,15 @@ const boosterList = ['NFL000','NFL555','NFL234'];
 
 
 export default function Packs() {
-  const { status, connect, disconnect, availableConnectTypes } = useWallet();
+  // const { status, connect, disconnect, availableConnectTypes } = useWallet();
 
-  const interactWallet = () => {
-    if (status === WalletStatus.WALLET_CONNECTED) {
-      disconnect();
-    } else {
-      connect(availableConnectTypes[1]);
-    }
-  };
+  // const interactWallet = () => {
+  //   if (status === WalletStatus.WALLET_CONNECTED) {
+  //     disconnect();
+  //   } else {
+  //     connect(availableConnectTypes[1]);
+  //   }
+  // };
 
   const [filterInfo, handleFilter] = React.useState(false);
   const { register, handleSubmit } = useForm();

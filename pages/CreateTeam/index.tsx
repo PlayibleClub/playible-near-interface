@@ -12,7 +12,6 @@ import { useRouter } from 'next/router';
 import Lineup from '../../components/Lineup';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { useConnectedWallet } from '@terra-money/wallet-provider';
 import { getAccountAssets } from '../../redux/reducers/external/playible/assets';
 import PerformerContainer from '../../components/containers/PerformerContainer';
 import PerformerContainerSelectable from '../../components/containers/PerformerContainerSelectable';
@@ -22,13 +21,12 @@ import { position } from '../../utils/athlete/position';
 import Modal from '../../components/modals/Modal';
 import { axiosInstance } from '../../utils/playible';
 import { route } from 'next/dist/next-server/server/router';
-import { executeContract } from '../../utils/terra';
 import LoadingPageDark from '../../components/loading/LoadingPageDark';
 
 export default function CreateLineup(props) {
   const router = useRouter();
   const dispatch = useDispatch();
-  const connectedWallet = useConnectedWallet();
+  const connectedWallet = {};
   const athlete = {
     athlete_id: null,
     token_id: null,
@@ -72,7 +70,7 @@ export default function CreateLineup(props) {
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState(error);
 
-  const { list: playerList } = useSelector((state) => state.assets);
+  //const { list: playerList } = useSelector((state) => state.assets);
 
   const fetchGameData = async () => {
     const res = await axiosInstance.get(`/fantasy/game/${router.query.id}/`);
@@ -245,7 +243,7 @@ export default function CreateLineup(props) {
         const formData = {
           name: teamName,
           game: router.query.id,
-          wallet_addr: connectedWallet.walletAddress,
+          // wallet_addr: connectedWallet.walletAddress,
           athletes: [...trimmedAthleteData],
         };
 
@@ -257,101 +255,101 @@ export default function CreateLineup(props) {
           },
         };
 
-        const resContract = await executeContract(connectedWallet, GAME, [
-          {
-            contractAddr: ATHLETE,
-            msg: {
-              approve_all: {
-                operator: GAME,
-              },
-            },
-          },
-          {
-            contractAddr: GAME,
-            msg: {
-              lock_team: {
-                game_id: router.query.id.toString(),
-                team_name: teamName,
-                token_ids: trimmedAthleteData.map((item) => item.token_id),
-              },
-            },
-          },
-          {
-            contractAddr: ATHLETE,
-            msg: {
-              revoke_all: {
-                operator: GAME,
-              },
-            },
-          },
-        ]);
+    //     const resContract = await executeContract(connectedWallet, GAME, [
+    //       {
+    //         contractAddr: ATHLETE,
+    //         msg: {
+    //           approve_all: {
+    //             operator: GAME,
+    //           },
+    //         },
+    //       },
+    //       {
+    //         contractAddr: GAME,
+    //         msg: {
+    //           lock_team: {
+    //             game_id: router.query.id.toString(),
+    //             team_name: teamName,
+    //             token_ids: trimmedAthleteData.map((item) => item.token_id),
+    //           },
+    //         },
+    //       },
+    //       {
+    //         contractAddr: ATHLETE,
+    //         msg: {
+    //           revoke_all: {
+    //             operator: GAME,
+    //           },
+    //         },
+    //       },
+    //     ]);
 
-        if (
-          !resContract.txResult ||
-          (resContract.txResult && !resContract.txResult.success) ||
-          resContract.txError
-        ) {
-          setMsg({
-            title: 'Failed',
-            content:
-              resContract.txResult && !resContract.txResult.success
-                ? 'Blockchain error! Please try again later.'
-                : resContract.txError,
-          });
-          alert(
-            resContract.txResult && !resContract.txResult.success
-              ? 'Blockchain error! Please try again later.'
-              : resContract.txError
-          );
-        } else {
-          let success = false;
-          let ctr = 0;
-          while (!success) {
-            ctr += 1;
-            const res = await axiosInstance.post('/fantasy/game_team/', formData);
-            setCreateLoading(false);
-            if (res.status === 201) {
-              success = true;
-              setSuccessModal(true);
-              return router.replace(`/CreateLineup/?id=${router.query.id}`);
-            } else {
-              alert('An error occurred! Refresh the page and try again.');
-            }
-          }
-        }
-      } else {
-        setMsg({
-          title: 'Notice',
-          content: 'You must fill up all the slots to proceed.',
-        });
-        alert('You must fill up all the slots to proceed.');
-      }
-    } else {
-      alert('Please connect your wallet first!');
-    }
+    //     if (
+    //       !resContract.txResult ||
+    //       (resContract.txResult && !resContract.txResult.success) ||
+    //       resContract.txError
+    //     ) {
+    //       setMsg({
+    //         title: 'Failed',
+    //         content:
+    //           resContract.txResult && !resContract.txResult.success
+    //             ? 'Blockchain error! Please try again later.'
+    //             : resContract.txError,
+    //       });
+    //       alert(
+    //         resContract.txResult && !resContract.txResult.success
+    //           ? 'Blockchain error! Please try again later.'
+    //           : resContract.txError
+    //       );
+    //     } else {
+    //       let success = false;
+    //       let ctr = 0;
+    //       while (!success) {
+    //         ctr += 1;
+    //         const res = await axiosInstance.post('/fantasy/game_team/', formData);
+    //         setCreateLoading(false);
+    //         if (res.status === 201) {
+    //           success = true;
+    //           setSuccessModal(true);
+    //           return router.replace(`/CreateLineup/?id=${router.query.id}`);
+    //         } else {
+    //           alert('An error occurred! Refresh the page and try again.');
+    //         }
+    //       }
+    //     }
+    //   } else {
+    //     setMsg({
+    //       title: 'Notice',
+    //       content: 'You must fill up all the slots to proceed.',
+    //     });
+    //     alert('You must fill up all the slots to proceed.');
+    //   }
+    // } else {
+    //   alert('Please connect your wallet first!');
+    // }
   };
 
-  const filterAthleteByPos = (pos) => {
-    if (playerList && playerList.tokens && playerList.tokens.length > 0) {
-      if (pos) {
-        setFilterPos(pos);
-        const tempList = [...playerList.tokens];
-        const filteredList = filterAthletes(tempList, pos).splice(limit * offset, limit);
+  // const filterAthleteByPos = (pos) => {
+  //   if (playerList && playerList.tokens && playerList.tokens.length > 0) {
+  //     if (pos) {
+  //       setFilterPos(pos);
+  //       const tempList = [...playerList.tokens];
+  //       const filteredList = filterAthletes(tempList, pos).splice(limit * offset, limit);
 
-        if (!(filteredList.length > 0)) {
-          alert(`You currently do not own athlete(s) that have the position of ${pos}`);
-        } else {
-          setSelectModal(true);
-          setAthleteList(filteredList);
-          setPageCount(Math.ceil(filterAthletes(tempList, pos).length / limit));
-        }
-      } else {
-        setSelectModal(false);
-      }
-    } else {
-      alert('No athletes available. Refresh the page and try again.');
-    }
-  };
+  //       if (!(filteredList.length > 0)) {
+  //         alert(`You currently do not own athlete(s) that have the position of ${pos}`);
+  //       } else {
+  //         setSelectModal(true);
+  //         setAthleteList(filteredList);
+  //         setPageCount(Math.ceil(filterAthletes(tempList, pos).length / limit));
+  //       }
+  //     } else {
+  //       setSelectModal(false);
+  //     }
+  //   } else {
+  //     alert('No athletes available. Refresh the page and try again.');
+  //   }
+  // };
 
   useEffect(() => {
     prepareSlots();
@@ -360,61 +358,61 @@ export default function CreateLineup(props) {
 
   useEffect(() => {
     if (dispatch && connectedWallet) {
-      dispatch(getAccountAssets({ walletAddr: connectedWallet.walletAddress }));
+      // dispatch(getAccountAssets({ walletAddr: connectedWallet.walletAddress }));
     }
   }, [dispatch, connectedWallet]);
 
-  useEffect(() => {
-    if (playerList && playerList.tokens && playerList.tokens.length > 0) {
-      if (filterPos) {
-        const tempList = [...playerList.tokens];
-        const filteredList = filterAthletes(tempList, filterPos).splice(limit * offset, limit);
+  // useEffect(() => {
+  //   if (playerList && playerList.tokens && playerList.tokens.length > 0) {
+  //     if (filterPos) {
+  //       const tempList = [...playerList.tokens];
+  //       const filteredList = filterAthletes(tempList, filterPos).splice(limit * offset, limit);
 
-        if (!(filteredList.length > 0)) {
-          alert(`You currently do not own athlete(s) that have the position of ${filterPos}`);
-        } else {
-          setSelectModal(true);
-          setAthleteList(filteredList);
-          setPageCount(Math.ceil(filterAthletes(tempList, filterPos).length / limit));
-        }
-      } else {
-        setSelectModal(false);
-      }
-    }
-  }, [playerList, limit, offset, timerUp]);
+  //       if (!(filteredList.length > 0)) {
+  //         alert(`You currently do not own athlete(s) that have the position of ${filterPos}`);
+  //       } else {
+  //         setSelectModal(true);
+  //         setAthleteList(filteredList);
+  //         setPageCount(Math.ceil(filterAthletes(tempList, filterPos).length / limit));
+  //       }
+  //     } else {
+  //       setSelectModal(false);
+  //     }
+  //   }
+  // }, [playerList, limit, offset, timerUp]);
 
   useEffect(() => {
     const id = setInterval(() => {
       const currentDate = new Date();
       const end = new Date(startDate);
-      const totalSeconds = (end - currentDate) / 1000;
-      if (Math.floor(totalSeconds) < 0) {
-        setTimerUp(true);
-        clearInterval(id);
-      }
+      // const totalSeconds = (end - currentDate) / 1000;
+      // if (Math.floor(totalSeconds) < 0) {
+      //   setTimerUp(true);
+      //   clearInterval(id);
+      // }
     }, 1000);
     return () => clearInterval(id);
   }, [timerUp, startDate]);
 
-  useEffect(async () => {
-    setErr(null);
-    if (connectedWallet) {
-      if (connectedWallet?.network?.name === 'testnet') {
-        setLoading(true);
-        await fetchGameData();
-        await prepareSlots();
-        await setTeamName('Team 1');
-        setLoading(false);
-        setErr(null);
-      } else {
-        setErr('You are connected to mainnet. Please connect to testnet');
-        setLoading(false);
-      }
-    } else {
-      setErr('Waiting for wallet connection...');
-      setLoading(false);
-    }
-  }, [connectedWallet]);
+  // useEffect(async () => {
+  //   setErr(null);
+  //   if (connectedWallet) {
+  //     if (connectedWallet?.network?.name === 'testnet') {
+  //       setLoading(true);
+  //       await fetchGameData();
+  //       await prepareSlots();
+  //       await setTeamName('Team 1');
+  //       setLoading(false);
+  //       setErr(null);
+  //     } else {
+  //       setErr('You are connected to mainnet. Please connect to testnet');
+  //       setLoading(false);
+  //     }
+  //   } else {
+  //     setErr('Waiting for wallet connection...');
+  //     setLoading(false);
+  //   }
+  // }, [connectedWallet]);
 
   if (!(router && router.query.id)) {
     return '';
@@ -531,7 +529,7 @@ export default function CreateLineup(props) {
                                       value={limit}
                                       className="bg-indigo-white text-lg w-full outline-none"
                                       onChange={(e) => {
-                                        setLimit(e.target.value);
+                                        // setLimit(e.target.value);
                                         setOffset(0);
                                       }}
                                     >
@@ -593,7 +591,7 @@ export default function CreateLineup(props) {
                                             }
                                             score={data.fantasy_score || 0}
                                             onClick={() => {
-                                              filterAthleteByPos(data.position.value);
+                                              // filterAthleteByPos(data.position.value);
                                               setSlotIndex(i);
                                             }}
                                             img={
@@ -753,6 +751,8 @@ export default function CreateLineup(props) {
       )}
     </>
   );
+}
+  }
 }
 export async function getServerSideProps(ctx) {
   return {

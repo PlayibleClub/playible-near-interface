@@ -6,7 +6,6 @@ import Container from '../../components/containers/Container';
 import BackFunction from '../../components/buttons/BackFunction';
 import { useRouter } from 'next/router';
 import { axiosInstance } from '../../utils/playible/';
-// import { useConnectedWallet } from '@terra-money/wallet-provider';
 import Link from 'next/link';
 import 'regenerator-runtime/runtime';
 import LoadingPageDark from '../../components/loading/LoadingPageDark';
@@ -15,7 +14,6 @@ export default function CreateLineup(props) {
   const router = useRouter();
   const [gameData, setGameData] = useState(null);
   const [teamModal, setTeamModal] = useState(false);
-  const connectedWallet = useConnectedWallet();
   const [teams, setTeams] = useState([]);
   const [startDate, setStartDate] = useState();
   const [buttonMute, setButtonMute] = useState(false);
@@ -28,7 +26,7 @@ export default function CreateLineup(props) {
     const res = await axiosInstance.get(`/fantasy/game/${router.query.id}/`);
 
     const teams = await axiosInstance.get(
-      `/fantasy/game/${router.query.id}/registered_teams_detail/?wallet_addr=${connectedWallet.walletAddress}`
+      `/fantasy/game/${router.query.id}/registered_teams_detail/?wallet_addr=${"TODO"}`
     );
 
     if (teams.status === 200) {
@@ -43,12 +41,12 @@ export default function CreateLineup(props) {
     setLoading(false);
   };
 
-  useEffect(() => {
-    if (router && router.query.id && connectedWallet) {
-      setTeams([]);
-      fetchGameData();
-    }
-  }, [router, connectedWallet]);
+  // useEffect(() => {
+  //   if (router && router.query.id && connectedWallet) {
+  //     setTeams([]);
+  //     fetchGameData();
+  //   }
+  // }, [router, connectedWallet]);
 
   if (!router) {
     return;
@@ -64,30 +62,30 @@ export default function CreateLineup(props) {
     const id = setInterval(() => {
       const currentDate = new Date();
       const end = new Date(startDate);
-      const totalSeconds = (end - currentDate) / 1000;
-      if (Math.floor(totalSeconds) === 0) {
-        setButtonMute(true);
-        clearInterval(id);
-      }
+      // const totalSeconds = (end - currentDate) / 1000;
+      // if (Math.floor(totalSeconds) === 0) {
+      //   setButtonMute(true);
+      //   clearInterval(id);
+      // }
     }, 1000);
     return () => clearInterval(id);
   }, [startDate]);
 
-  useEffect(async () => {
-    setErr(null);
-    if (connectedWallet) {
-      if (connectedWallet?.network?.name === 'testnet') {
-        await fetchGameData();
-        setErr(null);
-      } else {
-        setErr('You are connected to mainnet. Please connect to testnet');
-        setLoading(false);
-      }
-    } else {
-      setErr('Waiting for wallet connection...');
-      setLoading(false);
-    }
-  }, [connectedWallet]);
+  // useEffect(() => {
+  //   setErr(null);
+  //   if (connectedWallet) {
+  //     if (connectedWallet?.network?.name === 'testnet') {
+  //       await fetchGameData();
+  //       setErr(null);
+  //     } else {
+  //       setErr('You are connected to mainnet. Please connect to testnet');
+  //       setLoading(false);
+  //     }
+  //   } else {
+  //     setErr('Waiting for wallet connection...');
+  //     setLoading(false);
+  //   }
+  // }, [connectedWallet]);
 
   return (
     <>

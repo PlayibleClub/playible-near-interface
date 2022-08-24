@@ -13,10 +13,8 @@ import underlineIcon from '../../public/images/blackunderline.png';
 
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-// import { useConnectedWallet, useLCDClient } from '@terra-money/wallet-provider';
 import { connect, useDispatch, useSelector } from 'react-redux';
 
-import ListingModal from './forms/ListingModal';
 import CongratsModal from './components/CongratsModal';
 import LoadingPageDark from '../../components/loading/LoadingPageDark';
 import BackFunction from '../../components/buttons/BackFunction';
@@ -60,17 +58,15 @@ const AssetDetails = (props) => {
   ];
   const { query } = useRouter();
 
-  const { list: playerList } = useSelector((state) => state.assets);
-
   const [athleteData, setAthleteData] = useState([]);
 
   const tempPos = 'QB';
   const tempId = 2163;
 
-  const [getAthleteQB, { loadingQB, errorQB, dataQB }] = useLazyQuery(GET_ATHLETEDATA_QB);
-  const [getAthleteRB, { loadingRB, errorRB, dataRB }] = useLazyQuery(GET_ATHLETEDATA_RB);
-  const [getAthleteWR, { loadingWR, errorWR, dataWR }] = useLazyQuery(GET_ATHLETEDATA_WR);
-  const [getAthleteTE, { loadingTE, errorTE, dataTE }] = useLazyQuery(GET_ATHLETEDATA_TE);
+  const [getAthleteQB] = useLazyQuery(GET_ATHLETEDATA_QB);
+  const [getAthleteRB] = useLazyQuery(GET_ATHLETEDATA_RB);
+  const [getAthleteWR] = useLazyQuery(GET_ATHLETEDATA_WR);
+  const [getAthleteTE] = useLazyQuery(GET_ATHLETEDATA_TE);
 
   async function getData(x) {
     switch (x) {
@@ -178,18 +174,18 @@ const AssetDetails = (props) => {
           }}
         />
       )}
-      {listingModal && (
-        <ListingModal
-          // asset={assetData}
-          onClose={() => {
-            setListingModal(false);
-          }}
-          onSubmit={() => {
-            setListingModal(false);
-            displayCongrats(true);
-          }}
-        />
-      )}
+      {listingModal && true
+        // <ListingModal
+        //   // asset={assetData}
+        //   onClose={() => {
+        //     setListingModal(false);
+        //   }}
+        //   onSubmit={() => {
+        //     setListingModal(false);
+        //     displayCongrats(true);
+        //   }}
+        // />
+      }
       {displayModal && (
         <>
           <div className="fixed w-screen h-screen bg-opacity-70 z-50 overflow-auto bg-indigo-gray flex">
@@ -281,7 +277,7 @@ const AssetDetails = (props) => {
                               <div>
                                 <div className="ml-8 md:ml-6 mr-16">
                                   <PlayerContainer
-                                    img={athleteData.nftImage || null}
+                                    img={null}
                                     // playerID={
                                     //   assetData.attributes.filter(
                                     //     (item) => item.trait_type === 'athlete_id'

@@ -5,7 +5,6 @@ import PortfolioContainer from '../../components/containers/PortfolioContainer';
 import MarketplaceContainer from '../../components/containers/MarketplaceContainer';
 import { useDispatch, useSelector } from 'react-redux';
 import { getSalesOrders, clearData } from '../../redux/reducers/external/playible/salesOrder';
-import { useConnectedWallet } from '@terra-money/wallet-provider';
 import LoadingPageDark from '../../components/loading/LoadingPageDark';
 import Link from 'next/link';
 import Container from '../../components/containers/Container';
@@ -127,15 +126,15 @@ const Marketplace = () => {
   const [searchText, setSearchText] = useState('');
   const [loading, setLoading] = useState(true);
 
-  const { list: salesList, status } = useSelector((state) => state.external.playible.salesOrder);
+  // const { list: salesList, status } = useSelector((state) => state.external.playible.salesOrder);
 
   const dispatch = useDispatch();
-  const connectedWallet = useConnectedWallet();
+  const connectedWallet = {};
   const [sortedList, setSortedList] = useState([]);
 
   useEffect(() => {
     if (typeof connectedWallet !== 'undefined') {
-      dispatch(getSalesOrders({ walletAddr: connectedWallet.walletAddress }));
+      // dispatch(getSalesOrders({ walletAddr: connectedWallet.walletAddress }));
     }
   }, [dispatch, connectedWallet]);
 

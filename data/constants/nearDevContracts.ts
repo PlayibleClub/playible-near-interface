@@ -1,6 +1,6 @@
 export const MINTER = {
-  testnet: 'dev-1661011342313-97717160257859',
-  mainnet: 'dev-1661011342313-97717160257859',
+  mainnet: 'pack_minter.playible.near',
+  testnet: 'pack_minter.playible.near',
   interface: {
     viewMethods: [
       'get_config',
@@ -13,7 +13,9 @@ export const MINTER = {
   },
 }; // Near Minter contract
 export const NEP141USDC = {
-  mainnet: 'usdc.fakes.testnet',
+  title: "USDC",
+  mainnet: 'a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.factory.bridge.near',
+  testnet: 'usdc.fakes.testnet',
   decimals: 1000000,
   interface: {
     viewMethods: ['ft_balance_of'],
@@ -22,7 +24,9 @@ export const NEP141USDC = {
 }; //Near NEP-141 equivalent CW-20 or ERC-20
 
 export const NEP141USDT = {
-  mainnet: 'usdt.fakes.testnet',
+  title: "USDT",
+  mainnet: 'dac17f958d2ee523a2206206994597c13d831ec7.factory.bridge.near',
+  testnet: 'usdt.fakes.testnet',
   decimals: 1000000,
   interface: {
     viewMethods: ['ft_balance_of'],
@@ -30,21 +34,15 @@ export const NEP141USDT = {
   },
 }; //Near NEP-141 equivalent CW-20 or ERC-20
 export const NEP141USN = {
-  mainnet: 'usdn.testnet',
+  title: "USN",
+  mainnet: 'usn',
+  testnet: 'usdn.testnet',
   decimals: 1000000000000000000,
   interface: {
     viewMethods: ['ft_balance_of'],
     changeMethods: ['ft_transfer_call', 'storage_deposit'],
   },
 }; //Near NEP-141 equivalent CW-20 or ERC-20
-
-export const CW721 = {
-  mainnet: 'guest-book.testnet',
-  interface: {
-    viewMethods: ['getMessages'],
-    changeMethods: ['addMessage'],
-  },
-}; //NFT Contract
 
 export const PLAYIBLE = {
   mainnet: 'guest-book.testnet',
@@ -54,6 +52,7 @@ export const PLAYIBLE = {
     changeMethods: ['addMessage'],
   },
 }; //Playible/Fantasy Contract
+
 export const MARKETPLACE = {
   mainnet: 'guest-book.testnet',
   testnet: 'guest-book.mainnet',
@@ -71,8 +70,8 @@ export const ATHLETE = {
   },
 }; //Athlete Contract
 export const PACK = {
-  mainnet: 'guest-book.testnet',
-  testnet: 'guest-book.mainnet',
+  mainnet: 'nft.playible.testnet',
+  testnet: 'nft.playible.mainnet',
   interface: {
     viewMethods: ['getMessages'],
     changeMethods: ['addMessage'],

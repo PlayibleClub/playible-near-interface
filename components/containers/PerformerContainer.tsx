@@ -65,6 +65,11 @@ PerformerContainer.propTypes = {
   CoinValue: PropTypes.string,
   imagesrc: PropTypes.string,
   id: PropTypes.string,
+  AvgScore: PropTypes.number,
+  uri: PropTypes.string,
+  hoverable: PropTypes.bool,
+  rarity: PropTypes.string,
+  status: PropTypes.string,
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
 };
 

@@ -1,12 +1,8 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "baseUrl": ".",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "baseUrl": "./",
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "checkJs": true,
     "skipLibCheck": true,
@@ -22,11 +18,17 @@
     "jsx": "preserve"
   },
   "include": [
-  "components/DesktopDashboard.tsx"  ,  "pages/PlayDetails/index.js", "pages/History/index.js"  ,  "next-env.d.ts",
+    "components/DesktopDashboard.tsx",
+    "pages/PlayDetails/index.js",
+    "pages/History/index.js",
+    "next-env.d.ts",
     "**/*.ts",
-    "**/*.tsx"
-, "jest.config.js", "utils/athlete/position.jsx", "mocks/fileMock.js", "components/containers/HorizontalContainer.js", "components/containers/Container.js"  ],
-  "exclude": [
-    "node_modules"
-  ]
+    "**/*.tsx",
+    "jest.config.js",
+    "utils/athlete/position.jsx",
+    "mocks/fileMock.js",
+    "components/containers/HorizontalContainer.js",
+    "components/containers/Container.js"
+  ],
+  "exclude": ["node_modules"]
 }

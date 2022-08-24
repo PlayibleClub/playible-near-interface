@@ -6,31 +6,29 @@ import Navbar from '../../components/navbars/Navbar';
 import PackComponent from '../../components/PackComponent';
 import PortfolioContainer from '../../components/containers/PortfolioContainer';
 import { useDispatch } from 'react-redux';
-import { useConnectedWallet } from '@terra-money/wallet-provider';
-import {
-  getPackPrice,
-  purchasePack,
-  getLastRound,
-  getRoundData,
-} from '../../redux/reducers/contract/pack';
+// import {
+//   getPackPrice,
+//   purchasePack,
+//   getLastRound,
+//   getRoundData,
+// } from '../../redux/reducers/contract/pack';
 import 'regenerator-runtime/runtime';
 
 export default function OpenPackPage() {
   const router = useRouter();
   const dispatch = useDispatch();
-  const connectedWallet = useConnectedWallet();
 
-  const executePurchasePack = async () => {
-    dispatch(getPackPrice()).then((response) => {
-      dispatch(purchasePack({ connectedWallet })).then(() => {
-        dispatch(getLastRound()).then((response) => {
-          dispatch(getRoundData({ lastRound: response.payload })).then(() => {
-            router.push('/TokenDrawPage');
-          });
-        });
-      });
-    });
-  };
+  // const executePurchasePack = async () => {
+  //   dispatch(getPackPrice()).then((response) => {
+  //     dispatch(purchasePack({ connectedWallet })).then(() => {
+  //       dispatch(getLastRound()).then((response) => {
+  //         dispatch(getRoundData({ lastRound: response.payload })).then(() => {
+  //           router.push('/TokenDrawPage');
+  //         });
+  //       });
+  //     });
+  //   });
+  // };
 
   const [isClosed, setClosed] = React.useState(true);
 

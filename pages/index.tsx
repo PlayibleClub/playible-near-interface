@@ -82,15 +82,10 @@ export default function Home(props) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const featuredImagesDesktop = [
     '/images/promotionheaderDesktop.png',
-    '/images/promotionheaderDesktop2.png',
-    '/images/promotionheaderDesktop3.png',
+    'images/promotionheaderDesktop2.png',
   ];
 
-  const featuredImagesMobile = [
-    '/images/promotionheader.png',
-    '/images/promotionheader2.png',
-    '/images/promotionheader3.png',
-  ];
+  const featuredImagesMobile = ['/images/promotionheader.png', '/images/promotionheader2.png'];
 
   const startSlider = () => {
     setInterval(() => {
@@ -187,7 +182,7 @@ export default function Home(props) {
                               return (
                                 <>
                                   <PrizePoolComponent
-                                    icon={i}
+                                    icon={i.toString()}
                                     prizePool={data.prize}
                                     gameName={data.name}
                                     gameId={data.id}

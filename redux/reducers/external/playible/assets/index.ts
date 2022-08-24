@@ -1,9 +1,9 @@
 /* eslint-disable no-unused-vars */
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { axiosInstance } from '../../../../utils/playible';
-import * as statusCode from '../../../../data/constants/status';
-import * as actionType from '../../../../data/constants/actions';
-import * as contracts from '../../../../data/constants/contracts';
+import { axiosInstance } from 'utils/playible';
+import * as statusCode from 'data/constants/status';
+import * as actionType from 'data/constants/actions';
+import * as contracts from 'data/constants/contracts';
 
 const initialState = {
   list: null,
@@ -14,6 +14,7 @@ const initialState = {
 
 export const getAccountAssets = createAsyncThunk('getAccountAssets', async (payload, thunkAPI) => {
   try {
+    // @ts-ignore:next-line
     const { walletAddr, clear = false } = payload;
     let result = null;
     if (clear) {
@@ -58,6 +59,7 @@ const assetSlice = createSlice({
     clearData: () => initialState,
   },
   extraReducers: {
+    // @ts-ignore:next-line
     [getAccountAssets.pending]: (state) => {
       return {
         ...state,
@@ -65,6 +67,7 @@ const assetSlice = createSlice({
         action: actionType.GET,
       };
     },
+    // @ts-ignore:next-line
     [getAccountAssets.fulfilled]: (state, action) => {
       return {
         ...state,
@@ -73,6 +76,7 @@ const assetSlice = createSlice({
         action: actionType.GET,
       };
     },
+    // @ts-ignore:next-line
     [getAccountAssets.rejected]: (state, action) => {
       return {
         ...state,

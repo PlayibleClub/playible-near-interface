@@ -4,7 +4,7 @@ import * as statusCode from '../../data/constants/status';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { BrowserView, MobileView } from 'react-device-detect';
-import { getLastRound, getRoundData, clearData } from '../../redux/reducers/contract/pack';
+// import { getLastRound, getRoundData, clearData } from '../../redux/reducers/contract/pack';
 
 import LoadingPageDark from '../../components/loading/LoadingPageDark';
 import Container from '../../components/containers/Container';
@@ -23,6 +23,7 @@ const TokenDrawPageFront = () => {
   const [isClosed, setClosed] = useState(true);
   const [loading, setLoading] = useState(false);
 
+  // @ts-ignore:next-line
   const { drawList: tokenList, status } = useSelector((state) => state.contract.pack);
 
   const [assets, setassets] = useState([false, false, false, false, false]);

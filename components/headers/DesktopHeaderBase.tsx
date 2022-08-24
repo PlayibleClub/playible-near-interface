@@ -9,25 +9,24 @@ import type {
 } from "near-api-js/lib/providers/provider";
 import { useWalletSelector } from '../../contexts/WalletSelectorContext';
 
-const DesktopHeaderBase: React.FC = () => {
-
+const DesktopHeaderBase = () => {
   const { selector, modal, accounts, accountId } = useWalletSelector();
   const [account, setAccount] = useState<Account | null>(null);
   const [messages, setMessages] = useState<Array<Message>>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
-  const getAccount = useCallback(async (): Promise<Account | null> => {
+  const getAccount = useCallback(async () => {
     if (!accountId) {
       return null;
     }
 
     const { network } = selector.options;
-    const provider = new providers.JsonRpcProvider({ url: network.nodeUrl });
+    const provider = new providers.JsonRpcProvider({ url: 'https://rpc.mainnet.near.org' });
 
     return provider
       .query<AccountView>({
-        request_type: "view_account",
-        finality: "final",
+        request_type: 'view_account',
+        finality: 'final',
         account_id: accountId,
       })
       .then((data) => ({
@@ -64,44 +63,38 @@ const DesktopHeaderBase: React.FC = () => {
 
   const renderWallet = () => {
     {
-      if(accountId) {
+      if (accountId) {
         return (
           <Button
-          textColor="white-light font-bold"
-          color="indigo-buttonblue"
-          rounded="rounded-md"
-          size="h-full py-1 px-1"
-              onClick={logOut}
-            >
-              {accountId}
-        </Button>
-        )
+            textColor="white-light font-bold"
+            color="indigo-buttonblue"
+            rounded="rounded-md"
+            size="h-full py-1 px-1"
+            onClick={logOut}
+          >
+            {accountId}
+          </Button>
+        );
       } else {
-        return  (
+        return (
           <Button
-          rounded="rounded-sm "
-          textColor="white-light"
-          color="indigo-buttonblue"
-          onClick={logIn}
-          size="py-1 px-1 h-full"
-        >
-          <div className="flex flex-row text-sm h-12 items-center">
-            <div className="text-xs text-light">
-              Connect Wallet
+            rounded="rounded-sm "
+            textColor="white-light"
+            color="indigo-buttonblue"
+            onClick={logIn}
+            size="py-1 px-1 h-full"
+          >
+            <div className="flex flex-row text-sm h-12 items-center">
+              <div className="text-xs text-light">Connect Wallet</div>
+              <img className="ml-3 h-4 w-4" src="/images/wallet.png" alt="Img" />
             </div>
-            <img className="ml-3 h-4 w-4" src="/images/wallet.png" alt="Img" />
-          </div>
-        </Button>
-        )
+          </Button>
+        );
       }
     }
-  }
+  };
 
-  return (
-    <DesktopHeader>
-      {renderWallet()}
-    </DesktopHeader>
-  );
+  return <DesktopHeader>{renderWallet()}</DesktopHeader>;
 };
 
 DesktopHeaderBase.propTypes = {

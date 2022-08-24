@@ -1,7 +1,6 @@
 import React, { Component, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Image from 'next/image';
-import { CommunityPoolSpendProposal } from '@terra-money/terra.js';
 
 const Lineup = (props) => {
   const { position, player = '', img = null, id, score, nextposition, onClick = null } = props;

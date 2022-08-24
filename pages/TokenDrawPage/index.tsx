@@ -8,8 +8,6 @@ import Navbar from '../../components/navbars/Navbar';
 import HorizontalScrollContainer from '../../components/containers/HorizontalScrollContainer';
 import TokenComponent from '../../components/TokenComponent';
 import Main from '../../components/Main';
-import { useConnectedWallet, useLCDClient } from '@terra-money/wallet-provider';
-import { executeContract, queryContract, retrieveTxInfo } from '../../utils/terra';
 import { OPENPACK, PACK, ATHLETE } from '../../data/constants/contracts';
 import { axiosInstance } from '../../utils/playible';
 import 'regenerator-runtime/runtime';
@@ -21,7 +19,6 @@ const TokenDrawPage = (props) => {
   const { queryObj, newAthletes, error = null } = props;
 
   const dispatch = useDispatch();
-  const lcd = useLCDClient();
   const [err, setErr] = useState(error);
 
   const [loading, setLoading] = useState(false);
@@ -31,7 +28,7 @@ const TokenDrawPage = (props) => {
   const [athletes, setAthletes] = useState([]);
 
   const [packs, setpacks] = useState(true);
-  const walletConnection = useSelector((state) => state.external.playible.wallet.data);
+  const walletConnection = {};
   const [wallet, setWallet] = useState(null);
 
   const activeChecker = () => {
@@ -85,11 +82,13 @@ const TokenDrawPage = (props) => {
   };
 
   const getAthleteInfo = async (id) => {
+    /*
     const res = await lcd.wasm.contractQuery(ATHLETE, {
       all_nft_info: {
         token_id: id,
       },
     });
+    
 
     if (res.info) {
       const details = await axiosInstance.get(
@@ -121,13 +120,14 @@ const TokenDrawPage = (props) => {
 
       return newAthlete;
     }
+    */
   };
 
-  useEffect(async () => {
+  useEffect(() => {
     if (walletConnection) {
       // walletConnection.nearConfig.networkId -> to determine what network (testnet or mainnet)
       // setErr("You are not in the *intended network*") to notify user that they are not in the intended network
-      setWallet(walletConnection.walletConnection.isSignedIn());
+      // setWallet(walletConnection.walletConnection.isSignedIn());
     } else {
       setLoading(false);
       setWallet(null);

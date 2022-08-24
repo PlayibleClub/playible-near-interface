@@ -1,8 +1,8 @@
 /* eslint-disable no-unused-vars */
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { axiosInstance } from '../../../../../utils/playible';
-import * as statusCode from '../../../../../data/constants/status';
-import * as actionType from '../../../../../data/constants/actions';
+import { axiosInstance } from 'utils/playible';
+import * as statusCode from 'data/constants/status';
+import * as actionType from 'data/constants/actions';
 
 const initialState = {
   list: [],
@@ -76,6 +76,7 @@ const salesOrderSlice = createSlice({
     clearData: () => initialState,
   },
   extraReducers: {
+    // @ts-ignore:next-line
     [getSalesOrders.pending]: (state) => {
       return {
         ...state,
@@ -83,6 +84,7 @@ const salesOrderSlice = createSlice({
         action: actionType.GET,
       };
     },
+    // @ts-ignore:next-line
     [getSalesOrders.fulfilled]: (state, action) => {
       return {
         ...state,
@@ -91,6 +93,7 @@ const salesOrderSlice = createSlice({
         action: actionType.GET,
       };
     },
+    // @ts-ignore:next-line
     [getSalesOrders.rejected]: (state, action) => {
       return {
         ...state,
@@ -98,6 +101,7 @@ const salesOrderSlice = createSlice({
         action: actionType.GET,
       };
     },
+    // @ts-ignore:next-line
     [createSalesOrder.pending]: (state) => {
       return {
         ...state,
@@ -105,6 +109,7 @@ const salesOrderSlice = createSlice({
         action: actionType.CREATE,
       };
     },
+    // @ts-ignore:next-line
     [createSalesOrder.fulfilled]: (state, action) => {
       return {
         ...state,
@@ -112,6 +117,7 @@ const salesOrderSlice = createSlice({
         action: actionType.CREATE,
       };
     },
+    // @ts-ignore:next-line
     [createSalesOrder.rejected]: (state, action) => {
       return {
         ...state,

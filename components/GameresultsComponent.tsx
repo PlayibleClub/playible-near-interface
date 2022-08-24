@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import RoundedContainer from './RoundedContainer';
-import GameResultContainer from './GameResultContainer';
+import RoundedContainer from './containers/RoundedContainer';
+import GameResultContainer from './containers/GameResultContainer';
 
 const list = [
   {

@@ -196,7 +196,7 @@ const nflPos = [
   },
 ];
 
-const positionsProvider = (sport) => {
+function positionsProvider(sport): Object {
   const list = [
     {
       name: 'baseball',
@@ -213,17 +213,13 @@ const positionsProvider = (sport) => {
     return list[position];
   }
   return null;
-};
+}
 
 export const position = (sport, pos) => {
   if (positionsProvider(sport) !== null) {
-    const filteredPos = positionsProvider(sport).filter((item) => item.name === pos);
+    const filteredPos = positionsProvider(sport);
 
-    if (filteredPos.length > 0) {
-      return filteredPos[0].value;
-    } else {
-      return pos;
-    }
+    return filteredPos[0].value;
   } else {
     return pos;
   }
