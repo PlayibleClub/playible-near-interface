@@ -12,16 +12,16 @@ import Usdt from '../../public/images/SVG/usdt';
 import Usdc from '../../public/images/SVG/usdc';
 import USN from '../../public/images/SVG/usn';
 import { useWalletSelector } from '../../contexts/WalletSelectorContext';
-import BigNumber from "bignumber.js";
+import BigNumber from 'bignumber.js';
 import { getConfig } from '../../utils/near';
 
 import { MINTER, NEP141USDC, NEP141USDT, NEP141USN } from '../../data/constants/nearDevContracts';
 
 const MINT_STORAGE_COST_TESTNET = 5870000000000000000000;
 const MINT_STORAGE_COST = 9930000000000000000000;
-const DECIMALS_NEAR = 1000000000000000000000000
+const DECIMALS_NEAR = 1000000000000000000000000;
 const DEFAULT_MAX_FEES = '300000000000000';
-const RESERVED_AMOUNT = 200;
+const RESERVED_AMOUNT = 400;
 const NANO_TO_SECONDS_DENOMINATOR = 1000000;
 const CONTRACT_MINTER_ACCOUNT_ID =
   process.env.NEAR_ENV == 'development' ? MINTER.testnet : MINTER.mainnet;
@@ -124,7 +124,9 @@ export default function Home(props) {
   }
 
   async function execute_batch_transaction_storage_deposit_and_mint_token() {
-    const amount_to_deposit_near = new BigNumber(selectedMintAmount).multipliedBy(new BigNumber( MINT_STORAGE_COST)).toFixed();
+    const amount_to_deposit_near = new BigNumber(selectedMintAmount)
+      .multipliedBy(new BigNumber(MINT_STORAGE_COST))
+      .toFixed();
 
     const data_one = Buffer.from(JSON.stringify({}));
     const action_deposit_storage_near_token = {
@@ -434,9 +436,7 @@ export default function Home(props) {
                     )}
 
                     <div className="border border-indigo-lightgray rounded-2xl text-center p-4 w-40 flex flex-col justify-center  mt-8">
-                      <div className="text-2xl font-black font-monument ">
-                        {minted }
-                      </div>
+                      <div className="text-2xl font-black font-monument ">{minted}</div>
                       <div className="text-xs">YOU HAVE MINTED</div>
                     </div>
                     <div className="mt-8 mb-0 p-0 w-4/5">
@@ -475,8 +475,9 @@ export default function Home(props) {
                         >
                           Mint ${Math.floor(selectedMintAmount * format_price())} + fee{' '}
                           {utils.format.formatNearAmount(
-
-                              new BigNumber(selectedMintAmount).multipliedBy(new BigNumber( MINT_STORAGE_COST)).toFixed()
+                            new BigNumber(selectedMintAmount)
+                              .multipliedBy(new BigNumber(MINT_STORAGE_COST))
+                              .toFixed()
                           )}
                           N
                         </button>
