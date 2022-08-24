@@ -48,8 +48,8 @@ export const PACK = {
   mainnet: 'pack.pack_minter.playible.near',
   testnet: 'pack.pack_minter.playible.testnet',
   interface: {
-    viewMethods: ['getMessages'],
-    changeMethods: ['addMessage'],
+    viewMethods: ['nft_tokens_for_owner', 'nft_total_supply', 'nft_tokens', 'nft_supply_for_owner'],
+    changeMethods: ['nft_transfer', 'nft_transfer_call', 'nft_resolve_transfer'],
   },
 }; //Pack Contract
 
