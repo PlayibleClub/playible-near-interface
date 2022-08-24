@@ -200,9 +200,9 @@ export default function Home(props) {
           // @ts-ignore:next-line
           actions: [action_deposit_storage_near_token],
         },
-        // @ts-ignore:next-line
         {
           receiverId: getContract(useNEP141),
+          // @ts-ignore:next-line
           actions: [action_transfer_call],
         },
       ],
