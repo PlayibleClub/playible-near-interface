@@ -468,7 +468,7 @@ export default function Home(props) {
                           (
                             ((minterConfig.nft_pack_max_sale_supply -
                               minterConfig.nft_pack_mint_counter -
-                              200) *
+                              201) *
                               100) /
                             (minterConfig.nft_pack_max_sale_supply + RESERVED_AMOUNT)
                           ).toFixed(2)
@@ -481,7 +481,7 @@ export default function Home(props) {
                       {' '}
                       {minterConfig.nft_pack_max_sale_supply -
                         minterConfig.nft_pack_mint_counter -
-                        200}
+                        201}
                       /{minterConfig.nft_pack_max_sale_supply + RESERVED_AMOUNT} packs remaining
                     </div>
                     <div>{selectMint()}</div>
