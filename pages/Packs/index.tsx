@@ -30,6 +30,7 @@ export default function Packs() {
   const [filterMode, setMode] = useState(false);
   const [showFilter, setFilter] = useState(false);
   const [packs, setPacks] = useState([]);
+
   function query_nft_tokens_for_owner() {
     const query = JSON.stringify({ account_id: accountId, limit: 15 });
 
@@ -46,7 +47,6 @@ export default function Packs() {
         const result = JSON.parse(Buffer.from(data.result).toString());
         // Save minter config into state
         setPacks(result);
-        console.log(packs);
       });
   }
 
