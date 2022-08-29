@@ -159,7 +159,7 @@ export default function Home(props) {
 
       const balance = JSON.parse(Buffer.from(ft_balance_of.result).toString());
       if (balance < mint_cost) {
-        setBalanceErrorMsg('Error you need 200 ' + useNEP141.title);
+        setBalanceErrorMsg('Error you need ' + selectedMintAmount * 200 + " " + useNEP141.title);
         return;
       }
       setBalanceErrorMsg('');
