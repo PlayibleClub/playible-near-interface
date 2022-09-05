@@ -81,7 +81,7 @@ export const ATHLETE = {
 
 export const OPENPACK = {
   mainnet: 'guest-book.testnet',
-  testnet: 'guest-book.mainnet',
+  testnet: 'open_pack.nfl.playible.testnet',
   interface: {
     viewMethods: ['getMessages'],
     changeMethods: ['addMessage'],
