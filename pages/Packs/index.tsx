@@ -72,19 +72,15 @@ export default function Packs() {
     query_nft_supply_for_owner();
     getPackLimit();
     setPageCount(Math.ceil(totalPacks / packLimit));
-  }, [totalPacks, packLimit])
+    const endOffset = packOffset + packLimit;
+    console.log(`Loading packs from ${packOffset} to ${endOffset}`);
+    query_nft_tokens_for_owner();
+  }, [totalPacks, packLimit, packOffset])
 
   const handlePageClick = (event) => {
     const newOffset = (event.selected * packLimit) % totalPacks;
     setPackOffset(newOffset);
   }
-
-  useEffect(() => {
-    setPageCount(Math.ceil(totalPacks / packLimit));
-    const endOffset = packOffset + packLimit;
-    console.log(`Loading packs from ${packOffset} to ${endOffset}`);
-    query_nft_tokens_for_owner();
-  }, [packOffset, packLimit]);
 
   function query_nft_tokens_for_owner() {
     const query = JSON.stringify({ account_id: accountId, from_index: packOffset.toString(), limit: packLimit });
