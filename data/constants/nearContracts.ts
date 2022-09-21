@@ -84,7 +84,7 @@ export const OPENPACK = {
   testnet: 'open_pack.nfl.playible.testnet',
   interface: {
     viewMethods: ['getMessages'],
-    changeMethods: ['addMessage'],
+    changeMethods: ['execute_add_athletes, execute_open_pack'],
   },
 }; //OpenPack Contract
 export const ORACLE = {
