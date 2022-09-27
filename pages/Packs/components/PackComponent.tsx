@@ -4,9 +4,11 @@ import Image from 'next/image';
 import moment from 'moment';
 import sampleImage from '../../../public/images/packimages/Starter.png';
 import { assertDirective } from 'graphql';
+import { getServerSideProps } from 'pages/PackDetails';
+import Link from 'next/link';
 
 const PackComponent = (props) => {
-  const { image, id } = props;  
+  const { image, id, owner } = props;  
 
   const selectedPack = id;
   
@@ -16,13 +18,23 @@ const PackComponent = (props) => {
     return id;
   }
 
+  const handleClick = (e, path) => {
+    if (path === "/") {
+      console.log("Clicked on Pack#" + id);
+    }
+  }
+
+  // as={`/PackDetails/${id}`}
+
   return (
     <div className="md:w-48">
       <div className="ml-5">NFL#{id}</div>
       <div className="pointer-events-auto">
-        <button onClick={() => console.log("You clicked on Pack#" , getSelectedId(selectedPack))}>
+        <Link href={{pathname: "/PackDetails", query: {token_id: id}}} as={`/PackDetails/${id}`}>
+        <a onClick={(e) => handleClick(e, "/")}>
           <input type="image" src={image ? image : sampleImage} height={200} width={200}></input>
-        </button>
+        </a>
+        </Link>
       </div>
     </div>
   );
