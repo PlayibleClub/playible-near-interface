@@ -26,18 +26,17 @@ export default function PackDetails(props) {
   const { selector, accountId } = useWalletSelector();
 
   const myPack = {
-    packName: "STARTER PACK",
+    packName: 'STARTER PACK',
     id: queryObj.token_id,
     owner: queryObj.owner_id,
-  }
+  };
 
   async function execute_open_pack() {
-
     const transferArgs = Buffer.from(
       JSON.stringify({
         receiver_id: OPENPACK.testnet,
         token_id: myPack.id,
-        msg: "Pack " + myPack.id.toString() + " sent.",
+        msg: 'Pack ' + myPack.id.toString() + ' sent.',
       })
     );
 
@@ -62,11 +61,14 @@ export default function PackDetails(props) {
         },
       ],
     });
+<<<<<<< HEAD
 
     console.log(tx);
+=======
+>>>>>>> ec9a20c04676e8e33345bce800890a7d21decea8
   }
 
-  console.log("packdetails: " + typeof queryObj.token_id + " test " + queryObj.trait_type);
+  console.log('packdetails: ' + typeof queryObj.token_id + ' test ' + queryObj.trait_type);
 
   // const [msgModal, setMsgModal] = useState(false);
   // const [txLoading, setTxLoading] = useState(false);
@@ -82,55 +84,50 @@ export default function PackDetails(props) {
   return (
     <>
       <Container activeName="PACKS">
-      <div className="mt-8">
-      <BackFunction prev={queryObj.origin ? `/${queryObj.origin}` : '/Packs'}></BackFunction>
-      </div>
-      <div className="flex flex-row ml-24 mt-10">
-        <div>
-          <img src={sampleImage} height={200} width={200}></img>
+        <div className="mt-8">
+          <BackFunction prev={queryObj.origin ? `/${queryObj.origin}` : '/Packs'}></BackFunction>
         </div>
-        <div className="grid grid-rows">
-          <div className="text-2xl font-bold font-monument">
-            {myPack.packName}
+        <div className="flex flex-row ml-24 mt-10">
+          <div>
+            <img src={sampleImage} height={200} width={200}></img>
+          </div>
+          <div className="grid grid-rows">
+            <div className="text-2xl font-bold font-monument">
+              {myPack.packName}
+              <hr className="w-10 border-4"></hr>
+            </div>
+            <div className="text-lg h-0 font-bold">#NFL{queryObj.token_id}</div>
+            <div className="text-sm">RELEASE 1</div>
+            <button
+              className="bg-indigo-buttonblue text-indigo-white w-5/6 md:w-80 h-10 text-center font-bold text-sm mt-4"
+              onClick={() => execute_open_pack()}
+            >
+              OPEN PACK
+            </button>
+          </div>
+        </div>
+
+        <div className="ml-8 md:ml-28 mt-16">
+          <div className="text-2xl font-bold font-monument ">
+            PACK DETAILS
             <hr className="w-10 border-4"></hr>
           </div>
-          <div className="text-lg h-0 font-bold">
-            #NFL{queryObj.token_id}
+          <div className="mt-10">
+            This pack will contain 8 randomly generated <br></br>
+            American Football players.
           </div>
-          <div className="text-sm">
-            RELEASE 1
+          <div className="mt-5 mb-12">
+            <div className="mb-5">1 for each of the positions below:</div>
+            <ul className="marker list-disc pl-5 space-y-3 ">
+              <li>1 Quarter Back (QB)</li>
+              <li>2 Running Back (RB) </li>
+              <li>2 Wide Receivers (WR) </li>
+              <li>1 Tight End (TE)</li>
+              <li>1 Flex (RB/WR/TE) </li>
+              <li>1 Super Flex (QB/RB/WR/TE) </li>
+            </ul>
           </div>
-          <button className="bg-indigo-buttonblue text-indigo-white w-5/6 md:w-80 h-10 text-center font-bold text-sm mt-4" 
-            onClick={() => 
-                execute_open_pack()
-              }
-          >
-            OPEN PACK
-          </button>
         </div>
-      </div>
-
-      <div className="ml-8 md:ml-28 mt-16">
-        <div className="text-2xl font-bold font-monument ">
-          PACK DETAILS
-          <hr className="w-10 border-4"></hr>
-        </div>
-        <div className="mt-10">
-          This pack will contain 8 randomly generated <br></br>
-          NFL players.
-        </div>
-        <div className="mt-5 mb-12">
-        <div className="mb-5">1 for each of the positions below:</div>
-          <ul className="marker list-disc pl-5 space-y-3 ">
-            <li>1 Quarter Back (QB)</li>
-            <li>2 Running Back (RB) </li>
-            <li>2 Wide Receivers (WR) </li>
-            <li>1 Tight End (TE)</li>
-            <li>1 Flex (RB/WR/TE) </li>
-            <li>1 Super Flex (QB/RB/WR/TE) </li>
-          </ul>
-        </div>
-      </div>
       </Container>
     </>
   );
@@ -140,12 +137,12 @@ export async function getServerSideProps(ctx) {
   const { query } = ctx;
   let queryObj = null;
 
-  console.log("query.token_id: " + query.token_id);
+  console.log('query.token_id: ' + query.token_id);
 
   if (query) {
     if (query.token_id) {
       queryObj = query;
-      console.log("queryObject: " + queryObj);
+      console.log('queryObject: ' + queryObj);
     } else {
       return {
         redirect: {
