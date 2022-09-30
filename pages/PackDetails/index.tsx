@@ -46,7 +46,6 @@ export default function PackDetails(props) {
       params: {
         methodName: 'nft_transfer_call',
         args: transferArgs,
-        // token_id: myPack.id,
         gas: DEFAULT_MAX_FEES,
         deposit: '1',
       },
@@ -64,6 +63,7 @@ export default function PackDetails(props) {
       ],
     });
 
+    console.log(tx);
   }
 
   console.log("packdetails: " + typeof queryObj.token_id + " test " + queryObj.trait_type);
