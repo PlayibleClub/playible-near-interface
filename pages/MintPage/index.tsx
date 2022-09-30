@@ -159,7 +159,7 @@ export default function Home(props) {
 
       const balance = JSON.parse(Buffer.from(ft_balance_of.result).toString());
       if (balance < mint_cost) {
-        setBalanceErrorMsg('Error you need ' + selectedMintAmount * 200 + " " + useNEP141.title);
+        setBalanceErrorMsg('Error you need ' + selectedMintAmount * 200 + ' ' + useNEP141.title);
         return;
       }
       setBalanceErrorMsg('');
@@ -529,7 +529,7 @@ export default function Home(props) {
                       )
                     ) : selector.isSignedIn() ? (
                       <div className="w-9/12 flex text-center justify-center items-center bg-indigo-buttonblue font-montserrat text-indigo-white p-4 text-xs mt-8 ">
-                        MINT NFL STARTER PACK SOON
+                        MINT AMERICAN FOOTBALL STARTER PACK SOON
                       </div>
                     ) : (
                       <div className="w-9/12 flex text-center justify-center items-center bg-indigo-buttonblue font-montserrat text-indigo-white p-4 text-xs mt-8 ">
@@ -547,7 +547,7 @@ export default function Home(props) {
                   </div>
                   <div className="mt-10">
                     This pack will contain 8 randomly generated <br></br>
-                    NFL players.
+                    American Football players.
                   </div>
                   <div className="mt-5 mb-12">
                     <div className="mb-5">1 for each of the positions below:</div>
