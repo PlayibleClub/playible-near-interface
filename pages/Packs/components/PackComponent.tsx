@@ -8,10 +8,10 @@ import { getServerSideProps } from 'pages/PackDetails';
 import Link from 'next/link';
 
 const PackComponent = (props) => {
-  const { image, id, owner } = props;  
+  const { image, id, owner } = props;
 
   const selectedPack = id;
-  
+
   function getSelectedId(id) {
     id = selectedPack;
 
@@ -19,10 +19,10 @@ const PackComponent = (props) => {
   }
 
   const handleClick = (e, path) => {
-    if (path === "/") {
-      console.log("Clicked on Pack#" + id);
+    if (path === '/') {
+      console.log('Clicked on Pack#' + id);
     }
-  }
+  };
 
   // as={`/PackDetails/${id}`}
 
@@ -30,10 +30,10 @@ const PackComponent = (props) => {
     <div className="md:w-48">
       <div className="ml-5">NFL#{id}</div>
       <div className="pointer-events-auto">
-        <Link href={{pathname: "/PackDetails", query: {token_id: id}}} as={`/PackDetails/${id}`}>
-        <a onClick={(e) => handleClick(e, "/")}>
-          <input type="image" src={image ? image : sampleImage} height={200} width={200}></input>
-        </a>
+        <Link href={{ pathname: `/PackDetails/${id}` }}>
+          <a onClick={(e) => handleClick(e, '/')}>
+            <input type="image" src={image ? image : sampleImage} height={200} width={200}></input>
+          </a>
         </Link>
       </div>
     </div>

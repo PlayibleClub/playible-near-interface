@@ -8,15 +8,20 @@ import Navbar from '../../components/navbars/Navbar';
 import HorizontalScrollContainer from '../../components/containers/HorizontalScrollContainer';
 import TokenComponent from '../../components/TokenComponent';
 import Main from '../../components/Main';
-import { OPENPACK, PACK, ATHLETE } from '../../data/constants/contracts';
+import { ATHLETE } from '../../data/constants/nearContracts';
 import { axiosInstance } from '../../utils/playible';
 import 'regenerator-runtime/runtime';
 import { BrowserView, MobileView, isBrowser, isMobile } from 'react-device-detect';
+import { transactions, utils, WalletConnection, providers } from 'near-api-js';
+import { getRPCProvider, getContract } from 'utils/near';
+import { useWalletSelector } from 'contexts/WalletSelectorContext';
+import { decode } from 'js-base64';
+import { bindActionCreators } from 'redux';
 
 const sampleList = [0, 1, 2, 3, 4, 5];
 
 const TokenDrawPage = (props) => {
-  const { queryObj, newAthletes, error = null } = props;
+  const { query, newAthletes, error = null } = props;
 
   const dispatch = useDispatch();
   const [err, setErr] = useState(error);
@@ -27,9 +32,30 @@ const TokenDrawPage = (props) => {
   const [assets, setassets] = useState([]);
   const [athletes, setAthletes] = useState([]);
 
-  const [packs, setpacks] = useState(true);
-  const walletConnection = {};
-  const [wallet, setWallet] = useState(null);
+  const provider = new providers.JsonRpcProvider({
+    url: getRPCProvider(),
+  });
+
+  const { selector, accountId } = useWalletSelector();
+
+  async function query_transaction() {
+    const queryFromNear = await provider.sendJsonRpc<Array>('EXPERIMENTAL_tx_status', [
+      query.transactionHash,
+      accountId,
+    ]);
+    setAthletes(
+      queryFromNear.receipts
+        .filter((item) => {
+          return item.receipt.Action.actions.length == 8;
+        })[0]
+        .receipt.Action.actions.map((item) => {
+          return JSON.parse(decode(item.FunctionCall.args));
+        })
+        .map((item) => {
+          return JSON.parse(item.token_metadata.extra);
+        })
+    );
+  }
 
   const activeChecker = () => {
     if (athletes.length > 0) {
@@ -124,15 +150,8 @@ const TokenDrawPage = (props) => {
   };
 
   useEffect(() => {
-    if (walletConnection) {
-      // walletConnection.nearConfig.networkId -> to determine what network (testnet or mainnet)
-      // setErr("You are not in the *intended network*") to notify user that they are not in the intended network
-      // setWallet(walletConnection.walletConnection.isSignedIn());
-    } else {
-      setLoading(false);
-      setWallet(null);
-    }
-  }, [walletConnection]);
+    query_transaction();
+  }, []);
 
   const onVideoEnded = () => {
     setVideoPlaying(false);
@@ -163,7 +182,7 @@ const TokenDrawPage = (props) => {
                 ) : (
                   <div className="mb-10">
                     <div>
-                      {!wallet || err ? (
+                      {!accountId || err ? (
                         <p className="ml-12 mt-5">{err || 'Waiting for wallet connection...'}</p>
                       ) : (
                         <>
@@ -192,34 +211,29 @@ const TokenDrawPage = (props) => {
                                       >
                                         <TokenComponent
                                           athlete_id={
-                                            data.attributes.filter(
+                                            data.filter(
                                               (item) => item.trait_type === 'athlete_id'
                                             )[0].value
                                           }
                                           position={
-                                            data.attributes.filter(
-                                              (item) => item.trait_type === 'position'
-                                            )[0].value
+                                            data.filter((item) => item.trait_type === 'position')[0]
+                                              .value
                                           }
                                           rarity={
-                                            data.attributes.filter(
-                                              (item) => item.trait_type === 'rarity'
-                                            )[0].value
+                                            data.filter((item) => item.trait_type === 'rarity')[0]
+                                              .value
                                           }
                                           release={
-                                            data.attributes.filter(
-                                              (item) => item.trait_type === 'release'
-                                            )[0].value
+                                            data.filter((item) => item.trait_type === 'release')[0]
+                                              .value
                                           }
                                           team={
-                                            data.attributes.filter(
-                                              (item) => item.trait_type === 'team'
-                                            )[0].value
+                                            data.filter((item) => item.trait_type === 'team')[0]
+                                              .value
                                           }
                                           usage={
-                                            data.attributes.filter(
-                                              (item) => item.trait_type === 'usage'
-                                            )[0].value
+                                            data.filter((item) => item.trait_type === 'usage')[0]
+                                              .value
                                           }
                                           isOpen={data.isOpen}
                                           name={''}
@@ -256,41 +270,19 @@ const TokenDrawPage = (props) => {
 
 export default TokenDrawPage;
 
-// export async function getServerSideProps(ctx) {
-//   const { query } = ctx;
-//   let queryObj = null;
-//   const newAthletes = [];
-//   let error = null;
+export async function getServerSideProps(ctx) {
+  const { query } = ctx;
 
-//   if (query.txHash) {
-//     queryObj = query;
-//     if (query.txHash) {
-//       const response = await retrieveTxInfo(query.txHash);
+  if (!query.transactionHash) {
+    return {
+      redirect: {
+        destination: '/Portfolio',
+        permanent: false,
+      },
+    };
+  }
 
-//       if (response && response.logs) {
-//         const tokenList = response.logs[1].eventsByType.wasm.token_id;
-
-//         if (tokenList && tokenList.length > 0) {
-//           tokenList.forEach((id, i) => {
-//             if (i !== 0) {
-//               newAthletes.push(id);
-//             }
-//           });
-//         }
-//       } else {
-//         error = 'An error occurred. Please refresh the page';
-//       }
-//     }
-//   } else {
-//     return {
-//       redirect: {
-//         destination: '/Portfolio',
-//         permanent: false,
-//       },
-//     };
-//   }
-
-//   return {
-//     props: { queryObj, newAthletes, error },
-//   };
-// }
+  return {
+    props: { query },
+  };
+}

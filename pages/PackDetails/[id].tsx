@@ -21,14 +21,13 @@ import { providers } from 'near-api-js';
 const DEFAULT_MAX_FEES = '300000000000000';
 
 export default function PackDetails(props) {
-  const { queryObj } = props;
+  const { query } = props;
 
   const { selector, accountId } = useWalletSelector();
 
   const myPack = {
     packName: 'STARTER PACK',
-    id: queryObj.token_id,
-    owner: queryObj.owner_id,
+    id: query.id,
   };
 
   async function execute_open_pack() {
@@ -61,28 +60,13 @@ export default function PackDetails(props) {
         },
       ],
     });
-
-    console.log(tx);
   }
-
-  console.log('packdetails: ' + typeof queryObj.token_id + ' test ' + queryObj.trait_type);
-
-  // const [msgModal, setMsgModal] = useState(false);
-  // const [txLoading, setTxLoading] = useState(false);
-
-  // const [loading, setLoading] = useState(true);
-  // const [loadingMessage, setLoadingMessage] = useState('');
-  // const [displayModal, setModal] = useState(false);
-  // const [modalHeader, setModalHeader] = useState('');
-  // const [modalData, setModalData] = useState([]);
-  // const [modalStatus, setModalStatus] = useState(statusCode.IDLE);
-  // const [data, setData] = useState(null);
 
   return (
     <>
       <Container activeName="PACKS">
         <div className="mt-8">
-          <BackFunction prev={queryObj.origin ? `/${queryObj.origin}` : '/Packs'}></BackFunction>
+          <BackFunction prev={query.origin ? `/${query.origin}` : '/Packs'}></BackFunction>
         </div>
         <div className="flex flex-row ml-24 mt-10">
           <div>
@@ -93,7 +77,7 @@ export default function PackDetails(props) {
               {myPack.packName}
               <hr className="w-10 border-4"></hr>
             </div>
-            <div className="text-lg h-0 font-bold">#NFL{queryObj.token_id}</div>
+            <div className="text-lg h-0 font-bold">#NFL{query.id}</div>
             <div className="text-sm">RELEASE 1</div>
             <button
               className="bg-indigo-buttonblue text-indigo-white w-5/6 md:w-80 h-10 text-center font-bold text-sm mt-4"
@@ -132,14 +116,15 @@ export default function PackDetails(props) {
 
 export async function getServerSideProps(ctx) {
   const { query } = ctx;
-  let queryObj = null;
-
-  console.log('query.token_id: ' + query.token_id);
 
   if (query) {
-    if (query.token_id) {
-      queryObj = query;
-      console.log('queryObject: ' + queryObj);
+    if (query.transactionHashes) {
+      return {
+        redirect: {
+          destination: query.origin || `/TokenDrawPage/${query.transactionHashes}`,
+          permanent: false,
+        },
+      };
     } else {
       return {
         redirect: {
@@ -151,6 +136,6 @@ export async function getServerSideProps(ctx) {
   }
 
   return {
-    props: { queryObj },
+    props: { query },
   };
 }
