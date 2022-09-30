@@ -61,11 +61,8 @@ export default function PackDetails(props) {
         },
       ],
     });
-<<<<<<< HEAD
 
     console.log(tx);
-=======
->>>>>>> ec9a20c04676e8e33345bce800890a7d21decea8
   }
 
   console.log('packdetails: ' + typeof queryObj.token_id + ' test ' + queryObj.trait_type);
