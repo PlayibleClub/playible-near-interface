@@ -18,6 +18,19 @@ export const GET_ATHLETES_TOP = gql`
   }
 `;
 
+export const GET_ATHLETEDATA_BY_ID = gql`
+  query GetAthleteData($getAthleteByIdId: Float!) {
+    getAthleteById(id: $getAthleteByIdId) {
+      id
+      firstName
+      lastName
+      position
+      nftImage
+      nftAnimation
+    }
+  }
+`;
+
 export const GET_ATHLETEDATA_QB = gql`
   query GetAthleteData_QB($getAthleteByIdId: Float!) {
     getAthleteById(id: $getAthleteByIdId) {

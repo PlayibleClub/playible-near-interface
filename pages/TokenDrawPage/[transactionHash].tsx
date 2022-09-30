@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { useDispatch, useSelector } from 'react-redux';
 import LoadingPageDark from '../../components/loading/LoadingPageDark';
@@ -8,26 +8,27 @@ import Navbar from '../../components/navbars/Navbar';
 import HorizontalScrollContainer from '../../components/containers/HorizontalScrollContainer';
 import TokenComponent from '../../components/TokenComponent';
 import Main from '../../components/Main';
-import { ATHLETE } from '../../data/constants/nearContracts';
-import { axiosInstance } from '../../utils/playible';
+import { GET_ATHLETEDATA_BY_ID } from '../../utils/queries';
 import 'regenerator-runtime/runtime';
 import { BrowserView, MobileView, isBrowser, isMobile } from 'react-device-detect';
 import { transactions, utils, WalletConnection, providers } from 'near-api-js';
 import { getRPCProvider, getContract } from 'utils/near';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
 import { decode } from 'js-base64';
-import { bindActionCreators } from 'redux';
+import { useLazyQuery, useQuery } from '@apollo/client';
 
 const sampleList = [0, 1, 2, 3, 4, 5];
 
 const TokenDrawPage = (props) => {
-  const { query, newAthletes, error = null } = props;
+  const { query, newAthletes } = props;
 
   const dispatch = useDispatch();
-  const [err, setErr] = useState(error);
+
+  const [videoPlaying, setVideoPlaying] = useState(false);
+
+  const [err, setErr] = useState(null);
 
   const [loading, setLoading] = useState(false);
-  const [videoPlaying, setVideoPlaying] = useState(false);
 
   const [assets, setassets] = useState([]);
   const [athletes, setAthletes] = useState([]);
@@ -38,24 +39,39 @@ const TokenDrawPage = (props) => {
 
   const { selector, accountId } = useWalletSelector();
 
-  async function query_transaction() {
+  const [getAthleteById, { loading: loadingQuery, error, data }] =
+    useLazyQuery(GET_ATHLETEDATA_BY_ID);
+
+  const query_transaction = useCallback(async () => {
     const queryFromNear = await provider.sendJsonRpc<Array>('EXPERIMENTAL_tx_status', [
       query.transactionHash,
       accountId,
     ]);
-    setAthletes(
-      queryFromNear.receipts
-        .filter((item) => {
-          return item.receipt.Action.actions.length == 8;
-        })[0]
-        .receipt.Action.actions.map((item) => {
-          return JSON.parse(decode(item.FunctionCall.args));
-        })
-        .map((item) => {
-          return JSON.parse(item.token_metadata.extra);
-        })
+
+    console.log(
+      await Promise.all(
+        queryFromNear.receipts
+          .filter((item) => {
+            return item.receipt.Action.actions.length == 8;
+          })[0]
+          .receipt.Action.actions.map((item) => {
+            return JSON.parse(decode(item.FunctionCall.args));
+          })
+          .map((item) => {
+            return JSON.parse(item.token_metadata.extra);
+          })
+          .map((item) => {
+            let athlete_id = item.filter((item) => item.trait_type == 'athlete_id')[0].value;
+            let athlete = getAthleteById({
+              variables: {
+                getAthleteById: athlete_id,
+              },
+            });
+            return athlete;
+          })
+      )
     );
-  }
+  }, []);
 
   const activeChecker = () => {
     if (athletes.length > 0) {
@@ -94,64 +110,9 @@ const TokenDrawPage = (props) => {
     }
   };
 
-  const prepareNewAthletes = async () => {
-    if (assets.length > 0) {
-      const detailedAssets = assets.map(async (id, i) => {
-        return await getAthleteInfo(id);
-      });
-
-      const tempAthletes = await Promise.all(detailedAssets);
-      setAthletes(tempAthletes.filter((item) => item));
-    }
-
-    setLoading(false);
-  };
-
-  const getAthleteInfo = async (id) => {
-    /*
-    const res = await lcd.wasm.contractQuery(ATHLETE, {
-      all_nft_info: {
-        token_id: id,
-      },
-    });
-    
-
-    if (res.info) {
-      const details = await axiosInstance.get(
-        `/fantasy/athlete/${
-          res.info.extension.attributes.filter((item) => item.trait_type === 'athlete_id')[0].value
-        }/stats/`
-      );
-      const imgRes = await axiosInstance.get(
-        `/fantasy/athlete/${parseInt(
-          res.info.extension.attributes.filter((item) => item.trait_type === 'athlete_id')[0].value
-        )}/`
-      );
-
-      let stats = null;
-      const img = imgRes.status === 200 ? imgRes.data.nft_image : null;
-      const animation = imgRes.status === 200 ? imgRes.data.animation : null;
-
-      if (details.status === 200) {
-        stats = details.data.athlete_stat;
-      }
-
-      const newAthlete = {
-        ...res.info.extension,
-        ...stats,
-        isOpen: false,
-        img,
-        animation,
-      };
-
-      return newAthlete;
-    }
-    */
-  };
-
   useEffect(() => {
-    query_transaction();
-  }, []);
+    query_transaction().catch(console.error);
+  }, [query_transaction]);
 
   const onVideoEnded = () => {
     setVideoPlaying(false);

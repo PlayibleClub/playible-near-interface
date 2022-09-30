@@ -9,7 +9,7 @@
     "redux-devtools": "redux-devtools --hostname=localhost --port=8000"
   },
   "dependencies": {
-    "@apollo/client": "^3.6.9",
+    "@apollo/client": "^3.6.10",
     "@babel/core": "^7.17.8",
     "@headlessui/react": "^1.4.1",
     "@heroicons/react": "^1.0.1",
