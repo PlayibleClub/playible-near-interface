@@ -21,13 +21,11 @@ import client from 'apollo-client';
 const sampleList = [0, 1, 2, 3, 4, 5];
 
 const TokenDrawPage = (props) => {
-  const { query, newAthletes } = props;
+  const { query, result } = props;
 
   const dispatch = useDispatch();
 
   const [videoPlaying, setVideoPlaying] = useState(false);
-
-  const [err, setErr] = useState(null);
 
   const [loading, setLoading] = useState(true);
 
@@ -45,6 +43,8 @@ const TokenDrawPage = (props) => {
       query.transactionHash,
       accountId,
     ]);
+
+    console.log(queryFromNear);
 
     setAthletes(
       await Promise.all(
@@ -132,6 +132,58 @@ const TokenDrawPage = (props) => {
     }
   }, []);
 
+  const walletConnection = () => {
+    return <p className="ml-12 mt-5">{'Waiting for wallet connection...'}</p>;
+  };
+
+  const error = () => {
+    return <p className="ml-12 mt-5">{'An error occurred'}</p>;
+  };
+
+  const tokenRevealPage = () => {
+    return (
+      <>
+        {athletes.length > 0 && activeChecker() && (
+          <div className="flex justify-center my-2 w-full">
+            <button
+              className="bg-indigo-buttonblue cursor-pointer text-indigo-white w-5/6 md:w-80 h-14 text-center font-bold text-md uppercase"
+              onClick={revealAll}
+            >
+              Reveal all
+            </button>
+          </div>
+        )}
+        <div className="flex justify-center self-center" style={{ backgroundColor: 'white' }}>
+          <div className="flex flex-row flex-wrap justify-center">
+            {athletes.length > 0
+              ? athletes.map((data, key) => (
+                  <div className="flex px-14 py-10 m-10" key={key}>
+                    <div
+                      onClick={() => {
+                        changeCard(key);
+                      }}
+                    >
+                      <TokenComponent
+                        athlete_id={data.athlete_id}
+                        position={data.position}
+                        release={data.release}
+                        rarity={data.rarity}
+                        team={data.team}
+                        usage={data.usage}
+                        name={data.name}
+                        isOpen={data.isOpen}
+                        img={data.animation}
+                      />
+                    </div>
+                  </div>
+                ))
+              : ''}
+          </div>
+        </div>
+      </>
+    );
+  };
+
   return (
     <>
       <Container activeName="SQUAD">
@@ -149,64 +201,23 @@ const TokenDrawPage = (props) => {
                 {loading ? (
                   <LoadingPageDark />
                 ) : (
-                  <div className="mb-10">
-                    <div>
-                      {!accountId || err ? (
-                        <p className="ml-12 mt-5">{err || 'Waiting for wallet connection...'}</p>
-                      ) : (
-                        <>
-                          {athletes.length > 0 && activeChecker() && (
-                            <div className="flex justify-center my-2 w-full">
-                              <button
-                                className="bg-indigo-buttonblue cursor-pointer text-indigo-white w-5/6 md:w-80 h-14 text-center font-bold text-md uppercase"
-                                onClick={revealAll}
-                              >
-                                Reveal all
-                              </button>
-                            </div>
-                          )}
-                          <div
-                            className="flex justify-center self-center"
-                            style={{ backgroundColor: 'white' }}
-                          >
-                            <div className="flex flex-row flex-wrap justify-center">
-                              {athletes.length > 0
-                                ? athletes.map((data, key) => (
-                                    <div className="flex px-14 py-10 m-10" key={key}>
-                                      <div
-                                        onClick={() => {
-                                          changeCard(key);
-                                        }}
-                                      >
-                                        <TokenComponent
-                                          athlete_id={data.athlete_id}
-                                          position={data.position}
-                                          release={data.release}
-                                          rarity={data.rarity}
-                                          team={data.team}
-                                          usage={data.usage}
-                                          name={data.name}
-                                          isOpen={data.isOpen}
-                                          img={data.animation}
-                                        />
-                                      </div>
-                                    </div>
-                                  ))
-                                : ''}
-                            </div>
-                          </div>
-                        </>
-                      )}
-                    </div>
-                    <div className="flex h-14 mt-16">
-                      <div className="bg-indigo-black w-full justify-end flex opacity-5"></div>
-                      <Link href="/Portfolio" replace>
-                        <button className="bg-indigo-buttonblue cursor-pointer text-indigo-white w-5/6 md:w-80 h-14 text-center font-bold text-md">
-                          GO TO MY SQUAD
-                        </button>
-                      </Link>
-                    </div>
-                  </div>
+                  <>
+                    {!result ? (
+                      error()
+                    ) : (
+                      <div className="mb-10">
+                        <div>{!accountId ? walletConnection() : tokenRevealPage()}</div>
+                        <div className="flex h-14 mt-16">
+                          <div className="bg-indigo-black w-full justify-end flex opacity-5"></div>
+                          <Link href="/Portfolio" replace>
+                            <button className="bg-indigo-buttonblue cursor-pointer text-indigo-white w-5/6 md:w-80 h-14 text-center font-bold text-md">
+                              GO TO MY SQUAD
+                            </button>
+                          </Link>
+                        </div>
+                      </div>
+                    )}
+                  </>
                 )}
               </>
             )}
@@ -222,6 +233,8 @@ export default TokenDrawPage;
 export async function getServerSideProps(ctx) {
   const { query } = ctx;
 
+  let result = false;
+
   if (!query.transactionHash) {
     return {
       redirect: {
@@ -229,9 +242,17 @@ export async function getServerSideProps(ctx) {
         permanent: false,
       },
     };
+  } else {
+    const provider = new providers.JsonRpcProvider({
+      url: getRPCProvider(),
+    });
+    const transaction = await provider.txStatus(query.transactionHash, 'unnused');
+    // true if successful
+    // false if unsuccessful
+    result = providers.getTransactionLastResult(transaction);
   }
 
   return {
-    props: { query },
+    props: { query, result },
   };
 }
