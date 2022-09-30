@@ -18,22 +18,20 @@ export const GET_ATHLETES_TOP = gql`
   }
 `;
 
-export const GET_ATHLETEDATA_BY_ID = gql`
-  query GetAthleteData($getAthleteByIdId: Float!) {
-    getAthleteById(id: $getAthleteByIdId) {
-      id
-      firstName
-      lastName
-      position
-      nftImage
+export const GET_ATHLETE_BY_ID = gql`
+  query GetAthleteData($getAthleteById: Float!) {
+    getAthleteById(id: $getAthleteById) {
       nftAnimation
+      stats {
+        fantasyScore
+      }
     }
   }
 `;
 
 export const GET_ATHLETEDATA_QB = gql`
-  query GetAthleteData_QB($getAthleteByIdId: Float!) {
-    getAthleteById(id: $getAthleteByIdId) {
+  query GetAthleteData_QB($getAthleteById: Float!) {
+    getAthleteById(id: $getAthleteById) {
       id
       firstName
       lastName

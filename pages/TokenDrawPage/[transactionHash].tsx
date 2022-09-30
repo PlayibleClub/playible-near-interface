@@ -8,7 +8,7 @@ import Navbar from '../../components/navbars/Navbar';
 import HorizontalScrollContainer from '../../components/containers/HorizontalScrollContainer';
 import TokenComponent from '../../components/TokenComponent';
 import Main from '../../components/Main';
-import { GET_ATHLETEDATA_BY_ID } from '../../utils/queries';
+import { GET_ATHLETE_BY_ID } from '../../utils/queries';
 import 'regenerator-runtime/runtime';
 import { BrowserView, MobileView, isBrowser, isMobile } from 'react-device-detect';
 import { transactions, utils, WalletConnection, providers } from 'near-api-js';
@@ -16,6 +16,7 @@ import { getRPCProvider, getContract } from 'utils/near';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
 import { decode } from 'js-base64';
 import { useLazyQuery, useQuery } from '@apollo/client';
+import client from 'apollo-client';
 
 const sampleList = [0, 1, 2, 3, 4, 5];
 
@@ -28,7 +29,7 @@ const TokenDrawPage = (props) => {
 
   const [err, setErr] = useState(null);
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const [assets, setassets] = useState([]);
   const [athletes, setAthletes] = useState([]);
@@ -39,16 +40,13 @@ const TokenDrawPage = (props) => {
 
   const { selector, accountId } = useWalletSelector();
 
-  const [getAthleteById, { loading: loadingQuery, error, data }] =
-    useLazyQuery(GET_ATHLETEDATA_BY_ID);
-
   const query_transaction = useCallback(async () => {
     const queryFromNear = await provider.sendJsonRpc<Array>('EXPERIMENTAL_tx_status', [
       query.transactionHash,
       accountId,
     ]);
 
-    console.log(
+    setAthletes(
       await Promise.all(
         queryFromNear.receipts
           .filter((item) => {
@@ -60,17 +58,27 @@ const TokenDrawPage = (props) => {
           .map((item) => {
             return JSON.parse(item.token_metadata.extra);
           })
-          .map((item) => {
-            let athlete_id = item.filter((item) => item.trait_type == 'athlete_id')[0].value;
-            let athlete = getAthleteById({
-              variables: {
-                getAthleteById: athlete_id,
-              },
+          .map(async (item) => {
+            let value = item.map((item) => item.value);
+            const { data } = await client.query({
+              query: GET_ATHLETE_BY_ID,
+              variables: { getAthleteById: parseFloat(value[0]) },
             });
-            return athlete;
+            return {
+              athlete_id: value[0],
+              rarity: value[1],
+              usage: value[2],
+              name: value[3],
+              team: value[4],
+              position: value[5],
+              release: value[6],
+              isOpen: false,
+              animation: data.getAthleteById.nftAnimation,
+            };
           })
       )
     );
+    setLoading(false);
   }, []);
 
   const activeChecker = () => {
@@ -98,7 +106,7 @@ const TokenDrawPage = (props) => {
     setAthletes(tempAthletes);
   };
 
-  const changecard = (position) => {
+  const changeCard = (position) => {
     if (athletes[position].isOpen === false) {
       const updatedList = [...athletes];
       const updatedAthlete = {
@@ -167,38 +175,18 @@ const TokenDrawPage = (props) => {
                                     <div className="flex px-14 py-10 m-10" key={key}>
                                       <div
                                         onClick={() => {
-                                          changecard(key);
+                                          changeCard(key);
                                         }}
                                       >
                                         <TokenComponent
-                                          athlete_id={
-                                            data.filter(
-                                              (item) => item.trait_type === 'athlete_id'
-                                            )[0].value
-                                          }
-                                          position={
-                                            data.filter((item) => item.trait_type === 'position')[0]
-                                              .value
-                                          }
-                                          rarity={
-                                            data.filter((item) => item.trait_type === 'rarity')[0]
-                                              .value
-                                          }
-                                          release={
-                                            data.filter((item) => item.trait_type === 'release')[0]
-                                              .value
-                                          }
-                                          team={
-                                            data.filter((item) => item.trait_type === 'team')[0]
-                                              .value
-                                          }
-                                          usage={
-                                            data.filter((item) => item.trait_type === 'usage')[0]
-                                              .value
-                                          }
+                                          athlete_id={data.athlete_id}
+                                          position={data.position}
+                                          release={data.release}
+                                          rarity={data.rarity}
+                                          team={data.team}
+                                          usage={data.usage}
+                                          name={data.name}
                                           isOpen={data.isOpen}
-                                          name={''}
-                                          fantasy_score={data.fantasy_score}
                                           img={data.animation}
                                         />
                                       </div>
