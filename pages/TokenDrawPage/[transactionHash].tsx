@@ -25,7 +25,7 @@ const TokenDrawPage = (props) => {
 
   const dispatch = useDispatch();
 
-  const [videoPlaying, setVideoPlaying] = useState(false);
+  const [videoPlaying, setVideoPlaying] = useState(true);
 
   const [loading, setLoading] = useState(true);
 
@@ -137,7 +137,7 @@ const TokenDrawPage = (props) => {
   };
 
   const error = () => {
-    return <p className="ml-12 mt-5">{'An error occurred'}</p>;
+    return <p className="ml-12 mt-5">{'Transaction encountered error.'}</p>;
   };
 
   const tokenRevealPage = () => {
@@ -208,7 +208,7 @@ const TokenDrawPage = (props) => {
                       <div className="mb-10">
                         <div>{!accountId ? walletConnection() : tokenRevealPage()}</div>
                         <div className="flex h-14 mt-16">
-                          <div className="bg-indigo-black w-full justify-end flex opacity-5"></div>
+                          <div className="w-full justify-end"></div>
                           <Link href="/Portfolio" replace>
                             <button className="bg-indigo-buttonblue cursor-pointer text-indigo-white w-5/6 md:w-80 h-14 text-center font-bold text-md">
                               GO TO MY SQUAD
