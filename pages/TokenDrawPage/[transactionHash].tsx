@@ -46,18 +46,25 @@ const TokenDrawPage = (props) => {
 
     console.log(queryFromNear);
 
+    // See https://docs.near.org/api/rpc/transactions
+
     setAthletes(
       await Promise.all(
+        // filter out all receipts, and find those that array of 8 actions (since 8 nft_mints)
         queryFromNear.receipts
           .filter((item) => {
             return item.receipt.Action.actions.length == 8;
           })[0]
+          // decode the arguments of nft_mint, and determine the json
           .receipt.Action.actions.map((item) => {
             return JSON.parse(decode(item.FunctionCall.args));
           })
+          // get metadata
           .map((item) => {
             return JSON.parse(item.token_metadata.extra);
           })
+          // pull from graphQL and append the nft animation
+          // return assembled Athlete
           .map(async (item) => {
             let value = item.map((item) => item.value);
             const { data } = await client.query({
