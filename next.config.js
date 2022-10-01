@@ -6,7 +6,7 @@ nextConfig = {
     },
     env: {
         NEAR_ENV: process.env.NEAR_ENV,
-        GRAPHQL_URL: process.env.GRAPHQL_URL
+        GRAPHQL_URL: process.env.GRAPHQL_URL,
     }
 }
 

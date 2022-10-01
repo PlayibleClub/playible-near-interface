@@ -77,7 +77,7 @@ export default function PackDetails(props) {
               {myPack.packName}
               <hr className="w-10 border-4"></hr>
             </div>
-            <div className="text-lg h-0 font-bold">#NFL{query.id}</div>
+            <div className="text-lg h-0 font-bold">#{query.id}</div>
             <div className="text-sm">RELEASE 1</div>
             <button
               className="bg-indigo-buttonblue text-indigo-white w-5/6 md:w-80 h-10 text-center font-bold text-sm mt-4"

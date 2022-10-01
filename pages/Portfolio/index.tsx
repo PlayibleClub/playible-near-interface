@@ -11,13 +11,14 @@ import Sorter from './components/Sorter';
 
 import { transactions, utils, WalletConnection, providers } from 'near-api-js';
 import { getRPCProvider, getContract } from 'utils/near';
-import { PACK } from '../../data/constants/nearContracts';;
+import { PACK } from '../../data/constants/nearContracts';
 import { axiosInstance } from '../../utils/playible';
 import 'regenerator-runtime/runtime';
 import { ProvidedRequiredArgumentsOnDirectivesRule } from 'graphql/validation/rules/ProvidedRequiredArgumentsRule';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
 import { ATHLETE } from 'data/constants/contracts';
 import PackComponent from 'pages/Packs/components/PackComponent';
+import { convertNftToAthlete, getAthleteInfoById } from 'utils/athlete/helper';
 
 const Portfolio = () => {
   const [searchText, setSearchText] = useState('');
@@ -48,7 +49,7 @@ const Portfolio = () => {
 
   const provider = new providers.JsonRpcProvider({
     url: getRPCProvider(),
-  })
+  });
 
   function query_nft_tokens_for_owner() {
     const query = JSON.stringify({ account_id: accountId, limit: 50 });
@@ -61,11 +62,12 @@ const Portfolio = () => {
         method_name: 'nft_tokens_for_owner',
         args_base64: Buffer.from(query).toString('base64'),
       })
-      .then((data) => {
+      .then(async (data) => {
         // @ts-ignore:next-line
         const result = JSON.parse(Buffer.from(data.result).toString());
 
-        setAthletes(result);
+        setAthletes(await Promise.all(result.map(convertNftToAthlete).map(getAthleteInfoById)));
+        setLoading(false);
       });
   }
 
@@ -212,20 +214,6 @@ const Portfolio = () => {
   useEffect(() => {}, [limit, offset, filter, search]);
 
   useEffect(() => {}, [packs, packLimit, packOffset]);
-
-  // useEffect(() => {
-  //   if (walletConnection) {
-  //     setWallet(walletConnection.walletConnection.isSignedIn());
-  //   } else {
-  //     setWallet(null);
-  //   }
-  // }, [walletConnection]);
-
-  // useEffect(() => {
-  //   if (list) {
-  //     setPlayerList(list);
-  //   }
-  // }, [list]);
 
   return (
     // <Container activeName="SQUAD">
@@ -493,15 +481,28 @@ const Portfolio = () => {
           <div className="md:ml-6">
             <PortfolioContainer textcolor="indigo-black" title="SQUAD">
               <div className="flex flex-col">
-              <div className="grid grid-cols-4 gap-y-8 mt-4 md:grid-cols-4 md:ml-7 md:mt-12">
-                  {athletes.map(({ metadata, token_id }) => (
-                    <PackComponent image={metadata.media} id={token_id}></PackComponent>
-                  ))}
-                </div>
+                {loading ? (
+                  <LoadingPageDark />
+                ) : (
+                  <div className="grid grid-cols-4 gap-y-8 mt-4 md:grid-cols-4 md:ml-7 md:mt-12">
+                    {athletes.map((item) => {
+                      return (
+                        <PerformerContainer
+                          key={item.athlete_id}
+                          AthleteName={item.name}
+                          AvgScore={item.fantasy_score}
+                          id={item.athlete_id}
+                          uri={item.image}
+                          // rarity={path.rarity}
+                          // status={player.is_locked}
+                        ></PerformerContainer>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
             </PortfolioContainer>
-            <div className="absolute bottom-10 right-10">
-          </div>
+            <div className="absolute bottom-10 right-10"></div>
           </div>
         </Main>
       </div>

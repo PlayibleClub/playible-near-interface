@@ -37,7 +37,7 @@ const TokenComponent = (props) => {
       </div>
       {isOpen ? (
         <div className="flex whitespace-nowrap text-sm flex-col font-thin">
-          <div className="font-black mt-2 text-center">{name.toUpperCase()}</div>
+          <div className="font-black mt-2 text-center">#{athlete_id}</div>
         </div>
       ) : (
         ''

@@ -8,7 +8,7 @@ import Navbar from '../../components/navbars/Navbar';
 import HorizontalScrollContainer from '../../components/containers/HorizontalScrollContainer';
 import TokenComponent from '../../components/TokenComponent';
 import Main from '../../components/Main';
-import { GET_ATHLETE_BY_ID } from '../../utils/queries';
+
 import 'regenerator-runtime/runtime';
 import { BrowserView, MobileView, isBrowser, isMobile } from 'react-device-detect';
 import { transactions, utils, WalletConnection, providers } from 'near-api-js';
@@ -17,6 +17,7 @@ import { useWalletSelector } from 'contexts/WalletSelectorContext';
 import { decode } from 'js-base64';
 import { useLazyQuery, useQuery } from '@apollo/client';
 import client from 'apollo-client';
+import { getAthleteInfoById, convertNftToAthlete } from 'utils/athlete/helper';
 
 interface responseExperimentalTxStatus {
   receipts: Array<receipt>;
@@ -74,29 +75,8 @@ const TokenDrawPage = (props) => {
             return JSON.parse(decode(item.FunctionCall.args));
           })
           // get metadata
-          .map((item) => {
-            return JSON.parse(item.token_metadata.extra);
-          })
-          // pull from graphQL and append the nft animation
-          // return assembled Athlete
-          .map(async (item) => {
-            let value = item.map((item) => item.value);
-            const { data } = await client.query({
-              query: GET_ATHLETE_BY_ID,
-              variables: { getAthleteById: parseFloat(value[0]) },
-            });
-            return {
-              athlete_id: value[0],
-              rarity: value[1],
-              usage: value[2],
-              name: value[3],
-              team: value[4],
-              position: value[5],
-              release: value[6],
-              isOpen: false,
-              animation: data.getAthleteById.nftAnimation,
-            };
-          })
+          .map(convertNftToAthlete)
+          .map(getAthleteInfoById)
       )
     );
     setLoading(false);

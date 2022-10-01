@@ -19,7 +19,10 @@ const PerformerContainer = (props) => {
   } = props;
 
   return (
-    <div data-test="PerformerContainer" className={`justify-center flex flex-col w-full h-full`}>
+    <div
+      data-test="PerformerContainer"
+      className={`justify-center flex flex-col w-full h-full pb-12`}
+    >
       <div className="self-center mr-10">
         {status === true && (
           <div className="bg-indigo-lightgreen text-indigo-white text-center text-xs font-bold py-1 px-3 mb-2">
@@ -63,7 +66,6 @@ PerformerContainer.propTypes = {
   AthleteName: PropTypes.string,
   TeamName: PropTypes.string,
   CoinValue: PropTypes.string,
-  imagesrc: PropTypes.string,
   id: PropTypes.string,
   AvgScore: PropTypes.number,
   uri: PropTypes.string,
@@ -71,12 +73,6 @@ PerformerContainer.propTypes = {
   rarity: PropTypes.string,
   status: PropTypes.string,
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
-};
-
-PerformerContainer.defaultProps = {
-  imagesrc: '/public/images/tokens/0.png',
-  // children: <div>Fantasy investr</div>
-  children: <div />,
 };
 
 export default PerformerContainer;

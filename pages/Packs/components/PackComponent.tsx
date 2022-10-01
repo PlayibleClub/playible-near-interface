@@ -19,7 +19,7 @@ const PackComponent = (props) => {
 
   return (
     <div className="md:w-48">
-      <div className="ml-5">NFL#{id}</div>
+      <div className="ml-5">#{id}</div>
       <div className="pointer-events-auto">
         <button>
           <Link href={`/PackDetails/${id}`} passHref>

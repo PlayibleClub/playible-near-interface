@@ -22,6 +22,7 @@ export const GET_ATHLETE_BY_ID = gql`
   query GetAthleteData($getAthleteById: Float!) {
     getAthleteById(id: $getAthleteById) {
       nftAnimation
+      nftImage
       stats {
         fantasyScore
       }
