@@ -63,8 +63,8 @@ export default function PackDetails(props) {
   }
 
   return (
-    <>
-      <Container activeName="PACKS">
+    <Container activeName="PACKS">
+      <div className="flex flex-col w-full overflow-y-auto h-screen pb-40">
         <div className="mt-8">
           <BackFunction prev={query.origin ? `/${query.origin}` : '/Packs'}></BackFunction>
         </div>
@@ -109,8 +109,8 @@ export default function PackDetails(props) {
             </ul>
           </div>
         </div>
-      </Container>
-    </>
+      </div>
+    </Container>
   );
 }
 
@@ -125,7 +125,7 @@ export async function getServerSideProps(ctx) {
           permanent: false,
         },
       };
-    } else {
+    } else if (!query.id) {
       return {
         redirect: {
           destination: query.origin || '/Packs',

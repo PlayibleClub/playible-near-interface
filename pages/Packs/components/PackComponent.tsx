@@ -17,21 +17,15 @@ const PackComponent = (props) => {
     return id;
   }
 
-  const handleClick = (e, path) => {
-    if (path === '/') {
-      console.log('Clicked on Pack#' + id);
-    }
-  };
-
   return (
     <div className="md:w-48">
       <div className="ml-5">NFL#{id}</div>
       <div className="pointer-events-auto">
-        <Link href={{ pathname: `/PackDetails/${id}` }}>
-          <a onClick={(e) => handleClick(e, '/')}>
-            <input type="image" src={image ? image : sampleImage} height={200} width={200}></input>
-          </a>
-        </Link>
+        <button>
+          <Link href={`/PackDetails/${id}`} passHref>
+            <img src={image} height={200} width={200} />
+          </Link>
+        </button>
       </div>
     </div>
   );

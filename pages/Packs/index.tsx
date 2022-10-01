@@ -58,11 +58,11 @@ export default function Packs() {
 
   function getPackLimit() {
     try {
-      if (totalPacks>30) {
+      if (totalPacks > 30) {
         const _packLimit = 15;
-        console.log("Reloading packs")
+        console.log('Reloading packs');
         setPackLimit(_packLimit);
-      } 
+      }
     } catch (e) {
       setPackLimit(30);
     }
@@ -75,15 +75,19 @@ export default function Packs() {
     const endOffset = packOffset + packLimit;
     console.log(`Loading packs from ${packOffset} to ${endOffset}`);
     query_nft_tokens_for_owner();
-  }, [totalPacks, packLimit, packOffset])
+  }, [totalPacks, packLimit, packOffset]);
 
   const handlePageClick = (event) => {
     const newOffset = (event.selected * packLimit) % totalPacks;
     setPackOffset(newOffset);
-  }
+  };
 
   function query_nft_tokens_for_owner() {
-    const query = JSON.stringify({ account_id: accountId, from_index: packOffset.toString(), limit: packLimit });
+    const query = JSON.stringify({
+      account_id: accountId,
+      from_index: packOffset.toString(),
+      limit: packLimit,
+    });
 
     provider
       .query({
@@ -97,6 +101,7 @@ export default function Packs() {
         // @ts-ignore:next-line
         const result = JSON.parse(Buffer.from(data.result).toString());
 
+        console.log(result);
         setPacks(result);
       });
   }
@@ -138,28 +143,32 @@ export default function Packs() {
           <div className="md:ml-6">
             <PortfolioContainer textcolor="indigo-black" title="PACKS">
               <div className="flex flex-col">
-              <div className="grid grid-cols-4 gap-y-8 mt-4 md:grid-cols-4 md:ml-7 md:mt-12">
+                <div className="grid grid-cols-4 gap-y-8 mt-4 md:grid-cols-4 md:ml-7 md:mt-12">
                   {packs.map(({ metadata, token_id }) => (
-                    <PackComponent image={metadata.media} id={token_id}></PackComponent>
+                    <PackComponent
+                      key={token_id}
+                      image={metadata.media}
+                      id={token_id}
+                    ></PackComponent>
                   ))}
                 </div>
               </div>
             </PortfolioContainer>
             <div className="absolute bottom-10 right-10">
-          <ReactPaginate 
-            className="p-2 bg-indigo-buttonblue text-indigo-white flex flex-row space-x-4 select-none ml-7"
-            pageClassName="hover:font-bold"
-            activeClassName="rounded-lg bg-indigo-white text-indigo-black pr-1 pl-1 font-bold"
-            pageLinkClassName="rounded-lg hover:font-bold hover:bg-indigo-white hover:text-indigo-black pr-1 pl-1"
-            breakLabel="..."
-            nextLabel="next >"
-            onPageChange={handlePageClick}
-            pageRangeDisplayed={5}
-            pageCount={pageCount}
-            previousLabel="< prev"
-            renderOnZeroPageCount={null}
-          />
-          </div>
+              <ReactPaginate
+                className="p-2 bg-indigo-buttonblue text-indigo-white flex flex-row space-x-4 select-none ml-7"
+                pageClassName="hover:font-bold"
+                activeClassName="rounded-lg bg-indigo-white text-indigo-black pr-1 pl-1 font-bold"
+                pageLinkClassName="rounded-lg hover:font-bold hover:bg-indigo-white hover:text-indigo-black pr-1 pl-1"
+                breakLabel="..."
+                nextLabel="next >"
+                onPageChange={handlePageClick}
+                pageRangeDisplayed={5}
+                pageCount={pageCount}
+                previousLabel="< prev"
+                renderOnZeroPageCount={null}
+              />
+            </div>
           </div>
         </Main>
       </div>
