@@ -206,9 +206,7 @@ const Portfolio = () => {
 
   useEffect(() => {
     query_nft_tokens_for_owner();
-    setLoading(true);
     setSortedList([]);
-    setLoading(false);
   }, [dispatch]);
 
   useEffect(() => {}, [limit, offset, filter, search]);
