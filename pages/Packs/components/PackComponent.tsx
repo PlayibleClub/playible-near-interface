@@ -4,7 +4,6 @@ import Image from 'next/image';
 import moment from 'moment';
 import sampleImage from '../../../public/images/packimages/Starter.png';
 import { assertDirective } from 'graphql';
-import { getServerSideProps } from 'pages/PackDetails';
 import Link from 'next/link';
 
 const PackComponent = (props) => {
@@ -23,8 +22,6 @@ const PackComponent = (props) => {
       console.log('Clicked on Pack#' + id);
     }
   };
-
-  // as={`/PackDetails/${id}`}
 
   return (
     <div className="md:w-48">

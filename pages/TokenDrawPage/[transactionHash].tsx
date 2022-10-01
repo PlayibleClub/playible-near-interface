@@ -18,7 +18,21 @@ import { decode } from 'js-base64';
 import { useLazyQuery, useQuery } from '@apollo/client';
 import client from 'apollo-client';
 
-const sampleList = [0, 1, 2, 3, 4, 5];
+interface responseExperimentalTxStatus {
+  receipts: Array<receipt>;
+}
+
+interface receipt {
+  receipt: {
+    Action: {
+      actions: Array<{
+        FunctionCall: {
+          args: string;
+        };
+      }>;
+    };
+  };
+}
 
 const TokenDrawPage = (props) => {
   const { query, result } = props;
@@ -39,10 +53,10 @@ const TokenDrawPage = (props) => {
   const { selector, accountId } = useWalletSelector();
 
   const query_transaction = useCallback(async () => {
-    const queryFromNear = await provider.sendJsonRpc<Array>('EXPERIMENTAL_tx_status', [
-      query.transactionHash,
-      accountId,
-    ]);
+    const queryFromNear = await provider.sendJsonRpc<responseExperimentalTxStatus>(
+      'EXPERIMENTAL_tx_status',
+      [query.transactionHash, accountId]
+    );
 
     console.log(queryFromNear);
 
