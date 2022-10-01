@@ -40,7 +40,7 @@ const navigationLoggedIn = [
   clubhouse,
   home,
   mint,
-  // mySquad,
+  mySquad,
   myPacks,
   //play,
 ];

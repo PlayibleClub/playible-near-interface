@@ -9,7 +9,7 @@
     "redux-devtools": "redux-devtools --hostname=localhost --port=8000"
   },
   "dependencies": {
-    "@apollo/client": "^3.6.9",
+    "@apollo/client": "^3.6.10",
     "@babel/core": "^7.17.8",
     "@headlessui/react": "^1.4.1",
     "@heroicons/react": "^1.0.1",
@@ -24,6 +24,7 @@
     "crypto-js": "^4.1.1",
     "graphql": "^16.5.0",
     "javascript-time-ago": "^2.5.7",
+    "js-base64": "^3.7.2",
     "moment": "^2.29.1",
     "next": "10.2.3",
     "next-images": "^1.8.1",
