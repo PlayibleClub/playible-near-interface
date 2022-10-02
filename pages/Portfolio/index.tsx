@@ -58,7 +58,7 @@ const Portfolio = () => {
       .query({
         request_type: 'call_function',
         finality: 'optimistic',
-        account_id: 'athlete.nfl.playible.testnet',
+        account_id: getContract(ATHLETE),
         method_name: 'nft_tokens_for_owner',
         args_base64: Buffer.from(query).toString('base64'),
       })
