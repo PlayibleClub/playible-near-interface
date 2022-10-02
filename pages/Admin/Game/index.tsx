@@ -8,7 +8,7 @@ import BaseModal from '../../../components/modals/BaseModal';
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en.json';
 import ReactTimeAgo from 'react-time-ago';
-import { GAME, ORACLE } from '../../../data/constants/contracts';
+import { GAME, ORACLE } from '../../../data/constants/nearContracts';
 import 'regenerator-runtime/runtime';
 import { format } from 'prettier';
 import { ADMIN } from '../../../data/constants/address';
