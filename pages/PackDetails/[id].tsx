@@ -33,7 +33,7 @@ export default function PackDetails(props) {
   async function execute_open_pack() {
     const transferArgs = Buffer.from(
       JSON.stringify({
-        receiver_id: OPENPACK.testnet,
+        receiver_id: getContract(OPENPACK),
         token_id: myPack.id,
         msg: 'Pack ' + myPack.id.toString() + ' sent.',
       })
@@ -54,7 +54,7 @@ export default function PackDetails(props) {
     const tx = wallet.signAndSendTransactions({
       transactions: [
         {
-          receiverId: PACK.testnet,
+          receiverId: getContract(PACK),
           // @ts-ignore:next-line
           actions: [action_transfer_call],
         },
