@@ -1,0 +1,25 @@
+import PropTypes from 'prop-types';
+import React from 'react';
+
+const HorizontalScrollContainer = (props) => {
+  const { children, color } = props;
+
+  return (
+    <div className="flex overflow-x-auto">
+      <div className="flex flex-nowrap">{children}</div>
+    </div>
+  );
+};
+
+HorizontalScrollContainer.propTypes = {
+  color: PropTypes.string,
+  children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
+};
+
+HorizontalScrollContainer.defaultProps = {
+  color: 'pink',
+  // children: <div>Fantasy investr</div>
+  children: <div />,
+};
+
+export default HorizontalScrollContainer;
