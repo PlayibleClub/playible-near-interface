@@ -21,7 +21,6 @@ import BackFunction from '../../components/buttons/BackFunction';
 
 import { position } from '../../utils/athlete/position';
 import { axiosInstance } from '../../utils/playible';
-import { ATHLETE } from '../../data/constants/contracts';
 
 import {
   GET_ATHLETEDATA_QB,
@@ -174,7 +173,8 @@ const AssetDetails = (props) => {
           }}
         />
       )}
-      {listingModal && true
+      {
+        listingModal && true
         // <ListingModal
         //   // asset={assetData}
         //   onClose={() => {

@@ -3,7 +3,6 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { axiosInstance } from 'utils/playible';
 import * as statusCode from 'data/constants/status';
 import * as actionType from 'data/constants/actions';
-import * as contracts from 'data/constants/contracts';
 
 const initialState = {
   data: null,
