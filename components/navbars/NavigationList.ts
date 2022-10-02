@@ -1,3 +1,5 @@
+import Play from 'pages/Play';
+
 const clubhouse = {
   name: 'CLUBHOUSE',
   path: 'http://playible.club',
@@ -49,6 +51,11 @@ const navigationAdmin = [
   {
     name: 'GAME',
     path: '/Admin/Game',
+    img: '/images/icons/Play.svg',
+  },
+  {
+    name: 'OPENPACK',
+    path: '/Admin/OpenPack',
     img: '/images/icons/Play.svg',
   },
 ];

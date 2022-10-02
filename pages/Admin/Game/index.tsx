@@ -16,11 +16,13 @@ import { useRouter } from 'next/router';
 import { useSelector } from 'react-redux';
 import { useMutation } from '@apollo/client';
 import { CREATE_GAME } from '../../../utils/mutations';
+import { useWalletSelector } from 'contexts/WalletSelectorContext';
 
 TimeAgo.addDefaultLocale(en);
 
-const Index = (props) => {
+export default function Index(props) {
   const [createNewGame, { data, error }] = useMutation(CREATE_GAME);
+  const { selector, accountId } = useWalletSelector();
   const connectedWallet = {};
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -103,7 +105,6 @@ const Index = (props) => {
   const [completedGames, setCompletedGames] = useState([]);
   const [gameId, setGameId] = useState(null);
   const [err, setErr] = useState(null);
-  const [modal, setModal] = useState(false);
   const [endLoading, setEndLoading] = useState(false);
   const [confirmModal, setConfirmModal] = useState(false);
   const [endModal, setEndModal] = useState(false);
@@ -256,7 +257,7 @@ const Index = (props) => {
       setConfirmModal(true);
     }
   };
-  
+
   const endGame = async (id) => {
     if (connectedWallet) {
       setEndLoading(true);
@@ -325,7 +326,7 @@ const Index = (props) => {
       setEndLoading(false);
     }
   };
-  
+
   const createGame = async () => {
     if (connectedWallet) {
       const formData = {
@@ -347,68 +348,67 @@ const Index = (props) => {
         const distributionList = distribution.map((item) => {
           return {
             ...item,
-            percentage: (item.percentage) / 100 * 1000000,
+            percentage: (item.percentage / 100) * 1000000,
           };
         });
 
-      //   const resContract = await executeContract(connectedWallet, ORACLE, [
-      //     {
-      //       contractAddr: ORACLE,
-      //       msg: {
-      //         add_game: {
-      //           game_id: res.data.id.toString(),
-      //           prize: parseInt(res.data.prize),
-      //           distribution: distributionList,
-      //         },
-      //       },
-      //     },
-      //     {
-      //       contractAddr: GAME,
-      //       msg: {
-      //         add_game: {
-      //           game_id: res.data.id.toString(),
-      //           game_time_start: Math.ceil(convertToMinutes(formData.startTime)),
-      //           duration: Math.ceil(formData.duration),
-      //         },
-      //       },
-      //     },
-      //   ]);
+        //   const resContract = await executeContract(connectedWallet, ORACLE, [
+        //     {
+        //       contractAddr: ORACLE,
+        //       msg: {
+        //         add_game: {
+        //           game_id: res.data.id.toString(),
+        //           prize: parseInt(res.data.prize),
+        //           distribution: distributionList,
+        //         },
+        //       },
+        //     },
+        //     {
+        //       contractAddr: GAME,
+        //       msg: {
+        //         add_game: {
+        //           game_id: res.data.id.toString(),
+        //           game_time_start: Math.ceil(convertToMinutes(formData.startTime)),
+        //           duration: Math.ceil(formData.duration),
+        //         },
+        //       },
+        //     },
+        //   ]);
 
-      //   if (
-      //     !resContract.txResult ||
-      //     (resContract.txResult && !resContract.txResult.success) ||
-      //     resContract.txError
-      //   ) {
-      //     let deleteSuccess = false;
-      //     while (!deleteSuccess) {
-      //       const deleteRes = await axiosInstance.delete(`/fantasy/game/${res.data.id}/`);
+        //   if (
+        //     !resContract.txResult ||
+        //     (resContract.txResult && !resContract.txResult.success) ||
+        //     resContract.txError
+        //   ) {
+        //     let deleteSuccess = false;
+        //     while (!deleteSuccess) {
+        //       const deleteRes = await axiosInstance.delete(`/fantasy/game/${res.data.id}/`);
 
-      //       if (deleteRes.status === 204) {
-      //         deleteSuccess = true;
-      //       }
-      //     }
+        //       if (deleteRes.status === 204) {
+        //         deleteSuccess = true;
+        //       }
+        //     }
 
-      //     setMsg({
-      //       title: 'Failed',
-      //       content:
-      //         resContract.txResult && !resContract.txResult.success
-      //           ? 'Blockchain error! Please try again later.'
-      //           : resContract.txError,
-      //     });
-      //   }
-      //   resetForm();
-      //   // fetchGames();
-      // } else {
-      //   setMsg({
-      //     title: 'Failed',
-      //     content: 'An error occurred! Please try again later.',
-      //   });
-      // }
-
-      setModal(true);
-      setLoading(false);
-    } else {
-      alert('Connect to your wallet first');
+        //     setMsg({
+        //       title: 'Failed',
+        //       content:
+        //         resContract.txResult && !resContract.txResult.success
+        //           ? 'Blockchain error! Please try again later.'
+        //           : resContract.txError,
+        //     });
+        //   }
+        //   resetForm();
+        //   // fetchGames();
+        // } else {
+        //   setMsg({
+        //     title: 'Failed',
+        //     content: 'An error occurred! Please try again later.',
+        //   });
+        // }
+        setLoading(false);
+      } else {
+        alert('Connect to your wallet first');
+      }
     }
   };
 
@@ -453,7 +453,6 @@ const Index = (props) => {
         // const hasEnded = await lcd.wasm.contractQuery(GAME, {
         //   game_info: { game_id: item.id.toString() },
         // });
-
         // return {
         //   ...item,
         //   hasEnded: !!hasEnded?.has_ended,
@@ -485,38 +484,6 @@ const Index = (props) => {
   useEffect(() => {
     getTotalPercent();
   }, [distribution]);
-
-  // useEffect(() => {
-  //   if (connectedWallet) {
-  //     if (connectedWallet.walletAddress === ADMIN) {
-  //       if (connectedWallet?.network?.name === 'testnet') {
-  //         // fetchGames();
-  //         setErr(null);
-  //         setContent(true);
-  //       } else {
-  //         setErr('You are connected to mainnet. Please connect to testnet');
-  //       }
-  //     } else {
-  //       return router.replace('/');
-  //     }
-  //   } else {
-  //     setGames([]);
-  //     setCompletedGames([]);
-  //     setErr('Waiting for wallet connection...');
-  //   }
-  // }, [connectedWallet]);
-
-  // useEffect(() => {
-  //   if (wallet?.data) {
-  //     const isSignedIn = wallet.data.walletConnection.isSignedIn();
-  //     if (isSignedIn) {
-  //       setErr(null);
-  //       setContent(true);
-  //       setContentLoading(false);
-  //     }
-  //     console.log('walletInfo', wallet.data.walletConnection.isSignedIn());
-  //   }
-  // }, [wallet]);
 
   return (
     <Container isAdmin>
@@ -731,9 +698,6 @@ const Index = (props) => {
             ))}
         </Main>
       </div>
-      <BaseModal title={msg.title} visible={modal} onClose={() => setModal(false)}>
-        <p className="mt-5">{msg.content}</p>
-      </BaseModal>
       <BaseModal title={endMsg.title} visible={endLoading} onClose={() => console.log()}>
         {endMsg.content ? (
           <div>
@@ -786,10 +750,7 @@ const Index = (props) => {
       </BaseModal>
     </Container>
   );
-};
 }
-
-export default Index;
 
 // export async function getServerSideProps(ctx) {
 //   return {

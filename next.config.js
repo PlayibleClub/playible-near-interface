@@ -7,6 +7,7 @@ nextConfig = {
     env: {
         NEAR_ENV: process.env.NEAR_ENV,
         GRAPHQL_URL: process.env.GRAPHQL_URL,
+        ADMIN: process.env.ADMIN
     }
 }
 

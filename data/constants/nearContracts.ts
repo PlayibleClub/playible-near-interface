@@ -71,7 +71,7 @@ export const MARKETPLACE = {
   },
 }; //Marketplace Contract
 export const ATHLETE = {
-  mainnet: 'guest-book.testnet',
+  mainnet: 'athlete.nfl.playible.near',
   testnet: 'athlete.nfl.playible.testnet',
   interface: {
     viewMethods: ['nft_tokens_for_owner', 'nft_total_supply', 'nft_tokens', 'nft_supply_for_owner'],
@@ -80,7 +80,7 @@ export const ATHLETE = {
 }; //Athlete Contract
 
 export const OPENPACK = {
-  mainnet: 'guest-book.testnet',
+  mainnet: 'open_pack.nfl.playible.near',
   testnet: 'open_pack.nfl.playible.testnet',
   interface: {
     viewMethods: ['getMessages'],

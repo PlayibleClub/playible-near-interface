@@ -1,15 +1,18 @@
 import React from 'react';
 import DesktopNavbar from '../navbars/DesktopNavbar';
 import DesktopHeaderBase from '../headers/DesktopHeaderBase';
-import { useWalletSelector } from 'contexts/WalletSelectorContext';
 import Navbar from '../navbars/Navbar';
 import HeaderBase from '../headers/HeaderBase';
 import DisclaimerHeader from '../headers/DisclaimerHeader';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { useWalletSelector } from 'contexts/WalletSelectorContext';
+import { isAdminChecker } from 'utils/admin';
 
 const Container = (props) => {
-  const { activeName, children, isAdmin } = props;
-  const { selector } = useWalletSelector();
+  const { activeName, children } = props;
+  const { selector, accountId } = useWalletSelector();
+
+  const isAdmin = isAdminChecker(accountId);
 
   return (
     <div className="font-montserrat h-min md:h-screen relative hide-scroll bg-indigo-white flex overflow-x-hidden overflow-y-hidden">
