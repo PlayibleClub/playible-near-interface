@@ -17,8 +17,8 @@ import { useWalletSelector } from 'contexts/WalletSelectorContext';
 import { getRPCProvider, getContract } from 'utils/near';
 import { OPENPACK, PACK } from '../../data/constants/nearContracts';
 import { providers } from 'near-api-js';
-
-const DEFAULT_MAX_FEES = '300000000000000';
+import BigNumber from 'bignumber.js';
+import { DEFAULT_MAX_FEES, MINT_STORAGE_COST } from 'data/constants/gasFees';
 
 export default function PackDetails(props) {
   const { query } = props;
@@ -39,13 +39,15 @@ export default function PackDetails(props) {
       })
     );
 
+    const deposit = new BigNumber(8).multipliedBy(new BigNumber(MINT_STORAGE_COST)).toFixed();
+
     const action_transfer_call = {
       type: 'FunctionCall',
       params: {
         methodName: 'nft_transfer_call',
         args: transferArgs,
         gas: DEFAULT_MAX_FEES,
-        deposit: '1',
+        deposit: deposit,
       },
     };
 

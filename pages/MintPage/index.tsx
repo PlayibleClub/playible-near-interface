@@ -17,10 +17,9 @@ import { getConfig, getContract, getRPCProvider } from '../../utils/near';
 
 import { MINTER, NEP141USDC, NEP141USDT, NEP141USN } from '../../data/constants/nearContracts';
 
-const MINT_STORAGE_COST_TESTNET = 5870000000000000000000;
-const MINT_STORAGE_COST = 60000000000000000000000;
+import { MINT_STORAGE_COST, DEFAULT_MAX_FEES } from 'data/constants/gasFees';
+
 const DECIMALS_NEAR = 1000000000000000000000000;
-const DEFAULT_MAX_FEES = '300000000000000';
 const RESERVED_AMOUNT = 200;
 const NANO_TO_SECONDS_DENOMINATOR = 1000000;
 
