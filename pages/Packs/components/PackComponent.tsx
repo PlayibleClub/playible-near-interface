@@ -20,7 +20,7 @@ const PackComponent = (props) => {
   return (
     <div className="md:w-48">
       <div className="ml-5">#{id}</div>
-      <div className="pointer-events-auto">
+      <div className="pointer-events-auto cursor-pointer hover:-translate-y-1 transform transition-all">
         <button>
           <Link href={`/PackDetails/${id}`} passHref>
             <img src={image} height={200} width={200} />

@@ -5,7 +5,7 @@ const PlayerContainer = (props) => {
   const { img = null } = props;
 
   return (
-    <div className="overflow-hidden ease-in-out">
+    <div className="overflow-hidden ease-in-out mr-10">
       {/* {rarity === 'gold' && 
                 <Image
                     src={"/../public/images/tokens/"+playerID+"g.png"}

@@ -30,8 +30,8 @@ import {
 } from '../../utils/queries';
 import { useLazyQuery } from '@apollo/client';
 
-const AssetDetails = (props) => {
-  const { queryObj, playerStats, playerImg } = props;
+const AssetDetailsOld = (props) => {
+  const { queryObj, query, playerStats, playerImg } = props;
 
   const [loading, setLoading] = useState(false);
   const [tokenCongrats, setTokenCongrats] = useState(false);
@@ -55,7 +55,7 @@ const AssetDetails = (props) => {
     'hit_by_pitch',
     'stolen_bases',
   ];
-  const { query } = useRouter();
+  // const { query } = useRouter();
 
   const [athleteData, setAthleteData] = useState([]);
 
@@ -362,11 +362,11 @@ const AssetDetails = (props) => {
   );
 };
 
-export default AssetDetails;
+export default AssetDetailsOld;
 
 // export async function getServerSideProps(ctx) {
 //   const { query } = ctx;
-//   let queryObj = null;
+  
 //   if (query) {
 //     if (query.id && query.token_id) {
 //       queryObj = query;
@@ -380,13 +380,14 @@ export default AssetDetails;
 //     }
 //   }
 
-//   let playerStats = null;
-//   const res = await axiosInstance.get(`/fantasy/athlete/${parseInt(queryObj.id)}/stats/`);
+//   // let playerStats = null;
+//   // const res = await axiosInstance.get(`/fantasy/athlete/${parseInt(queryObj.id)}/stats/`);
 
-//   if (res.status === 200) {
-//     playerStats = res.data;
-//   }
+//   // if (res.status === 200) {
+//   //   playerStats = res.data;
+//   // }
+
 //   return {
-//     props: { queryObj, playerStats },
+//     props: { query },
 //   };
 // }
