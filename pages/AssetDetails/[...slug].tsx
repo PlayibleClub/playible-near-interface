@@ -22,12 +22,20 @@ const AssetDetails = (props) => {
 
     const [athlete, setAthlete] = useState([]);
 
+    // const routerAthlete = {
+    //     id: query.id,
+    //     index: query.index,
+    // }
+
     const routerAthlete = {
-        id: query.id,
+        id: slug[0],
+        index: slug[1],
     }
 
+    const athleteImage = athlete.map((item) => { return (item.image) }).toString();
+
     function query_nft_tokens_for_owner() {
-        const query = JSON.stringify({ account_id: accountId, from_index: "0", limit: 1 })
+        const query = JSON.stringify({ account_id: accountId, from_index: routerAthlete.index.toString(), limit: 1 })
     
          provider
           .query({
@@ -48,7 +56,7 @@ const AssetDetails = (props) => {
 
     useEffect(() => {
         query_nft_tokens_for_owner();
-    })
+    }, [])
 
     return (
         <Container activeName="ATHLETES">
@@ -56,10 +64,16 @@ const AssetDetails = (props) => {
           <div className="mt-8">
             <BackFunction prev={query.origin ? `/${query.origin}` : '/Portfolio'}></BackFunction>
           </div>
-          <div className="flex flex-row ml-24 mt-10">
+
+          <div className="flex flex-row ml-16 mt-10">
             <div className="mr-10">
-              <Image src={'/images/tokensMLB/SP.png'} width={120} height={160} />
-              
+              <object
+              className=""
+              type="image/svg+xml"
+              data={athleteImage !== undefined ? athleteImage : '/images/tokensMLB/SP.png'}
+              width={120}
+              height={160}
+              />
             </div>
             <div className="grid grid-rows">
               <div className="text-2xl font-bold font-monument">
@@ -67,7 +81,7 @@ const AssetDetails = (props) => {
                 <hr className="w-10 border-4"></hr>
               </div>
               <div className="mt-10 text-m h-0 font-bold">
-                ATHLETE NAME
+                {athlete.map((item) => { return (item.name)}).toString().toUpperCase()}
               </div>
               <div className="mt-10 text-sm grid grid-rows-2 grid-cols-2">
                 <div>
@@ -77,46 +91,20 @@ const AssetDetails = (props) => {
                   PLAY TRACKER
                 </div>
                 <div>
-                  ATHLETE SCORE
+                  {athlete.map((item) => { return (item.fantasy_score)})}
                 </div>
                 <div>
-                  (PLACEHOLDER) 
-                  {/* {data.getAthletes.map(function ({ passingYards}, i){
-                    return(
-                      <div className="" key={i}>
-                        {passingYards}
-                        test
-                      </div>
-                    );
-                  })} */}
+                  {athlete.map((item) => { return (item.usage)})} 
                 </div>
               </div>
               <button className="bg-indigo-lightblue text-indigo-buttonblue w-5/6 md:w-80 h-10 
                 text-center font-bold text-md mt-12 self-center justify-center cursor-not-allowed">
                   PLACE FOR SALE - COMING SOON
               </button>
-  
               <div>
             </div>
             </div>
             </div>
-  
-            <div className="grid grid-cols-4 gap-y-8 mt-4 md:grid-cols-4 md:ml-7 md:mt-12">
-              
-          {athlete.filter(athlete => athlete.athlete_id === routerAthlete.id).map((item) => {
-            return (
-              <PerformerContainer
-                            key={item.athlete_id}
-                            AthleteName={item.name}
-                            AvgScore={item.fantasy_score}
-                            id={item.athlete_id}
-                            uri={item.image}
-              ></PerformerContainer>
-            );
-          })}
-  
-          {/* {athlete.filter(athlete => athlete.athlete_id === routerAthlete.id).map} */}
-        </div>
             
             <div className="flex flex-row ml-24 mt-20">
               <div className="grid grid-cols-2">

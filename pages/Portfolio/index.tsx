@@ -238,7 +238,7 @@ const Portfolio = () => {
               
           <div className="md:ml-6">
           <div className="md:ml-6">
-          
+          {totalAthletes}
           </div>
             <PortfolioContainer textcolor="indigo-black" title="SQUAD">
               <div className="flex flex-col">
@@ -248,6 +248,9 @@ const Portfolio = () => {
                   <div className="grid grid-cols-4 gap-y-8 mt-4 md:grid-cols-4 md:ml-7 md:mt-12">
 
                     {athletes.map((item) => {
+
+                      const accountAthleteIndex = athletes.indexOf(item, 0) + athleteOffset;
+
                       return (
                         <PerformerContainer
                           key={item.athlete_id}
@@ -255,7 +258,7 @@ const Portfolio = () => {
                           AvgScore={item.fantasy_score}
                           id={item.athlete_id}
                           uri={item.image}
-                          index={athletes.indexOf(item.athlete_id, 0).toString()}
+                          index={accountAthleteIndex}
                           // rarity={path.rarity}
                           // status={player.is_locked}
                         ></PerformerContainer>

@@ -39,7 +39,7 @@ const PerformerContainer = (props) => {
       >
         {uri ? (
           <div className="relative" style={{ width: '120px', height: '160px' }}>
-            <Link href={`/AssetDetails/${id}`} passHref>
+            <Link href={`/AssetDetails/${id}/${index}`} passHref>
             <div className="absolute z-50" style={{ width: '120px', height: '160px' }}></div>
             </Link>
             <object
@@ -61,6 +61,7 @@ const PerformerContainer = (props) => {
           <div className="mt-4 text-xs font-thin">FANTASY SCORE</div>
           <div className="text-xs font-bold">{AvgScore}</div>
           <div className="text-xs font-bold">{id}</div>
+          <div className="text-xs font-bold">{index}</div>
         </div>
       </div>
     </div>
@@ -77,7 +78,7 @@ PerformerContainer.propTypes = {
   hoverable: PropTypes.bool,
   rarity: PropTypes.string,
   status: PropTypes.string,
-  index: PropTypes.string,
+  index: PropTypes.number,
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
 };
 
