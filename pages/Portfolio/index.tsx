@@ -237,9 +237,10 @@ const Portfolio = () => {
               </div> */}
               
           <div className="md:ml-6">
-          <div className="md:ml-6">da</div>
+          <div className="md:ml-6">
+          
+          </div>
             <PortfolioContainer textcolor="indigo-black" title="SQUAD">
-              {JSON.stringify(filterOption)}
               <div className="flex flex-col">
                 {loading ? (
                   <LoadingPageDark />
@@ -260,8 +261,6 @@ const Portfolio = () => {
                         ></PerformerContainer>
                       );
                     })}
-                    
-                    {console.log("iomdexpf"+ athletes.findIndex(shit => shit.athlete_id == "18030CR10"))}
 
                   </div>
                 )}
