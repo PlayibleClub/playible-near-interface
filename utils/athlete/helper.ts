@@ -13,6 +13,7 @@ async function getAthleteInfoById(item) {
   console.log(data);
 
   const returningData = {
+    primary_id: value[0],
     athlete_id: item.token_id,
     rarity: value[1],
     usage: value[2],

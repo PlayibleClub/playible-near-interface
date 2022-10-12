@@ -1,8 +1,10 @@
-import React from 'react';
-
+import React, { useEffect, useState} from 'react';
+import { GET_ATHLETEDATA_QB, GET_ATHLETEDATA_RB, GET_ATHLETEDATA_WR, GET_ATHLETEDATA_TE } from 'utils/queries';
+import { useLazyQuery } from '@apollo/client';
 const StatsComponent = (props) => {
-    const { 
-        passingYards,
+    const {
+        id, 
+        position,
         // position,
         // completions,
         // passingTouchdowns,
@@ -12,57 +14,120 @@ const StatsComponent = (props) => {
         // carries,
         // freeSpace, 
     } = props;
+    const [objectNames, setObjectNames] = useState([]);
+    const [getAthleteQB] = useLazyQuery(GET_ATHLETEDATA_QB);
+    const [getAthleteRB] = useLazyQuery(GET_ATHLETEDATA_RB);
+    const [getAthleteWR] = useLazyQuery(GET_ATHLETEDATA_WR);
+    const [getAthleteTE] = useLazyQuery(GET_ATHLETEDATA_TE);
+    const [athleteData, setAthleteData] = useState([]);
 
+    const [athleteTest, setAthleteTest] = useState([]);
+    const [objectTest, setObjectTest] = useState([]);
+    // console.log(tempPos);
+    async function getStats(position, id){
+        console.log(position);
+        try{
+            switch (position){
+                case 'QB':               
+                console.log("test");
+                const QBdata = await getAthleteQB({ variables: { getAthleteById: parseFloat(id.toString())}});
+                console.log(QBdata.data.getAthleteById.stats[0]);
+                setAthleteData(QBdata.data.getAthleteById.stats[0]);
+                setObjectNames(QBdata.data.getAthleteById.stats[0]);
+                break;
+
+                case 'RB':
+                console.log("testRB");
+                const RBdata = await getAthleteRB({ variables: {getAthleteById: parseFloat(id.toString())}});
+                console.table(RBdata.data.getAthleteById.stats);
+                setAthleteData(RBdata.data.getAthleteById.stats);
+                break;
+
+                case 'WR':
+                console.log("testWR");
+                const WRdata = await getAthleteWR({ variables: {getAthleteById: parseFloat(id.toString())}});
+                console.table(WRdata.data.getAthleteById.stats);
+                setAthleteData(WRdata.data.getAthleteById.stats);
+                break;
+ 
+                case 'TE':
+                console.log("testTE");
+                const TEdata = await getAthleteTE({ variables: {getAthleteById: parseFloat(id.toString())}});
+                console.table(TEdata.data.getAthleteById.stats);
+                setAthleteData(TEdata.data.getAthleteById.stats);
+                break;
+            }
+        }
+        catch(err){
+            console.log(err);
+        }
+    }
+
+    useEffect(() => {
+        if(id[0] !== undefined && position[0] !== undefined){
+            console.log("test");
+            getStats(position[0], id[0]);
+        }
+    }, [id, position]);
+
+    //FIX THIS
+    useEffect(() => {
+        setAthleteTest(Object.values(athleteData));
+        setObjectTest(Object.keys(objectNames));
+    }), [athleteData, objectNames];
+    // useEffect(() => {}, [athleteData, objectNames]);
     return (
         <>
             <div className="flex h-1/8 w-1/3 ml-24 -mt-8 justify-center content-center select-none text-center text-4xl 
             bg-indigo-black font-monument text-indigo-white p-2 pl-5">
             <div className="">
-                QUARTER BACK
+                {position}
+                
             </div>
             </div>
 
             <div className="mt-10 ml-24 w-1/2 text-sm grid grid-rows-4 grid-cols-4">
-            <div>
-                1 
-                <br></br>
-                COMPLETIONS/ATTEMPTS
-            </div>
-            <div>
-                2
-                <br></br>
-                PASSING YARDS
-            </div>
-            <div>
-                3
-                <br></br>
-                PASSING TOUCHDOWNS
-            </div>
-            <div>
-                4
-                <br></br>
-                INTERCEPTIONS
-            </div>
-            <div>
-                5
-                <br></br>
-                RUSHING YARDS
-            </div>
-            <div>
-                6
-                <br></br>
-                RUSHING TOUCHDOWNS
-            </div>
-            <div>
-                7 
-                <br></br>
-                CARRIES
-            </div>
-            <div>
-                8
-                <br></br>
-                FREE SPACE
-            </div>
+                <div>
+                    {athleteTest[1]} 
+                    <br></br>
+                    {objectTest[1]}
+                </div>
+                <div>
+                    2
+                    <br></br>
+                    PASSING YARDS
+                    
+                </div>
+                <div>
+                    3
+                    <br></br>
+                    PASSING TOUCHDOWNS
+                </div>
+                <div>
+                    4
+                    <br></br>
+                    INTERCEPTIONS
+                </div>
+                <div>
+                    5
+                    <br></br>
+                    RUSHING YARDS
+                </div>
+                <div>
+                    6
+                    <br></br>
+                    RUSHING TOUCHDOWNS
+                </div>
+                <div>
+                    7 
+                    <br></br>
+                    CARRIES
+                </div>
+                <div>
+                    8
+                    <br></br>
+                    FREE SPACE
+                </div>
             </div>
         </>
     )

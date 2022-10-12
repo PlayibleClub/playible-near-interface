@@ -85,7 +85,7 @@ const AssetDetails = (props) => {
               </div>
               <div className="mt-10 text-sm grid grid-rows-2 grid-cols-2">
                 <div>
-                  FANTASY SCORE
+                  {athlete.map((item) => {return (item.primary_id)})}
                 </div>
                 <div>
                   PLAY TRACKER
@@ -119,8 +119,13 @@ const AssetDetails = (props) => {
             </div>
   
             {/* {displayStats()} */}
+        
+            <StatsComponent
+              id={athlete.map((item) => { return (item.primary_id) })} 
+              position={athlete.map((item) => { return (item.position) })}
+            >
 
-            <StatsComponent passingYards="placeholder"></StatsComponent>
+            </StatsComponent>
   
             </div>
       </Container>

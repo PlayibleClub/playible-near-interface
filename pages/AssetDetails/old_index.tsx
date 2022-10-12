@@ -70,7 +70,7 @@ const AssetDetailsOld = (props) => {
   async function getData(x) {
     switch (x) {
       case 'QB':
-        const QBdata = await getAthleteQB({ variables: { getAthleteByIdId: tempId } });
+        const QBdata = await getAthleteQB({ variables: { getAthleteByIdId: tempId } }); 
         setAthleteData(QBdata.data.getAthleteById);
         console.log(athleteData);
         console.log(QBdata.data.getAthleteById);
