@@ -43,9 +43,9 @@ export const GET_ATHLETEDATA_QB = gql`
         passingYards
         passingTouchdowns
         interceptions
-        carries
         rushingYards
         rushingTouchdowns
+        carries
       }
     }
   }
@@ -63,10 +63,9 @@ export const GET_ATHLETEDATA_RB = gql`
         carries
         rushingYards
         rushingTouchdowns
-        targets
-        receptions
         receivingYards
         receivingTouchdowns
+        receptions
       }
     }
   }
