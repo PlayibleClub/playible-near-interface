@@ -1,5 +1,5 @@
 export const qbStatNames = [
-  'QUARTERBACK',
+  'QUARTER BACK',
   'COMPLETION',
   'PASSING YARDS',
   'PASSING TOUCHDOWNS',
