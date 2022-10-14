@@ -6,24 +6,14 @@ const StatsComponent = (props) => {
     const {
         id, 
         position,
-        // position,
-        // completions,
-        // passingTouchdowns,
-        // interceptions,
-        // rushingYards,
-        // rushingTouchdowns,
-        // carries,
-        // freeSpace, 
     } = props;
+
     const [statNames, setStatNames] = useState([]);
     const [getAthleteQB] = useLazyQuery(GET_ATHLETEDATA_QB);
     const [getAthleteRB] = useLazyQuery(GET_ATHLETEDATA_RB);
     const [getAthleteWR] = useLazyQuery(GET_ATHLETEDATA_WR);
     const [getAthleteTE] = useLazyQuery(GET_ATHLETEDATA_TE);
     const [athleteData, setAthleteData] = useState([]);
-    let test = [];
-    const [athleteTest, setAthleteTest] = useState([]);
-    const [objectTest, setObjectTest] = useState([]);
     
     const query_stats = useCallback(async (position, id) => {
         let query;
@@ -55,68 +45,13 @@ const StatsComponent = (props) => {
             query_stats(position[0], id[0]).catch(console.error);
         }
     }, [id, position, query_stats]);
-    // console.log(tempPos);
-    //db portion start TODO: lift to parent(AssetDetails) to make it stateless
-    // async function getStats(position, id){
-    //     console.log(position);
-    //     try{
-    //         switch (position){
-    //             case 'QB':               
-    //                 console.log("test");
-    //                 const QBdata = await getAthleteQB({ variables: { getAthleteById: parseFloat(id.toString())}});
-    //                 setStatNames(qbStatNames);
-    //                 console.table(QBdata.data.getAthleteById.stats[0]);
-    //                 setAthleteData(Object.values(QBdata.data.getAthleteById.stats[0]));
-    //                 test = Object.values(QBdata.data.getAthleteById.stats[0]);
-    //                 break;
 
-    //             case 'RB':
-    //                 console.log("testRB");
-    //                 const RBdata = await getAthleteRB({ variables: {getAthleteById: parseFloat(id.toString())}});
-    //                 console.table(RBdata.data.getAthleteById.stats);
-    //                 setAthleteData(RBdata.data.getAthleteById.stats);
-    //                 break;
-
-    //             case 'WR':
-    //                 console.log("testWR");
-    //                 const WRdata = await getAthleteWR({ variables: {getAthleteById: parseFloat(id.toString())}});
-    //                 console.table(WRdata.data.getAthleteById.stats);
-    //                 setAthleteData(WRdata.data.getAthleteById.stats);
-    //                 break;
- 
-    //             case 'TE':
-    //                 console.log("testTE");
-    //                 const TEdata = await getAthleteTE({ variables: {getAthleteById: parseFloat(id.toString())}});
-    //                 console.table(TEdata.data.getAthleteById.stats);
-    //                 setAthleteData(TEdata.data.getAthleteById.stats);
-    //                 break;
-    //         }
-    //     }
-    //     catch(err){
-    //         console.log(err);
-    //     }
-    // }
-    // //db portion end
-
-    // useEffect(() => {
-    //     if(id[0] !== undefined && position[0] !== undefined){
-    //         console.log("test");
-    //         getStats(position[0], id[0]);
-    //     }
-    // }, [id, position]);
-
-    //FIX THIS
-    // useEffect(() => {
-    //     setAthleteTest(Object.values(athleteData));
-    // }), [athleteData];
-    // useEffect(() => {}, [athleteData, objectNames]);
     return (
         <>
             <div className="flex h-1/8 w-1/3 ml-24 -mt-8 justify-center content-center select-none text-center text-4xl 
             bg-indigo-black font-monument text-indigo-white p-2 pl-5">
             <div className="">
                 {statNames[0]}
-                
             </div>
             </div>
 

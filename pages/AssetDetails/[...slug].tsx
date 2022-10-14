@@ -22,11 +22,6 @@ const AssetDetails = (props) => {
 
     const [athlete, setAthlete] = useState([]);
 
-    // const routerAthlete = {
-    //     id: query.id,
-    //     index: query.index,
-    // }
-
     const routerAthlete = {
         id: slug[0],
         index: slug[1],
@@ -85,7 +80,7 @@ const AssetDetails = (props) => {
               </div>
               <div className="mt-10 text-sm grid grid-rows-2 grid-cols-2">
                 <div>
-                  {athlete.map((item) => {return (item.primary_id)})}
+                  FANTASY SCORE
                 </div>
                 <div>
                   PLAY TRACKER
@@ -112,21 +107,23 @@ const AssetDetails = (props) => {
                   PLAYER STATS
                   <hr className="w-10 border-4"></hr>
                 </div>
-                <div className="mb-14">
-                  <Image src={'/images/avgscore.png'} width={133} height={135} />
+                <div className="mb-14 relative">
+                <Image src={'/images/avgscore.png'} width={133} height={135} />
+                <div className="font-monument absolute text-3xl text-indigo-white top-14 left-8 
+                -translate-x-1/2 -translate-y-1/2">
+                  {athlete.map((item) => { return (item.fantasy_score)})}
+                </div>
+
+
                 </div>
               </div>
             </div>
-  
-            {/* {displayStats()} */}
         
             <StatsComponent
               id={athlete.map((item) => { return (item.primary_id) })} 
               position={athlete.map((item) => { return (item.position) })}
-            >
+            />
 
-            </StatsComponent>
-  
             </div>
       </Container>
     )
