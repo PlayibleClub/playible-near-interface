@@ -66,11 +66,9 @@ const StatsComponent = (props) => {
                 setAthleteData(state);
                 setStatNames(teStatNames);
                 break;
-            
-        }
-        
+        }    
+    },[] );
 
-    }, []);
     useEffect(() => {
         if(id[0] !== undefined && position[0] !== undefined){
             query_stats(position[0], id[0]).catch(console.error);
@@ -79,7 +77,6 @@ const StatsComponent = (props) => {
     
     return (
         <>
-            
             <div className="flex h-1/8 w-1/3 ml-24 -mt-8 justify-center content-center select-none text-center text-4xl 
             bg-indigo-black font-monument text-indigo-white p-2 pl-5">
             <div className="">
@@ -87,50 +84,67 @@ const StatsComponent = (props) => {
             </div>
             </div>
 
-            <div className="mt-10 ml-24 w-1/2 text-sm grid grid-rows-4 grid-cols-4">
+            <div className="mt-14 ml-24 w-1/2 text-sm grid grid-rows-4 grid-cols-4">
                 <div>
-                    {athleteData[1]} 
+                    <div className="font-monument text-5xl -mb-6">
+                        {athleteData[1]}
+                    </div>
                     <br></br>
-                    {statNames[1]}
+                    <div className="">
+                        {statNames[1]}
+                    </div>
                 </div>
                 <div>
-                    {athleteData[2]}
+                    <div className="font-monument text-5xl -mb-6">
+                        {athleteData[2]}
+                    </div>
                     <br></br>
                     {statNames[2]}
-                    
                 </div>
                 <div>
-                    {athleteData[3]}
+                    <div className="font-monument text-5xl -mb-6">
+                        {athleteData[3]}
+                    </div>
                     <br></br>
                     {/* PASSING TOUCHDOWNS */}
                     {statNames[3]}
                 </div>
                 <div>
-                    {athleteData[4]}
+                    <div className="font-monument text-5xl -mb-6">
+                        {athleteData[4]}
+                    </div>
                     <br></br>
                     {/* INTERCEPTIONS */}
                     {statNames[4]}
                 </div>
                 <div>
-                    {athleteData[5]}
+                    <div className="font-monument text-5xl -mb-6 mt-2">
+                        {athleteData[5]}
+                    </div>
                     <br></br>
                     {/* RUSHING YARDS */}
                     {statNames[5]}
                 </div>
                 <div>
-                    {athleteData[6]}
+                    <div className="font-monument text-5xl -mb-6 mt-2">
+                        {athleteData[6]}
+                    </div>
                     <br></br>
                     {/* RUSHING TOUCHDOWNS */}
                     {statNames[6]}
                 </div>
                 <div>
-                    {athleteData[7]}
+                    <div className="font-monument text-5xl -mb-6 mt-2">
+                        {athleteData[7]}
+                    </div>
                     <br></br>
                     {/* CARRIES */}
                     {statNames[7]}
                 </div>
                 <div>
-                    {athleteData[8]}
+                    <div className="font-monument text-5xl -mb-6 mt-2">
+                        {athleteData[8]}
+                    </div>
                     <br></br>
                     {/* FREE SPACE */}
                     {statNames[8]}

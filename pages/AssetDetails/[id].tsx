@@ -8,7 +8,6 @@ import { providers } from 'near-api-js';
 import { getContract, getRPCProvider } from 'utils/near';
 import { ATHLETE } from 'data/constants/nearContracts';
 import StatsComponent from './components/StatsComponent';
-import { useRouter } from 'next/router';
 
 const AssetDetails = (props) => {
 
@@ -93,17 +92,19 @@ const AssetDetails = (props) => {
             </div>
             </div>
             
-            <div className="flex flex-row ml-24 mt-20">
+            <div className="flex flex-row ml-24 mt-20 pointer-events-none">
               <div className="grid grid-cols-2">
                 <div className="text-2xl font-bold font-monument mt-16 mr-8">
                   PLAYER STATS
                   <hr className="w-10 border-4"></hr>
                 </div>
-                <div className="mb-14 relative">
+                <div className="mb-14 relative pointer-events-none select-none">
                 <Image src={'/images/avgscore.png'} width={133} height={135} />
                 <div className="font-monument absolute text-3xl text-indigo-white top-14 left-8 
-                -translate-x-1/2 -translate-y-1/2">
-                  {athlete.map((item) => { return (item.fantasy_score)})}
+                -translate-x-1/2 -translate-y-1/2 pointer-events-none">
+                  {athlete.map((item) => {
+                    const fS = item.fantasy_score;
+                    return (fS.toFixed(1))})}
                 </div>
                 </div>
               </div>

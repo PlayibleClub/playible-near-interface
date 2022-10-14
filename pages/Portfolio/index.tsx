@@ -235,9 +235,6 @@ const Portfolio = () => {
               </div> */}
               
           <div className="md:ml-6">
-          <div className="md:ml-6">
-          {totalAthletes}
-          </div>
             <PortfolioContainer textcolor="indigo-black" title="SQUAD">
               <div className="flex flex-col">
                 {loading ? (
