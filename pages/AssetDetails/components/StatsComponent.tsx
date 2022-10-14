@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback} from 'react';
 import { GET_ATHLETEDATA_QB, GET_ATHLETEDATA_RB, GET_ATHLETEDATA_WR, GET_ATHLETEDATA_TE } from 'utils/queries';
 import { useLazyQuery } from '@apollo/client';
 import { qbStatNames, rbStatNames, wrStatNames, teStatNames } from 'data/constants/statNames';
+
 const StatsComponent = (props) => {
     const {
         id, 
@@ -17,7 +18,6 @@ const StatsComponent = (props) => {
     
     const query_stats = useCallback(async (position, id) => {
         let query;
-        console.log(position, id);
         switch(position){
             case 'QB':
                 query = await getAthleteQB({ variables: { getAthleteById: parseFloat(id.toString())}});

@@ -57,39 +57,39 @@ const Portfolio = () => {
   const [isFiltered, setIsFiltered] = useState(false);
   const [filterOption, setFilterOption] = useState("");
   const [athleteList, setAthleteList] = useState([]);
-  const listQB = athletes.filter(athlete => athlete.position === "QB");
-  const listRB = athletes.filter(athlete => athlete.position === "RB");
-  const listWR = athletes.filter(athlete => athlete.position === "WR");
-  const listTE = athletes.filter(athlete => athlete.position === "TE");
+  // const listQB = athletes.filter(athlete => athlete.position === "QB");
+  // const listRB = athletes.filter(athlete => athlete.position === "RB");
+  // const listWR = athletes.filter(athlete => athlete.position === "WR");
+  // const listTE = athletes.filter(athlete => athlete.position === "TE");
   // const walletConnection = useSelector((state) => state.external.playible.wallet.data);
   // const { list } = useSelector((state) => state.assets);
 
-  const { selector, modal, accounts, accountId } = useWalletSelector();
+  const { accountId } = useWalletSelector();
 
   const provider = new providers.JsonRpcProvider({
     url: getRPCProvider(),
   });
 
-  function getAthleteList() {
-    if (isFiltered) {
-      if (filterOption.length == 0)
-      {
-        return listQB;
-      }
-      if (filterOption == "QB") {
-        return listQB;
-      }
-      if (filterOption == "RB") {
-        return listRB;
-      }
-      if (filterOption == "WR") {
-        return listWR;
-      }
-      if (filterOption == "TE") {
-        return listTE;
-      }
-    } 
-  }
+  // function getAthleteList() {
+  //   if (isFiltered) {
+  //     if (filterOption.length == 0)
+  //     {
+  //       return listQB;
+  //     }
+  //     if (filterOption == "QB") {
+  //       return listQB;
+  //     }
+  //     if (filterOption == "RB") {
+  //       return listRB;
+  //     }
+  //     if (filterOption == "WR") {
+  //       return listWR;
+  //     }
+  //     if (filterOption == "TE") {
+  //       return listTE;
+  //     }
+  //   } 
+  // }
 
   function getAthleteLimit() {
     try {
@@ -154,7 +154,7 @@ const Portfolio = () => {
   useEffect(() => {
     query_nft_supply_for_owner();
     getAthleteLimit();
-    setAthleteList(getAthleteList());
+    // setAthleteList(getAthleteList());
     setPageCount(Math.ceil(totalAthletes / athleteLimit));
     const endOffset = athleteOffset + athleteLimit;
     console.log(`Loading athletes from ${athleteOffset} to ${endOffset}`);
@@ -167,15 +167,15 @@ const Portfolio = () => {
   useEffect(() => {}, [limit, offset, filter, search]);
 
   //filtering functions
-  async function checkIfFiltered() {
-    try {
-      if (filterOption != "All Positions") {
-        setIsFiltered(true);
-      }
-    } catch (e) {
-      setIsFiltered(false);
-    }
-  } 
+  // async function checkIfFiltered() {
+  //   try {
+  //     if (filterOption != "All Positions") {
+  //       setIsFiltered(true);
+  //     }
+  //   } catch (e) {
+  //     setIsFiltered(false);
+  //   }
+  // } 
 
   // function selectFilter() {
   //   const filterOptions = ["All Positions", "QB", "RB", "WR", "TE"];
@@ -193,8 +193,6 @@ const Portfolio = () => {
   //     </>
   //   );
   // }
-
-  const filteredLimit = listRB.length;
 
 //   function sortByKey(athletes, key) {
 //     return athletes.sort(function(a, b) {
@@ -246,11 +244,8 @@ const Portfolio = () => {
                   <LoadingPageDark />
                 ) : (
                   <div className="grid grid-cols-4 gap-y-8 mt-4 md:grid-cols-4 md:ml-7 md:mt-12">
-
                     {athletes.map((item) => {
-
                       const accountAthleteIndex = athletes.indexOf(item, 0) + athleteOffset;
-
                       return (
                         <PerformerContainer
                           key={item.athlete_id}
@@ -264,7 +259,6 @@ const Portfolio = () => {
                         ></PerformerContainer>
                       );
                     })}
-
                   </div>
                 )}
               </div>

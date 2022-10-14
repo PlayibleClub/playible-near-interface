@@ -2,35 +2,29 @@ import React, { useEffect, useState } from 'react';
 import Container from '../../components/containers/Container';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
 import { getAthleteInfoById, convertNftToAthlete } from 'utils/athlete/helper';
-import { useRouter } from 'next/router';
 import Image from 'next/image';
 import BackFunction from '../../components/buttons/BackFunction';
 import { providers } from 'near-api-js';
 import { getContract, getRPCProvider } from 'utils/near';
 import { ATHLETE } from 'data/constants/nearContracts';
 import StatsComponent from './components/StatsComponent';
-import PerformerContainer from 'components/containers/PerformerContainer';
+import { useRouter } from 'next/router';
 
 const AssetDetails = (props) => {
-    const { accountId } = useWalletSelector();
+
     const { query } = props;
-    const router = useRouter();
-    const { slug } = router.query;
+    const athleteIndex = query.id;
+    const { accountId } = useWalletSelector();
+
     const provider = new providers.JsonRpcProvider({
         url: getRPCProvider(),
     })
 
     const [athlete, setAthlete] = useState([]);
-
-    const routerAthlete = {
-        id: slug[0],
-        index: slug[1],
-    }
-
     const athleteImage = athlete.map((item) => { return (item.image) }).toString();
 
     function query_nft_tokens_for_owner() {
-        const query = JSON.stringify({ account_id: accountId, from_index: routerAthlete.index.toString(), limit: 1 })
+        const query = JSON.stringify({ account_id: accountId, from_index: athleteIndex.toString(), limit: 1 })
     
          provider
           .query({
@@ -43,8 +37,7 @@ const AssetDetails = (props) => {
           .then(async (data) => {
             // @ts-ignore:next-line
             const result = JSON.parse(Buffer.from(data.result).toString());
-            const result_two = await Promise.all(result.map(convertNftToAthlete).map(getAthleteInfoById));;
-    
+            const result_two = await Promise.all(result.map(convertNftToAthlete).map(getAthleteInfoById));
             setAthlete(result_two);
           })
       }
@@ -55,11 +48,10 @@ const AssetDetails = (props) => {
 
     return (
         <Container activeName="ATHLETES">
-        <div className="flex flex-col w-full overflow-y-auto h-screen pb-40">
-          <div className="mt-8">
+        <div className="mt-8">
             <BackFunction prev={query.origin ? `/${query.origin}` : '/Portfolio'}></BackFunction>
-          </div>
-
+        </div>
+        <div className="flex flex-col w-full overflow-y-auto h-screen pb-40">
           <div className="flex flex-row ml-16 mt-10">
             <div className="mr-10">
               <object
@@ -113,8 +105,6 @@ const AssetDetails = (props) => {
                 -translate-x-1/2 -translate-y-1/2">
                   {athlete.map((item) => { return (item.fantasy_score)})}
                 </div>
-
-
                 </div>
               </div>
             </div>
@@ -134,6 +124,12 @@ export default AssetDetails;
 export async function getServerSideProps(ctx) {
     const { query } = ctx;
 
+    if (query.id != query.id) {
+      return {
+        desination: query.origin || '/Portfolio'
+      }
+    }
+    
     return {
         props: { query },
     };

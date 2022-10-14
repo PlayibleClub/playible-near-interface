@@ -39,7 +39,7 @@ const PerformerContainer = (props) => {
       >
         {uri ? (
           <div className="relative" style={{ width: '120px', height: '160px' }}>
-            <Link href={`/AssetDetails/${id}/${index}`} passHref>
+            <Link href = {`/AssetDetails/${index}`} passHref>
             <div className="absolute z-50" style={{ width: '120px', height: '160px' }}></div>
             </Link>
             <object
@@ -60,8 +60,6 @@ const PerformerContainer = (props) => {
           <div className="mt-2 text-xs font-bold">{AthleteName}</div>
           <div className="mt-4 text-xs font-thin">FANTASY SCORE</div>
           <div className="text-xs font-bold">{AvgScore}</div>
-          <div className="text-xs font-bold">{id}</div>
-          <div className="text-xs font-bold">{index}</div>
         </div>
       </div>
     </div>
