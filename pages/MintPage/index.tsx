@@ -19,6 +19,7 @@ import { MINTER, NEP141USDC, NEP141USDT, NEP141USN } from '../../data/constants/
 
 import { MINT_STORAGE_COST, DEFAULT_MAX_FEES } from 'data/constants/gasFees';
 
+
 const DECIMALS_NEAR = 1000000000000000000000000;
 const RESERVED_AMOUNT = 200;
 const NANO_TO_SECONDS_DENOMINATOR = 1000000;
@@ -480,7 +481,7 @@ export default function Home(props) {
                       {' '}
                       {minterConfig.nft_pack_max_sale_supply -
                         minterConfig.nft_pack_mint_counter -
-                        205}
+                        220}
                       /{minterConfig.nft_pack_max_sale_supply + RESERVED_AMOUNT} packs remaining
                     </div>
                     <div>{selectMint()}</div>
