@@ -25,14 +25,12 @@ const StatsComponent = (props) => {
                 avg = Math.round((newState[2] / newState[1]) * 10 + Number.EPSILON) / 10;
                 // newState.push(Number.isNaN(avg) ? 0 : avg);
                 newState.splice(3, 0, Number.isNaN(avg) ? 0 : avg);
-                setAthleteData(newState);
                 break;
             case 'WR':
             case 'TE':
                 avg = Math.round((newState[3] / newState[2]) * 10+ Number.EPSILON) / 10;
                 // newState.push(Number.isNaN(avg) ? 0 : avg);
                 newState.splice(3, 0, Number.isNaN(avg) ? 0 : avg);
-                setAthleteData(newState);
                 break;
         }
         return newState;
