@@ -8,6 +8,7 @@ import { providers } from 'near-api-js';
 import { getContract, getRPCProvider } from 'utils/near';
 import { ATHLETE } from 'data/constants/nearContracts';
 import StatsComponent from './components/StatsComponent';
+import Link from 'next/link';
 
 const AssetDetails = (props) => {
 
@@ -83,10 +84,12 @@ const AssetDetails = (props) => {
                   {athlete.map((item) => { return (item.usage)})} 
                 </div>
               </div>
-              <button className="bg-indigo-lightblue text-indigo-buttonblue w-5/6 md:w-80 h-10 
-                text-center font-bold text-md mt-12 self-center justify-center cursor-not-allowed">
-                  PLACE FOR SALE - COMING SOON
-              </button>
+              <Link href="https://paras.id/collection/athlete.nfl.playible.near">
+                <button className="bg-indigo-lightblue text-indigo-buttonblue w-5/6 md:w-80 h-10 
+                  text-center font-bold text-md mt-12 self-center justify-center">
+                    PLACE FOR SALE
+                </button>
+              </Link>
               <div>
             </div>
             </div>
