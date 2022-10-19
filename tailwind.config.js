@@ -13,6 +13,15 @@ module.exports = {
             backgroundImage: {
                 'avg-icon': "url('/images/avgscore.png')"
             },
+            width: {
+                '133px': '133px'
+            },
+            height: {
+                '135px': '135px'
+            },
+            margin: {
+                '15': '60px'
+            }
         },
         colors: {
             indigo: {

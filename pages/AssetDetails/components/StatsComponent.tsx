@@ -75,7 +75,7 @@ const StatsComponent = (props) => {
     
     return (
         <>
-            <div className="flex h-1/8 w-1/3 ml-24 -mt-8 justify-center content-center select-none text-center text-4xl 
+            <div className="flex h-1/8 w-1/3 ml-24 -mt-16 justify-center content-center select-none text-center text-4xl 
             bg-indigo-black font-monument text-indigo-white p-2 pl-5">
             <div className="">
                 {statNames[0]}

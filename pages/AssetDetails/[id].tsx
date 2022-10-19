@@ -94,25 +94,35 @@ const AssetDetails = (props) => {
             </div>
             </div>
             </div>
-            
-            <div className="flex flex-row ml-24 mt-20 pointer-events-none">
-              <div className="grid grid-cols-2">
-                <div className="text-2xl font-bold font-monument mt-16 mr-8">
-                  PLAYER STATS
-                  <hr className="w-10 border-4"></hr>
-                </div>
-                <div className="mb-14 relative pointer-events-none select-none">
-                <Image src={'/images/avgscore.png'} width={133} height={135} />
-                <div className="font-monument absolute text-3xl text-indigo-white top-14 left-8 
-                -translate-x-1/2 -translate-y-1/2 pointer-events-none">
-                  {athlete.map((item) => {
-                    const fS = item.fantasy_score;
-                    return (fS.toFixed(1))})}
-                </div>
-                </div>
+
+            <div className="grid grid-cols-2 ml-24 mt-20 mb-20 w-2/5">
+              <div className="text-2xl font-bold font-monument mt-16 mr-8 align-baseline">
+                PLAYER STATS
+                <hr className="w-10 border-4"></hr>
               </div>
+              {athlete.map((item) => {
+                  const fantasyScore = item.fantasy_score;
+
+                  if(fantasyScore.toString().length >= 5) {
+                    return (
+                      <div className="bg-avg-icon w-133px h-135px text-center">
+                        <div className="ml-1 mt-15 font-monument text-xl text-indigo-white">
+                          {fantasyScore}
+                        </div>
+                    </div>
+                    )
+                  } else {
+                    return (
+                      <div className="bg-avg-icon w-133px h-135px text-center">
+                        <div className="ml-1 mt-14 font-monument text-3xl text-indigo-white">
+                          {fantasyScore}
+                        </div>
+                      </div>
+                    )
+                  }
+              })}
             </div>
-        
+
             <StatsComponent
               id={athlete.map((item) => { return (item.primary_id) })} 
               position={athlete.map((item) => { return (item.position) })}
