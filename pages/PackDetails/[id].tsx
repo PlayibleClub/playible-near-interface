@@ -1,20 +1,10 @@
 import React, { useState } from 'react';
-import Main from '../../components/Main';
-import LoadingPageDark from '../../components/loading/LoadingPageDark';
 import Container from '../../components/containers/Container';
-import TransactionModal from '../../components/modals/TransactionModal';
-import { useRouter } from 'next/router';
-import Image from 'next/image';
 import 'regenerator-runtime/runtime';
-import * as statusCode from '../../data/constants/status';
-import { useDispatch, useSelector } from 'react-redux';
-import PortfolioContainer from '../../components/containers/PortfolioContainer';
 import BackFunction from '../../components/buttons/BackFunction';
-import claimreward from '../../public/images/claimreward.png';
 import sampleImage from '../../public/images/packimages/Starter.png';
-
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
-import { getRPCProvider, getContract } from 'utils/near';
+import { getContract } from 'utils/near';
 import { OPENPACK, PACK } from '../../data/constants/nearContracts';
 import { providers } from 'near-api-js';
 import BigNumber from 'bignumber.js';
@@ -23,7 +13,7 @@ import { DEFAULT_MAX_FEES, MINT_STORAGE_COST } from 'data/constants/gasFees';
 export default function PackDetails(props) {
   const { query } = props;
 
-  const { selector, accountId } = useWalletSelector();
+  const { selector } = useWalletSelector();
 
   const myPack = {
     packName: 'STARTER PACK',
@@ -66,10 +56,10 @@ export default function PackDetails(props) {
 
   return (
     <Container activeName="PACKS">
+      <div className="mt-8">
+        <BackFunction prev={query.origin ? `/${query.origin}` : '/Packs'}></BackFunction>
+      </div>
       <div className="flex flex-col w-full overflow-y-auto h-screen pb-40">
-        <div className="mt-8">
-          <BackFunction prev={query.origin ? `/${query.origin}` : '/Packs'}></BackFunction>
-        </div>
         <div className="flex flex-row ml-24 mt-10">
           <div>
             <img src={sampleImage} height={200} width={200}></img>
@@ -83,13 +73,11 @@ export default function PackDetails(props) {
             <div className="text-sm">RELEASE 1</div>
             <button
               className="bg-indigo-buttonblue text-indigo-white w-5/6 md:w-80 h-10 text-center font-bold text-sm mt-4"
-              onClick={() => execute_open_pack()}
-            >
-              OPEN PACK
+              onClick={() => execute_open_pack()}>
+                OPEN PACK
             </button>
           </div>
         </div>
-
         <div className="ml-8 md:ml-28 mt-16">
           <div className="text-2xl font-bold font-monument ">
             PACK DETAILS

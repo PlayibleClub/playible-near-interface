@@ -9,6 +9,7 @@ import SquadPackComponent from '../../components/SquadPackComponent';
 import Container from '../../components/containers/Container';
 import Sorter from './components/Sorter';
 
+import filterIcon from '../../public/images/filterBlack.png'
 import { transactions, utils, WalletConnection, providers } from 'near-api-js';
 import { getRPCProvider, getContract } from 'utils/near';
 import { PACK } from '../../data/constants/nearContracts';
@@ -20,6 +21,8 @@ import { ATHLETE } from 'data/constants/nearContracts';
 import PackComponent from 'pages/Packs/components/PackComponent';
 import { convertNftToAthlete, getAthleteInfoById } from 'utils/athlete/helper';
 import ReactPaginate from 'react-paginate';
+import Select from 'react-select';
+import { isCompositeType } from 'graphql';
 
 const Portfolio = () => {
   const [searchText, setSearchText] = useState('');
@@ -49,16 +52,56 @@ const Portfolio = () => {
   const [athleteLimit, setAthleteLimit] = useState(10);
   const [totalAthletes, setTotalAthletes] = useState(0);
   const [pageCount, setPageCount] = useState(0);
-  const [packOffset, setPackOffset] = useState(0);
-  const [packLimit, setPackLimit] = useState(30);
+
+  const [filteredTotal, setFilteredTotal] = useState(30);
+  const [isFiltered, setIsFiltered] = useState(false);
+  const [filterOption, setFilterOption] = useState("");
+  const [athleteList, setAthleteList] = useState([]);
+  // const listQB = athletes.filter(athlete => athlete.position === "QB");
+  // const listRB = athletes.filter(athlete => athlete.position === "RB");
+  // const listWR = athletes.filter(athlete => athlete.position === "WR");
+  // const listTE = athletes.filter(athlete => athlete.position === "TE");
   // const walletConnection = useSelector((state) => state.external.playible.wallet.data);
   // const { list } = useSelector((state) => state.assets);
 
-  const { selector, modal, accounts, accountId } = useWalletSelector();
+  const { accountId } = useWalletSelector();
 
   const provider = new providers.JsonRpcProvider({
     url: getRPCProvider(),
   });
+
+  // function getAthleteList() {
+  //   if (isFiltered) {
+  //     if (filterOption.length == 0)
+  //     {
+  //       return listQB;
+  //     }
+  //     if (filterOption == "QB") {
+  //       return listQB;
+  //     }
+  //     if (filterOption == "RB") {
+  //       return listRB;
+  //     }
+  //     if (filterOption == "WR") {
+  //       return listWR;
+  //     }
+  //     if (filterOption == "TE") {
+  //       return listTE;
+  //     }
+  //   } 
+  // }
+
+  function getAthleteLimit() {
+    try {
+      if (totalAthletes > 30) {
+        const _athleteLimit = 15;
+        console.log('Reloading packs');
+        setAthleteLimit(_athleteLimit);
+      }
+    } catch (e) {
+      setAthleteLimit(30);
+    }
+  }
 
   function query_nft_supply_for_owner() {
     const query = JSON.stringify({ account_id: accountId });
@@ -79,18 +122,6 @@ const Portfolio = () => {
       })
   }
 
-  function getAthleteLimit() {
-    try {
-      if (totalAthletes > 30) {
-        const _athleteLimit = 15;
-        console.log('Reloading packs');
-        setAthleteLimit(_athleteLimit);
-      }
-    } catch (e) {
-      setAthleteLimit(30);
-    }
-  }
-
   function query_nft_tokens_for_owner() {
     const query = JSON.stringify({ account_id: accountId, from_index: athleteOffset.toString(), limit: athleteLimit });
 
@@ -106,7 +137,11 @@ const Portfolio = () => {
         // @ts-ignore:next-line
         const result = JSON.parse(Buffer.from(data.result).toString());
 
-        setAthletes(await Promise.all(result.map(convertNftToAthlete).map(getAthleteInfoById)));
+        const result_two = await Promise.all(result.map(convertNftToAthlete).map(getAthleteInfoById));
+
+        // const sortedResult = sortByKey(result_two, 'fantasy_score');
+
+        setAthletes(result_two);
         setLoading(false);
       });
   }
@@ -116,70 +151,10 @@ const Portfolio = () => {
     setAthleteOffset(newOffset);
   }
 
-  // const applySortFilter = (list, filter, search = '') => {
-  //   let tempList = [...list];
-
-  //   if (tempList.length > 0) {
-  //     let filteredList = tempList.filter(
-  //       (item) =>
-  //         item.token_info.info.extension.attributes
-  //           .filter((data) => data.trait_type === 'name')[0]
-  //           .value.toLowerCase()
-  //           .indexOf(search.toLowerCase()) > -1
-  //     );
-  //     switch (filter) {
-  //       case 'name':
-  //         filteredList.sort((a, b) =>
-  //           a.token_info.info.extension.attributes
-  //             .filter((data) => data.trait_type === 'name')[0]
-  //             .value.localeCompare(
-  //               b.token_info.info.extension.attributes.filter(
-  //                 (data) => data.trait_type === 'name'
-  //               )[0].value
-  //             )
-  //         );
-  //         return filteredList;
-  //       case 'team':
-  //         filteredList.sort((a, b) =>
-  //           a.token_info.info.extension.attributes
-  //             .filter((data) => data.trait_type === 'team')[0]
-  //             .value.localeCompare(
-  //               b.token_info.info.extension.attributes.filter(
-  //                 (data) => data.trait_type === 'team'
-  //               )[0].value
-  //             )
-  //         );
-  //         return filteredList;
-  //       case 'position':
-  //         filteredList.sort((a, b) =>
-  //           a.token_info.info.extension.attributes
-  //             .filter((data) => data.trait_type === 'position')[0]
-  //             .value.localeCompare(
-  //               b.token_info.info.extension.attributes.filter(
-  //                 (data) => data.trait_type === 'position'
-  //               )[0].value
-  //             )
-  //         );
-  //         return filteredList;
-  //       default:
-  //         return filteredList;
-  //     }
-  //   } else {
-  //     return tempList;
-  //   }
-  // };
-
-  // const resetFilters = (type = 'athlete') => {
-  //   if (type === 'pack') {
-  //     setPackOffset(0);
-  //   } else {
-  //     setOffset(0);
-  //   }
-  // };
-
   useEffect(() => {
     query_nft_supply_for_owner();
     getAthleteLimit();
+    // setAthleteList(getAthleteList());
     setPageCount(Math.ceil(totalAthletes / athleteLimit));
     const endOffset = athleteOffset + athleteLimit;
     console.log(`Loading athletes from ${athleteOffset} to ${endOffset}`);
@@ -191,11 +166,74 @@ const Portfolio = () => {
 
   useEffect(() => {}, [limit, offset, filter, search]);
 
+  //filtering functions
+  // async function checkIfFiltered() {
+  //   try {
+  //     if (filterOption != "All Positions") {
+  //       setIsFiltered(true);
+  //     }
+  //   } catch (e) {
+  //     setIsFiltered(false);
+  //   }
+  // } 
+
+  // function selectFilter() {
+  //   const filterOptions = ["All Positions", "QB", "RB", "WR", "TE"];
+  //   let filterList = [];
+  //   filterOptions.forEach(function(element) {
+  //     filterList.push({ label:element, value: element})
+  //   });
+  //   return (
+  //     <>
+  //       <Select
+  //         onChange={(event) => setFilterOption(event.value)}
+  //         options={filterList}
+  //         className="md:w-1/5"
+  //       />
+  //     </>
+  //   );
+  // }
+
+//   function sortByKey(athletes, key) {
+//     return athletes.sort(function(a, b) {
+//         const x = a[key]; 
+//         const y = b[key];
+//         return (
+//           (x < y) ? 1 : ((x > y) ? -1 : 0)
+//         );
+//     });
+// }
+
+// console.log("sorted id: " + JSON.stringify(sortedAthletes));
+
   return (
 
     <Container activeName="SQUAD">
       <div className="flex flex-col w-full overflow-y-auto h-screen pb-12 mb-12">
         <Main color="indigo-white">
+              {/* <div className="flex flex-row h-8">
+                <div className="bg-indigo-white h-8 flex justify-between self-center 
+                    font-thin w-72 mt-6 border-2 border-indigo-lightgray border-opacity-50">
+                    <form>
+                      <select className="filter-select bg-white">
+                        <option value="QB">
+                          QB
+                        </option>
+                        <option value="RB">
+                          RB
+                        </option>
+                        <option value="WB">
+                          WB
+                        </option>
+                        <option value="TE">
+                          TE
+                        </option>
+                      </select>
+                    </form>
+                    <img src={filterIcon} className="object-none w-4 mr-4" />
+              </div>
+              </div> */}
+              
           <div className="md:ml-6">
             <PortfolioContainer textcolor="indigo-black" title="SQUAD">
               <div className="flex flex-col">
@@ -204,6 +242,7 @@ const Portfolio = () => {
                 ) : (
                   <div className="grid grid-cols-4 gap-y-8 mt-4 md:grid-cols-4 md:ml-7 md:mt-12">
                     {athletes.map((item) => {
+                      const accountAthleteIndex = athletes.indexOf(item, 0) + athleteOffset;
                       return (
                         <PerformerContainer
                           key={item.athlete_id}
@@ -211,6 +250,7 @@ const Portfolio = () => {
                           AvgScore={item.fantasy_score}
                           id={item.athlete_id}
                           uri={item.image}
+                          index={accountAthleteIndex}
                           // rarity={path.rarity}
                           // status={player.is_locked}
                         ></PerformerContainer>

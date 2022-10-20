@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import Image from 'next/image';
 import React from 'react';
+import Link from 'next/link';
 
 const PerformerContainer = (props) => {
   const {
@@ -15,6 +16,7 @@ const PerformerContainer = (props) => {
     id = null,
     rarity,
     status,
+    index,
     hoverable = true,
   } = props;
 
@@ -37,7 +39,9 @@ const PerformerContainer = (props) => {
       >
         {uri ? (
           <div className="relative" style={{ width: '120px', height: '160px' }}>
+            <Link href = {`/AssetDetails/${index}`} passHref>
             <div className="absolute z-50" style={{ width: '120px', height: '160px' }}></div>
+            </Link>
             <object
               className="absolute z-10"
               type="image/svg+xml"
@@ -72,6 +76,7 @@ PerformerContainer.propTypes = {
   hoverable: PropTypes.bool,
   rarity: PropTypes.string,
   status: PropTypes.string,
+  index: PropTypes.number,
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
 };
 
