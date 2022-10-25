@@ -8,6 +8,10 @@ import { providers } from 'near-api-js';
 import { getContract, getRPCProvider } from 'utils/near';
 import { ATHLETE } from 'data/constants/nearContracts';
 import StatsComponent from './components/StatsComponent';
+import Popup from 'reactjs-popup';
+import 'reactjs-popup/dist/index.css';
+import Link from 'next/link';
+
 
 const AssetDetails = (props) => {
 
@@ -74,7 +78,12 @@ const AssetDetails = (props) => {
                   FANTASY SCORE
                 </div>
                 <div>
-                  PLAY TRACKER
+                  PLAY BALANCE 
+                    <Popup trigger={<button className="font-monument "> ? </button>}>
+                      <div className='mt-2 mb-2 ml-2 mr-2 text-justify'>
+                        Play Balance: Amount of PLAY  remaining to join weekly cash contests
+                      </div>
+                    </Popup>
                 </div>
                 <div>
                   {athlete.map((item) => { return (item.fantasy_score)})}
@@ -83,33 +92,46 @@ const AssetDetails = (props) => {
                   {athlete.map((item) => { return (item.usage)})} 
                 </div>
               </div>
-              <button className="bg-indigo-lightblue text-indigo-buttonblue w-5/6 md:w-80 h-10 
-                text-center font-bold text-md mt-12 self-center justify-center cursor-not-allowed">
-                  PLACE FOR SALE - COMING SOON
-              </button>
+              <Link href="https://paras.id/collection/athlete.nfl.playible.near">
+                <button className="bg-indigo-lightblue text-indigo-buttonblue w-5/6 md:w-80 h-10 
+                  text-center font-bold text-md mt-12 self-center justify-center">
+                    PLACE FOR SALE
+                </button>
+              </Link>
               <div>
             </div>
             </div>
             </div>
-            
-            <div className="flex flex-row ml-24 mt-20 pointer-events-none">
-              <div className="grid grid-cols-2">
-                <div className="text-2xl font-bold font-monument mt-16 mr-8">
-                  PLAYER STATS
-                  <hr className="w-10 border-4"></hr>
-                </div>
-                <div className="mb-14 relative pointer-events-none select-none">
-                <Image src={'/images/avgscore.png'} width={133} height={135} />
-                <div className="font-monument absolute text-3xl text-indigo-white top-14 left-8 
-                -translate-x-1/2 -translate-y-1/2 pointer-events-none">
-                  {athlete.map((item) => {
-                    const fS = item.fantasy_score;
-                    return (fS.toFixed(1))})}
-                </div>
-                </div>
+
+
+            <div className="grid grid-cols-2 ml-24 mt-20 mb-20 w-2/5">
+              <div className="text-2xl font-bold font-monument mt-16 mr-8 align-baseline">
+                PLAYER STATS
+                <hr className="w-10 border-4"></hr>
               </div>
+              {athlete.map((item) => {
+                  const fantasyScore = item.fantasy_score;
+
+                  if(fantasyScore.toString().length >= 5) {
+                    return (
+                      <div className="bg-avg-icon w-133px h-135px text-center">
+                        <div className="ml-1 mt-15 font-monument text-xl text-indigo-white">
+                          {fantasyScore}
+                        </div>
+                    </div>
+                    )
+                  } else {
+                    return (
+                      <div className="bg-avg-icon w-133px h-135px text-center">
+                        <div className="ml-1 mt-14 font-monument text-3xl text-indigo-white">
+                          {fantasyScore}
+                        </div>
+                      </div>
+                    )
+                  }
+              })}
             </div>
-        
+
             <StatsComponent
               id={athlete.map((item) => { return (item.primary_id) })} 
               position={athlete.map((item) => { return (item.position) })}
