@@ -28,18 +28,33 @@ async function getAthleteInfoById(item) {
   };
   return returningData;
 }
-
-function getAvgFantasyScore(array) {
-  if (Array.isArray(array) && array.length > 0) {
-    return (
-      array.reduce((prevItem, currItem) => {
-        return prevItem.fantasyScore || 0 + currItem.fantasyScore;
-      }, 0) / array.length
-    );
-  } else {
+function getAvgFantasyScore(array){
+  let totalFantasy = 0;
+  if(Array.isArray(array) && array.length > 0){
+    for(let i = 0; i < array.length; i++){
+      let obj = array[i];
+      if(obj.type === "weekly"){
+        totalFantasy += obj.fantasyScore;
+      }
+    }
+    return totalFantasy / (array.length - 1);
+  }
+  else{
     return 0;
   }
 }
+//OLD CODE FOR GETAVGFANTASYSCORE
+// function getAvgFantasyScore(array) {
+//   if (Array.isArray(array) && array.length > 0) {
+//     return (
+//       array.reduce((prevItem, currItem) => {
+//         return prevItem.fantasyScore || 0 + currItem.fantasyScore;
+//       }, 0) / array.length
+//     );
+//   } else {
+//     return 0;
+//   }
+// }
 
 function convertNftToAthlete(item) {
   const token_metadata = item.token_metadata || item.metadata;
