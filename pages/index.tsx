@@ -36,6 +36,7 @@ export default function Home(props) {
         args: {
           filter: {
             sport: 'nfl',
+            statType: "season",
           },
           pagination: {
             limit: 4,
@@ -50,6 +51,22 @@ export default function Home(props) {
   useEffect(() => {
     fetchTopAthletes();
   }, []);
+
+  function getAvgFantasyScore(array){
+    let totalFantasy = 0;
+    if(Array.isArray(array) && array.length > 0){
+      for(let i = 0; i < array.length; i++){
+        let obj = array[i];
+        if(obj.type === "weekly"){
+          totalFantasy += obj.fantasyScore;
+        }
+      }
+      return totalFantasy / (array.length - 1);
+    }
+    else{
+      return 0;
+    }
+  }
 
   async function fetchActiveGames() {
     const res = await axiosInstance.get(`/fantasy/game/active/?limit=2`);
@@ -237,12 +254,12 @@ export default function Home(props) {
                   </div>
                 ) : data?.getAthletes.length > 0 ? (
                   <div className="grid grid-cols-2 gap-x-4 mt-8">
-                    {data.getAthletes.map(function ({ firstName, lastName, id, nftImage }, i) {
+                    {data.getAthletes.map(function ({ firstName, lastName, id, nftImage, stats, }, i) {
                       return (
                         <div className="" key={i}>
                           <PerformerContainer
                             AthleteName={`${firstName} ${lastName}`}
-                            AvgScore={500}
+                            AvgScore={stats.length == 1 ? stats[0].fantasyScore.toFixed(2) : getAvgFantasyScore(stats).toFixed(2)}
                             id={id}
                             uri={nftImage || null}
                             hoverable={false}
