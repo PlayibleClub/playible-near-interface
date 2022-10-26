@@ -247,7 +247,7 @@ const Portfolio = () => {
                         <PerformerContainer
                           key={item.athlete_id}
                           AthleteName={item.name}
-                          AvgScore={item.fantasy_score}
+                          AvgScore={item.fantasy_score.toFixed(2)}
                           id={item.athlete_id}
                           uri={item.image}
                           index={accountAthleteIndex}
