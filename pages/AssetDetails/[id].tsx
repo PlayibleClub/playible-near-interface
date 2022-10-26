@@ -79,14 +79,14 @@ const AssetDetails = (props) => {
                 </div>
                 <div>
                   PLAY BALANCE 
-                    <Popup trigger={<button className="font-monument "> ? </button>}>
+                    <Popup trigger={<button className="ml-2 font-bold border rounded-full relative px-2"> i </button>} position="right center">
                       <div className='mt-2 mb-2 ml-2 mr-2 text-justify'>
                         Play Balance: Amount of PLAY  remaining to join weekly cash contests
                       </div>
                     </Popup>
                 </div>
                 <div>
-                  {athlete.map((item) => { return (item.fantasy_score)})}
+                  {athlete.map((item) => { return (item.fantasy_score.toFixed(2))})}
                 </div>
                 <div>
                   {athlete.map((item) => { return (item.usage)})} 
@@ -104,33 +104,29 @@ const AssetDetails = (props) => {
             </div>
 
 
-            <div className="grid grid-cols-2 ml-24 mt-20 mb-20 w-2/5">
-              <div className="text-2xl font-bold font-monument mt-16 mr-8 align-baseline">
-                PLAYER STATS
-                <hr className="w-10 border-4"></hr>
-              </div>
-              {athlete.map((item) => {
-                  const fantasyScore = item.fantasy_score;
-
-                  if(fantasyScore.toString().length >= 5) {
-                    return (
-                      <div className="bg-avg-icon w-133px h-135px text-center">
-                        <div className="ml-1 mt-15 font-monument text-xl text-indigo-white">
-                          {fantasyScore}
-                        </div>
-                    </div>
-                    )
-                  } else {
-                    return (
-                      <div className="bg-avg-icon w-133px h-135px text-center">
-                        <div className="ml-1 mt-14 font-monument text-3xl text-indigo-white">
-                          {fantasyScore}
-                        </div>
-                      </div>
-                    )
-                  }
-              })}
+           
+        <div className="text-2xl font-bold font-monument ml-24 mt-16 mr-8 align-baseline">
+          SEASON STATS
+        <hr className="w-10 border-4"></hr>    
+        </div>
+        <div className="grid grid-cols-5 ml-24 mt-10 mb-20 ">
+          <div className="mr-2 p-4 border rounded-lg text-center">
+            <div className="font-monument text-3xl">
+              {athlete.map((item) => { return (item.fantasy_score.toFixed(2))})}
             </div>
+            <div className="text-sm">
+              AVG.FANTASY SCORE
+            </div>  
+          </div>
+          <div className="ml-4 mr-5 p-4 border rounded-lg text-center">
+            <div className="font-monument text-3xl">
+              12
+            </div>
+            <div className="text-sm">
+              GAMES PLAYED
+            </div>
+          </div>
+        </div>
 
             <StatsComponent
               id={athlete.map((item) => { return (item.primary_id) })} 
