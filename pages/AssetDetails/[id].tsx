@@ -14,7 +14,7 @@ import Link from 'next/link';
 
 
 const AssetDetails = (props) => {
-
+    let test = [1,2,3];
     const { query } = props;
     const athleteIndex = query.id;
     const { accountId } = useWalletSelector();
@@ -80,8 +80,8 @@ const AssetDetails = (props) => {
                 <div>
                   PLAY BALANCE 
                     <Popup trigger={<button className="ml-2 font-bold border rounded-full relative px-2"> i </button>} position="right center">
-                      <div className='mt-2 mb-2 ml-2 mr-2 text-justify'>
-                        Play Balance: Amount of PLAY  remaining to join weekly cash contests
+                      <div className='mt-2 mb-2 ml-2 mr-2'>
+                        PLAY BALANCE: Amount of PLAY  remaining to join weekly cash contests
                       </div>
                     </Popup>
                 </div>
@@ -105,35 +105,77 @@ const AssetDetails = (props) => {
 
 
            
-        <div className="text-2xl font-bold font-monument ml-24 mt-16 mr-8 align-baseline">
-          SEASON STATS
-        <hr className="w-10 border-4"></hr>    
-        </div>
-        <div className="grid grid-cols-5 ml-24 mt-10 mb-20 ">
-          <div className="mr-2 p-4 border rounded-lg text-center">
-            <div className="font-monument text-3xl">
-              {athlete.map((item) => { return (item.fantasy_score.toFixed(2))})}
-            </div>
-            <div className="text-sm">
-              AVG.FANTASY SCORE
-            </div>  
+          <div className="text-2xl font-bold font-monument ml-24 mt-16 mr-8 align-baseline">
+            SEASON STATS
+          <hr className="w-10 border-4"></hr>    
           </div>
-          <div className="ml-4 mr-5 p-4 border rounded-lg text-center">
-            <div className="font-monument text-3xl">
-              12
+          <div className="grid grid-cols-5 ml-24 mt-10 mb-20 ">
+            <div className="mr-2 p-4 border rounded-lg text-center">
+              <div className="font-monument text-3xl">
+                {athlete.map((item) => { return (item.fantasy_score.toFixed(2))})}
+              </div>
+              <div className="text-sm">
+                AVG.FANTASY SCORE
+              </div>  
             </div>
-            <div className="text-sm">
-              GAMES PLAYED
+            <div className="ml-4 mr-5 p-4 border rounded-lg text-center">
+              <div className="font-monument text-3xl">
+                12
+              </div>
+              <div className="text-sm">
+                GAMES PLAYED
+              </div>
             </div>
           </div>
-        </div>
 
             <StatsComponent
               id={athlete.map((item) => { return (item.primary_id) })} 
               position={athlete.map((item) => { return (item.position) })}
             />
 
+            <div className="text-2xl font-bold font-monument ml-24 mb-10 mr-8 align-baseline">
+            GAME SCORES
+            <hr className="w-10 border-4"></hr>    
             </div>
+            <table className="table-auto ml-24 mr-80 border border-indigo-slate">
+              <thead>
+                <tr className='border border-indigo-slate'>
+                  <th> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </th>
+                  <th> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </th>
+                  <th> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </th>
+                  <th className="mt-10 mb-10 font-monument text-xs text-center">FANTASY SCORE</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr className='border border-indigo-slate'>
+                  <td className=''> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Oct. 24 </td>
+                  <td className='text-left'>  vs  </td>
+                  <td>  Team CookieziFans </td>
+                  <td className='text-center'> 727 </td> 
+                </tr>
+                <tr>
+                  <td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  Oct. 17  </td>
+                  <td className='text-left'>  vs  </td>
+                  <td> Team WYSI </td>
+                  <td className='text-center'> 322 </td> 
+                </tr>
+               {test.map((item, i) => {
+                  return (
+                    <tr key={i} className='border border-indigo-slate'>
+                      <td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Oct. {item}</td>
+                      <td>vs</td>
+                      <td>Team {item}</td>
+                      <td className='text-center'>{item}</td>
+                    </tr>
+                  );
+                })} 
+              </tbody>
+            </table>
+
+        </div>
+
+            
+            
       </Container>
     )
 }
