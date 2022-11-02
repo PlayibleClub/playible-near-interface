@@ -32,7 +32,11 @@ export const GET_ATHLETE_BY_ID = gql`
         fantasyScore
         week
         type
-
+        opponent {
+          name
+          key
+        }
+        gameDate
       }
     }
   }

@@ -14,7 +14,6 @@ import Link from 'next/link';
 
 
 const AssetDetails = (props) => {
-    let test = [1,2,3];
     const { query } = props;
     const athleteIndex = query.id;
     const { accountId } = useWalletSelector();
@@ -25,6 +24,13 @@ const AssetDetails = (props) => {
 
     const [athlete, setAthlete] = useState([]);
     const athleteImage = athlete.map((item) => { return (item.image) }).toString();
+
+    function get_dateOfGame(gameDate){
+      let date = new Date( Date.parse(gameDate) );
+      let months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+      return months[date.getMonth()] + ". " + date.getDate();
+    }
 
     function query_nft_tokens_for_owner() {
         const query = JSON.stringify({ account_id: accountId, from_index: athleteIndex.toString(), limit: 1 })
@@ -109,8 +115,8 @@ const AssetDetails = (props) => {
             SEASON STATS
           <hr className="w-10 border-4"></hr>    
           </div>
-          <div className="grid grid-cols-5 ml-24 mt-10 mb-20 ">
-            <div className="mr-2 p-4 border rounded-lg text-center">
+          <div className="grid grid-cols-2 ml-24 mt-10 mb-20 w-5/12">
+            <div className="mr-2 p-4 border border-indigo-slate rounded-lg text-center">
               <div className="font-monument text-3xl">
                 {athlete.map((item) => { return (item.fantasy_score.toFixed(2))})}
               </div>
@@ -118,7 +124,7 @@ const AssetDetails = (props) => {
                 AVG.FANTASY SCORE
               </div>  
             </div>
-            <div className="ml-4 mr-5 p-4 border rounded-lg text-center">
+            <div className="ml-4 mr-5 p-4 border border-indigo-slate rounded-lg text-center">
               <div className="font-monument text-3xl">
                 12
               </div>
@@ -137,25 +143,25 @@ const AssetDetails = (props) => {
             GAME SCORES
             <hr className="w-10 border-4"></hr>    
             </div>
-            <table className="table-auto ml-24 mr-80 border border-indigo-slate">
+            <table className="table-auto ml-24 mr-24 mb-40 border border-indigo-slate">
               <thead>
                 <tr className='border border-indigo-slate'>
-                  <th> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </th>
-                  <th> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </th>
-                  <th> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </th>
-                  <th className="mt-10 mb-10 font-monument text-xs text-center">FANTASY SCORE</th>
+                  <th> </th>
+                  <th> </th>
+                  <th> </th>
+                  <th className="font-monument text-xs text-right pr-10 p-2 ">FANTASY SCORE</th>
                 </tr>
               </thead>
               <tbody>
                 
                 {athlete[0] == undefined ? "LOADING GAMES...." : 
-                 athlete[0].stats_breakdown.filter((statType) => statType.type == "weekly").map((item,index) => {
+                 athlete[0].stats_breakdown.filter((statType) => statType.type == "weekly").map((item,index) => {9
                   return (
                     <tr key={index} className='border border-indigo-slate'>
-                      <td className="text-center"> Week {item.week}</td>
-                      <td >vs</td>
-                      <td className="font-bold font-monument">Team {index+1}</td>
-                      <td className='text-center font-bold'>{item.fantasyScore.toFixed(2)}</td>
+                      <td className="text-sm text-center w-6 pl-4 pr-4">{get_dateOfGame(item.gameDate)}</td>
+                      <td className="text-sm w-px">vs.</td>
+                      <td className="text-sm pl-2 font-black w-96">{item.opponent}</td>
+                      <td className='text-sm text-right font-black p-3 pr-10 w-12'>{item.fantasyScore.toFixed(2)}</td>
                     </tr>
                   );
                 })}
