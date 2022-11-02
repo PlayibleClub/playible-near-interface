@@ -161,11 +161,11 @@ export default function Packs() {
                 activeClassName="rounded-lg bg-indigo-white text-indigo-black pr-1 pl-1 font-bold"
                 pageLinkClassName="rounded-lg hover:font-bold hover:bg-indigo-white hover:text-indigo-black pr-1 pl-1"
                 breakLabel="..."
-                nextLabel="next >"
+                nextLabel=">"
                 onPageChange={handlePageClick}
                 pageRangeDisplayed={5}
                 pageCount={pageCount}
-                previousLabel="< prev"
+                previousLabel="<"
                 renderOnZeroPageCount={null}
               />
             </div>
