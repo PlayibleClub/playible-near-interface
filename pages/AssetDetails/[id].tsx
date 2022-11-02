@@ -147,31 +147,21 @@ const AssetDetails = (props) => {
                 </tr>
               </thead>
               <tbody>
-                <tr className='border border-indigo-slate'>
-                  <td className=''> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Oct. 24 </td>
-                  <td className='text-left'>  vs  </td>
-                  <td>  Team CookieziFans </td>
-                  <td className='text-center'> 727 </td> 
-                </tr>
-                <tr>
-                  <td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  Oct. 17  </td>
-                  <td className='text-left'>  vs  </td>
-                  <td> Team WYSI </td>
-                  <td className='text-center'> 322 </td> 
-                </tr>
-               {test.map((item, i) => {
+                
+                {athlete[0] == undefined ? "LOADING GAMES...." : 
+                 athlete[0].stats_breakdown.filter((statType) => statType.type == "weekly").map((item,index) => {
                   return (
-                    <tr key={i} className='border border-indigo-slate'>
-                      <td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Oct. {item}</td>
-                      <td>vs</td>
-                      <td>Team {item}</td>
-                      <td className='text-center'>{item}</td>
+                    <tr key={index} className='border border-indigo-slate'>
+                      <td className="text-center"> Week {item.week}</td>
+                      <td >vs</td>
+                      <td className="font-bold font-monument">Team {index+1}</td>
+                      <td className='text-center font-bold'>{item.fantasyScore.toFixed(2)}</td>
                     </tr>
                   );
-                })} 
+                })}
+          
               </tbody>
             </table>
-
         </div>
 
             
