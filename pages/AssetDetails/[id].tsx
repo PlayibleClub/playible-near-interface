@@ -55,6 +55,15 @@ const AssetDetails = (props) => {
         query_nft_tokens_for_owner();
     }, [])
 
+    function getGamesPlayed(){
+      let totalGames = 0;
+      athlete[0].stats_breakdown.forEach((game) => {
+        if(game.type === "weekly" && game.fantasyScore !== 0){
+          totalGames++;
+        }
+      })
+      return totalGames;
+    }
     return (
         <Container activeName="ATHLETES">
         <div className="mt-8">
@@ -125,8 +134,9 @@ const AssetDetails = (props) => {
               </div>  
             </div>
             <div className="ml-4 mr-5 p-4 border border-indigo-slate rounded-lg text-center">
+
               <div className="font-monument text-3xl">
-                12
+                {athlete[0] === undefined ? "" : getGamesPlayed()}
               </div>
               <div className="text-sm">
                 GAMES PLAYED
