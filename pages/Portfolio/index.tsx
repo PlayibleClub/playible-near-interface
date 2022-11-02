@@ -265,7 +265,7 @@ const Portfolio = () => {
                 )}
               </div>
             </PortfolioContainer>
-            <div className="absolute bottom-10 right-10">
+            <div className="absolute bottom-10 right-10 iphone5:bottom-4 iphone5:right-2 iphone5:fixed iphoneX:bottom-4 iphoneX:right-4 iphoneX-fixed">
               <ReactPaginate
                 className="p-2 bg-indigo-buttonblue text-indigo-white flex flex-row space-x-4 select-none ml-7"
                 pageClassName="hover:font-bold"
