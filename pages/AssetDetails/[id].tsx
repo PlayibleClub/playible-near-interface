@@ -149,7 +149,7 @@ const AssetDetails = (props) => {
               position={athlete.map((item) => { return (item.position) })}
             />
 
-            <div className="text-2xl font-bold font-monument ml-24 mb-10 mr-8 align-baseline">
+            <div className="text-2xl font-bold font-monument -mt-14 ml-24 mb-10 mr-8 align-baseline">
             GAME SCORES
             <hr className="w-10 border-4"></hr>    
             </div>
@@ -159,7 +159,7 @@ const AssetDetails = (props) => {
                   <th> </th>
                   <th> </th>
                   <th> </th>
-                  <th className="font-monument text-xs text-right pr-10 p-2 ">FANTASY SCORE</th>
+                  <th className="font-monument text-xs text-right pr-24 p-2">FANTASY SCORE</th>
                 </tr>
               </thead>
               <tbody>
@@ -171,7 +171,7 @@ const AssetDetails = (props) => {
                       <td className="text-sm text-center w-6 pl-4 pr-4">{get_dateOfGame(item.gameDate)}</td>
                       <td className="text-sm w-px">vs.</td>
                       <td className="text-sm pl-2 font-black w-96">{item.opponent}</td>
-                      <td className='text-sm text-right font-black p-3 pr-10 w-12'>{item.fantasyScore.toFixed(2)}</td>
+                      <td className='text-sm text-right font-black p-3 pr-24 w-12'>{item.fantasyScore.toFixed(2)}</td>
                     </tr>
                   );
                 })}
