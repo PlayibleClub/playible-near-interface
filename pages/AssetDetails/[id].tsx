@@ -8,10 +8,12 @@ import { providers } from 'near-api-js';
 import { getContract, getRPCProvider } from 'utils/near';
 import { ATHLETE } from 'data/constants/nearContracts';
 import StatsComponent from './components/StatsComponent';
+import Popup from 'reactjs-popup';
+import 'reactjs-popup/dist/index.css';
 import Link from 'next/link';
 
-const AssetDetails = (props) => {
 
+const AssetDetails = (props) => {
     const { query } = props;
     const athleteIndex = query.id;
     const { accountId } = useWalletSelector();
@@ -22,6 +24,13 @@ const AssetDetails = (props) => {
 
     const [athlete, setAthlete] = useState([]);
     const athleteImage = athlete.map((item) => { return (item.image) }).toString();
+
+    function get_dateOfGame(gameDate){
+      let date = new Date( Date.parse(gameDate) );
+      let months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+      return months[date.getMonth()] + ". " + date.getDate();
+    }
 
     function query_nft_tokens_for_owner() {
         const query = JSON.stringify({ account_id: accountId, from_index: athleteIndex.toString(), limit: 1 })
@@ -46,6 +55,15 @@ const AssetDetails = (props) => {
         query_nft_tokens_for_owner();
     }, [])
 
+    function getGamesPlayed(){
+      let totalGames = 0;
+      athlete[0].stats_breakdown.forEach((game) => {
+        if(game.type === "weekly" && game.fantasyScore !== 0){
+          totalGames++;
+        }
+      })
+      return totalGames;
+    }
     return (
         <Container activeName="ATHLETES">
         <div className="mt-8">
@@ -75,10 +93,15 @@ const AssetDetails = (props) => {
                   FANTASY SCORE
                 </div>
                 <div>
-                  PLAY TRACKER
+                  PLAY BALANCE 
+                    <Popup trigger={<button className="ml-2 font-bold border rounded-full relative px-2"> i </button>} position="right center">
+                      <div className='mt-2 mb-2 ml-2 mr-2'>
+                        PLAY BALANCE: Amount of PLAY  remaining to join weekly cash contests
+                      </div>
+                    </Popup>
                 </div>
                 <div>
-                  {athlete.map((item) => { return (item.fantasy_score)})}
+                  {athlete.map((item) => { return (item.fantasy_score.toFixed(2))})}
                 </div>
                 <div>
                   {athlete.map((item) => { return (item.usage)})} 
@@ -95,40 +118,70 @@ const AssetDetails = (props) => {
             </div>
             </div>
 
-            <div className="grid grid-cols-2 ml-24 mt-20 mb-20 w-2/5">
-              <div className="text-2xl font-bold font-monument mt-16 mr-8 align-baseline">
-                PLAYER STATS
-                <hr className="w-10 border-4"></hr>
-              </div>
-              {athlete.map((item) => {
-                  const fantasyScore = item.fantasy_score;
 
-                  if(fantasyScore.toString().length >= 5) {
-                    return (
-                      <div className="bg-avg-icon w-133px h-135px text-center">
-                        <div className="ml-1 mt-15 font-monument text-xl text-indigo-white">
-                          {fantasyScore}
-                        </div>
-                    </div>
-                    )
-                  } else {
-                    return (
-                      <div className="bg-avg-icon w-133px h-135px text-center">
-                        <div className="ml-1 mt-14 font-monument text-3xl text-indigo-white">
-                          {fantasyScore}
-                        </div>
-                      </div>
-                    )
-                  }
-              })}
+           
+          <div className="text-2xl font-bold font-monument ml-24 mt-16 mr-8 align-baseline">
+            SEASON STATS
+          <hr className="w-10 border-4"></hr>    
+          </div>
+          <div className="grid grid-cols-2 ml-24 mt-10 mb-20 w-5/12">
+            <div className="mr-2 p-4 border border-indigo-slate rounded-lg text-center">
+              <div className="font-monument text-3xl">
+                {athlete.map((item) => { return (item.fantasy_score.toFixed(2))})}
+              </div>
+              <div className="text-sm">
+                AVG.FANTASY SCORE
+              </div>  
             </div>
+            <div className="ml-4 mr-5 p-4 border border-indigo-slate rounded-lg text-center">
+
+              <div className="font-monument text-3xl">
+                {athlete[0] === undefined ? "" : getGamesPlayed()}
+              </div>
+              <div className="text-sm">
+                GAMES PLAYED
+              </div>
+            </div>
+          </div>
 
             <StatsComponent
               id={athlete.map((item) => { return (item.primary_id) })} 
               position={athlete.map((item) => { return (item.position) })}
             />
 
+            <div className="text-2xl font-bold font-monument -mt-14 ml-24 mb-10 mr-8 align-baseline">
+            GAME SCORES
+            <hr className="w-10 border-4"></hr>    
             </div>
+            <table className="table-auto ml-24 mr-24 mb-40 border border-indigo-slate">
+              <thead>
+                <tr className='border border-indigo-slate'>
+                  <th> </th>
+                  <th> </th>
+                  <th> </th>
+                  <th className="font-monument text-xs text-right pr-24 p-2">FANTASY SCORE</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                {athlete[0] == undefined ? "LOADING GAMES...." : 
+                 athlete[0].stats_breakdown.filter((statType) => statType.type == "weekly").map((item,index) => {9
+                  return (
+                    <tr key={index} className='border border-indigo-slate'>
+                      <td className="text-sm text-center w-6 pl-4 pr-4">{get_dateOfGame(item.gameDate)}</td>
+                      <td className="text-sm w-px">vs.</td>
+                      <td className="text-sm pl-2 font-black w-96">{item.opponent.name}</td>
+                      <td className='text-sm text-right font-black p-3 pr-24 w-12'>{item.fantasyScore.toFixed(2)}</td>
+                    </tr>
+                  );
+                })}
+          
+              </tbody>
+            </table>
+        </div>
+
+            
+            
       </Container>
     )
 }
