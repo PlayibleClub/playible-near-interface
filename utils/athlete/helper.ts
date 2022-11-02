@@ -25,6 +25,7 @@ async function getAthleteInfoById(item) {
     animation: data.getAthleteById.nftAnimation,
     image: data.getAthleteById.nftImage,
     fantasy_score: getAvgFantasyScore(data.getAthleteById.stats),
+    stats_breakdown: data.getAthleteById.stats,
   };
   return returningData;
 }
