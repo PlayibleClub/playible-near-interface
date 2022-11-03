@@ -57,6 +57,8 @@ const Portfolio = () => {
   const [isFiltered, setIsFiltered] = useState(false);
   const [filterOption, setFilterOption] = useState('');
   const [athleteList, setAthleteList] = useState([]);
+  
+  const [position, setPosition] = useState("ALL");
   // const listQB = athletes.filter(athlete => athlete.position === "QB");
   // const listRB = athletes.filter(athlete => athlete.position === "RB");
   // const listWR = athletes.filter(athlete => athlete.position === "WR");
@@ -216,11 +218,14 @@ const Portfolio = () => {
     <Container activeName="SQUAD">
       <div className="flex flex-col w-full overflow-y-auto h-screen pb-12 mb-12">
         <Main color="indigo-white">
-          {/* <div className="flex flex-row h-8">
+          <div className="flex flex-row h-8">
                 <div className="bg-indigo-white h-8 flex justify-between self-center 
                     font-thin w-72 mt-6 border-2 border-indigo-lightgray border-opacity-50">
                     <form>
-                      <select className="filter-select bg-white">
+                      <select onChange={(e) => {console.log(e.target.value)}} className="filter-select bg-white">
+                        <option value="ALL">
+                          ALL
+                        </option>
                         <option value="QB">
                           QB
                         </option>
@@ -237,7 +242,7 @@ const Portfolio = () => {
                     </form>
                     <img src={filterIcon} className="object-none w-4 mr-4" />
               </div>
-              </div> */}
+              </div>
 
           <div className="md:ml-6">
             <PortfolioContainer textcolor="indigo-black" title="SQUAD">
