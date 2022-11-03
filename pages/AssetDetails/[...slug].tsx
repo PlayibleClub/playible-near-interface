@@ -11,10 +11,13 @@ import StatsComponent from './components/StatsComponent';
 import Popup from 'reactjs-popup';
 import 'reactjs-popup/dist/index.css';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 const AssetDetails = (props) => {
   const { query } = props;
-  const athleteIndex = query.id;
+  const router=useRouter();
+  const { slug } = router.query;
+  // const athleteIndex = query.id;
   const { accountId } = useWalletSelector();
 
   const provider = new providers.JsonRpcProvider({
@@ -22,11 +25,17 @@ const AssetDetails = (props) => {
   });
 
   const [athlete, setAthlete] = useState([]);
+
   const athleteImage = athlete
     .map((item) => {
       return item.image;
     })
     .toString();
+
+  const routerAthlete = {
+    position:slug[0],
+    index:slug[1],
+  }
 
   function get_dateOfGame(gameDate) {
     let date = new Date(Date.parse(gameDate));
@@ -48,10 +57,37 @@ const AssetDetails = (props) => {
     return months[date.getMonth()] + '. ' + date.getDate();
   }
 
+  function filtered_nft(){
+    console.table(routerAthlete);
+    const query = JSON.stringify({
+      account_id: accountId,
+      from_index: routerAthlete.index.toString(),
+      limit: 1,
+      position: routerAthlete.position,
+    });
+
+    provider
+      .query({
+        request_type: 'call_function',
+        finality: 'optimistic',
+        account_id: getContract(ATHLETE),
+        method_name: 'filter_tokens_by_position',
+        args_base64: Buffer.from(query).toString('base64'),
+      })
+      .then(async (data) => {
+        // @ts-ignore:next-line
+        const result = JSON.parse(Buffer.from(data.result).toString());
+        const result_two = await Promise.all(
+          result.map(convertNftToAthlete).map(getAthleteInfoById)
+        );
+        setAthlete(result_two);
+      });
+  }
+
   function query_nft_tokens_for_owner() {
     const query = JSON.stringify({
       account_id: accountId,
-      from_index: athleteIndex.toString(),
+      from_index: routerAthlete.index.toString(),
       limit: 1,
     });
 
@@ -74,7 +110,8 @@ const AssetDetails = (props) => {
   }
 
   useEffect(() => {
-    query_nft_tokens_for_owner();
+    if(routerAthlete.position=="all"){query_nft_tokens_for_owner();}
+    else{filtered_nft();}
   }, []);
 
   function getGamesPlayed() {

@@ -104,14 +104,14 @@ const Portfolio = () => {
   }
 
   function query_nft_supply_for_owner() {
-    const query = JSON.stringify({ account_id: accountId });
+    const query = JSON.stringify({ account_id: accountId,position:"WR" });
 
     provider
       .query({
         request_type: 'call_function',
         finality: 'optimistic',
         account_id: getContract(ATHLETE),
-        method_name: 'nft_supply_for_owner',
+        method_name: 'filtered_nft_supply_for_owner',
         args_base64: Buffer.from(query).toString('base64'),
       })
       .then((data) => {
@@ -127,6 +127,7 @@ const Portfolio = () => {
       account_id: accountId,
       from_index: athleteOffset.toString(),
       limit: athleteLimit,
+      position:"WR"
     });
 
     provider
@@ -134,7 +135,7 @@ const Portfolio = () => {
         request_type: 'call_function',
         finality: 'optimistic',
         account_id: getContract(ATHLETE),
-        method_name: 'nft_tokens_for_owner',
+        method_name: 'filter_tokens_by_position',
         args_base64: Buffer.from(query).toString('base64'),
       })
       .then(async (data) => {
@@ -256,6 +257,7 @@ const Portfolio = () => {
                           id={item.athlete_id}
                           uri={item.image}
                           index={accountAthleteIndex}
+                          athletePosition={item.position}
                           // rarity={path.rarity}
                           // status={player.is_locked}
                         ></PerformerContainer>

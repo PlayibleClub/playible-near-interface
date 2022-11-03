@@ -18,6 +18,7 @@ const PerformerContainer = (props) => {
     status,
     index,
     hoverable = true,
+    athletePosition,
   } = props;
   return (
     <div
@@ -38,7 +39,7 @@ const PerformerContainer = (props) => {
       >
         {uri ? (
           <div className="relative" style={{ width: '120px', height: '160px' }}>
-            <Link href = {`/AssetDetails/${index}`} passHref>
+            <Link href = {`/AssetDetails/${athletePosition}/${index}`} passHref>
             <div className="absolute z-50" style={{ width: '120px', height: '160px' }}></div>
             </Link>
             <object
@@ -77,6 +78,7 @@ PerformerContainer.propTypes = {
   status: PropTypes.string,
   index: PropTypes.number,
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
+  athletePosition: PropTypes.string,
 };
 
 export default PerformerContainer;

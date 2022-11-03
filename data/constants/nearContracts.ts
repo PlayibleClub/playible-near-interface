@@ -74,7 +74,7 @@ export const ATHLETE = {
   mainnet: 'athlete.nfl.playible.near',
   testnet: 'athlete.nfl.playible.testnet',
   interface: {
-    viewMethods: ['nft_tokens_for_owner', 'nft_total_supply', 'nft_tokens', 'nft_supply_for_owner'],
+    viewMethods: ['nft_tokens_for_owner', 'nft_total_supply', 'nft_tokens', 'nft_supply_for_owner','filter_tokens_by_position','filter_supply_for_owner'],
     changeMethods: ['addMessage'],
   },
 }; //Athlete Contract
