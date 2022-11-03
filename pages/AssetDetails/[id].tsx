@@ -60,9 +60,7 @@ const AssetDetails = (props) => {
       .then(async (data) => {
         // @ts-ignore:next-line
         const result = JSON.parse(Buffer.from(data.result).toString());
-        console.log(result);
         const result_two = await getAthleteInfoById(await convertNftToAthlete(result));
-        console.log(result_two);
         setAthlete(result_two);
       });
   }
