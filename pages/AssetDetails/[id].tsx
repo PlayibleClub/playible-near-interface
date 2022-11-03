@@ -80,7 +80,7 @@ const AssetDetails = (props) => {
   function getGamesPlayed() {
     let totalGames = 0;
     athlete[0].stats_breakdown.forEach((game) => {
-      if (game.type === 'weekly') {
+      if (game.type === 'weekly' && game.played == 1) {
         totalGames++;
       }
     });
@@ -203,7 +203,7 @@ const AssetDetails = (props) => {
             {athlete[0] == undefined
               ? 'LOADING GAMES....'
               : athlete[0].stats_breakdown
-                  .filter((statType) => statType.type == 'weekly')
+                  .filter((statType) => statType.type == 'weekly' && statType.played == 1)
                   .map((item, index) => {
                     9;
                     return (

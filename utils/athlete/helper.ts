@@ -1,4 +1,5 @@
 import client from 'apollo-client';
+import { objectTraps } from 'immer/dist/internal';
 import { GET_ATHLETE_BY_ID } from '../queries';
 
 // pull from graphQL and append the nft animation
@@ -29,18 +30,12 @@ async function getAthleteInfoById(item) {
   };
   return returningData;
 }
-function getAvgFantasyScore(array){
-  let totalFantasy = 0;
-  if(Array.isArray(array) && array.length > 0){
-    for(let i = 0; i < array.length; i++){
-      let obj = array[i];
-      if(obj.type === "weekly"){
-        totalFantasy += obj.fantasyScore;
-      }
-    }
-    return totalFantasy / (array.length - 1);
-  }
-  else{
+function getAvgFantasyScore(array) {
+  if (Array.isArray(array) && array.length > 0) {
+    return array.filter((item) => {
+      return item.type == 'season';
+    })[0].fantasyScore;
+  } else {
     return 0;
   }
 }
