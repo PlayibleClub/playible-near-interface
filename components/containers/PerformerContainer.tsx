@@ -19,7 +19,6 @@ const PerformerContainer = (props) => {
     index,
     hoverable = true,
   } = props;
-
   return (
     <div
       data-test="PerformerContainer"

@@ -9,7 +9,7 @@ import SquadPackComponent from '../../components/SquadPackComponent';
 import Container from '../../components/containers/Container';
 import Sorter from './components/Sorter';
 
-import filterIcon from '../../public/images/filterBlack.png'
+import filterIcon from '../../public/images/filterBlack.png';
 import { transactions, utils, WalletConnection, providers } from 'near-api-js';
 import { getRPCProvider, getContract } from 'utils/near';
 import { PACK } from '../../data/constants/nearContracts';
@@ -55,7 +55,7 @@ const Portfolio = () => {
 
   const [filteredTotal, setFilteredTotal] = useState(30);
   const [isFiltered, setIsFiltered] = useState(false);
-  const [filterOption, setFilterOption] = useState("");
+  const [filterOption, setFilterOption] = useState('');
   const [athleteList, setAthleteList] = useState([]);
   // const listQB = athletes.filter(athlete => athlete.position === "QB");
   // const listRB = athletes.filter(athlete => athlete.position === "RB");
@@ -88,7 +88,7 @@ const Portfolio = () => {
   //     if (filterOption == "TE") {
   //       return listTE;
   //     }
-  //   } 
+  //   }
   // }
 
   function getAthleteLimit() {
@@ -119,11 +119,15 @@ const Portfolio = () => {
         const totalAthletes = JSON.parse(Buffer.from(data.result));
 
         setTotalAthletes(totalAthletes);
-      })
+      });
   }
 
   function query_nft_tokens_for_owner() {
-    const query = JSON.stringify({ account_id: accountId, from_index: athleteOffset.toString(), limit: athleteLimit });
+    const query = JSON.stringify({
+      account_id: accountId,
+      from_index: athleteOffset.toString(),
+      limit: athleteLimit,
+    });
 
     provider
       .query({
@@ -137,7 +141,9 @@ const Portfolio = () => {
         // @ts-ignore:next-line
         const result = JSON.parse(Buffer.from(data.result).toString());
 
-        const result_two = await Promise.all(result.map(convertNftToAthlete).map(getAthleteInfoById));
+        const result_two = await Promise.all(
+          result.map(convertNftToAthlete).map(getAthleteInfoById)
+        );
 
         // const sortedResult = sortByKey(result_two, 'fantasy_score');
 
@@ -149,7 +155,7 @@ const Portfolio = () => {
   const handlePageClick = (event) => {
     const newOffset = (event.selected * athleteLimit) % totalAthletes;
     setAthleteOffset(newOffset);
-  }
+  };
 
   useEffect(() => {
     query_nft_supply_for_owner();
@@ -175,7 +181,7 @@ const Portfolio = () => {
   //   } catch (e) {
   //     setIsFiltered(false);
   //   }
-  // } 
+  // }
 
   // function selectFilter() {
   //   const filterOptions = ["All Positions", "QB", "RB", "WR", "TE"];
@@ -194,24 +200,23 @@ const Portfolio = () => {
   //   );
   // }
 
-//   function sortByKey(athletes, key) {
-//     return athletes.sort(function(a, b) {
-//         const x = a[key]; 
-//         const y = b[key];
-//         return (
-//           (x < y) ? 1 : ((x > y) ? -1 : 0)
-//         );
-//     });
-// }
+  //   function sortByKey(athletes, key) {
+  //     return athletes.sort(function(a, b) {
+  //         const x = a[key];
+  //         const y = b[key];
+  //         return (
+  //           (x < y) ? 1 : ((x > y) ? -1 : 0)
+  //         );
+  //     });
+  // }
 
-// console.log("sorted id: " + JSON.stringify(sortedAthletes));
+  // console.log("sorted id: " + JSON.stringify(sortedAthletes));
 
   return (
-
     <Container activeName="SQUAD">
       <div className="flex flex-col w-full overflow-y-auto h-screen pb-12 mb-12">
         <Main color="indigo-white">
-              {/* <div className="flex flex-row h-8">
+          {/* <div className="flex flex-row h-8">
                 <div className="bg-indigo-white h-8 flex justify-between self-center 
                     font-thin w-72 mt-6 border-2 border-indigo-lightgray border-opacity-50">
                     <form>
@@ -233,7 +238,7 @@ const Portfolio = () => {
                     <img src={filterIcon} className="object-none w-4 mr-4" />
               </div>
               </div> */}
-              
+
           <div className="md:ml-6">
             <PortfolioContainer textcolor="indigo-black" title="SQUAD">
               <div className="flex flex-col">
@@ -247,7 +252,7 @@ const Portfolio = () => {
                         <PerformerContainer
                           key={item.athlete_id}
                           AthleteName={item.name}
-                          AvgScore={item.fantasy_score}
+                          AvgScore={item.fantasy_score.toFixed(2)}
                           id={item.athlete_id}
                           uri={item.image}
                           index={accountAthleteIndex}
@@ -260,21 +265,21 @@ const Portfolio = () => {
                 )}
               </div>
             </PortfolioContainer>
-              <div className="absolute bottom-10 right-10">
+            <div className="absolute bottom-10 right-10 iphone5:bottom-4 iphone5:right-2 iphone5:fixed iphoneX:bottom-4 iphoneX:right-4 iphoneX-fixed">
               <ReactPaginate
                 className="p-2 bg-indigo-buttonblue text-indigo-white flex flex-row space-x-4 select-none ml-7"
                 pageClassName="hover:font-bold"
                 activeClassName="rounded-lg bg-indigo-white text-indigo-black pr-1 pl-1 font-bold"
                 pageLinkClassName="rounded-lg hover:font-bold hover:bg-indigo-white hover:text-indigo-black pr-1 pl-1"
                 breakLabel="..."
-                nextLabel="next >"
+                nextLabel=">"
                 onPageChange={handlePageClick}
                 pageRangeDisplayed={5}
                 pageCount={pageCount}
-                previousLabel="< prev"
+                previousLabel="<"
                 renderOnZeroPageCount={null}
               />
-              </div>
+            </div>
             <div className="absolute bottom-10 right-10"></div>
           </div>
         </Main>

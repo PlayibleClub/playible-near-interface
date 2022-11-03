@@ -14,6 +14,11 @@ export const GET_ATHLETES_TOP = gql`
       isInjured
       nftImage
       nftAnimation
+      stats {
+        fantasyScore
+        week
+        type
+      }
     }
   }
 `;
@@ -25,6 +30,13 @@ export const GET_ATHLETE_BY_ID = gql`
       nftImage
       stats {
         fantasyScore
+        week
+        type
+        opponent {
+          name
+          key
+        }
+        gameDate
       }
     }
   }
