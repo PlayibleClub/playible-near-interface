@@ -124,11 +124,12 @@ const Portfolio = () => {
       });
   }
 
-  function query_nft_tokens_for_owner() {
+  function query_nft_tokens_for_owner(position) {
     const query = JSON.stringify({
       account_id: accountId,
       from_index: athleteOffset.toString(),
       limit: athleteLimit,
+      position: position,
     });
 
     provider
@@ -136,7 +137,7 @@ const Portfolio = () => {
         request_type: 'call_function',
         finality: 'optimistic',
         account_id: getContract(ATHLETE),
-        method_name: 'nft_tokens_for_owner',
+        method_name: 'filter_tokens_by_position',
         args_base64: Buffer.from(query).toString('base64'),
       })
       .then(async (data) => {
@@ -166,7 +167,7 @@ const Portfolio = () => {
     setPageCount(Math.ceil(totalAthletes / athleteLimit));
     const endOffset = athleteOffset + athleteLimit;
     console.log(`Loading athletes from ${athleteOffset} to ${endOffset}`);
-    query_nft_tokens_for_owner();
+    query_nft_tokens_for_owner("QB");
     // setSortedList([]);
   }, [totalAthletes, athleteLimit, athleteOffset]);
 
@@ -222,7 +223,7 @@ const Portfolio = () => {
                 <div className="bg-indigo-white h-8 flex justify-between self-center 
                     font-thin w-72 mt-6 border-2 border-indigo-lightgray border-opacity-50">
                     <form>
-                      <select onChange={(e) => {console.log(e.target.value)}} className="filter-select bg-white">
+                      <select onChange={(e) => {query_nft_tokens_for_owner(e.target.value)}} className="filter-select bg-white">
                         <option value="ALL">
                           ALL
                         </option>
