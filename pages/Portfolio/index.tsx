@@ -58,7 +58,8 @@ const Portfolio = () => {
   const [filterOption, setFilterOption] = useState('');
   const [athleteList, setAthleteList] = useState([]);
   
-  const [position, setPosition] = useState("ALL");
+  const [currPosition, setCurrPosition] = useState("");
+  const [position, setPosition] = useState("allPos");
   // const listQB = athletes.filter(athlete => athlete.position === "QB");
   // const listRB = athletes.filter(athlete => athlete.position === "RB");
   // const listWR = athletes.filter(athlete => athlete.position === "WR");
@@ -105,15 +106,15 @@ const Portfolio = () => {
     }
   }
 
-  function query_nft_supply_for_owner() {
-    const query = JSON.stringify({ account_id: accountId });
+  function query_nft_supply_for_owner(position) {
+    const query = JSON.stringify({ account_id: accountId, position: position });
 
     provider
       .query({
         request_type: 'call_function',
         finality: 'optimistic',
         account_id: getContract(ATHLETE),
-        method_name: 'nft_supply_for_owner',
+        method_name: 'filtered_nft_supply_for_owner',
         args_base64: Buffer.from(query).toString('base64'),
       })
       .then((data) => {
@@ -124,6 +125,15 @@ const Portfolio = () => {
       });
   }
 
+  function handleDropdownChange(position){
+    query_nft_supply_for_owner(position);
+    getAthleteLimit();
+    // setAthleteList(getAthleteList());
+    setPageCount(Math.ceil(totalAthletes / athleteLimit));
+    const endOffset = athleteOffset + athleteLimit;
+    console.log(`Loading athletes from ${athleteOffset} to ${endOffset}`);
+    query_nft_tokens_for_owner(position);
+  }
   function query_nft_tokens_for_owner(position) {
     const query = JSON.stringify({
       account_id: accountId,
@@ -131,28 +141,30 @@ const Portfolio = () => {
       limit: athleteLimit,
       position: position,
     });
-
+    
     provider
-      .query({
-        request_type: 'call_function',
-        finality: 'optimistic',
-        account_id: getContract(ATHLETE),
-        method_name: 'filter_tokens_by_position',
-        args_base64: Buffer.from(query).toString('base64'),
-      })
-      .then(async (data) => {
-        // @ts-ignore:next-line
-        const result = JSON.parse(Buffer.from(data.result).toString());
+    .query({
+      request_type: 'call_function',
+      finality: 'optimistic',
+      account_id: getContract(ATHLETE),
+      method_name: 'filter_tokens_by_position',
+      args_base64: Buffer.from(query).toString('base64'),
+    })
+    .then(async (data) => {
+      // @ts-ignore:next-line
+      const result = JSON.parse(Buffer.from(data.result).toString());
 
-        const result_two = await Promise.all(
-          result.map(convertNftToAthlete).map(getAthleteInfoById)
-        );
+      const result_two = await Promise.all(
+        result.map(convertNftToAthlete).map(getAthleteInfoById)
+      );
 
-        // const sortedResult = sortByKey(result_two, 'fantasy_score');
-
-        setAthletes(result_two);
-        setLoading(false);
-      });
+      // const sortedResult = sortByKey(result_two, 'fantasy_score');
+      setCurrPosition(position)
+      setAthletes(result_two);
+      setLoading(false);
+    });
+    
+    
   }
 
   const handlePageClick = (event) => {
@@ -161,15 +173,15 @@ const Portfolio = () => {
   };
 
   useEffect(() => {
-    query_nft_supply_for_owner();
+    query_nft_supply_for_owner(position);
     getAthleteLimit();
     // setAthleteList(getAthleteList());
     setPageCount(Math.ceil(totalAthletes / athleteLimit));
     const endOffset = athleteOffset + athleteLimit;
     console.log(`Loading athletes from ${athleteOffset} to ${endOffset}`);
-    query_nft_tokens_for_owner("QB");
+    query_nft_tokens_for_owner(position);
     // setSortedList([]);
-  }, [totalAthletes, athleteLimit, athleteOffset]);
+  }, [totalAthletes, athleteLimit, athleteOffset, position]);
 
   //[dispatch]
 
@@ -219,12 +231,13 @@ const Portfolio = () => {
     <Container activeName="SQUAD">
       <div className="flex flex-col w-full overflow-y-auto h-screen pb-12 mb-12">
         <Main color="indigo-white">
+          {totalAthletes}
           <div className="flex flex-row h-8">
                 <div className="bg-indigo-white h-8 flex justify-between self-center 
                     font-thin w-72 mt-6 border-2 border-indigo-lightgray border-opacity-50">
                     <form>
-                      <select onChange={(e) => {query_nft_tokens_for_owner(e.target.value)}} className="filter-select bg-white">
-                        <option value="ALL">
+                      <select onChange={(e) => setPosition(e.target.value)} className="filter-select bg-white">
+                        <option value="allPos">
                           ALL
                         </option>
                         <option value="QB">
@@ -233,8 +246,8 @@ const Portfolio = () => {
                         <option value="RB">
                           RB
                         </option>
-                        <option value="WB">
-                          WB
+                        <option value="WR">
+                          WR
                         </option>
                         <option value="TE">
                           TE
