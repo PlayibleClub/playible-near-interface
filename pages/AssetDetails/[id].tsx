@@ -15,9 +15,8 @@ import { useRouter } from 'next/router';
 
 const AssetDetails = (props) => {
   const { query } = props;
-  const router=useRouter();
-  const { slug } = router.query;
-  // const athleteIndex = query.id;
+
+  const athleteIndex = query.id;
   const { accountId } = useWalletSelector();
 
   const provider = new providers.JsonRpcProvider({
@@ -27,12 +26,8 @@ const AssetDetails = (props) => {
   const [athlete, setAthlete] = useState(null);
   const athleteImage = athlete?.image;
 
-  const routerAthlete = {
-    position:slug[0],
-    index:slug[1],
-  }
 
-  function get_dateOfGame(gameDate) {
+  function getDateOfGame(gameDate) {
     let date = new Date(Date.parse(gameDate));
     let months = [
       'Jan',
@@ -54,9 +49,7 @@ const AssetDetails = (props) => {
 
   function query_nft_tokens_for_owner() {
     const query = JSON.stringify({
-      account_id: accountId,
-      from_index: athleteIndex.toString(),
-      limit: 1,
+      token_id: athleteIndex
     });
 
     provider
@@ -181,11 +174,10 @@ const AssetDetails = (props) => {
               : athlete.stats_breakdown
                   .filter((statType) => statType.type == 'weekly' && statType.played == 1)
                   .map((item, index) => {
-                    9;
                     return (
                       <tr key={index} className="border border-indigo-slate">
                         <td className="text-sm text-center w-6 pl-4 pr-4">
-                          {get_dateOfGame(item.gameDate)}
+                          {getDateOfGame(item.gameDate)}
                         </td>
                         <td className="text-sm w-px">vs.</td>
                         <td className="text-sm pl-2 font-black w-96">{item.opponent.name}</td>
