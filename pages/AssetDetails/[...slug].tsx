@@ -24,13 +24,8 @@ const AssetDetails = (props) => {
     url: getRPCProvider(),
   });
 
-  const [athlete, setAthlete] = useState([]);
-
-  const athleteImage = athlete
-    .map((item) => {
-      return item.image;
-    })
-    .toString();
+  const [athlete, setAthlete] = useState(null);
+  const athleteImage = athlete?.image;
 
   const routerAthlete = {
     position:slug[0],
@@ -57,37 +52,10 @@ const AssetDetails = (props) => {
     return months[date.getMonth()] + '. ' + date.getDate();
   }
 
-  function filtered_nft(){
-    console.table(routerAthlete);
-    const query = JSON.stringify({
-      account_id: accountId,
-      from_index: routerAthlete.index.toString(),
-      limit: 1,
-      position: routerAthlete.position,
-    });
-
-    provider
-      .query({
-        request_type: 'call_function',
-        finality: 'optimistic',
-        account_id: getContract(ATHLETE),
-        method_name: 'filter_tokens_by_position',
-        args_base64: Buffer.from(query).toString('base64'),
-      })
-      .then(async (data) => {
-        // @ts-ignore:next-line
-        const result = JSON.parse(Buffer.from(data.result).toString());
-        const result_two = await Promise.all(
-          result.map(convertNftToAthlete).map(getAthleteInfoById)
-        );
-        setAthlete(result_two);
-      });
-  }
-
   function query_nft_tokens_for_owner() {
     const query = JSON.stringify({
       account_id: accountId,
-      from_index: routerAthlete.index.toString(),
+      from_index: athleteIndex.toString(),
       limit: 1,
     });
 
@@ -96,28 +64,25 @@ const AssetDetails = (props) => {
         request_type: 'call_function',
         finality: 'optimistic',
         account_id: getContract(ATHLETE),
-        method_name: 'nft_tokens_for_owner',
+        method_name: 'nft_token_by_id',
         args_base64: Buffer.from(query).toString('base64'),
       })
       .then(async (data) => {
         // @ts-ignore:next-line
         const result = JSON.parse(Buffer.from(data.result).toString());
-        const result_two = await Promise.all(
-          result.map(convertNftToAthlete).map(getAthleteInfoById)
-        );
+        const result_two = await getAthleteInfoById(await convertNftToAthlete(result));
         setAthlete(result_two);
       });
   }
 
   useEffect(() => {
-    if(routerAthlete.position=="all"){query_nft_tokens_for_owner();}
-    else{filtered_nft();}
+    query_nft_tokens_for_owner();
   }, []);
 
   function getGamesPlayed() {
     let totalGames = 0;
-    athlete[0].stats_breakdown.forEach((game) => {
-      if (game.type === 'weekly') {
+    athlete?.stats_breakdown.forEach((game) => {
+      if (game.type === 'weekly' && game.played == 1) {
         totalGames++;
       }
     });
@@ -144,14 +109,7 @@ const AssetDetails = (props) => {
               PLAYER DETAILS
               <hr className="w-10 border-4"></hr>
             </div>
-            <div className="mt-10 text-m h-0 font-bold">
-              {athlete
-                .map((item) => {
-                  return item.name;
-                })
-                .toString()
-                .toUpperCase()}
-            </div>
+            <div className="mt-10 text-m h-0 font-bold">{athlete?.name}</div>
             <div className="mt-10 text-sm grid grid-rows-2 grid-cols-2">
               <div>FANTASY SCORE</div>
               <div>
@@ -170,16 +128,8 @@ const AssetDetails = (props) => {
                   </div>
                 </Popup>
               </div>
-              <div>
-                {athlete.map((item) => {
-                  return item.fantasy_score.toFixed(2);
-                })}
-              </div>
-              <div>
-                {athlete.map((item) => {
-                  return item.usage;
-                })}
-              </div>
+              <div>{athlete?.fantasy_score.toFixed(2)}</div>
+              <div>{athlete?.usage}</div>
             </div>
             <Link href="https://paras.id/collection/athlete.nfl.playible.near">
               <button
@@ -199,29 +149,18 @@ const AssetDetails = (props) => {
         </div>
         <div className="grid grid-cols-2 ml-24 mt-10 mb-20 w-5/12">
           <div className="mr-2 p-4 border border-indigo-slate rounded-lg text-center">
-            <div className="font-monument text-3xl">
-              {athlete.map((item) => {
-                return item.fantasy_score.toFixed(2);
-              })}
-            </div>
+            <div className="font-monument text-3xl">{athlete?.fantasy_score.toFixed(2)}</div>
             <div className="text-sm">AVG.FANTASY SCORE</div>
           </div>
           <div className="ml-4 mr-5 p-4 border border-indigo-slate rounded-lg text-center">
             <div className="font-monument text-3xl">
-              {athlete[0] === undefined ? '' : getGamesPlayed()}
+              {athlete === undefined ? '' : getGamesPlayed()}
             </div>
             <div className="text-sm">GAMES PLAYED</div>
           </div>
         </div>
 
-        <StatsComponent
-          id={athlete.map((item) => {
-            return item.primary_id;
-          })}
-          position={athlete.map((item) => {
-            return item.position;
-          })}
-        />
+        <StatsComponent id={athlete?.primary_id} position={athlete?.position} />
 
         <div className="text-2xl font-bold font-monument -mt-14 ml-24 mb-10 mr-8 align-baseline">
           GAME SCORES
@@ -237,10 +176,10 @@ const AssetDetails = (props) => {
             </tr>
           </thead>
           <tbody>
-            {athlete[0] == undefined
+            {athlete == undefined
               ? 'LOADING GAMES....'
-              : athlete[0].stats_breakdown
-                  .filter((statType) => statType.type == 'weekly')
+              : athlete.stats_breakdown
+                  .filter((statType) => statType.type == 'weekly' && statType.played == 1)
                   .map((item, index) => {
                     9;
                     return (

@@ -13,7 +13,7 @@ const PerformerContainer = (props) => {
     TeamName,
     CoinValue,
     AvgScore,
-    id = null,
+    id,
     rarity,
     status,
     index,
@@ -39,8 +39,8 @@ const PerformerContainer = (props) => {
       >
         {uri ? (
           <div className="relative" style={{ width: '120px', height: '160px' }}>
-            <Link href = {`/AssetDetails/${athletePosition}/${index}`} passHref>
-            <div className="absolute z-50" style={{ width: '120px', height: '160px' }}></div>
+            <Link href={`/AssetDetails/${id}`} passHref>
+              <div className="absolute z-50" style={{ width: '120px', height: '160px' }}></div>
             </Link>
             <object
               className="absolute z-10"
