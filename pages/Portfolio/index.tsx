@@ -60,7 +60,10 @@ const Portfolio = () => {
   
   const [currPosition, setCurrPosition] = useState("");
   const [position, setPosition] = useState("allPos");
+  const [team, setTeam] = useState("allTeams");
+  const [name, setName] = useState("allNames");
 
+  
   const [remountComponent, setRemountComponent] = useState(0);
   // const listQB = athletes.filter(athlete => athlete.position === "QB");
   // const listRB = athletes.filter(athlete => athlete.position === "RB");
@@ -108,8 +111,8 @@ const Portfolio = () => {
     }
   }
 
-  function query_nft_supply_for_owner(position) {
-    const query = JSON.stringify({ account_id: accountId, position: position });
+  function query_nft_supply_for_owner(position, team, name) {
+    const query = JSON.stringify({ account_id: accountId, position: position, team: team, name: name });
 
     provider
       .query({
@@ -127,18 +130,20 @@ const Portfolio = () => {
       });
   }
 
-  function handleDropdownChange(position){
+  function handleDropdownChange(){
     setAthleteOffset(0);
     setAthleteLimit(10);
-    setPosition(position);
     setRemountComponent(Math.random());
   }
-  function query_nft_tokens_for_owner(position) {
+
+  function query_nft_tokens_for_owner(position, team, name) {
     const query = JSON.stringify({
       account_id: accountId,
       from_index: athleteOffset.toString(),
       limit: athleteLimit,
       position: position,
+      team: team,
+      name: name,
     });
     
     provider
@@ -146,7 +151,7 @@ const Portfolio = () => {
       request_type: 'call_function',
       finality: 'optimistic',
       account_id: getContract(ATHLETE),
-      method_name: 'filter_tokens_by_position',
+      method_name: 'filter_tokens_for_owner',
       args_base64: Buffer.from(query).toString('base64'),
     })
     .then(async (data) => {
@@ -175,17 +180,17 @@ const Portfolio = () => {
   useEffect(() => {
     if(!isNaN(athleteOffset)){
       console.log("loading");
-      query_nft_supply_for_owner(position);
+      query_nft_supply_for_owner(position, team, name);
       //getAthleteLimit();
       // setAthleteList(getAthleteList());
       setPageCount(Math.ceil(totalAthletes / athleteLimit));
       const endOffset = athleteOffset + athleteLimit;
       console.log(`Loading athletes from ${athleteOffset} to ${endOffset}`);
-      query_nft_tokens_for_owner(position);
+      query_nft_tokens_for_owner(position, team, name);
     }
     
     // setSortedList([]);
-  }, [totalAthletes, athleteLimit, athleteOffset, position]);
+  }, [totalAthletes, athleteLimit, athleteOffset, position, team]);
 
   //[dispatch]
 
@@ -240,7 +245,7 @@ const Portfolio = () => {
                 <div className="bg-indigo-white h-8 flex justify-between self-center 
                     font-thin w-72 mt-6 border-2 border-indigo-lightgray border-opacity-50">
                     <form>
-                      <select onChange={(e) => handleDropdownChange(e.target.value)} className="filter-select bg-white">
+                      <select onChange={(e) =>{handleDropdownChange(); setPosition(e.target.value)}} className="filter-select bg-white">
                         <option value="allPos">
                           ALL
                         </option>
@@ -275,12 +280,12 @@ const Portfolio = () => {
                 </div>
                 <div className="bg-indigo-white h-8 flex justify-between center w-72 mt-3 font-thin border-2 border-indigo-lightgray border-opacity-50 ml-3">
                     <form>
-                      <select onChange={(e) => console.log(e)} className="filter-select bg-white">
+                      <select onChange={(e) => {handleDropdownChange(); setTeam(e.target.value)}} className="filter-select bg-white">
                         <option value="allTeams">
                           ALL
                         </option>
-                        <option value="TEN">
-                          Tennessee
+                        <option value="KC">
+                          Kansas
                         </option>
                       </select>
                     </form>
