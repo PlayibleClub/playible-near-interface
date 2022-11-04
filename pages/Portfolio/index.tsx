@@ -60,6 +60,8 @@ const Portfolio = () => {
   
   const [currPosition, setCurrPosition] = useState("");
   const [position, setPosition] = useState("allPos");
+
+  const [remountComponent, setRemountComponent] = useState(0);
   // const listQB = athletes.filter(athlete => athlete.position === "QB");
   // const listRB = athletes.filter(athlete => athlete.position === "RB");
   // const listWR = athletes.filter(athlete => athlete.position === "WR");
@@ -126,13 +128,10 @@ const Portfolio = () => {
   }
 
   function handleDropdownChange(position){
-    query_nft_supply_for_owner(position);
-    getAthleteLimit();
-    // setAthleteList(getAthleteList());
-    setPageCount(Math.ceil(totalAthletes / athleteLimit));
-    const endOffset = athleteOffset + athleteLimit;
-    console.log(`Loading athletes from ${athleteOffset} to ${endOffset}`);
-    query_nft_tokens_for_owner(position);
+    setAthleteOffset(0);
+    setAthleteLimit(10);
+    setPosition(position);
+    setRemountComponent(Math.random());
   }
   function query_nft_tokens_for_owner(position) {
     const query = JSON.stringify({
@@ -153,7 +152,6 @@ const Portfolio = () => {
     .then(async (data) => {
       // @ts-ignore:next-line
       const result = JSON.parse(Buffer.from(data.result).toString());
-
       const result_two = await Promise.all(
         result.map(convertNftToAthlete).map(getAthleteInfoById)
       );
@@ -172,14 +170,20 @@ const Portfolio = () => {
     setAthleteOffset(newOffset);
   };
 
+  
+
   useEffect(() => {
-    query_nft_supply_for_owner(position);
-    getAthleteLimit();
-    // setAthleteList(getAthleteList());
-    setPageCount(Math.ceil(totalAthletes / athleteLimit));
-    const endOffset = athleteOffset + athleteLimit;
-    console.log(`Loading athletes from ${athleteOffset} to ${endOffset}`);
-    query_nft_tokens_for_owner(position);
+    if(!isNaN(athleteOffset)){
+      console.log("loading");
+      query_nft_supply_for_owner(position);
+      //getAthleteLimit();
+      // setAthleteList(getAthleteList());
+      setPageCount(Math.ceil(totalAthletes / athleteLimit));
+      const endOffset = athleteOffset + athleteLimit;
+      console.log(`Loading athletes from ${athleteOffset} to ${endOffset}`);
+      query_nft_tokens_for_owner(position);
+    }
+    
     // setSortedList([]);
   }, [totalAthletes, athleteLimit, athleteOffset, position]);
 
@@ -236,7 +240,7 @@ const Portfolio = () => {
                 <div className="bg-indigo-white h-8 flex justify-between self-center 
                     font-thin w-72 mt-6 border-2 border-indigo-lightgray border-opacity-50">
                     <form>
-                      <select onChange={(e) => setPosition(e.target.value)} className="filter-select bg-white">
+                      <select onChange={(e) => handleDropdownChange(e.target.value)} className="filter-select bg-white">
                         <option value="allPos">
                           ALL
                         </option>
@@ -286,19 +290,22 @@ const Portfolio = () => {
               </div>
             </PortfolioContainer>
             <div className="absolute bottom-10 right-10 iphone5:bottom-4 iphone5:right-2 iphone5:fixed iphoneX:bottom-4 iphoneX:right-4 iphoneX-fixed">
-              <ReactPaginate
-                className="p-2 bg-indigo-buttonblue text-indigo-white flex flex-row space-x-4 select-none ml-7"
-                pageClassName="hover:font-bold"
-                activeClassName="rounded-lg bg-indigo-white text-indigo-black pr-1 pl-1 font-bold"
-                pageLinkClassName="rounded-lg hover:font-bold hover:bg-indigo-white hover:text-indigo-black pr-1 pl-1"
-                breakLabel="..."
-                nextLabel=">"
-                onPageChange={handlePageClick}
-                pageRangeDisplayed={5}
-                pageCount={pageCount}
-                previousLabel="<"
-                renderOnZeroPageCount={null}
-              />
+                <div key={remountComponent}>
+                  <ReactPaginate
+                    className="p-2 bg-indigo-buttonblue text-indigo-white flex flex-row space-x-4 select-none ml-7"
+                    pageClassName="hover:font-bold"
+                    activeClassName="rounded-lg bg-indigo-white text-indigo-black pr-1 pl-1 font-bold"
+                    pageLinkClassName="rounded-lg hover:font-bold hover:bg-indigo-white hover:text-indigo-black pr-1 pl-1"
+                    breakLabel="..."
+                    nextLabel=">"
+                    onPageChange={handlePageClick}
+                    pageRangeDisplayed={5}
+                    pageCount={pageCount}
+                    previousLabel="<"
+                    renderOnZeroPageCount={null}
+                  />
+                </div>
+                
             </div>
             <div className="absolute bottom-10 right-10"></div>
           </div>
