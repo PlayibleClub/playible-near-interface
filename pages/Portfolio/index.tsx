@@ -23,6 +23,7 @@ import { convertNftToAthlete, getAthleteInfoById } from 'utils/athlete/helper';
 import ReactPaginate from 'react-paginate';
 import Select from 'react-select';
 import { isCompositeType } from 'graphql';
+import {useRef} from 'react';
 
 const Portfolio = () => {
   const [searchText, setSearchText] = useState('');
@@ -162,7 +163,7 @@ const Portfolio = () => {
       );
 
       // const sortedResult = sortByKey(result_two, 'fantasy_score');
-      setCurrPosition(position)
+      setCurrPosition(position);
       setAthletes(result_two);
       setLoading(false);
     });
@@ -175,7 +176,11 @@ const Portfolio = () => {
     setAthleteOffset(newOffset);
   };
 
-  
+
+  function handleSubmit(event) {
+    alert('A name was submitted: ' + this.name.value);
+    event.preventDefault();
+  }
 
   useEffect(() => {
     if(!isNaN(athleteOffset)){
@@ -190,7 +195,7 @@ const Portfolio = () => {
     }
     
     // setSortedList([]);
-  }, [totalAthletes, athleteLimit, athleteOffset, position, team]);
+  }, [totalAthletes, athleteLimit, athleteOffset, position, team, name]);
 
   //[dispatch]
 
@@ -242,27 +247,30 @@ const Portfolio = () => {
         <Main color="indigo-white">
           {totalAthletes}
           <div className="flex flex-row h-8">
-                <div className="bg-indigo-white h-8 flex justify-between self-center 
-                    font-thin w-72 mt-6 border-2 border-indigo-lightgray border-opacity-50">
+                <div className="h-8 flex justify-between mt-3 ml-12">
                     <form>
-                      <select onChange={(e) =>{handleDropdownChange(); setPosition(e.target.value)}} className="filter-select bg-white">
+                      <select onChange={(e) =>{handleDropdownChange(); setPosition(e.target.value)}} 
+                      className="bg-filter-icon bg-no-repeat bg-right  bg-indigo-white w-60
+                      ring-2 ring-offset-4 ring-indigo-black ring-opacity-25 focus:ring-2 focus:ring-indigo-black 
+                      focus:outline-none rounded-lg">
                         <option value="allPos">
-                          ALL
+                          ALL POSITIONS
                         </option>
                         <option value="QB">
-                          QB
+                          QUARTER BACK
                         </option>
                         <option value="RB">
-                          RB
+                          RUNNING BACK
                         </option>
                         <option value="WR">
-                          WR
+                          WIDE RECEIVER
                         </option>
                         <option value="TE">
-                          TE
+                          TIGHT END
                         </option>
                       </select>
                     </form>
+                    {/* <img src={filterIcon} className="object-none w-4 mr-2" /> */}
                     {/* <form>
                       <select onChange={(e) => console.log(e)} className="filter-select bg-white">
                         <option value="allTeams">
@@ -273,32 +281,37 @@ const Portfolio = () => {
                         </option>
                       </select>
                     </form> */}
-
-                    
-
-                    <img src={filterIcon} className="object-none w-4 mr-4" />
                 </div>
-                <div className="bg-indigo-white h-8 flex justify-between center w-72 mt-3 font-thin border-2 border-indigo-lightgray border-opacity-50 ml-3">
+                <div className="h-8 flex justify-between mt-3 ml-12">
                     <form>
-                      <select onChange={(e) => {handleDropdownChange(); setTeam(e.target.value)}} className="filter-select bg-white">
+                      <select onChange={(e) => {handleDropdownChange(); setTeam(e.target.value)}} 
+                      className="bg-filter-icon bg-no-repeat bg-right  bg-indigo-white w-60
+                      ring-2 ring-offset-4 ring-indigo-black ring-opacity-25 focus:ring-2 focus:ring-indigo-black 
+                      focus:outline-none rounded-lg">
                         <option value="allTeams">
-                          ALL
+                          ALL TEAMS
                         </option>
-                        <option value="KC">
-                          Kansas
+                        <option value="ARI">
+                          Arizona
                         </option>
                       </select>
                     </form>
                 </div>
-                <div className="bg-indigo-white pl-8 h-8 flex justify-between center mt-3 w-96">
-                    <form>   
+                
+                <div className="h-8 flex justify-between mt-3 ml-32">
+                    <form onSubmit={(e) => 
+                            {handleDropdownChange(); search == "" ? setName("allNames") :
+                             setName(search);e.preventDefault();}}>   
                         <label className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-gray-300">Search</label>
                         <div className="relative">
-                            <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
-                                <svg aria-hidden="true" className="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                            </div>
-                            <input type="search" id="default-search" className="block p-4 pl-10 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder=""/>
-                            <button type="submit" className="text-white absolute right-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Search</button>
+                            <input type="search" id="default-search" onChange={(e) => setSearch(e.target.value)}
+                            className=" bg-indigo-white w-72 pl-2
+                            ring-2 ring-offset-4 ring-indigo-black ring-opacity-25 focus:ring-2 focus:ring-indigo-black 
+                            focus:outline-none rounded-lg" placeholder="Search Athlete"/>
+                            <button type="submit"
+                            className="bg-search-icon bg-no-repeat bg-center absolute -right-12 bottom-0 h-full
+                            pl-6 py-2 ring-2 ring-offset-4 ring-indigo-black ring-opacity-25
+                            focus:ring-2 focus:ring-indigo-black rounded-lg"></button>
                         </div>
                     </form>
                 </div>

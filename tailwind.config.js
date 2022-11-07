@@ -11,7 +11,9 @@ module.exports = {
         },
         extend: {
             backgroundImage: {
-                'avg-icon': "url('/images/avgscore.png')"
+                'avg-icon': "url('/images/avgscore.png')",
+                'filter-icon': "url('/images/filterBlack.png')",
+                'search-icon': "url('/images/icons/Search.svg')"
             },
             width: {
                 '133px': '133px'
