@@ -245,14 +245,13 @@ const Portfolio = () => {
     <Container activeName="SQUAD">
       <div className="flex flex-col w-full overflow-y-auto h-screen pb-12 mb-12">
         <Main color="indigo-white">
-          {totalAthletes}
           <div className="flex flex-row h-8">
                 <div className="h-8 flex justify-between mt-3 ml-12">
                     <form>
                       <select onChange={(e) =>{handleDropdownChange(); setPosition(e.target.value)}} 
                       className="bg-filter-icon bg-no-repeat bg-right  bg-indigo-white w-60
                       ring-2 ring-offset-4 ring-indigo-black ring-opacity-25 focus:ring-2 focus:ring-indigo-black 
-                      focus:outline-none rounded-lg">
+                      focus:outline-none cursor-pointer">
                         <option value="allPos">
                           ALL POSITIONS
                         </option>
@@ -285,9 +284,9 @@ const Portfolio = () => {
                 <div className="h-8 flex justify-between mt-3 ml-12">
                     <form>
                       <select onChange={(e) => {handleDropdownChange(); setTeam(e.target.value)}} 
-                      className="bg-filter-icon bg-no-repeat bg-right  bg-indigo-white w-60
+                      className="bg-filter-icon bg-no-repeat bg-right bg-indigo-white w-60
                       ring-2 ring-offset-4 ring-indigo-black ring-opacity-25 focus:ring-2 focus:ring-indigo-black 
-                      focus:outline-none rounded-lg">
+                      focus:outline-none cursor-pointer">
                         <option value="allTeams">
                           ALL TEAMS
                         </option>
@@ -298,20 +297,20 @@ const Portfolio = () => {
                     </form>
                 </div>
                 
-                <div className="h-8 flex justify-between mt-3 ml-32">
+                <div className="h-8 flex justify-between mt-3 md:ml-32 lg:ml-80">
                     <form onSubmit={(e) => 
                             {handleDropdownChange(); search == "" ? setName("allNames") :
                              setName(search);e.preventDefault();}}>   
                         <label className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-gray-300">Search</label>
-                        <div className="relative">
+                        <div className="relative lg:ml-80">
                             <input type="search" id="default-search" onChange={(e) => setSearch(e.target.value)}
                             className=" bg-indigo-white w-72 pl-2
                             ring-2 ring-offset-4 ring-indigo-black ring-opacity-25 focus:ring-2 focus:ring-indigo-black 
-                            focus:outline-none rounded-lg" placeholder="Search Athlete"/>
+                            focus:outline-none" placeholder="Search Athlete"/>
                             <button type="submit"
                             className="bg-search-icon bg-no-repeat bg-center absolute -right-12 bottom-0 h-full
                             pl-6 py-2 ring-2 ring-offset-4 ring-indigo-black ring-opacity-25
-                            focus:ring-2 focus:ring-indigo-black rounded-lg"></button>
+                            focus:ring-2 focus:ring-indigo-black"></button>
                         </div>
                     </form>
                 </div>
