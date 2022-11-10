@@ -416,22 +416,23 @@ export default function CreateLineup(props) {
       if (!(router && router.query.id)) {
         return '';
       }
-
+    }
+  };
       return (
-        <>
-          {loading ? (
-            <Container>
-              <LoadingPageDark />
-            </Container>
-          ) : (
-            <>
-              {err ? (
-                <>
-                  <Container activeName="PLAY">
-                    <p className="py-10 ml-7">{err}</p>
-                  </Container>
-                </>
-              ) : (
+        // <>
+        //   {loading ? (
+        //     <Container>
+        //       <LoadingPageDark />
+        //     </Container>
+        //   ) : (
+        //     <>
+        //       {err ? (
+        //         <>
+        //           <Container activeName="PLAY">
+        //             <p className="py-10 ml-7">{err}</p>
+        //           </Container>
+        //         </>
+        //       ) : (
                 <>
                   {timerUp ? (
                     <Container activeName="PLAY">
@@ -752,22 +753,20 @@ export default function CreateLineup(props) {
                     <p className="mt-5">{msg.content}</p>
                   </BaseModal>
                 </>
-              )}
-            </>
-          )}
-        </>
+        //       )}
+        //     </>
+        //   )}
+        // </>
       );
-    }
-  };
 }
-export async function getServerSideProps(ctx) {
-  return {
-    redirect: {
-      destination: '/Portfolio',
-      permanent: false,
-    },
-  };
-}
+// export async function getServerSideProps(ctx) {
+//   return {
+//     redirect: {
+//       destination: '/Portfolio',
+//       permanent: false,
+//     },
+//   };
+// }
 
 // export async function getServerSideProps(ctx) {
 //   const { query } = ctx;
