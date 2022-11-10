@@ -31,6 +31,12 @@ export default function Index(props) {
   const [contentLoading, setContentLoading] = useState(true);
   const [gameType, setGameType] = useState('new');
   const [content, setContent] = useState(false);
+
+  //gameinfo
+  const [gameInfo, setGameInfo] = useState({
+
+  })
+
   const [tabs, setTabs] = useState([
     {
       name: 'GAMES',
@@ -217,9 +223,9 @@ export default function Index(props) {
       errors.push('Game is missing a title');
     }
 
-    if (new Date(details.startTime) < new Date() || !details.startTime) {
-      errors.push('Invalid Date & Time values');
-    }
+    // if (new Date(details.startTime) < new Date() || !details.startTime) {
+    //   errors.push('Invalid Date & Time values');
+    // }
 
     if (distribution.length === 1 && percentTotal === 0) {
       errors.push('Invalid Distribution values');
@@ -485,7 +491,38 @@ export default function Index(props) {
       },
     ]);
   };
-  function query_games_list(){
+
+  //placeholder test for calling game contract functions
+
+  const testWhitelist = ["lilith87.testnet", "kishidev.testnet"];
+
+  const testPositions = [
+    {positions: ["QB"], amount: 1},
+    {positions: ["RB"], amount: 2},
+    {positions: ["WR"], amount: 2},
+    {positions: ["TE"], amount: 1},
+    {positions: ["RB", "WR", "TE"], amount: 1},
+    {positions: ["QB", "RB", "WR", "TE"], amount: 1},
+  ]
+
+  // const testPositions = {
+  //   QB: {positions: ["QB"], amount: 1},
+  //   RB: {positions: ["RB"], amount: 2},
+  //   WR: {positions: ["WR"], amount: 2},
+  //   TE: {positions: ["TE"], amount: 1},
+  //   FLEX: {positions: ["RB", "WR", "TE"], amount: 1},
+  //   SUPERFLEX: {positions: ["QB", "RB", "WR", "TE"], amount: 1}
+  // };
+
+  const currentUnixTimestamp = Date.now();
+  const date = new Date(currentUnixTimestamp);
+  const testDayLater = new Date(currentUnixTimestamp + 86400000);
+
+  // console.log("current:" + date);
+  // console.log("day later:" + testDayLater);
+  console.log(JSON.stringify(testPositions));
+
+  function query_games_list() {
     const query = JSON.stringify({
       from_index: 1, //offset for pagination
       limit: 1,
@@ -507,14 +544,40 @@ export default function Index(props) {
         setGames(gamesList);
       })
   }
-  async function execute_add_game(){
-    const transferArgs = Buffer.from(
-      JSON.stringify({
-        game_id: 1,
-        game_time_start: 1
 
+  async function execute_add_game() {
+    const addGameArgs = Buffer.from(
+      JSON.stringify({
+        game_id: "2", //hardcoded palang, di ko pa alam ung generation
+        game_time_start: currentUnixTimestamp,
+        game_time_end: currentUnixTimestamp + 300000,
+        usage_cost: 1,
+        whitelist: testWhitelist,
+        positions: testPositions,
+        lineup_len: 8,
       })
     );
+
+    const action_add_game = {
+      type: 'FunctionCall',
+      params: {
+        methodName: 'add_game',
+        args: addGameArgs,
+        gas: DEFAULT_MAX_FEES,
+      }
+    };
+
+    const wallet = await selector.wallet();
+    // @ts-ignore:next-line
+    const tx = wallet.signAndSendTransactions({
+      transactions: [
+        {
+          receiverId: getContract(GAME),
+          // @ts-ignore:next-line
+          actions: [action_add_game],
+        },
+      ],
+    });
   }
 
   useEffect(() => {
@@ -754,7 +817,8 @@ export default function Index(props) {
           className="bg-indigo-green font-monument tracking-widest text-indigo-white w-full h-16 text-center text-sm mt-4"
           onClick={() => {
             // createGame();
-            newGame();
+            // newGame();
+            execute_add_game();
             setConfirmModal(false);
           }}
         >
