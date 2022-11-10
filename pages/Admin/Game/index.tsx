@@ -489,12 +489,12 @@ export default function Index(props) {
     <Container isAdmin>
       <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
         <Main color="indigo-white">
-          {content &&
+          {/* {content &&
             (contentLoading ? (
               <LoadingPageDark />
             ) : err ? (
               <p className="ml-12 mt-5">{err}</p>
-            ) : (
+            ) : ( */}
               <div className="flex flex-col w-full overflow-y-auto overflow-x-hidden h-screen self-center text-indigo-black">
                 <div className="flex md:ml-4 font-bold ml-8 font-monument mt-5">
                   {tabs.map(({ name, isActive }) => (
