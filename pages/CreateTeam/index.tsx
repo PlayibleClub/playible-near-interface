@@ -69,6 +69,8 @@ export default function CreateLineup(props) {
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState(error);
 
+ const test = ["1", "2", "3", "4", "5", "6", "7","8"];
+
   //const { list: playerList } = useSelector((state) => state.assets);
 
   const fetchGameData = async () => {
@@ -581,7 +583,7 @@ export default function CreateLineup(props) {
                                       </p>
                                     </div>
                                     <div className="grid grid-cols-2 gap-y-4 mt-4 mb-5 md:mb-10 md:grid-cols-4 md:ml-7 md:mt-12">
-                                      {team.length > 0 &&
+                                      {/* {team.length > 0 &&
                                         team.map((data, i) => {
                                           return (
                                             <div>
@@ -604,6 +606,27 @@ export default function CreateLineup(props) {
                                                     ? data.token_info.info.token_uri
                                                     : null
                                                 }
+                                              />
+                                            </div>
+                                          );
+                                        })} */}
+                                        {5 > 0 &&
+                                        test.map((data, i) => {
+                                          return (
+                                            <div>
+                                              <Lineup
+                                                position={"TEST"}
+                                                player={"name"
+                                                  
+                                                    ? "Position"
+                                                    : ''
+                                                }
+                                                score={"69"}
+                                                onClick={() => {
+                                                  // filterAthleteByPos(data.position.value);
+                                                  setSlotIndex(i);
+                                                }}
+                                                img="/images/tokensMLB/CF.png"
                                               />
                                             </div>
                                           );
