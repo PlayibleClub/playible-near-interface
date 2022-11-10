@@ -20,6 +20,7 @@ import { useWalletSelector } from 'contexts/WalletSelectorContext';
 import { getContract, getRPCProvider } from 'utils/near';
 import { DEFAULT_MAX_FEES, MINT_STORAGE_COST } from 'data/constants/gasFees';
 import { transactions, utils, WalletConnection, providers } from 'near-api-js';
+import { getGameInfoById } from 'utils/game/helper';
 TimeAgo.addDefaultLocale(en);
 
 export default function Index(props) {
@@ -108,8 +109,8 @@ export default function Index(props) {
       percentage: 2,
     },
   ]);
-
   const [games, setGames] = useState([]);
+  const [gameList, setGameList] = useState([]);
   const [completedGames, setCompletedGames] = useState([]);
   const [gameId, setGameId] = useState(null);
   const [err, setErr] = useState(null);
@@ -524,8 +525,8 @@ export default function Index(props) {
 
   function query_games_list() {
     const query = JSON.stringify({
-      from_index: 1, //offset for pagination
-      limit: 1,
+      from_index: 0, //offset for pagination
+      limit: 10,
     });
     provider
       .query({
@@ -538,10 +539,16 @@ export default function Index(props) {
       .then(async (data) => {
         //@ts-ignore:next-line
         const result = JSON.parse(Buffer.from(data.result).toString());
+        //@ts-ignore:next-lines
+        //console.table(Buffer.from(data.result).toString());
+        //console.table(result);
         const gamesList = await Promise.all(
-          result.map()
+          result.map((item) => getGameInfoById(item))
+          
         );
-        setGames(gamesList);
+
+        setGameList(gamesList);
+        //setGames(gamesList);
       })
   }
 
@@ -583,9 +590,17 @@ export default function Index(props) {
   useEffect(() => {
     getTotalPercent();
   }, [distribution]);
+  useEffect(() => {
+    query_games_list();
+  }, []);
+
+  useEffect(() => {
+    console.table(gameList);
+  }, [gameList]);
 
   return (
     <Container isAdmin>
+      
       <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
         <Main color="indigo-white">
           {/* {content &&
