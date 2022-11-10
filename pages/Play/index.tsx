@@ -54,8 +54,12 @@ const Play = (props) => {
   const [filter, setFilter] = useState(null);
   const [search, setSearch] = useState('');
   const [err, setErr] = useState(error);
-
+  const sportList = ['all','football','basketball'];
+  const [activeSport, setSport] = useState('all');
+  
   const categoryList = ['new', 'active', 'completed'];
+  const Test = [1,2,3,4,5];
+
 
   const changeIndex = (index) => {
     switch (index) {
@@ -367,7 +371,7 @@ const Play = (props) => {
     //   showClaimModal(false);
     //   setClaimLoading(false);
     // };
-
+  };
     useEffect(() => {
       if (games && games.length > 0) {
         const tempList = [...games];
@@ -615,7 +619,7 @@ const Play = (props) => {
         <Container activeName="PLAY">
           <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
             <Main color="indigo-white">
-              <div className="flex flex-col">
+              <div className="flex flex-col mb-10">
                 <div className="flex">
                   <div className="flex-initial">
                     <PortfolioContainer title="PLAY" textcolor="text-indigo-black" />
@@ -643,23 +647,42 @@ const Play = (props) => {
                       </div>
                     ))}
                   </div>
-                  <hr className="opacity-50" />
-                  {loading ? (
+                  <hr className="opacity-10" />
+                  <div className="flex flex-col mt-6">
+                  <div className="flex font-bold ml-8 md:ml-0 font-monument">
+                  {sportList.map((type) => (
+                    <div
+                      key={type}
+                      className={`text-center px-8 py-3 uppercase border border-indigo-slate rounded-lg 
+                      cursor-pointer ml-8 ${
+                        activeSport=== type ? 'text-indigo-white font-thin bg-indigo-buttonblue' : ''
+                      }`}
+                      onClick={() => {
+                        setSport(type);
+                      }}
+                    >
+                      {type}
+                    </div>
+                  ))}
+                    </div> 
+                  </div>
+                  {/* {loading ? (
                     <LoadingPageDark />
                   ) : (
                     <>
                       {err ? (
                         <p className="py-10 ml-7">{err}</p>
-                      ) : (
+                      ) : ( */}
                         <>
-                          {sortedList.length > 0 ? (
+                        {/* {sortedList.length > 0 ? ( */}
+                          {1 > 0 ? (
                             <>
                               <div className="mt-4 ml-6 grid grid-cols-0 md:grid-cols-3">
-                                {sortedList.map(function (data, i) {
+                                {Test.map(function (data, i) {
                                   return (
                                     <div key={i} className="flex">
                                       <div className="mr-6">
-                                        <a href={`/PlayDetails?id=${data.id}`}>
+                                      {/* <a href={`/PlayDetails?id=${data.id}`}>
                                           <div className="mr-6">
                                             <PlayComponent
                                               type={activeCategory}
@@ -675,21 +698,44 @@ const Play = (props) => {
                                               index={() => changeIndex(1)}
                                             />
                                           </div>
+                                        </a> */}
+                                        <a href={`/PlayDetails?id=$1`}>
+                                          <div className="mr-6">
+                                            <PlayComponent
+                                              type={activeCategory}
+                                              icon="test"
+                                              prizePool="2,300" 
+                                              startDate="10/11/2022"
+                                              endDate="10/11/2022"
+                                              month="04"
+                                              date="20"
+                                              year="2022"
+                                              img="test"
+                                              fetchGames={fetchGamesLoading}
+                                              index={() => changeIndex(1)}
+                                            />
+                                          </div>
                                         </a>
-                                        {activeCategory === 'completed' && data.hasAthletes && (
+                                        {/* {activeCategory === 'completed' && data.hasAthletes && ( */}
+                                        {activeCategory === 'completed' && "test" && (
                                           <div className="">
-                                            {data.isClaimed === 'unclaimed' ? (
-                                              data.hasEnded ? (
+                                            {/* {data.isClaimed === 'unclaimed' ? ( */}
+                                            {"unclaimed" === 'unclaimed' ? (
+                                              // data.hasEnded ? (
+                                              "data.hasEnded "? (
                                                 <button
                                                   className={`bg-indigo-buttonblue w-full h-12 text-center font-bold rounded-md text-sm mt-4 self-center`}
                                                   onClick={() =>
-                                                    data.hasEnded
-                                                      ? fetchTeamPlacements(data.id)
+                                                    "data.hasEnded"
+                                                    // data.hasEnded
+                                                      ? fetchTeamPlacements("test")
+                                                      // ? fetchTeamPlacements(data.id)
                                                       : undefined
                                                   }
                                                 >
                                                   <div className="text-indigo-white">
-                                                    CLAIM {data.hasRewards ? 'REWARD' : 'TEAM'}
+                                                    CLAIM {"test" ? 'REWARD' : 'TEAM'}
+                                                    {/* CLAIM {data.hasRewards ? 'REWARD' : 'TEAM'} */}
                                                   </div>
                                                 </button>
                                               ) : (
@@ -773,9 +819,9 @@ const Play = (props) => {
                             </>
                           )}
                         </>
-                      )}
+                      {/* )}
                     </>
-                  )}
+                  )} */}
                 </div>
               </div>
             </Main>
@@ -783,15 +829,14 @@ const Play = (props) => {
         </Container>
       </>
     );
-  };
 };
 export default Play;
 
-export async function getServerSideProps(ctx) {
-  return {
-    redirect: {
-      destination: '/Portfolio',
-      permanent: false,
-    },
-  };
-}
+// export async function getServerSideProps(ctx) {
+//   return {
+//     redirect: {
+//       destination: '/Play',
+//       permanent: false,
+//     },
+//   };
+// }

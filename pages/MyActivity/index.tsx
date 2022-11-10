@@ -10,6 +10,7 @@ import 'regenerator-runtime/runtime';
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en.json';
 import ReactTimeAgo from 'react-time-ago';
+import BackFunction from '../../components/buttons/BackFunction';
 TimeAgo.addDefaultLocale(en);
 
 import win from '../../public/images/myactivitywin.png';
@@ -21,6 +22,8 @@ import { useRouter } from 'next/router';
 import LoadingPageDark from '../../components/loading/LoadingPageDark';
 
 const MyActivity = (props) => {
+
+  
   const router = useRouter();
   const [activeCategory, setCategory] = useState('activeplays');
   const [allGames, setAllGames] = useState([]);
@@ -28,11 +31,15 @@ const MyActivity = (props) => {
   const connectedWallet = {};
   const dispatch = useDispatch();
 
-  const { error } = props;
+  const { query } = props;
   const [loading, setLoading] = useState(true);
-  const [err, setErr] = useState(error);
+  // const [err, setErr] = useState(error);
 
   const categoryList = ['activeplays', 'playhistory'];
+  const test = [1,2];
+  const test2 = [1,2,3,4,5];
+  var end = new Date();
+  end.setUTCHours(23,59,59,999);
 
   async function fetchActiveGames() {
     let tempList1 = [];
@@ -118,16 +125,19 @@ const MyActivity = (props) => {
   return (
     <>
       <Container activeName="PLAY">
+        <div className="mt-8">
+          <BackFunction prev={query.origin ? `/${query.origin}` : '/Play'}></BackFunction>
+        </div>
         <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
           <Main color="indigo-white">
             <PortfolioContainer title="MY ACTIVITY" textcolor="text-indigo-black" />
-            {loading ? (
+            {/* {loading ? (
               <LoadingPageDark />
             ) : (
               <>
                 {err ? (
                   <p className="py-10 ml-7">{err}</p>
-                ) : (
+                ) : ( */}
                   <>
                     <div className="flex flex-col">
                       <div className="flex font-bold ml-8 mt-8 md:ml-0 font-monument">
@@ -146,29 +156,30 @@ const MyActivity = (props) => {
                           </div>
                         ))}
                       </div>
-                      <hr className="opacity-50" />
+                      <hr className="opacity-10" />
                       <div className="mt-8 ml-12 mr-8 md:w-2/3">
                         <div>
-                          {(activeCategory === 'activeplays' ? allGames : completedGames).map(
+                          {(activeCategory === 'activeplays' ? test : test2).map(
                             (data, i) =>
                               data ? (
-                                <div className="flex flex-col " key={i}>
+                                <div className="flex flex-col">
                                   <div className="flex justify-between item-center p-8 text-sm">
                                     <div className="relative w-full">
-                                      <p className="font-bold uppercase">{data.name}</p>
+                                      
+                                      <p className="font-bold uppercase">Game {i+1}</p>
                                       <p>
                                         <ReactTimeAgo
                                           future={activeCategory === 'activeplays'}
                                           timeStyle="round-minute"
-                                          date={data.end_datetime}
+                                          date={end}
                                           locale="en-US"
                                         />
-                                      </p>
+                                      </p> 
                                       <Link
                                         href={{
                                           pathname: '/EntrySummary',
                                           query: {
-                                            game_id: data.id,
+                                            game_id: "Test",
                                             origin: 'MyActivity',
                                           },
                                         }}
@@ -183,17 +194,17 @@ const MyActivity = (props) => {
 
                                   <hr className="w-full self-center opacity-25" />
                                 </div>
-                              ) : (
-                                ''
-                              )
-                          )}
+                               ) : (
+                                 ''
+                               )
+                           )}
                         </div>
                       </div>
                     </div>
                   </>
-                )}
+                {/* )}
               </>
-            )}
+            )} */}
           </Main>
         </div>
       </Container>
@@ -203,10 +214,15 @@ const MyActivity = (props) => {
 export default MyActivity;
 
 export async function getServerSideProps(ctx) {
+  const { query } = ctx;
+
+  if (query.id != query.id) {
+    return {
+      desination: query.origin || '/Play',
+    };
+  }
+
   return {
-    redirect: {
-      destination: '/Portfolio',
-      permanent: false,
-    },
+    props: { query },
   };
 }
