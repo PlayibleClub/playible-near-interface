@@ -104,10 +104,10 @@ export const CONTROLLER = {
   },
 }; // Controller Contract
 export const GAME = {
-  mainnet: 'guest-book.testnet',
-  testnet: 'guest-book.mainnet',
+  mainnet: 'game.nfl.playible.testnet',
+  testnet: 'game.nfl.playible.testnet',
   interface: {
-    viewMethods: ['getMessages'],
-    changeMethods: ['addMessage'],
+    viewMethods: ['get_games'],
+    changeMethods: ['add_game'],
   },
 }; //Game Contract

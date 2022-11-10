@@ -17,7 +17,9 @@ import { useSelector } from 'react-redux';
 import { useMutation } from '@apollo/client';
 import { CREATE_GAME } from '../../../utils/mutations';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
-
+import { getContract, getRPCProvider } from 'utils/near';
+import { DEFAULT_MAX_FEES, MINT_STORAGE_COST } from 'data/constants/gasFees';
+import { transactions, utils, WalletConnection, providers } from 'near-api-js';
 TimeAgo.addDefaultLocale(en);
 
 export default function Index(props) {
@@ -113,6 +115,9 @@ export default function Index(props) {
     content: '',
   });
 
+  const provider = new providers.JsonRpcProvider({
+    url: getRPCProvider(),
+  });
   const [endMsg, setEndMsg] = useState({
     title: '',
     content: '',
@@ -480,6 +485,37 @@ export default function Index(props) {
       },
     ]);
   };
+  function query_games_list(){
+    const query = JSON.stringify({
+      from_index: 1, //offset for pagination
+      limit: 1,
+    });
+    provider
+      .query({
+        request_type: 'call_function',
+        finality: 'optimistic',
+        account_id: getContract(GAME),
+        method_name: 'get_games',
+        args_base64: Buffer.from(query).toString('base64'),
+      })
+      .then(async (data) => {
+        //@ts-ignore:next-line
+        const result = JSON.parse(Buffer.from(data.result).toString());
+        const gamesList = await Promise.all(
+          result.map()
+        );
+        setGames(gamesList);
+      })
+  }
+  async function execute_add_game(){
+    const transferArgs = Buffer.from(
+      JSON.stringify({
+        game_id: 1,
+        game_time_start: 1
+
+      })
+    );
+  }
 
   useEffect(() => {
     getTotalPercent();
@@ -695,7 +731,7 @@ export default function Index(props) {
                   )}
                 </div>
               </div>
-            ))}
+            ))
         </Main>
       </div>
       <BaseModal title={endMsg.title} visible={endLoading} onClose={() => console.log()}>
