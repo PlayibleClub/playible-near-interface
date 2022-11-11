@@ -37,6 +37,8 @@ export default function CreateLineup(props) {
     wallet_addr: '',
     athletes: [],
   };
+  const data = router.query;
+  console.log(data);
   const positions = ['P', 'P', 'C', '1B', '2B', '3B', 'SS', 'OF', 'OF', 'OF'];
   const [team, setTeam] = useState([]);
   const [selectModal, setSelectModal] = useState(false);
@@ -362,10 +364,10 @@ export default function CreateLineup(props) {
       //   }
       // };
 
-      useEffect(() => {
-        prepareSlots();
-        fetchGameData();
-      }, [router, startDate, timerUp]);
+      // useEffect(() => {
+      //   prepareSlots();
+      //   fetchGameData();
+      // }, [router, startDate, timerUp]);
 
       useEffect(() => {
         if (dispatch && connectedWallet) {

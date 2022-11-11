@@ -139,7 +139,10 @@ export default function CreateLineup(props) {
                             </button>
                           </a>
                           )} */}
-                          <Link href='/CreateTeam/0' passHref>
+                          <Link href={{
+                            pathname: '/CreateTeam',
+                            query: {}
+                          }}>
                           <button className='bg-indigo-buttonblue text-indigo-white whitespace-nowrap h-14 px-10 mt-4 text-center font-bold'>
                             CREATE YOUR LINEUP +
                           </button>

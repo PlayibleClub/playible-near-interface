@@ -70,7 +70,7 @@ const AthleteSelect = (props) => {
         test.splice(pass.index, 0, {
             position: "QB",
             isAthlete: true,
-            athlete: athletes[index],
+            athlete: JSON.stringify(athletes[index]),
         })
         console.table(test);
         //pass.athleteLineup[parseInt(pass.index)] = athletes[index];
@@ -110,9 +110,14 @@ const AthleteSelect = (props) => {
                     })}
                 </div>
                 <div className="flex  bg-opacity-5 w-full justify-end">
-                        
+                        <Link href={{
+                            pathname: '/CreateTeam',
+                            query: {
+                                testing: test,
+                            }
+                        }} as='/CreateTeam'>
                         <button className="bg-indigo-buttonblue text-indigo-white w-full mr-10 md:w-80 h-14 text-center font-bold text-md">PROCEED</button>
-                        
+                        </Link>
                 </div>  
             </div>
         
