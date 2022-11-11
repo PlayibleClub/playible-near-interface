@@ -6,7 +6,19 @@ import Link from 'next/link';
 
 
 const Lineup = (props) => {
-  const { position, player = '', img = null, id, score, nextposition, onClick = null } = props;
+
+  const {
+    position,
+    player = '',
+    img = null,
+    id,
+    score,
+    nextposition,
+    onClick= null,
+    athleteLineup,
+    index,
+  } = props;
+  //const { position, player = '', img = null, id, score, nextposition, onClick = null } = props;
   const lineupPosition = '/images/tokensMLB/' + position + '.png';
 
 

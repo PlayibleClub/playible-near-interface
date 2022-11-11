@@ -65,9 +65,9 @@ export default function CreateLineup(props) {
     content: '',
   });
 
-  const { error } = props;
+  //const { error } = props;
   const [loading, setLoading] = useState(true);
-  const [err, setErr] = useState(error);
+  
   const [lineup, setLineup] = useState([]);
  const test = ["1", "2", "3", "4", "5", "6", "7","8"];
 
@@ -128,7 +128,9 @@ export default function CreateLineup(props) {
 
     setTeam(slots);
   };
+  function setArray(){
 
+  }
   const filterAthletes = (list, pos) => {
     const tempList = [...list];
 
@@ -641,16 +643,16 @@ export default function CreateLineup(props) {
                                           );
                                         })} */}
                                         {lineup.map((data, i) => {
-                                          {console.table(lineup)}
+                                          
                                           return(
                                             <>
                                               {data.isAthlete === false ? (
                                                 <div>
                                                   <Lineup
                                                     position={data.position}
-                                                    player={"name" ? "Position" : ''}
-                                                    score={"69"}
-                                                    onClick={() => {setSlotIndex(i)}}
+                                                    athleteLineup={lineup}
+                                                    index={i}
+                                                    //test={setArray(data.position, lineup, i)}
                                                     img='/images/tokensMLB/CF.png' 
                                                   />
                                                 </div>
@@ -857,7 +859,18 @@ export default function CreateLineup(props) {
 //     },
 //   };
 // }
+export async function getServerSideProps(ctx){
+  const { query } = ctx;
+  if (query.athlete_id){
+    return {
+      props : { query },
+    }
+  }
 
+  return {
+    props: { query },
+  }
+}
 // export async function getServerSideProps(ctx) {
 //   const { query } = ctx;
 //   let queryObj = null;

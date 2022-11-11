@@ -9,6 +9,7 @@ import { useWalletSelector } from 'contexts/WalletSelectorContext';
 import { convertNftToAthlete, getAthleteInfoById } from 'utils/athlete/helper';
 import { ATHLETE } from 'data/constants/nearContracts';
 import AthleteSelectContainer from 'components/containers/AthleteSelectContainer';
+import Link from 'next/link';
 
 const AthleteSelect = (props) => {
     const { query } = props;
@@ -19,7 +20,7 @@ const AthleteSelect = (props) => {
     const [athleteOffset, setAthleteOffset] = useState(0);
     const [athleteLimit, setAthleteLimit] = useState(10);
     const [totalAthletes, setTotalAthletes] = useState(0);
-
+    const [radioSelected, setRadioSelected] = useState<number>(null);
     const [team, setTeam] = useState("allTeams");
     const [name, setName] = useState("allNames");
 
@@ -74,11 +75,12 @@ const AthleteSelect = (props) => {
             textcolor="text-indigo-black"
         >
             <div className="flex flex-col">
-                <div className="grid grid-cols-4 gap-y-8 mt-4 md:grid-cols-4 md:ml-7 md:mt-12">
-                    {athletes.map((item) => {
+                <div className="grid grid-cols-4 mt-1 md:grid-cols-4 md:ml-7 md:mt-2">
+                    {athletes.map((item, i) => {
                         const accountAthleteIndex = athletes.indexOf(item, 0);
                         return(
-                            <div className="w-4/5 h-5/6 border border-indigo-blue focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent">
+                            <div className="w-4/5 h-5/6 border-transparent focus:border-transparent focus:ring-2 focus:ring-blue-300 focus:border-transparent">
+                                <input className="justify-self-end" type="radio" name="athletePick" value={i} onChange={(e) => setRadioSelected(parseInt(e.target.value))}></input>
                                 <AthleteSelectContainer
                                     key={item.athlete_id}
                                     athleteName={item.name}
@@ -87,14 +89,19 @@ const AthleteSelect = (props) => {
                                     uri={item.image}
                                     index={accountAthleteIndex}
                                 />
+                                
                             </div>
                         )
                     })}
+                </div>
+                <div className="flex  bg-opacity-5 w-full justify-end">
+                    
+                        <button className="bg-indigo-buttonblue text-indigo-white w-full mr-10 md:w-80 h-14 text-center font-bold text-md">PROCEED</button>
+                    
+                    
                 </div>  
             </div>
-        {/* <div className="flex bg-indigo-black bg-opacity-5 w-full justify-end">
-            <button className="bg-indigo-buttonblue text-indigo-white w-full md:w-80 h-14 text-center font-bold text-md">PROCEED</button>
-        </div> */}
+        
         </PortfolioContainer>
     </Container>
     </>
