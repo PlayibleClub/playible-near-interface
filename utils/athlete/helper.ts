@@ -39,18 +39,6 @@ function getAvgFantasyScore(array) {
     return 0;
   }
 }
-//OLD CODE FOR GETAVGFANTASYSCORE
-// function getAvgFantasyScore(array) {
-//   if (Array.isArray(array) && array.length > 0) {
-//     return (
-//       array.reduce((prevItem, currItem) => {
-//         return prevItem.fantasyScore || 0 + currItem.fantasyScore;
-//       }, 0) / array.length
-//     );
-//   } else {
-//     return 0;
-//   }
-// }
 
 function convertNftToAthlete(item) {
   const token_metadata = item.token_metadata || item.metadata;
