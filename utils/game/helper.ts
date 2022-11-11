@@ -20,7 +20,7 @@ async function getGameInfoById(item){
     jointed_team_counter: item[1].joined_team_counter,
     isCompleted: Date.now() >= item[1].end_time ? true : false,
     status: Date.now() >= item[1].end_time ? 'completed' :
-            Date.now() < item[1].start_time ? 'upcoming' :
+            Date.now() < item[1].start_time ? 'new' :
             Date.now() > item[1].start_time && Date.now() < item[1].end_time ? 'ongoing' : 'invalid'
   }
 
