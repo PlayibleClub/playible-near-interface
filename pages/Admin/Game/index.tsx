@@ -22,6 +22,7 @@ import { DEFAULT_MAX_FEES, MINT_STORAGE_COST } from 'data/constants/gasFees';
 import { transactions, utils, WalletConnection, providers } from 'near-api-js';
 import { getGameInfoById } from 'utils/game/helper';
 import AdminGameComponent from './components/AdminGameComponent';
+import moment from 'moment';
 TimeAgo.addDefaultLocale(en);
 
 export default function Index(props) {
@@ -33,6 +34,7 @@ export default function Index(props) {
   const [contentLoading, setContentLoading] = useState(true);
   const [gameType, setGameType] = useState('new');
   const [content, setContent] = useState(false);
+  const [gameDuration, setGameDuration] = useState(0);
 
   //gameinfo
   const [gameInfo, setGameInfo] = useState({
@@ -63,14 +65,6 @@ export default function Index(props) {
       isActive: false,
     },
   ]);
-
-  const [details, setDetails] = useState({
-    name: '',
-    startTime: '',
-    duration: 1,
-    prize: 1,
-    description: '',
-  });
 
   const [distribution, setDistribution] = useState([
     {
@@ -222,17 +216,17 @@ export default function Index(props) {
     let errors = [];
     let sortPercentage = [...distribution].sort((a, b) => b.percentage - a.percentage);
     console.log('details.duration', typeof details.duration);
-    if (!Number.isInteger(details.duration)) {
-      errors.push('Duration must be a positive integer that is expressed in days');
-    }
-
-    if (!details.name) {
-      errors.push('Game is missing a title');
-    }
-
-    // if (new Date(details.startTime) < new Date() || !details.startTime) {
-    //   errors.push('Invalid Date & Time values');
+    // if (!Number.isInteger(details.duration)) {
+    //   errors.push('Duration must be a positive integer that is expressed in days');
     // }
+
+    // if (!details.name) {
+    //   errors.push('Game is missing a title');
+    // }
+
+    if (new Date(details.startTime) < new Date() || !details.startTime) {
+      errors.push('Invalid Date & Time values');
+    }
 
     if (distribution.length === 1 && percentTotal === 0) {
       errors.push('Invalid Distribution values');
@@ -501,6 +495,14 @@ export default function Index(props) {
 
   //placeholder test for calling game contract functions
 
+  const [details, setDetails] = useState({
+    // name: '',
+    startTime: '',
+    duration: 1,
+    prize: 1,
+    description: '',
+  });
+
   const testWhitelist = ["lilith87.testnet", "kishidev.testnet"];
 
   const testPositions = [
@@ -512,13 +514,18 @@ export default function Index(props) {
     {positions: ["QB", "RB", "WR", "TE"], amount: 1},
   ]
 
-  const currentUnixTimestamp = Date.now();
-  const date = new Date(currentUnixTimestamp);
-  const testDayLater = new Date(currentUnixTimestamp + 86400000);
+  const dateStr = moment(details.startTime).format('YYYY-MM-DD HH:mm:ss');
+  const dateDateStr = new Date(dateStr);
 
-  // console.log("current:" + date);
-  // console.log("day later:" + testDayLater);
-  console.log(JSON.stringify(testPositions));
+  const startUnixTimestamp = Math.floor(dateDateStr.getTime()/1000);
+  const endUnixTimeStamp = startUnixTimestamp + (details.duration * 86400);
+
+  const startMilliseconds = startUnixTimestamp * 1000;
+  const startMsDate = new Date(startMilliseconds);
+  const startFormattedTimestamp = startMsDate.toLocaleString();
+  const endMilliseconds = endUnixTimeStamp * 1000;
+  const endMsDate = new Date(endMilliseconds);
+  const endFormattedTimestamp = endMsDate.toLocaleString();
   
   function query_games_list() {
     const query = JSON.stringify({
@@ -573,8 +580,8 @@ export default function Index(props) {
     const addGameArgs = Buffer.from(
       JSON.stringify({
         game_id: newGameID(),
-        game_time_start: currentUnixTimestamp + 200000,
-        game_time_end: currentUnixTimestamp + 300000,
+        game_time_start: startUnixTimestamp,
+        game_time_end: endUnixTimeStamp,
         usage_cost: 1,
         whitelist: testWhitelist,
         positions: testPositions,
@@ -623,7 +630,6 @@ export default function Index(props) {
               <p className="ml-12 mt-5">{err}</p>
             ) : ( */}
               <div className="flex flex-col w-full overflow-y-auto overflow-x-hidden h-screen self-center text-indigo-black">
-                
                 <div className="flex md:ml-4 font-bold font-monument mt-5">
                   {tabs.map(({ name, isActive }) => (
                     <div
@@ -726,7 +732,7 @@ export default function Index(props) {
                     <>
                       <div className="flex">
                         {/* GAME TITLE */}
-                        <div className="flex flex-col lg:w-1/2 lg:mr-10">
+                        {/* <div className="flex flex-col lg:w-1/2 lg:mr-10">
                           <label className="font-monument" htmlFor="title">
                             TITLE
                           </label>
@@ -738,7 +744,7 @@ export default function Index(props) {
                             onChange={(e) => onChange(e)}
                             value={details.name}
                           />
-                        </div>
+                        </div> */}
 
                         {/* DATE & TIME */}
                         <div className="flex flex-col lg:w-1/2">
@@ -775,7 +781,7 @@ export default function Index(props) {
                         </div>
 
                         {/* PRIZE */}
-                        <div className="flex flex-col lg:w-1/2">
+                        {/* <div className="flex flex-col lg:w-1/2">
                           <label className="font-monument" htmlFor="prize">
                             PRIZE
                           </label>
@@ -789,12 +795,12 @@ export default function Index(props) {
                             onChange={(e) => onChange(e)}
                             value={details.prize}
                           />
-                        </div>
+                        </div> */}
                       </div>
 
                       <div className="flex mt-8">
                         {/* DESCRIPTION */}
-                        <div className="flex flex-col w-full">
+                        {/* <div className="flex flex-col w-full">
                           <label className="font-monument" htmlFor="duration">
                             DESCRIPTION
                           </label>
@@ -810,11 +816,11 @@ export default function Index(props) {
                               minHeight: '220px',
                             }}
                           />
-                        </div>
+                        </div> */}
                       </div>
 
                       {/* DISTRIBUTION FORM */}
-                      <div className="mt-8">
+                      {/* <div className="mt-8">
                         <p className="font-monument">DISTRIBUTION</p>
                         {distribution.map(({ rank, percentage }) => (
                           <Distribution
@@ -838,11 +844,11 @@ export default function Index(props) {
                         ) : (
                           ''
                         )}
-                      </div>
+                      </div> */}
 
-                      <div className="flex justify-center mt-8 mb-10">
+                      <div className="flex mt-4 mb-10">
                         <button
-                          className="bg-indigo-green font-monument tracking-widest ml-7 text-indigo-white w-5/6 md:w-80 h-16 text-center text-sm mt-4"
+                          className="bg-indigo-green font-monument tracking-widest text-indigo-white w-5/6 md:w-80 h-16 text-center text-sm mt-4"
                           onClick={validateGame}
                         >
                           CREATE GAME
@@ -871,6 +877,9 @@ export default function Index(props) {
       </BaseModal>
       <BaseModal title={'Confirm'} visible={confirmModal} onClose={() => setConfirmModal(false)}>
         <p className="mt-5">Are you sure?</p>
+        <p>GAME DETAILS:</p>
+        <p>Start Date:</p> {startFormattedTimestamp}
+        <p>End Date:</p> {endFormattedTimestamp}
         <button
           className="bg-indigo-green font-monument tracking-widest text-indigo-white w-full h-16 text-center text-sm mt-4"
           onClick={() => {
