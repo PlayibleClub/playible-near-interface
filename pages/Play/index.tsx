@@ -4,7 +4,7 @@ import Main from '../../components/Main';
 import PortfolioContainer from '../../components/containers/PortfolioContainer';
 import { useDispatch } from 'react-redux';
 // import { getPortfolio } from '../../redux/reducers/contract/portfolio';
-
+import { GAME, ORACLE } from 'data/constants/nearContracts';
 import Link from 'next/link';
 import PlayComponent from './components/PlayComponent';
 import Container from '../../components/containers/Container';
@@ -16,7 +16,9 @@ import 'regenerator-runtime/runtime';
 import { axiosInstance } from '../../utils/playible';
 import LoadingPageDark from '../../components/loading/LoadingPageDark';
 import Modal from '../../components/modals/Modal';
-
+import { transactions, utils, WalletConnection, providers } from 'near-api-js';
+import { getContract, getRPCProvider } from 'utils/near';
+import { getGameInfoById } from 'utils/game/helper';
 const Play = (props) => {
   const { error } = props;
   const [activeCategory, setCategory] = useState('new');
@@ -60,7 +62,13 @@ const Play = (props) => {
   const categoryList = ['new', 'active', 'completed'];
   const Test = [1,2,3,4,5];
 
+  const [newGames, setNewGames] = useState([]);
+  const [ongoingGames, setOngoingGames] = useState([]);
+  const [completedGames, setCompletedGames] = useState([]);
 
+  const provider = new providers.JsonRpcProvider({
+    url: getRPCProvider(),
+  });
   const changeIndex = (index) => {
     switch (index) {
       case 'next':
@@ -324,7 +332,42 @@ const Play = (props) => {
       </>
     );
   };
+  function query_games_list(){
+    const query = JSON.stringify({
+      from_index: 0,
+      limit: 10,
+    });
+    provider
+      .query({
+        request_type: 'call-function',
+        finality: 'optimistic',
+        account_id: getContract(GAME),
+        method_name: 'get_games',
+        args_base64: Buffer.from(query).toString('base64'),
+      })
+      .then(async (data) => {
+        //@ts-ignore:next-line
+        const result = JSON.parse(Buffer.from(data.result).toString());
 
+        const upcomingGames = await Promise.all(
+          result.filter(x => x[1].start_time > Date.now()).map((item) => getGameInfoById(item))
+        );
+
+        const completedGames = await Promise.all(
+          result.filter(x => x[1].end_time < Date.now()).map((item) => getGameInfoById(item))
+        );
+
+        const ongoingGames = await Promise.all(
+          result
+            .filter(x => x[1].start_time < Date.now() && x[1].end_time > Date.now())
+            .map((item) => getGameInfoById(item))
+        );
+
+        setNewGames(upcomingGames);
+        setCompletedGames(completedGames);
+        setOngoingGames(ongoingGames);
+      })
+  }
   const claimRewards = async (gameId) => {
     setClaimLoading(true);
     let totalPrize = 0;
@@ -372,74 +415,77 @@ const Play = (props) => {
     //   setClaimLoading(false);
     // };
   };
-    useEffect(() => {
-      if (games && games.length > 0) {
-        const tempList = [...games];
-        const filteredList = applySortFilter(tempList, filter, search).splice(
-          limit * offset,
-          limit
-        );
-        setSortedList(filteredList);
-        if (search) {
-          setPageCount(Math.ceil(applySortFilter(tempList, filter, search).length / limit));
-        } else {
-          setPageCount(Math.ceil(games.length / limit));
-        }
+  useEffect(() => {
+    if (games && games.length > 0) {
+      const tempList = [...games];
+      const filteredList = applySortFilter(tempList, filter, search).splice(
+        limit * offset,
+        limit
+      );
+      setSortedList(filteredList);
+      if (search) {
+        setPageCount(Math.ceil(applySortFilter(tempList, filter, search).length / limit));
+      } else {
+        setPageCount(Math.ceil(games.length / limit));
       }
-    }, [games, limit, offset, filter, search]);
+    }
+  }, [games, limit, offset, filter, search]);
 
-    useEffect(() => {
-      if (games.length > 0) {
-        const tempList = [...games];
-        const filteredList = tempList.splice(gamesLimit * gamesOffset, gamesLimit);
+  useEffect(() => {
+    if (games.length > 0) {
+      const tempList = [...games];
+      const filteredList = tempList.splice(gamesLimit * gamesOffset, gamesLimit);
 
-        setSortedgames(filteredList);
-        setgamePageCount(Math.ceil(games.length / gamesLimit));
-      }
-    }, [games, gamesLimit, gamesOffset]);
+      setSortedgames(filteredList);
+      setgamePageCount(Math.ceil(games.length / gamesLimit));
+    }
+  }, [games, gamesLimit, gamesOffset]);
 
-    // useEffect(() => {
-    //   if (connectedWallet) {
-    //     if (connectedWallet?.network?.name === 'testnet') {
-    //       dispatch(getPortfolio({ walletAddr: connectedWallet.walletAddress }));
-    //     }
-    //   }
-    // }, [connectedWallet, dispatch]);
+  useEffect(() => {
+    query_games_list();
+  }, []);
+  // useEffect(() => {
+  //   if (connectedWallet) {
+  //     if (connectedWallet?.network?.name === 'testnet') {
+  //       dispatch(getPortfolio({ walletAddr: connectedWallet.walletAddress }));
+  //     }
+  //   }
+  // }, [connectedWallet, dispatch]);
 
-    // useEffect(async () => {
-    //   setLoading(true);
-    //   setErr(null);
-    //   if (connectedWallet) {
-    //     if (connectedWallet?.network?.name === 'testnet') {
-    //       await fetchGamesLoading();
-    //       setErr(null);
-    //     } else {
-    //       setErr('You are connected to mainnet. Please connect to testnet');
-    //       setLoading(false);
-    //     }
-    //   } else {
-    //     setErr('Waiting for wallet connection...');
-    //     setLoading(false);
-    //   }
-    //   setOffset(0);
-    // }, [connectedWallet, activeCategory]);
+  // useEffect(async () => {
+  //   setLoading(true);
+  //   setErr(null);
+  //   if (connectedWallet) {
+  //     if (connectedWallet?.network?.name === 'testnet') {
+  //       await fetchGamesLoading();
+  //       setErr(null);
+  //     } else {
+  //       setErr('You are connected to mainnet. Please connect to testnet');
+  //       setLoading(false);
+  //     }
+  //   } else {
+  //     setErr('Waiting for wallet connection...');
+  //     setLoading(false);
+  //   }
+  //   setOffset(0);
+  // }, [connectedWallet, activeCategory]);
 
-    // useEffect(() => {
-    //   fetchGamesLoading();
-    //   setOffset(0);
-    // }, [activeCategory]);
+  // useEffect(() => {
+  //   fetchGamesLoading();
+  //   setOffset(0);
+  // }, [activeCategory]);
 
-    useEffect(() => {
-      if (router && router.query.type) {
-        // setCategory(router.query.type);
-      }
-    }, [router]);
+  useEffect(() => {
+    if (router && router.query.type) {
+      // setCategory(router.query.type);
+    }
+  }, [router]);
 
-    useEffect(() => {
-      if (!claimModal) {
-        setClaimData(null);
-      }
-    }, [claimModal]);
+  useEffect(() => {
+    if (!claimModal) {
+      setClaimData(null);
+    }
+  }, [claimModal]);
 
     return (
       <>
