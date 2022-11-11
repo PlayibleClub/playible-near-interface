@@ -21,6 +21,7 @@ import { getContract, getRPCProvider } from 'utils/near';
 import { DEFAULT_MAX_FEES, MINT_STORAGE_COST } from 'data/constants/gasFees';
 import { transactions, utils, WalletConnection, providers } from 'near-api-js';
 import { getGameInfoById } from 'utils/game/helper';
+import AdminGameComponent from './components/AdminGameComponent';
 TimeAgo.addDefaultLocale(en);
 
 export default function Index(props) {
@@ -627,7 +628,7 @@ export default function Index(props) {
                   {loading ? (
                     <LoadingPageDark />
                   ) : tabs[0].isActive ? (
-                    <div>
+                    <div className="flex flex-col">
                       <div className="flex md:ml-4 font-bold ml-8 font-monument mt-5">
                         {gameTabs.map(({ name, isActive }) => (
                           <div
@@ -640,44 +641,82 @@ export default function Index(props) {
                           </div>
                         ))}
                       </div>
-                      {(gameTabs[0].isActive ? games : completedGames).length > 0 &&
-                        (gameTabs[0].isActive ? games : completedGames).map(function (data, i) {
-                          return (
-                            <div className="border-b p-5 py-8">
-                              <div className="flex justify-between">
-                                <div>
-                                  <p className="font-bold text-lg">{data.name}</p>
-                                  {gameTabs[0].isActive ? (
-                                    <ReactTimeAgo
-                                      future
-                                      timeStyle="round-minute"
-                                      date={data.startTime}
-                                      locale="en-US"
-                                    />
-                                  ) : (
-                                    ''
-                                  )}
-                                  <p>Prize: $ {data.prize}</p>
-                                </div>
-                                {gameTabs[0].isActive ? (
-                                  ''
-                                ) : (
-                                  <div>
-                                    <button
-                                      className="bg-indigo-green font-monument tracking-widest  text-indigo-white w-5/6 md:w-64 h-16 text-center text-sm"
-                                      onClick={() => {
-                                        setGameId(data.id);
-                                        setEndModal(true);
-                                      }}
-                                    >
-                                      END GAME
-                                    </button>
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-                          );
-                        })}
+                      <div className="flex flex-row">
+                        {(gameTabs[0].isActive ? gameList : completedGames).length > 0 &&
+                          (gameTabs[0].isActive ? gameList : completedGames).map(function (data, i) {
+                            return(
+                              <AdminGameComponent 
+                                game_id={data.game_id}
+                                start_time={data.start_time}
+                                end_time={data.end_time}
+                                whitelist={data.whitelist}
+                                positions={data.positions}
+                                lineup_len={data.lineup_len}
+                                joined_player_counter={data.joined_player_counter}
+                                joined_team-counter={data.joined_team_counter}
+                                type="upcoming"
+                                isCompleted={data.isCompleted}
+                              />
+                            )
+                            // return (
+                            //   <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
+                            //     {data.whitelist}
+                            //   </div>
+                            //   // <div className="border-b p-5 py-8">
+                            //   //   <div className="flex justify-between">
+                            //   //     <div>
+                            //   //       <p className="font-bold text-lg">{data.name}</p>
+                            //   //       {gameTabs[0].isActive ? (
+                            //   //         <ReactTimeAgo
+                            //   //           future
+                            //   //           timeStyle="round-minute"
+                            //   //           date={data.startTime}
+                            //   //           locale="en-US"
+                            //   //         />
+                            //   //       ) : (
+                            //   //         ''
+                            //   //       )}
+                            //   //       <p>Prize: $ {data.prize}</p>
+                            //   //     </div>
+                            //   //     {gameTabs[0].isActive ? (
+                            //   //       ''
+                            //   //     ) : (
+                            //   //       <div>
+                            //   //         <button
+                            //   //           className="bg-indigo-green font-monument tracking-widest  text-indigo-white w-5/6 md:w-64 h-16 text-center text-sm"
+                            //   //           onClick={() => {
+                            //   //             setGameId(data.id);
+                            //   //             setEndModal(true);
+                            //   //           }}
+                            //   //         >
+                            //   //           END GAME
+                            //   //         </button>
+                            //   //       </div>
+                            //   //     )}
+                            //   //   </div>
+                            //   // </div>
+                            // );
+                          })}
+                          {(gameTabs[1].isActive ? gameList : completedGames).length > 0 &&
+                          (gameTabs[1].isActive ? gameList : completedGames).map(function (data, i) {
+                            return(
+                              <AdminGameComponent 
+                                game_id={data.game_id}
+                                start_time={data.start_time}
+                                end_time={data.end_time}
+                                whitelist={data.whitelist}
+                                positions={data.positions}
+                                lineup_len={data.lineup_len}
+                                joined_player_counter={data.joined_player_counter}
+                                joined_team-counter={data.joined_team_counter}
+                                type="completed"
+                                isCompleted={data.isCompleted}
+                              />
+                            )
+                            
+                          })}
+                      </div>
+                      
                     </div>
                   ) : (
                     <>
