@@ -68,7 +68,7 @@ export default function CreateLineup(props) {
   const { error } = props;
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState(error);
-
+  const [lineup, setLineup] = useState([]);
  const test = ["1", "2", "3", "4", "5", "6", "7","8"];
 
   //const { list: playerList } = useSelector((state) => state.assets);
@@ -610,7 +610,7 @@ export default function CreateLineup(props) {
                                             </div>
                                           );
                                         })} */}
-                                        {5 > 0 &&
+                                        {/* {5 > 0 &&
                                         test.map((data, i) => {
                                           return (
                                             <div>
@@ -630,7 +630,44 @@ export default function CreateLineup(props) {
                                               />
                                             </div>
                                           );
-                                        })}
+                                        })} */}
+                                        
+                                        {Array.from(
+                                          {length: 8},
+                                          (lineup, i) => {
+                                            return(
+                                              <>
+                                                {lineup === undefined ? (
+                                                <div>
+                                                  <Lineup
+                                                    position={"TEST"}
+                                                    player={"name" ? "Position" : ''}
+                                                    score={"69"}
+                                                    onClick={() => {
+                                                      setSlotIndex(i);
+                                                    }} 
+                                                    img='/images/tokensMLB/CF.png'
+                                                  />
+                                                </div>
+                                                ) : (
+                                                <div>
+                                                  <Lineup
+                                                    position={"HELLO"}
+                                                    player={"name" ? "Position" : ''}
+                                                    score={"69"}
+                                                    onClick={() => {
+                                                      setSlotIndex(i);
+                                                    }}
+                                                    img='/images/tokensMLB/CF.png'
+                                                    />
+                                                </div>
+                                                )}
+                                              </>
+                                            )
+                                            
+                                          }
+                                          
+                                        )}
                                     </div>
                                   </div>
                                   <div className="flex bg-indigo-black bg-opacity-5 w-full justify-end">
