@@ -339,7 +339,7 @@ const Play = (props) => {
     });
     provider
       .query({
-        request_type: 'call-function',
+        request_type: 'call_function',
         finality: 'optimistic',
         account_id: getContract(GAME),
         method_name: 'get_games',
