@@ -174,7 +174,10 @@ export default function CreateLineup(props) {
       return [];
     }
   };
-
+  function populateLineup(){
+    const array = Array(8).fill({position: "QB", isAthlete: false});
+    setLineup(array);
+  }
   const updateTeamSlots = () => {
     const tempSlots = [...team];
 
@@ -222,6 +225,10 @@ export default function CreateLineup(props) {
 
     return hasEmptySlot;
   };
+
+  useEffect(() => {
+    populateLineup();
+  }, []);
 
   const confirmTeam = async () => {
     setLimit(5);
@@ -363,6 +370,7 @@ export default function CreateLineup(props) {
         }
       }, [dispatch, connectedWallet]);
 
+      
       // useEffect(() => {
       //   if (playerList && playerList.tokens && playerList.tokens.length > 0) {
       //     if (filterPos) {
@@ -418,7 +426,8 @@ export default function CreateLineup(props) {
       if (!(router && router.query.id)) {
         return '';
       }
-    }
+    } 
+  
   };
       return (
         // <>
@@ -631,8 +640,29 @@ export default function CreateLineup(props) {
                                             </div>
                                           );
                                         })} */}
-                                        
-                                        {Array.from(
+                                        {lineup.map((data, i) => {
+                                          {console.table(lineup)}
+                                          return(
+                                            <>
+                                              {data.isAthlete === false ? (
+                                                <div>
+                                                  <Lineup
+                                                    position={"TEST"}
+                                                    player={"name" ? "Position" : ''}
+                                                    score={"69"}
+                                                    onClick={() => {setSlotIndex(i)}}
+                                                    img='/images/tokensMLB/CF.png' 
+                                                  />
+                                                </div>
+                                              ) : (
+                                                <div>
+                                                  
+                                                </div>
+                                              )}
+                                            </>
+                                          )
+                                        })}
+                                        {/* {Array.from(
                                           {length: 8},
                                           (lineup, i) => {
                                             return(
@@ -667,7 +697,7 @@ export default function CreateLineup(props) {
                                             
                                           }
                                           
-                                        )}
+                                        )} */}
                                     </div>
                                   </div>
                                   <div className="flex bg-indigo-black bg-opacity-5 w-full justify-end">
