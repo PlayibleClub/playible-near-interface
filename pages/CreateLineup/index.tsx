@@ -18,9 +18,9 @@ export default function CreateLineup(props) {
   const [startDate, setStartDate] = useState();
   const [buttonMute, setButtonMute] = useState(false);
 
-  const { error } = props;
+  const { query } = props;
   const [loading, setLoading] = useState(true);
-  const [err, setErr] = useState(error);
+  // const [err, setErr] = useState(error);
 
   const fetchGameData = async () => {
     const res = await axiosInstance.get(`/fantasy/game/${router.query.id}/`);
@@ -90,6 +90,9 @@ export default function CreateLineup(props) {
   return (
     <>
       <Container activeName="PLAY">
+        <div className="mt-8">
+          <BackFunction prev={query.origin ? `/${query.origin}` : '/PlayDetails'}></BackFunction>
+        </div>
         <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
           <Main color="indigo-white">
             {/* {loading ? (
@@ -194,15 +197,19 @@ export default function CreateLineup(props) {
   );
 }
 
-// export async function getServerSideProps(ctx) {
-//   return {
-//     redirect: {
-//       destination: '/CreateLineup',
-//       permanent: false,
-//     },
-//   };
-// }
+export async function getServerSideProps(ctx) {
+  const { query } = ctx;
 
+  if (query.id != query.id) {
+    return {
+      desination: query.origin || '/PlayDetails',
+    };
+  }
+
+  return {
+    props: { query },
+  };
+}
 // export async function getServerSideProps(ctx) {
 //   const { query } = ctx;
 //   let queryObj = null;
