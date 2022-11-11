@@ -11,7 +11,9 @@ import { ATHLETE } from 'data/constants/nearContracts';
 
 const AthleteSelect = (props) => {
     const { query } = props;
+
     const position = query.position;
+    
     const [athletes, setAthletes] = useState([]);
     const [athleteOffset, setAthleteOffset] = useState(0);
     const [athleteLimit, setAthleteLimit] = useState(10);
@@ -61,13 +63,14 @@ const AthleteSelect = (props) => {
             query_nft_tokens_for_owner(position, team, name);
         }
     }, []);
-return(
+
+    return (
     <>
     {console.log(position)}
      <Container activeName="PLAY">
-        <BackFunction prev={`/CreateLineup?id=${router.query.id}`} />
+        <BackFunction prev={`/CreateTeam`} />
         <PortfolioContainer
-            title="SELECT"
+            title="SELECT YOUR ATHLETE"
             textcolor="text-indigo-black"
         >
             
@@ -80,4 +83,19 @@ return(
     
  )
 }
-export default AthleteSelect
+export default AthleteSelect;
+
+export async function getServerSideProps(ctx) {
+    const { query } = ctx;
+  
+    if (query.id != query.id) {
+      return {
+        desination: query.origin || '/CreateTeam',
+      };
+    }
+  
+    return {
+      props: { query },
+    };
+  }
+  
