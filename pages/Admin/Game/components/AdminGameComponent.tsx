@@ -30,6 +30,9 @@ const AdminGameComponent = (props) => {
             </div>
             <div className="mt-4 flex justify-between">
               <div className="">
+              <div>
+                Game ID: {game_id}
+              </div>
               <div className="font-thin text-sm">
                     START DATE
                   <div className="text-base font-monument">
@@ -54,6 +57,9 @@ const AdminGameComponent = (props) => {
             </div>
             <div className="mt-4 flex justify-between">
               <div className="">
+              <div>
+                Game ID: {game_id}
+              </div>
                 <div className="font-thin text-sm">
                     START DATE
                   <div className="text-base font-monument">
@@ -78,6 +84,9 @@ const AdminGameComponent = (props) => {
             </div>
             <div className="mt-4 flex justify-between">
               <div className="">
+              <div>
+                Game ID: {game_id}
+              </div>
               <div className="font-thin text-sm">
                     START DATE
                   <div className="text-base font-monument">
