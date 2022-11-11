@@ -160,7 +160,7 @@ return (
               ) : (
                 <> */}
                  {/* {gameData ? ( */}
-                  {1 ? (
+                  {5 ? (
                     <>
                       <div className="ml-6 mr-6 md:ml-7 flex flex-col md:flex-row">
                         <div className="md:mr-12">
@@ -172,6 +172,7 @@ return (
                               height={220}
                             />
                           </div>
+                          {/* {!timesUp ? ( */}
                           {!timesUp ? (
                             <div className="mt-4">
                               {/* {new Date(gameData.start_datetime) <= new Date() &&
@@ -209,32 +210,38 @@ return (
                                 </>
                               ) : (
                                 <>
-                                  {gameEnd ? (
+                                {/* {gameEnd ? ( */}
+                                  {1 ? (
                                     <>
                                       <div className="flex space-x-14 mt-4">
                                         <div>
                                           <div>PRIZE POOL</div>
                                           <div className="text-base font-monument text-lg">
-                                            ${gameData.prize}
+                                            {/* ${gameData.prize} */}
+                                            ${"2,300"}
                                           </div>
                                         </div>
                                         <div>
                                           <div>START DATE</div>
                                           <div className="text-base font-monument text-lg">
-                                            {moment(gameData.start_datetime).format('MM/DD/YYYY')}
+                                            {/* {moment(gameData.start_datetime).format('MM/DD/YYYY')} */}
+                                            {moment("11/11/2022").format('MM/DD/YYYY')}
                                           </div>
                                         </div>
                                       </div>
                                       <div>REGISTRATION ENDS IN</div>
                                       <PlayDetailsComponent
-                                        startDate={gameData.start_datetime}
-                                        endDate={gameData.end_d}
+                                        // startDate={gameData.start_datetime}
+                                        // endDate={gameData.end_d}
+                                        startDate={"11/11/2022"}
+                                        endDate={"11/12/2022"}
                                         fetch={() => fetchGameData()}
                                         game={() => isOngoing()}
                                         gameEnd={() => isEnd()}
                                       />
                                       <div className="flex justify-center md:justify-start">
-                                        <a href={`/CreateLineup?id=${gameData.id}`}>
+                                        {/* <a href={`/CreateLineup?id=${gameData.id}`}> */}
+                                        <a href={`/CreateLineup`}>
                                           <button className="bg-indigo-buttonblue text-indigo-white w-64 h-12 text-center font-bold text-md mt-8">
                                             ENTER GAME
                                           </button>
@@ -273,7 +280,7 @@ return (
                                           </a>
                                         </Link>
                                       </div>
-                                    );
+                                    )
                                   })
                                 : 'No teams created for this game.'}
                             </>
@@ -282,12 +289,12 @@ return (
                         <div className="flex flex-col">
                         {/* {hasLeaderboard(gameData.start_datetime, gameData.end_datetime) ? (
                             leaderboard.length > 0 ? ( */}
-                          {hasLeaderboard("test","test") ? (
+                          {hasLeaderboard("gameData.start_datetime", "gameData.end_datetime") ? (
                             leaderboard.length > 0 ? (
                               <>
                                 <PortfolioContainer
                                   textcolor="indigo-black mb-5"
-                                  title="LEADERBOARD"
+                                  title="LEADERBOARD1"
                                 />
                                 {leaderboard.map(function (data, key) {
                                   return (
@@ -317,12 +324,11 @@ return (
                               </>
                             ) : (
                               <>
-                                <PortfolioContainer
+                                {/* <PortfolioContainer
                                   textcolor="indigo-black"
-                                  title="LEADERBOARD"
-                                />
-                                {/* {leaderboard.map(function (data, key) { */}
-                                {test2.map(function (data, key) {
+                                  title="LEADERBOARD2"
+                                /> */}
+                                {/* {leaderboard.map(function (data, key) {
                                   return (
                                     <>
                                       <div className="ml-12 md:ml-10 mt-4 md:mt-0">
@@ -331,18 +337,16 @@ return (
                                             {key + 1 <= 9 ? '0' + (key + 1) : key + 1}
                                           </div>
                                           <div className="bg-indigo-black text-indigo-white w-40 text-center p-1 text-base font-monument">
-                                            {/* {truncate(data.player_addr, 11)} */}
                                             {truncate("test", 11)}
                                           </div>
                                           <div className="ml-16 w-10 text-center font-black">
-                                            {/* {data.fantasy_score} */}
                                             {"data.fantasy_score"}
                                           </div>
                                         </div>
                                       </div>
                                     </>
                                   );
-                                })}
+                                })} */}
                               </>
                             )
                           ) : (
@@ -362,7 +366,8 @@ return (
                     </>
                   ) : (
                     <>
-                      <PortfolioContainer textcolor="indigo-black" title="LEADERBOARD" />
+                      <PortfolioContainer textcolor="indigo-black" title="LEADERBOARD3" />
+                      {/* {leaderboard.map(function (data, key) { */}
                       {leaderboard.map(function (data, key) {
                         return (
                           <>
@@ -372,10 +377,12 @@ return (
                                   {key + 1 <= 9 ? '0' + (key + 1) : key + 1}
                                 </div>
                                 <div className="bg-indigo-black text-indigo-white w-40 text-center p-1 text-base font-monument">
-                                  {truncate(data.player_addr, 11)}
+                                  {/* {truncate(data.player_addr, 11)} */}
+                                  {truncate("test", 11)}
                                 </div>
                                 <div className="ml-16 w-10 text-center font-black">
-                                  {data.fantasy_score}
+                                  {/* {data.fantasy_score} */}
+                                  {"11.11"}
                                 </div>
                               </div>
                             </div>

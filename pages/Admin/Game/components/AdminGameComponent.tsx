@@ -22,7 +22,7 @@ const AdminGameComponent = (props) => {
   return (
     <>
       {console.log(status + " " + game_id)}
-      {status === 'upcoming'? (
+      {status === 'new'? (
         <div className="w-84 h-96 mb-12">
           <div className="w-full p-3">
             <div className="w-full">
@@ -30,10 +30,17 @@ const AdminGameComponent = (props) => {
             </div>
             <div className="mt-4 flex justify-between">
               <div className="">
-                <div className="font-thin text-sm">START DATE</div>
-                <div className="text-base font-monument">
-                  {moment(start_time).format('MM/DD/YYYY')}
-                  hello im upcoming
+              <div className="font-thin text-sm">
+                    START DATE
+                  <div className="text-base font-monument">
+                    {moment(start_time).format('MM/DD/YYYY')}
+                  </div>
+                  <div className="font-thin text-sm">
+                    END DATE
+                  </div>
+                  <div className="text-base font-monument">
+                    {moment(end_time).format('MM/DD/YYYY')}
+                  </div>
                 </div>
               </div>
             </div>
@@ -47,10 +54,17 @@ const AdminGameComponent = (props) => {
             </div>
             <div className="mt-4 flex justify-between">
               <div className="">
-                <div className="font-thin text-sm">START DATE</div>
-                <div className="text-base font-monument">
-                  {moment(start_time).format('MM/DD/YYYY')}
-                  hello im completed :D
+                <div className="font-thin text-sm">
+                    START DATE
+                  <div className="text-base font-monument">
+                    {moment(start_time).format('MM/DD/YYYY')}
+                  </div>
+                  <div className="font-thin text-sm">
+                    END DATE
+                  </div>
+                  <div className="text-base font-monument">
+                    {moment(end_time).format('MM/DD/YYYY')}
+                  </div>
                 </div>
               </div>
             </div>
@@ -64,10 +78,17 @@ const AdminGameComponent = (props) => {
             </div>
             <div className="mt-4 flex justify-between">
               <div className="">
-                <div className="font-thin text-sm">START DATE</div>
-                <div className="text-base font-monument">
-                  {moment(start_time).format('MM/DD/YYYY')}
-                  hello im ongoing D:
+              <div className="font-thin text-sm">
+                    START DATE
+                  <div className="text-base font-monument">
+                    {moment(start_time).format('MM/DD/YYYY')}
+                  </div>
+                  <div className="font-thin text-sm">
+                    END DATE
+                  </div>
+                  <div className="text-base font-monument">
+                    {moment(end_time).format('MM/DD/YYYY')}
+                  </div>
                 </div>
               </div>
             </div>

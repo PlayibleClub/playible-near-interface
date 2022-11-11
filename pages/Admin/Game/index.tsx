@@ -512,15 +512,6 @@ export default function Index(props) {
     {positions: ["QB", "RB", "WR", "TE"], amount: 1},
   ]
 
-  // const testPositions = {
-  //   QB: {positions: ["QB"], amount: 1},
-  //   RB: {positions: ["RB"], amount: 2},
-  //   WR: {positions: ["WR"], amount: 2},
-  //   TE: {positions: ["TE"], amount: 1},
-  //   FLEX: {positions: ["RB", "WR", "TE"], amount: 1},
-  //   SUPERFLEX: {positions: ["QB", "RB", "WR", "TE"], amount: 1}
-  // };
-
   const currentUnixTimestamp = Date.now();
   const date = new Date(currentUnixTimestamp);
   const testDayLater = new Date(currentUnixTimestamp + 86400000);
@@ -571,11 +562,18 @@ export default function Index(props) {
       })
   }
 
+  function newGameID() {
+    let newGameId = 0;
+    newGameId = ongoingGames.length + completedGames.length + newGames.length + 1;
+    
+    return newGameId.toString();
+  }
+
   async function execute_add_game() {
     const addGameArgs = Buffer.from(
       JSON.stringify({
-        game_id: "2", //hardcoded palang, di ko pa alam ung generation
-        game_time_start: currentUnixTimestamp,
+        game_id: newGameID(),
+        game_time_start: currentUnixTimestamp + 200000,
         game_time_end: currentUnixTimestamp + 300000,
         usage_cost: 1,
         whitelist: testWhitelist,
@@ -606,14 +604,12 @@ export default function Index(props) {
     });
   }
 
-  
   useEffect(() => {
     getTotalPercent();
   }, [distribution]);
   useEffect(() => {
     query_games_list();
   }, []);
-
 
   return (
     <Container isAdmin>
@@ -627,7 +623,8 @@ export default function Index(props) {
               <p className="ml-12 mt-5">{err}</p>
             ) : ( */}
               <div className="flex flex-col w-full overflow-y-auto overflow-x-hidden h-screen self-center text-indigo-black">
-                <div className="flex md:ml-4 font-bold ml-8 font-monument mt-5">
+                
+                <div className="flex md:ml-4 font-bold font-monument mt-5">
                   {tabs.map(({ name, isActive }) => (
                     <div
                       className={`cursor-pointer mr-6 ${
@@ -645,7 +642,7 @@ export default function Index(props) {
                     <LoadingPageDark />
                   ) : tabs[0].isActive ? (
                     <div className="flex flex-col">
-                      <div className="flex md:ml-4 font-bold ml-8 font-monument mt-5">
+                      <div className="flex font-bold -ml-16 font-monument">
                         {gameTabs.map(({ name, isActive }) => (
                           <div
                             className={`cursor-pointer mr-6 ${
