@@ -19,7 +19,7 @@ const AthleteSelectContainer = (props) => {
     <div className="justify-center flex flex-col w-full h-full pb-4">
       <div className="self-center mr-10">
         {status === true && (
-          <div className="bg-indigo-lightgreen text-indigo-white text-center text-xs font-bold py-1 px-3 mb-2">
+          <div className="bg-indigo-lightgreen text-indigo-white text-center text-xs font-bold px-3 mb-2">
           </div>
         )}
       </div>
@@ -45,7 +45,7 @@ const AthleteSelectContainer = (props) => {
           <Image src={'/images/tokensMLB/SP.png'} width={120} height={160} />
         )}
       </div>
-      <div className="h-full mt-16 flex justify-center mb-6">
+      <div className="h-full mt-16 flex justify-center ">
         <div className="flex flex-col mt-4">
           <div className="mt-2 text-xs font-bold">{athleteName}</div>
           <div className="mt-4 text-xs font-thin">FANTASY SCORE</div>
