@@ -59,7 +59,35 @@ const Play = (props) => {
   const sportList = ['all','football','basketball'];
   const [activeSport, setSport] = useState('all');
   
-  const categoryList = ['new', 'active', 'completed'];
+  const [categoryList,setcategoryList] = useState([
+    {
+      name: 'NEW',
+      isActive: true,
+    },
+    {
+      name: 'ON-GOING',
+      isActive: false,
+    },
+    {
+      name: 'COMPLETED',
+      isActive: false,
+    },
+  ]);
+
+  const changecategoryList = (name) => {
+    const tabList = [...categoryList];
+
+    tabList.forEach((item) => {
+      if (item.name === name) {
+        item.isActive = true;
+      } else {
+        item.isActive = false;
+      }
+    });
+
+    setcategoryList([...tabList]);
+  };
+
   const Test = [1,2,3,4,5];
 
   const [newGames, setNewGames] = useState([]);
@@ -678,18 +706,15 @@ const Play = (props) => {
                 </div>
 
                 <div className="flex flex-col mt-6">
-                  <div className="flex font-bold ml-8 md:ml-0 font-monument">
-                    {categoryList.map((type) => (
+                  <div className="flex font-bold ml-8 md:ml-7 font-monument">
+                    {categoryList.map(({name,isActive}) => (
                       <div
-                        key={type}
-                        className={`mr-6 uppercase cursor-pointer md:ml-8 ${
-                          activeCategory === type ? 'border-b-8 pb-2 border-indigo-buttonblue' : ''
-                        }`}
-                        onClick={() => {
-                          setCategory(type);
-                        }}
+                        className={`cursor-pointer mr-6 ${
+                            isActive ? 'border-b-8 border-indigo-buttonblue' : ''
+                          }`}
+                          onClick={() => changecategoryList(name)}
                       >
-                        {type}
+                        {name}
                       </div>
                     ))}
                   </div>
@@ -724,7 +749,8 @@ const Play = (props) => {
                           {1 > 0 ? (
                             <>
                               <div className="mt-4 ml-6 grid grid-cols-0 md:grid-cols-3">
-                                {Test.map(function (data, i) {
+                          {(categoryList[0].isActive ? newGames : categoryList[1].isActive ? ongoingGames : completedGames).length > 0 &&
+                          (categoryList[0].isActive ? newGames : categoryList[1].isActive ? ongoingGames : completedGames).map((data, i) => {
                                   return (
                                     <div key={i} className="flex">
                                       <div className="mr-6">
@@ -751,8 +777,8 @@ const Play = (props) => {
                                               type={activeCategory}
                                               icon="test"
                                               prizePool="2,300" 
-                                              startDate="10/11/2022"
-                                              endDate="10/11/2022"
+                                              startDate={data.start_time}
+                                              endDate={data.end_time}
                                               month="04"
                                               date="20"
                                               year="2022"
