@@ -8,6 +8,7 @@ import router from "next/router";
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
 import { convertNftToAthlete, getAthleteInfoById } from 'utils/athlete/helper';
 import { ATHLETE } from 'data/constants/nearContracts';
+import AthleteSelectContainer from 'components/containers/AthleteSelectContainer';
 
 const AthleteSelect = (props) => {
     const { query } = props;
@@ -65,18 +66,35 @@ const AthleteSelect = (props) => {
     }, []);
 
     return (
-    <>
-    {console.log(position)}
+    <>{console.log(position)}
      <Container activeName="PLAY">
         <BackFunction prev={`/CreateTeam`} />
         <PortfolioContainer
             title="SELECT YOUR ATHLETE"
             textcolor="text-indigo-black"
         >
-            
-            <div className="flex bg-indigo-black bg-opacity-5 w-full justify-end">
-                <button className="bg-indigo-buttonblue text-indigo-white w-full md:w-80 h-14 text-center font-bold text-md">PROCEED</button>
+            <div className="flex flex-col">
+                <div className="grid grid-cols-4 gap-y-8 mt-4 md:grid-cols-4 md:ml-7 md:mt-12">
+                    {athletes.map((item) => {
+                        const accountAthleteIndex = athletes.indexOf(item, 0);
+                        return(
+                            <div className="focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent">
+                                <AthleteSelectContainer
+                                    key={item.athlete_id}
+                                    athleteName={item.name}
+                                    avgScore={item.fantasy_score.toFixed(2)}
+                                    id={item.athlete_id}
+                                    uri={item.image}
+                                    index={accountAthleteIndex}
+                                />
+                            </div>
+                        )
+                    })}
+                </div>  
             </div>
+        {/* <div className="flex bg-indigo-black bg-opacity-5 w-full justify-end">
+            <button className="bg-indigo-buttonblue text-indigo-white w-full md:w-80 h-14 text-center font-bold text-md">PROCEED</button>
+        </div> */}
         </PortfolioContainer>
     </Container>
     </>
