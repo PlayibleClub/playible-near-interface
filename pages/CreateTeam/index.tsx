@@ -647,7 +647,7 @@ export default function CreateLineup(props) {
                                               {data.isAthlete === false ? (
                                                 <div>
                                                   <Lineup
-                                                    position={"TEST"}
+                                                    position={data.position}
                                                     player={"name" ? "Position" : ''}
                                                     score={"69"}
                                                     onClick={() => {setSlotIndex(i)}}
