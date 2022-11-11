@@ -4,7 +4,7 @@ import { getRPCProvider, getContract } from 'utils/near';
 import BackFunction from "components/buttons/BackFunction";
 import Container from "components/containers/Container";
 import PortfolioContainer from "components/containers/PortfolioContainer";
-import router from "next/router";
+import router, {useRouter} from "next/router";
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
 import { convertNftToAthlete, getAthleteInfoById } from 'utils/athlete/helper';
 import { ATHLETE } from 'data/constants/nearContracts';
@@ -15,7 +15,14 @@ const AthleteSelect = (props) => {
     const { query } = props;
 
     const position = query.position;
-    
+    const router = useRouter();
+    const data = router.query;
+    let pass = data;
+    // @ts-ignore:next-line
+    let test = JSON.parse(data.athleteLineup);
+    // @ts-ignore:next-line
+    console.log(JSON.parse(data.athleteLineup));
+    console.table(test);
     const [athletes, setAthletes] = useState([]);
     const [athleteOffset, setAthleteOffset] = useState(0);
     const [athleteLimit, setAthleteLimit] = useState(10);
@@ -23,7 +30,7 @@ const AthleteSelect = (props) => {
     const [radioSelected, setRadioSelected] = useState<number>(null);
     const [team, setTeam] = useState("allTeams");
     const [name, setName] = useState("allNames");
-
+    
     const { accountId } = useWalletSelector();
 
     const provider = new providers.JsonRpcProvider({
@@ -59,7 +66,15 @@ const AthleteSelect = (props) => {
         setAthletes(result_two);
         });
     }
-
+    function setAthleteRadio(index){
+        test.splice(pass.index, 0, {
+            position: "QB",
+            isAthlete: true,
+            athlete: athletes[index],
+        })
+        console.table(test);
+        //pass.athleteLineup[parseInt(pass.index)] = athletes[index];
+    }
     useEffect(() => {
         if(!isNaN(athleteOffset)){
             query_nft_tokens_for_owner(position, team, name);
@@ -80,7 +95,7 @@ const AthleteSelect = (props) => {
                         const accountAthleteIndex = athletes.indexOf(item, 0);
                         return(
                             <div className="w-4/5 h-5/6 border-transparent focus:border-transparent focus:ring-2 focus:ring-blue-300 focus:border-transparent">
-                                <input className="justify-self-end" type="radio" name="athletePick" value={i} onChange={(e) => setRadioSelected(parseInt(e.target.value))}></input>
+                                <input className="justify-self-end" type="radio" name="athletePick" value={i} onChange={(e) => setAthleteRadio(parseInt(e.target.value))}></input>
                                 <AthleteSelectContainer
                                     key={item.athlete_id}
                                     athleteName={item.name}
@@ -95,10 +110,9 @@ const AthleteSelect = (props) => {
                     })}
                 </div>
                 <div className="flex  bg-opacity-5 w-full justify-end">
-                    
+                        
                         <button className="bg-indigo-buttonblue text-indigo-white w-full mr-10 md:w-80 h-14 text-center font-bold text-md">PROCEED</button>
-                    
-                    
+                        
                 </div>  
             </div>
         

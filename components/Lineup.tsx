@@ -17,16 +17,24 @@ const Lineup = (props) => {
     onClick= null,
     athleteLineup,
     index,
+    test,
   } = props;
   //const { position, player = '', img = null, id, score, nextposition, onClick = null } = props;
   const lineupPosition = '/images/tokensMLB/' + position + '.png';
 
-
+  console.table(test);
   return (
     <>
     
       <div className="flex justify-center cursor-pointer">
-      <Link href={`/AthleteSelect/${position}`} passHref>
+      <Link href={{
+        pathname: '/AthleteSelect',
+        query: {
+          position: test[0].position,
+          athleteLineup: JSON.stringify(test[1].lineup),
+          index: test[2].index,
+        },
+      }} as="/AthleteSelect">
         {img ? (
           <div className="relative mb-7" style={{ width: '120px', height: '162px' }}>
             <div className="absolute z-50" style={{ width: '120px', height: '160px' }}></div>

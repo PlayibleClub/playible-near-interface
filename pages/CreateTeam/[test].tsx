@@ -128,8 +128,9 @@ export default function CreateLineup(props) {
 
     setTeam(slots);
   };
-  function setArray(){
-
+  function setArray(position, lineup, index){
+    const array = [{position}, {lineup}, {index}];
+    return array;
   }
   const filterAthletes = (list, pos) => {
     const tempList = [...list];
@@ -652,7 +653,7 @@ export default function CreateLineup(props) {
                                                     position={data.position}
                                                     athleteLineup={lineup}
                                                     index={i}
-                                                    //test={setArray(data.position, lineup, i)}
+                                                    test={setArray(data.position, lineup, i)}
                                                     img='/images/tokensMLB/CF.png' 
                                                   />
                                                 </div>

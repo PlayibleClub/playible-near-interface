@@ -139,11 +139,11 @@ export default function CreateLineup(props) {
                             </button>
                           </a>
                           )} */}
-                          <a href='/CreateTeam'>
+                          <Link href='/CreateTeam/0' passHref>
                           <button className='bg-indigo-buttonblue text-indigo-white whitespace-nowrap h-14 px-10 mt-4 text-center font-bold'>
                             CREATE YOUR LINEUP +
                           </button>
-                          </a>
+                          </Link>
                           </div>
                         </div>
                         
