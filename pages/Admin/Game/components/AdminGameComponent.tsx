@@ -14,14 +14,15 @@ const AdminGameComponent = (props) => {
     joined_player_counter,
     joined_team_counter,
     type,
-    isCompleted, //checking if upcoming or completed game
+    isCompleted,
+    status, //checking if upcoming or completed game
   } = props;
 
   const playicon = '/images/playthumbnails/key.png';
   return (
     <>
-      {console.log("hello world")}
-      {isCompleted === false ? (
+      {console.log(status + " " + game_id)}
+      {status === 'upcoming'? (
         <div className="w-84 h-96 mb-12">
           <div className="w-full p-3">
             <div className="w-full">
@@ -38,7 +39,7 @@ const AdminGameComponent = (props) => {
             </div>
           </div>
         </div>
-      ) : isCompleted === true ? (
+      ) : status === 'completed'? (
         <div className="w-84 h-96 mb-12">
           <div className="w-full p-3">
             <div className="w-full">
@@ -55,7 +56,24 @@ const AdminGameComponent = (props) => {
             </div>
           </div>
         </div>
-      ): (
+      ): status === 'ongoing' ? (
+        <div className="w-84 h-96 mb-12">
+          <div className="w-full p-3">
+            <div className="w-full">
+              <Image src={playicon} width="300px" height="263px"/>
+            </div>
+            <div className="mt-4 flex justify-between">
+              <div className="">
+                <div className="font-thin text-sm">START DATE</div>
+                <div className="text-base font-monument">
+                  {moment(start_time).format('MM/DD/YYYY')}
+                  hello im ongoing D:
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : (
         <div></div>
       )}
     </>
@@ -72,6 +90,7 @@ AdminGameComponent.propTypes = {
   joined_team_counter: PropTypes.number,
   type: PropTypes.string,
   isCompleted: PropTypes.bool,
+  status: PropTypes.string,
 };
 
 export default AdminGameComponent;
