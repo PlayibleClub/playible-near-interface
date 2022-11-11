@@ -51,15 +51,15 @@ export default function Index(props) {
   ]);
   const [gameTabs, setGameTabs] = useState([
     {
-      name: 'UPCOMING',
+      name: 'NEW',
       isActive: true,
     },
     {
-      name: 'COMPLETED',
+      name: 'ON-GOING',
       isActive: false,
     },
     {
-      name: 'ONGOING',
+      name: 'COMPLETED',
       isActive: false,
     },
   ]);
@@ -115,7 +115,7 @@ export default function Index(props) {
     },
   ]);
   const [games, setGames] = useState([]);
-  const [upcomingGames, setUpcomingGames] = useState([]);
+  const [newGames, setNewGames] = useState([]);
   const [completedGames, setCompletedGames] = useState([]);
   const [ongoingGames, setOngoingGames] = useState([]);
   const [gameId, setGameId] = useState(null);
@@ -564,7 +564,7 @@ export default function Index(props) {
         );
         
 
-        setUpcomingGames(upcomingGames);
+        setNewGames(upcomingGames);
         setCompletedGames(completedGames);
         setOngoingGames(onGoingGames);
         //setGames(gamesList);
@@ -658,8 +658,8 @@ export default function Index(props) {
                         ))}
                       </div>
                       <div className="flex flex-row">
-                        {(gameTabs[0].isActive ? upcomingGames : gameTabs[1].isActive ? completedGames : ongoingGames).length > 0 &&
-                          (gameTabs[0].isActive ? upcomingGames : gameTabs[1].isActive ? completedGames : ongoingGames).map((data, i) => {
+                        {(gameTabs[0].isActive ? newGames : gameTabs[1].isActive ? ongoingGames : completedGames).length > 0 &&
+                          (gameTabs[0].isActive ? newGames : gameTabs[1].isActive ? ongoingGames : completedGames).map((data, i) => {
             
                             return(
                               <AdminGameComponent 
