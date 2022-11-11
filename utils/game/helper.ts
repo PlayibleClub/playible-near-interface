@@ -21,7 +21,6 @@ async function getGameInfoById(item){
     isCompleted: Date.now() >= item[1].end_time ? true : false,
   }
 
-  //console.table(returningData);
 
   return returningData;
 }

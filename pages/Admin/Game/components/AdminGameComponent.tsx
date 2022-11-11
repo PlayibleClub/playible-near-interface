@@ -21,7 +21,7 @@ const AdminGameComponent = (props) => {
   return (
     <>
       {console.log("hello world")}
-      {type === 'upcoming' && isCompleted === false ? (
+      {isCompleted === false ? (
         <div className="w-84 h-96 mb-12">
           <div className="w-full p-3">
             <div className="w-full">
@@ -38,7 +38,7 @@ const AdminGameComponent = (props) => {
             </div>
           </div>
         </div>
-      ) : type === 'completed' && isCompleted === true ? (
+      ) : isCompleted === true ? (
         <div className="w-84 h-96 mb-12">
           <div className="w-full p-3">
             <div className="w-full">

@@ -111,7 +111,7 @@ export default function Index(props) {
     },
   ]);
   const [games, setGames] = useState([]);
-  const [gameList, setGameList] = useState([]);
+  const [upcomingGames, setUpcomingGames] = useState([]);
   const [completedGames, setCompletedGames] = useState([]);
   const [gameId, setGameId] = useState(null);
   const [err, setErr] = useState(null);
@@ -523,7 +523,7 @@ export default function Index(props) {
   // console.log("current:" + date);
   // console.log("day later:" + testDayLater);
   console.log(JSON.stringify(testPositions));
-
+  
   function query_games_list() {
     const query = JSON.stringify({
       from_index: 0, //offset for pagination
@@ -543,12 +543,18 @@ export default function Index(props) {
         //@ts-ignore:next-lines
         //console.table(Buffer.from(data.result).toString());
         //console.table(result);
-        const gamesList = await Promise.all(
-          result.map((item) => getGameInfoById(item))
+        const upcomingGames = await Promise.all(
+          result.filter(x => x[1].end_time > Date.now()).map((item) => getGameInfoById(item))
           
         );
+        const completedGames = await Promise.all(
+          result.filter(x => x[1].end_time < Date.now()).map((item) => getGameInfoById(item))
+          
+        );
+        
 
-        setGameList(gamesList);
+        setUpcomingGames(upcomingGames);
+        setCompletedGames(completedGames);
         //setGames(gamesList);
       })
   }
@@ -588,6 +594,7 @@ export default function Index(props) {
     });
   }
 
+  
   useEffect(() => {
     getTotalPercent();
   }, [distribution]);
@@ -595,9 +602,6 @@ export default function Index(props) {
     query_games_list();
   }, []);
 
-  useEffect(() => {
-    console.table(gameList);
-  }, [gameList]);
 
   return (
     <Container isAdmin>
@@ -642,8 +646,8 @@ export default function Index(props) {
                         ))}
                       </div>
                       <div className="flex flex-row">
-                        {(gameTabs[0].isActive ? gameList : completedGames).length > 0 &&
-                          (gameTabs[0].isActive ? gameList : completedGames).map(function (data, i) {
+                        {(gameTabs[0].isActive ? upcomingGames: completedGames).length > 0 &&
+                          (gameTabs[0].isActive ? upcomingGames : completedGames).map(function (data, i) {
                             return(
                               <AdminGameComponent 
                                 game_id={data.game_id}
@@ -697,24 +701,7 @@ export default function Index(props) {
                             //   // </div>
                             // );
                           })}
-                          {(gameTabs[1].isActive ? gameList : completedGames).length > 0 &&
-                          (gameTabs[1].isActive ? gameList : completedGames).map(function (data, i) {
-                            return(
-                              <AdminGameComponent 
-                                game_id={data.game_id}
-                                start_time={data.start_time}
-                                end_time={data.end_time}
-                                whitelist={data.whitelist}
-                                positions={data.positions}
-                                lineup_len={data.lineup_len}
-                                joined_player_counter={data.joined_player_counter}
-                                joined_team-counter={data.joined_team_counter}
-                                type="completed"
-                                isCompleted={data.isCompleted}
-                              />
-                            )
-                            
-                          })}
+                          
                       </div>
                       
                     </div>
