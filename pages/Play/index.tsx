@@ -699,7 +699,7 @@ const Play = (props) => {
                                             />
                                           </div>
                                         </a> */}
-                                        <a href={`/PlayDetails?id=$1`}>
+                                        <a href={`/PlayDetails?id=${i}`}>
                                           <div className="mr-6">
                                             <PlayComponent
                                               type={activeCategory}
