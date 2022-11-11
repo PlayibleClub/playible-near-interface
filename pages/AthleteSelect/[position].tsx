@@ -78,7 +78,7 @@ const AthleteSelect = (props) => {
                     {athletes.map((item) => {
                         const accountAthleteIndex = athletes.indexOf(item, 0);
                         return(
-                            <div className="focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent">
+                            <div className="w-4/5 h-5/6 border border-indigo-blue focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent">
                                 <AthleteSelectContainer
                                     key={item.athlete_id}
                                     athleteName={item.name}

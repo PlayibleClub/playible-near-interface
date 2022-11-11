@@ -16,7 +16,7 @@ const AthleteSelectContainer = (props) => {
   } = props;
 
   return (
-    <div className="justify-center flex flex-col w-full h-full pb-12">
+    <div className="justify-center flex flex-col w-full h-full pb-4">
       <div className="self-center mr-10">
         {status === true && (
           <div className="bg-indigo-lightgreen text-indigo-white text-center text-xs font-bold py-1 px-3 mb-2">
@@ -24,7 +24,7 @@ const AthleteSelectContainer = (props) => {
         )}
       </div>
       <div
-        className={`flex justify-center h-2/3 ${
+        className={`flex justify-center mt-2 h-1/3 ${
           hoverable ? 'cursor-pointer hover:-translate-y-1 transform transition-all' : ''
         }`}
       >
@@ -45,7 +45,7 @@ const AthleteSelectContainer = (props) => {
           <Image src={'/images/tokensMLB/SP.png'} width={120} height={160} />
         )}
       </div>
-      <div className="h-1/2 flex justify-center mb-6">
+      <div className="h-full mt-16 flex justify-center mb-6">
         <div className="flex flex-col mt-4">
           <div className="mt-2 text-xs font-bold">{athleteName}</div>
           <div className="mt-4 text-xs font-thin">FANTASY SCORE</div>
