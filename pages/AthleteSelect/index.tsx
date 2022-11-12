@@ -30,7 +30,7 @@ const AthleteSelect = (props) => {
     const [radioSelected, setRadioSelected] = useState<number>(null);
     const [team, setTeam] = useState("allTeams");
     const [name, setName] = useState("allNames");
-    
+    const [passingVal, setPassingVal] = useState([]);
     const { accountId } = useWalletSelector();
 
     const provider = new providers.JsonRpcProvider({
@@ -70,8 +70,9 @@ const AthleteSelect = (props) => {
         test.splice(pass.index, 0, {
             position: "QB",
             isAthlete: true,
-            athlete: JSON.stringify(athletes[index]),
+            athlete: JSON.stringify((athletes[index])),
         })
+        setPassingVal(test);
         console.table(test);
         //pass.athleteLineup[parseInt(pass.index)] = athletes[index];
     }
@@ -113,7 +114,7 @@ const AthleteSelect = (props) => {
                         <Link href={{
                             pathname: '/CreateTeam',
                             query: {
-                                testing: test,
+                                testing: JSON.stringify(passingVal),
                             }
                         }} as='/CreateTeam'>
                         <button className="bg-indigo-buttonblue text-indigo-white w-full mr-10 md:w-80 h-14 text-center font-bold text-md">PROCEED</button>
