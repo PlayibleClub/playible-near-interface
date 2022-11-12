@@ -6,7 +6,7 @@ import Container from "components/containers/Container";
 import PortfolioContainer from "components/containers/PortfolioContainer";
 import router, {useRouter} from "next/router";
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
-import { convertNftToAthlete, getAthleteInfoById } from 'utils/athlete/helper';
+import { convertNftToAthlete, getAthleteInfoById, getAthleteInfoNoStats } from 'utils/athlete/helper';
 import { ATHLETE } from 'data/constants/nearContracts';
 import AthleteSelectContainer from 'components/containers/AthleteSelectContainer';
 import Link from 'next/link';
@@ -59,7 +59,7 @@ const AthleteSelect = (props) => {
         // @ts-ignore:next-line
         const result = JSON.parse(Buffer.from(data.result).toString());
         const result_two = await Promise.all(
-            result.map(convertNftToAthlete).map(getAthleteInfoById)
+            result.map(convertNftToAthlete).map(getAthleteInfoNoStats)
         );
 
         // const sortedResult = sortByKey(result_two, 'fantasy_score');
@@ -67,10 +67,10 @@ const AthleteSelect = (props) => {
         });
     }
     function setAthleteRadio(index){
-        test.splice(pass.index, 0, {
+        test.splice(pass.index, 1, {
             position: "QB",
             isAthlete: true,
-            athlete: JSON.stringify((athletes[index])),
+            athlete: athletes[index],
         })
         setPassingVal(test);
         console.table(test);

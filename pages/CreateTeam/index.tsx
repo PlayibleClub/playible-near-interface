@@ -38,7 +38,9 @@ export default function CreateLineup(props) {
     athletes: [],
   };
   const data = router.query;
-  console.log(data);
+  // @ts-ignore:next-line
+  console.table(data);
+  isJson(data.testing) ? console.log("true") : console.log("test");
   const positions = ['P', 'P', 'C', '1B', '2B', '3B', 'SS', 'OF', 'OF', 'OF'];
   const [team, setTeam] = useState([]);
   const [selectModal, setSelectModal] = useState(false);
@@ -70,7 +72,9 @@ export default function CreateLineup(props) {
   //const { error } = props;
   const [loading, setLoading] = useState(true);
   
-  const [lineup, setLineup] = useState([]);
+  const initialState = isJson(data.testing) ? JSON.parse(data.testing) : "hello";
+  console.log(initialState);
+  const [lineup, setLineup] = isJson(data.testing) ? useState(initialState): useState([]);
  const test = ["1", "2", "3", "4", "5", "6", "7","8"];
 
   //const { list: playerList } = useSelector((state) => state.assets);
@@ -180,8 +184,22 @@ export default function CreateLineup(props) {
     }
   };
   function populateLineup(){
+    
     const array = Array(8).fill({position: "QB", isAthlete: false});
     setLineup(array);
+  }
+  function isJson(str){
+    console.log(str);
+    try{
+      let json = JSON.parse(str);
+      console.table(json);
+      if(typeof json === 'object'){
+        return true;
+      }
+    } catch (e){
+      console.log("err:" + e);
+      return false;
+    }
   }
   const updateTeamSlots = () => {
     const tempSlots = [...team];
@@ -232,9 +250,15 @@ export default function CreateLineup(props) {
   };
 
   useEffect(() => {
-    populateLineup();
+    if(lineup.length === 0){
+      populateLineup();
+    }
+    
   }, []);
 
+  useEffect(() => {
+    console.log(lineup);
+  }, [lineup]);
   const confirmTeam = async () => {
     setLimit(5);
     setOffset(0);
@@ -656,11 +680,22 @@ export default function CreateLineup(props) {
                                                     athleteLineup={lineup}
                                                     index={i}
                                                     test={setArray(data.position, lineup, i)}
-                                                    img='/images/tokensMLB/CF.png' 
+                                                    img='/images/tokensMLB/CF.png'
+                                                    player='' 
                                                   />
                                                 </div>
                                               ) : (
                                                 <div>
+                                                  <Lineup
+                                                    position={data.position}
+                                                    athleteLineup={lineup}
+                                                    index={i}
+                                                    test={setArray(data.position, lineup, i)}
+                                                    img={data.athlete.image}
+                                                    player={data.athlete.name}
+                                                    score={data.athlete.fantasy_score}
+                                                  />
+                                                    
                                                   
                                                 </div>
                                               )}
