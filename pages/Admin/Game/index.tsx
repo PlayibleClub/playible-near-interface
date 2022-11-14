@@ -580,8 +580,8 @@ export default function Index(props) {
     const addGameArgs = Buffer.from(
       JSON.stringify({
         game_id: newGameID(),
-        game_time_start: startUnixTimestamp,
-        game_time_end: endUnixTimeStamp,
+        game_time_start: startMilliseconds,
+        game_time_end: endMilliseconds,
         usage_cost: 1,
         whitelist: testWhitelist,
         positions: testPositions,
