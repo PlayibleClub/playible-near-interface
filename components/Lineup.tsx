@@ -12,6 +12,7 @@ const Lineup = (props) => {
     player,
     img = null,
     id,
+    game_id,
     score,
     nextposition,
     onClick= null,
@@ -28,6 +29,7 @@ const Lineup = (props) => {
       <Link href={{
         pathname: '/AthleteSelect',
         query: {
+          game_id: game_id,
           position: test[0].position,
           athleteLineup: JSON.stringify(test[1].lineup),
           index: test[2].index,

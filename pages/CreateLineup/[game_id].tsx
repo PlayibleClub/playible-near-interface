@@ -149,7 +149,7 @@ export default function CreateLineup(props) {
                             </button>
                           </a>
                           )} */}
-                          <Link href={`/CreateLineup/${gameId}`}>
+                          <Link href={`/CreateTeam/${gameId}`}>
                           <button className='bg-indigo-buttonblue text-indigo-white whitespace-nowrap h-14 px-10 mt-4 text-center font-bold'>
                             CREATE YOUR LINEUP +
                           </button>

@@ -24,6 +24,11 @@ import LoadingPageDark from '../../components/loading/LoadingPageDark';
 import { DEFAULT_MAX_FEES } from 'data/constants/gasFees';
 import { GAME } from 'data/constants/nearContracts';
 export default function CreateLineup(props) {
+
+  const { query } = props;
+
+  const gameId = query.game_id;
+
   const router = useRouter();
   const dispatch = useDispatch();
   const connectedWallet = {};
@@ -75,7 +80,6 @@ export default function CreateLineup(props) {
    // @ts-ignore:next-line
   const initialState = isJson(data.testing) ? JSON.parse(data.testing) : "hello";
   const [lineup, setLineup] = isJson(data.testing) ? useState(initialState): useState([]);
-  const test = ["1", "2", "3", "4", "5", "6", "7","8"];
 
   //const { list: playerList } = useSelector((state) => state.assets);
 
@@ -725,6 +729,7 @@ export default function CreateLineup(props) {
                                                     test={setArray(data.position, lineup, i)}
                                                     img='/images/tokensMLB/CF.png'
                                                     player='' 
+                                                    game_id={gameId}
                                                   />
                                                 </div>
                                               ) : (
@@ -737,6 +742,7 @@ export default function CreateLineup(props) {
                                                     img={data.athlete.image}
                                                     player={data.athlete.name}
                                                     score={data.athlete.fantasy_score}
+                                                    game_id={gameId}
                                                   />
                                                     
                                                   
@@ -942,7 +948,8 @@ export default function CreateLineup(props) {
 // }
 export async function getServerSideProps(ctx){
   const { query } = ctx;
-  if (query.athlete_id){
+
+  if (query.game_id && query.athlete_id){
     return {
       props : { query },
     }

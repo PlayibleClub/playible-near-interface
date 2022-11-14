@@ -14,6 +14,8 @@ import Link from 'next/link';
 const AthleteSelect = (props) => {
     const { query } = props;
 
+    const gameId = query.game_id;
+
     const position = query.position;
     const router = useRouter();
     const data = router.query;
@@ -81,7 +83,7 @@ const AthleteSelect = (props) => {
     return (
     <>
      <Container activeName="PLAY">
-        <BackFunction prev={`/CreateTeam`} />
+        <BackFunction prev={`/CreateTeam/${gameId}`} />
         <PortfolioContainer
             title="SELECT YOUR ATHLETE"
             textcolor="text-indigo-black"
@@ -110,11 +112,12 @@ const AthleteSelect = (props) => {
                 </div>
                 <div className="flex  bg-opacity-5 w-full justify-end">
                         <Link href={{
-                            pathname: '/CreateTeam',
+                            pathname: '/CreateTeam/[game_id]',
                             query: {
-                                testing: JSON.stringify(lineup),
-                            }
-                        }} as='/CreateTeam'>
+                                game_id: gameId,
+                                testing: JSON.stringify(lineup),                                
+                            } 
+                        }} as={`/CreateTeam/${gameId}`}>
                         <button className="bg-indigo-buttonblue text-indigo-white w-full mr-10 md:w-80 h-14 text-center font-bold text-md">PROCEED</button>
                         </Link>
                 </div>  
