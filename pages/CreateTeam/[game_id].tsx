@@ -253,7 +253,15 @@ export default function CreateLineup(props) {
             actions: [action_submit_lineup],
         }]
     })
-}
+  }
+  function verifyLineup(game_id, team_name, lineup){
+    
+    const token_ids = lineup.map(data => {
+      return data.athlete.athlete_id;
+    })
+    
+    execute_submit_lineup(game_id, team_name, token_ids);
+  }
 
   const updateTeamSlots = () => {
     const tempSlots = [...team];
@@ -860,7 +868,7 @@ export default function CreateLineup(props) {
                           <p className="">Confirm team lineup</p>
                           <button
                             className="bg-indigo-green font-monument tracking-widest text-indigo-white w-full h-16 text-center text-sm mt-4"
-                            onClick={confirmTeam}
+                            onClick={() => verifyLineup(1, "Team T34M", lineup)}
                           >
                             CONFIRM
                           </button>
