@@ -14,9 +14,20 @@ import { ADMIN } from '../../data/constants/address';
 import Link from 'next/link';
 import 'regenerator-runtime/runtime';
 import LoadingPageDark from '../../components/loading/LoadingPageDark';
+import { providers } from 'near-api-js';
+import { getContract, getRPCProvider } from 'utils/near';
+import { GAME } from 'data/constants/nearContracts';
 
 export default function PlayDetails(props) {
-  const router = useRouter();
+
+  const { query } = props;
+
+  const gameId = query.game_id;
+
+  const provider = new providers.JsonRpcProvider({
+    url: getRPCProvider(),
+  });
+
   const [gameData, setGameData] = useState(null);
   const [leaderboard, setLeaderboard] = useState([]);
   const [registeredTeams, setRegisteredTeams] = useState([]);
@@ -29,37 +40,55 @@ export default function PlayDetails(props) {
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState(error);
 
-  const test2 = [1,2,3,4,5];
-  
-  async function fetchGameData() {
-    const res = await axiosInstance.get(`/fantasy/game/${router.query.id}/`);
-    if (res.status === 200) {
-      setGameData(res.data);
-      setStartDate(res.data.end_datetime);
-    } else {
-    }
-  }
+  function query_game_data() {
+    const query = JSON.stringify({
+      game_id: gameId
+    });
 
-  async function fetchRegisteredTeams() {
-    const res = await axiosInstance.get(
-      `/fantasy/game/${router.query.id}/registered_teams_detail/?wallet_addr=${"TODO"}`
-    );
-
-    if (res.status === 200 && res.data.length > 0) {
-      setRegisteredTeams(res.data);
-    }
-  }
-
-  async function fetchLeaderboard() {
-    const res = await axiosInstance.get(`/fantasy/game/${router.query.id}/leaderboard/`);
-    if (res.status === 200) {
-      const removedAdminWallet = res.data.filter(function (data) {
-        return data.player_addr !== ADMIN;
+    provider
+      .query({
+        request_type: 'call_function',
+        finality: 'optimistic',
+        account_id: getContract(GAME),
+        method_name: 'get_game',
+        args_base64: Buffer.from(query).toString('base64'),
+      })
+      .then(async (data) => {
+        // @ts-ignore:next-line
+        const result = JSON.parse(Buffer.from(data.result).toString());
+        setGameData(result);
       });
-      setLeaderboard(removedAdminWallet);
-    } else {
-    }
   }
+  
+  // async function fetchGameData() {
+  //   const res = await axiosInstance.get(`/fantasy/game/${router.query.id}/`);
+  //   if (res.status === 200) {
+  //     setGameData(res.data);
+  //     setStartDate(res.data.end_datetime);
+  //   } else {
+  //   }
+  // }
+
+  // async function fetchRegisteredTeams() {
+  //   const res = await axiosInstance.get(
+  //     `/fantasy/game/${router.query.id}/registered_teams_detail/?wallet_addr=${"TODO"}`
+  //   );
+
+  //   if (res.status === 200 && res.data.length > 0) {
+  //     setRegisteredTeams(res.data);
+  //   }
+  // }
+
+  // async function fetchLeaderboard() {
+  //   const res = await axiosInstance.get(`/fantasy/game/${router.query.id}/leaderboard/`);
+  //   if (res.status === 200) {
+  //     const removedAdminWallet = res.data.filter(function (data) {
+  //       return data.player_addr !== ADMIN;
+  //     });
+  //     setLeaderboard(removedAdminWallet);
+  //   } else {
+  //   }
+  // }
 
   function hasLeaderboard(start, end) {
     const start_datetime = new Date(start);
@@ -91,13 +120,17 @@ export default function PlayDetails(props) {
   }
 
   useEffect(() => {
-    if (router && router.query.id) {
-      fetchLeaderboard();
-      fetchGameData();
-      setgameOngoing(false);
-      isNew();
-    }
-  }, [router, gameOngoing, gameEnd, timesUp]);
+    query_game_data();
+  }, []);
+
+  // useEffect(() => {
+  //   if (router && router.query.id) {
+  //     fetchLeaderboard();
+  //     fetchGameData();
+  //     setgameOngoing(false);
+  //     isNew();
+  //   }
+  // }, [router, gameOngoing, gameEnd, timesUp]);
 
   // useEffect(() => {
   //   if (router && router.query.id && connectedWallet) {
@@ -105,20 +138,20 @@ export default function PlayDetails(props) {
   //   }
   // }, [router, connectedWallet]);
 
-  useEffect(() => {
-    const id = setInterval(() => {
-      const currentDate = new Date();
-      const end = new Date(startDate);
-      // const totalSeconds = (end - currentDate) / 1000;
-      isNew();
-      // if (Math.floor(totalSeconds) < 0) {
-      //   clearInterval(id);
-      //   setTimesUp(true);
-      //   isEnd();
-      // }
-    }, 1000);
-    return () => clearInterval(id);
-  }, [startDate]);
+  // useEffect(() => {
+  //   const id = setInterval(() => {
+  //     const currentDate = new Date();
+  //     const end = new Date(startDate);
+  //     // const totalSeconds = (end - currentDate) / 1000;
+  //     isNew();
+  //     // if (Math.floor(totalSeconds) < 0) {
+  //     //   clearInterval(id);
+  //     //   setTimesUp(true);
+  //     //   isEnd();
+  //     // }
+  //   }, 1000);
+  //   return () => clearInterval(id);
+  // }, [startDate]);
 
   // useEffect(() => {
   //   setErr(null);
@@ -139,9 +172,9 @@ export default function PlayDetails(props) {
   //   }
   // }, [connectedWallet]);
 
-  if (!router) {
-    return <div></div>;
-  }
+  // if (!router) {
+  //   return <div></div>;
+  // }
 
 return (
   <Container activeName="SQUAD">
@@ -189,7 +222,7 @@ return (
                                         return (
                                           <div className="p-5 px-6 bg-black-dark text-indigo-white mb-5 flex justify-between">
                                             <p className="font-monument">{data.name}</p>
-                                            <Link
+                                            {/* <Link
                                               href={{
                                                 pathname: '/EntrySummary',
                                                 query: {
@@ -202,7 +235,7 @@ return (
                                               <a>
                                                 <img src={'/images/arrow-top-right.png'} />
                                               </a>
-                                            </Link>
+                                            </Link> */}
                                           </div>
                                         );
                                       })
@@ -216,26 +249,24 @@ return (
                                       <div className="flex space-x-14 mt-4">
                                         <div>
                                           <div>PRIZE POOL</div>
-                                          <div className="text-base font-monument text-lg">
+                                          <div className="font-monument text-lg">
                                             {/* ${gameData.prize} */}
                                             ${"2,300"}
                                           </div>
                                         </div>
                                         <div>
                                           <div>START DATE</div>
-                                          <div className="text-base font-monument text-lg">
+                                          <div className="font-monument text-lg">
                                             {/* {moment(gameData.start_datetime).format('MM/DD/YYYY')} */}
-                                            {moment("11/11/2022").format('MM/DD/YYYY')}
+                                            {moment(gameData.game_time_start).format('MM/DD/YYYY')}
                                           </div>
                                         </div>
                                       </div>
                                       <div>REGISTRATION ENDS IN</div>
                                       <PlayDetailsComponent
-                                        // startDate={gameData.start_datetime}
-                                        // endDate={gameData.end_d}
-                                        startDate={"11/11/2022"}
-                                        endDate={"11/12/2022"}
-                                        fetch={() => fetchGameData()}
+                                        startDate={moment(gameData.game_time_start).format('MM/DD/YYYY')}
+                                        endDate={moment(gameData.game_time_end).format('MM/DD/YYYY')}
+                                        // fetch={() => fetchGameData()}
                                         game={() => isOngoing()}
                                         gameEnd={() => isEnd()}
                                       />
@@ -265,7 +296,7 @@ return (
                                     return (
                                       <div className="p-5 px-6 bg-black-dark text-indigo-white mb-5 flex justify-between">
                                         <p className="font-monument">{data.name}</p>
-                                        <Link
+                                        {/* <Link
                                           href={{
                                             pathname: '/EntrySummary',
                                             query: {
@@ -278,7 +309,7 @@ return (
                                           <a>
                                             <img src={'/images/arrow-top-right.png'} />
                                           </a>
-                                        </Link>
+                                        </Link> */}
                                       </div>
                                     )
                                   })
@@ -395,10 +426,10 @@ return (
                     <PortfolioContainer textcolor="indigo-black" title="GAMEPLAY" />
 
                     {/* if paid game */}
-                    <div className="ml-7 mt-5 font-normal font-bold text-indigo-red">*Participation in this game will reduce your player token's usage by 1.</div>
+                    <div className="ml-7 mt-5 font-bold text-indigo-red">*Participation in this game will reduce your player token's usage by 1.</div>
 
                     {/* if free game */}
-                    <div className="ml-7 mt-5 font-normal font-bold text-indigo-green">*Winning in this game will reward your player token's usage by 1.</div>
+                    <div className="ml-7 mt-5 font-bold text-indigo-green">*Winning in this game will reward your player token's usage by 1.</div>
 
                     <div className="ml-7 mt-3 font-normal">
                       Enter a team into the Alley-oop tournament to compete for cash prizes.
@@ -422,11 +453,16 @@ return (
 );
 };
 
-{/* export async function getServerSideProps(ctx) {
+export async function getServerSideProps(ctx) {
+  const { query } = ctx;
+
+  if (query.game_id != query.game_id) {
+    return {
+      desination: query.origin || '/Play',
+    };
+  }
+
   return {
-    redirect: {
-      destination: '/Portfolio',
-      permanent: false,
-    },
+    props: { query },
   };
-} */}
+}
