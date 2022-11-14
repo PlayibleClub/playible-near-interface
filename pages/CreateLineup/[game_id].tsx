@@ -5,41 +5,51 @@ import ModalPortfolioContainer from '../../components/containers/ModalPortfolioC
 import Container from '../../components/containers/Container';
 import BackFunction from '../../components/buttons/BackFunction';
 import { useRouter } from 'next/router';
-import { axiosInstance } from '../../utils/playible/';
+import { axiosInstance } from '../../utils/playible';
 import Link from 'next/link';
 import 'regenerator-runtime/runtime';
 import LoadingPageDark from '../../components/loading/LoadingPageDark';
+import { providers } from 'near-api-js';
+import { getContract, getRPCProvider } from 'utils/near';
+import { GAME } from 'data/constants/nearContracts';
+
 
 export default function CreateLineup(props) {
-  const router = useRouter();
+  const { query } = props;
+
+  const gameId = query.game_id;
+
+  const provider = new providers.JsonRpcProvider({
+    url: getRPCProvider(),
+  });
+
   const [gameData, setGameData] = useState(null);
   const [teamModal, setTeamModal] = useState(false);
   const [teams, setTeams] = useState([]);
   const [startDate, setStartDate] = useState();
   const [buttonMute, setButtonMute] = useState(false);
 
-  const { query } = props;
   const [loading, setLoading] = useState(true);
   // const [err, setErr] = useState(error);
 
-  const fetchGameData = async () => {
-    const res = await axiosInstance.get(`/fantasy/game/${router.query.id}/`);
+  // const fetchGameData = async () => {
+  //   const res = await axiosInstance.get(`/fantasy/game/${router.query.id}/`);
 
-    const teams = await axiosInstance.get(
-      `/fantasy/game/${router.query.id}/registered_teams_detail/?wallet_addr=${"TODO"}`
-    );
+  //   const teams = await axiosInstance.get(
+  //     `/fantasy/game/${router.query.id}/registered_teams_detail/?wallet_addr=${"TODO"}`
+  //   );
 
-    if (teams.status === 200) {
-      setTeams(teams.data);
-    }
+  //   if (teams.status === 200) {
+  //     setTeams(teams.data);
+  //   }
 
-    if (res.status === 200) {
-      setGameData(res.data);
-      setStartDate(res.data.start_datetime);
-    }
+  //   if (res.status === 200) {
+  //     setGameData(res.data);
+  //     setStartDate(res.data.start_datetime);
+  //   }
 
-    setLoading(false);
-  };
+  //   setLoading(false);
+  // };
 
   // useEffect(() => {
   //   if (router && router.query.id && connectedWallet) {
@@ -48,15 +58,15 @@ export default function CreateLineup(props) {
   //   }
   // }, [router, connectedWallet]);
 
-  if (!router) {
-    return;
-  }
+  // if (!router) {
+  //   return;
+  // }
 
-  if (gameData && router && router.query.id) {
-    if (new Date(gameData.start_datetime) < new Date()) {
-      router.replace(`/PlayDetails/?id=${router.query.id}`);
-    }
-  }
+  // if (gameData && router && router.query.id) {
+  //   if (new Date(gameData.start_datetime) < new Date()) {
+  //     router.replace(`/PlayDetails/?id=${router.query.id}`);
+  //   }
+  // }
 
   useEffect(() => {
     const id = setInterval(() => {
@@ -139,10 +149,7 @@ export default function CreateLineup(props) {
                             </button>
                           </a>
                           )} */}
-                          <Link href={{
-                            pathname: '/CreateTeam',
-                            query: {}
-                          }}>
+                          <Link href={`/CreateLineup/${gameId}`}>
                           <button className='bg-indigo-buttonblue text-indigo-white whitespace-nowrap h-14 px-10 mt-4 text-center font-bold'>
                             CREATE YOUR LINEUP +
                           </button>
@@ -203,9 +210,9 @@ export default function CreateLineup(props) {
 export async function getServerSideProps(ctx) {
   const { query } = ctx;
 
-  if (query.id != query.id) {
+  if (query.game_id != query.game_id) {
     return {
-      desination: query.origin || '/PlayDetails',
+      desination: query.origin || '/Play',
     };
   }
 

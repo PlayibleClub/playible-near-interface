@@ -614,6 +614,7 @@ export default function Index(props) {
   useEffect(() => {
     getTotalPercent();
   }, [distribution]);
+  
   useEffect(() => {
     query_games_list();
   }, []);
