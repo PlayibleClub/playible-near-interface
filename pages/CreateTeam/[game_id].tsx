@@ -868,7 +868,7 @@ export default function CreateLineup(props) {
                           <p className="">Confirm team lineup</p>
                           <button
                             className="bg-indigo-green font-monument tracking-widest text-indigo-white w-full h-16 text-center text-sm mt-4"
-                            onClick={() => verifyLineup(1, "Team T34M", lineup)}
+                            onClick={() => verifyLineup(gameId, teamName, lineup)}
                           >
                             CONFIRM
                           </button>
