@@ -650,7 +650,7 @@ export default function CreateLineup(props) {
                                 ''
                               )}
                               <div className={`${selectModal ? 'hidden h-0' : ''}`}>
-                                <BackFunction prev={`/CreateLineup?id=${router.query.id}`} />
+                                <BackFunction prev={`/CreateLineup/${gameId}`} />
                                 <PortfolioContainer
                                   title="CREATE LINEUP"
                                   textcolor="text-indigo-black"

@@ -101,7 +101,7 @@ export default function CreateLineup(props) {
     <>
       <Container activeName="PLAY">
         <div className="mt-8">
-          <BackFunction prev={query.origin ? `/${query.origin}` : '/PlayDetails'}></BackFunction>
+          <BackFunction prev={query.origin ? `/${query.origin}` : `/PlayDetails/${gameId}`}></BackFunction>
         </div>
         <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
           <Main color="indigo-white">
