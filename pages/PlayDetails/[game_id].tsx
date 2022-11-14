@@ -56,9 +56,14 @@ export default function PlayDetails(props) {
       .then(async (data) => {
         // @ts-ignore:next-line
         const result = JSON.parse(Buffer.from(data.result).toString());
+        console.log(result);
         setGameData(result);
       });
   }
+
+  useEffect(() => {
+    query_game_data();
+  }, []);
   
   // async function fetchGameData() {
   //   const res = await axiosInstance.get(`/fantasy/game/${router.query.id}/`);
@@ -118,10 +123,6 @@ export default function PlayDetails(props) {
     //   setgameEnd(true);
     // }
   }
-
-  useEffect(() => {
-    query_game_data();
-  }, []);
 
   // useEffect(() => {
   //   if (router && router.query.id) {
@@ -257,26 +258,25 @@ return (
                                         <div>
                                           <div>START DATE</div>
                                           <div className="font-monument text-lg">
-                                            {/* {moment(gameData.start_datetime).format('MM/DD/YYYY')} */}
-                                            {moment(gameData.game_time_start).format('MM/DD/YYYY')}
+                                            {moment(gameData?.start_time).format('MM/DD/YYYY')}
                                           </div>
                                         </div>
                                       </div>
                                       <div>REGISTRATION ENDS IN</div>
                                       <PlayDetailsComponent
-                                        startDate={moment(gameData.game_time_start).format('MM/DD/YYYY')}
-                                        endDate={moment(gameData.game_time_end).format('MM/DD/YYYY')}
+                                        startDate={moment(gameData?.start_time).format('MM/DD/YYYY')}
+                                        endDate={moment(gameData?.end_time).format('MM/DD/YYYY')}
                                         // fetch={() => fetchGameData()}
                                         game={() => isOngoing()}
                                         gameEnd={() => isEnd()}
                                       />
                                       <div className="flex justify-center md:justify-start">
                                         {/* <a href={`/CreateLineup?id=${gameData.id}`}> */}
-                                        <a href={`/CreateLineup`}>
+                                        <Link href={`/CreateLineup/${gameId}`}>
                                           <button className="bg-indigo-buttonblue text-indigo-white w-64 h-12 text-center font-bold text-md mt-8">
                                             ENTER GAME
                                           </button>
-                                        </a>
+                                        </Link>
                                       </div>
                                     </>
                                   ) : (
@@ -450,7 +450,7 @@ return (
       </Main>
     </div>
   </Container>
-);
+  );
 };
 
 export async function getServerSideProps(ctx) {
