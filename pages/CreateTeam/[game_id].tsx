@@ -29,6 +29,8 @@ export default function CreateLineup(props) {
 
   const gameId = query.game_id;
 
+  const newTeamName = query.teamName;
+
   const router = useRouter();
   const dispatch = useDispatch();
   const connectedWallet = {};
@@ -74,6 +76,15 @@ export default function CreateLineup(props) {
     title: '',
     content: '',
   });
+
+  function getTeamName() {
+    if (newTeamName != "") {
+      setTeamName(newTeamName);
+    }
+    else {
+      setTeamName("Team 1");
+    }
+  }
 
   //const { error } = props;
   const [loading, setLoading] = useState(true);
@@ -243,7 +254,6 @@ export default function CreateLineup(props) {
             receiverId: getContract(GAME),
             //@ts-ignore:next-line
             actions: [action_submit_lineup],
-
         }]
     })
 }
@@ -297,6 +307,7 @@ export default function CreateLineup(props) {
   };
 
   useEffect(() => {
+    getTeamName();
     if(lineup.length === 0){
       populateLineup();
     }
@@ -730,6 +741,7 @@ export default function CreateLineup(props) {
                                                     img='/images/tokensMLB/CF.png'
                                                     player='' 
                                                     game_id={gameId}
+                                                    teamName={teamName}
                                                   />
                                                 </div>
                                               ) : (

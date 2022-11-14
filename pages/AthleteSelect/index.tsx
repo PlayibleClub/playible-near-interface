@@ -15,6 +15,7 @@ const AthleteSelect = (props) => {
     const { query } = props;
 
     const gameId = query.game_id;
+    const teamName = query.teamName;
 
     const position = query.position;
     const router = useRouter();
@@ -115,7 +116,8 @@ const AthleteSelect = (props) => {
                             pathname: '/CreateTeam/[game_id]',
                             query: {
                                 game_id: gameId,
-                                testing: JSON.stringify(lineup),                                
+                                testing: JSON.stringify(lineup),
+                                teamName: teamName                            
                             } 
                         }} as={`/CreateTeam/${gameId}`}>
                         <button className="bg-indigo-buttonblue text-indigo-white w-full mr-10 md:w-80 h-14 text-center font-bold text-md">PROCEED</button>

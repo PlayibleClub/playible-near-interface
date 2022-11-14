@@ -14,6 +14,7 @@ const Lineup = (props) => {
     id,
     game_id,
     score,
+    teamName,
     nextposition,
     onClick= null,
     athleteLineup,
@@ -33,6 +34,7 @@ const Lineup = (props) => {
           position: test[0].position,
           athleteLineup: JSON.stringify(test[1].lineup),
           index: test[2].index,
+          teamName: teamName
         },
       }} as="/AthleteSelect">
         {img ? (
