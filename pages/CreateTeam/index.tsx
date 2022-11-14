@@ -8,9 +8,9 @@ import BackFunction from '../../components/buttons/BackFunction';
 import 'regenerator-runtime/runtime';
 
 import { useRouter } from 'next/router';
-
+import { getContract, getRPCProvider } from 'utils/near';
 import Lineup from '../../components/Lineup';
-
+import { useWalletSelector } from 'contexts/WalletSelectorContext';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAccountAssets } from '../../redux/reducers/external/playible/assets';
 import PerformerContainer from '../../components/containers/PerformerContainer';
@@ -21,7 +21,8 @@ import Modal from '../../components/modals/Modal';
 import { axiosInstance } from '../../utils/playible';
 import { route } from 'next/dist/next-server/server/router';
 import LoadingPageDark from '../../components/loading/LoadingPageDark';
-
+import { DEFAULT_MAX_FEES } from 'data/constants/gasFees';
+import { GAME } from 'data/constants/nearContracts';
 export default function CreateLineup(props) {
   const router = useRouter();
   const dispatch = useDispatch();
@@ -37,6 +38,8 @@ export default function CreateLineup(props) {
     wallet_addr: '',
     athletes: [],
   };
+
+  const { selector } = useWalletSelector();
   const data = router.query;
   // @ts-ignore:next-line
   const positions = ['P', 'P', 'C', '1B', '2B', '3B', 'SS', 'OF', 'OF', 'OF'];
@@ -182,7 +185,17 @@ export default function CreateLineup(props) {
   };
   function populateLineup(){
     
-    const array = Array(8).fill({position: "QB", isAthlete: false});
+    //const array = Array(8).fill({position: "QB", isAthlete: false});
+    const array = [
+      {position: 'QB', isAthlete: false},
+      {position: 'RB', isAthlete: false},
+      {position: 'RB', isAthlete: false},
+      {position: 'WR', isAthlete: false},
+      {position: 'WR', isAthlete: false},
+      {position: 'TE', isAthlete: false},
+      {position: 'TE', isAthlete: false},
+      {position: 'QB', isAthlete: false},
+    ]
     setLineup(array);
   }
 
@@ -200,6 +213,37 @@ export default function CreateLineup(props) {
       return false;
     }
   }
+
+  async function execute_submit_lineup(game_id, team_name, token_ids){
+    const submitLineupArgs = Buffer.from(
+        JSON.stringify({
+            game_id: game_id,
+            team_name: team_name,
+            token_ids: token_ids,
+        })
+    );
+
+    const action_submit_lineup = {
+        type: 'FunctionCall',
+        params: {
+            methodName: 'submit_lineup',
+            args: submitLineupArgs,
+            gas: DEFAULT_MAX_FEES,
+        }
+    }
+
+    const wallet = await selector.wallet();
+
+    const tx = wallet.signAndSendTransactions({
+        transactions: [{
+            receiverId: getContract(GAME),
+            //@ts-ignore:next-line
+            actions: [action_submit_lineup],
+
+        }]
+    })
+}
+
   const updateTeamSlots = () => {
     const tempSlots = [...team];
 
