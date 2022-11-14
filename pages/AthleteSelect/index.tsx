@@ -69,7 +69,7 @@ const AthleteSelect = (props) => {
             isAthlete: true,
             athlete: athletes[index],
         })
-        setLineup(lineup);
+        setLineup(passedLineup);
 
     }
     useEffect(() => {
