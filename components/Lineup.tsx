@@ -21,8 +21,6 @@ const Lineup = (props) => {
   } = props;
   //const { position, player = '', img = null, id, score, nextposition, onClick = null } = props;
   const lineupPosition = '/images/tokensMLB/' + position + '.png';
-  let name = test[1].lineup[index].athlete.name;
-  console.table(test);
   return (
     <>
     

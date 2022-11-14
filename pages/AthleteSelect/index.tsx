@@ -19,10 +19,7 @@ const AthleteSelect = (props) => {
     const data = router.query;
     let pass = data;
     // @ts-ignore:next-line
-    let test = JSON.parse(data.athleteLineup);
-    // @ts-ignore:next-line
-    console.log(JSON.parse(data.athleteLineup));
-    console.table(test);
+    let passedLineup = JSON.parse(data.athleteLineup);
     const [athletes, setAthletes] = useState([]);
     const [athleteOffset, setAthleteOffset] = useState(0);
     const [athleteLimit, setAthleteLimit] = useState(10);
@@ -30,7 +27,7 @@ const AthleteSelect = (props) => {
     const [radioSelected, setRadioSelected] = useState<number>(null);
     const [team, setTeam] = useState("allTeams");
     const [name, setName] = useState("allNames");
-    const [passingVal, setPassingVal] = useState([]);
+    const [lineup, setLineup] = useState([]);
     const { accountId } = useWalletSelector();
 
     const provider = new providers.JsonRpcProvider({
@@ -67,14 +64,13 @@ const AthleteSelect = (props) => {
         });
     }
     function setAthleteRadio(index){
-        test.splice(pass.index, 1, {
+        passedLineup.splice(pass.index, 1, {
             position: "QB",
             isAthlete: true,
             athlete: athletes[index],
         })
-        setPassingVal(test);
-        console.table(test);
-        //pass.athleteLineup[parseInt(pass.index)] = athletes[index];
+        setLineup(lineup);
+
     }
     useEffect(() => {
         if(!isNaN(athleteOffset)){
@@ -83,7 +79,7 @@ const AthleteSelect = (props) => {
     }, []);
 
     return (
-    <>{console.log(position)}
+    <>
      <Container activeName="PLAY">
         <BackFunction prev={`/CreateTeam`} />
         <PortfolioContainer
@@ -114,7 +110,7 @@ const AthleteSelect = (props) => {
                         <Link href={{
                             pathname: '/CreateTeam',
                             query: {
-                                testing: JSON.stringify(passingVal),
+                                testing: JSON.stringify(lineup),
                             }
                         }} as='/CreateTeam'>
                         <button className="bg-indigo-buttonblue text-indigo-white w-full mr-10 md:w-80 h-14 text-center font-bold text-md">PROCEED</button>

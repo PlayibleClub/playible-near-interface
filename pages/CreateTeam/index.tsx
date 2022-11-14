@@ -39,8 +39,6 @@ export default function CreateLineup(props) {
   };
   const data = router.query;
   // @ts-ignore:next-line
-  console.table(data);
-  isJson(data.testing) ? console.log("true") : console.log("test");
   const positions = ['P', 'P', 'C', '1B', '2B', '3B', 'SS', 'OF', 'OF', 'OF'];
   const [team, setTeam] = useState([]);
   const [selectModal, setSelectModal] = useState(false);
@@ -71,11 +69,10 @@ export default function CreateLineup(props) {
 
   //const { error } = props;
   const [loading, setLoading] = useState(true);
-  
+   // @ts-ignore:next-line
   const initialState = isJson(data.testing) ? JSON.parse(data.testing) : "hello";
-  console.log(initialState);
   const [lineup, setLineup] = isJson(data.testing) ? useState(initialState): useState([]);
- const test = ["1", "2", "3", "4", "5", "6", "7","8"];
+  const test = ["1", "2", "3", "4", "5", "6", "7","8"];
 
   //const { list: playerList } = useSelector((state) => state.assets);
 
@@ -188,16 +185,18 @@ export default function CreateLineup(props) {
     const array = Array(8).fill({position: "QB", isAthlete: false});
     setLineup(array);
   }
+
+  /* Function that checks whether a string parses into valid JSON. Used to check if data from router
+     query parses into a JSON that holds the athlete data coming from AthleteSelect. Returns false
+     otherwise if the user is coming from CreateLineup
+  */
   function isJson(str){
-    console.log(str);
     try{
       let json = JSON.parse(str);
-      console.table(json);
       if(typeof json === 'object'){
         return true;
       }
     } catch (e){
-      console.log("err:" + e);
       return false;
     }
   }
