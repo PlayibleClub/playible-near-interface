@@ -91,18 +91,20 @@ const AthleteSelect = (props) => {
                     {athletes.map((item, i) => {
                         const accountAthleteIndex = athletes.indexOf(item, 0);
                         return(
-                            <div className="w-4/5 h-5/6 border-transparent focus:border-transparent focus:ring-2 focus:ring-blue-300 focus:border-transparent">
-                                <input className="justify-self-end" type="radio" name="athletePick" value={i} onChange={(e) => setAthleteRadio(parseInt(e.target.value))}></input>
-                                <AthleteSelectContainer
-                                    key={item.athlete_id}
-                                    athleteName={item.name}
-                                    avgScore={item.fantasy_score.toFixed(2)}
-                                    id={item.athlete_id}
-                                    uri={item.image}
-                                    index={accountAthleteIndex}
-                                />
-                                
-                            </div>
+                            <label> 
+                                <div className="w-4/5 h-5/6 border-transparent focus:border-transparent focus:ring-2 focus:ring-blue-300 focus:border-transparent">
+                                    <input className="justify-self-end" type="radio" name="athletePick" value={i} onChange={(e) => setAthleteRadio(parseInt(e.target.value))}></input>
+                                    <AthleteSelectContainer
+                                        key={item.athlete_id}
+                                        athleteName={item.name}
+                                        avgScore={item.fantasy_score.toFixed(2)}
+                                        id={item.athlete_id}
+                                        uri={item.image}
+                                        index={accountAthleteIndex}
+                                    />
+                                    
+                                </div>
+                            </label>
                         )
                     })}
                 </div>
