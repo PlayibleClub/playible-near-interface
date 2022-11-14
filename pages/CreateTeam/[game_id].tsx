@@ -53,7 +53,7 @@ export default function CreateLineup(props) {
   const [team, setTeam] = useState([]);
   const [selectModal, setSelectModal] = useState(false);
   const [filterPos, setFilterPos] = useState(null);
-  const [teamName, setTeamName] = useState('Team 1');
+  const [teamName, setTeamName] = useState("");
 
   const [limit, setLimit] = useState(5);
   const [offset, setOffset] = useState(0);
@@ -80,9 +80,6 @@ export default function CreateLineup(props) {
   function getTeamName() {
     if (newTeamName != "") {
       setTeamName(newTeamName);
-    }
-    else {
-      setTeamName("Team 1");
     }
   }
 

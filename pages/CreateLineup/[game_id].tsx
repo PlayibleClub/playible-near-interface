@@ -18,7 +18,7 @@ export default function CreateLineup(props) {
   const { query } = props;
 
   const gameId = query.game_id;
-
+  const teamName = "Team 1";
   const provider = new providers.JsonRpcProvider({
     url: getRPCProvider(),
   });
@@ -149,7 +149,13 @@ export default function CreateLineup(props) {
                             </button>
                           </a>
                           )} */}
-                          <Link href={`/CreateTeam/${gameId}`}>
+                          <Link href={{
+                              pathname: '/CreateTeam/[game_id]',
+                              query: {
+                                  game_id: gameId,
+                                  teamName: teamName                            
+                              } 
+                          }} as={`/CreateTeam/${gameId}`}>
                           <button className='bg-indigo-buttonblue text-indigo-white whitespace-nowrap h-14 px-10 mt-4 text-center font-bold'>
                             CREATE YOUR LINEUP +
                           </button>
