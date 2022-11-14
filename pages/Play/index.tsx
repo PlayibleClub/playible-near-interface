@@ -771,7 +771,7 @@ const Play = (props) => {
                                             />
                                           </div>
                                         </a> */}
-                                        <a href={`/PlayDetails?id=${i}`}>
+                                        <Link href={`/PlayDetails/${data.game_id}`} passHref>
                                           <div className="mr-6">
                                             <PlayComponent
                                               type={activeCategory}
@@ -787,7 +787,7 @@ const Play = (props) => {
                                               index={() => changeIndex(1)}
                                             />
                                           </div>
-                                        </a>
+                                        </Link>
                                         {/* {activeCategory === 'completed' && data.hasAthletes && ( */}
                                         {activeCategory === 'completed' && "test" && (
                                           <div className="">
