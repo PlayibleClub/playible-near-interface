@@ -5,41 +5,51 @@ import ModalPortfolioContainer from '../../components/containers/ModalPortfolioC
 import Container from '../../components/containers/Container';
 import BackFunction from '../../components/buttons/BackFunction';
 import { useRouter } from 'next/router';
-import { axiosInstance } from '../../utils/playible/';
+import { axiosInstance } from '../../utils/playible';
 import Link from 'next/link';
 import 'regenerator-runtime/runtime';
 import LoadingPageDark from '../../components/loading/LoadingPageDark';
+import { providers } from 'near-api-js';
+import { getContract, getRPCProvider } from 'utils/near';
+import { GAME } from 'data/constants/nearContracts';
+
 
 export default function CreateLineup(props) {
-  const router = useRouter();
+  const { query } = props;
+
+  const gameId = query.game_id;
+  const teamName = "Team 1";
+  const provider = new providers.JsonRpcProvider({
+    url: getRPCProvider(),
+  });
+
   const [gameData, setGameData] = useState(null);
   const [teamModal, setTeamModal] = useState(false);
   const [teams, setTeams] = useState([]);
   const [startDate, setStartDate] = useState();
   const [buttonMute, setButtonMute] = useState(false);
 
-  const { error } = props;
   const [loading, setLoading] = useState(true);
-  const [err, setErr] = useState(error);
+  // const [err, setErr] = useState(error);
 
-  const fetchGameData = async () => {
-    const res = await axiosInstance.get(`/fantasy/game/${router.query.id}/`);
+  // const fetchGameData = async () => {
+  //   const res = await axiosInstance.get(`/fantasy/game/${router.query.id}/`);
 
-    const teams = await axiosInstance.get(
-      `/fantasy/game/${router.query.id}/registered_teams_detail/?wallet_addr=${"TODO"}`
-    );
+  //   const teams = await axiosInstance.get(
+  //     `/fantasy/game/${router.query.id}/registered_teams_detail/?wallet_addr=${"TODO"}`
+  //   );
 
-    if (teams.status === 200) {
-      setTeams(teams.data);
-    }
+  //   if (teams.status === 200) {
+  //     setTeams(teams.data);
+  //   }
 
-    if (res.status === 200) {
-      setGameData(res.data);
-      setStartDate(res.data.start_datetime);
-    }
+  //   if (res.status === 200) {
+  //     setGameData(res.data);
+  //     setStartDate(res.data.start_datetime);
+  //   }
 
-    setLoading(false);
-  };
+  //   setLoading(false);
+  // };
 
   // useEffect(() => {
   //   if (router && router.query.id && connectedWallet) {
@@ -48,15 +58,15 @@ export default function CreateLineup(props) {
   //   }
   // }, [router, connectedWallet]);
 
-  if (!router) {
-    return;
-  }
+  // if (!router) {
+  //   return;
+  // }
 
-  if (gameData && router && router.query.id) {
-    if (new Date(gameData.start_datetime) < new Date()) {
-      router.replace(`/PlayDetails/?id=${router.query.id}`);
-    }
-  }
+  // if (gameData && router && router.query.id) {
+  //   if (new Date(gameData.start_datetime) < new Date()) {
+  //     router.replace(`/PlayDetails/?id=${router.query.id}`);
+  //   }
+  // }
 
   useEffect(() => {
     const id = setInterval(() => {
@@ -90,9 +100,12 @@ export default function CreateLineup(props) {
   return (
     <>
       <Container activeName="PLAY">
+        <div className="mt-8">
+          <BackFunction prev={query.origin ? `/${query.origin}` : `/PlayDetails/${gameId}`}></BackFunction>
+        </div>
         <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
           <Main color="indigo-white">
-            {loading ? (
+            {/* {loading ? (
               <LoadingPageDark />
             ) : (
               <>
@@ -101,45 +114,59 @@ export default function CreateLineup(props) {
                 ) : (
                   <>
                     {gameData ? (
-                      <>
-                        <div className="mt-8">
+                      <> */}
+                        {/* <div className="mt-8">
                           <BackFunction prev={`/PlayDetails?id=${gameData.id}`} />
-                        </div>
-                        <div className="md:ml-7 flex flex-col md:flex-row">
-                          <div className="md:mr-12">
-                            <div className="mt-7 justify-center md:self-left md:mr-8">
-                              <Image
-                                // src={gameData.image}
-                                src="/images/game.png"
-                                width={550}
-                                height={220}
-                              />
+                        </div> */}
+                        <div className='grid grid-cols-3 mt-12 gap-10'>
+                          <div className='ml-24 h-full col-span-2 row-span-2'>
+                            <Image
+                              // src={gameData.image}
+                              src="/images/game.png"
+                              width={640}
+                              height={300}
+                            />
+                          </div>
+                          <div>
+                            <ModalPortfolioContainer
+                              title="CREATE TEAM"
+                              textcolor="text-indigo-black"
+                            /> 
+                            <div className="mt-0 md:mt-4 w-2/3">
+                              Create a team and showcase your collection. Enter a team into the
+                              tournament and compete for cash prizes.
                             </div>
                           </div>
-                        </div>
-                        <div className="flex flex-col md:flex-row ml-7 mb-10">
-                          <ModalPortfolioContainer
-                            title="CREATE TEAM"
-                            textcolor="text-indigo-black"
-                          />
-                          {buttonMute ? (
+                          <div>
+                          {/* {buttonMute ? (
                             <button className="bg-indigo-lightblue text-indigo-buttonblue whitespace-nowrap h-14 px-10 mt-4 ml-0 md:ml-12 text-center font-bold cursor-not-allowed">
                               CREATE YOUR LINEUP +
                             </button>
                           ) : (
                             <a href={`/CreateTeam?id=${router.query.id}`}>
-                              <button className="bg-indigo-buttonblue text-indigo-white whitespace-nowrap h-14 px-10 mt-4 ml-0 md:ml-12 text-center font-bold">
-                                CREATE YOUR LINEUP +
-                              </button>
-                            </a>
-                          )}
+                            <button className="bg-indigo-buttonblue text-indigo-white whitespace-nowrap h-14 px-10 mt-4 ml-0 md:ml-12 text-center font-bold">
+                              CREATE YOUR LINEUP +
+                            </button>
+                          </a>
+                          )} */}
+                          <Link href={{
+                              pathname: '/CreateTeam/[game_id]',
+                              query: {
+                                  game_id: gameId,
+                                  teamName: teamName                            
+                              } 
+                          }} as={`/CreateTeam/${gameId}`}>
+                          <button className='bg-indigo-buttonblue text-indigo-white whitespace-nowrap h-14 px-10 mt-4 text-center font-bold'>
+                            CREATE YOUR LINEUP +
+                          </button>
+                          </Link>
+                          </div>
                         </div>
+                        
+                       
                         {/* <div className="ml-7 mr-7 border-b-2 border-indigo-lightgray border-opacity-30 w-2/5" /> */}
-                        <div className="ml-7 mt-0 md:mt-4 w-10/12 md:w-2/5">
-                          Create a team and showcase your collection. Enter a team into the
-                          tournament and compete for cash prizes.
-                        </div>
-                        <div className="mt-7 ml-7 w-2/5">
+                       
+                        {/* <div className="mt-7 ml-7 w-2/5">
                           <ModalPortfolioContainer
                             title="VIEW TEAMS"
                             textcolor="text-indigo-black mb-5"
@@ -170,15 +197,15 @@ export default function CreateLineup(props) {
                           ) : (
                             <p>No teams assigned</p>
                           )}
-                        </div>
-                      </>
+                        </div> */}
+                      {/* </>
                     ) : (
                       ''
                     )}
                   </>
                 )}
               </>
-            )}
+            )} */}
           </Main>
         </div>
       </Container>
@@ -187,14 +214,18 @@ export default function CreateLineup(props) {
 }
 
 export async function getServerSideProps(ctx) {
+  const { query } = ctx;
+
+  if (query.game_id != query.game_id) {
+    return {
+      desination: query.origin || '/Play',
+    };
+  }
+
   return {
-    redirect: {
-      destination: '/Portfolio',
-      permanent: false,
-    },
+    props: { query },
   };
 }
-
 // export async function getServerSideProps(ctx) {
 //   const { query } = ctx;
 //   let queryObj = null;

@@ -11,13 +11,16 @@ module.exports = {
         },
         extend: {
             backgroundImage: {
-                'avg-icon': "url('/images/avgscore.png')"
+                'avg-icon': "url('/images/avgscore.png')",
+                'filter-icon': "url('/images/filterBlack.png')",
+                'search-icon': "url('/images/icons/Search.svg')"
             },
             width: {
                 '133px': '133px'
             },
             height: {
-                '135px': '135px'
+                '135px': '135px',
+                '14px' : '14px',
             },
             margin: {
                 '15': '60px'
