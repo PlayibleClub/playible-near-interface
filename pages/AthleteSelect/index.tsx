@@ -111,8 +111,10 @@ const AthleteSelect = (props) => {
                         
                         return(
                             <>
-                                {checkIfAthleteExists(item.athlete_id)? ( 
-                                    <div className="w-4/5 h-5/6 border-transparent focus:border-transparent focus:ring-2 focus:ring-blue-300 focus:border-transparent bg-black">
+                                {checkIfAthleteExists(item.athlete_id)? (
+    
+                                    <div className="w-4/5 h-5/6 border-transparent opacity-50 pointer-events-none">
+                                        <div className="mt-1.5 w-full h-14px mb-1"></div>
                                         <AthleteSelectContainer
                                             key={item.athlete_id}
                                             athleteName={item.name}
@@ -123,8 +125,8 @@ const AthleteSelect = (props) => {
                                         />  
                                     </div>
                                 ) : (
-                                    <label> 
-                                    <div className="w-4/5 h-5/6 border-transparent focus:border-transparent focus:ring-2 focus:ring-blue-300 focus:border-transparent">
+                                    <label className="w-4/5 h-5/6"> 
+                                    <div className="w-full h-full border-transparent focus:border-transparent focus:ring-2 focus:ring-blue-300 focus:border-transparent">
                                         <input className="justify-self-end" type="radio" name="athletePick" value={i} onChange={(e) => setAthleteRadio(parseInt(e.target.value))}></input>
                                         <AthleteSelectContainer
                                             key={item.athlete_id}

@@ -19,7 +19,8 @@ module.exports = {
                 '133px': '133px'
             },
             height: {
-                '135px': '135px'
+                '135px': '135px',
+                '14px' : '14px',
             },
             margin: {
                 '15': '60px'
