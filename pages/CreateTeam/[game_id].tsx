@@ -199,16 +199,33 @@ export default function CreateLineup(props) {
     
     //const array = Array(8).fill({position: "QB", isAthlete: false});
     const array = [
-      {position: 'QB', isAthlete: false},
-      {position: 'RB', isAthlete: false},
-      {position: 'RB', isAthlete: false},
-      {position: 'WR', isAthlete: false},
-      {position: 'WR', isAthlete: false},
-      {position: 'TE', isAthlete: false},
-      {position: 'TE', isAthlete: false},
-      {position: 'QB', isAthlete: false},
+      {position: 'QB', isAthlete: false, amount:1},
+      {position: 'RB', isAthlete: false, amount:2},
+      {position: 'WR', isAthlete: false, amount:2},
+      {position: 'TE', isAthlete: false, amount:1},
+      {position: ['RB','WR','TE'], isAthlete: false, amount:1},
+      {position: ['QB','RB','WR','TE'], isAthlete: false, amount:1},
+      
     ]
-    setLineup(array);
+
+    const array2 = [
+
+    ];
+    
+    for (let i = 0 ; i < array.length ; i++){
+      for (let j = 0 ; j < array[i].amount ; j++){
+
+        if (array[i].position.length  === 3){
+          array[i].position = "FLEX"
+        } 
+        else if(array[i].position.length === 4){
+            array[i].position = "SUPERFLEX"
+        } 
+
+        array2.push({positions: array[i].position, isAthlete: false,});
+      }    
+    }
+    setLineup(array2);
   }
 
   /* Function that checks whether a string parses into valid JSON. Used to check if data from router
