@@ -8,9 +8,9 @@ import BackFunction from '../../components/buttons/BackFunction';
 import 'regenerator-runtime/runtime';
 
 import { useRouter } from 'next/router';
-
+import { getContract, getRPCProvider } from 'utils/near';
 import Lineup from '../../components/Lineup';
-
+import { useWalletSelector } from 'contexts/WalletSelectorContext';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAccountAssets } from '../../redux/reducers/external/playible/assets';
 import PerformerContainer from '../../components/containers/PerformerContainer';
@@ -21,8 +21,16 @@ import Modal from '../../components/modals/Modal';
 import { axiosInstance } from '../../utils/playible';
 import { route } from 'next/dist/next-server/server/router';
 import LoadingPageDark from '../../components/loading/LoadingPageDark';
-
+import { DEFAULT_MAX_FEES } from 'data/constants/gasFees';
+import { GAME } from 'data/constants/nearContracts';
 export default function CreateLineup(props) {
+
+  const { query } = props;
+
+  const gameId = query.game_id;
+
+  const newTeamName = query.teamName;
+
   const router = useRouter();
   const dispatch = useDispatch();
   const connectedWallet = {};
@@ -37,11 +45,15 @@ export default function CreateLineup(props) {
     wallet_addr: '',
     athletes: [],
   };
+
+  const { selector } = useWalletSelector();
+  const data = router.query;
+  // @ts-ignore:next-line
   const positions = ['P', 'P', 'C', '1B', '2B', '3B', 'SS', 'OF', 'OF', 'OF'];
   const [team, setTeam] = useState([]);
   const [selectModal, setSelectModal] = useState(false);
   const [filterPos, setFilterPos] = useState(null);
-  const [teamName, setTeamName] = useState('Team 1');
+  const [teamName, setTeamName] = useState("");
 
   const [limit, setLimit] = useState(5);
   const [offset, setOffset] = useState(0);
@@ -65,9 +77,17 @@ export default function CreateLineup(props) {
     content: '',
   });
 
-  const { error } = props;
+  function getTeamName() {
+    if (newTeamName != "") {
+      setTeamName(newTeamName);
+    }
+  }
+
+  //const { error } = props;
   const [loading, setLoading] = useState(true);
-  const [err, setErr] = useState(error);
+   // @ts-ignore:next-line
+  const initialState = isJson(data.testing) ? JSON.parse(data.testing) : "hello";
+  const [lineup, setLineup] = isJson(data.testing) ? useState(initialState): useState([]);
 
   //const { list: playerList } = useSelector((state) => state.assets);
 
@@ -126,7 +146,10 @@ export default function CreateLineup(props) {
 
     setTeam(slots);
   };
-
+  function setArray(position, lineup, index){
+    const array = [{position}, {lineup}, {index}];
+    return array;
+  }
   const filterAthletes = (list, pos) => {
     const tempList = [...list];
 
@@ -172,6 +195,90 @@ export default function CreateLineup(props) {
       return [];
     }
   };
+  function populateLineup(){
+    
+    //const array = Array(8).fill({position: "QB", isAthlete: false});
+    const array = [
+      {position: 'QB', isAthlete: false, amount:1},
+      {position: 'RB', isAthlete: false, amount:2},
+      {position: 'WR', isAthlete: false, amount:2},
+      {position: 'TE', isAthlete: false, amount:1},
+      {position: ['RB','WR','TE'], isAthlete: false, amount:1},
+      {position: ['QB','RB','WR','TE'], isAthlete: false, amount:1},
+      
+    ]
+
+    const array2 = [
+
+    ];
+    
+    for (let i = 0 ; i < array.length ; i++){
+      for (let j = 0 ; j < array[i].amount ; j++){
+
+        if (array[i].position.length  === 3){
+          array[i].position = "FLEX"
+        } 
+        else if(array[i].position.length === 4){
+            array[i].position = "SUPERFLEX"
+        } 
+
+        array2.push({positions: array[i].position, isAthlete: false,});
+      }    
+    }
+    setLineup(array2);
+  }
+
+  /* Function that checks whether a string parses into valid JSON. Used to check if data from router
+     query parses into a JSON that holds the athlete data coming from AthleteSelect. Returns false
+     otherwise if the user is coming from CreateLineup
+  */
+  function isJson(str){
+    try{
+      let json = JSON.parse(str);
+      if(typeof json === 'object'){
+        return true;
+      }
+    } catch (e){
+      return false;
+    }
+  }
+
+  async function execute_submit_lineup(game_id, team_name, token_ids){
+    const submitLineupArgs = Buffer.from(
+        JSON.stringify({
+            game_id: game_id,
+            team_name: team_name,
+            token_ids: token_ids,
+        })
+    );
+
+    const action_submit_lineup = {
+        type: 'FunctionCall',
+        params: {
+            methodName: 'submit_lineup',
+            args: submitLineupArgs,
+            gas: DEFAULT_MAX_FEES,
+        }
+    }
+
+    const wallet = await selector.wallet();
+
+    const tx = wallet.signAndSendTransactions({
+        transactions: [{
+            receiverId: getContract(GAME),
+            //@ts-ignore:next-line
+            actions: [action_submit_lineup],
+        }]
+    })
+  }
+  function verifyLineup(game_id, team_name, lineup){
+    
+    const token_ids = lineup.map(data => {
+      return data.athlete.athlete_id;
+    })
+    
+    execute_submit_lineup(game_id, team_name, token_ids);
+  }
 
   const updateTeamSlots = () => {
     const tempSlots = [...team];
@@ -221,6 +328,17 @@ export default function CreateLineup(props) {
     return hasEmptySlot;
   };
 
+  useEffect(() => {
+    getTeamName();
+    if(lineup.length === 0){
+      populateLineup();
+    }
+    
+  }, []);
+
+  useEffect(() => {
+    console.log(lineup);
+  }, [lineup]);
   const confirmTeam = async () => {
     setLimit(5);
     setOffset(0);
@@ -350,10 +468,10 @@ export default function CreateLineup(props) {
       //   }
       // };
 
-      useEffect(() => {
-        prepareSlots();
-        fetchGameData();
-      }, [router, startDate, timerUp]);
+      // useEffect(() => {
+      //   prepareSlots();
+      //   fetchGameData();
+      // }, [router, startDate, timerUp]);
 
       useEffect(() => {
         if (dispatch && connectedWallet) {
@@ -361,6 +479,7 @@ export default function CreateLineup(props) {
         }
       }, [dispatch, connectedWallet]);
 
+      
       // useEffect(() => {
       //   if (playerList && playerList.tokens && playerList.tokens.length > 0) {
       //     if (filterPos) {
@@ -416,22 +535,24 @@ export default function CreateLineup(props) {
       if (!(router && router.query.id)) {
         return '';
       }
-
+    } 
+  
+  };
       return (
-        <>
-          {loading ? (
-            <Container>
-              <LoadingPageDark />
-            </Container>
-          ) : (
-            <>
-              {err ? (
-                <>
-                  <Container activeName="PLAY">
-                    <p className="py-10 ml-7">{err}</p>
-                  </Container>
-                </>
-              ) : (
+        // <>
+        //   {loading ? (
+        //     <Container>
+        //       <LoadingPageDark />
+        //     </Container>
+        //   ) : (
+        //     <>
+        //       {err ? (
+        //         <>
+        //           <Container activeName="PLAY">
+        //             <p className="py-10 ml-7">{err}</p>
+        //           </Container>
+        //         </>
+        //       ) : (
                 <>
                   {timerUp ? (
                     <Container activeName="PLAY">
@@ -562,7 +683,7 @@ export default function CreateLineup(props) {
                                 ''
                               )}
                               <div className={`${selectModal ? 'hidden h-0' : ''}`}>
-                                <BackFunction prev={`/CreateLineup?id=${router.query.id}`} />
+                                <BackFunction prev={`/CreateLineup/${gameId}`} />
                                 <PortfolioContainer
                                   title="CREATE LINEUP"
                                   textcolor="text-indigo-black"
@@ -580,7 +701,7 @@ export default function CreateLineup(props) {
                                       </p>
                                     </div>
                                     <div className="grid grid-cols-2 gap-y-4 mt-4 mb-5 md:mb-10 md:grid-cols-4 md:ml-7 md:mt-12">
-                                      {team.length > 0 &&
+                                      {/* {team.length > 0 &&
                                         team.map((data, i) => {
                                           return (
                                             <div>
@@ -606,7 +727,100 @@ export default function CreateLineup(props) {
                                               />
                                             </div>
                                           );
+                                        })} */}
+                                        {/* {5 > 0 &&
+                                        test.map((data, i) => {
+                                          return (
+                                            <div>
+                                              <Lineup
+                                                position={"TEST"}
+                                                player={"name"
+                                                  
+                                                    ? "Position"
+                                                    : ''
+                                                }
+                                                score={"69"}
+                                                onClick={() => {
+                                                  // filterAthleteByPos(data.position.value);
+                                                  setSlotIndex(i);
+                                                }}
+                                                img="/images/tokensMLB/CF.png"
+                                              />
+                                            </div>
+                                          );
+                                        })} */}
+                                        {lineup.map((data, i) => {
+                                          
+                                          return(
+                                            <>
+                                              {data.isAthlete === false ? (
+                                                <div>
+                                                  <Lineup
+                                                    position={data.position}
+                                                    athleteLineup={lineup}
+                                                    index={i}
+                                                    test={setArray(data.position, lineup, i)}
+                                                    img='/images/tokensMLB/CF.png'
+                                                    player='' 
+                                                    game_id={gameId}
+                                                    teamName={teamName}
+                                                  />
+                                                </div>
+                                              ) : (
+                                                <div>
+                                                  <Lineup
+                                                    position={data.position}
+                                                    athleteLineup={lineup}
+                                                    index={i}
+                                                    test={setArray(data.position, lineup, i)}
+                                                    img={data.athlete.image}
+                                                    player={data.athlete.name}
+                                                    score={data.athlete.fantasy_score}
+                                                    game_id={gameId}
+                                                  />
+                                                    
+                                                  
+                                                </div>
+                                              )}
+                                            </>
+                                          )
                                         })}
+                                        {/* {Array.from(
+                                          {length: 8},
+                                          (lineup, i) => {
+                                            return(
+                                              <>
+                                                {lineup === undefined ? (
+                                                <div>
+                                                  <Lineup
+                                                    position={"TEST"}
+                                                    player={"name" ? "Position" : ''}
+                                                    score={"69"}
+                                                    onClick={() => {
+                                                      setSlotIndex(i);
+                                                    }} 
+                                                    img='/images/tokensMLB/CF.png'
+                                                  />
+                                                </div>
+                                                ) : (
+                                                <div>
+                                                  <Lineup
+                                                    position={"HELLO"}
+                                                    player={"name" ? "Position" : ''}
+                                                    score={"69"}
+                                                    onClick={() => {
+                                                      setSlotIndex(i);
+                                                    }}
+                                                    img='/images/tokensMLB/CF.png'
+                                                    />
+                                                </div>
+                                                )}
+                                              </>
+                                            )
+                                            
+                                          }
+                                          
+                                        )} */}
                                     </div>
                                   </div>
                                   <div className="flex bg-indigo-black bg-opacity-5 w-full justify-end">
@@ -671,7 +885,7 @@ export default function CreateLineup(props) {
                           <p className="">Confirm team lineup</p>
                           <button
                             className="bg-indigo-green font-monument tracking-widest text-indigo-white w-full h-16 text-center text-sm mt-4"
-                            onClick={confirmTeam}
+                            onClick={() => verifyLineup(gameId, teamName, lineup)}
                           >
                             CONFIRM
                           </button>
@@ -752,23 +966,33 @@ export default function CreateLineup(props) {
                     <p className="mt-5">{msg.content}</p>
                   </BaseModal>
                 </>
-              )}
-            </>
-          )}
-        </>
+        //       )}
+        //     </>
+        //   )}
+        // </>
       );
-    }
-  };
 }
-export async function getServerSideProps(ctx) {
-  return {
-    redirect: {
-      destination: '/Portfolio',
-      permanent: false,
-    },
-  };
-}
+// export async function getServerSideProps(ctx) {
+//   return {
+//     redirect: {
+//       destination: '/Portfolio',
+//       permanent: false,
+//     },
+//   };
+// }
+export async function getServerSideProps(ctx){
+  const { query } = ctx;
 
+  if (query.game_id && query.athlete_id){
+    return {
+      props : { query },
+    }
+  }
+
+  return {
+    props: { query },
+  }
+}
 // export async function getServerSideProps(ctx) {
 //   const { query } = ctx;
 //   let queryObj = null;

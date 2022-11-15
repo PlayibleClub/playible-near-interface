@@ -1,14 +1,42 @@
 import React, { Component, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Image from 'next/image';
+import router from 'next/router';
+import Link from 'next/link';
+
 
 const Lineup = (props) => {
-  const { position, player = '', img = null, id, score, nextposition, onClick = null } = props;
-  const lineupPosition = '/images/tokensMLB/' + position + '.png';
 
+  const {
+    position,
+    player,
+    img = null,
+    id,
+    game_id,
+    score,
+    teamName,
+    nextposition,
+    onClick= null,
+    athleteLineup,
+    index,
+    test,
+  } = props;
+  //const { position, player = '', img = null, id, score, nextposition, onClick = null } = props;
+  const lineupPosition = '/images/tokensMLB/' + position + '.png';
   return (
     <>
-      <div className="flex justify-center cursor-pointer" onClick={onClick || undefined}>
+    
+      <div className="flex justify-center cursor-pointer">
+      <Link href={{
+        pathname: '/AthleteSelect',
+        query: {
+          game_id: game_id,
+          position: test[0].position,
+          athleteLineup: JSON.stringify(test[1].lineup),
+          index: test[2].index,
+          teamName: teamName
+        },
+      }} as="/AthleteSelect">
         {img ? (
           <div className="relative mb-7" style={{ width: '120px', height: '162px' }}>
             <div className="absolute z-50" style={{ width: '120px', height: '160px' }}></div>
@@ -23,6 +51,8 @@ const Lineup = (props) => {
         ) : (
           <Image src={lineupPosition} width={143} height={190} />
         )}
+        </Link>
+        
       </div>
       <div className="flex justify-center">
         <div className="flex flex-col mt-4">

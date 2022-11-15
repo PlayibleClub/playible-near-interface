@@ -4,7 +4,7 @@ import Main from '../../components/Main';
 import PortfolioContainer from '../../components/containers/PortfolioContainer';
 import { useDispatch } from 'react-redux';
 // import { getPortfolio } from '../../redux/reducers/contract/portfolio';
-
+import { GAME, ORACLE } from 'data/constants/nearContracts';
 import Link from 'next/link';
 import PlayComponent from './components/PlayComponent';
 import Container from '../../components/containers/Container';
@@ -16,7 +16,9 @@ import 'regenerator-runtime/runtime';
 import { axiosInstance } from '../../utils/playible';
 import LoadingPageDark from '../../components/loading/LoadingPageDark';
 import Modal from '../../components/modals/Modal';
-
+import { transactions, utils, WalletConnection, providers } from 'near-api-js';
+import { getContract, getRPCProvider } from 'utils/near';
+import { getGameInfoById } from 'utils/game/helper';
 const Play = (props) => {
   const { error } = props;
   const [activeCategory, setCategory] = useState('new');
@@ -54,9 +56,47 @@ const Play = (props) => {
   const [filter, setFilter] = useState(null);
   const [search, setSearch] = useState('');
   const [err, setErr] = useState(error);
+  const sportList = ['all','football','basketball'];
+  const [activeSport, setSport] = useState('all');
+  
+  const [categoryList,setcategoryList] = useState([
+    {
+      name: 'NEW',
+      isActive: true,
+    },
+    {
+      name: 'ON-GOING',
+      isActive: false,
+    },
+    {
+      name: 'COMPLETED',
+      isActive: false,
+    },
+  ]);
 
-  const categoryList = ['new', 'active', 'completed'];
+  const changecategoryList = (name) => {
+    const tabList = [...categoryList];
 
+    tabList.forEach((item) => {
+      if (item.name === name) {
+        item.isActive = true;
+      } else {
+        item.isActive = false;
+      }
+    });
+
+    setcategoryList([...tabList]);
+  };
+
+  const Test = [1,2,3,4,5];
+
+  const [newGames, setNewGames] = useState([]);
+  const [ongoingGames, setOngoingGames] = useState([]);
+  const [completedGames, setCompletedGames] = useState([]);
+
+  const provider = new providers.JsonRpcProvider({
+    url: getRPCProvider(),
+  });
   const changeIndex = (index) => {
     switch (index) {
       case 'next':
@@ -320,7 +360,42 @@ const Play = (props) => {
       </>
     );
   };
+  function query_games_list(){
+    const query = JSON.stringify({
+      from_index: 0,
+      limit: 10,
+    });
+    provider
+      .query({
+        request_type: 'call_function',
+        finality: 'optimistic',
+        account_id: getContract(GAME),
+        method_name: 'get_games',
+        args_base64: Buffer.from(query).toString('base64'),
+      })
+      .then(async (data) => {
+        //@ts-ignore:next-line
+        const result = JSON.parse(Buffer.from(data.result).toString());
 
+        const upcomingGames = await Promise.all(
+          result.filter(x => x[1].start_time > Date.now()).map((item) => getGameInfoById(item))
+        );
+
+        const completedGames = await Promise.all(
+          result.filter(x => x[1].end_time < Date.now()).map((item) => getGameInfoById(item))
+        );
+
+        const ongoingGames = await Promise.all(
+          result
+            .filter(x => x[1].start_time < Date.now() && x[1].end_time > Date.now())
+            .map((item) => getGameInfoById(item))
+        );
+
+        setNewGames(upcomingGames);
+        setCompletedGames(completedGames);
+        setOngoingGames(ongoingGames);
+      })
+  }
   const claimRewards = async (gameId) => {
     setClaimLoading(true);
     let totalPrize = 0;
@@ -367,75 +442,78 @@ const Play = (props) => {
     //   showClaimModal(false);
     //   setClaimLoading(false);
     // };
-
-    useEffect(() => {
-      if (games && games.length > 0) {
-        const tempList = [...games];
-        const filteredList = applySortFilter(tempList, filter, search).splice(
-          limit * offset,
-          limit
-        );
-        setSortedList(filteredList);
-        if (search) {
-          setPageCount(Math.ceil(applySortFilter(tempList, filter, search).length / limit));
-        } else {
-          setPageCount(Math.ceil(games.length / limit));
-        }
+  };
+  useEffect(() => {
+    if (games && games.length > 0) {
+      const tempList = [...games];
+      const filteredList = applySortFilter(tempList, filter, search).splice(
+        limit * offset,
+        limit
+      );
+      setSortedList(filteredList);
+      if (search) {
+        setPageCount(Math.ceil(applySortFilter(tempList, filter, search).length / limit));
+      } else {
+        setPageCount(Math.ceil(games.length / limit));
       }
-    }, [games, limit, offset, filter, search]);
+    }
+  }, [games, limit, offset, filter, search]);
 
-    useEffect(() => {
-      if (games.length > 0) {
-        const tempList = [...games];
-        const filteredList = tempList.splice(gamesLimit * gamesOffset, gamesLimit);
+  useEffect(() => {
+    if (games.length > 0) {
+      const tempList = [...games];
+      const filteredList = tempList.splice(gamesLimit * gamesOffset, gamesLimit);
 
-        setSortedgames(filteredList);
-        setgamePageCount(Math.ceil(games.length / gamesLimit));
-      }
-    }, [games, gamesLimit, gamesOffset]);
+      setSortedgames(filteredList);
+      setgamePageCount(Math.ceil(games.length / gamesLimit));
+    }
+  }, [games, gamesLimit, gamesOffset]);
 
-    // useEffect(() => {
-    //   if (connectedWallet) {
-    //     if (connectedWallet?.network?.name === 'testnet') {
-    //       dispatch(getPortfolio({ walletAddr: connectedWallet.walletAddress }));
-    //     }
-    //   }
-    // }, [connectedWallet, dispatch]);
+  useEffect(() => {
+    query_games_list();
+  }, []);
+  // useEffect(() => {
+  //   if (connectedWallet) {
+  //     if (connectedWallet?.network?.name === 'testnet') {
+  //       dispatch(getPortfolio({ walletAddr: connectedWallet.walletAddress }));
+  //     }
+  //   }
+  // }, [connectedWallet, dispatch]);
 
-    // useEffect(async () => {
-    //   setLoading(true);
-    //   setErr(null);
-    //   if (connectedWallet) {
-    //     if (connectedWallet?.network?.name === 'testnet') {
-    //       await fetchGamesLoading();
-    //       setErr(null);
-    //     } else {
-    //       setErr('You are connected to mainnet. Please connect to testnet');
-    //       setLoading(false);
-    //     }
-    //   } else {
-    //     setErr('Waiting for wallet connection...');
-    //     setLoading(false);
-    //   }
-    //   setOffset(0);
-    // }, [connectedWallet, activeCategory]);
+  // useEffect(async () => {
+  //   setLoading(true);
+  //   setErr(null);
+  //   if (connectedWallet) {
+  //     if (connectedWallet?.network?.name === 'testnet') {
+  //       await fetchGamesLoading();
+  //       setErr(null);
+  //     } else {
+  //       setErr('You are connected to mainnet. Please connect to testnet');
+  //       setLoading(false);
+  //     }
+  //   } else {
+  //     setErr('Waiting for wallet connection...');
+  //     setLoading(false);
+  //   }
+  //   setOffset(0);
+  // }, [connectedWallet, activeCategory]);
 
-    // useEffect(() => {
-    //   fetchGamesLoading();
-    //   setOffset(0);
-    // }, [activeCategory]);
+  // useEffect(() => {
+  //   fetchGamesLoading();
+  //   setOffset(0);
+  // }, [activeCategory]);
 
-    useEffect(() => {
-      if (router && router.query.type) {
-        // setCategory(router.query.type);
-      }
-    }, [router]);
+  useEffect(() => {
+    if (router && router.query.type) {
+      // setCategory(router.query.type);
+    }
+  }, [router]);
 
-    useEffect(() => {
-      if (!claimModal) {
-        setClaimData(null);
-      }
-    }, [claimModal]);
+  useEffect(() => {
+    if (!claimModal) {
+      setClaimData(null);
+    }
+  }, [claimModal]);
 
     return (
       <>
@@ -615,7 +693,7 @@ const Play = (props) => {
         <Container activeName="PLAY">
           <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
             <Main color="indigo-white">
-              <div className="flex flex-col">
+              <div className="flex flex-col mb-10">
                 <div className="flex">
                   <div className="flex-initial">
                     <PortfolioContainer title="PLAY" textcolor="text-indigo-black" />
@@ -628,38 +706,55 @@ const Play = (props) => {
                 </div>
 
                 <div className="flex flex-col mt-6">
-                  <div className="flex font-bold ml-8 md:ml-0 font-monument">
-                    {categoryList.map((type) => (
+                  <div className="flex font-bold ml-8 md:ml-7 font-monument">
+                    {categoryList.map(({name,isActive}) => (
                       <div
-                        key={type}
-                        className={`mr-6 uppercase cursor-pointer md:ml-8 ${
-                          activeCategory === type ? 'border-b-8 pb-2 border-indigo-buttonblue' : ''
-                        }`}
-                        onClick={() => {
-                          setCategory(type);
-                        }}
+                        className={`cursor-pointer mr-6 ${
+                            isActive ? 'border-b-8 border-indigo-buttonblue' : ''
+                          }`}
+                          onClick={() => changecategoryList(name)}
                       >
-                        {type}
+                        {name}
                       </div>
                     ))}
                   </div>
-                  <hr className="opacity-50" />
-                  {loading ? (
+                  <hr className="opacity-10" />
+                  <div className="flex flex-col mt-6">
+                  <div className="flex font-bold ml-8 md:ml-0 font-monument">
+                  {sportList.map((type) => (
+                    <div
+                      key={type}
+                      className={`text-center px-8 py-3 uppercase border border-indigo-slate rounded-lg 
+                      cursor-pointer ml-8 ${
+                        activeSport=== type ? 'text-indigo-white font-thin bg-indigo-buttonblue' : ''
+                      }`}
+                      onClick={() => {
+                        setSport(type);
+                      }}
+                    >
+                      {type}
+                    </div>
+                  ))}
+                    </div> 
+                  </div>
+                  {/* {loading ? (
                     <LoadingPageDark />
                   ) : (
                     <>
                       {err ? (
                         <p className="py-10 ml-7">{err}</p>
-                      ) : (
+                      ) : ( */}
                         <>
-                          {sortedList.length > 0 ? (
+                        {/* {sortedList.length > 0 ? ( */}
+                          {1 > 0 ? (
                             <>
                               <div className="mt-4 ml-6 grid grid-cols-0 md:grid-cols-3">
-                                {sortedList.map(function (data, i) {
+                          {(categoryList[0].isActive ? newGames : categoryList[1].isActive ? ongoingGames : completedGames).length > 0 &&
+                          (categoryList[0].isActive ? newGames : categoryList[1].isActive ? ongoingGames : completedGames).map((data, i) => {
                                   return (
                                     <div key={i} className="flex">
                                       <div className="mr-6">
-                                        <a href={`/PlayDetails?id=${data.id}`}>
+                                      {/* <a href={`/PlayDetails?id=${data.id}`}>
                                           <div className="mr-6">
                                             <PlayComponent
                                               type={activeCategory}
@@ -675,21 +770,44 @@ const Play = (props) => {
                                               index={() => changeIndex(1)}
                                             />
                                           </div>
-                                        </a>
-                                        {activeCategory === 'completed' && data.hasAthletes && (
+                                        </a> */}
+                                        <Link href={`/PlayDetails/${data.game_id}`} passHref>
+                                          <div className="mr-6">
+                                            <PlayComponent
+                                              type={activeCategory}
+                                              icon="test"
+                                              prizePool="2,300" 
+                                              startDate={data.start_time}
+                                              endDate={data.end_time}
+                                              month="04"
+                                              date="20"
+                                              year="2022"
+                                              img="test"
+                                              fetchGames={fetchGamesLoading}
+                                              index={() => changeIndex(1)}
+                                            />
+                                          </div>
+                                        </Link>
+                                        {/* {activeCategory === 'completed' && data.hasAthletes && ( */}
+                                        {activeCategory === 'completed' && "test" && (
                                           <div className="">
-                                            {data.isClaimed === 'unclaimed' ? (
-                                              data.hasEnded ? (
+                                            {/* {data.isClaimed === 'unclaimed' ? ( */}
+                                            {"unclaimed" === 'unclaimed' ? (
+                                              // data.hasEnded ? (
+                                              "data.hasEnded "? (
                                                 <button
                                                   className={`bg-indigo-buttonblue w-full h-12 text-center font-bold rounded-md text-sm mt-4 self-center`}
                                                   onClick={() =>
-                                                    data.hasEnded
-                                                      ? fetchTeamPlacements(data.id)
+                                                    "data.hasEnded"
+                                                    // data.hasEnded
+                                                      ? fetchTeamPlacements("test")
+                                                      // ? fetchTeamPlacements(data.id)
                                                       : undefined
                                                   }
                                                 >
                                                   <div className="text-indigo-white">
-                                                    CLAIM {data.hasRewards ? 'REWARD' : 'TEAM'}
+                                                    CLAIM {"test" ? 'REWARD' : 'TEAM'}
+                                                    {/* CLAIM {data.hasRewards ? 'REWARD' : 'TEAM'} */}
                                                   </div>
                                                 </button>
                                               ) : (
@@ -773,9 +891,9 @@ const Play = (props) => {
                             </>
                           )}
                         </>
-                      )}
+                      {/* )}
                     </>
-                  )}
+                  )} */}
                 </div>
               </div>
             </Main>
@@ -783,15 +901,14 @@ const Play = (props) => {
         </Container>
       </>
     );
-  };
 };
 export default Play;
 
-export async function getServerSideProps(ctx) {
-  return {
-    redirect: {
-      destination: '/Portfolio',
-      permanent: false,
-    },
-  };
-}
+// export async function getServerSideProps(ctx) {
+//   return {
+//     redirect: {
+//       destination: '/Play',
+//       permanent: false,
+//     },
+//   };
+// }

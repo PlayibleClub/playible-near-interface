@@ -44,7 +44,7 @@ const navigationLoggedIn = [
   mint,
   mySquad,
   myPacks,
-  //play,
+  play,
 ];
 
 const navigationAdmin = [
