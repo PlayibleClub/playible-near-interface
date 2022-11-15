@@ -13,7 +13,7 @@ import Link from 'next/link';
 
 const AthleteSelect = (props) => {
     const { query } = props;
-
+    
     const gameId = query.game_id;
     const teamName = query.teamName;
 
@@ -66,14 +66,29 @@ const AthleteSelect = (props) => {
         setAthletes(result_two);
         });
     }
+    //TODO: might encounter error w/ loading duplicate athlete
     function setAthleteRadio(index){
         passedLineup.splice(pass.index, 1, {
-            position: "QB",
+            position: position,
             isAthlete: true,
             athlete: athletes[index],
         })
+        console.table(passedLineup);
         setLineup(passedLineup);
 
+    }
+
+    function checkIfAthleteExists(athlete_id){
+        for(let i = 0; i < passedLineup.length; i++){
+            if(passedLineup[i].position === position && passedLineup[i].isAthlete === true){
+                if(athlete_id === passedLineup[i].athlete.athlete_id){
+                    return true;
+                }
+                //result = false; //add guard clause
+            }
+            //else result = false;
+        }
+        return false;
     }
     useEffect(() => {
         if(!isNaN(athleteOffset)){
@@ -93,21 +108,39 @@ const AthleteSelect = (props) => {
                 <div className="grid grid-cols-4 mt-1 md:grid-cols-4 md:ml-7 md:mt-2">
                     {athletes.map((item, i) => {
                         const accountAthleteIndex = athletes.indexOf(item, 0);
+                        
                         return(
-                            <label> 
-                                <div className="w-4/5 h-5/6 border-transparent focus:border-transparent focus:ring-2 focus:ring-blue-300 focus:border-transparent">
-                                    <input className="justify-self-end" type="radio" name="athletePick" value={i} onChange={(e) => setAthleteRadio(parseInt(e.target.value))}></input>
-                                    <AthleteSelectContainer
-                                        key={item.athlete_id}
-                                        athleteName={item.name}
-                                        avgScore={item.fantasy_score.toFixed(2)}
-                                        id={item.athlete_id}
-                                        uri={item.image}
-                                        index={accountAthleteIndex}
-                                    />
-                                    
-                                </div>
-                            </label>
+                            <>
+                                {checkIfAthleteExists(item.athlete_id)? ( 
+                                    <div className="w-4/5 h-5/6 border-transparent focus:border-transparent focus:ring-2 focus:ring-blue-300 focus:border-transparent bg-black">
+                                        <AthleteSelectContainer
+                                            key={item.athlete_id}
+                                            athleteName={item.name}
+                                            avgScore={item.fantasy_score.toFixed(2)}
+                                            id={item.athlete_id}
+                                            uri={item.image}
+                                            index={accountAthleteIndex}
+                                        />  
+                                    </div>
+                                ) : (
+                                    <label> 
+                                    <div className="w-4/5 h-5/6 border-transparent focus:border-transparent focus:ring-2 focus:ring-blue-300 focus:border-transparent">
+                                        <input className="justify-self-end" type="radio" name="athletePick" value={i} onChange={(e) => setAthleteRadio(parseInt(e.target.value))}></input>
+                                        <AthleteSelectContainer
+                                            key={item.athlete_id}
+                                            athleteName={item.name}
+                                            avgScore={item.fantasy_score.toFixed(2)}
+                                            id={item.athlete_id}
+                                            uri={item.image}
+                                            index={accountAthleteIndex}
+                                        />
+                                        
+                                    </div>
+                                    </label>
+                                )}
+                                
+                            </>
+                            
                         )
                     })}
                 </div>
