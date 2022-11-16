@@ -31,11 +31,11 @@ async function getAthleteInfoById(item) {
   return returningData;
 }
 
-async function getAthleteInfoNoStats(item){
+async function getAthleteInfoNoStats(item) {
   let value = item.metadata.map((item) => item.value);
   const { data } = await client.query({
     query: GET_ATHLETE_BY_ID,
-    variables: { getAthleteById: parseFloat(value[0])},
+    variables: { getAthleteById: parseFloat(value[0]) },
   });
 
   const returningData = {
@@ -50,7 +50,6 @@ async function getAthleteInfoNoStats(item){
     animation: data.getAthleteById.nftAnimation,
     image: data.getAthleteById.nftImage,
     fantasy_score: getAvgFantasyScore(data.getAthleteById.stats),
-
   };
   return returningData;
 }
@@ -67,10 +66,13 @@ function getAvgFantasyScore(array) {
 
 function convertNftToAthlete(item) {
   const token_metadata = item.token_metadata || item.metadata;
+
   return {
     token_id: item.token_id,
-    metadata: JSON.parse(token_metadata.extra),
+    metadata: token_metadata.extra.includes('attributes')
+      ? JSON.parse(token_metadata.extra).attributes
+      : JSON.parse(token_metadata.extra),
   };
 }
 
-export { convertNftToAthlete, getAthleteInfoById , getAthleteInfoNoStats};
+export { convertNftToAthlete, getAthleteInfoById, getAthleteInfoNoStats };
