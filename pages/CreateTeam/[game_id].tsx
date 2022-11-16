@@ -222,7 +222,7 @@ export default function CreateLineup(props) {
             array[i].position = "SUPERFLEX"
         } 
 
-        array2.push({positions: array[i].position, isAthlete: false,});
+        array2.push({position: array[i].position, isAthlete: false,});
       }    
     }
     setLineup(array2);
@@ -539,30 +539,7 @@ export default function CreateLineup(props) {
   
   };
       return (
-        // <>
-        //   {loading ? (
-        //     <Container>
-        //       <LoadingPageDark />
-        //     </Container>
-        //   ) : (
-        //     <>
-        //       {err ? (
-        //         <>
-        //           <Container activeName="PLAY">
-        //             <p className="py-10 ml-7">{err}</p>
-        //           </Container>
-        //         </>
-        //       ) : (
                 <>
-                  {timerUp ? (
-                    <Container activeName="PLAY">
-                      <PortfolioContainer
-                        title="GAME HAS STARTED"
-                        textcolor="text-indigo-black"
-                      ></PortfolioContainer>
-                      <p className="ml-7">Please refresh the page or go to Play page</p>
-                    </Container>
-                  ) : (
                     <>
                       <Container activeName="PLAY">
                         <div className="flex flex-col w-full hide-scroll max-h-screen justify-center self-center md:pb-12">
@@ -688,7 +665,7 @@ export default function CreateLineup(props) {
                                   title="CREATE LINEUP"
                                   textcolor="text-indigo-black"
                                 >
-                                  <div className="flex flex-col">
+                                  <div className="flex flex-col -mt-8 -mb-5">
                                     <div className="flex items-end pt-10 pb-3 ml-7">
                                       <div className="font-monument text-xl truncate w-40 md:w-min md:max-w-xs">
                                         {teamName}
@@ -700,58 +677,9 @@ export default function CreateLineup(props) {
                                         EDIT TEAM NAME
                                       </p>
                                     </div>
-                                    <div className="grid grid-cols-2 gap-y-4 mt-4 mb-5 md:mb-10 md:grid-cols-4 md:ml-7 md:mt-12">
-                                      {/* {team.length > 0 &&
-                                        team.map((data, i) => {
-                                          return (
-                                            <div>
-                                              <Lineup
-                                                position={data.position.value}
-                                                player={
-                                                  data.token_info
-                                                    ? data.token_info.info.extension.attributes.filter(
-                                                        (item) => item.trait_type === 'name'
-                                                      )[0].value
-                                                    : ''
-                                                }
-                                                score={data.fantasy_score || 0}
-                                                onClick={() => {
-                                                  // filterAthleteByPos(data.position.value);
-                                                  setSlotIndex(i);
-                                                }}
-                                                img={
-                                                  data.token_info
-                                                    ? data.token_info.info.token_uri
-                                                    : null
-                                                }
-                                              />
-                                            </div>
-                                          );
-                                        })} */}
-                                        {/* {5 > 0 &&
-                                        test.map((data, i) => {
-                                          return (
-                                            <div>
-                                              <Lineup
-                                                position={"TEST"}
-                                                player={"name"
-                                                  
-                                                    ? "Position"
-                                                    : ''
-                                                }
-                                                score={"69"}
-                                                onClick={() => {
-                                                  // filterAthleteByPos(data.position.value);
-                                                  setSlotIndex(i);
-                                                }}
-                                                img="/images/tokensMLB/CF.png"
-                                              />
-                                            </div>
-                                          );
-                                        })} */}
+                                    <div className="grid grid-cols-2 gap-y-4 mt-2 mb-2 md:mb-10 md:grid-cols-4 md:ml-7 md:mt-12">
                                         {lineup.map((data, i) => {
-                                          
-                                          return(
+                                          return (
                                             <>
                                               {data.isAthlete === false ? (
                                                 <div>
@@ -775,52 +703,14 @@ export default function CreateLineup(props) {
                                                     test={setArray(data.position, lineup, i)}
                                                     img={data.athlete.image}
                                                     player={data.athlete.name}
-                                                    score={data.athlete.fantasy_score}
+                                                    score={data.athlete.fantasy_score.toFixed(2)}
                                                     game_id={gameId}
                                                   />
-                                                    
-                                                  
                                                 </div>
                                               )}
                                             </>
                                           )
                                         })}
-                                        {/* {Array.from(
-                                          {length: 8},
-                                          (lineup, i) => {
-                                            return(
-                                              <>
-                                                {lineup === undefined ? (
-                                                <div>
-                                                  <Lineup
-                                                    position={"TEST"}
-                                                    player={"name" ? "Position" : ''}
-                                                    score={"69"}
-                                                    onClick={() => {
-                                                      setSlotIndex(i);
-                                                    }} 
-                                                    img='/images/tokensMLB/CF.png'
-                                                  />
-                                                </div>
-                                                ) : (
-                                                <div>
-                                                  <Lineup
-                                                    position={"HELLO"}
-                                                    player={"name" ? "Position" : ''}
-                                                    score={"69"}
-                                                    onClick={() => {
-                                                      setSlotIndex(i);
-                                                    }}
-                                                    img='/images/tokensMLB/CF.png'
-                                                    />
-                                                </div>
-                                                )}
-                                              </>
-                                            )
-                                            
-                                          }
-                                          
-                                        )} */}
                                     </div>
                                   </div>
                                   <div className="flex bg-indigo-black bg-opacity-5 w-full justify-end">
@@ -931,7 +821,7 @@ export default function CreateLineup(props) {
                         onClose={() => {
                           setEditModal(false);
                           setEditInput(teamName);
-                        }}
+                        }} 
                       >
                         <div className="mt-2 px-5">
                           <p
@@ -946,6 +836,12 @@ export default function CreateLineup(props) {
                             style={{ fontFamily: 'Montserrat' }}
                             value={editInput}
                             onChange={(e) => setEditInput(e.target.value)}
+                            onKeyPress={(e) => {
+                              if(e.key === 'Enter'){
+                                setTeamName(editInput);
+                                setEditModal(false);
+                              }
+                            }}
                           />
                           <div className="flex mt-16 mb-5 bg-opacity-5 w-full">
                             <button
@@ -961,7 +857,6 @@ export default function CreateLineup(props) {
                         </div>
                       </Modal>
                     </>
-                  )}
                   <BaseModal title={msg.title} visible={modal} onClose={() => setModal(false)}>
                     <p className="mt-5">{msg.content}</p>
                   </BaseModal>

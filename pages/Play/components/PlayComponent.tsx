@@ -73,10 +73,10 @@ const PlayComponent = (props) => {
             </div>
 
             <div className="mt-4 flex justify-between">
-              <div className="">
+              {/* <div className="">
                 <div className="font-thin text-sm">PRIZE POOL</div>
                 <div className="text-base font-monument">${prizePool}</div>
-              </div>
+              </div> */}
               <div className="">
                 <div className="font-thin text-sm">STATUS</div>
                 <div className="text-base font-monument">COMPLETE</div>
@@ -102,10 +102,10 @@ const PlayComponent = (props) => {
             </div>
 
             <div className="mt-4 flex justify-between">
-              <div className="">
+              {/* <div className="">
                 <div className="font-thin text-sm">PRIZE POOL</div>
                 <div className="text-base font-monument">${prizePool}</div>
-              </div>
+              </div> */}
               <div className="">
                 <div className="font-thin text-sm">START DATE</div>
                 <div className="text-base font-monument">

@@ -35,6 +35,7 @@ export default function Index(props) {
   const [gameType, setGameType] = useState('new');
   const [content, setContent] = useState(false);
   const [gameDuration, setGameDuration] = useState(0);
+  const [totalGames, setTotalGames] = useState(0);
 
   //gameinfo
   const [gameInfo, setGameInfo] = useState({
@@ -215,7 +216,6 @@ export default function Index(props) {
   const checkValidity = () => {
     let errors = [];
     let sortPercentage = [...distribution].sort((a, b) => b.percentage - a.percentage);
-    console.log('details.duration', typeof details.duration);
     // if (!Number.isInteger(details.duration)) {
     //   errors.push('Duration must be a positive integer that is expressed in days');
     // }
@@ -224,9 +224,13 @@ export default function Index(props) {
     //   errors.push('Game is missing a title');
     // }
 
-    if (new Date(details.startTime) < new Date() || !details.startTime) {
-      errors.push('Invalid Date & Time values');
-    }
+    // if (new Date(details.startTime) < new Date() || !details.startTime) {
+    //   errors.push('Invalid Date & Time values');
+    // }
+
+    // if (new Date(details.endTime) > new Date(details.startTime) ) {
+    //   errors.push('Invalid Date & Time values');
+    // }
 
     if (distribution.length === 1 && percentTotal === 0) {
       errors.push('Invalid Distribution values');
@@ -498,7 +502,7 @@ export default function Index(props) {
   const [details, setDetails] = useState({
     // name: '',
     startTime: '',
-    duration: 1,
+    endTime: '',
     prize: 1,
     description: '',
   });
@@ -516,9 +520,11 @@ export default function Index(props) {
 
   const dateStr = moment(details.startTime).format('YYYY-MM-DD HH:mm:ss');
   const dateDateStr = new Date(dateStr);
+  const dateStrEnd = moment(details.endTime).format('YYYY-MM-DD HH:mm:ss');
+  const dateDateStrEnd = new Date(dateStrEnd);
 
   const startUnixTimestamp = Math.floor(dateDateStr.getTime()/1000);
-  const endUnixTimeStamp = startUnixTimestamp + (details.duration * 86400);
+  const endUnixTimeStamp = Math.floor(dateDateStrEnd.getTime() / 1000);
 
   const startMilliseconds = startUnixTimestamp * 1000;
   const startMsDate = new Date(startMilliseconds);
@@ -526,11 +532,30 @@ export default function Index(props) {
   const endMilliseconds = endUnixTimeStamp * 1000;
   const endMsDate = new Date(endMilliseconds);
   const endFormattedTimestamp = endMsDate.toLocaleString();
-  
+
+  function query_game_supply() {
+    const query = JSON.stringify({ account_id: getContract(GAME) });
+
+    provider
+      .query({
+        request_type: 'call_function',
+        finality: 'optimistic',
+        account_id: getContract(GAME),
+        method_name: 'nft_supply_for_owner',
+        args_base64: Buffer.from(query).toString('base64'),
+      })
+      .then((data) => {
+        // @ts-ignore:next-line
+        const totalGames = JSON.parse(Buffer.from(data.result));
+
+        setTotalGames(totalGames);
+      });
+  }
+
   function query_games_list() {
     const query = JSON.stringify({
       from_index: 0, //offset for pagination
-      limit: 10,
+      limit: 100,
     });
     provider
       .query({
@@ -617,6 +642,7 @@ export default function Index(props) {
   
   useEffect(() => {
     query_games_list();
+    // query_game_supply();
   }, []);
 
   return (
@@ -750,7 +776,7 @@ export default function Index(props) {
                         {/* DATE & TIME */}
                         <div className="flex flex-col lg:w-1/2">
                           <label className="font-monument" htmlFor="datetime">
-                            DATE & TIME
+                            START TIME
                           </label>
                           <input
                             className="border outline-none rounded-lg px-3 p-2"
@@ -766,18 +792,16 @@ export default function Index(props) {
                       <div className="flex mt-8">
                         {/* DURATION */}
                         <div className="flex flex-col lg:w-1/2 lg:mr-10">
-                          <label className="font-monument" htmlFor="duration">
-                            DURATION <span className="text-indigo-lightgray">(DAYS)</span>
+                          <label className="font-monument" htmlFor="datetime">
+                            END TIME
                           </label>
                           <input
                             className="border outline-none rounded-lg px-3 p-2"
-                            id="duration"
-                            name="duration"
-                            type="number"
-                            min={1}
-                            placeholder="Express in days"
+                            id="datetime"
+                            type="datetime-local"
+                            name="endTime"
                             onChange={(e) => onChange(e)}
-                            value={details.duration}
+                            value={details.endTime}
                           />
                         </div>
 
