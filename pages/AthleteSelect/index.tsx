@@ -10,6 +10,7 @@ import { convertNftToAthlete, getAthleteInfoById, getAthleteInfoNoStats } from '
 import { ATHLETE } from 'data/constants/nearContracts';
 import AthleteSelectContainer from 'components/containers/AthleteSelectContainer';
 import Link from 'next/link';
+import ReactPaginate from 'react-paginate';
 
 const AthleteSelect = (props) => {
     const { query } = props;
@@ -27,16 +28,40 @@ const AthleteSelect = (props) => {
     const [athleteOffset, setAthleteOffset] = useState(0);
     const [athleteLimit, setAthleteLimit] = useState(10);
     const [totalAthletes, setTotalAthletes] = useState(0);
-    const [radioSelected, setRadioSelected] = useState<number>(null);
+    const [radioSelected, setRadioSelected] = useState(null);
     const [team, setTeam] = useState("allTeams");
     const [name, setName] = useState("allNames");
     const [lineup, setLineup] = useState([]);
     const { accountId } = useWalletSelector();
-
+    const [pageCount, setPageCount] = useState(0);
+    const [remountComponent, setRemountComponent] = useState(0);
     const provider = new providers.JsonRpcProvider({
         url: getRPCProvider(),
     });
 
+    
+    function query_nft_supply_for_owner(position, team, name){
+        const query = JSON.stringify({ 
+            account_id: accountId, 
+            position: position, 
+            team: team, 
+            name: name,
+        });
+
+        provider.query({
+            request_type: "call_function",
+            finality: 'optimistic',
+            account_id: getContract(ATHLETE),
+            method_name: 'filtered_nft_supply_for_owner',
+            args_base64: Buffer.from(query).toString('base64'),
+        })
+        .then((data) => {
+            //@ts-ignore:next-line
+            const totalAthletes = JSON.parse(Buffer.from(data.result));
+            setTotalAthletes(totalAthletes);
+        })
+
+    }
     function query_nft_tokens_for_owner(position, team, name){
         const query = JSON.stringify({
             account_id: accountId,
@@ -72,7 +97,7 @@ const AthleteSelect = (props) => {
             position: position,
             isAthlete: true,
             athlete: athletes[index],
-        })
+        });
         console.table(passedLineup);
         setLineup(passedLineup);
 
@@ -90,16 +115,37 @@ const AthleteSelect = (props) => {
         }
         return false;
     }
+
+    const handlePageClick = (e) => {
+        const newOffset = (e.selected * athleteLimit) % totalAthletes;
+        //add reset of lineup
+        passedLineup.splice(pass.index, 1, {
+            position: position,
+            isAthlete: false,
+        });
+        setRadioSelected(null);
+        setAthleteOffset(newOffset);
+    }
+    const handleRadioClick = (value) => {
+        console.log(value);
+        setRadioSelected(value);
+        setAthleteRadio(value);
+
+    }
     useEffect(() => {
         if(!isNaN(athleteOffset)){
+            query_nft_supply_for_owner(position, team, name);
+            setPageCount(Math.ceil(totalAthletes / athleteLimit));
+            const endOffset = athleteOffset + athleteLimit;
             query_nft_tokens_for_owner(position, team, name);
         }
-    }, []);
+    }, [totalAthletes, athleteLimit, athleteOffset]);
 
     return (
     <>
      <Container activeName="PLAY">
         <BackFunction prev={`/CreateTeam/${gameId}`} />
+        
         <PortfolioContainer
             title="SELECT YOUR ATHLETE"
             textcolor="text-indigo-black"
@@ -107,7 +153,7 @@ const AthleteSelect = (props) => {
             <div className="flex flex-col">
                 <div className="grid grid-cols-4 mt-1 md:grid-cols-4 md:ml-7 md:mt-2">
                     {athletes.map((item, i) => {
-                        const accountAthleteIndex = athletes.indexOf(item, 0);
+                        const accountAthleteIndex = athletes.indexOf(item, 0) + athleteOffset;
                         
                         return(
                             <>
@@ -127,7 +173,7 @@ const AthleteSelect = (props) => {
                                 ) : (
                                     <label className="w-4/5 h-5/6"> 
                                     <div className="w-full h-full border-transparent focus:border-transparent focus:ring-2 focus:ring-blue-300 focus:border-transparent">
-                                        <input className="justify-self-end" type="radio" name="athletePick" value={i} onChange={(e) => setAthleteRadio(parseInt(e.target.value))}></input>
+                                        <input  className="justify-self-end" type="radio"  checked={radioSelected == i} value={i} onChange={(e) => handleRadioClick(e.target.value)}></input>
                                         <AthleteSelectContainer
                                             key={item.athlete_id}
                                             athleteName={item.name}
@@ -145,6 +191,7 @@ const AthleteSelect = (props) => {
                             
                         )
                     })}
+                    
                 </div>
                 <div className="flex  bg-opacity-5 w-full justify-end">
                         <Link href={{
@@ -159,9 +206,29 @@ const AthleteSelect = (props) => {
                         </Link>
                 </div>  
             </div>
-        
+            
+            
+            <div className="absolute bottom-10 right-10"></div>
         </PortfolioContainer>
+        <div className="absolute z-0 bottom-10 right-10 iphone5:bottom-4 iphone5:right-2 iphone5:fixed iphoneX:bottom-4 iphoneX:right-4 iphoneX-fixed">
+                <div key={remountComponent}>
+                    <ReactPaginate 
+                        className="p-2 bg-indigo-buttonblue text-indigo-white flex flex-row space-x-4 select-none ml-7" 
+                        pageClassName="hover:font-bold"
+                        activeClassName="rounded-lg bg-indigo-white text-indigo-black pr-1 pl-1 font-bold"
+                        pageLinkClassName="rounded-lg hover:font-bold hover:bg-indigo-white hover:text-indigo-black"
+                        breakLabel="..."
+                        nextLabel=">"
+                        onPageChange={handlePageClick}
+                        pageRangeDisplayed={5}
+                        pageCount={pageCount}
+                        previousLabel="<"
+                        renderOnZeroPageCount={null}
+                    />
+                </div>
+        </div>
     </Container>
+    
     </>
     
  )
