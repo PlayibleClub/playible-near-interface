@@ -21,6 +21,17 @@ const Lineup = (props) => {
     index,
     test,
   } = props;
+  
+  function getPositionDisplay(position){
+    switch(position){
+      case 'QB' : return "QUARTER BACK";
+      case 'RB' : return "RUNNING BACK";
+      case 'WR' : return "WIDE RECEIVER";
+      case 'TE' : return "TIGHT END";
+      case 'FLEX' :
+      case 'SUPERFLEX': return position;
+    }
+  }
   //const { position, player = '', img = null, id, score, nextposition, onClick = null } = props;
   const lineupPosition = '/images/tokensMLB/' + position + '.png';
   return (
@@ -39,7 +50,7 @@ const Lineup = (props) => {
       }} as="/AthleteSelect">
         {img ? (
           <div className="relative mb-7" style={{ width: '120px', height: '162px' }}>
-            <div className="absolute z-50" style={{ width: '120px', height: '160px' }}></div>
+            <div className="absolute z-40" style={{ width: '120px', height: '160px' }}></div>
             <object
               className="absolute z-10"
               type="image/svg+xml"
@@ -47,6 +58,7 @@ const Lineup = (props) => {
               width={143}
               height={190}
             />
+            <div className="font-montserrat absolute z-50 text-sm top-1/3 left-4 text-indigo-white">{getPositionDisplay(position)}</div>
           </div>
         ) : (
           <Image src={lineupPosition} width={143} height={190} />

@@ -102,7 +102,16 @@ const AthleteSelect = (props) => {
         setLineup(passedLineup);
 
     }
-
+    function getPositionDisplay(position){
+        switch(position){
+          case 'QB' : return "QUARTER BACK";
+          case 'RB' : return "RUNNING BACK";
+          case 'WR' : return "WIDE RECEIVER";
+          case 'TE' : return "TIGHT END";
+          case 'FLEX' : return "FLEX (RB/WR/TE)"
+          case 'SUPERFLEX': return "SUPERFLEX (QB/RB/WR/TE)";
+        }
+      }
     function checkIfAthleteExists(athlete_id){
         for(let i = 0; i < passedLineup.length; i++){
             if(passedLineup[i].position === position && passedLineup[i].isAthlete === true){
@@ -147,7 +156,7 @@ const AthleteSelect = (props) => {
         <BackFunction prev={`/CreateTeam/${gameId}`} />
         
         <PortfolioContainer
-            title="SELECT YOUR ATHLETE"
+            title={"SELECT YOUR " + getPositionDisplay(position)} 
             textcolor="text-indigo-black"
         >
             <div className="flex flex-col">
