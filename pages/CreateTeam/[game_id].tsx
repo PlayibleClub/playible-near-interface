@@ -222,7 +222,7 @@ export default function CreateLineup(props) {
             array[i].position = "SUPERFLEX"
         } 
 
-        array2.push({positions: array[i].position, isAthlete: false,});
+        array2.push({position: array[i].position, isAthlete: false,});
       }    
     }
     setLineup(array2);
@@ -775,7 +775,7 @@ export default function CreateLineup(props) {
                                                     test={setArray(data.position, lineup, i)}
                                                     img={data.athlete.image}
                                                     player={data.athlete.name}
-                                                    score={data.athlete.fantasy_score}
+                                                    score={data.athlete.fantasy_score.toFixed(2)}
                                                     game_id={gameId}
                                                   />
                                                     
