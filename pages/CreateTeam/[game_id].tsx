@@ -931,7 +931,7 @@ export default function CreateLineup(props) {
                         onClose={() => {
                           setEditModal(false);
                           setEditInput(teamName);
-                        }}
+                        }} 
                       >
                         <div className="mt-2 px-5">
                           <p
@@ -946,6 +946,12 @@ export default function CreateLineup(props) {
                             style={{ fontFamily: 'Montserrat' }}
                             value={editInput}
                             onChange={(e) => setEditInput(e.target.value)}
+                            onKeyPress={(e) => {
+                              if(e.key === 'Enter'){
+                                setTeamName(editInput);
+                                setEditModal(false);
+                              }
+                            }}
                           />
                           <div className="flex mt-16 mb-5 bg-opacity-5 w-full">
                             <button
