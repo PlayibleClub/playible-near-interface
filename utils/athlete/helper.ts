@@ -11,8 +11,6 @@ async function getAthleteInfoById(item) {
     variables: { getAthleteById: parseFloat(value[0]) },
   });
 
-  console.log(data);
-
   const returningData = {
     primary_id: value[0],
     athlete_id: item.token_id,
@@ -67,11 +65,13 @@ function getAvgFantasyScore(array) {
 function convertNftToAthlete(item) {
   const token_metadata = item.token_metadata || item.metadata;
 
+  let metadata = token_metadata.extra.includes('attributes')
+    ? JSON.parse(JSON.parse(token_metadata.extra).attributes)
+    : JSON.parse(token_metadata.extra);
+
   return {
     token_id: item.token_id,
-    metadata: token_metadata.extra.includes('attributes')
-      ? JSON.parse(token_metadata.extra).attributes
-      : JSON.parse(token_metadata.extra),
+    metadata: metadata,
   };
 }
 
