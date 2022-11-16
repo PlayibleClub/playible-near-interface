@@ -39,7 +39,6 @@ const AthleteSelect = (props) => {
         url: getRPCProvider(),
     });
 
-    
     function query_nft_supply_for_owner(position, team, name){
         const query = JSON.stringify({ 
             account_id: accountId, 
@@ -62,6 +61,7 @@ const AthleteSelect = (props) => {
         })
 
     }
+
     function query_nft_tokens_for_owner(position, team, name){
         const query = JSON.stringify({
             account_id: accountId,
@@ -153,8 +153,9 @@ const AthleteSelect = (props) => {
     return (
     <>
      <Container activeName="PLAY">
-        <BackFunction prev={`/CreateTeam/${gameId}`} />
-        
+        <div className="mt-4">
+            <BackFunction prev={`/CreateTeam/${gameId}`} />
+        </div>
         <PortfolioContainer
             title={"SELECT YOUR " + getPositionDisplay(position)} 
             textcolor="text-indigo-black"
@@ -202,18 +203,6 @@ const AthleteSelect = (props) => {
                     })}
                     
                 </div>
-                <div className="flex  bg-opacity-5 w-full justify-end">
-                        <Link href={{
-                            pathname: '/CreateTeam/[game_id]',
-                            query: {
-                                game_id: gameId,
-                                testing: JSON.stringify(lineup),
-                                teamName: teamName                            
-                            } 
-                        }} as={`/CreateTeam/${gameId}`}>
-                        <button className="bg-indigo-buttonblue text-indigo-white w-full mr-10 md:w-80 h-14 text-center font-bold text-md">PROCEED</button>
-                        </Link>
-                </div>  
             </div>
             
             
@@ -234,6 +223,16 @@ const AthleteSelect = (props) => {
                         previousLabel="<"
                         renderOnZeroPageCount={null}
                     />
+                    <Link href={{
+                        pathname: '/CreateTeam/[game_id]',
+                        query: {
+                            game_id: gameId,
+                            testing: JSON.stringify(lineup),
+                            teamName: teamName                            
+                        } 
+                        }} as={`/CreateTeam/${gameId}`}>
+                        <button className="bg-indigo-buttonblue text-indigo-white w-full ml-7 mt-4 md:w-60 h-14 text-center font-bold text-md">PROCEED</button>
+                    </Link>
                 </div>
         </div>
     </Container>

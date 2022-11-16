@@ -363,7 +363,7 @@ const Play = (props) => {
   function query_games_list(){
     const query = JSON.stringify({
       from_index: 0,
-      limit: 10,
+      limit: 100,
     });
     provider
       .query({
@@ -753,7 +753,7 @@ const Play = (props) => {
                           (categoryList[0].isActive ? newGames : categoryList[1].isActive ? ongoingGames : completedGames).map((data, i) => {
                                   return (
                                     <div key={i} className="flex">
-                                      <div className="mr-6">
+                                      <div className="mr-6 cursor-pointer">
                                       {/* <a href={`/PlayDetails?id=${data.id}`}>
                                           <div className="mr-6">
                                             <PlayComponent
@@ -765,7 +765,7 @@ const Play = (props) => {
                                               month={data.month}
                                               date={data.date}
                                               year={data.year}
-                                              img={data.image}
+                                            img={data.image}
                                               fetchGames={fetchGamesLoading}
                                               index={() => changeIndex(1)}
                                             />
