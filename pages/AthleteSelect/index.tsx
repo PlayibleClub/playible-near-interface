@@ -114,13 +114,11 @@ const AthleteSelect = (props) => {
       }
     function checkIfAthleteExists(athlete_id){
         for(let i = 0; i < passedLineup.length; i++){
-            if(passedLineup[i].position === position && passedLineup[i].isAthlete === true){
+            if(passedLineup[i].isAthlete === true){
                 if(athlete_id === passedLineup[i].athlete.athlete_id){
                     return true;
-                }
-                //result = false; //add guard clause
+                }   
             }
-            //else result = false;
         }
         return false;
     }
@@ -235,6 +233,7 @@ const AthleteSelect = (props) => {
                     </Link>
                 </div>
         </div>
+
     </Container>
     
     </>
