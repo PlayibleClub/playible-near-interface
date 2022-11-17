@@ -18,6 +18,7 @@ const Lineup = (props) => {
     athleteLineup,
     index,
     test,
+    isAthlete,
   } = props;
 
   function getPositionDisplay(position) {
@@ -54,7 +55,10 @@ const Lineup = (props) => {
           as="/AthleteSelect"
         >
           {img ? (
-            <div className="relative mb-7" style={{ width: '120px', height: '162px' }}>
+            <div
+              className="justify-center relative mb-7"
+              style={{ width: '120px', height: '162px' }}
+            >
               <div className="absolute z-40" style={{ width: '120px', height: '160px' }}></div>
               <object
                 className="absolute z-10"
@@ -63,8 +67,8 @@ const Lineup = (props) => {
                 width={143}
                 height={190}
               />
-              <div className="font-montserrat absolute z-50 text-sm top-1/3 left-4 text-indigo-white">
-                {getPositionDisplay(position)}
+              <div className="w-24 ml-1 text-center font-montserrat absolute z-50 text-sm top-1/3 left-4 text-indigo-white">
+                {isAthlete ? '' : getPositionDisplay(position)}
               </div>
             </div>
           ) : (
