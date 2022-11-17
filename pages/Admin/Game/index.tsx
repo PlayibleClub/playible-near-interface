@@ -608,7 +608,6 @@ export default function Index(props) {
         game_time_start: startMilliseconds,
         game_time_end: endMilliseconds,
         usage_cost: 1,
-        whitelist: testWhitelist,
         positions: testPositions,
         lineup_len: 8,
       })
