@@ -21,7 +21,7 @@ import { getContract, getRPCProvider } from 'utils/near';
 import { getGameInfoById } from 'utils/game/helper';
 const Play = (props) => {
   const { error } = props;
-  const [activeCategory, setCategory] = useState('new');
+  const [activeCategory, setCategory] = useState('NEW');
   const [rewardsCategory, setRewardsCategory] = useState('winning');
   const [claimModal, showClaimModal] = useState(false);
   const [claimData, setClaimData] = useState(null);
@@ -56,9 +56,7 @@ const Play = (props) => {
   const [filter, setFilter] = useState(null);
   const [search, setSearch] = useState('');
   const [err, setErr] = useState(error);
-  const sportList = ['all','football','basketball'];
-  const [activeSport, setSport] = useState('all');
-  
+
   const [categoryList,setcategoryList] = useState([
     {
       name: 'NEW',
@@ -698,11 +696,11 @@ const Play = (props) => {
                   <div className="flex-initial">
                     <PortfolioContainer title="PLAY" textcolor="text-indigo-black" />
                   </div>
-                  <Link href="/MyActivity">
+                  {/* <Link href="/MyActivity">
                     <button>
                       <div className="ml-8 mt-4 text-xs underline">MY ACTIVITY</div>
                     </button>
-                  </Link>
+                  </Link> */}
                 </div>
 
                 <div className="flex flex-col mt-6">
@@ -712,31 +710,13 @@ const Play = (props) => {
                         className={`cursor-pointer mr-6 ${
                             isActive ? 'border-b-8 border-indigo-buttonblue' : ''
                           }`}
-                          onClick={() => changecategoryList(name)}
+                          onClick={() => {changecategoryList(name);setCategory(name)}}
                       >
                         {name}
                       </div>
                     ))}
                   </div>
                   <hr className="opacity-10" />
-                  <div className="flex flex-col mt-6">
-                  <div className="flex font-bold ml-8 md:ml-0 font-monument">
-                  {sportList.map((type) => (
-                    <div
-                      key={type}
-                      className={`text-center px-8 py-3 uppercase border border-indigo-slate rounded-lg 
-                      cursor-pointer ml-8 ${
-                        activeSport=== type ? 'text-indigo-white font-thin bg-indigo-buttonblue' : ''
-                      }`}
-                      onClick={() => {
-                        setSport(type);
-                      }}
-                    >
-                      {type}
-                    </div>
-                  ))}
-                    </div> 
-                  </div>
                   {/* {loading ? (
                     <LoadingPageDark />
                   ) : (
@@ -775,14 +755,12 @@ const Play = (props) => {
                                           <div className="mr-6">
                                             <PlayComponent
                                               type={activeCategory}
+                                              game_id={data.game_id}
                                               icon="test"
                                               prizePool="2,300" 
                                               startDate={data.start_time}
                                               endDate={data.end_time}
-                                              month="04"
-                                              date="20"
-                                              year="2022"
-                                              img="test"
+                                              img={data.image}
                                               fetchGames={fetchGamesLoading}
                                               index={() => changeIndex(1)}
                                             />
