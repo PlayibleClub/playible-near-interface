@@ -5,6 +5,7 @@ import moment from 'moment';
 
 const PlayComponent = (props) => {
   const {
+    game_id,
     icon,
     prizePool,
     timeLeft,
@@ -41,31 +42,31 @@ const PlayComponent = (props) => {
     setMinute(0);
     setSecond(0);
     const id = setInterval(() => {
-      const currentDate = new Date();
-      const end = new Date(type === 'ongoing' || type === 'active' ? endDate : startDate);
-      // const totalSeconds = (end - currentDate) / 1000;
+      const currentDate = +new Date();
+      const end = +new Date(type === 'ON-GOING' || type === 'ACTIVE' ? endDate : startDate);
+      const totalSeconds = (end - currentDate) / 1000;
 
-      // const days = Math.floor(totalSeconds / 2600 / 24);
-      // const hours = Math.floor(totalSeconds / 3600) % 24;
-      // const minutes = Math.floor(totalSeconds / 60) % 60;
-      // const seconds = Math.floor(totalSeconds) % 60;
+      const days = Math.floor(totalSeconds / 2600 / 24);
+      const hours = Math.floor(totalSeconds / 3600) % 24;
+      const minutes = Math.floor(totalSeconds / 60) % 60;
+      const seconds = Math.floor(totalSeconds) % 60;
 
-      // setDay(formatTime(days));
-      // setHour(formatTime(hours));
-      // setMinute(formatTime(minutes));
-      // setSecond(formatTime(seconds));
+      setDay(formatTime(days));
+      setHour(formatTime(hours));
+      setMinute(formatTime(minutes));
+      setSecond(formatTime(seconds));
 
-      // if (Math.floor(totalSeconds) === 0) {
-      //   setGetGames(true);
-      //   fetchGames();
-      // }
+      if (Math.floor(totalSeconds) === 0) {
+        setGetGames(true);
+        fetchGames();
+      }
     }, 1000);
     return () => clearInterval(id);
   }, [index, getGames]);
 
   return (
     <>
-      {type === 'completed' ? (
+      {type === 'COMPLETED' ? (
         <div className="w-84 h-84">
           <div className="w-full p-3">
             <div className="w-full">
@@ -112,18 +113,24 @@ const PlayComponent = (props) => {
                   {moment(startDate).format('MM/DD/YYYY')}
                 </div>
               </div>
+              <div>
+                <div className="font-thin text-sm">GAME ID</div>
+                <div className="text-base font-monument">
+                  {game_id}
+                </div>
+              </div>
             </div>
 
             <div className="flex mt-2">
               <div className="">
-                {type === 'completed' ? (
+                {type === 'COMPLETED' ? (
                   ''
-                ) : type === 'active' || type === 'ongoing' ? (
+                ) : type === 'ACTIVE' || type === 'ON-GOING' ? (
                   <div className="font-thin text-sm">ENDS IN</div>
                 ) : (
                   <div className="font-thin text-sm">REGISTRATION ENDS IN</div>
                 )}
-                {(type === 'new' || type === 'ongoing' || type === 'active') && (
+                {(type === 'NEW' || type === 'ON-GOING' || type === 'ACTIVE') && (
                   <div className="text-sm font-montserrat font-normal flex mt-2 space-x-3">
                     <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
                       {day}
@@ -149,6 +156,7 @@ const PlayComponent = (props) => {
 };
 
 PlayComponent.propTypes = {
+  game_id: PropTypes.string.isRequired,
   icon: PropTypes.string.isRequired,
   key: PropTypes.string.isRequired,
   prizePool: PropTypes.string.isRequired,

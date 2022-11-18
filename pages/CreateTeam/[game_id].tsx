@@ -692,6 +692,7 @@ export default function CreateLineup(props) {
                                                     player='' 
                                                     game_id={gameId}
                                                     teamName={teamName}
+                                                    isAthlete={data.isAthlete}
                                                   />
                                                 </div>
                                               ) : (
@@ -705,6 +706,7 @@ export default function CreateLineup(props) {
                                                     player={data.athlete.name}
                                                     score={data.athlete.fantasy_score.toFixed(2)}
                                                     game_id={gameId}
+                                                    isAthlete={data.isAthlete}
                                                   />
                                                 </div>
                                               )}
