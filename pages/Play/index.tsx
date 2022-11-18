@@ -48,6 +48,7 @@ const Play = (props) => {
   const [offset, setOffset] = useState(0);
   const [pageCount, setPageCount] = useState(0);
   const [gamesLimit, setgamesLimit] = useState(10);
+  const [totalGames, setTotalGames] = useState(0);
   const [gamesOffset, setgamesOffset] = useState(0);
   const [gamePageCount, setgamePageCount] = useState(0);
   const [sortedList, setSortedList] = useState([]);
@@ -358,10 +359,30 @@ const Play = (props) => {
       </>
     );
   };
+
+  function query_game_supply() {
+    const query = JSON.stringify({ });
+
+    provider
+      .query({
+        request_type: 'call_function',
+        finality: 'optimistic',
+        account_id: getContract(GAME),
+        method_name: 'get_total_games',
+        args_base64: Buffer.from(query).toString('base64'),
+      })
+      .then((data) => {
+        // @ts-ignore:next-line
+        const totalGames = JSON.parse(Buffer.from(data.result));
+
+        setTotalGames(totalGames);
+      });
+  };
+  console.log(totalGames)
   function query_games_list(){
     const query = JSON.stringify({
       from_index: 0,
-      limit: 100,
+      limit: totalGames,
     });
     provider
       .query({
@@ -468,8 +489,9 @@ const Play = (props) => {
   }, [games, gamesLimit, gamesOffset]);
 
   useEffect(() => {
+    query_game_supply();
     query_games_list();
-  }, []);
+  }, [totalGames]);
   // useEffect(() => {
   //   if (connectedWallet) {
   //     if (connectedWallet?.network?.name === 'testnet') {

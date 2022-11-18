@@ -534,14 +534,14 @@ export default function Index(props) {
   const endFormattedTimestamp = endMsDate.toLocaleString();
 
   function query_game_supply() {
-    const query = JSON.stringify({ account_id: getContract(GAME) });
+    const query = JSON.stringify({ });
 
     provider
       .query({
         request_type: 'call_function',
         finality: 'optimistic',
         account_id: getContract(GAME),
-        method_name: 'nft_supply_for_owner',
+        method_name: 'get_total_games',
         args_base64: Buffer.from(query).toString('base64'),
       })
       .then((data) => {
@@ -550,12 +550,12 @@ export default function Index(props) {
 
         setTotalGames(totalGames);
       });
-  }
+  };
 
   function query_games_list() {
     const query = JSON.stringify({
       from_index: 0, //offset for pagination
-      limit: 100,
+      limit: totalGames,
     });
     provider
       .query({
@@ -641,8 +641,8 @@ export default function Index(props) {
   
   useEffect(() => {
     query_games_list();
-    // query_game_supply();
-  }, []);
+    query_game_supply();
+  }, [totalGames]);
 
   return (
     <Container isAdmin>
