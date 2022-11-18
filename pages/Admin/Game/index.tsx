@@ -516,20 +516,13 @@ export default function Index(props) {
     { positions: ['QB', 'RB', 'WR', 'TE'], amount: 1 },
   ];
 
-  const dateStr = moment(details.startTime).format('YYYY-MM-DD HH:mm:ss');
-  const dateDateStr = new Date(dateStr);
-  const dateStrEnd = moment(details.endTime).format('YYYY-MM-DD HH:mm:ss');
-  const dateDateStrEnd = new Date(dateStrEnd);
+  const dateStartFormatted = moment(details.startTime).format('YYYY-MM-DD HH:mm:ss');
+  const dateStart = moment(dateStartFormatted).utc().unix() * 1000;
+  const dateEndFormatted = moment(details.endTime).format('YYYY-MM-DD HH:mm:ss');
+  const dateEnd = moment(dateEndFormatted).utc().unix() * 1000;
 
-  const startUnixTimestamp = Math.floor(dateDateStr.getTime() / 1000);
-  const endUnixTimeStamp = Math.floor(dateDateStrEnd.getTime() / 1000);
-
-  const startMilliseconds = startUnixTimestamp * 1000;
-  const startMsDate = new Date(startMilliseconds);
-  const startFormattedTimestamp = startMsDate.toLocaleString();
-  const endMilliseconds = endUnixTimeStamp * 1000;
-  const endMsDate = new Date(endMilliseconds);
-  const endFormattedTimestamp = endMsDate.toLocaleString();
+  const startFormattedTimestamp = moment(dateStartFormatted).toLocaleString();
+  const endFormattedTimestamp = moment(dateEndFormatted).toLocaleString();
 
   function query_game_supply() {
     const query = JSON.stringify({ account_id: getContract(GAME) });
@@ -605,8 +598,8 @@ export default function Index(props) {
     const addGameArgs = Buffer.from(
       JSON.stringify({
         game_id: newGameID(),
-        game_time_start: startMilliseconds,
-        game_time_end: endMilliseconds,
+        game_time_start: dateStart,
+        game_time_end: dateEnd,
         usage_cost: 1,
         positions: testPositions,
         lineup_len: 8,
@@ -888,7 +881,6 @@ export default function Index(props) {
               )}
             </div>
           </div>
-          ))
         </Main>
       </div>
       <BaseModal title={endMsg.title} visible={endLoading} onClose={() => console.log()}>

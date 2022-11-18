@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect} from 'react';
+import React, { Component, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Image from 'next/image';
 import moment from 'moment';
@@ -21,53 +21,45 @@ const AdminGameComponent = (props) => {
   const playicon = '/images/playthumbnails/key.png';
   return (
     <>
-      {console.log(status + " " + game_id)}
-      {status === 'new'? (
+      {console.log(status + ' ' + game_id)}
+      {status === 'new' ? (
         <div className="w-84 h-96 mb-12">
           <div className="w-full p-3">
             <div className="w-full">
-              <Image src={playicon} width="300px" height="263px"/>
+              <Image src={playicon} width="300px" height="263px" />
             </div>
             <div className="mt-4 flex justify-between">
               <div className="">
-              <div>
-                Game ID: {game_id}
-              </div>
-              <div className="font-thin text-sm">
-                    START DATE
-                  <div className="text-base font-monument">
-                    {moment(start_time).format('MM/DD/YYYY')}
-                  </div>
-                  <div className="font-thin text-sm">
-                    END DATE
-                  </div>
-                  <div className="text-base font-monument">
-                    {moment(end_time).format('MM/DD/YYYY')}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      ) : status === 'completed'? (
-        <div className="w-84 h-96 mb-12">
-          <div className="w-full p-3">
-            <div className="w-full">
-              <Image src={playicon} width="300px" height="263px"/>
-            </div>
-            <div className="mt-4 flex justify-between">
-              <div className="">
-              <div>
-                Game ID: {game_id}
-              </div>
+                <div>Game ID: {game_id}</div>
                 <div className="font-thin text-sm">
-                    START DATE
+                  START DATE
+                  <div className="text-base font-monument">
+                    {moment.utc(start_time).format('MM/DD/YYYY')}
+                  </div>
+                  <div className="font-thin text-sm">END DATE</div>
+                  <div className="text-base font-monument">
+                    {moment.utc(end_time).format('MM/DD/YYYY')}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : status === 'completed' ? (
+        <div className="w-84 h-96 mb-12">
+          <div className="w-full p-3">
+            <div className="w-full">
+              <Image src={playicon} width="300px" height="263px" />
+            </div>
+            <div className="mt-4 flex justify-between">
+              <div className="">
+                <div>Game ID: {game_id}</div>
+                <div className="font-thin text-sm">
+                  START DATE
                   <div className="text-base font-monument">
                     {moment(start_time).format('MM/DD/YYYY')}
                   </div>
-                  <div className="font-thin text-sm">
-                    END DATE
-                  </div>
+                  <div className="font-thin text-sm">END DATE</div>
                   <div className="text-base font-monument">
                     {moment(end_time).format('MM/DD/YYYY')}
                   </div>
@@ -76,25 +68,21 @@ const AdminGameComponent = (props) => {
             </div>
           </div>
         </div>
-      ): status === 'ongoing' ? (
+      ) : status === 'ongoing' ? (
         <div className="w-84 h-96 mb-12">
           <div className="w-full p-3">
             <div className="w-full">
-              <Image src={playicon} width="300px" height="263px"/>
+              <Image src={playicon} width="300px" height="263px" />
             </div>
             <div className="mt-4 flex justify-between">
               <div className="">
-              <div>
-                Game ID: {game_id}
-              </div>
-              <div className="font-thin text-sm">
-                    START DATE
+                <div>Game ID: {game_id}</div>
+                <div className="font-thin text-sm">
+                  START DATE
                   <div className="text-base font-monument">
                     {moment(start_time).format('MM/DD/YYYY')}
                   </div>
-                  <div className="font-thin text-sm">
-                    END DATE
-                  </div>
+                  <div className="font-thin text-sm">END DATE</div>
                   <div className="text-base font-monument">
                     {moment(end_time).format('MM/DD/YYYY')}
                   </div>
@@ -108,7 +96,7 @@ const AdminGameComponent = (props) => {
       )}
     </>
   );
-}
+};
 AdminGameComponent.propTypes = {
   game_id: PropTypes.string.isRequired,
   start_time: PropTypes.number,
