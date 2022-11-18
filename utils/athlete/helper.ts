@@ -66,7 +66,7 @@ function convertNftToAthlete(item) {
   const token_metadata = item.token_metadata || item.metadata;
 
   let metadata = token_metadata.extra.includes('attributes')
-    ? JSON.parse(JSON.parse(token_metadata.extra).attributes)
+    ? JSON.parse(token_metadata.extra).attributes
     : JSON.parse(token_metadata.extra);
 
   return {
