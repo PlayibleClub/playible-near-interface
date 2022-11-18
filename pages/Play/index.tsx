@@ -92,7 +92,7 @@ const Play = (props) => {
   const [newGames, setNewGames] = useState([]);
   const [ongoingGames, setOngoingGames] = useState([]);
   const [completedGames, setCompletedGames] = useState([]);
-
+  const [emptyGames, setEmpyGames] = useState([]);
   const provider = new providers.JsonRpcProvider({
     url: getRPCProvider(),
   });
@@ -359,7 +359,9 @@ const Play = (props) => {
       </>
     );
   };
+  function checkIfCompleted(){
 
+  }
   function query_game_supply() {
     const query = JSON.stringify({ });
 
@@ -751,8 +753,8 @@ const Play = (props) => {
                           {1 > 0 ? (
                             <>
                               <div className="mt-4 ml-6 grid grid-cols-0 md:grid-cols-3">
-                          {(categoryList[0].isActive ? newGames : categoryList[1].isActive ? ongoingGames : completedGames).length > 0 &&
-                          (categoryList[0].isActive ? newGames : categoryList[1].isActive ? ongoingGames : completedGames).map((data, i) => {
+                          {(categoryList[0].isActive ? newGames : categoryList[1].isActive ? ongoingGames : emptyGames).length > 0 &&
+                          (categoryList[0].isActive ? newGames : categoryList[1].isActive ? ongoingGames : emptyGames).map((data, i) => {
                                   return (
                                     <div key={i} className="flex">
                                       <div className="mr-6 cursor-pointer">
@@ -788,7 +790,7 @@ const Play = (props) => {
                                             />
                                           </div>
                                         </Link>
-                                        {/* {activeCategory === 'completed' && data.hasAthletes && ( */}
+                                        
                                         {activeCategory === 'completed' && "test" && (
                                           <div className="">
                                             {/* {data.isClaimed === 'unclaimed' ? ( */}
@@ -890,6 +892,31 @@ const Play = (props) => {
                               </div>
                             </>
                           )}
+                          <div className="mt-4 ml-6 grid grid-cols-0 md:grid-cols-3">
+                            {(categoryList[2].isActive ? completedGames : emptyGames).length > 0 &&
+                            (categoryList[2].isActive ? completedGames : emptyGames).map((data, i) => {
+                              return(
+                                <div key={i} className="flex">
+                                  <div className="mr-6 cursor-pointer" onClick={() => alert("ERROR: Game " + data.game_id + " is already finished.")}>
+                                    <div className="mr-6">
+                                      <PlayComponent 
+                                        type={activeCategory}
+                                        game_id={data.game_id}
+                                        icon="test"
+                                        prizePool="2,300" 
+                                        startDate={data.start_time}
+                                        endDate={data.end_time}
+                                        img={data.image}
+                                        fetchGames={fetchGamesLoading}
+                                        index={() => changeIndex(1)}
+                                      />
+                                    </div>
+                                  </div>
+                                </div>
+                              )
+                            })}
+                          </div>
+                          
                         </>
                       {/* )}
                     </>
