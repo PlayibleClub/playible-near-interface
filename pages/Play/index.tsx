@@ -19,7 +19,7 @@ import Modal from '../../components/modals/Modal';
 import { transactions, utils, WalletConnection, providers } from 'near-api-js';
 import { getContract, getRPCProvider } from 'utils/near';
 import { getGameInfoById } from 'utils/game/helper';
-import { getLocalUnixTimestamp } from 'utils/date/helper';
+import { getUTCTimestampFromLocal } from 'utils/date/helper';
 
 const Play = (props) => {
   const { error } = props;
@@ -379,13 +379,13 @@ const Play = (props) => {
 
         const upcomingGames = await Promise.all(
           result
-            .filter((x) => x[1].start_time > getLocalUnixTimestamp())
+            .filter((x) => x[1].start_time > getUTCTimestampFromLocal())
             .map((item) => getGameInfoById(item))
         );
 
         const completedGames = await Promise.all(
           result
-            .filter((x) => x[1].end_time < getLocalUnixTimestamp())
+            .filter((x) => x[1].end_time < getUTCTimestampFromLocal())
             .map((item) => getGameInfoById(item))
         );
 
@@ -393,7 +393,8 @@ const Play = (props) => {
           result
             .filter(
               (x) =>
-                x[1].start_time < getLocalUnixTimestamp() && x[1].end_time > getLocalUnixTimestamp()
+                x[1].start_time < getUTCTimestampFromLocal() &&
+                x[1].end_time > getUTCTimestampFromLocal()
             )
             .map((item) => getGameInfoById(item))
         );

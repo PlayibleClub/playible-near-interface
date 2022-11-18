@@ -18,6 +18,8 @@ const AdminGameComponent = (props) => {
     status, //checking if upcoming or completed game
   } = props;
 
+  const formatString = 'MM/DD/YYYY HH:mm:ss Z';
+
   const playicon = '/images/playthumbnails/key.png';
   return (
     <>
@@ -34,11 +36,11 @@ const AdminGameComponent = (props) => {
                 <div className="font-thin text-sm">
                   START DATE
                   <div className="text-base font-monument">
-                    {moment.utc(start_time).format('MM/DD/YYYY')}
+                    {moment.utc(start_time).local().format(formatString)}
                   </div>
                   <div className="font-thin text-sm">END DATE</div>
                   <div className="text-base font-monument">
-                    {moment.utc(end_time).format('MM/DD/YYYY')}
+                    {moment.utc(end_time).local().format(formatString)}
                   </div>
                 </div>
               </div>
@@ -57,11 +59,11 @@ const AdminGameComponent = (props) => {
                 <div className="font-thin text-sm">
                   START DATE
                   <div className="text-base font-monument">
-                    {moment(start_time).format('MM/DD/YYYY')}
+                    {moment(start_time).local().format(formatString)}
                   </div>
                   <div className="font-thin text-sm">END DATE</div>
                   <div className="text-base font-monument">
-                    {moment(end_time).format('MM/DD/YYYY')}
+                    {moment(end_time).local().format(formatString)}
                   </div>
                 </div>
               </div>
@@ -80,11 +82,11 @@ const AdminGameComponent = (props) => {
                 <div className="font-thin text-sm">
                   START DATE
                   <div className="text-base font-monument">
-                    {moment(start_time).format('MM/DD/YYYY')}
+                    {moment(start_time).local().format(formatString)}
                   </div>
                   <div className="font-thin text-sm">END DATE</div>
                   <div className="text-base font-monument">
-                    {moment(end_time).format('MM/DD/YYYY')}
+                    {moment(end_time).local().format(formatString)}
                   </div>
                 </div>
               </div>

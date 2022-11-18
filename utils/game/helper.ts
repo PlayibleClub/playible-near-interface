@@ -1,5 +1,5 @@
 import client from 'apollo-client';
-import { getLocalUnixTimestamp } from 'utils/date/helper';
+import { getUTCTimestampFromLocal } from 'utils/date/helper';
 
 async function getGameInfoById(item) {
   // let game_id = item[0];
@@ -18,13 +18,14 @@ async function getGameInfoById(item) {
     lineup_len: item[1].lineup_len,
     joined_player_counter: item[1].joined_player_counter,
     jointed_team_counter: item[1].joined_team_counter,
-    isCompleted: getLocalUnixTimestamp() >= item[1].end_time ? true : false,
+    isCompleted: getUTCTimestampFromLocal() >= item[1].end_time ? true : false,
     status:
-      getLocalUnixTimestamp() >= item[1].end_time
+      getUTCTimestampFromLocal() >= item[1].end_time
         ? 'completed'
-        : getLocalUnixTimestamp() < item[1].start_time
+        : getUTCTimestampFromLocal() < item[1].start_time
         ? 'new'
-        : getLocalUnixTimestamp() > item[1].start_time && getLocalUnixTimestamp() < item[1].end_time
+        : getUTCTimestampFromLocal() > item[1].start_time &&
+          getUTCTimestampFromLocal() < item[1].end_time
         ? 'ongoing'
         : 'invalid',
   };

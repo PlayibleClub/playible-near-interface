@@ -2,7 +2,7 @@ import React, { Component, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Image from 'next/image';
 import moment from 'moment';
-import { getLocalDate, getLocalUnixTimestamp } from 'utils/date/helper';
+import { getUTCDateFromLocal } from 'utils/date/helper';
 
 const PlayComponent = (props) => {
   const {
@@ -43,8 +43,10 @@ const PlayComponent = (props) => {
     setMinute(0);
     setSecond(0);
     const id = setInterval(() => {
-      const currentDate = getLocalDate();
+      const currentDate = getUTCDateFromLocal();
       const end = moment.utc(type === 'ON-GOING' || type === 'ACTIVE' ? endDate : startDate);
+
+      console.log(endDate);
 
       setDay(formatTime(Math.floor(end.diff(currentDate, 'second') / 3600 / 24)));
       setHour(formatTime(Math.floor((end.diff(currentDate, 'second') / 3600) % 24)));
@@ -103,9 +105,14 @@ const PlayComponent = (props) => {
                 <div className="text-base font-monument">${prizePool}</div>
               </div> */}
               <div className="">
-                <div className="font-thin text-sm">START DATE</div>
+                <div className="font-thin text-sm">
+                  {type === 'ON-GOING' || type === 'ACTIVE' ? 'END' : 'START'} DATE
+                </div>
                 <div className="text-base font-monument">
-                  {moment.utc(startDate).format('MM/DD/YYYY')}
+                  {moment
+                    .utc(type === 'ON-GOING' || type === 'ACTIVE' ? endDate : startDate)
+                    .local()
+                    .format('MM/DD/YYYY')}
                 </div>
               </div>
               <div>

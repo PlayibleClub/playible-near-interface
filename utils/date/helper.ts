@@ -1,11 +1,11 @@
 import moment, { Moment } from 'moment';
 
-function getLocalUnixTimestamp(): number {
+function getUTCTimestampFromLocal(): number {
   return moment.utc(Date.now()).unix() * 1000;
 }
 
-function getLocalDate(): moment.Moment {
+function getUTCDateFromLocal(): moment.Moment {
   return moment.utc(Date.now());
 }
 
-export { getLocalUnixTimestamp, getLocalDate };
+export { getUTCTimestampFromLocal, getUTCDateFromLocal };
