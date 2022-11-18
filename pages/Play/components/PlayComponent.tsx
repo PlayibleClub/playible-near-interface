@@ -82,6 +82,12 @@ const PlayComponent = (props) => {
                 <div className="font-thin text-sm">STATUS</div>
                 <div className="text-base font-monument">COMPLETE</div>
               </div>
+              <div>
+                <div className="font-thin text-sm">GAME ID</div>
+                <div className="text-base font-monument">
+                  {game_id}
+                </div>
+              </div>
             </div>
 
             <div className="mt-4 flex justify-between">

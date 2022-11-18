@@ -12,7 +12,7 @@ import LoadingPageDark from '../../components/loading/LoadingPageDark';
 import { providers } from 'near-api-js';
 import { getContract, getRPCProvider } from 'utils/near';
 import { GAME } from 'data/constants/nearContracts';
-
+import { useWalletSelector } from 'contexts/WalletSelectorContext';
 
 export default function CreateLineup(props) {
   const { query } = props;
@@ -23,9 +23,11 @@ export default function CreateLineup(props) {
     url: getRPCProvider(),
   });
 
+  const { accountId } = useWalletSelector();
+
   const [gameData, setGameData] = useState(null);
   const [teamModal, setTeamModal] = useState(false);
-  const [teams, setTeams] = useState([]);
+  const [playerTeams, setPlayerTeams] = useState([]);
   const [startDate, setStartDate] = useState();
   const [buttonMute, setButtonMute] = useState(false);
 
@@ -97,13 +99,44 @@ export default function CreateLineup(props) {
   //   }
   // }, [connectedWallet]);
 
+  function query_player_teams(){
+    const query = JSON.stringify({
+      account: accountId,
+      game_id: gameId,
+    });
+
+    provider
+    .query({
+      request_type: 'call_function',
+      finality: 'optimistic',
+      account_id: getContract(GAME),
+      method_name: 'get_player_team',
+      args_base64: Buffer.from(query).toString('base64'),
+    })
+    .then((data) => {
+      // @ts-ignore:next-line
+      const  playerTeamNames = JSON.parse(Buffer.from(data.result));
+      
+      setPlayerTeams(playerTeamNames);
+
+    });
+  }
+  
+  useEffect(() => {
+      
+    console.log("loading");
+    query_player_teams();
+    console.log(playerTeams);
+    
+  },[]);
+
   return (
     <>
       <Container activeName="PLAY">
         <div className="mt-8">
           <BackFunction prev={query.origin ? `/${query.origin}` : `/PlayDetails/${gameId}`}></BackFunction>
         </div>
-        <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
+        <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12 ">
           <Main color="indigo-white">
             {/* {loading ? (
               <LoadingPageDark />
@@ -166,23 +199,31 @@ export default function CreateLineup(props) {
                        
                         {/* <div className="ml-7 mr-7 border-b-2 border-indigo-lightgray border-opacity-30 w-2/5" /> */}
                        
-                        {/* <div className="mt-7 ml-7 w-2/5">
+                        <div className="mt-7 ml-7 w-2/5">
                           <ModalPortfolioContainer
                             title="VIEW TEAMS"
                             textcolor="text-indigo-black mb-5"
                           />
-                          {teams.length > 0 ? (
+                           
+                          {
+                          /* @ts-expect-error */
+                          playerTeams.team_names == undefined ? (
+                           
+
+                            <p>No teams assigned</p>                            
+                          ) : ( 
                             <div>
-                              {teams.map(function (data, i) {
+                             { /* @ts-expect-error */ }
+                              {playerTeams.team_names.map((data) => {
                                 return (
                                   <div className="p-5 px-6 bg-black-dark text-indigo-white mb-5 flex justify-between">
-                                    <p className="font-monument">{data.name}</p>
+                                    <p className="font-monument">{data}</p>
                                     <Link
                                       href={{
                                         pathname: '/EntrySummary',
                                         query: {
-                                          team_id: data.id,
-                                          game_id: router.query.id,
+                                          team_id: data,
+                                          game_id: gameId,
                                         },
                                       }}
                                     >
@@ -194,10 +235,8 @@ export default function CreateLineup(props) {
                                 );
                               })}
                             </div>
-                          ) : (
-                            <p>No teams assigned</p>
                           )}
-                        </div> */}
+                        </div>
                       {/* </>
                     ) : (
                       ''

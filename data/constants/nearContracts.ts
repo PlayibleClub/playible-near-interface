@@ -114,7 +114,7 @@ export const GAME = {
   mainnet: 'game.nfl.playible.near',
   testnet: 'game.nfl.playible.testnet',
   interface: {
-    viewMethods: ['get_games, get_game, get_total_games'],
+    viewMethods: ['get_games, get_game, get_total_games, get_player_team'],
     changeMethods: ['add_game'],
   },
 }; //Game Contract
