@@ -208,8 +208,6 @@ export default function CreateLineup(props) {
                           {
                           /* @ts-expect-error */
                           playerTeams.team_names == undefined ? (
-                           
-
                             <p>No teams assigned</p>                            
                           ) : ( 
                             <div>
@@ -220,12 +218,12 @@ export default function CreateLineup(props) {
                                     <p className="font-monument">{data}</p>
                                     <Link
                                       href={{
-                                        pathname: '/EntrySummary',
+                                        pathname: '/EntrySummary/[game_id]',
                                         query: {
                                           team_id: data,
                                           game_id: gameId,
                                         },
-                                      }}
+                                      }}as={`/EntrySummary/${gameId}/${data}`}
                                     >
                                       <a>
                                         <img src={'/images/arrow-top-right.png'} />

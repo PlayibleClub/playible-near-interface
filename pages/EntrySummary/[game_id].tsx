@@ -6,24 +6,43 @@ import ModalPortfolioContainer from '../../components/containers/ModalPortfolioC
 import Container from '../../components/containers/Container';
 import BackFunction from '../../components/buttons/BackFunction';
 import { useRouter } from 'next/router';
-import PlayDetailsComponent from '../../pages/PlayDetails/components/PlayDetailsComponent';
+import PlayDetailsComponent from '../PlayDetails/components/PlayDetailsComponent';
 import { axiosInstance } from '../../utils/playible';
 import moment from 'moment';
 import Link from 'next/link';
 import PerformerContainer from '../../components/containers/PerformerContainer';
 import 'regenerator-runtime/runtime';
 import LoadingPageDark from '../../components/loading/LoadingPageDark';
+import { providers } from 'near-api-js';
+import { getContract, getRPCProvider } from 'utils/near';
+import { GAME } from 'data/constants/nearContracts';
+import { useWalletSelector } from 'contexts/WalletSelectorContext';
+import { convertNftToAthlete, getAthleteInfoById } from 'utils/athlete/helper';
 
 export default function EntrySummary(props) {
+
   const router = useRouter();
   const [name, setName] = useState('');
   const [gameData, setGameData] = useState(null);
   const [teamModal, setTeamModal] = useState(false);
   const [team, setTeam] = useState([]);
   const [gameEnd, setGameEnd] = useState(false);
-  const { error } = props;
+
+ 
+
+  const { query } = props;
+  const provider = new providers.JsonRpcProvider({
+    url: getRPCProvider(),
+  });
+  const gameId = query.game_id;
+  const [playerLineup, setPlayerLineup] = useState([]);
+  const playerTeamName = query.team_id;
+
+  const { accountId } = useWalletSelector();
+
+  // const { error } = props;
   const [loading, setLoading] = useState(true);
-  const [err, setErr] = useState(error);
+  // const [err, setErr] = useState(error);
 
   const fetchGameData = async () => {
     const res = await axiosInstance.get(`/fantasy/game/${router.query.game_id}/`);
@@ -79,6 +98,40 @@ export default function EntrySummary(props) {
     return;
   }
 
+  function query_player_team_lineup(){
+    const query = JSON.stringify({
+      account: accountId,
+      game_id: gameId,
+      team_id: playerTeamName,
+    });
+
+    provider
+    .query({
+      request_type: 'call_function',
+      finality: 'optimistic',
+      account_id: getContract(GAME),
+      method_name: 'get_player_lineup',
+      args_base64: Buffer.from(query).toString('base64'),
+    })
+    .then((data) => {
+      // @ts-ignore:next-line
+      const  playerTeamLineup = JSON.parse(Buffer.from(data.result));
+      
+      setPlayerLineup(playerTeamLineup);
+
+    });
+  }
+
+  useEffect(() => {
+      
+    console.log("loading lineup");
+    query_player_team_lineup();
+    /* @ts-expect-error */
+    console.log(playerLineup.lineup);
+    
+  },[]);
+
+
   return (
     <>
       {/* { changeNameModal === true &&
@@ -119,17 +172,17 @@ export default function EntrySummary(props) {
         <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
           <Main color="indigo-white">
             <>
-              {loading ? (
+              {/* {loading ? (
                 <LoadingPageDark />
               ) : (
                 <>
                   {err ? (
                     <p className="py-10 ml-7">{err}</p>
-                  ) : (
+                  ) : ( */}
                     <>
                       <div className="mt-8">
                         <BackFunction
-                          prev={router.query.origin || `/CreateLineup?id=${router.query.game_id}`}
+                          prev={router.query.origin || `/CreateLineup/${gameId}`}
                         />
                       </div>
                       <PortfolioContainer textcolor="indigo-black" title="ENTRY SUMMARY" />
@@ -191,14 +244,21 @@ export default function EntrySummary(props) {
                           </div>
                         </div>
                       </div>
-                      {team.length > 0
-                        ? team.map((item) => (
+                      <div className="mt-5 flex items-center ml-7">
+                         <ModalPortfolioContainer
+                            title={playerTeamName}
+                            textcolor="text-indigo-black mb-5"
+                          />
+                      </div>
+                      {
+                        /* @ts-expect-error */
+                      playerLineup.lineup == undefined ? 
+                         'Loading Athletes' :
+                         /* @ts-expect-error */
+                        playerLineup.lineup.map((item) => (
                             <>
-                              <div className="mt-10 flex items-center ml-7">
-                                <p className="text-2xl font-bold font-monument">{item.name}</p>
-                              </div>
                               <div className="grid grid-cols-4 gap-y-4 mt-4 md:grid-cols-4 md:ml-7 md:mt-12">
-                                {item.athletes.map((player, i) => {
+                                {/* {item.athletes.map((player, i) => {
                                   return (
                                     <div className="mb-4" key={i}>
                                       <PerformerContainer
@@ -210,15 +270,16 @@ export default function EntrySummary(props) {
                                       />
                                     </div>
                                   );
-                                })}
+                                })} */}
                               </div>
                             </>
                           ))
-                        : ''}
+                          
+                        }
                     </>
-                  )}
+                  {/* )}
                 </>
-              )}
+              )} */}
             </>
           </Main>
         </div>
@@ -228,10 +289,24 @@ export default function EntrySummary(props) {
 }
 
 export async function getServerSideProps(ctx) {
+  const { query } = ctx;
+
+  if (query.game_id != query.game_id) {
+    return {
+      desination: query.origin || '/Play',
+    };
+  }
+
   return {
-    redirect: {
-      destination: '/Portfolio',
-      permanent: false,
-    },
+    props: { query },
   };
 }
+
+// export async function getServerSideProps(ctx) {
+//   return {
+//     redirect: {
+//       destination: '/Portfolio',
+//       permanent: false,
+//     },
+//   };
+// }
