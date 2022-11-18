@@ -17,7 +17,8 @@ import LoadingPageDark from '../../components/loading/LoadingPageDark';
 import { providers } from 'near-api-js';
 import { getContract, getRPCProvider } from 'utils/near';
 import { GAME } from 'data/constants/nearContracts';
-
+import Router from 'next/router';
+import BaseModal from 'components/modals/BaseModal';
 export default function PlayDetails(props) {
   const { query } = props;
 
@@ -34,11 +35,28 @@ export default function PlayDetails(props) {
   const [gameEnd, setgameEnd] = useState(false);
   const [timesUp, setTimesUp] = useState(false);
   const [startDate, setStartDate] = useState();
-
+  const [redirectModal, setRedirectModal] = useState(false);
   const { error } = props;
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState(error);
+  const [countdown, setCountdown] = useState(3);
+  function checkIfCompleted(gameData){
+    if(gameData.end_time < Date.now()){
+      console.log("completed");
+      setRedirectModal(true);
+      return true;
+    }
+    else return false;
+    
+  }
 
+  function startCountdown(){
+
+    setTimeout(() => {
+      let newCount = countdown - 1;
+      setCountdown(newCount);
+    }, 1000);
+  }
   function query_game_data() {
     const query = JSON.stringify({
       game_id: gameId,
@@ -64,6 +82,27 @@ export default function PlayDetails(props) {
     query_game_data();
   }, []);
 
+  useEffect(() => {
+    if(gameData !== null){
+      console.log(gameData);
+      checkIfCompleted(gameData);
+    }
+  }, [gameData]);
+
+  useEffect(() => {
+    if(redirectModal){
+      startCountdown();
+    }
+  }, [redirectModal]);
+
+  useEffect(() => {
+    if(countdown === 0){
+      Router.push('/Play');
+    }
+    else if(gameData !== null && redirectModal){
+      startCountdown();
+    }
+  }, [countdown]);
   // async function fetchGameData() {
   //   const res = await axiosInstance.get(`/fantasy/game/${router.query.id}/`);
   //   if (res.status === 200) {
@@ -435,6 +474,11 @@ export default function PlayDetails(props) {
           </div>
         </Main>
       </div>
+
+      <BaseModal title="ERROR" visible={redirectModal} onClose={() => console.log()}>
+        <p className="mt-5">Game is already finished.</p>
+        <p className="mt-5">Returning to play page in {countdown}...</p>
+      </BaseModal>
     </Container>
   );
 }
