@@ -593,6 +593,11 @@ export default function Index(props) {
     let newGameId = 0;
     newGameId = ongoingGames.length + completedGames.length + newGames.length + 1;
 
+    if (newGameId == 2) {
+      // on prod, a game got deleted, need to append one.
+      newGameId += 1;
+    }
+
     return newGameId.toString();
   }
 
