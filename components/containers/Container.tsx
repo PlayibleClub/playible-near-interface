@@ -3,7 +3,6 @@ import DesktopNavbar from '../navbars/DesktopNavbar';
 import DesktopHeaderBase from '../headers/DesktopHeaderBase';
 import Navbar from '../navbars/Navbar';
 import HeaderBase from '../headers/HeaderBase';
-import DisclaimerHeader from '../headers/DisclaimerHeader';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
 import { isAdminChecker } from 'utils/admin';
@@ -27,7 +26,6 @@ const Container = (props) => {
           />
           <div className="flex flex-col w-screen h-full">
             <DesktopHeaderBase />
-            <DisclaimerHeader />
             {children}
           </div>
         </div>
@@ -36,7 +34,6 @@ const Container = (props) => {
       <div className="visible md:invisible h-fit overflow-x-auto z-40">
         <Navbar isAdmin={isAdmin} isLoggedIn={selector.isSignedIn()} />
         <HeaderBase />
-        <DisclaimerHeader />
 
         {children}
       </div>
