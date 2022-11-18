@@ -36,36 +36,24 @@ const play = {
   img: '/images/icons/Play.svg',
 };
 
-const navigationGuest = [clubhouse, home, mint];
+const adminGame = {
+  name: 'GAME',
+  path: '/Admin/Game',
+  img: '/images/icons/Play.svg',
+};
 
-const navigationLoggedIn = [
-  clubhouse,
-  home,
-  mint,
-  mySquad,
-  myPacks,
-  play,
-];
-
-const navigationAdmin = [
-  {
-    name: 'GAME',
-    path: '/Admin/Game',
-    img: '/images/icons/Play.svg',
-  },
-  {
-    name: 'OPENPACK',
-    path: '/Admin/OpenPack',
-    img: '/images/icons/Play.svg',
-  },
-];
+const adminOpenPack = {
+  name: 'OPENPACK',
+  path: '/Admin/OpenPack',
+  img: '/images/icons/Play.svg',
+};
 
 export const getNavigation = (admin = false, loggedIn = false) => {
   if (admin) {
-    return navigationAdmin;
+    return [adminGame, adminOpenPack, home, mySquad, myPacks, play];
   } else if (loggedIn) {
-    return navigationLoggedIn;
+    return [clubhouse, home, mint, mySquad, myPacks, play];
   } else {
-    return navigationGuest;
+    return [clubhouse, home, mint];
   }
 };
