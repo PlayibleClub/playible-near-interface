@@ -591,7 +591,7 @@ export default function Index(props) {
   async function execute_add_game() {
     const addGameArgs = Buffer.from(
       JSON.stringify({
-        game_id: gameIdToAdd,
+        game_id: gameIdToAdd.toString(),
         game_time_start: dateStart,
         game_time_end: dateEnd,
         usage_cost: 1,
