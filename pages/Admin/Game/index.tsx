@@ -23,6 +23,7 @@ import { transactions, utils, WalletConnection, providers } from 'near-api-js';
 import { getGameInfoById } from 'utils/game/helper';
 import AdminGameComponent from './components/AdminGameComponent';
 import moment from 'moment';
+
 TimeAgo.addDefaultLocale(en);
 
 export default function Index(props) {
@@ -36,7 +37,7 @@ export default function Index(props) {
   const [content, setContent] = useState(false);
   const [gameDuration, setGameDuration] = useState(0);
   const [totalGames, setTotalGames] = useState(0);
-
+  const [gameIdToAdd, setGameIdToAdd] = useState(0);
   //gameinfo
   const [gameInfo, setGameInfo] = useState({});
 
@@ -575,29 +576,22 @@ export default function Index(props) {
             .map((item) => getGameInfoById(item))
         );
 
+        const latestGameId = result.reduce((a, value) => {
+          return Math.max(a, parseInt(value[0]));
+        }, 0);
+
         setNewGames(upcomingGames);
         setCompletedGames(completedGames);
         setOngoingGames(onGoingGames);
+        setGameIdToAdd(latestGameId + 1);
         //setGames(gamesList);
       });
-  }
-
-  function newGameID() {
-    let newGameId = 0;
-    newGameId = ongoingGames.length + completedGames.length + newGames.length + 1;
-
-    if (newGameId == 2) {
-      // on prod, a game got deleted, need to append one.
-      newGameId += 1;
-    }
-
-    return newGameId.toString();
   }
 
   async function execute_add_game() {
     const addGameArgs = Buffer.from(
       JSON.stringify({
-        game_id: newGameID(),
+        game_id: gameIdToAdd,
         game_time_start: dateStart,
         game_time_end: dateEnd,
         usage_cost: 1,
