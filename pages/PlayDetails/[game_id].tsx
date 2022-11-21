@@ -275,14 +275,41 @@ export default function PlayDetails(props) {
                                     </div>
                                   </div>
                                 </div>
-                                <div>REGISTRATION ENDS IN</div>
-                                <PlayDetailsComponent
-                                  startDate={moment(gameData?.start_time).format('MM/DD/YYYY')}
-                                  endDate={moment(gameData?.end_time).format('MM/DD/YYYY')}
-                                  // fetch={() => fetchGameData()}
-                                  game={() => isOngoing()}
-                                  gameEnd={() => isEnd()}
-                                />
+                                <div className="mt-4">
+                                  {gameData &&
+                                    (moment(gameData.start_time) <= moment() &&
+                                    moment(gameData.end_time) > moment() ? (
+                                      <>
+                                        <p>ENDS IN</p>
+                                        {gameData ? (
+                                          <PlayDetailsComponent
+                                            prizePool={gameData.prize}
+                                            startDate={gameData.end_time}
+                                            // fetch={() => fetchGameData()}
+                                            // game={() => gameEnded()}
+                                          />
+                                        ) : (
+                                          ''
+                                        )}
+                                      </>
+                                    ) : moment(gameData.start_time) > moment() ? (
+                                      <>
+                                        <p>REGISTRATION ENDS IN</p>
+                                        {gameData ? (
+                                          <PlayDetailsComponent
+                                            prizePool={gameData.prize}
+                                            startDate={gameData.start_time}
+                                            // fetch={() => fetchGameData()}
+                                            // game={() => gameEnded()}
+                                          />
+                                        ) : (
+                                          ''
+                                        )}
+                                      </>
+                                    ) : (
+                                      ''
+                                    ))}
+                                </div>
                                 <div className="flex justify-center md:justify-start">
                                   {/* <a href={`/CreateLineup?id=${gameData.id}`}> */}
                                   <Link href={`/CreateLineup/${gameId}`}>
