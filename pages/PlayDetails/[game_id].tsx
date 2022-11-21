@@ -36,6 +36,8 @@ export default function PlayDetails(props) {
   const [gameEnd, setgameEnd] = useState(false);
   const [timesUp, setTimesUp] = useState(false);
   const [startDate, setStartDate] = useState();
+  const [gameFreeOrPaid, setgameFreeOrPaid] = useState("");
+  const [detailsFreeOrPaid, setdetailsFreeOrPaid] = useState("");
   const [redirectModal, setRedirectModal] = useState(false);
   const { error } = props;
   const [loading, setLoading] = useState(true);
@@ -58,6 +60,7 @@ export default function PlayDetails(props) {
       setCountdown(newCount);
     }, 1000);
   }
+
   function query_game_data() {
     const query = JSON.stringify({
       game_id: gameId,
@@ -79,6 +82,17 @@ export default function PlayDetails(props) {
       });
   }
 
+  function checkIfPaidGame(gameData) {
+    if (gameData.usage_cost > 0) {
+      setgameFreeOrPaid("PAID GAME")
+      setdetailsFreeOrPaid("*Participation in this game will reduce your player token's usage by 1.")
+    }
+    else {
+      setgameFreeOrPaid("FREE GAME")
+      setdetailsFreeOrPaid("*Winning in this game will reward your player's token usage by 1.")
+    }
+  }
+
   useEffect(() => {
     query_game_data();
   }, []);
@@ -87,6 +101,7 @@ export default function PlayDetails(props) {
     if (gameData !== null) {
       console.log(gameData);
       checkIfCompleted(gameData);
+      checkIfPaidGame(gameData);
     }
   }, [gameData]);
 
@@ -237,14 +252,6 @@ export default function PlayDetails(props) {
               <>
                 <div className="ml-6 mr-6 md:ml-7 flex flex-col md:flex-row">
                   <div className="md:mr-12">
-                    <div className="mt-7 justify-center md:self-left md:mr-8">
-                      <Image
-                        // src={gameData.image}
-                        src="/images/game.png"
-                        width={550}
-                        height={220}
-                      />
-                    </div>
                     {/* {!timesUp ? ( */}
                     {!timesUp ? (
                       <div className="mt-4">
@@ -267,56 +274,77 @@ export default function PlayDetails(props) {
                           <>
                             {1 ? (
                               <>
-                                <div className="flex space-x-14 mt-4">
-                                  <div>
-                                    <div>START DATE</div>
-                                    <div className="font-monument text-lg">
-                                      {moment(gameData?.start_time).format('MM/DD/YYYY')}
+                                <div className="md:ml-7 flex flex-row md:flex-row">
+                                  <div className="md:-mr-20">
+                                    <div className="mt-7 flex justify-center md:self-left md:mr-8">
+                                      <div className="-ml-7 mr-7">
+                                        <Image src="/images/game.png" width={550} height={279} />
+                                      </div>
+                                      <div className="-mt-7 w-96">
+                                        <PortfolioContainer textcolor="indigo-black" title={gameFreeOrPaid} />
+                                        <div className="flex space-x-14 mt-4">
+                                          <div className="ml-7">
+                                            <div>PRIZE POOL</div>
+                                            <div className=" font-monument text-lg">
+                                              {(gameData && gameData.prize) || 'N/A'}
+                                            </div>
+                                          </div>
+                                          <div>
+                                            <div>START DATE</div>
+                                            <div className=" font-monument text-lg">
+                                              {(gameData &&
+                                                moment(gameData.start_time).format('MM/DD/YYYY')) ||
+                                                'N/A'}
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div className="ml-7">
+                                          <div className="mt-4">
+                                            {gameData &&
+                                              (moment(gameData.start_time) <= moment() &&
+                                                moment(gameData.end_time) > moment() ? (
+                                                <>
+                                                  <p>ENDS IN</p>
+                                                  {gameData ? (
+                                                    <PlayDetailsComponent
+                                                      prizePool={gameData.prize}
+                                                      startDate={gameData.end_time}
+                                                    // fetch={() => fetchGameData()}
+                                                    // game={() => gameEnded()}
+                                                    />
+                                                  ) : (
+                                                    ''
+                                                  )}
+                                                </>
+                                              ) : moment(gameData.start_time) > moment() ? (
+                                                <>
+                                                  <p>REGISTRATION ENDS IN</p>
+                                                  {gameData ? (
+                                                    <PlayDetailsComponent
+                                                      prizePool={gameData.prize}
+                                                      startDate={gameData.start_time}
+                                                    // fetch={() => fetchGameData()}
+                                                    // game={() => gameEnded()}
+                                                    />
+                                                  ) : (
+                                                    ''
+                                                  )}
+                                                </>
+                                              ) : (
+                                                ''
+                                              ))}
+                                            <div className="flex justify-center md:justify-start">
+                                              <Link href={`/CreateLineup/${gameId}`}>
+                                                <button className="bg-indigo-buttonblue text-indigo-white w-full h-12 text-center font-bold text-md mt-8">
+                                                  ENTER GAME
+                                                </button>
+                                              </Link>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
                                     </div>
                                   </div>
-                                </div>
-                                <div className="mt-4">
-                                  {gameData &&
-                                    (moment(gameData.start_time) <= moment() &&
-                                    moment(gameData.end_time) > moment() ? (
-                                      <>
-                                        <p>ENDS IN</p>
-                                        {gameData ? (
-                                          <PlayDetailsComponent
-                                            prizePool={gameData.prize}
-                                            startDate={gameData.end_time}
-                                            // fetch={() => fetchGameData()}
-                                            // game={() => gameEnded()}
-                                          />
-                                        ) : (
-                                          ''
-                                        )}
-                                      </>
-                                    ) : moment(gameData.start_time) > moment() ? (
-                                      <>
-                                        <p>REGISTRATION ENDS IN</p>
-                                        {gameData ? (
-                                          <PlayDetailsComponent
-                                            prizePool={gameData.prize}
-                                            startDate={gameData.start_time}
-                                            // fetch={() => fetchGameData()}
-                                            // game={() => gameEnded()}
-                                          />
-                                        ) : (
-                                          ''
-                                        )}
-                                      </>
-                                    ) : (
-                                      ''
-                                    ))}
-                                </div>
-                                <div className="flex justify-center md:justify-start">
-                                  {/* <a href={`/CreateLineup?id=${gameData.id}`}> */}
-                                  <Link href={`/CreateLineup/${gameId}`}>
-                                    <button className="bg-indigo-buttonblue text-indigo-white w-64 h-12 text-center font-bold text-md mt-8">
-                                      ENTER GAME
-                                    </button>
-                                  </Link>
                                 </div>
                               </>
                             ) : (
@@ -458,7 +486,7 @@ export default function PlayDetails(props) {
 
               {/* if paid game */}
               <div className="ml-7 mt-5 font-bold text-indigo-red">
-                *Participation in this game will reduce your player token's usage by 1.
+                {detailsFreeOrPaid}
               </div>
 
               <div className="ml-7 mt-3 font-normal">
