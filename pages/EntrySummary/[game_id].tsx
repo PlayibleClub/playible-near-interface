@@ -28,7 +28,7 @@ export default function EntrySummary(props) {
   const [team, setTeam] = useState([]);
   const [gameEnd, setGameEnd] = useState(false);
 
- 
+  const [remountComponent, setRemountComponent] = useState(0);
 
   const { query } = props;
   const provider = new providers.JsonRpcProvider({
@@ -38,7 +38,7 @@ export default function EntrySummary(props) {
   const [playerLineup, setPlayerLineup] = useState([]);
   const playerTeamName = query.team_id;
   const [athletes, setAthletes] = useState([]);
-
+  const [testAthlete, setTestAthlete] = useState([]);
   const { accountId } = useWalletSelector();
 
   // const { error } = props;
@@ -116,47 +116,66 @@ export default function EntrySummary(props) {
     })
     .then((data) => {
       // @ts-ignore:next-line
-      const  playerTeamLineup = JSON.parse(Buffer.from(data.result));
+      const playerTeamLineup = JSON.parse(Buffer.from(data.result));
       
-      setPlayerLineup(playerTeamLineup);
+      setPlayerLineup(playerTeamLineup.lineup);
 
     });
   }
 
   function query_nft_tokens_for_owner() {
-    const query = JSON.stringify({
-      token_id: 
-    });
-
-    provider
-      .query({
-        request_type: 'call_function',
-        finality: 'optimistic',
-        account_id: getContract(ATHLETE),
-        method_name: 'nft_token_by_id',
-        args_base64: Buffer.from(query).toString('base64'),
-      })
-      .then(async (data) => {
-        // @ts-ignore:next-line
-        const result = JSON.parse(Buffer.from(data.result).toString());
-        const result_two = await getAthleteInfoById(await convertNftToAthlete(result));
-        setAthletes(result_two);
-        
+    playerLineup.forEach((token_id) => {
+      const query = JSON.stringify({
+        token_id: token_id,
       });
+  
+      provider
+        .query({
+          request_type: 'call_function',
+          finality: 'optimistic',
+          account_id: getContract(ATHLETE),
+          method_name: 'nft_token_by_id',
+          args_base64: Buffer.from(query).toString('base64'),
+        })
+        .then(async (data) => {
+          // @ts-ignore:next-line
+          const result = JSON.parse(Buffer.from(data.result).toString());
+          const result_two = await getAthleteInfoById(await convertNftToAthlete(result));
+          let currState = athletes;
+          currState.push(result_two);
+          setAthletes(currState);
+          
+        });
+      } 
+    );
+    //setAthletes(testAthlete);
+    
   }
 
   
 
   useEffect(() => {
-      
+    
     console.log("loading lineup...");
     query_player_team_lineup();
-    console.log(playerLineup);
     console.log("loading athletes...");
-    query_nft_tokens_for_owner();
     
   },[]);
 
+  useEffect(() => {
+    if(playerLineup.length > 0 && athletes.length === 0){
+      console.log(playerLineup);
+      query_nft_tokens_for_owner();
+    }   
+  }, [ playerLineup ]);
+  useEffect(() => {
+    console.log(athletes);
+    setRemountComponent(Math.random())
+  }, [ athletes]);
+
+  useEffect(() => {
+    console.log(athletes);
+  }, [remountComponent]);
 
   return (
     <>
@@ -220,13 +239,13 @@ export default function EntrySummary(props) {
                           <div className="flex space-x-14 mt-4">
                             <div>
                               <div>PRIZE POOL</div>
-                              <div className="text-base font-monument text-lg">
+                              <div className=" font-monument text-lg">
                                 {(gameData && gameData.prize) || 'N/A'}
                               </div>
                             </div>
                             <div>
                               <div>START DATE</div>
-                              <div className="text-base font-monument text-lg">
+                              <div className=" font-monument text-lg">
                                 {(gameData &&
                                   moment(gameData.start_datetime).format('MM/DD/YYYY')) ||
                                   'N/A'}
@@ -276,32 +295,25 @@ export default function EntrySummary(props) {
                             textcolor="text-indigo-black mb-5"
                           />
                       </div>
-                      {
-                        /* @ts-expect-error */
-                      playerLineup.lineup == undefined ? 
-                         'Loading Athletes' :
-                         /* @ts-expect-error */
-                        playerLineup.lineup.map((item) => (
-                            <>
-                              <div className="grid grid-cols-4 gap-y-4 mt-4 md:grid-cols-4 md:ml-7 md:mt-12">
-                                {/* {item.athletes.map((player, i) => {
-                                  return (
-                                    <div className="mb-4" key={i}>
-                                      <PerformerContainer
-                                        AthleteName={`${player.first_name} ${player.last_name}`}
-                                        AvgScore={player.fantasy_score}
-                                        id={player.id}
-                                        uri={player.nft_image || null}
-                                        hoverable={false}
-                                      />
-                                    </div>
-                                  );
-                                })} */}
-                              </div>
-                            </>
-                          ))
-                          
-                        }
+                      <div key={remountComponent} className="grid grid-cols-4 gap-y-4 mt-4 md:grid-cols-4 md:ml-7 md:mt-17">
+                        {athletes.length === 0 ? 'Loading athletes...' : athletes.map((item, i) => {
+      
+                          return(
+                            <div className="grid grid-cols-4 gap-y-4 mt-4 md:grid-cols-4 md:ml-7 md:mt-12">
+                                  <div className="mb-4" key={i}>
+                                    <PerformerContainer
+                                      AthleteName={`${item.name}`}
+                                      AvgScore={item.fantasy_score}
+                                      id={item.primary_id}
+                                      uri={item.image}
+                                      hoverable={false}
+                                    />
+                                  </div>
+                               </div>
+                            )
+                        })}
+                      </div>
+
                     </>
                   {/* )}
                 </>
