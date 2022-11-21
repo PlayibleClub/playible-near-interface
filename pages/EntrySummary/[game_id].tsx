@@ -292,7 +292,7 @@ export default function EntrySummary(props) {
                             textcolor="text-indigo-black mb-5"
                           />
                       </div>
-                      <div key={remountComponent} className="grid grid-cols-4 gap-y-4 mt-4 md:grid-cols-4 md:ml-2 md:mt-17">
+                      <div key={remountComponent} className="grid grid-cols-4 gap-y-4 mt-4 md:grid-cols-4 md:ml-2 md:mt-17 w-3/4">
                         {athletes.length === 0 ? 'Loading athletes...' : athletes.map((item, i) => {
       
                           return(
