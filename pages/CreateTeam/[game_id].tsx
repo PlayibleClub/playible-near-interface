@@ -37,7 +37,7 @@ export default function CreateLineup(props) {
     token_id: null,
     contract_addr: null,
   };
-  
+
   const gameTeamFormat = {
     name: '',
     game: 0,

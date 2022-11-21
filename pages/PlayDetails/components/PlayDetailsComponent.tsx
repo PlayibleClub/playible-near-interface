@@ -6,7 +6,7 @@ import { getUTCDateFromLocal } from 'utils/date/helper';
 
 const PlayDetailsComponent = (props) => {
   const { startDate, endDate, type, fetch, game, gameEnd } = props;
-  
+
   const [day, setDay] = useState(0);
   const [hour, setHour] = useState(0);
   const [minute, setMinute] = useState(0);
@@ -52,7 +52,7 @@ const PlayDetailsComponent = (props) => {
           {minute || ''}
         </div>
         <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
-          {second  || ''}
+          {second || ''}
         </div>
       </div>
     </div>

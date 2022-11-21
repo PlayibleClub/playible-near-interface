@@ -94,14 +94,14 @@ export default function CreateLineup(props) {
       <Container activeName="PLAY">
         <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12 ">
           <Main color="indigo-white">
-          <div className="mt-8 md:ml-6">
-          <BackFunction prev={query.origin ? `/${query.origin}` : `/PlayDetails/${gameId}`}></BackFunction>
-        </div>
+            <div className="mt-8 md:ml-6">
+              <BackFunction prev={query.origin ? `/${query.origin}` : `/PlayDetails/${gameId}`}></BackFunction>
+            </div>
             <div className='grid grid-cols-3 mt-12 gap-10'>
               <div className='ml-12 -mt-3 h-full col-span-2 row-span-2'>
                 <Image
                   src="/images/game.png"
-                  width={550} 
+                  width={550}
                   height={279}
                 />
               </div>
@@ -115,18 +115,18 @@ export default function CreateLineup(props) {
                   tournament and compete for cash prizes.
                 </div>
                 <div className="mt-10">
-                <Link href={{
-                  pathname: '/CreateTeam/[game_id]',
-                  query: {
-                    game_id: gameId,
-                    teamName: teamName
-                  }
-                }} as={`/CreateTeam/${gameId}`}>
-                  <button className='bg-indigo-buttonblue text-indigo-white whitespace-nowrap h-14 px-10 mt-16 text-center font-bold w-3/5'>
-                    CREATE YOUR LINEUP +
-                  </button>
-                </Link>
-              </div>
+                  <Link href={{
+                    pathname: '/CreateTeam/[game_id]',
+                    query: {
+                      game_id: gameId,
+                      teamName: teamName
+                    }
+                  }} as={`/CreateTeam/${gameId}`}>
+                    <button className='bg-indigo-buttonblue text-indigo-white whitespace-nowrap h-14 px-10 mt-16 text-center font-bold w-3/5'>
+                      CREATE YOUR LINEUP +
+                    </button>
+                  </Link>
+                </div>
               </div>
             </div>
             <div className="mt-7 ml-7 w-2/5">
