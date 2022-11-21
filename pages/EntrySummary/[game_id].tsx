@@ -18,6 +18,7 @@ import { getContract, getRPCProvider } from 'utils/near';
 import { GAME, ATHLETE } from 'data/constants/nearContracts';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
 import { convertNftToAthlete, getAthleteInfoById } from 'utils/athlete/helper';
+import { getUTCDateFromLocal } from 'utils/date/helper';
 
 export default function EntrySummary(props) {
 
@@ -45,31 +46,31 @@ export default function EntrySummary(props) {
   const [loading, setLoading] = useState(true);
   // const [err, setErr] = useState(error);
 
-  const fetchGameData = async () => {
-    const res = await axiosInstance.get(`/fantasy/game/${router.query.game_id}/`);
+  // const fetchGameData = async () => {
+  //   const res = await axiosInstance.get(`/fantasy/game/${router.query.game_id}/`);
 
-    const allTeams = router.query.team_id
-      ? await axiosInstance.get(`/fantasy/game_team/${router.query.team_id}/`)
-      : await axiosInstance.get(
-          `/fantasy/game/${router.query.game_id}/registered_teams_detail/?wallet_addr=`
-        );
+  //   const allTeams = router.query.team_id
+  //     ? await axiosInstance.get(`/fantasy/game_team/${router.query.team_id}/`)
+  //     : await axiosInstance.get(
+  //         `/fantasy/game/${router.query.game_id}/registered_teams_detail/?wallet_addr=`
+  //       );
 
-    if (allTeams.status === 200) {
-      if (router.query.team_id) {
-        setTeam([allTeams.data]);
-      } else {
-        setTeam(allTeams.data);
-      }
-    }
+  //   if (allTeams.status === 200) {
+  //     if (router.query.team_id) {
+  //       setTeam([allTeams.data]);
+  //     } else {
+  //       setTeam(allTeams.data);
+  //     }
+  //   }
 
-    if (res.status === 200) {
-      setGameData(res.data);
-    }
-  };
+  //   if (res.status === 200) {
+  //     setGameData(res.data);
+  //   }
+  // };
 
-  function gameEnded() {
-    setGameEnd(true);
-  }
+  // function gameEnded() {
+  //   setGameEnd(true);
+  // }
 
   // useEffect(() => {
   //   if (router && router.query.game_id && connectedWallet) {
@@ -150,6 +151,30 @@ export default function EntrySummary(props) {
     
   }
 
+  function query_game_data() {
+    const query = JSON.stringify({
+      game_id: gameId,
+    });
+
+    provider
+      .query({
+        request_type: 'call_function',
+        finality: 'optimistic',
+        account_id: getContract(GAME),
+        method_name: 'get_game',
+        args_base64: Buffer.from(query).toString('base64'),
+      })
+      .then(async (data) => {
+        // @ts-ignore:next-line
+        const result = JSON.parse(Buffer.from(data.result).toString());
+        console.log(result);
+        setGameData(result);
+      });
+  }
+
+  useEffect(() => {
+    query_game_data();
+  }, []);
   
 
   useEffect(() => {
@@ -227,63 +252,73 @@ export default function EntrySummary(props) {
                           prev={router.query.origin || `/CreateLineup/${gameId}`}
                         />
                       </div>
-                      <PortfolioContainer textcolor="indigo-black" title="ENTRY SUMMARY" />
+                      
                       <div className="md:ml-7 flex flex-row md:flex-row">
                         <div className="md:mr-12">
-                          <div className="mt-7 justify-center md:self-left md:mr-8">
-                            <Image src="/images/game.png" width={550} height={220} />
-                          </div>
-                          <div className="flex space-x-14 mt-4">
-                            <div>
+                          <div className="mt-7 flex justify-center md:self-left md:mr-8">
+                            <div className="">
+                              <Image src="/images/game.png" width={550} height={220} />
+                            </div>
+                            <div className="-mt-7">
+                              <PortfolioContainer textcolor="indigo-black" title="ENTRY SUMMARY" />
+                              <div className="flex space-x-14 mt-4">
+                            <div className="ml-7">
                               <div>PRIZE POOL</div>
-                              <div className=" font-monument text-lg">
-                                {(gameData && gameData.prize) || 'N/A'}
+                                 <div className=" font-monument text-lg">
+                                  {(gameData && gameData.prize) || 'N/A'}
+                                 </div>
                               </div>
-                            </div>
-                            <div>
-                              <div>START DATE</div>
-                              <div className=" font-monument text-lg">
-                                {(gameData &&
-                                  moment(gameData.start_datetime).format('MM/DD/YYYY')) ||
-                                  'N/A'}
+                              <div>
+                                <div>START DATE</div>
+                                  <div className=" font-monument text-lg">
+                                      {(gameData &&
+                                        moment(gameData.start_time).format('MM/DD/YYYY')) ||
+                                        'N/A'}
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="ml-7">
+                               <div className="mt-4">
+                                  {gameData &&
+                                    (moment(gameData.start_time) <= moment() &&
+                                    moment(gameData.end_time) > moment() ? (
+                                      <>
+                                        <p>ENDS IN</p>
+                                        {gameData ? (
+                                          <PlayDetailsComponent
+                                            prizePool={gameData.prize}
+                                            startDate={gameData.end_time}
+                                            // fetch={() => fetchGameData()}
+                                            // game={() => gameEnded()}
+                                          />
+                                        ) : (
+                                          ''
+                                        )}
+                                      </>
+                                    ) : moment(gameData.start_time) > moment() ? (
+                                      <>
+                                        <p>REGISTRATION ENDS IN</p>
+                                        {gameData ? (
+                                          <PlayDetailsComponent
+                                            prizePool={gameData.prize}
+                                            startDate={gameData.start_time}
+                                            // fetch={() => fetchGameData()}
+                                            // game={() => gameEnded()}
+                                          />
+                                        ) : (
+                                          ''
+                                        )}
+                                      </>
+                                    ) : (
+                                      ''
+                                    ))}
+                                </div> 
                               </div>
                             </div>
                           </div>
-                          <div className="mt-4">
-                            {gameData &&
-                              (new Date(gameData.start_datetime) <= new Date() &&
-                              new Date(gameData.end_datetime) > new Date() ? (
-                                <>
-                                  <p>ENDS IN</p>
-                                  {gameData ? (
-                                    <PlayDetailsComponent
-                                      prizePool={gameData.prize}
-                                      startDate={gameData.end_datetime}
-                                      fetch={() => fetchGameData()}
-                                      game={() => gameEnded()}
-                                    />
-                                  ) : (
-                                    ''
-                                  )}
-                                </>
-                              ) : new Date(gameData.start_datetime) > new Date() ? (
-                                <>
-                                  <p>REGISTRATION ENDS IN</p>
-                                  {gameData ? (
-                                    <PlayDetailsComponent
-                                      prizePool={gameData.prize}
-                                      startDate={gameData.start_datetime}
-                                      fetch={() => fetchGameData()}
-                                      game={() => gameEnded()}
-                                    />
-                                  ) : (
-                                    ''
-                                  )}
-                                </>
-                              ) : (
-                                ''
-                              ))}
-                          </div>
+                          
+                          
+                          
                         </div>
                       </div>
                       <div className="mt-5 flex items-center ml-7">

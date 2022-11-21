@@ -176,12 +176,6 @@ const Portfolio = () => {
     setAthleteOffset(newOffset);
   };
 
-
-  function handleSubmit(event) {
-    alert('A name was submitted: ' + this.name.value);
-    event.preventDefault();
-  }
-
   useEffect(() => {
     if(!isNaN(athleteOffset)){
       console.log("loading");
