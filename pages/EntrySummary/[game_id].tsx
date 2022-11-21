@@ -141,9 +141,7 @@ export default function EntrySummary(props) {
           // @ts-ignore:next-line
           const result = JSON.parse(Buffer.from(data.result).toString());
           const result_two = await getAthleteInfoById(await convertNftToAthlete(result));
-          let currState = athletes;
-          currState.push(result_two);
-          setAthletes(currState);
+          setAthletes(athletes => [...athletes, result_two]);
           
         });
       } 
@@ -170,7 +168,6 @@ export default function EntrySummary(props) {
   }, [ playerLineup ]);
   useEffect(() => {
     console.log(athletes);
-    setRemountComponent(Math.random())
   }, [ athletes]);
 
   useEffect(() => {
@@ -295,21 +292,17 @@ export default function EntrySummary(props) {
                             textcolor="text-indigo-black mb-5"
                           />
                       </div>
-                      <div key={remountComponent} className="grid grid-cols-4 gap-y-4 mt-4 md:grid-cols-4 md:ml-7 md:mt-17">
+                      <div key={remountComponent} className="grid grid-cols-4 gap-y-4 mt-4 md:grid-cols-4 md:ml-2 md:mt-17">
                         {athletes.length === 0 ? 'Loading athletes...' : athletes.map((item, i) => {
       
                           return(
-                            <div className="grid grid-cols-4 gap-y-4 mt-4 md:grid-cols-4 md:ml-7 md:mt-12">
-                                  <div className="mb-4" key={i}>
-                                    <PerformerContainer
-                                      AthleteName={`${item.name}`}
-                                      AvgScore={item.fantasy_score}
-                                      id={item.primary_id}
-                                      uri={item.image}
-                                      hoverable={false}
-                                    />
-                                  </div>
-                               </div>
+                            <PerformerContainer
+                            AthleteName={`${item.name}`}
+                            AvgScore={item.fantasy_score.toFixed(2)}
+                            id={item.primary_id}
+                            uri={item.image}
+                            hoverable={false}
+                          />
                             )
                         })}
                       </div>
