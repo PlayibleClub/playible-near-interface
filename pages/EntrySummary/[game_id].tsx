@@ -15,7 +15,7 @@ import 'regenerator-runtime/runtime';
 import LoadingPageDark from '../../components/loading/LoadingPageDark';
 import { providers } from 'near-api-js';
 import { getContract, getRPCProvider } from 'utils/near';
-import { GAME } from 'data/constants/nearContracts';
+import { GAME, ATHLETE } from 'data/constants/nearContracts';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
 import { convertNftToAthlete, getAthleteInfoById } from 'utils/athlete/helper';
 
@@ -37,6 +37,7 @@ export default function EntrySummary(props) {
   const gameId = query.game_id;
   const [playerLineup, setPlayerLineup] = useState([]);
   const playerTeamName = query.team_id;
+  const [athletes, setAthletes] = useState([]);
 
   const { accountId } = useWalletSelector();
 
@@ -122,12 +123,37 @@ export default function EntrySummary(props) {
     });
   }
 
+  function query_nft_tokens_for_owner() {
+    const query = JSON.stringify({
+      token_id: 
+    });
+
+    provider
+      .query({
+        request_type: 'call_function',
+        finality: 'optimistic',
+        account_id: getContract(ATHLETE),
+        method_name: 'nft_token_by_id',
+        args_base64: Buffer.from(query).toString('base64'),
+      })
+      .then(async (data) => {
+        // @ts-ignore:next-line
+        const result = JSON.parse(Buffer.from(data.result).toString());
+        const result_two = await getAthleteInfoById(await convertNftToAthlete(result));
+        setAthletes(result_two);
+        
+      });
+  }
+
+  
+
   useEffect(() => {
       
-    console.log("loading lineup");
+    console.log("loading lineup...");
     query_player_team_lineup();
-    /* @ts-expect-error */
-    console.log(playerLineup.lineup);
+    console.log(playerLineup);
+    console.log("loading athletes...");
+    query_nft_tokens_for_owner();
     
   },[]);
 
