@@ -23,7 +23,7 @@ import { transactions, utils, WalletConnection, providers } from 'near-api-js';
 import { getGameInfoById } from 'utils/game/helper';
 import AdminGameComponent from './components/AdminGameComponent';
 import moment from 'moment';
-
+import {getUTCTimestampFromLocal} from 'utils/date/helper';
 TimeAgo.addDefaultLocale(en);
 
 export default function Index(props) {
@@ -564,15 +564,15 @@ export default function Index(props) {
         //console.table(Buffer.from(data.result).toString());
         //console.table(result);
         const upcomingGames = await Promise.all(
-          result.filter((x) => x[1].start_time > Date.now()).map((item) => getGameInfoById(item))
+          result.filter((x) => x[1].start_time > getUTCTimestampFromLocal()).map((item) => getGameInfoById(item))
         );
         const completedGames = await Promise.all(
-          result.filter((x) => x[1].end_time < Date.now()).map((item) => getGameInfoById(item))
+          result.filter((x) => x[1].end_time < getUTCTimestampFromLocal()).map((item) => getGameInfoById(item))
         );
 
         const onGoingGames = await Promise.all(
           result
-            .filter((x) => x[1].start_time < Date.now() && x[1].end_time > Date.now())
+            .filter((x) => x[1].start_time < getUTCTimestampFromLocal() && x[1].end_time > getUTCTimestampFromLocal())
             .map((item) => getGameInfoById(item))
         );
 
