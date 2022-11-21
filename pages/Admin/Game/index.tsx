@@ -672,7 +672,7 @@ export default function Index(props) {
                       </div>
                     ))}
                   </div>
-                  <div className="flex flex-row">
+                  <div className="mt-4 ml-6 grid grid-cols-0 md:grid-cols-3">
                     {(gameTabs[0].isActive
                       ? newGames
                       : gameTabs[1].isActive

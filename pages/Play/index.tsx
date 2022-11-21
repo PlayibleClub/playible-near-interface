@@ -767,13 +767,13 @@ const Play = (props) => {
                           ? newGames
                           : categoryList[1].isActive
                           ? ongoingGames
-                          : completedGames
+                          : emptyGames
                         ).length > 0 &&
                           (categoryList[0].isActive
                             ? newGames
                             : categoryList[1].isActive
                             ? ongoingGames
-                            : completedGames
+                            : emptyGames
                           ).map((data, i) => {
                             return (
                               <div key={i} className="flex">
