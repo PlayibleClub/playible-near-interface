@@ -9,6 +9,7 @@ import BackFunction from '../../components/buttons/BackFunction';
 import PlayDetailsComponent from './components/PlayDetailsComponent';
 import { axiosInstance } from '../../utils/playible';
 import moment from 'moment';
+import { getUTCDateFromLocal, getUTCTimestampFromLocal } from 'utils/date/helper';
 import { truncate } from '../../utils/wallet/index';
 import { ADMIN } from '../../data/constants/address';
 import Link from 'next/link';
@@ -41,7 +42,7 @@ export default function PlayDetails(props) {
   const [err, setErr] = useState(error);
   const [countdown, setCountdown] = useState(3);
   function checkIfCompleted(gameData){
-    if(gameData.end_time < Date.now()){
+    if(gameData.end_time <= getUTCTimestampFromLocal){
       console.log("completed");
       setRedirectModal(true);
       return true;
