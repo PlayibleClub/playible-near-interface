@@ -22,25 +22,22 @@ import { getUTCDateFromLocal } from 'utils/date/helper';
 
 export default function EntrySummary(props) {
 
+  const { query } = props;
+  const provider = new providers.JsonRpcProvider({
+    url: getRPCProvider(),
+  });
   const router = useRouter();
+  const { accountId } = useWalletSelector();
+  const playerTeamName = query.team_id;
   const [name, setName] = useState('');
   const [gameData, setGameData] = useState(null);
   const [teamModal, setTeamModal] = useState(false);
   const [team, setTeam] = useState([]);
   const [gameEnd, setGameEnd] = useState(false);
-
   const [remountComponent, setRemountComponent] = useState(0);
-
-  const { query } = props;
-  const provider = new providers.JsonRpcProvider({
-    url: getRPCProvider(),
-  });
   const gameId = query.game_id;
   const [playerLineup, setPlayerLineup] = useState([]);
-  const playerTeamName = query.team_id;
   const [athletes, setAthletes] = useState([]);
-  const [testAthlete, setTestAthlete] = useState([]);
-  const { accountId } = useWalletSelector();
 
   // const { error } = props;
   const [loading, setLoading] = useState(true);
@@ -100,7 +97,7 @@ export default function EntrySummary(props) {
     return;
   }
 
-  function query_player_team_lineup(){
+  function query_player_team_lineup() {
     const query = JSON.stringify({
       account: accountId,
       game_id: gameId,
@@ -108,20 +105,20 @@ export default function EntrySummary(props) {
     });
 
     provider
-    .query({
-      request_type: 'call_function',
-      finality: 'optimistic',
-      account_id: getContract(GAME),
-      method_name: 'get_player_lineup',
-      args_base64: Buffer.from(query).toString('base64'),
-    })
-    .then((data) => {
-      // @ts-ignore:next-line
-      const playerTeamLineup = JSON.parse(Buffer.from(data.result));
-      
-      setPlayerLineup(playerTeamLineup.lineup);
+      .query({
+        request_type: 'call_function',
+        finality: 'optimistic',
+        account_id: getContract(GAME),
+        method_name: 'get_player_lineup',
+        args_base64: Buffer.from(query).toString('base64'),
+      })
+      .then((data) => {
+        // @ts-ignore:next-line
+        const playerTeamLineup = JSON.parse(Buffer.from(data.result));
 
-    });
+        setPlayerLineup(playerTeamLineup.lineup);
+
+      });
   }
 
   function query_nft_tokens_for_owner() {
@@ -129,7 +126,7 @@ export default function EntrySummary(props) {
       const query = JSON.stringify({
         token_id: token_id,
       });
-  
+
       provider
         .query({
           request_type: 'call_function',
@@ -143,12 +140,12 @@ export default function EntrySummary(props) {
           const result = JSON.parse(Buffer.from(data.result).toString());
           const result_two = await getAthleteInfoById(await convertNftToAthlete(result));
           setAthletes(athletes => [...athletes, result_two]);
-          
+
         });
-      } 
+    }
     );
     //setAthletes(testAthlete);
-    
+
   }
 
   function query_game_data() {
@@ -175,25 +172,25 @@ export default function EntrySummary(props) {
   useEffect(() => {
     query_game_data();
   }, []);
-  
+
 
   useEffect(() => {
-    
+
     console.log("loading lineup...");
     query_player_team_lineup();
     console.log("loading athletes...");
-    
-  },[]);
+
+  }, []);
 
   useEffect(() => {
-    if(playerLineup.length > 0 && athletes.length === 0){
+    if (playerLineup.length > 0 && athletes.length === 0) {
       console.log(playerLineup);
       query_nft_tokens_for_owner();
-    }   
-  }, [ playerLineup ]);
+    }
+  }, [playerLineup]);
   useEffect(() => {
     console.log(athletes);
-  }, [ athletes]);
+  }, [athletes]);
 
   useEffect(() => {
     console.log(athletes);
@@ -201,151 +198,103 @@ export default function EntrySummary(props) {
 
   return (
     <>
-      {/* { changeNameModal === true &&
-        <>
-        <div className="fixed w-screen h-screen bg-opacity-70 z-50 overflow-auto bg-indigo-gray flex font-montserrat">
-            <div className="relative p-8 bg-indigo-white w-11/12 md:w-4/12 h-10/12 md:h-auto m-auto flex-col flex rounded-lg">
-                <button onClick={()=>{setchangeNameModal(false)}}>
-                    <div className="absolute top-0 right-0 p-4 font-black">
-                        X
-                    </div>
-                </button>
-                    <ModalPortfolioContainer  textcolor="indigo-black" title="EDIT TEAM NAME"/>
-                <div className='ml-7'>
-                    <div>
-                       Enter Team Name 
-                    </div>
-                    <div className='flex border justify-between p-4 text-bold font-monument'>
-                    <form>
-                            <input 
-                            type="text" 
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                        /> 
-                    </form>
-                    <button className='mr-4' onClick={reset}>
-                        X
-                    </button>
-                    </div>
-                    <button className='bg-indigo-buttonblue w-full h-12 text-center font-bold rounded-md text-sm mt-4 self-center text-indigo-white' onClick={()=>{setchangeNameModal(false)}}>
-                            PROCEED
-                        </button>
-                </div>
-            </div>
-        </div>
-        </>
-        } */}
       <Container activeName="PLAY">
         <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
           <Main color="indigo-white">
             <>
-              {/* {loading ? (
-                <LoadingPageDark />
-              ) : (
-                <>
-                  {err ? (
-                    <p className="py-10 ml-7">{err}</p>
-                  ) : ( */}
-                    <>
-                      <div className="mt-8">
-                        <BackFunction
-                          prev={router.query.origin || `/CreateLineup/${gameId}`}
-                        />
+              <>
+                <div className="mt-8">
+                  <BackFunction
+                    prev={router.query.origin || `/CreateLineup/${gameId}`}
+                  />
+                </div>
+
+                <div className="md:ml-7 flex flex-row md:flex-row">
+                  <div className="md:mr-12">
+                    <div className="mt-7 flex justify-center md:self-left md:mr-8">
+                      <div className="">
+                        <Image src="/images/game.png" width={550} height={220} />
                       </div>
-                      
-                      <div className="md:ml-7 flex flex-row md:flex-row">
-                        <div className="md:mr-12">
-                          <div className="mt-7 flex justify-center md:self-left md:mr-8">
-                            <div className="">
-                              <Image src="/images/game.png" width={550} height={220} />
-                            </div>
-                            <div className="-mt-7">
-                              <PortfolioContainer textcolor="indigo-black" title="ENTRY SUMMARY" />
-                              <div className="flex space-x-14 mt-4">
-                            <div className="ml-7">
-                              <div>PRIZE POOL</div>
-                                 <div className=" font-monument text-lg">
-                                  {(gameData && gameData.prize) || 'N/A'}
-                                 </div>
-                              </div>
-                              <div>
-                                <div>START DATE</div>
-                                  <div className=" font-monument text-lg">
-                                      {(gameData &&
-                                        moment(gameData.start_time).format('MM/DD/YYYY')) ||
-                                        'N/A'}
-                                  </div>
-                                </div>
-                              </div>
-                              <div className="ml-7">
-                               <div className="mt-4">
-                                  {gameData &&
-                                    (moment(gameData.start_time) <= moment() &&
-                                    moment(gameData.end_time) > moment() ? (
-                                      <>
-                                        <p>ENDS IN</p>
-                                        {gameData ? (
-                                          <PlayDetailsComponent
-                                            prizePool={gameData.prize}
-                                            startDate={gameData.end_time}
-                                            // fetch={() => fetchGameData()}
-                                            // game={() => gameEnded()}
-                                          />
-                                        ) : (
-                                          ''
-                                        )}
-                                      </>
-                                    ) : moment(gameData.start_time) > moment() ? (
-                                      <>
-                                        <p>REGISTRATION ENDS IN</p>
-                                        {gameData ? (
-                                          <PlayDetailsComponent
-                                            prizePool={gameData.prize}
-                                            startDate={gameData.start_time}
-                                            // fetch={() => fetchGameData()}
-                                            // game={() => gameEnded()}
-                                          />
-                                        ) : (
-                                          ''
-                                        )}
-                                      </>
-                                    ) : (
-                                      ''
-                                    ))}
-                                </div> 
-                              </div>
+                      <div className="-mt-7">
+                        <PortfolioContainer textcolor="indigo-black" title="ENTRY SUMMARY" />
+                        <div className="flex space-x-14 mt-4">
+                          <div className="ml-7">
+                            <div>PRIZE POOL</div>
+                            <div className=" font-monument text-lg">
+                              {(gameData && gameData.prize) || 'N/A'}
                             </div>
                           </div>
-                          
-                          
-                          
+                          <div>
+                            <div>START DATE</div>
+                            <div className=" font-monument text-lg">
+                              {(gameData &&
+                                moment(gameData.start_time).format('MM/DD/YYYY')) ||
+                                'N/A'}
+                            </div>
+                          </div>
+                        </div>
+                        <div className="ml-7">
+                          <div className="mt-4">
+                            {gameData &&
+                              (moment(gameData.start_time) <= moment() &&
+                                moment(gameData.end_time) > moment() ? (
+                                <>
+                                  <p>ENDS IN</p>
+                                  {gameData ? (
+                                    <PlayDetailsComponent
+                                      prizePool={gameData.prize}
+                                      startDate={gameData.end_time}
+                                    // fetch={() => fetchGameData()}
+                                    // game={() => gameEnded()}
+                                    />
+                                  ) : (
+                                    ''
+                                  )}
+                                </>
+                              ) : moment(gameData.start_time) > moment() ? (
+                                <>
+                                  <p>REGISTRATION ENDS IN</p>
+                                  {gameData ? (
+                                    <PlayDetailsComponent
+                                      prizePool={gameData.prize}
+                                      startDate={gameData.start_time}
+                                    // fetch={() => fetchGameData()}
+                                    // game={() => gameEnded()}
+                                    />
+                                  ) : (
+                                    ''
+                                  )}
+                                </>
+                              ) : (
+                                ''
+                              ))}
+                          </div>
                         </div>
                       </div>
-                      <div className="mt-5 flex items-center ml-7">
-                         <ModalPortfolioContainer
-                            title={playerTeamName}
-                            textcolor="text-indigo-black mb-5"
-                          />
-                      </div>
-                      <div key={remountComponent} className="grid grid-cols-4 gap-y-4 mt-4 md:grid-cols-4 md:ml-2 md:mt-17 w-3/4">
-                        {athletes.length === 0 ? 'Loading athletes...' : athletes.map((item, i) => {
-      
-                          return(
-                            <PerformerContainer
-                            AthleteName={`${item.name}`}
-                            AvgScore={item.fantasy_score.toFixed(2)}
-                            id={item.primary_id}
-                            uri={item.image}
-                            hoverable={false}
-                          />
-                            )
-                        })}
-                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="mt-5 flex items-center ml-7">
+                  <ModalPortfolioContainer
+                    title={playerTeamName}
+                    textcolor="text-indigo-black mb-5"
+                  />
+                </div>
+                <div key={remountComponent} className="grid grid-cols-4 gap-y-4 mt-4 md:grid-cols-4 md:ml-2 md:mt-17 w-3/4">
+                  {athletes.length === 0 ? 'Loading athletes...' : athletes.map((item, i) => {
 
-                    </>
-                  {/* )}
-                </>
-              )} */}
+                    return (
+                      <PerformerContainer
+                        AthleteName={`${item.name}`}
+                        AvgScore={item.fantasy_score.toFixed(2)}
+                        id={item.primary_id}
+                        uri={item.image}
+                        hoverable={false}
+                      />
+                    )
+                  })}
+                </div>
+              </>
             </>
           </Main>
         </div>
@@ -367,12 +316,3 @@ export async function getServerSideProps(ctx) {
     props: { query },
   };
 }
-
-// export async function getServerSideProps(ctx) {
-//   return {
-//     redirect: {
-//       destination: '/Portfolio',
-//       permanent: false,
-//     },
-//   };
-// }

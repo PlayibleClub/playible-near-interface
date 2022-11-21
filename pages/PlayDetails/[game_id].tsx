@@ -41,17 +41,17 @@ export default function PlayDetails(props) {
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState(error);
   const [countdown, setCountdown] = useState(3);
-  function checkIfCompleted(gameData){
-    if(gameData.end_time <= getUTCTimestampFromLocal){
+  function checkIfCompleted(gameData) {
+    if (gameData.end_time <= getUTCTimestampFromLocal) {
       console.log("completed");
       setRedirectModal(true);
       return true;
     }
     else return false;
-    
+
   }
 
-  function startCountdown(){
+  function startCountdown() {
 
     setTimeout(() => {
       let newCount = countdown - 1;
@@ -84,23 +84,23 @@ export default function PlayDetails(props) {
   }, []);
 
   useEffect(() => {
-    if(gameData !== null){
+    if (gameData !== null) {
       console.log(gameData);
       checkIfCompleted(gameData);
     }
   }, [gameData]);
 
   useEffect(() => {
-    if(redirectModal){
+    if (redirectModal) {
       startCountdown();
     }
   }, [redirectModal]);
 
   useEffect(() => {
-    if(countdown === 0){
+    if (countdown === 0) {
       Router.push('/Play');
     }
-    else if(gameData !== null && redirectModal){
+    else if (gameData !== null && redirectModal) {
       startCountdown();
     }
   }, [countdown]);
@@ -255,40 +255,19 @@ export default function PlayDetails(props) {
                             <ModalPortfolioContainer textcolor="indigo-black" title="VIEW TEAMS" />
                             {registeredTeams.length > 0
                               ? registeredTeams.map(function (data, i) {
-                                  return (
-                                    <div className="p-5 px-6 bg-black-dark text-indigo-white mb-5 flex justify-between">
-                                      <p className="font-monument">{data.name}</p>
-                                      {/* <Link
-                                              href={{
-                                                pathname: '/EntrySummary',
-                                                query: {
-                                                  team_id: data.id,
-                                                  game_id: router.query.id,
-                                                  origin: `/PlayDetails/?id=${router.query.id}`,
-                                                },
-                                              }}
-                                            >
-                                              <a>
-                                                <img src={'/images/arrow-top-right.png'} />
-                                              </a>
-                                            </Link> */}
-                                    </div>
-                                  );
-                                })
+                                return (
+                                  <div className="p-5 px-6 bg-black-dark text-indigo-white mb-5 flex justify-between">
+                                    <p className="font-monument">{data.name}</p>
+                                  </div>
+                                );
+                              })
                               : 'No teams created for this game.'}
                           </>
                         ) : (
                           <>
-                            {/* {gameEnd ? ( */}
                             {1 ? (
                               <>
                                 <div className="flex space-x-14 mt-4">
-                                  {/* <div>
-                                    <div>PRIZE POOL</div>
-                                    <div className="font-monument text-lg">
-                                      ${'2,300'}
-                                    </div>
-                                  </div> */}
                                   <div>
                                     <div>START DATE</div>
                                     <div className="font-monument text-lg">
@@ -324,10 +303,10 @@ export default function PlayDetails(props) {
                         <ModalPortfolioContainer textcolor="indigo-black" title="VIEW TEAMS" />
                         {registeredTeams.length > 0
                           ? registeredTeams.map(function (data, i) {
-                              return (
-                                <div className="p-5 px-6 bg-black-dark text-indigo-white mb-5 flex justify-between">
-                                  <p className="font-monument">{data.name}</p>
-                                  {/* <Link
+                            return (
+                              <div className="p-5 px-6 bg-black-dark text-indigo-white mb-5 flex justify-between">
+                                <p className="font-monument">{data.name}</p>
+                                {/* <Link
                                           href={{
                                             pathname: '/EntrySummary',
                                             query: {
@@ -341,9 +320,9 @@ export default function PlayDetails(props) {
                                             <img src={'/images/arrow-top-right.png'} />
                                           </a>
                                         </Link> */}
-                                </div>
-                              );
-                            })
+                              </div>
+                            );
+                          })
                           : 'No teams created for this game.'}
                       </>
                     )}
@@ -361,9 +340,8 @@ export default function PlayDetails(props) {
                                 <div className="ml-12 md:ml-10 mt-4 md:mt-5">
                                   <div className="flex text-center items-center">
                                     <div
-                                      className={`w-10 mr-2 font-monument text-2xl ${
-                                        key + 1 > 3 ? 'text-indigo-white' : ''
-                                      }`}
+                                      className={`w-10 mr-2 font-monument text-2xl ${key + 1 > 3 ? 'text-indigo-white' : ''
+                                        }`}
                                     >
                                       {key + 1 <= 9 ? '0' + (key + 1) : key + 1}
                                     </div>
@@ -425,7 +403,6 @@ export default function PlayDetails(props) {
             ) : (
               <>
                 <PortfolioContainer textcolor="indigo-black" title="LEADERBOARD3" />
-                {/* {leaderboard.map(function (data, key) { */}
                 {leaderboard.map(function (data, key) {
                   return (
                     <>
@@ -465,17 +442,9 @@ export default function PlayDetails(props) {
                 Create a lineup by selecting 8 Playible Football Athlete Tokens now.
               </div>
             </>
-            {/* )
-              </>
-            
-             )}
-          </div> )} : (
-            ''
-          ) */}
           </div>
         </Main>
       </div>
-
       <BaseModal title="ERROR" visible={redirectModal} onClose={() => console.log()}>
         <p className="mt-5">Game is already finished.</p>
         <p className="mt-5">Returning to play page in {countdown}...</p>

@@ -353,7 +353,7 @@ const Play = (props) => {
         </div>
         {(rewardsCategory === 'winning' ? claimData.winning_placements : claimData.no_placements)
           .length ===
-        i + 1 ? (
+          i + 1 ? (
           ''
         ) : (
           <hr className="opacity-50" />
@@ -361,11 +361,11 @@ const Play = (props) => {
       </>
     );
   };
-  function checkIfCompleted(){
+  function checkIfCompleted() {
 
   }
   function query_game_supply() {
-    const query = JSON.stringify({ });
+    const query = JSON.stringify({});
 
     provider
       .query({
@@ -383,7 +383,7 @@ const Play = (props) => {
       });
   };
   console.log(totalGames)
-  function query_games_list(){
+  function query_games_list() {
     const query = JSON.stringify({
       from_index: 0,
       limit: totalGames,
@@ -437,42 +437,6 @@ const Play = (props) => {
         return acc;
       }, 0);
     }
-
-    //   const claimRes = await executeContract(connectedWallet, GAME, [
-    //     {
-    //       contractAddr: GAME,
-    //       msg: {
-    //         claim_rewards: {
-    //           game_id: gameId.toString(),
-    //         },
-    //       },
-    //     },
-    //   ]);
-
-    //   if (!claimRes.txError) {
-    //     const fetchTx = await retrieveTxInfo(claimRes.txHash);
-
-    //     if (fetchTx && fetchTx.logs) {
-    //       if (claimData && claimData.winning_placements.length > 0) {
-    //         showSuccessModal({
-    //           prize: totalPrize,
-    //         });
-    //       }
-    //       setLoading(true);
-    //       fetchGamesLoading();
-    //     }
-    //   } else {
-    //     showFailedModal({
-    //       msg:
-    //         claimRes.txError.indexOf('Un') !== -1 && claimRes.txError.indexOf('Un') < 2
-    //           ? null
-    //           : claimRes.txError,
-    //     });
-    //     fetchGamesLoading();
-    //   }
-    //   showClaimModal(false);
-    //   setClaimLoading(false);
-    // };
   };
   useEffect(() => {
     if (games && games.length > 0) {
@@ -501,36 +465,6 @@ const Play = (props) => {
     query_game_supply();
     query_games_list();
   }, [totalGames]);
-  // useEffect(() => {
-  //   if (connectedWallet) {
-  //     if (connectedWallet?.network?.name === 'testnet') {
-  //       dispatch(getPortfolio({ walletAddr: connectedWallet.walletAddress }));
-  //     }
-  //   }
-  // }, [connectedWallet, dispatch]);
-
-  // useEffect(async () => {
-  //   setLoading(true);
-  //   setErr(null);
-  //   if (connectedWallet) {
-  //     if (connectedWallet?.network?.name === 'testnet') {
-  //       await fetchGamesLoading();
-  //       setErr(null);
-  //     } else {
-  //       setErr('You are connected to mainnet. Please connect to testnet');
-  //       setLoading(false);
-  //     }
-  //   } else {
-  //     setErr('Waiting for wallet connection...');
-  //     setLoading(false);
-  //   }
-  //   setOffset(0);
-  // }, [connectedWallet, activeCategory]);
-
-  // useEffect(() => {
-  //   fetchGamesLoading();
-  //   setOffset(0);
-  // }, [activeCategory]);
 
   useEffect(() => {
     if (router && router.query.type) {
@@ -562,29 +496,24 @@ const Play = (props) => {
               ) : (
                 ''
               )}
-
               <div className="text-sm">
                 <div className="flex font-monument select-none mt-5">
                   <div
-                    className={`mr-8 tracking-wider text-xs ${
-                      claimLoading ? 'cursor-not-allowed text-indigo-lightgray' : 'cursor-pointer'
-                    } ${
-                      rewardsCategory === 'winning'
+                    className={`mr-8 tracking-wider text-xs ${claimLoading ? 'cursor-not-allowed text-indigo-lightgray' : 'cursor-pointer'
+                      } ${rewardsCategory === 'winning'
                         ? 'border-b-8 pb-2 border-indigo-buttonblue'
                         : ''
-                    }`}
+                      }`}
                     onClick={!claimLoading ? () => setRewardsCategory('winning') : undefined}
                   >
                     WINNING TEAMS
                   </div>
                   <div
-                    className={`mr-8 tracking-wider text-xs ${
-                      claimLoading ? 'cursor-not-allowed text-indigo-lightgray' : 'cursor-pointer'
-                    } ${
-                      rewardsCategory !== 'winning'
+                    className={`mr-8 tracking-wider text-xs ${claimLoading ? 'cursor-not-allowed text-indigo-lightgray' : 'cursor-pointer'
+                      } ${rewardsCategory !== 'winning'
                         ? 'border-b-8 pb-2 border-indigo-buttonblue'
                         : ''
-                    }`}
+                      }`}
                     onClick={!claimLoading ? () => setRewardsCategory('lost') : undefined}
                   >
                     NO PLACEMENT
@@ -629,7 +558,6 @@ const Play = (props) => {
                             </div>
                           </>
                         ))}
-
                       {!claimData.isClaimed && (
                         <div className="flex justify-center">
                           <button
@@ -738,9 +666,8 @@ const Play = (props) => {
                 <div className="flex font-bold ml-8 md:ml-7 font-monument">
                   {categoryList.map(({ name, isActive }) => (
                     <div
-                      className={`cursor-pointer mr-6 ${
-                        isActive ? 'border-b-8 border-indigo-buttonblue' : ''
-                      }`}
+                      className={`cursor-pointer mr-6 ${isActive ? 'border-b-8 border-indigo-buttonblue' : ''
+                        }`}
                       onClick={() => {
                         changecategoryList(name);
                         setCategory(name);
@@ -766,14 +693,14 @@ const Play = (props) => {
                         {(categoryList[0].isActive
                           ? newGames
                           : categoryList[1].isActive
-                          ? ongoingGames
-                          : emptyGames
+                            ? ongoingGames
+                            : emptyGames
                         ).length > 0 &&
                           (categoryList[0].isActive
                             ? newGames
                             : categoryList[1].isActive
-                            ? ongoingGames
-                            : emptyGames
+                              ? ongoingGames
+                              : emptyGames
                           ).map((data, i) => {
                             return (
                               <div key={i} className="flex">
@@ -795,135 +722,12 @@ const Play = (props) => {
                                             />
                                           </div>
                                         </a> */}
-                                        <Link href={`/PlayDetails/${data.game_id}`} passHref>
-                                          <div className="mr-6">
-                                            <PlayComponent
-                                              type={activeCategory}
-                                              game_id={data.game_id}
-                                              icon="test"
-                                              prizePool="2,300" 
-                                              startDate={data.start_time}
-                                              endDate={data.end_time}
-                                              img={data.image}
-                                              fetchGames={fetchGamesLoading}
-                                              index={() => changeIndex(1)}
-                                            />
-                                          </div>
-                                        </Link>
-                                        
-                                        {activeCategory === 'completed' && "test" && (
-                                          <div className="">
-                                            {/* {data.isClaimed === 'unclaimed' ? ( */}
-                                            {"unclaimed" === 'unclaimed' ? (
-                                              // data.hasEnded ? (
-                                              "data.hasEnded "? (
-                                                <button
-                                                  className={`bg-indigo-buttonblue w-full h-12 text-center font-bold rounded-md text-sm mt-4 self-center`}
-                                                  onClick={() =>
-                                                    "data.hasEnded"
-                                                    // data.hasEnded
-                                                      ? fetchTeamPlacements("test")
-                                                      // ? fetchTeamPlacements(data.id)
-                                                      : undefined
-                                                  }
-                                                >
-                                                  <div className="text-indigo-white">
-                                                    CLAIM {"test" ? 'REWARD' : 'TEAM'}
-                                                    {/* CLAIM {data.hasRewards ? 'REWARD' : 'TEAM'} */}
-                                                  </div>
-                                                </button>
-                                              ) : (
-                                                <button
-                                                  className={`bg-indigo-lightblue cursor-not-allowed  w-full h-12 text-center font-bold rounded-md text-sm mt-4 self-center`}
-                                                >
-                                                  <div className="text-indigo-white">
-                                                    Please wait for the game to end
-                                                  </div>
-                                                </button>
-                                              )
-                                            ) : (
-                                              ''
-                                            )}
-                                          </div>
-                                        )}
-                                      </div>
-                                    </div>
-                                  );
-                                })}
-                              </div>
-                              <div className="flex justify-between md:mt-5 md:mr-6 p-5">
-                                <div className="bg-indigo-white mr-1 h-11 flex items-center font-thin border-indigo-lightgray border-opacity-40 p-2">
-                                  {pageCount > 1 && (
-                                    <button
-                                      className="px-2 border mr-2"
-                                      onClick={() => changeIndex('first')}
-                                    >
-                                      First
-                                    </button>
-                                  )}
-                                  {pageCount !== 0 && canPrevious() && (
-                                    <button
-                                      className="px-2 border mr-2"
-                                      onClick={() => changeIndex('previous')}
-                                    >
-                                      Previous
-                                    </button>
-                                  )}
-                                  <p className="mr-2">
-                                    Page {offset + 1} of {pageCount}
-                                  </p>
-                                  {pageCount !== 0 && canNext() && (
-                                    <button
-                                      className="px-2 border mr-2"
-                                      onClick={() => changeIndex('next')}
-                                    >
-                                      Next
-                                    </button>
-                                  )}
-                                  {pageCount > 1 && (
-                                    <button
-                                      className="px-2 border mr-2"
-                                      onClick={() => changeIndex('last')}
-                                    >
-                                      Last
-                                    </button>
-                                  )}
-                                </div>
-                                <div className="bg-indigo-white mr-1 h-11 w-64 flex font-thin border-2 border-indigo-lightgray border-opacity-40 p-2">
-                                  <select
-                                    value={limit}
-                                    className="bg-indigo-white text-lg w-full outline-none"
-                                    onChange={(e) => {
-                                      //setLimit(e.target.value);
-                                      setOffset(0);
-                                    }}
-                                  >
-                                    {limitOptions.map((option) => (
-                                      <option value={option}>{option}</option>
-                                    ))}
-                                  </select>
-                                </div>
-                              </div>
-                            </>
-                          ) : (
-                            <>
-                              <div className="ml-7 mt-7 text-xl">
-                                There are no {activeCategory} games to be displayed
-                              </div>
-                            </>
-                          )}
-                          <div className="mt-4 ml-6 grid grid-cols-0 md:grid-cols-3">
-                            {(categoryList[2].isActive ? completedGames : emptyGames).length > 0 &&
-                            (categoryList[2].isActive ? completedGames : emptyGames).map((data, i) => {
-                              return(
-                                <div key={i} className="flex">
-                                  <div className="mr-6 cursor-pointer" onClick={() => alert("ERROR: Game " + data.game_id + " is already finished.")}>
+                                  <Link href={`/PlayDetails/${data.game_id}`} passHref>
                                     <div className="mr-6">
-                                      <PlayComponent 
+                                      <PlayComponent
                                         type={activeCategory}
                                         game_id={data.game_id}
                                         icon="test"
-                                        prizePool="2,300" 
                                         startDate={data.start_time}
                                         endDate={data.end_time}
                                         img={data.image}
@@ -931,16 +735,134 @@ const Play = (props) => {
                                         index={() => changeIndex(1)}
                                       />
                                     </div>
-                                  </div>
+                                  </Link>
+
+                                  {activeCategory === 'completed' && "test" && (
+                                    <div className="">
+                                      {/* {data.isClaimed === 'unclaimed' ? ( */}
+                                      {"unclaimed" === 'unclaimed' ? (
+                                        // data.hasEnded ? (
+                                        "data.hasEnded " ? (
+                                          <button
+                                            className={`bg-indigo-buttonblue w-full h-12 text-center font-bold rounded-md text-sm mt-4 self-center`}
+                                            onClick={() =>
+                                              "data.hasEnded"
+                                                // data.hasEnded
+                                                ? fetchTeamPlacements("test")
+                                                // ? fetchTeamPlacements(data.id)
+                                                : undefined
+                                            }
+                                          >
+                                            <div className="text-indigo-white">
+                                              CLAIM {"test" ? 'REWARD' : 'TEAM'}
+                                              {/* CLAIM {data.hasRewards ? 'REWARD' : 'TEAM'} */}
+                                            </div>
+                                          </button>
+                                        ) : (
+                                          <button
+                                            className={`bg-indigo-lightblue cursor-not-allowed  w-full h-12 text-center font-bold rounded-md text-sm mt-4 self-center`}
+                                          >
+                                            <div className="text-indigo-white">
+                                              Please wait for the game to end
+                                            </div>
+                                          </button>
+                                        )
+                                      ) : (
+                                        ''
+                                      )}
+                                    </div>
+                                  )}
                                 </div>
-                              )
-                            })}
-                          </div>
-                          
-                        </>
-                      {/* )}
+                              </div>
+                            );
+                          })}
+                      </div>
+                      <div className="flex justify-between md:mt-5 md:mr-6 p-5">
+                        <div className="bg-indigo-white mr-1 h-11 flex items-center font-thin border-indigo-lightgray border-opacity-40 p-2">
+                          {pageCount > 1 && (
+                            <button
+                              className="px-2 border mr-2"
+                              onClick={() => changeIndex('first')}
+                            >
+                              First
+                            </button>
+                          )}
+                          {pageCount !== 0 && canPrevious() && (
+                            <button
+                              className="px-2 border mr-2"
+                              onClick={() => changeIndex('previous')}
+                            >
+                              Previous
+                            </button>
+                          )}
+                          <p className="mr-2">
+                            Page {offset + 1} of {pageCount}
+                          </p>
+                          {pageCount !== 0 && canNext() && (
+                            <button
+                              className="px-2 border mr-2"
+                              onClick={() => changeIndex('next')}
+                            >
+                              Next
+                            </button>
+                          )}
+                          {pageCount > 1 && (
+                            <button
+                              className="px-2 border mr-2"
+                              onClick={() => changeIndex('last')}
+                            >
+                              Last
+                            </button>
+                          )}
+                        </div>
+                        <div className="bg-indigo-white mr-1 h-11 w-64 flex font-thin border-2 border-indigo-lightgray border-opacity-40 p-2">
+                          <select
+                            value={limit}
+                            className="bg-indigo-white text-lg w-full outline-none"
+                            onChange={(e) => {
+                              //setLimit(e.target.value);
+                              setOffset(0);
+                            }}
+                          >
+                            {limitOptions.map((option) => (
+                              <option value={option}>{option}</option>
+                            ))}
+                          </select>
+                        </div>
+                      </div>
                     </>
-                  )} */}
+                  ) : (
+                    <>
+                      <div className="ml-7 mt-7 text-xl">
+                        There are no {activeCategory} games to be displayed
+                      </div>
+                    </>
+                  )}
+                  <div className="mt-4 ml-6 grid grid-cols-0 md:grid-cols-3">
+                    {(categoryList[2].isActive ? completedGames : emptyGames).length > 0 &&
+                      (categoryList[2].isActive ? completedGames : emptyGames).map((data, i) => {
+                        return (
+                          <div key={i} className="flex">
+                            <div className="mr-6 cursor-pointer" onClick={() => alert("ERROR: Game " + data.game_id + " is already finished.")}>
+                              <div className="mr-6">
+                                <PlayComponent
+                                  type={activeCategory}
+                                  game_id={data.game_id}
+                                  icon="test"
+                                  prizePool="2,300"
+                                  startDate={data.start_time}
+                                  endDate={data.end_time}
+                                  img={data.image}
+                                  fetchGames={fetchGamesLoading}
+                                  index={() => changeIndex(1)}
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        )
+                      })}
+                  </div>
+                </>
               </div>
             </div>
           </Main>
