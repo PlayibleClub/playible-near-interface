@@ -278,7 +278,7 @@ export default function PlayDetails(props) {
                                   <div className="md:-mr-20">
                                     <div className="mt-7 flex justify-center md:self-left md:mr-8">
                                       <div className="-ml-7 mr-7">
-                                        <Image src="/images/game.png" width={550} height={279} />
+                                        <Image src="/images/game.png" width={550} height={279}/>
                                       </div>
                                       <div className="-mt-7 w-96">
                                         <PortfolioContainer textcolor="indigo-black" title={gameFreeOrPaid} />

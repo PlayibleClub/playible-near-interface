@@ -203,19 +203,18 @@ export default function EntrySummary(props) {
           <Main color="indigo-white">
             <>
               <>
-                <div className="mt-8">
+                <div className="mt-8 md:ml-6">
                   <BackFunction
                     prev={router.query.origin || `/CreateLineup/${gameId}`}
                   />
                 </div>
-
                 <div className="md:ml-7 flex flex-row md:flex-row">
                   <div className="md:mr-12">
-                    <div className="mt-7 flex justify-center md:self-left md:mr-8">
+                    <div className="mt-11 flex justify-center md:self-left md:mr-8 md:ml-6">
                       <div className="">
-                        <Image src="/images/game.png" width={550} height={220} />
+                        <Image src="/images/game.png" width={550} height={279} />
                       </div>
-                      <div className="-mt-7">
+                      <div className="-mt-7 ml-7">
                         <PortfolioContainer textcolor="indigo-black" title="ENTRY SUMMARY" />
                         <div className="flex space-x-14 mt-4">
                           <div className="ml-7">
@@ -274,7 +273,7 @@ export default function EntrySummary(props) {
                     </div>
                   </div>
                 </div>
-                <div className="mt-5 flex items-center ml-7">
+                <div className="flex items-center ml-14">
                   <ModalPortfolioContainer
                     title={playerTeamName}
                     textcolor="text-indigo-black mb-5"

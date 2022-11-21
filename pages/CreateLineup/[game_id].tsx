@@ -92,21 +92,20 @@ export default function CreateLineup(props) {
   return (
     <>
       <Container activeName="PLAY">
-        <div className="mt-8">
-          <BackFunction prev={query.origin ? `/${query.origin}` : `/PlayDetails/${gameId}`}></BackFunction>
-        </div>
         <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12 ">
           <Main color="indigo-white">
+          <div className="mt-8 md:ml-6">
+          <BackFunction prev={query.origin ? `/${query.origin}` : `/PlayDetails/${gameId}`}></BackFunction>
+        </div>
             <div className='grid grid-cols-3 mt-12 gap-10'>
-              <div className='ml-24 h-full col-span-2 row-span-2'>
+              <div className='ml-12 -mt-3 h-full col-span-2 row-span-2'>
                 <Image
-                  // src={gameData.image}
                   src="/images/game.png"
-                  width={640}
-                  height={300}
+                  width={550} 
+                  height={279}
                 />
               </div>
-              <div>
+              <div className="-ml-72">
                 <ModalPortfolioContainer
                   title="CREATE TEAM"
                   textcolor="text-indigo-black"
@@ -115,8 +114,7 @@ export default function CreateLineup(props) {
                   Create a team and showcase your collection. Enter a team into the
                   tournament and compete for cash prizes.
                 </div>
-              </div>
-              <div>
+                <div className="mt-10">
                 <Link href={{
                   pathname: '/CreateTeam/[game_id]',
                   query: {
@@ -124,10 +122,11 @@ export default function CreateLineup(props) {
                     teamName: teamName
                   }
                 }} as={`/CreateTeam/${gameId}`}>
-                  <button className='bg-indigo-buttonblue text-indigo-white whitespace-nowrap h-14 px-10 mt-4 text-center font-bold'>
+                  <button className='bg-indigo-buttonblue text-indigo-white whitespace-nowrap h-14 px-10 mt-16 text-center font-bold w-3/5'>
                     CREATE YOUR LINEUP +
                   </button>
                 </Link>
+              </div>
               </div>
             </div>
             <div className="mt-7 ml-7 w-2/5">
