@@ -19,6 +19,8 @@ import Modal from '../../components/modals/Modal';
 import { transactions, utils, WalletConnection, providers } from 'near-api-js';
 import { getContract, getRPCProvider } from 'utils/near';
 import { getGameInfoById } from 'utils/game/helper';
+import { getUTCTimestampFromLocal } from 'utils/date/helper';
+
 const Play = (props) => {
   const { error } = props;
   const [activeCategory, setCategory] = useState('NEW');
@@ -58,7 +60,7 @@ const Play = (props) => {
   const [search, setSearch] = useState('');
   const [err, setErr] = useState(error);
 
-  const [categoryList,setcategoryList] = useState([
+  const [categoryList, setcategoryList] = useState([
     {
       name: 'NEW',
       isActive: true,
@@ -87,7 +89,7 @@ const Play = (props) => {
     setcategoryList([...tabList]);
   };
 
-  const Test = [1,2,3,4,5];
+  const Test = [1, 2, 3, 4, 5];
 
   const [newGames, setNewGames] = useState([]);
   const [ongoingGames, setOngoingGames] = useState([]);
@@ -399,23 +401,31 @@ const Play = (props) => {
         const result = JSON.parse(Buffer.from(data.result).toString());
 
         const upcomingGames = await Promise.all(
-          result.filter(x => x[1].start_time > Date.now()).map((item) => getGameInfoById(item))
+          result
+            .filter((x) => x[1].start_time > getUTCTimestampFromLocal())
+            .map((item) => getGameInfoById(item))
         );
 
         const completedGames = await Promise.all(
-          result.filter(x => x[1].end_time < Date.now()).map((item) => getGameInfoById(item))
+          result
+            .filter((x) => x[1].end_time < getUTCTimestampFromLocal())
+            .map((item) => getGameInfoById(item))
         );
 
         const ongoingGames = await Promise.all(
           result
-            .filter(x => x[1].start_time < Date.now() && x[1].end_time > Date.now())
+            .filter(
+              (x) =>
+                x[1].start_time < getUTCTimestampFromLocal() &&
+                x[1].end_time > getUTCTimestampFromLocal()
+            )
             .map((item) => getGameInfoById(item))
         );
 
         setNewGames(upcomingGames);
         setCompletedGames(completedGames);
         setOngoingGames(ongoingGames);
-      })
+      });
   }
   const claimRewards = async (gameId) => {
     setClaimLoading(true);
@@ -467,10 +477,7 @@ const Play = (props) => {
   useEffect(() => {
     if (games && games.length > 0) {
       const tempList = [...games];
-      const filteredList = applySortFilter(tempList, filter, search).splice(
-        limit * offset,
-        limit
-      );
+      const filteredList = applySortFilter(tempList, filter, search).splice(limit * offset, limit);
       setSortedList(filteredList);
       if (search) {
         setPageCount(Math.ceil(applySortFilter(tempList, filter, search).length / limit));
@@ -537,228 +544,241 @@ const Play = (props) => {
     }
   }, [claimModal]);
 
-    return (
-      <>
-        {claimModal === true && (
-          <>
-            <div className="fixed w-screen h-screen bg-opacity-70 z-50 overflow-auto bg-indigo-gray flex font-montserrat">
-              <div className="relative p-8 bg-indigo-white w-11/12 md:w-2/5 m-auto flex-col flex">
-                {!claimLoading ? (
-                  <button
-                    className="absolute top-0 right-0 mt-6 mr-6 h-4 w-4"
-                    onClick={() => {
-                      showClaimModal(false);
-                    }}
+  return (
+    <>
+      {claimModal === true && (
+        <>
+          <div className="fixed w-screen h-screen bg-opacity-70 z-50 overflow-auto bg-indigo-gray flex font-montserrat">
+            <div className="relative p-8 bg-indigo-white w-11/12 md:w-2/5 m-auto flex-col flex">
+              {!claimLoading ? (
+                <button
+                  className="absolute top-0 right-0 mt-6 mr-6 h-4 w-4"
+                  onClick={() => {
+                    showClaimModal(false);
+                  }}
+                >
+                  <img className="h-4 w-4 " src={'/images/x.png'} />
+                </button>
+              ) : (
+                ''
+              )}
+
+              <div className="text-sm">
+                <div className="flex font-monument select-none mt-5">
+                  <div
+                    className={`mr-8 tracking-wider text-xs ${
+                      claimLoading ? 'cursor-not-allowed text-indigo-lightgray' : 'cursor-pointer'
+                    } ${
+                      rewardsCategory === 'winning'
+                        ? 'border-b-8 pb-2 border-indigo-buttonblue'
+                        : ''
+                    }`}
+                    onClick={!claimLoading ? () => setRewardsCategory('winning') : undefined}
                   >
-                    <img className="h-4 w-4 " src={'/images/x.png'} />
-                  </button>
-                ) : (
-                  ''
-                )}
-
-                <div className="text-sm">
-                  <div className="flex font-monument select-none mt-5">
-                    <div
-                      className={`mr-8 tracking-wider text-xs ${
-                        claimLoading ? 'cursor-not-allowed text-indigo-lightgray' : 'cursor-pointer'
-                      } ${
-                        rewardsCategory === 'winning'
-                          ? 'border-b-8 pb-2 border-indigo-buttonblue'
-                          : ''
-                      }`}
-                      onClick={!claimLoading ? () => setRewardsCategory('winning') : undefined}
-                    >
-                      WINNING TEAMS
-                    </div>
-                    <div
-                      className={`mr-8 tracking-wider text-xs ${
-                        claimLoading ? 'cursor-not-allowed text-indigo-lightgray' : 'cursor-pointer'
-                      } ${
-                        rewardsCategory !== 'winning'
-                          ? 'border-b-8 pb-2 border-indigo-buttonblue'
-                          : ''
-                      }`}
-                      onClick={!claimLoading ? () => setRewardsCategory('lost') : undefined}
-                    >
-                      NO PLACEMENT
-                    </div>
+                    WINNING TEAMS
                   </div>
-                  <hr className="opacity-50 -mx-8" />
+                  <div
+                    className={`mr-8 tracking-wider text-xs ${
+                      claimLoading ? 'cursor-not-allowed text-indigo-lightgray' : 'cursor-pointer'
+                    } ${
+                      rewardsCategory !== 'winning'
+                        ? 'border-b-8 pb-2 border-indigo-buttonblue'
+                        : ''
+                    }`}
+                    onClick={!claimLoading ? () => setRewardsCategory('lost') : undefined}
+                  >
+                    NO PLACEMENT
+                  </div>
+                </div>
+                <hr className="opacity-50 -mx-8" />
 
-                  <div className="w-full">
-                    {claimLoading ? (
-                      <div className="mt-8">
-                        <p className="mb-5 text-center font-montserrat">Please wait</p>
-                        <div className="flex gap-5 justify-center mb-5">
-                          <div className="bg-indigo-buttonblue animate-bounce w-5 h-5 rounded-full"></div>
-                          <div className="bg-indigo-buttonblue animate-bounce w-5 h-5 rounded-full"></div>
-                          <div className="bg-indigo-buttonblue animate-bounce w-5 h-5 rounded-full"></div>
-                        </div>
+                <div className="w-full">
+                  {claimLoading ? (
+                    <div className="mt-8">
+                      <p className="mb-5 text-center font-montserrat">Please wait</p>
+                      <div className="flex gap-5 justify-center mb-5">
+                        <div className="bg-indigo-buttonblue animate-bounce w-5 h-5 rounded-full"></div>
+                        <div className="bg-indigo-buttonblue animate-bounce w-5 h-5 rounded-full"></div>
+                        <div className="bg-indigo-buttonblue animate-bounce w-5 h-5 rounded-full"></div>
                       </div>
-                    ) : claimData ? (
-                      <>
-                        {rewardsCategory === 'winning' &&
-                          (claimData.winning_placements.length > 0 ? (
-                            claimData.winning_placements.map(
-                              (item, i) => item && renderPlacements(item, i, true)
-                            )
-                          ) : (
-                            <>
-                              <div className="mt-8 font-monument tracking-wider text-indigo-lightgray text-center mb-5">
-                                There are no teams to display
-                              </div>
-                            </>
-                          ))}
+                    </div>
+                  ) : claimData ? (
+                    <>
+                      {rewardsCategory === 'winning' &&
+                        (claimData.winning_placements.length > 0 ? (
+                          claimData.winning_placements.map(
+                            (item, i) => item && renderPlacements(item, i, true)
+                          )
+                        ) : (
+                          <>
+                            <div className="mt-8 font-monument tracking-wider text-indigo-lightgray text-center mb-5">
+                              There are no teams to display
+                            </div>
+                          </>
+                        ))}
 
-                        {rewardsCategory !== 'winning' &&
-                          (claimData.no_placements.length > 0 ? (
-                            claimData.no_placements.map(
-                              (item, i) => item && renderPlacements(item, i)
-                            )
-                          ) : (
-                            <>
-                              <div className="mt-8 font-monument tracking-wider text-indigo-lightgray text-center mb-5">
-                                There are no teams to display
-                              </div>
-                            </>
-                          ))}
+                      {rewardsCategory !== 'winning' &&
+                        (claimData.no_placements.length > 0 ? (
+                          claimData.no_placements.map(
+                            (item, i) => item && renderPlacements(item, i)
+                          )
+                        ) : (
+                          <>
+                            <div className="mt-8 font-monument tracking-wider text-indigo-lightgray text-center mb-5">
+                              There are no teams to display
+                            </div>
+                          </>
+                        ))}
 
-                        {!claimData.isClaimed && (
-                          <div className="flex justify-center">
-                            <button
-                              className="text-indigo-white w-full text-sm font-bold text-center bg-indigo-buttonblue p-3 px-5"
-                              onClick={() => claimRewards(claimData.gameId)}
-                            >
-                              CLAIM {claimData.winning_placements.length > 0 ? 'REWARDS' : 'TEAM'}
-                            </button>
-                          </div>
-                        )}
-                      </>
-                    ) : (
-                      ''
-                    )}
-                  </div>
+                      {!claimData.isClaimed && (
+                        <div className="flex justify-center">
+                          <button
+                            className="text-indigo-white w-full text-sm font-bold text-center bg-indigo-buttonblue p-3 px-5"
+                            onClick={() => claimRewards(claimData.gameId)}
+                          >
+                            CLAIM {claimData.winning_placements.length > 0 ? 'REWARDS' : 'TEAM'}
+                          </button>
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    ''
+                  )}
                 </div>
               </div>
             </div>
-          </>
-        )}
-        {claimTeam === true && (
-          <>
-            <div className="fixed w-screen h-screen bg-opacity-70 z-50 overflow-auto bg-indigo-gray flex font-montserrat">
-              <div className="relative p-8 bg-indigo-white w-11/12 md:w-96 h-10/12 md:h-auto m-auto flex-col flex rounded-lg">
-                <button
-                  onClick={() => {
-                    showClaimTeam(false);
-                  }}
-                >
-                  <div className="absolute top-0 right-0 p-4 font-black">X</div>
-                </button>
-                <div className="mt-4 bg-indigo-yellow p-2 text-center font-bold text-xl rounded">
-                  Your Team has not made it to the leader board
-                </div>
-                <div className="mt-4 p-2 text-center font-bold text-xl">Try again next time!</div>
+          </div>
+        </>
+      )}
+      {claimTeam === true && (
+        <>
+          <div className="fixed w-screen h-screen bg-opacity-70 z-50 overflow-auto bg-indigo-gray flex font-montserrat">
+            <div className="relative p-8 bg-indigo-white w-11/12 md:w-96 h-10/12 md:h-auto m-auto flex-col flex rounded-lg">
+              <button
+                onClick={() => {
+                  showClaimTeam(false);
+                }}
+              >
+                <div className="absolute top-0 right-0 p-4 font-black">X</div>
+              </button>
+              <div className="mt-4 bg-indigo-yellow p-2 text-center font-bold text-xl rounded">
+                Your Team has not made it to the leader board
+              </div>
+              <div className="mt-4 p-2 text-center font-bold text-xl">Try again next time!</div>
+            </div>
+          </div>
+        </>
+      )}
+      {successTransactionModal !== null && (
+        <>
+          <div className="fixed w-screen h-screen bg-opacity-70 z-50 overflow-auto bg-indigo-gray flex font-montserrat">
+            <div className="relative p-8 bg-indigo-white w-11/12 md:w-96 h-10/12 md:h-auto m-auto flex-col flex">
+              <button
+                className="absolute top-0 right-0 mt-6 mr-6 h-4 w-4"
+                onClick={() => {
+                  showSuccessModal(null);
+                }}
+              >
+                <img className="h-4 w-4 " src={'/images/x.png'} />
+              </button>
+              <img src={claimreward} className="h-20 w-20 mt-5" />
+              <div className="mt-4 bg-indigo-yellow w-min p-2 px-3 text-center text-lg font-monument">
+                CONGRATULATIONS
+              </div>
+              <div className="p-2 text-4xl font-monument">
+                {successTransactionModal.prize.toString()} UST
+              </div>
+              <div className="p-2 text-lg font-monument -mt-4">EARNED</div>
+            </div>
+          </div>
+        </>
+      )}
+      {failedTransactionModal !== null && (
+        <>
+          <div className="fixed w-screen h-screen bg-opacity-70 z-50 overflow-auto bg-indigo-gray flex font-montserrat">
+            <div className="relative p-8 bg-indigo-white w-11/12 md:w-min h-10/12 md:h-auto m-auto flex-col flex">
+              <button
+                className="absolute top-0 right-0 mt-6 mr-6 h-4 w-4"
+                onClick={() => {
+                  showFailedModal(null);
+                }}
+              >
+                <img className="h-4 w-4 " src={'/images/x.png'} />
+              </button>
+              <img src={claimreward} className="h-20 w-20 mt-5" />
+              <div className="mt-4 bg-indigo-yellow w-max p-2 px-3 text-center text-lg font-monument">
+                FAILED TRANSACTION
+              </div>
+              <div className="mt-4 p-2 text-xs">
+                {failedTransactionModal.msg ||
+                  "We're sorry, unfortunately we've experienced a problem loading your request."}
+                <br />
+                Please try again.
               </div>
             </div>
-          </>
-        )}
-        {successTransactionModal !== null && (
-          <>
-            <div className="fixed w-screen h-screen bg-opacity-70 z-50 overflow-auto bg-indigo-gray flex font-montserrat">
-              <div className="relative p-8 bg-indigo-white w-11/12 md:w-96 h-10/12 md:h-auto m-auto flex-col flex">
-                <button
-                  className="absolute top-0 right-0 mt-6 mr-6 h-4 w-4"
-                  onClick={() => {
-                    showSuccessModal(null);
-                  }}
-                >
-                  <img className="h-4 w-4 " src={'/images/x.png'} />
-                </button>
-                <img src={claimreward} className="h-20 w-20 mt-5" />
-                <div className="mt-4 bg-indigo-yellow w-min p-2 px-3 text-center text-lg font-monument">
-                  CONGRATULATIONS
+          </div>
+        </>
+      )}
+      <Container activeName="PLAY">
+        <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
+          <Main color="indigo-white">
+            <div className="flex flex-col mb-10">
+              <div className="flex">
+                <div className="flex-initial">
+                  <PortfolioContainer title="PLAY" textcolor="text-indigo-black" />
                 </div>
-                <div className="p-2 text-4xl font-monument">
-                  {successTransactionModal.prize.toString()} UST
-                </div>
-                <div className="p-2 text-lg font-monument -mt-4">EARNED</div>
-              </div>
-            </div>
-          </>
-        )}
-        {failedTransactionModal !== null && (
-          <>
-            <div className="fixed w-screen h-screen bg-opacity-70 z-50 overflow-auto bg-indigo-gray flex font-montserrat">
-              <div className="relative p-8 bg-indigo-white w-11/12 md:w-min h-10/12 md:h-auto m-auto flex-col flex">
-                <button
-                  className="absolute top-0 right-0 mt-6 mr-6 h-4 w-4"
-                  onClick={() => {
-                    showFailedModal(null);
-                  }}
-                >
-                  <img className="h-4 w-4 " src={'/images/x.png'} />
-                </button>
-                <img src={claimreward} className="h-20 w-20 mt-5" />
-                <div className="mt-4 bg-indigo-yellow w-max p-2 px-3 text-center text-lg font-monument">
-                  FAILED TRANSACTION
-                </div>
-                <div className="mt-4 p-2 text-xs">
-                  {failedTransactionModal.msg ||
-                    "We're sorry, unfortunately we've experienced a problem loading your request."}
-                  <br />
-                  Please try again.
-                </div>
-              </div>
-            </div>
-          </>
-        )}
-        <Container activeName="PLAY">
-          <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
-            <Main color="indigo-white">
-              <div className="flex flex-col mb-10">
-                <div className="flex">
-                  <div className="flex-initial">
-                    <PortfolioContainer title="PLAY" textcolor="text-indigo-black" />
-                  </div>
-                  {/* <Link href="/MyActivity">
+                {/* <Link href="/MyActivity">
                     <button>
                       <div className="ml-8 mt-4 text-xs underline">MY ACTIVITY</div>
                     </button>
                   </Link> */}
-                </div>
+              </div>
 
-                <div className="flex flex-col mt-6">
-                  <div className="flex font-bold ml-8 md:ml-7 font-monument">
-                    {categoryList.map(({name,isActive}) => (
-                      <div
-                        className={`cursor-pointer mr-6 ${
-                            isActive ? 'border-b-8 border-indigo-buttonblue' : ''
-                          }`}
-                          onClick={() => {changecategoryList(name);setCategory(name)}}
-                      >
-                        {name}
-                      </div>
-                    ))}
-                  </div>
-                  <hr className="opacity-10" />
-                  {/* {loading ? (
+              <div className="flex flex-col mt-6">
+                <div className="flex font-bold ml-8 md:ml-7 font-monument">
+                  {categoryList.map(({ name, isActive }) => (
+                    <div
+                      className={`cursor-pointer mr-6 ${
+                        isActive ? 'border-b-8 border-indigo-buttonblue' : ''
+                      }`}
+                      onClick={() => {
+                        changecategoryList(name);
+                        setCategory(name);
+                      }}
+                    >
+                      {name}
+                    </div>
+                  ))}
+                </div>
+                <hr className="opacity-10" />
+                {/* {loading ? (
                     <LoadingPageDark />
                   ) : (
                     <>
                       {err ? (
                         <p className="py-10 ml-7">{err}</p>
                       ) : ( */}
-                        <>
-                        {/* {sortedList.length > 0 ? ( */}
-                          {1 > 0 ? (
-                            <>
-                              <div className="mt-4 ml-6 grid grid-cols-0 md:grid-cols-3">
-                          {(categoryList[0].isActive ? newGames : categoryList[1].isActive ? ongoingGames : emptyGames).length > 0 &&
-                          (categoryList[0].isActive ? newGames : categoryList[1].isActive ? ongoingGames : emptyGames).map((data, i) => {
-                                  return (
-                                    <div key={i} className="flex">
-                                      <div className="mr-6 cursor-pointer">
-                                      {/* <a href={`/PlayDetails?id=${data.id}`}>
+                <>
+                  {/* {sortedList.length > 0 ? ( */}
+                  {1 > 0 ? (
+                    <>
+                      <div className="mt-4 ml-6 grid grid-cols-0 md:grid-cols-3">
+                        {(categoryList[0].isActive
+                          ? newGames
+                          : categoryList[1].isActive
+                          ? ongoingGames
+                          : completedGames
+                        ).length > 0 &&
+                          (categoryList[0].isActive
+                            ? newGames
+                            : categoryList[1].isActive
+                            ? ongoingGames
+                            : completedGames
+                          ).map((data, i) => {
+                            return (
+                              <div key={i} className="flex">
+                                <div className="mr-6 cursor-pointer">
+                                  {/* <a href={`/PlayDetails?id=${data.id}`}>
                                           <div className="mr-6">
                                             <PlayComponent
                                               type={activeCategory}
@@ -921,13 +941,13 @@ const Play = (props) => {
                       {/* )}
                     </>
                   )} */}
-                </div>
               </div>
-            </Main>
-          </div>
-        </Container>
-      </>
-    );
+            </div>
+          </Main>
+        </div>
+      </Container>
+    </>
+  );
 };
 export default Play;
 

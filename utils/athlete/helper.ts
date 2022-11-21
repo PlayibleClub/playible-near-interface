@@ -1,4 +1,5 @@
 import client from 'apollo-client';
+import { objectTraps } from 'immer/dist/internal';
 import { GET_ATHLETE_BY_ID } from '../queries';
 
 // pull from graphQL and append the nft animation
@@ -9,8 +10,6 @@ async function getAthleteInfoById(item) {
     query: GET_ATHLETE_BY_ID,
     variables: { getAthleteById: parseFloat(value[0]) },
   });
-
-  console.log(data);
 
   const returningData = {
     primary_id: value[0],
@@ -66,11 +65,13 @@ function getAvgFantasyScore(array) {
 function convertNftToAthlete(item) {
   const token_metadata = item.token_metadata || item.metadata;
 
+  let metadata = token_metadata.extra.includes('attributes')
+    ? JSON.parse(token_metadata.extra).attributes
+    : JSON.parse(token_metadata.extra);
+
   return {
     token_id: item.token_id,
-    metadata: token_metadata.extra.includes('attributes')
-      ? JSON.parse(token_metadata.extra).attributes
-      : JSON.parse(token_metadata.extra),
+    metadata: metadata,
   };
 }
 

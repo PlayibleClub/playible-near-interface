@@ -23,6 +23,7 @@ import { transactions, utils, WalletConnection, providers } from 'near-api-js';
 import { getGameInfoById } from 'utils/game/helper';
 import AdminGameComponent from './components/AdminGameComponent';
 import moment from 'moment';
+
 TimeAgo.addDefaultLocale(en);
 
 export default function Index(props) {
@@ -36,11 +37,9 @@ export default function Index(props) {
   const [content, setContent] = useState(false);
   const [gameDuration, setGameDuration] = useState(0);
   const [totalGames, setTotalGames] = useState(0);
-
+  const [gameIdToAdd, setGameIdToAdd] = useState(0);
   //gameinfo
-  const [gameInfo, setGameInfo] = useState({
-
-  })
+  const [gameInfo, setGameInfo] = useState({});
 
   const [tabs, setTabs] = useState([
     {
@@ -507,31 +506,24 @@ export default function Index(props) {
     description: '',
   });
 
-  const testWhitelist = ["lilith87.testnet", "kishidev.testnet"];
+  // const testWhitelist = ["lilith87.testnet", "kishidev.testnet"];
 
   const testPositions = [
-    {positions: ["QB"], amount: 1},
-    {positions: ["RB"], amount: 2},
-    {positions: ["WR"], amount: 2},
-    {positions: ["TE"], amount: 1},
-    {positions: ["RB", "WR", "TE"], amount: 1},
-    {positions: ["QB", "RB", "WR", "TE"], amount: 1},
-  ]
+    { positions: ['QB'], amount: 1 },
+    { positions: ['RB'], amount: 2 },
+    { positions: ['WR'], amount: 2 },
+    { positions: ['TE'], amount: 1 },
+    { positions: ['RB', 'WR', 'TE'], amount: 1 },
+    { positions: ['QB', 'RB', 'WR', 'TE'], amount: 1 },
+  ];
 
-  const dateStr = moment(details.startTime).format('YYYY-MM-DD HH:mm:ss');
-  const dateDateStr = new Date(dateStr);
-  const dateStrEnd = moment(details.endTime).format('YYYY-MM-DD HH:mm:ss');
-  const dateDateStrEnd = new Date(dateStrEnd);
+  const dateStartFormatted = moment(details.startTime).format('YYYY-MM-DD HH:mm:ss');
+  const dateStart = moment(dateStartFormatted).utc().unix() * 1000;
+  const dateEndFormatted = moment(details.endTime).format('YYYY-MM-DD HH:mm:ss');
+  const dateEnd = moment(dateEndFormatted).utc().unix() * 1000;
 
-  const startUnixTimestamp = Math.floor(dateDateStr.getTime()/1000);
-  const endUnixTimeStamp = Math.floor(dateDateStrEnd.getTime() / 1000);
-
-  const startMilliseconds = startUnixTimestamp * 1000;
-  const startMsDate = new Date(startMilliseconds);
-  const startFormattedTimestamp = startMsDate.toLocaleString();
-  const endMilliseconds = endUnixTimeStamp * 1000;
-  const endMsDate = new Date(endMilliseconds);
-  const endFormattedTimestamp = endMsDate.toLocaleString();
+  const startFormattedTimestamp = moment(dateStartFormatted).toLocaleString();
+  const endFormattedTimestamp = moment(dateEndFormatted).toLocaleString();
 
   function query_game_supply() {
     const query = JSON.stringify({ });
@@ -572,41 +564,36 @@ export default function Index(props) {
         //console.table(Buffer.from(data.result).toString());
         //console.table(result);
         const upcomingGames = await Promise.all(
-          result.filter(x => x[1].start_time > Date.now()).map((item) => getGameInfoById(item))
-          
+          result.filter((x) => x[1].start_time > Date.now()).map((item) => getGameInfoById(item))
         );
         const completedGames = await Promise.all(
-          result.filter(x => x[1].end_time < Date.now()).map((item) => getGameInfoById(item))
-          
+          result.filter((x) => x[1].end_time < Date.now()).map((item) => getGameInfoById(item))
         );
 
         const onGoingGames = await Promise.all(
           result
-            .filter(x => x[1].start_time < Date.now() && x[1].end_time > Date.now())
+            .filter((x) => x[1].start_time < Date.now() && x[1].end_time > Date.now())
             .map((item) => getGameInfoById(item))
         );
-        
+
+        const latestGameId = result.reduce((a, value) => {
+          return Math.max(a, parseInt(value[0]));
+        }, 0);
 
         setNewGames(upcomingGames);
         setCompletedGames(completedGames);
         setOngoingGames(onGoingGames);
+        setGameIdToAdd(latestGameId + 1);
         //setGames(gamesList);
-      })
-  }
-
-  function newGameID() {
-    let newGameId = 0;
-    newGameId = ongoingGames.length + completedGames.length + newGames.length + 1;
-    
-    return newGameId.toString();
+      });
   }
 
   async function execute_add_game() {
     const addGameArgs = Buffer.from(
       JSON.stringify({
-        game_id: newGameID(),
-        game_time_start: startMilliseconds,
-        game_time_end: endMilliseconds,
+        game_id: gameIdToAdd.toString(),
+        game_time_start: dateStart,
+        game_time_end: dateEnd,
         usage_cost: 1,
         positions: testPositions,
         lineup_len: 8,
@@ -619,7 +606,7 @@ export default function Index(props) {
         methodName: 'add_game',
         args: addGameArgs,
         gas: DEFAULT_MAX_FEES,
-      }
+      },
     };
 
     const wallet = await selector.wallet();
@@ -638,7 +625,7 @@ export default function Index(props) {
   useEffect(() => {
     getTotalPercent();
   }, [distribution]);
-  
+
   useEffect(() => {
     query_games_list();
     query_game_supply();
@@ -646,7 +633,6 @@ export default function Index(props) {
 
   return (
     <Container isAdmin>
-      
       <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
         <Main color="indigo-white">
           {/* {content &&
@@ -655,58 +641,67 @@ export default function Index(props) {
             ) : err ? (
               <p className="ml-12 mt-5">{err}</p>
             ) : ( */}
-              <div className="flex flex-col w-full overflow-y-auto overflow-x-hidden h-screen self-center text-indigo-black">
-                <div className="flex md:ml-4 font-bold font-monument mt-5">
-                  {tabs.map(({ name, isActive }) => (
-                    <div
-                      className={`cursor-pointer mr-6 ${
-                        isActive ? 'border-b-8 border-indigo-buttonblue' : ''
-                      }`}
-                      onClick={() => changeTab(name)}
-                    >
-                      {name}
-                    </div>
-                  ))}
+          <div className="flex flex-col w-full overflow-y-auto overflow-x-hidden h-screen self-center text-indigo-black">
+            <div className="flex md:ml-4 font-bold font-monument mt-5">
+              {tabs.map(({ name, isActive }) => (
+                <div
+                  className={`cursor-pointer mr-6 ${
+                    isActive ? 'border-b-8 border-indigo-buttonblue' : ''
+                  }`}
+                  onClick={() => changeTab(name)}
+                >
+                  {name}
                 </div>
-                <hr className="opacity-50" />
-                <div className="p-8 px-32">
-                  {loading ? (
-                    <LoadingPageDark />
-                  ) : tabs[0].isActive ? (
-                    <div className="flex flex-col">
-                      <div className="flex font-bold -ml-16 font-monument">
-                        {gameTabs.map(({ name, isActive }) => (
-                          <div
-                            className={`cursor-pointer mr-6 ${
-                              isActive ? 'border-b-8 border-indigo-buttonblue' : ''
-                            }`}
-                            onClick={() => changeGameTab(name)}
-                          >
-                            {name}
-                          </div>
-                        ))}
+              ))}
+            </div>
+            <hr className="opacity-50" />
+            <div className="p-8 px-32">
+              {loading ? (
+                <LoadingPageDark />
+              ) : tabs[0].isActive ? (
+                <div className="flex flex-col">
+                  <div className="flex font-bold -ml-16 font-monument">
+                    {gameTabs.map(({ name, isActive }) => (
+                      <div
+                        className={`cursor-pointer mr-6 ${
+                          isActive ? 'border-b-8 border-indigo-buttonblue' : ''
+                        }`}
+                        onClick={() => changeGameTab(name)}
+                      >
+                        {name}
                       </div>
-                      <div className="mt-4 ml-6 grid grid-cols-0 md:grid-cols-3">
-                        {(gameTabs[0].isActive ? newGames : gameTabs[1].isActive ? ongoingGames : completedGames).length > 0 &&
-                          (gameTabs[0].isActive ? newGames : gameTabs[1].isActive ? ongoingGames : completedGames).map((data, i) => {
-            
-                            return(
-                              <AdminGameComponent 
-                                game_id={data.game_id}
-                                start_time={data.start_time}
-                                end_time={data.end_time}
-                                whitelist={data.whitelist}
-                                positions={data.positions}
-                                lineup_len={data.lineup_len}
-                                joined_player_counter={data.joined_player_counter}
-                                joined_team-counter={data.joined_team_counter}
-                                type="upcoming"
-                                isCompleted={data.isCompleted}
-                                status={data.status}
-                              />
-                            )
-                          })}
-                        {/* {(gameTabs[0].isActive ? upcomingGames: completedGames).length > 0 &&
+                    ))}
+                  </div>
+                  <div className="flex flex-row">
+                    {(gameTabs[0].isActive
+                      ? newGames
+                      : gameTabs[1].isActive
+                      ? ongoingGames
+                      : completedGames
+                    ).length > 0 &&
+                      (gameTabs[0].isActive
+                        ? newGames
+                        : gameTabs[1].isActive
+                        ? ongoingGames
+                        : completedGames
+                      ).map((data, i) => {
+                        return (
+                          <AdminGameComponent
+                            game_id={data.game_id}
+                            start_time={data.start_time}
+                            end_time={data.end_time}
+                            whitelist={data.whitelist}
+                            positions={data.positions}
+                            lineup_len={data.lineup_len}
+                            joined_player_counter={data.joined_player_counter}
+                            joined_team-counter={data.joined_team_counter}
+                            type="upcoming"
+                            isCompleted={data.isCompleted}
+                            status={data.status}
+                          />
+                        );
+                      })}
+                    {/* {(gameTabs[0].isActive ? upcomingGames: completedGames).length > 0 &&
                           (gameTabs[0].isActive ? upcomingGames : completedGames).map(function (data, i) {
                             return(
                               
@@ -750,15 +745,13 @@ export default function Index(props) {
                             //   // </div>
                             // );
                           })} */}
-                          
-                      </div>
-                      
-                    </div>
-                  ) : (
-                    <>
-                      <div className="flex">
-                        {/* GAME TITLE */}
-                        {/* <div className="flex flex-col lg:w-1/2 lg:mr-10">
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <div className="flex">
+                    {/* GAME TITLE */}
+                    {/* <div className="flex flex-col lg:w-1/2 lg:mr-10">
                           <label className="font-monument" htmlFor="title">
                             TITLE
                           </label>
@@ -772,40 +765,40 @@ export default function Index(props) {
                           />
                         </div> */}
 
-                        {/* DATE & TIME */}
-                        <div className="flex flex-col lg:w-1/2">
-                          <label className="font-monument" htmlFor="datetime">
-                            START TIME
-                          </label>
-                          <input
-                            className="border outline-none rounded-lg px-3 p-2"
-                            id="datetime"
-                            type="datetime-local"
-                            name="startTime"
-                            onChange={(e) => onChange(e)}
-                            value={details.startTime}
-                          />
-                        </div>
-                      </div>
+                    {/* DATE & TIME */}
+                    <div className="flex flex-col lg:w-1/2">
+                      <label className="font-monument" htmlFor="datetime">
+                        START TIME
+                      </label>
+                      <input
+                        className="border outline-none rounded-lg px-3 p-2"
+                        id="datetime"
+                        type="datetime-local"
+                        name="startTime"
+                        onChange={(e) => onChange(e)}
+                        value={details.startTime}
+                      />
+                    </div>
+                  </div>
 
-                      <div className="flex mt-8">
-                        {/* DURATION */}
-                        <div className="flex flex-col lg:w-1/2 lg:mr-10">
-                          <label className="font-monument" htmlFor="datetime">
-                            END TIME
-                          </label>
-                          <input
-                            className="border outline-none rounded-lg px-3 p-2"
-                            id="datetime"
-                            type="datetime-local"
-                            name="endTime"
-                            onChange={(e) => onChange(e)}
-                            value={details.endTime}
-                          />
-                        </div>
+                  <div className="flex mt-8">
+                    {/* DURATION */}
+                    <div className="flex flex-col lg:w-1/2 lg:mr-10">
+                      <label className="font-monument" htmlFor="datetime">
+                        END TIME
+                      </label>
+                      <input
+                        className="border outline-none rounded-lg px-3 p-2"
+                        id="datetime"
+                        type="datetime-local"
+                        name="endTime"
+                        onChange={(e) => onChange(e)}
+                        value={details.endTime}
+                      />
+                    </div>
 
-                        {/* PRIZE */}
-                        {/* <div className="flex flex-col lg:w-1/2">
+                    {/* PRIZE */}
+                    {/* <div className="flex flex-col lg:w-1/2">
                           <label className="font-monument" htmlFor="prize">
                             PRIZE
                           </label>
@@ -820,11 +813,11 @@ export default function Index(props) {
                             value={details.prize}
                           />
                         </div> */}
-                      </div>
+                  </div>
 
-                      <div className="flex mt-8">
-                        {/* DESCRIPTION */}
-                        {/* <div className="flex flex-col w-full">
+                  <div className="flex mt-8">
+                    {/* DESCRIPTION */}
+                    {/* <div className="flex flex-col w-full">
                           <label className="font-monument" htmlFor="duration">
                             DESCRIPTION
                           </label>
@@ -841,10 +834,10 @@ export default function Index(props) {
                             }}
                           />
                         </div> */}
-                      </div>
+                  </div>
 
-                      {/* DISTRIBUTION FORM */}
-                      {/* <div className="mt-8">
+                  {/* DISTRIBUTION FORM */}
+                  {/* <div className="mt-8">
                         <p className="font-monument">DISTRIBUTION</p>
                         {distribution.map(({ rank, percentage }) => (
                           <Distribution
@@ -870,19 +863,18 @@ export default function Index(props) {
                         )}
                       </div> */}
 
-                      <div className="flex mt-4 mb-10">
-                        <button
-                          className="bg-indigo-green font-monument tracking-widest text-indigo-white w-5/6 md:w-80 h-16 text-center text-sm mt-4"
-                          onClick={validateGame}
-                        >
-                          CREATE GAME
-                        </button>
-                      </div>
-                    </>
-                  )}
-                </div>
-              </div>
-            ))
+                  <div className="flex mt-4 mb-10">
+                    <button
+                      className="bg-indigo-green font-monument tracking-widest text-indigo-white w-5/6 md:w-80 h-16 text-center text-sm mt-4"
+                      onClick={validateGame}
+                    >
+                      CREATE GAME
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
         </Main>
       </div>
       <BaseModal title={endMsg.title} visible={endLoading} onClose={() => console.log()}>

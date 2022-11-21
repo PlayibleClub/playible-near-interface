@@ -2,6 +2,7 @@ import React, { Component, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Image from 'next/image';
 import moment from 'moment';
+import { getUTCDateFromLocal } from 'utils/date/helper';
 
 const PlayComponent = (props) => {
   const {
@@ -42,21 +43,17 @@ const PlayComponent = (props) => {
     setMinute(0);
     setSecond(0);
     const id = setInterval(() => {
-      const currentDate = +new Date();
-      const end = +new Date(type === 'ON-GOING' || type === 'ACTIVE' ? endDate : startDate);
-      const totalSeconds = (end - currentDate) / 1000;
+      const currentDate = getUTCDateFromLocal();
+      const end = moment.utc(type === 'ON-GOING' || type === 'ACTIVE' ? endDate : startDate);
 
-      const days = Math.floor(totalSeconds / 2600 / 24);
-      const hours = Math.floor(totalSeconds / 3600) % 24;
-      const minutes = Math.floor(totalSeconds / 60) % 60;
-      const seconds = Math.floor(totalSeconds) % 60;
+      console.log(endDate);
 
-      setDay(formatTime(days));
-      setHour(formatTime(hours));
-      setMinute(formatTime(minutes));
-      setSecond(formatTime(seconds));
+      setDay(formatTime(Math.floor(end.diff(currentDate, 'second') / 3600 / 24)));
+      setHour(formatTime(Math.floor((end.diff(currentDate, 'second') / 3600) % 24)));
+      setMinute(formatTime(Math.floor((end.diff(currentDate, 'second') / 60) % 60)));
+      setSecond(formatTime(Math.floor(end.diff(currentDate, 'second') % 60)));
 
-      if (Math.floor(totalSeconds) === 0) {
+      if (Math.floor(end.diff(currentDate, 'second')) === 0) {
         setGetGames(true);
         fetchGames();
       }
@@ -114,16 +111,19 @@ const PlayComponent = (props) => {
                 <div className="text-base font-monument">${prizePool}</div>
               </div> */}
               <div className="">
-                <div className="font-thin text-sm">START DATE</div>
+                <div className="font-thin text-sm">
+                  {type === 'ON-GOING' || type === 'ACTIVE' ? 'END' : 'START'} DATE
+                </div>
                 <div className="text-base font-monument">
-                  {moment(startDate).format('MM/DD/YYYY')}
+                  {moment
+                    .utc(type === 'ON-GOING' || type === 'ACTIVE' ? endDate : startDate)
+                    .local()
+                    .format('MM/DD/YYYY')}
                 </div>
               </div>
               <div>
                 <div className="font-thin text-sm">GAME ID</div>
-                <div className="text-base font-monument">
-                  {game_id}
-                </div>
+                <div className="text-base font-monument">{game_id}</div>
               </div>
             </div>
 
