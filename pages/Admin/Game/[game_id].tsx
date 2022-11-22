@@ -112,7 +112,9 @@ export default function AdminPlayerLineup(props) {
         ? playerLineups.map((item, index) => {
             return (
               <div key={index}>
-                <div>Account Id: {item.accountId}</div>
+                <div>
+                  Account Id: <b>{item.accountId}</b>
+                </div>
                 <div>Team Name: {item.teamName}</div>
                 <div>Overall Fantasy Score: {item.sumScore}</div>
                 <div>Week: {week}</div>
