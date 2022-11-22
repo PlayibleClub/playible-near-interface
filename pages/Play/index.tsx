@@ -676,7 +676,7 @@ const Play = (props) => {
               </div>
 
               <div className="flex flex-col mt-6">
-                <div className="flex font-bold ml-8 md:ml-7 font-monument">
+                <div className="flex font-bold md:ml-14 font-monument">
                   {categoryList.map(({ name, isActive }) => (
                     <div
                       className={`cursor-pointer mr-6 ${isActive ? 'border-b-8 border-indigo-buttonblue' : ''
@@ -702,7 +702,7 @@ const Play = (props) => {
                   {/* {sortedList.length > 0 ? ( */}
                   {1 > 0 ? (
                     <>
-                      <div className="mt-4 ml-6 grid grid-cols-0 md:grid-cols-3">
+                      <div className="mt-4 md:ml-10 grid grid-cols-0 md:grid-cols-3">
                         {(categoryList[0].isActive
                           ? newGames
                           : categoryList[1].isActive
@@ -736,7 +736,7 @@ const Play = (props) => {
                                           </div>
                                         </a> */}
                                   <Link href={`/PlayDetails/${data.game_id}`} passHref>
-                                    <div className="mr-6">
+                                    <div className="mt-4 mr-6">
                                       <PlayComponent
                                         type={activeCategory}
                                         game_id={data.game_id}
@@ -790,13 +790,13 @@ const Play = (props) => {
                             );
                           })}
                       </div>
-                      <div className="mt-4 ml-6 grid grid-cols-0 md:grid-cols-3">
+                      <div className="mt-4 md:ml-10 grid grid-cols-0 md:grid-cols-3">
                         {(categoryList[2].isActive ? completedGames : emptyGames).length > 0 &&
                           (categoryList[2].isActive ? completedGames : emptyGames).filter((data, i) => i >= gamesOffset && i < (gamesOffset + gamesLimit)).map((data, i) => {
                             console.log(currentTotal);
                             return (
                               <div key={i} className="flex">
-                                <div className="mr-6 cursor-pointer" onClick={() => alert("ERROR: Game " + data.game_id + " is already finished.")}>
+                                <div className="mr-6 cursor-pointer " onClick={() => alert("ERROR: Game " + data.game_id + " is already finished.")}>
                                   <div className="mr-6">
                                     <PlayComponent
                                       type={activeCategory}

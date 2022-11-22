@@ -162,13 +162,14 @@ const AthleteSelect = (props) => {
   return (
     <>
       <Container activeName="PLAY">
-        <div className="mt-4">
+        <div className="md:ml-6 md:mt-12">
           <BackFunction prev={`/CreateTeam/${gameId}`} />
-        </div>
-        <PortfolioContainer
+          <PortfolioContainer
           title={'SELECT YOUR ' + getPositionDisplay(position)}
           textcolor="text-indigo-black"
-        >
+        />
+        </div>
+       
           <div className="flex flex-col">
             <div className="grid grid-cols-4 mt-1 md:grid-cols-4 md:ml-7 md:mt-2">
               {athletes.map((item, i) => {
@@ -216,7 +217,6 @@ const AthleteSelect = (props) => {
           </div>
 
           <div className="absolute bottom-10 right-10"></div>
-        </PortfolioContainer>
         <div className="absolute z-0 bottom-10 right-10 iphone5:bottom-4 iphone5:right-2 iphone5:fixed iphoneX:bottom-4 iphoneX:right-4 iphoneX-fixed">
           <div key={remountComponent}>
             <ReactPaginate
