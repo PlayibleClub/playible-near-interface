@@ -74,7 +74,7 @@ export default function AdminPlayerLineup(props) {
         );
 
         arrayToReturn.sort(function (a, b) {
-          return a.sumScore - b.sumScore;
+          return b.sumScore - a.sumScore;
         });
 
         setPlayerLineups(arrayToReturn);
