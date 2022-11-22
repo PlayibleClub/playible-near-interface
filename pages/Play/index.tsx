@@ -20,7 +20,7 @@ import { transactions, utils, WalletConnection, providers } from 'near-api-js';
 import { getContract, getRPCProvider } from 'utils/near';
 import { getGameInfoById } from 'utils/game/helper';
 import { getUTCTimestampFromLocal } from 'utils/date/helper';
-
+import ReactPaginate from 'react-paginate';
 const Play = (props) => {
   const { error } = props;
   const [activeCategory, setCategory] = useState('NEW');
@@ -59,7 +59,7 @@ const Play = (props) => {
   const [filter, setFilter] = useState(null);
   const [search, setSearch] = useState('');
   const [err, setErr] = useState(error);
-
+  const [currentTotal, setCurrentTotal] = useState(0);
   const [categoryList, setcategoryList] = useState([
     {
       name: 'NEW',
@@ -74,10 +74,18 @@ const Play = (props) => {
       isActive: false,
     },
   ]);
-
+  const [remountComponent, setRemountComponent] = useState(0);
   const changecategoryList = (name) => {
     const tabList = [...categoryList];
-
+    setgamesOffset(0);
+    setgamesLimit(10);
+    setRemountComponent(Math.random());
+    switch(name){
+      case 'NEW' : setCurrentTotal(newGames.length); break;
+      case 'ON-GOING': setCurrentTotal(ongoingGames.length); break;
+      case 'COMPLETED': setCurrentTotal(completedGames.length); break;
+    }
+    
     tabList.forEach((item) => {
       if (item.name === name) {
         item.isActive = true;
@@ -324,7 +332,7 @@ const Play = (props) => {
     await setSortedList([]);
     fetchGames(activeCategory);
   };
-
+  
   const renderPlacements = (item, i, winning = false) => {
     return (
       <>
@@ -361,8 +369,10 @@ const Play = (props) => {
       </>
     );
   };
-  function checkIfCompleted() {
-
+  const handlePageClick = (event) => {
+    const newOffset = (event.selected * gamesLimit) % currentTotal;
+    console.log(newOffset);
+    setgamesOffset(newOffset);
   }
   function query_game_supply() {
     const query = JSON.stringify({});
@@ -421,7 +431,8 @@ const Play = (props) => {
             )
             .map((item) => getGameInfoById(item))
         );
-
+        console.table(completedGames);
+        setCurrentTotal(upcomingGames.length);
         setNewGames(upcomingGames);
         setCompletedGames(completedGames);
         setOngoingGames(ongoingGames);
@@ -438,28 +449,28 @@ const Play = (props) => {
       }, 0);
     }
   };
-  useEffect(() => {
-    if (games && games.length > 0) {
-      const tempList = [...games];
-      const filteredList = applySortFilter(tempList, filter, search).splice(limit * offset, limit);
-      setSortedList(filteredList);
-      if (search) {
-        setPageCount(Math.ceil(applySortFilter(tempList, filter, search).length / limit));
-      } else {
-        setPageCount(Math.ceil(games.length / limit));
-      }
-    }
-  }, [games, limit, offset, filter, search]);
+  // useEffect(() => {
+  //   if (games && games.length > 0) {
+  //     const tempList = [...games];
+  //     const filteredList = applySortFilter(tempList, filter, search).splice(limit * offset, limit);
+  //     setSortedList(filteredList);
+  //     if (search) {
+  //       setPageCount(Math.ceil(applySortFilter(tempList, filter, search).length / limit));
+  //     } else {
+  //       setPageCount(Math.ceil(games.length / limit));
+  //     }
+  //   }
+  // }, [games, limit, offset, filter, search]);
 
-  useEffect(() => {
-    if (games.length > 0) {
-      const tempList = [...games];
-      const filteredList = tempList.splice(gamesLimit * gamesOffset, gamesLimit);
+  // useEffect(() => {
+  //   if (games.length > 0) {
+  //     const tempList = [...games];
+  //     const filteredList = tempList.splice(gamesLimit * gamesOffset, gamesLimit);
 
-      setSortedgames(filteredList);
-      setgamePageCount(Math.ceil(games.length / gamesLimit));
-    }
-  }, [games, gamesLimit, gamesOffset]);
+  //     setSortedgames(filteredList);
+  //     setgamePageCount(Math.ceil(games.length / gamesLimit));
+  //   }
+  // }, [games, gamesLimit, gamesOffset]);
 
   useEffect(() => {
     query_game_supply();
@@ -467,11 +478,13 @@ const Play = (props) => {
   }, [totalGames]);
 
   useEffect(() => {
+    currentTotal !== 0 ? setPageCount(Math.ceil(currentTotal / gamesLimit)) : setPageCount(1);
+  }, [ currentTotal ])
+  useEffect(() => {
     if (router && router.query.type) {
       // setCategory(router.query.type);
     }
   }, [router]);
-
   useEffect(() => {
     if (!claimModal) {
       setClaimData(null);
@@ -779,7 +792,8 @@ const Play = (props) => {
                       </div>
                       <div className="mt-4 ml-6 grid grid-cols-0 md:grid-cols-3">
                         {(categoryList[2].isActive ? completedGames : emptyGames).length > 0 &&
-                          (categoryList[2].isActive ? completedGames : emptyGames).map((data, i) => {
+                          (categoryList[2].isActive ? completedGames : emptyGames).filter((data, i) => i >= gamesOffset && i < (gamesOffset + gamesLimit)).map((data, i) => {
+                            console.log(currentTotal);
                             return (
                               <div key={i} className="flex">
                                 <div className="mr-6 cursor-pointer" onClick={() => alert("ERROR: Game " + data.game_id + " is already finished.")}>
@@ -801,68 +815,34 @@ const Play = (props) => {
                             )
                          })}
                       </div>
-                      <div className="flex justify-between md:mt-5 md:mr-6 p-5">
-                        <div className="bg-indigo-white mr-1 h-11 flex items-center font-thin border-indigo-lightgray border-opacity-40 p-2">
-                          {pageCount > 1 && (
-                            <button
-                              className="px-2 border mr-2"
-                              onClick={() => changeIndex('first')}
-                            >
-                              First
-                            </button>
-                          )}
-                          {pageCount !== 0 && canPrevious() && (
-                            <button
-                              className="px-2 border mr-2"
-                              onClick={() => changeIndex('previous')}
-                            >
-                              Previous
-                            </button>
-                          )}
-                          <p className="mr-2">
-                            Page {offset + 1} of {pageCount}
-                          </p>
-                          {pageCount !== 0 && canNext() && (
-                            <button
-                              className="px-2 border mr-2"
-                              onClick={() => changeIndex('next')}
-                            >
-                              Next
-                            </button>
-                          )}
-                          {pageCount > 1 && (
-                            <button
-                              className="px-2 border mr-2"
-                              onClick={() => changeIndex('last')}
-                            >
-                              Last
-                            </button>
-                          )}
-                        </div>
-                        <div className="bg-indigo-white mr-1 h-11 w-64 flex font-thin border-2 border-indigo-lightgray border-opacity-40 p-2">
-                          <select
-                            value={limit}
-                            className="bg-indigo-white text-lg w-full outline-none"
-                            onChange={(e) => {
-                              //setLimit(e.target.value);
-                              setOffset(0);
-                            }}
-                          >
-                            {limitOptions.map((option) => (
-                              <option value={option}>{option}</option>
-                            ))}
-                          </select>
-                        </div>
-                      </div>
+                      
+                      
                     </>
                   ) : (
-                    <>
+                  <>
                       <div className="ml-7 mt-7 text-xl">
                         There are no {activeCategory} games to be displayed
                       </div>
                     </>
                   )}
-                  
+                  <div className="absolute bottom-10 right-10 iphone5:bottom-4 iphone5:right-2 iphoneX:bottom-4 iphoneX:right-4 iphoneX-fixed">
+                        <div key={remountComponent}>
+                          <ReactPaginate
+                            className="p-2 text-center bg-indigo-buttonblue text-indigo-white flex flex-row space-x-4 select-none ml-7"
+                            pageClassName="hover:font-bold"
+                            activeClassName="rounded-lg text-center bg-indigo-white text-indigo-black pr-1 pl-1 font-bold"
+                            pageLinkClassName="rounded-lg text-center hover:font-bold hover:bg-indigo-white hover:text-indigo-black"
+                            breakLabel="..."
+                            nextLabel=">"
+                            onPageChange={handlePageClick}
+                            pageRangeDisplayed={5}
+                            pageCount={pageCount}
+                            previousLabel="<"
+                            renderOnZeroPageCount={null}
+                          />
+                        </div>
+                        
+                      </div>
                 </>
               </div>
             </div>
