@@ -777,6 +777,30 @@ const Play = (props) => {
                             );
                           })}
                       </div>
+                      <div className="mt-4 ml-6 grid grid-cols-0 md:grid-cols-3">
+                        {(categoryList[2].isActive ? completedGames : emptyGames).length > 0 &&
+                          (categoryList[2].isActive ? completedGames : emptyGames).map((data, i) => {
+                            return (
+                              <div key={i} className="flex">
+                                <div className="mr-6 cursor-pointer" onClick={() => alert("ERROR: Game " + data.game_id + " is already finished.")}>
+                                  <div className="mr-6">
+                                    <PlayComponent
+                                      type={activeCategory}
+                                      game_id={data.game_id}
+                                      icon="test"
+                                      prizePool="2,300"
+                                      startDate={data.start_time}
+                                      endDate={data.end_time}
+                                      img={data.image}
+                                      fetchGames={fetchGamesLoading}
+                                      index={() => changeIndex(1)}
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+                            )
+                         })}
+                      </div>
                       <div className="flex justify-between md:mt-5 md:mr-6 p-5">
                         <div className="bg-indigo-white mr-1 h-11 flex items-center font-thin border-indigo-lightgray border-opacity-40 p-2">
                           {pageCount > 1 && (
@@ -838,30 +862,7 @@ const Play = (props) => {
                       </div>
                     </>
                   )}
-                  <div className="mt-4 ml-6 grid grid-cols-0 md:grid-cols-3">
-                    {(categoryList[2].isActive ? completedGames : emptyGames).length > 0 &&
-                      (categoryList[2].isActive ? completedGames : emptyGames).map((data, i) => {
-                        return (
-                          <div key={i} className="flex">
-                            <div className="mr-6 cursor-pointer" onClick={() => alert("ERROR: Game " + data.game_id + " is already finished.")}>
-                              <div className="mr-6">
-                                <PlayComponent
-                                  type={activeCategory}
-                                  game_id={data.game_id}
-                                  icon="test"
-                                  prizePool="2,300"
-                                  startDate={data.start_time}
-                                  endDate={data.end_time}
-                                  img={data.image}
-                                  fetchGames={fetchGamesLoading}
-                                  index={() => changeIndex(1)}
-                                />
-                              </div>
-                            </div>
-                          </div>
-                        )
-                      })}
-                  </div>
+                  
                 </>
               </div>
             </div>
