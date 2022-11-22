@@ -5,6 +5,7 @@ import BackFunction from 'components/buttons/BackFunction';
 import Container from 'components/containers/Container';
 import PortfolioContainer from 'components/containers/PortfolioContainer';
 import router, { useRouter } from 'next/router';
+import Head from 'next/dist/next-server/lib/head';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
 import {
   convertNftToAthlete,
@@ -162,24 +163,47 @@ const AthleteSelect = (props) => {
   return (
     <>
       <Container activeName="PLAY">
+        <Head>
+          <title>Playible - Next Generation of Sports Collectibles</title>
+          <link rel="icon" type="image/png" sizes="16x16" href="images/favicon.png" />
+        </Head>
         <div className="md:ml-6 md:mt-12">
           <BackFunction prev={`/CreateTeam/${gameId}`} />
           <PortfolioContainer
-          title={'SELECT YOUR ' + getPositionDisplay(position)}
-          textcolor="text-indigo-black"
-        />
+            title={'SELECT YOUR ' + getPositionDisplay(position)}
+            textcolor="text-indigo-black"
+          />
         </div>
-       
-          <div className="flex flex-col">
-            <div className="grid grid-cols-4 mt-1 md:grid-cols-4 md:ml-7 md:mt-2">
-              {athletes.map((item, i) => {
-                const accountAthleteIndex = athletes.indexOf(item, 0) + athleteOffset;
 
-                return (
-                  <>
-                    {checkIfAthleteExists(item.athlete_id) ? (
-                      <div className="w-4/5 h-5/6 border-transparent opacity-50 pointer-events-none">
-                        <div className="mt-1.5 w-full h-14px mb-1"></div>
+        <div className="flex flex-col">
+          <div className="grid grid-cols-4 mt-1 md:grid-cols-4 md:ml-7 md:mt-2">
+            {athletes.map((item, i) => {
+              const accountAthleteIndex = athletes.indexOf(item, 0) + athleteOffset;
+
+              return (
+                <>
+                  {checkIfAthleteExists(item.athlete_id) ? (
+                    <div className="w-4/5 h-5/6 border-transparent opacity-50 pointer-events-none">
+                      <div className="mt-1.5 w-full h-14px mb-1"></div>
+                      <AthleteSelectContainer
+                        key={item.athlete_id}
+                        athleteName={item.name}
+                        avgScore={item.fantasy_score.toFixed(2)}
+                        id={item.athlete_id}
+                        uri={item.image}
+                        index={accountAthleteIndex}
+                      />
+                    </div>
+                  ) : (
+                    <label className="w-4/5 h-5/6">
+                      <div className="w-full h-full border-transparent focus:border-transparent focus:ring-2 focus:ring-blue-300 focus:border-transparent">
+                        <input
+                          className="justify-self-end"
+                          type="radio"
+                          checked={radioSelected == i}
+                          value={i}
+                          onChange={(e) => handleRadioClick(e.target.value)}
+                        ></input>
                         <AthleteSelectContainer
                           key={item.athlete_id}
                           athleteName={item.name}
@@ -189,34 +213,15 @@ const AthleteSelect = (props) => {
                           index={accountAthleteIndex}
                         />
                       </div>
-                    ) : (
-                      <label className="w-4/5 h-5/6">
-                        <div className="w-full h-full border-transparent focus:border-transparent focus:ring-2 focus:ring-blue-300 focus:border-transparent">
-                          <input
-                            className="justify-self-end"
-                            type="radio"
-                            checked={radioSelected == i}
-                            value={i}
-                            onChange={(e) => handleRadioClick(e.target.value)}
-                          ></input>
-                          <AthleteSelectContainer
-                            key={item.athlete_id}
-                            athleteName={item.name}
-                            avgScore={item.fantasy_score.toFixed(2)}
-                            id={item.athlete_id}
-                            uri={item.image}
-                            index={accountAthleteIndex}
-                          />
-                        </div>
-                      </label>
-                    )}
-                  </>
-                );
-              })}
-            </div>
+                    </label>
+                  )}
+                </>
+              );
+            })}
           </div>
+        </div>
 
-          <div className="absolute bottom-10 right-10"></div>
+        <div className="absolute bottom-10 right-10"></div>
         <div className="absolute z-0 bottom-10 right-10 iphone5:bottom-4 iphone5:right-2 iphone5:fixed iphoneX:bottom-4 iphoneX:right-4 iphoneX-fixed">
           <div key={remountComponent}>
             <ReactPaginate

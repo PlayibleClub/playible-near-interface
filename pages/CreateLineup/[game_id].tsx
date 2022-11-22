@@ -13,6 +13,7 @@ import { providers } from 'near-api-js';
 import { getContract, getRPCProvider } from 'utils/near';
 import { GAME } from 'data/constants/nearContracts';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
+import Head from 'next/dist/next-server/lib/head';
 
 export default function CreateLineup(props) {
   const { query } = props;
@@ -89,6 +90,10 @@ export default function CreateLineup(props) {
   return (
     <>
       <Container activeName="PLAY">
+        <Head>
+          <title>Playible - Next Generation of Sports Collectibles</title>
+          <link rel="icon" type="image/png" sizes="16x16" href="images/favicon.png" />
+        </Head>
         <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12 ">
           <Main color="indigo-white">
             <div className="mt-8 md:ml-6">

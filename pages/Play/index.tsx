@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import Main from '../../components/Main';
+import Head from 'next/dist/next-server/lib/head';
 import PortfolioContainer from '../../components/containers/PortfolioContainer';
 import { useDispatch } from 'react-redux';
 // import { getPortfolio } from '../../redux/reducers/contract/portfolio';
@@ -80,12 +81,12 @@ const Play = (props) => {
     setgamesOffset(0);
     setgamesLimit(10);
     setRemountComponent(Math.random());
-    switch(name){
-      case 'NEW' : setCurrentTotal(newGames.length); break;
+    switch (name) {
+      case 'NEW': setCurrentTotal(newGames.length); break;
       case 'ON-GOING': setCurrentTotal(ongoingGames.length); break;
       case 'COMPLETED': setCurrentTotal(completedGames.length); break;
     }
-    
+
     tabList.forEach((item) => {
       if (item.name === name) {
         item.isActive = true;
@@ -332,7 +333,7 @@ const Play = (props) => {
     await setSortedList([]);
     fetchGames(activeCategory);
   };
-  
+
   const renderPlacements = (item, i, winning = false) => {
     return (
       <>
@@ -373,7 +374,7 @@ const Play = (props) => {
     const newOffset = (event.selected * gamesLimit) % currentTotal;
     console.log(newOffset);
     setgamesOffset(newOffset);
-    
+
   }
   function query_game_supply() {
     const query = JSON.stringify({});
@@ -480,7 +481,7 @@ const Play = (props) => {
 
   useEffect(() => {
     currentTotal !== 0 ? setPageCount(Math.ceil(currentTotal / gamesLimit)) : setPageCount(1);
-  }, [ currentTotal ])
+  }, [currentTotal])
   useEffect(() => {
     if (router && router.query.type) {
       // setCategory(router.query.type);
@@ -494,6 +495,10 @@ const Play = (props) => {
 
   return (
     <>
+      <Head>
+        <title>Playible - Next Generation of Sports Collectibles</title>
+        <link rel="icon" type="image/png" sizes="16x16" href="images/favicon.png" />
+      </Head>
       {claimModal === true && (
         <>
           <div className="fixed w-screen h-screen bg-opacity-70 z-50 overflow-auto bg-indigo-gray flex font-montserrat">
@@ -814,36 +819,36 @@ const Play = (props) => {
                                 </div>
                               </div>
                             )
-                         })}
+                          })}
                       </div>
-                      
-                      
+
+
                     </>
                   ) : (
-                  <>
+                    <>
                       <div className="ml-7 mt-7 text-xl">
                         There are no {activeCategory} games to be displayed
                       </div>
                     </>
                   )}
                   <div className="absolute bottom-10 right-10 iphone5:bottom-4 iphone5:right-2 iphoneX:bottom-4 iphoneX:right-4 iphoneX-fixed">
-                        <div key={remountComponent}>
-                          <ReactPaginate
-                            className="p-2 text-center bg-indigo-buttonblue text-indigo-white flex flex-row space-x-4 select-none ml-7"
-                            pageClassName="hover:font-bold"
-                            activeClassName="rounded-lg text-center bg-indigo-white text-indigo-black pr-1 pl-1 font-bold"
-                            pageLinkClassName="rounded-lg text-center hover:font-bold hover:bg-indigo-white hover:text-indigo-black"
-                            breakLabel="..."
-                            nextLabel=">"
-                            onPageChange={handlePageClick}
-                            pageRangeDisplayed={5}
-                            pageCount={pageCount}
-                            previousLabel="<"
-                            renderOnZeroPageCount={null}
-                          />
-                        </div>
-                        
-                      </div>
+                    <div key={remountComponent}>
+                      <ReactPaginate
+                        className="p-2 text-center bg-indigo-buttonblue text-indigo-white flex flex-row space-x-4 select-none ml-7"
+                        pageClassName="hover:font-bold"
+                        activeClassName="rounded-lg text-center bg-indigo-white text-indigo-black pr-1 pl-1 font-bold"
+                        pageLinkClassName="rounded-lg text-center hover:font-bold hover:bg-indigo-white hover:text-indigo-black"
+                        breakLabel="..."
+                        nextLabel=">"
+                        onPageChange={handlePageClick}
+                        pageRangeDisplayed={5}
+                        pageCount={pageCount}
+                        previousLabel="<"
+                        renderOnZeroPageCount={null}
+                      />
+                    </div>
+
+                  </div>
                 </>
               </div>
             </div>

@@ -6,6 +6,7 @@ import Link from 'next/link';
 import Container from '../../components/containers/Container';
 import BackFunction from '../../components/buttons/BackFunction';
 import 'regenerator-runtime/runtime';
+import Head from 'next/dist/next-server/lib/head';
 
 import { useRouter } from 'next/router';
 import { getContract, getRPCProvider } from 'utils/near';
@@ -37,7 +38,7 @@ export default function CreateLineup(props) {
     token_id: null,
     contract_addr: null,
   };
-  
+
   const gameTeamFormat = {
     name: '',
     game: 0,
@@ -400,11 +401,15 @@ export default function CreateLineup(props) {
     <>
       <>
         <Container activeName="PLAY">
+          <Head>
+            <title>Playible - Next Generation of Sports Collectibles</title>
+            <link rel="icon" type="image/png" sizes="16x16" href="images/favicon.png" />
+          </Head>
           <div className="flex flex-col w-full hide-scroll max-h-screen justify-center self-center">
             <Main color="indigo-white">
-            <div className="md:ml-6 md:mt-8">
-                  <BackFunction prev={`/CreateLineup/${gameId}`} />
-                  </div>
+              <div className="md:ml-6 md:mt-8">
+                <BackFunction prev={`/CreateLineup/${gameId}`} />
+              </div>
               <div className="flex flex-col w-full hide-scroll overflow-x-hidden h-full md:h-min self-center text-indigo-black relative">
                 {selectModal ? (
                   <div className="absolute top-0 left-0 bottom-0 right-0 bg-indigo-white z-50">
@@ -511,70 +516,70 @@ export default function CreateLineup(props) {
                   ''
                 )}
                 <div className={`${selectModal ? 'hidden h-0' : ''}`}>
-                 
+
                   <div className="md:ml-6">
                     <PortfolioContainer
                       title="CREATE LINEUP"
-                      textcolor="text-indigo-black"/>
+                      textcolor="text-indigo-black" />
                   </div>
-                    <div className="flex flex-col -mt-8 -mb-5">
-                      <div className="flex items-end pt-10 pb-3 ml-7">
-                        <div className="font-monument text-xl ml-6 truncate w-40 md:w-min md:max-w-xs">
-                          {teamName}
-                        </div>
-                        <p
-                          className="ml-5 underline text-sm pb-1 cursor-pointer"
-                          onClick={() => setEditModal(true)}
-                        >
-                          EDIT TEAM NAME
-                        </p>
+                  <div className="flex flex-col -mt-8 -mb-5">
+                    <div className="flex items-end pt-10 pb-3 ml-7">
+                      <div className="font-monument text-xl ml-6 truncate w-40 md:w-min md:max-w-xs">
+                        {teamName}
                       </div>
-                      <div className="grid grid-cols-2 gap-y-4 mt-2 mb-2 md:mb-10 md:grid-cols-4 md:ml-7 md:mt-12">
-                        {lineup.map((data, i) => {
-                          return (
-                            <>
-                              {data.isAthlete === false ? (
-                                <div>
-                                  <Lineup
-                                    position={data.position}
-                                    athleteLineup={lineup}
-                                    index={i}
-                                    test={setArray(data.position, lineup, i)}
-                                    img='/images/tokensMLB/CF.png'
-                                    player=''
-                                    game_id={gameId}
-                                    teamName={teamName}
-                                    isAthlete={data.isAthlete}
-                                  />
-                                </div>
-                              ) : (
-                                <div>
-                                  <Lineup
-                                    position={data.position}
-                                    athleteLineup={lineup}
-                                    index={i}
-                                    test={setArray(data.position, lineup, i)}
-                                    img={data.athlete.image}
-                                    player={data.athlete.name}
-                                    score={data.athlete.fantasy_score.toFixed(2)}
-                                    game_id={gameId}
-                                    isAthlete={data.isAthlete}
-                                  />
-                                </div>
-                              )}
-                            </>
-                          )
-                        })}
-                      </div>
-                    </div>
-                    <div className="flex bg-indigo-black bg-opacity-5 w-full justify-end">
-                      <button
-                        className="bg-indigo-buttonblue text-indigo-white w-full md:w-80 h-14 text-center font-bold text-md"
-                        onClick={() => setSubmitModal(true)}
+                      <p
+                        className="ml-5 underline text-sm pb-1 cursor-pointer"
+                        onClick={() => setEditModal(true)}
                       >
-                        CONFIRM TEAM
-                      </button>
+                        EDIT TEAM NAME
+                      </p>
                     </div>
+                    <div className="grid grid-cols-2 gap-y-4 mt-2 mb-2 md:mb-10 md:grid-cols-4 md:ml-7 md:mt-12">
+                      {lineup.map((data, i) => {
+                        return (
+                          <>
+                            {data.isAthlete === false ? (
+                              <div>
+                                <Lineup
+                                  position={data.position}
+                                  athleteLineup={lineup}
+                                  index={i}
+                                  test={setArray(data.position, lineup, i)}
+                                  img='/images/tokensMLB/CF.png'
+                                  player=''
+                                  game_id={gameId}
+                                  teamName={teamName}
+                                  isAthlete={data.isAthlete}
+                                />
+                              </div>
+                            ) : (
+                              <div>
+                                <Lineup
+                                  position={data.position}
+                                  athleteLineup={lineup}
+                                  index={i}
+                                  test={setArray(data.position, lineup, i)}
+                                  img={data.athlete.image}
+                                  player={data.athlete.name}
+                                  score={data.athlete.fantasy_score.toFixed(2)}
+                                  game_id={gameId}
+                                  isAthlete={data.isAthlete}
+                                />
+                              </div>
+                            )}
+                          </>
+                        )
+                      })}
+                    </div>
+                  </div>
+                  <div className="flex bg-indigo-black bg-opacity-5 w-full justify-end">
+                    <button
+                      className="bg-indigo-buttonblue text-indigo-white w-full md:w-80 h-14 text-center font-bold text-md"
+                      onClick={() => setSubmitModal(true)}
+                    >
+                      CONFIRM TEAM
+                    </button>
+                  </div>
                 </div>
               </div>
             </Main>

@@ -13,6 +13,7 @@ import { getUTCDateFromLocal, getUTCTimestampFromLocal } from 'utils/date/helper
 import { truncate } from '../../utils/wallet/index';
 import { ADMIN } from '../../data/constants/address';
 import Link from 'next/link';
+import Head from 'next/dist/next-server/lib/head';
 import 'regenerator-runtime/runtime';
 import LoadingPageDark from '../../components/loading/LoadingPageDark';
 import { providers } from 'near-api-js';
@@ -233,6 +234,10 @@ export default function PlayDetails(props) {
 
   return (
     <Container activeName="SQUAD">
+      <Head>
+        <title>Playible - Next Generation of Sports Collectibles</title>
+        <link rel="icon" type="image/png" sizes="16x16" href="images/favicon.png" />
+      </Head>
       <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
         <Main color="indigo-white">
           <div className="md:ml-6">
