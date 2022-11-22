@@ -37,7 +37,7 @@ export default function CreateLineup(props) {
     token_id: null,
     contract_addr: null,
   };
-
+  
   const gameTeamFormat = {
     name: '',
     game: 0,
@@ -400,7 +400,7 @@ export default function CreateLineup(props) {
     <>
       <>
         <Container activeName="PLAY">
-          <div className="flex flex-col w-full hide-scroll max-h-screen justify-center self-center md:pb-12">
+          <div className="flex flex-col w-full hide-scroll max-h-screen justify-center self-center">
             <Main color="indigo-white md:pb-10">
               <div className="flex flex-col w-full hide-scroll overflow-x-hidden h-full md:h-min self-center text-indigo-black relative">
                 {selectModal ? (
