@@ -508,13 +508,16 @@ export default function CreateLineup(props) {
                   ''
                 )}
                 <div className={`${selectModal ? 'hidden h-0' : ''}`}>
+                  <div className="md:ml-6 md:mt-8">
                   <BackFunction prev={`/CreateLineup/${gameId}`} />
-                  <PortfolioContainer
-                    title="CREATE LINEUP"
-                    textcolor="text-indigo-black"
-                  >
+                  </div>
+                  <div className="md:ml-6 -mt-6">
+                    <PortfolioContainer
+                      title="CREATE LINEUP"
+                      textcolor="text-indigo-black"/>
+                  </div>
                     <div className="flex flex-col -mt-8 -mb-5">
-                      <div className="flex items-end pt-10 pb-3 ml-7">
+                      <div className="flex items-end pt-10 pb-3 ml-8">
                         <div className="font-monument text-xl truncate w-40 md:w-min md:max-w-xs">
                           {teamName}
                         </div>
@@ -571,7 +574,6 @@ export default function CreateLineup(props) {
                         CONFIRM TEAM
                       </button>
                     </div>
-                  </PortfolioContainer>
                 </div>
               </div>
             </Main>

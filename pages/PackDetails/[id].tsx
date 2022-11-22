@@ -56,7 +56,7 @@ export default function PackDetails(props) {
 
   return (
     <Container activeName="PACKS">
-      <div className="mt-8">
+      <div className="md:ml-6 mt-12">
         <BackFunction prev={query.origin ? `/${query.origin}` : '/Packs'}></BackFunction>
       </div>
       <div className="flex flex-col w-full overflow-y-auto h-screen pb-40">

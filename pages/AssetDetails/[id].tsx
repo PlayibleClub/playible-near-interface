@@ -83,7 +83,7 @@ const AssetDetails = (props) => {
   }
   return (
     <Container activeName="ATHLETES">
-      <div className="mt-8">
+      <div className="md:ml-6 mt-12">
         <BackFunction prev={query.origin ? `/${query.origin}` : '/Portfolio'}></BackFunction>
       </div>
       <div className="flex flex-col w-full overflow-y-auto h-screen pb-40">

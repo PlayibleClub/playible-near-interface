@@ -652,7 +652,7 @@ const Play = (props) => {
           <Main color="indigo-white">
             <div className="flex flex-col mb-10">
               <div className="flex">
-                <div className="flex-initial">
+                <div className="flex-initial md:ml-6 md:mt-8">
                   <PortfolioContainer title="PLAY" textcolor="text-indigo-black" />
                 </div>
                 {/* <Link href="/MyActivity">
