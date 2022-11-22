@@ -36,8 +36,8 @@ export default function PlayDetails(props) {
   const [gameEnd, setgameEnd] = useState(false);
   const [timesUp, setTimesUp] = useState(false);
   const [startDate, setStartDate] = useState();
-  const [gameFreeOrPaid, setgameFreeOrPaid] = useState('');
-  const [detailsFreeOrPaid, setdetailsFreeOrPaid] = useState('');
+  const [gameFreeOrPaid, setgameFreeOrPaid] = useState("");
+  const [detailsFreeOrPaid, setdetailsFreeOrPaid] = useState("");
   const [redirectModal, setRedirectModal] = useState(false);
   const { error } = props;
   const [loading, setLoading] = useState(true);
@@ -45,13 +45,16 @@ export default function PlayDetails(props) {
   const [countdown, setCountdown] = useState(3);
   function checkIfCompleted(gameData) {
     if (gameData.end_time <= getUTCTimestampFromLocal) {
-      console.log('completed');
+      console.log("completed");
       setRedirectModal(true);
       return true;
-    } else return false;
+    }
+    else return false;
+
   }
 
   function startCountdown() {
+
     setTimeout(() => {
       let newCount = countdown - 1;
       setCountdown(newCount);
@@ -81,13 +84,12 @@ export default function PlayDetails(props) {
 
   function checkIfPaidGame(gameData) {
     if (gameData.usage_cost > 0) {
-      setgameFreeOrPaid('PAID GAME');
-      setdetailsFreeOrPaid(
-        "*Participation in this game will reduce your player token's usage by 1."
-      );
-    } else {
-      setgameFreeOrPaid('FREE GAME');
-      setdetailsFreeOrPaid("*Winning in this game will reward your player's token usage by 1.");
+      setgameFreeOrPaid("PAID GAME")
+      setdetailsFreeOrPaid("*Participation in this game will reduce your player token's usage by 1.")
+    }
+    else {
+      setgameFreeOrPaid("FREE GAME")
+      setdetailsFreeOrPaid("*Winning in this game will reward your player's token usage by 1.")
     }
   }
 
@@ -112,7 +114,8 @@ export default function PlayDetails(props) {
   useEffect(() => {
     if (countdown === 0) {
       Router.push('/Play');
-    } else if (gameData !== null && redirectModal) {
+    }
+    else if (gameData !== null && redirectModal) {
       startCountdown();
     }
   }, [countdown]);
@@ -259,82 +262,85 @@ export default function PlayDetails(props) {
                             <ModalPortfolioContainer textcolor="indigo-black" title="VIEW TEAMS" />
                             {registeredTeams.length > 0
                               ? registeredTeams.map(function (data, i) {
-                                  return (
-                                    <div className="p-5 px-6 bg-black-dark text-indigo-white mb-5 flex justify-between">
-                                      <p className="font-monument">{data.name}</p>
-                                    </div>
-                                  );
-                                })
+                                return (
+                                  <div className="p-5 px-6 bg-black-dark text-indigo-white mb-5 flex justify-between">
+                                    <p className="font-monument">{data.name}</p>
+                                  </div>
+                                );
+                              })
                               : 'No teams created for this game.'}
                           </>
                         ) : (
                           <>
                             {1 ? (
                               <>
-                                <div className="grid grid-cols-2 w-full gap-60">
-                                  <Image src="/images/game.png" width={550} height={279} />
-                                  <div className="ml-24 w-3/5">
-                                    <PortfolioContainer
-                                      textcolor="indigo-black"
-                                      title={gameFreeOrPaid}
-                                    />
-                                    <div className="flex space-x-14 mt-4">
-                                      <div className="ml-7">
-                                        <div>PRIZE POOL</div>
-                                        <div className=" font-monument text-lg">
-                                          {(gameData && gameData.prize) || 'N/A'}
-                                        </div>
+                                <div className="md:ml-7 flex flex-row md:flex-row">
+                                  <div className="md:-mr-20">
+                                    <div className="mt-7 flex justify-center md:self-left md:mr-8">
+                                      <div className="-ml-7 mr-7">
+                                        <Image src="/images/game.png" width={550} height={279} />
                                       </div>
-                                      <div>
-                                        <div>START DATE</div>
-                                        <div className=" font-monument text-lg">
-                                          {(gameData &&
-                                            moment(gameData.start_time).format('MM/DD/YYYY')) ||
-                                            'N/A'}
+                                      <div className="-mt-7 w-96">
+                                        <PortfolioContainer textcolor="indigo-black" title={gameFreeOrPaid} />
+                                        <div className="flex space-x-14 mt-4">
+                                          <div className="ml-7">
+                                            <div>PRIZE POOL</div>
+                                            <div className=" font-monument text-lg">
+                                              {(gameData && gameData.prize) || 'N/A'}
+                                            </div>
+                                          </div>
+                                          <div>
+                                            <div>START DATE</div>
+                                            <div className=" font-monument text-lg">
+                                              {(gameData &&
+                                                moment(gameData.start_time).format('MM/DD/YYYY')) ||
+                                                'N/A'}
+                                            </div>
+                                          </div>
                                         </div>
-                                      </div>
-                                    </div>
-                                    <div className="ml-7">
-                                      <div className="mt-4">
-                                        {gameData &&
-                                          (moment(gameData.start_time) <= moment() &&
-                                          moment(gameData.end_time) > moment() ? (
-                                            <>
-                                              <p>ENDS IN</p>
-                                              {gameData ? (
-                                                <PlayDetailsComponent
-                                                  prizePool={gameData.prize}
-                                                  startDate={gameData.end_time}
-                                                  // fetch={() => fetchGameData()}
-                                                  // game={() => gameEnded()}
-                                                />
+                                        <div className="ml-7">
+                                          <div className="mt-4">
+                                            {gameData &&
+                                              (moment(gameData.start_time) <= moment() &&
+                                                moment(gameData.end_time) > moment() ? (
+                                                <>
+                                                  <p>ENDS IN</p>
+                                                  {gameData ? (
+                                                    <PlayDetailsComponent
+                                                      prizePool={gameData.prize}
+                                                      startDate={gameData.end_time}
+                                                    // fetch={() => fetchGameData()}
+                                                    // game={() => gameEnded()}
+                                                    />
+                                                  ) : (
+                                                    ''
+                                                  )}
+                                                </>
+                                              ) : moment(gameData.start_time) > moment() ? (
+                                                <>
+                                                  <p>REGISTRATION ENDS IN</p>
+                                                  {gameData ? (
+                                                    <PlayDetailsComponent
+                                                      prizePool={gameData.prize}
+                                                      startDate={gameData.start_time}
+                                                    // fetch={() => fetchGameData()}
+                                                    // game={() => gameEnded()}
+                                                    />
+                                                  ) : (
+                                                    ''
+                                                  )}
+                                                </>
                                               ) : (
                                                 ''
-                                              )}
-                                            </>
-                                          ) : moment(gameData.start_time) > moment() ? (
-                                            <>
-                                              <p>REGISTRATION ENDS IN</p>
-                                              {gameData ? (
-                                                <PlayDetailsComponent
-                                                  prizePool={gameData.prize}
-                                                  startDate={gameData.start_time}
-                                                  // fetch={() => fetchGameData()}
-                                                  // game={() => gameEnded()}
-                                                />
-                                              ) : (
-                                                ''
-                                              )}
-                                            </>
-                                          ) : (
-                                            ''
-                                          ))}
-                                        <div className="flex justify-center md:justify-start">
-                                          <Link href={`/CreateLineup/${gameId}`}>
-                                            <button className="bg-indigo-buttonblue text-indigo-white w-full h-12 text-center font-bold text-md mt-8">
-                                              ENTER GAME
-                                            </button>
-                                          </Link>
+                                              ))}
+                                            <div className="flex justify-center md:justify-start">
+                                              <Link href={`/CreateLineup/${gameId}`}>
+                                                <button className="bg-indigo-buttonblue text-indigo-white w-full h-12 text-center font-bold text-md mt-8">
+                                                  ENTER GAME
+                                                </button>
+                                              </Link>
+                                            </div>
+                                          </div>
                                         </div>
                                       </div>
                                     </div>
@@ -352,10 +358,10 @@ export default function PlayDetails(props) {
                         <ModalPortfolioContainer textcolor="indigo-black" title="VIEW TEAMS" />
                         {registeredTeams.length > 0
                           ? registeredTeams.map(function (data, i) {
-                              return (
-                                <div className="p-5 px-6 bg-black-dark text-indigo-white mb-5 flex justify-between">
-                                  <p className="font-monument">{data.name}</p>
-                                  {/* <Link
+                            return (
+                              <div className="p-5 px-6 bg-black-dark text-indigo-white mb-5 flex justify-between">
+                                <p className="font-monument">{data.name}</p>
+                                {/* <Link
                                           href={{
                                             pathname: '/EntrySummary',
                                             query: {
@@ -369,9 +375,9 @@ export default function PlayDetails(props) {
                                             <img src={'/images/arrow-top-right.png'} />
                                           </a>
                                         </Link> */}
-                                </div>
-                              );
-                            })
+                              </div>
+                            );
+                          })
                           : 'No teams created for this game.'}
                       </>
                     )}
@@ -389,9 +395,8 @@ export default function PlayDetails(props) {
                                 <div className="ml-12 md:ml-10 mt-4 md:mt-5">
                                   <div className="flex text-center items-center">
                                     <div
-                                      className={`w-10 mr-2 font-monument text-2xl ${
-                                        key + 1 > 3 ? 'text-indigo-white' : ''
-                                      }`}
+                                      className={`w-10 mr-2 font-monument text-2xl ${key + 1 > 3 ? 'text-indigo-white' : ''
+                                        }`}
                                     >
                                       {key + 1 <= 9 ? '0' + (key + 1) : key + 1}
                                     </div>
@@ -480,7 +485,9 @@ export default function PlayDetails(props) {
               <PortfolioContainer textcolor="indigo-black" title="GAMEPLAY" />
 
               {/* if paid game */}
-              <div className="ml-7 mt-5 font-bold text-indigo-red">{detailsFreeOrPaid}</div>
+              <div className="ml-7 mt-5 font-bold text-indigo-red">
+                {detailsFreeOrPaid}
+              </div>
 
               <div className="ml-7 mt-3 font-normal">
                 Enter a team into the The Blitz tournament to compete for cash prizes.
