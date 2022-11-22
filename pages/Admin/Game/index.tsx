@@ -23,7 +23,8 @@ import { transactions, utils, WalletConnection, providers } from 'near-api-js';
 import { getGameInfoById } from 'utils/game/helper';
 import AdminGameComponent from './components/AdminGameComponent';
 import moment from 'moment';
-
+import {getUTCTimestampFromLocal} from 'utils/date/helper';
+import ReactPaginate from 'react-paginate';
 TimeAgo.addDefaultLocale(en);
 
 export default function Index(props) {
@@ -113,6 +114,10 @@ export default function Index(props) {
   const [completedGames, setCompletedGames] = useState([]);
   const [ongoingGames, setOngoingGames] = useState([]);
   const [gameId, setGameId] = useState(null);
+  const [gamesLimit, setGamesLimit] = useState(10);
+  const [pageCount, setPageCount] = useState(0);
+  const [gamesOffset, setGamesOffset] = useState(0);
+  const [currentTotal, setCurrentTotal] = useState(0);
   const [err, setErr] = useState(null);
   const [endLoading, setEndLoading] = useState(false);
   const [confirmModal, setConfirmModal] = useState(false);
@@ -131,10 +136,13 @@ export default function Index(props) {
   });
 
   const [percentTotal, setPercentTotal] = useState(0);
-
+  const [remountComponent, setRemountComponent] = useState(0);
   const changeTab = (name) => {
+    setGamesOffset(0);
+    setGamesLimit(10);
+    setRemountComponent(Math.random());
     const tabList = [...tabs];
-
+    
     tabList.forEach((item) => {
       if (item.name === name) {
         item.isActive = true;
@@ -148,7 +156,14 @@ export default function Index(props) {
 
   const changeGameTab = (name) => {
     const tabList = [...gameTabs];
-
+    setGamesOffset(0);
+    setGamesLimit(10);
+    setRemountComponent(Math.random());
+    switch(name){
+      case 'NEW' : setCurrentTotal(newGames.length); break;
+      case 'ON-GOING': setCurrentTotal(ongoingGames.length); break;
+      case 'COMPLETED': setCurrentTotal(completedGames.length); break;
+    }
     tabList.forEach((item) => {
       if (item.name === name) {
         item.isActive = true;
@@ -211,7 +226,10 @@ export default function Index(props) {
       });
     }
   };
-
+  const handlePageClick = (event) => {
+    const newOffset = (event.selected * gamesLimit) % currentTotal;
+    setGamesOffset(newOffset);
+  }
   const checkValidity = () => {
     let errors = [];
     let sortPercentage = [...distribution].sort((a, b) => b.percentage - a.percentage);
@@ -526,14 +544,14 @@ export default function Index(props) {
   const endFormattedTimestamp = moment(dateEndFormatted).toLocaleString();
 
   function query_game_supply() {
-    const query = JSON.stringify({ account_id: getContract(GAME) });
+    const query = JSON.stringify({ });
 
     provider
       .query({
         request_type: 'call_function',
         finality: 'optimistic',
         account_id: getContract(GAME),
-        method_name: 'nft_supply_for_owner',
+        method_name: 'get_total_games',
         args_base64: Buffer.from(query).toString('base64'),
       })
       .then((data) => {
@@ -542,12 +560,12 @@ export default function Index(props) {
 
         setTotalGames(totalGames);
       });
-  }
+  };
 
   function query_games_list() {
     const query = JSON.stringify({
       from_index: 0, //offset for pagination
-      limit: 100,
+      limit: totalGames,
     });
     provider
       .query({
@@ -564,22 +582,22 @@ export default function Index(props) {
         //console.table(Buffer.from(data.result).toString());
         //console.table(result);
         const upcomingGames = await Promise.all(
-          result.filter((x) => x[1].start_time > Date.now()).map((item) => getGameInfoById(item))
+          result.filter((x) => x[1].start_time > getUTCTimestampFromLocal()).map((item) => getGameInfoById(item))
         );
         const completedGames = await Promise.all(
-          result.filter((x) => x[1].end_time < Date.now()).map((item) => getGameInfoById(item))
+          result.filter((x) => x[1].end_time < getUTCTimestampFromLocal()).map((item) => getGameInfoById(item))
         );
 
         const onGoingGames = await Promise.all(
           result
-            .filter((x) => x[1].start_time < Date.now() && x[1].end_time > Date.now())
+            .filter((x) => x[1].start_time < getUTCTimestampFromLocal() && x[1].end_time > getUTCTimestampFromLocal())
             .map((item) => getGameInfoById(item))
         );
 
         const latestGameId = result.reduce((a, value) => {
           return Math.max(a, parseInt(value[0]));
         }, 0);
-
+        setCurrentTotal(upcomingGames.length);
         setNewGames(upcomingGames);
         setCompletedGames(completedGames);
         setOngoingGames(onGoingGames);
@@ -628,9 +646,11 @@ export default function Index(props) {
 
   useEffect(() => {
     query_games_list();
-    // query_game_supply();
-  }, []);
-
+    query_game_supply();
+  }, [totalGames]);
+  useEffect(() => {
+    currentTotal !== 0 ? setPageCount(Math.ceil(currentTotal / gamesLimit)) : setPageCount(1);
+  }, [ currentTotal]);
   return (
     <Container isAdmin>
       <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
@@ -672,7 +692,7 @@ export default function Index(props) {
                       </div>
                     ))}
                   </div>
-                  <div className="flex flex-row">
+                  <div  className="mt-4 ml-6 grid grid-cols-0 md:grid-cols-3">
                     {(gameTabs[0].isActive
                       ? newGames
                       : gameTabs[1].isActive
@@ -684,9 +704,10 @@ export default function Index(props) {
                         : gameTabs[1].isActive
                         ? ongoingGames
                         : completedGames
-                      ).map((data, i) => {
+                      ).filter((data, i ) => i >= gamesOffset && i < (gamesOffset + gamesLimit)).map((data, i) => {
                         return (
-                          <AdminGameComponent
+                          <div key={remountComponent}>
+                            <AdminGameComponent
                             game_id={data.game_id}
                             start_time={data.start_time}
                             end_time={data.end_time}
@@ -699,6 +720,8 @@ export default function Index(props) {
                             isCompleted={data.isCompleted}
                             status={data.status}
                           />
+                          </div>
+                          
                         );
                       })}
                     {/* {(gameTabs[0].isActive ? upcomingGames: completedGames).length > 0 &&
@@ -746,7 +769,25 @@ export default function Index(props) {
                             // );
                           })} */}
                   </div>
+                  <div className="absolute bottom-10 right-10 iphone5:bottom-4 iphone5:right-2 iphoneX:bottom-4 iphoneX:right-4 iphoneX-fixed">
+                    <div key={remountComponent}>
+                    <ReactPaginate
+                      className="p-2 text-center bg-indigo-buttonblue text-indigo-white flex flex-row space-x-4 select-none ml-7"
+                      pageClassName="hover:font-bold"
+                      activeClassName="rounded-lg text-center bg-indigo-white text-indigo-black pr-1 pl-1 font-bold"
+                      pageLinkClassName="rounded-lg text-center hover:font-bold hover:bg-indigo-white hover:text-indigo-black"
+                      breakLabel="..."
+                      nextLabel=">"
+                      onPageChange={handlePageClick}
+                      pageRangeDisplayed={5}
+                      pageCount={pageCount}
+                      previousLabel="<"
+                      renderOnZeroPageCount={null}
+                    />
+                  </div>
+              </div>
                 </div>
+                
               ) : (
                 <>
                   <div className="flex">
@@ -873,6 +914,7 @@ export default function Index(props) {
                   </div>
                 </>
               )}
+              
             </div>
           </div>
         </Main>

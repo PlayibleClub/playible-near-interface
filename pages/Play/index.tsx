@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import Main from '../../components/Main';
+import Head from 'next/dist/next-server/lib/head';
 import PortfolioContainer from '../../components/containers/PortfolioContainer';
 import { useDispatch } from 'react-redux';
 // import { getPortfolio } from '../../redux/reducers/contract/portfolio';
@@ -20,7 +21,7 @@ import { transactions, utils, WalletConnection, providers } from 'near-api-js';
 import { getContract, getRPCProvider } from 'utils/near';
 import { getGameInfoById } from 'utils/game/helper';
 import { getUTCTimestampFromLocal } from 'utils/date/helper';
-
+import ReactPaginate from 'react-paginate';
 const Play = (props) => {
   const { error } = props;
   const [activeCategory, setCategory] = useState('NEW');
@@ -50,6 +51,7 @@ const Play = (props) => {
   const [offset, setOffset] = useState(0);
   const [pageCount, setPageCount] = useState(0);
   const [gamesLimit, setgamesLimit] = useState(10);
+  const [totalGames, setTotalGames] = useState(0);
   const [gamesOffset, setgamesOffset] = useState(0);
   const [gamePageCount, setgamePageCount] = useState(0);
   const [sortedList, setSortedList] = useState([]);
@@ -58,7 +60,7 @@ const Play = (props) => {
   const [filter, setFilter] = useState(null);
   const [search, setSearch] = useState('');
   const [err, setErr] = useState(error);
-
+  const [currentTotal, setCurrentTotal] = useState(0);
   const [categoryList, setcategoryList] = useState([
     {
       name: 'NEW',
@@ -73,9 +75,23 @@ const Play = (props) => {
       isActive: false,
     },
   ]);
-
+  const [remountComponent, setRemountComponent] = useState(0);
   const changecategoryList = (name) => {
     const tabList = [...categoryList];
+    setgamesOffset(0);
+    setgamesLimit(10);
+    setRemountComponent(Math.random());
+    switch (name) {
+      case 'NEW':
+        setCurrentTotal(newGames.length);
+        break;
+      case 'ON-GOING':
+        setCurrentTotal(ongoingGames.length);
+        break;
+      case 'COMPLETED':
+        setCurrentTotal(completedGames.length);
+        break;
+    }
 
     tabList.forEach((item) => {
       if (item.name === name) {
@@ -93,7 +109,7 @@ const Play = (props) => {
   const [newGames, setNewGames] = useState([]);
   const [ongoingGames, setOngoingGames] = useState([]);
   const [completedGames, setCompletedGames] = useState([]);
-
+  const [emptyGames, setEmpyGames] = useState([]);
   const provider = new providers.JsonRpcProvider({
     url: getRPCProvider(),
   });
@@ -360,10 +376,34 @@ const Play = (props) => {
       </>
     );
   };
+  const handlePageClick = (event) => {
+    const newOffset = (event.selected * gamesLimit) % currentTotal;
+    console.log(newOffset);
+    setgamesOffset(newOffset);
+  };
+  function query_game_supply() {
+    const query = JSON.stringify({});
+
+    provider
+      .query({
+        request_type: 'call_function',
+        finality: 'optimistic',
+        account_id: getContract(GAME),
+        method_name: 'get_total_games',
+        args_base64: Buffer.from(query).toString('base64'),
+      })
+      .then((data) => {
+        // @ts-ignore:next-line
+        const totalGames = JSON.parse(Buffer.from(data.result));
+
+        setTotalGames(totalGames);
+      });
+  }
+  console.log(totalGames);
   function query_games_list() {
     const query = JSON.stringify({
       from_index: 0,
-      limit: 100,
+      limit: totalGames,
     });
     provider
       .query({
@@ -398,7 +438,8 @@ const Play = (props) => {
             )
             .map((item) => getGameInfoById(item))
         );
-
+        console.table(completedGames);
+        setCurrentTotal(upcomingGames.length);
         setNewGames(upcomingGames);
         setCompletedGames(completedGames);
         setOngoingGames(ongoingGames);
@@ -414,106 +455,43 @@ const Play = (props) => {
         return acc;
       }, 0);
     }
-
-    //   const claimRes = await executeContract(connectedWallet, GAME, [
-    //     {
-    //       contractAddr: GAME,
-    //       msg: {
-    //         claim_rewards: {
-    //           game_id: gameId.toString(),
-    //         },
-    //       },
-    //     },
-    //   ]);
-
-    //   if (!claimRes.txError) {
-    //     const fetchTx = await retrieveTxInfo(claimRes.txHash);
-
-    //     if (fetchTx && fetchTx.logs) {
-    //       if (claimData && claimData.winning_placements.length > 0) {
-    //         showSuccessModal({
-    //           prize: totalPrize,
-    //         });
-    //       }
-    //       setLoading(true);
-    //       fetchGamesLoading();
-    //     }
-    //   } else {
-    //     showFailedModal({
-    //       msg:
-    //         claimRes.txError.indexOf('Un') !== -1 && claimRes.txError.indexOf('Un') < 2
-    //           ? null
-    //           : claimRes.txError,
-    //     });
-    //     fetchGamesLoading();
-    //   }
-    //   showClaimModal(false);
-    //   setClaimLoading(false);
-    // };
   };
-  useEffect(() => {
-    if (games && games.length > 0) {
-      const tempList = [...games];
-      const filteredList = applySortFilter(tempList, filter, search).splice(limit * offset, limit);
-      setSortedList(filteredList);
-      if (search) {
-        setPageCount(Math.ceil(applySortFilter(tempList, filter, search).length / limit));
-      } else {
-        setPageCount(Math.ceil(games.length / limit));
-      }
-    }
-  }, [games, limit, offset, filter, search]);
-
-  useEffect(() => {
-    if (games.length > 0) {
-      const tempList = [...games];
-      const filteredList = tempList.splice(gamesLimit * gamesOffset, gamesLimit);
-
-      setSortedgames(filteredList);
-      setgamePageCount(Math.ceil(games.length / gamesLimit));
-    }
-  }, [games, gamesLimit, gamesOffset]);
-
-  useEffect(() => {
-    query_games_list();
-  }, []);
   // useEffect(() => {
-  //   if (connectedWallet) {
-  //     if (connectedWallet?.network?.name === 'testnet') {
-  //       dispatch(getPortfolio({ walletAddr: connectedWallet.walletAddress }));
-  //     }
-  //   }
-  // }, [connectedWallet, dispatch]);
-
-  // useEffect(async () => {
-  //   setLoading(true);
-  //   setErr(null);
-  //   if (connectedWallet) {
-  //     if (connectedWallet?.network?.name === 'testnet') {
-  //       await fetchGamesLoading();
-  //       setErr(null);
+  //   if (games && games.length > 0) {
+  //     const tempList = [...games];
+  //     const filteredList = applySortFilter(tempList, filter, search).splice(limit * offset, limit);
+  //     setSortedList(filteredList);
+  //     if (search) {
+  //       setPageCount(Math.ceil(applySortFilter(tempList, filter, search).length / limit));
   //     } else {
-  //       setErr('You are connected to mainnet. Please connect to testnet');
-  //       setLoading(false);
+  //       setPageCount(Math.ceil(games.length / limit));
   //     }
-  //   } else {
-  //     setErr('Waiting for wallet connection...');
-  //     setLoading(false);
   //   }
-  //   setOffset(0);
-  // }, [connectedWallet, activeCategory]);
+  // }, [games, limit, offset, filter, search]);
 
   // useEffect(() => {
-  //   fetchGamesLoading();
-  //   setOffset(0);
-  // }, [activeCategory]);
+  //   if (games.length > 0) {
+  //     const tempList = [...games];
+  //     const filteredList = tempList.splice(gamesLimit * gamesOffset, gamesLimit);
 
+  //     setSortedgames(filteredList);
+  //     setgamePageCount(Math.ceil(games.length / gamesLimit));
+  //   }
+  // }, [games, gamesLimit, gamesOffset]);
+
+  useEffect(() => {
+    query_game_supply();
+    query_games_list();
+  }, [totalGames]);
+
+  useEffect(() => {
+    currentTotal !== 0 ? setPageCount(Math.ceil(currentTotal / gamesLimit)) : setPageCount(1);
+  }, [currentTotal]);
   useEffect(() => {
     if (router && router.query.type) {
       // setCategory(router.query.type);
     }
   }, [router]);
-
   useEffect(() => {
     if (!claimModal) {
       setClaimData(null);
@@ -522,6 +500,10 @@ const Play = (props) => {
 
   return (
     <>
+      <Head>
+        <title>Playible - Next Generation of Sports Collectibles</title>
+        <link rel="icon" type="image/png" sizes="16x16" href="images/favicon.png" />
+      </Head>
       {claimModal === true && (
         <>
           <div className="fixed w-screen h-screen bg-opacity-70 z-50 overflow-auto bg-indigo-gray flex font-montserrat">
@@ -538,7 +520,6 @@ const Play = (props) => {
               ) : (
                 ''
               )}
-
               <div className="text-sm">
                 <div className="flex font-monument select-none mt-5">
                   <div
@@ -605,7 +586,6 @@ const Play = (props) => {
                             </div>
                           </>
                         ))}
-
                       {!claimData.isClaimed && (
                         <div className="flex justify-center">
                           <button
@@ -700,7 +680,7 @@ const Play = (props) => {
           <Main color="indigo-white">
             <div className="flex flex-col mb-10">
               <div className="flex">
-                <div className="flex-initial">
+                <div className="flex-initial md:ml-6 md:mt-8">
                   <PortfolioContainer title="PLAY" textcolor="text-indigo-black" />
                 </div>
                 {/* <Link href="/MyActivity">
@@ -711,7 +691,7 @@ const Play = (props) => {
               </div>
 
               <div className="flex flex-col mt-6">
-                <div className="flex font-bold ml-8 md:ml-7 font-monument">
+                <div className="flex font-bold md:ml-14 font-monument">
                   {categoryList.map(({ name, isActive }) => (
                     <div
                       className={`cursor-pointer mr-6 ${
@@ -738,23 +718,25 @@ const Play = (props) => {
                   {/* {sortedList.length > 0 ? ( */}
                   {1 > 0 ? (
                     <>
-                      <div className="mt-4 ml-6 grid grid-cols-0 md:grid-cols-3">
+                      <div className="mt-4 md:ml-10 grid grid-cols-0 md:grid-cols-3">
                         {(categoryList[0].isActive
                           ? newGames
                           : categoryList[1].isActive
                           ? ongoingGames
-                          : completedGames
+                          : emptyGames
                         ).length > 0 &&
                           (categoryList[0].isActive
                             ? newGames
                             : categoryList[1].isActive
                             ? ongoingGames
-                            : completedGames
-                          ).map((data, i) => {
-                            return (
-                              <div key={i} className="flex">
-                                <div className="mr-6 cursor-pointer">
-                                  {/* <a href={`/PlayDetails?id=${data.id}`}>
+                            : emptyGames
+                          )
+                            .filter((data, i) => i >= gamesOffset && i < gamesOffset + gamesLimit)
+                            .map((data, i) => {
+                              return (
+                                <div key={i} className="flex">
+                                  <div className="mr-6 cursor-pointer">
+                                    {/* <a href={`/PlayDetails?id=${data.id}`}>
                                           <div className="mr-6">
                                             <PlayComponent
                                               type={activeCategory}
@@ -771,7 +753,75 @@ const Play = (props) => {
                                             />
                                           </div>
                                         </a> */}
-                                  <Link href={`/PlayDetails/${data.game_id}`} passHref>
+                                    <Link href={`/PlayDetails/${data.game_id}`} passHref>
+                                      <div className="mt-4 mr-6">
+                                        <PlayComponent
+                                          type={activeCategory}
+                                          game_id={data.game_id}
+                                          icon="test"
+                                          startDate={data.start_time}
+                                          endDate={data.end_time}
+                                          img={data.image}
+                                          fetchGames={fetchGamesLoading}
+                                          index={() => changeIndex(1)}
+                                        />
+                                      </div>
+                                    </Link>
+
+                                    {activeCategory === 'completed' && 'test' && (
+                                      <div className="">
+                                        {/* {data.isClaimed === 'unclaimed' ? ( */}
+                                        {'unclaimed' === 'unclaimed' ? (
+                                          // data.hasEnded ? (
+                                          'data.hasEnded ' ? (
+                                            <button
+                                              className={`bg-indigo-buttonblue w-full h-12 text-center font-bold rounded-md text-sm mt-4 self-center`}
+                                              onClick={() =>
+                                                'data.hasEnded'
+                                                  ? // data.hasEnded
+                                                    fetchTeamPlacements('test')
+                                                  : // ? fetchTeamPlacements(data.id)
+                                                    undefined
+                                              }
+                                            >
+                                              <div className="text-indigo-white">
+                                                CLAIM {'test' ? 'REWARD' : 'TEAM'}
+                                                {/* CLAIM {data.hasRewards ? 'REWARD' : 'TEAM'} */}
+                                              </div>
+                                            </button>
+                                          ) : (
+                                            <button
+                                              className={`bg-indigo-lightblue cursor-not-allowed  w-full h-12 text-center font-bold rounded-md text-sm mt-4 self-center`}
+                                            >
+                                              <div className="text-indigo-white">
+                                                Please wait for the game to end
+                                              </div>
+                                            </button>
+                                          )
+                                        ) : (
+                                          ''
+                                        )}
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+                              );
+                            })}
+                      </div>
+                      <div className="mt-4 md:ml-10 grid grid-cols-0 md:grid-cols-3">
+                        {(categoryList[2].isActive ? completedGames : emptyGames).length > 0 &&
+                          (categoryList[2].isActive ? completedGames : emptyGames)
+                            .filter((data, i) => i >= gamesOffset && i < gamesOffset + gamesLimit)
+                            .map((data, i) => {
+                              console.log(currentTotal);
+                              return (
+                                <div key={i} className="flex">
+                                  <div
+                                    className="mr-6 cursor-pointer "
+                                    onClick={() =>
+                                      alert('ERROR: Game ' + data.game_id + ' is already finished.')
+                                    }
+                                  >
                                     <div className="mr-6">
                                       <PlayComponent
                                         type={activeCategory}
@@ -785,100 +835,10 @@ const Play = (props) => {
                                         index={() => changeIndex(1)}
                                       />
                                     </div>
-                                  </Link>
-                                  {/* {activeCategory === 'completed' && data.hasAthletes && ( */}
-                                  {activeCategory === 'completed' && 'test' && (
-                                    <div className="">
-                                      {/* {data.isClaimed === 'unclaimed' ? ( */}
-                                      {'unclaimed' === 'unclaimed' ? (
-                                        // data.hasEnded ? (
-                                        'data.hasEnded ' ? (
-                                          <button
-                                            className={`bg-indigo-buttonblue w-full h-12 text-center font-bold rounded-md text-sm mt-4 self-center`}
-                                            onClick={() =>
-                                              'data.hasEnded'
-                                                ? // data.hasEnded
-                                                  fetchTeamPlacements('test')
-                                                : // ? fetchTeamPlacements(data.id)
-                                                  undefined
-                                            }
-                                          >
-                                            <div className="text-indigo-white">
-                                              CLAIM {'test' ? 'REWARD' : 'TEAM'}
-                                              {/* CLAIM {data.hasRewards ? 'REWARD' : 'TEAM'} */}
-                                            </div>
-                                          </button>
-                                        ) : (
-                                          <button
-                                            className={`bg-indigo-lightblue cursor-not-allowed  w-full h-12 text-center font-bold rounded-md text-sm mt-4 self-center`}
-                                          >
-                                            <div className="text-indigo-white">
-                                              Please wait for the game to end
-                                            </div>
-                                          </button>
-                                        )
-                                      ) : (
-                                        ''
-                                      )}
-                                    </div>
-                                  )}
+                                  </div>
                                 </div>
-                              </div>
-                            );
-                          })}
-                      </div>
-                      <div className="flex justify-between md:mt-5 md:mr-6 p-5">
-                        <div className="bg-indigo-white mr-1 h-11 flex items-center font-thin border-indigo-lightgray border-opacity-40 p-2">
-                          {pageCount > 1 && (
-                            <button
-                              className="px-2 border mr-2"
-                              onClick={() => changeIndex('first')}
-                            >
-                              First
-                            </button>
-                          )}
-                          {pageCount !== 0 && canPrevious() && (
-                            <button
-                              className="px-2 border mr-2"
-                              onClick={() => changeIndex('previous')}
-                            >
-                              Previous
-                            </button>
-                          )}
-                          <p className="mr-2">
-                            Page {offset + 1} of {pageCount}
-                          </p>
-                          {pageCount !== 0 && canNext() && (
-                            <button
-                              className="px-2 border mr-2"
-                              onClick={() => changeIndex('next')}
-                            >
-                              Next
-                            </button>
-                          )}
-                          {pageCount > 1 && (
-                            <button
-                              className="px-2 border mr-2"
-                              onClick={() => changeIndex('last')}
-                            >
-                              Last
-                            </button>
-                          )}
-                        </div>
-                        <div className="bg-indigo-white mr-1 h-11 w-64 flex font-thin border-2 border-indigo-lightgray border-opacity-40 p-2">
-                          <select
-                            value={limit}
-                            className="bg-indigo-white text-lg w-full outline-none"
-                            onChange={(e) => {
-                              //setLimit(e.target.value);
-                              setOffset(0);
-                            }}
-                          >
-                            {limitOptions.map((option) => (
-                              <option value={option}>{option}</option>
-                            ))}
-                          </select>
-                        </div>
+                              );
+                            })}
                       </div>
                     </>
                   ) : (
@@ -888,10 +848,24 @@ const Play = (props) => {
                       </div>
                     </>
                   )}
+                  <div className="absolute bottom-10 right-10 iphone5:bottom-4 iphone5:right-2 iphoneX:bottom-4 iphoneX:right-4 iphoneX-fixed">
+                    <div key={remountComponent}>
+                      <ReactPaginate
+                        className="p-2 text-center bg-indigo-buttonblue text-indigo-white flex flex-row space-x-4 select-none ml-7"
+                        pageClassName="hover:font-bold"
+                        activeClassName="rounded-lg text-center bg-indigo-white text-indigo-black pr-1 pl-1 font-bold"
+                        pageLinkClassName="rounded-lg text-center hover:font-bold hover:bg-indigo-white hover:text-indigo-black"
+                        breakLabel="..."
+                        nextLabel=">"
+                        onPageChange={handlePageClick}
+                        pageRangeDisplayed={5}
+                        pageCount={pageCount}
+                        previousLabel="<"
+                        renderOnZeroPageCount={null}
+                      />
+                    </div>
+                  </div>
                 </>
-                {/* )}
-                    </>
-                  )} */}
               </div>
             </div>
           </Main>

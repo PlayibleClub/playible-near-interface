@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import PortfolioContainer from '../../components/containers/PortfolioContainer';
 import LargePackContainer from '../../components/containers/LargePackContainer';
 import Container from '../../components/containers/Container';
+import Head from 'next/dist/next-server/lib/head';
 import BackFunction from '../../components/buttons/BackFunction';
 import Main from '../../components/Main';
 import 'regenerator-runtime/runtime';
@@ -138,9 +139,13 @@ export default function Packs() {
 
   return (
     <Container activeName="SQUAD">
+      <Head>
+        <title>Playible - Next Generation of Sports Collectibles</title>
+        <link rel="icon" type="image/png" sizes="16x16" href="images/favicon.png" />
+      </Head>
       <div className="flex flex-col w-full overflow-y-auto h-screen pb-12 mb-12">
         <Main color="indigo-white">
-          <div className="md:ml-6">
+          <div className="md:ml-6 md:mt-8">
             <PortfolioContainer textcolor="indigo-black" title="PACKS">
               <div className="flex flex-col">
                 <div className="grid grid-cols-4 gap-y-8 mt-4 md:grid-cols-4 md:ml-7 md:mt-12">

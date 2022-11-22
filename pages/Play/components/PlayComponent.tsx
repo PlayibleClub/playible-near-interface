@@ -67,7 +67,7 @@ const PlayComponent = (props) => {
         <div className="w-84 h-84">
           <div className="w-full p-3">
             <div className="w-full">
-              <Image src={img ? img : playicon} width="300px" height="263px" />
+              <Image src={img ? img : playicon} width={300} height={263} />
             </div>
 
             <div className="mt-4 flex justify-between">
@@ -78,6 +78,12 @@ const PlayComponent = (props) => {
               <div className="">
                 <div className="font-thin text-sm">STATUS</div>
                 <div className="text-base font-monument">COMPLETE</div>
+              </div>
+              <div>
+                <div className="font-thin text-sm">GAME ID</div>
+                <div className="text-base font-monument">
+                  {game_id}
+                </div>
               </div>
             </div>
 
