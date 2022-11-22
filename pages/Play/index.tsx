@@ -373,6 +373,7 @@ const Play = (props) => {
     const newOffset = (event.selected * gamesLimit) % currentTotal;
     console.log(newOffset);
     setgamesOffset(newOffset);
+    
   }
   function query_game_supply() {
     const query = JSON.stringify({});
@@ -714,7 +715,7 @@ const Play = (props) => {
                             : categoryList[1].isActive
                               ? ongoingGames
                               : emptyGames
-                          ).map((data, i) => {
+                          ).filter((data, i) => i >= gamesOffset && i < (gamesOffset + gamesLimit)).map((data, i) => {
                             return (
                               <div key={i} className="flex">
                                 <div className="mr-6 cursor-pointer">
