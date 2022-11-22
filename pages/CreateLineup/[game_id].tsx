@@ -105,7 +105,7 @@ export default function CreateLineup(props) {
                   height={279}
                 />
               </div>
-              <div className="-ml-72">
+              <div className="-ml-72 -mt-8">
                 <ModalPortfolioContainer
                   title="CREATE TEAM"
                   textcolor="text-indigo-black"

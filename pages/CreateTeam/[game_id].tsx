@@ -401,7 +401,10 @@ export default function CreateLineup(props) {
       <>
         <Container activeName="PLAY">
           <div className="flex flex-col w-full hide-scroll max-h-screen justify-center self-center">
-            <Main color="indigo-white md:pb-10">
+            <Main color="indigo-white">
+            <div className="md:ml-6 md:mt-8">
+                  <BackFunction prev={`/CreateLineup/${gameId}`} />
+                  </div>
               <div className="flex flex-col w-full hide-scroll overflow-x-hidden h-full md:h-min self-center text-indigo-black relative">
                 {selectModal ? (
                   <div className="absolute top-0 left-0 bottom-0 right-0 bg-indigo-white z-50">
@@ -508,17 +511,15 @@ export default function CreateLineup(props) {
                   ''
                 )}
                 <div className={`${selectModal ? 'hidden h-0' : ''}`}>
-                  <div className="md:ml-6 md:mt-8">
-                  <BackFunction prev={`/CreateLineup/${gameId}`} />
-                  </div>
-                  <div className="md:ml-6 -mt-6">
+                 
+                  <div className="md:ml-6">
                     <PortfolioContainer
                       title="CREATE LINEUP"
                       textcolor="text-indigo-black"/>
                   </div>
                     <div className="flex flex-col -mt-8 -mb-5">
-                      <div className="flex items-end pt-10 pb-3 ml-8">
-                        <div className="font-monument text-xl truncate w-40 md:w-min md:max-w-xs">
+                      <div className="flex items-end pt-10 pb-3 ml-7">
+                        <div className="font-monument text-xl ml-6 truncate w-40 md:w-min md:max-w-xs">
                           {teamName}
                         </div>
                         <p
