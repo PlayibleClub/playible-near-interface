@@ -21,7 +21,6 @@ import { convertNftToAthlete, getAthleteInfoById } from 'utils/athlete/helper';
 import { getUTCDateFromLocal } from 'utils/date/helper';
 
 export default function EntrySummary(props) {
-
   const { query } = props;
   const provider = new providers.JsonRpcProvider({
     url: getRPCProvider(),
@@ -117,7 +116,6 @@ export default function EntrySummary(props) {
         const playerTeamLineup = JSON.parse(Buffer.from(data.result));
 
         setPlayerLineup(playerTeamLineup.lineup);
-
       });
   }
 
@@ -139,13 +137,10 @@ export default function EntrySummary(props) {
           // @ts-ignore:next-line
           const result = JSON.parse(Buffer.from(data.result).toString());
           const result_two = await getAthleteInfoById(await convertNftToAthlete(result));
-          setAthletes(athletes => [...athletes, result_two]);
-
+          setAthletes((athletes) => [...athletes, result_two]);
         });
-    }
-    );
+    });
     //setAthletes(testAthlete);
-
   }
 
   function query_game_data() {
@@ -173,13 +168,10 @@ export default function EntrySummary(props) {
     query_game_data();
   }, []);
 
-
   useEffect(() => {
-
-    console.log("loading lineup...");
+    console.log('loading lineup...');
     query_player_team_lineup();
-    console.log("loading athletes...");
-
+    console.log('loading athletes...');
   }, []);
 
   useEffect(() => {
@@ -204,9 +196,7 @@ export default function EntrySummary(props) {
             <>
               <>
                 <div className="mt-8 md:ml-6">
-                  <BackFunction
-                    prev={router.query.origin || `/CreateLineup/${gameId}`}
-                  />
+                  <BackFunction prev={router.query.origin || `/CreateLineup/${gameId}`} />
                 </div>
                 <div className="md:ml-7 flex flex-row md:flex-row">
                   <div className="md:mr-12">
@@ -226,8 +216,7 @@ export default function EntrySummary(props) {
                           <div>
                             <div>START DATE</div>
                             <div className=" font-monument text-lg">
-                              {(gameData &&
-                                moment(gameData.start_time).format('MM/DD/YYYY')) ||
+                              {(gameData && moment(gameData.start_time).format('MM/DD/YYYY')) ||
                                 'N/A'}
                             </div>
                           </div>
@@ -236,15 +225,15 @@ export default function EntrySummary(props) {
                           <div className="mt-4">
                             {gameData &&
                               (moment(gameData.start_time) <= moment() &&
-                                moment(gameData.end_time) > moment() ? (
+                              moment(gameData.end_time) > moment() ? (
                                 <>
                                   <p>ENDS IN</p>
                                   {gameData ? (
                                     <PlayDetailsComponent
                                       prizePool={gameData.prize}
                                       startDate={gameData.end_time}
-                                    // fetch={() => fetchGameData()}
-                                    // game={() => gameEnded()}
+                                      // fetch={() => fetchGameData()}
+                                      // game={() => gameEnded()}
                                     />
                                   ) : (
                                     ''
@@ -257,8 +246,8 @@ export default function EntrySummary(props) {
                                     <PlayDetailsComponent
                                       prizePool={gameData.prize}
                                       startDate={gameData.start_time}
-                                    // fetch={() => fetchGameData()}
-                                    // game={() => gameEnded()}
+                                      // fetch={() => fetchGameData()}
+                                      // game={() => gameEnded()}
                                     />
                                   ) : (
                                     ''
@@ -279,19 +268,23 @@ export default function EntrySummary(props) {
                     textcolor="text-indigo-black mb-5"
                   />
                 </div>
-                <div key={remountComponent} className="grid grid-cols-4 gap-y-4 mt-4 md:grid-cols-4 md:ml-2 md:mt-17 w-3/4">
-                  {athletes.length === 0 ? 'Loading athletes...' : athletes.map((item, i) => {
-
-                    return (
-                      <PerformerContainer
-                        AthleteName={`${item.name}`}
-                        AvgScore={item.fantasy_score.toFixed(2)}
-                        id={item.primary_id}
-                        uri={item.image}
-                        hoverable={false}
-                      />
-                    )
-                  })}
+                <div
+                  key={remountComponent}
+                  className="grid grid-cols-4 gap-y-4 mt-4 md:grid-cols-4 md:ml-2 md:mt-17 w-3/4"
+                >
+                  {athletes.length === 0
+                    ? 'Loading athletes...'
+                    : athletes.map((item, i) => {
+                        return (
+                          <PerformerContainer
+                            AthleteName={`${item.name}`}
+                            AvgScore={item.fantasy_score.toFixed(2)}
+                            id={item.primary_id}
+                            uri={item.image}
+                            hoverable={false}
+                          />
+                        );
+                      })}
                 </div>
               </>
             </>

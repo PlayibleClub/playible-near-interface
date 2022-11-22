@@ -82,9 +82,15 @@ const Play = (props) => {
     setgamesLimit(10);
     setRemountComponent(Math.random());
     switch (name) {
-      case 'NEW': setCurrentTotal(newGames.length); break;
-      case 'ON-GOING': setCurrentTotal(ongoingGames.length); break;
-      case 'COMPLETED': setCurrentTotal(completedGames.length); break;
+      case 'NEW':
+        setCurrentTotal(newGames.length);
+        break;
+      case 'ON-GOING':
+        setCurrentTotal(ongoingGames.length);
+        break;
+      case 'COMPLETED':
+        setCurrentTotal(completedGames.length);
+        break;
     }
 
     tabList.forEach((item) => {
@@ -362,7 +368,7 @@ const Play = (props) => {
         </div>
         {(rewardsCategory === 'winning' ? claimData.winning_placements : claimData.no_placements)
           .length ===
-          i + 1 ? (
+        i + 1 ? (
           ''
         ) : (
           <hr className="opacity-50" />
@@ -374,8 +380,7 @@ const Play = (props) => {
     const newOffset = (event.selected * gamesLimit) % currentTotal;
     console.log(newOffset);
     setgamesOffset(newOffset);
-
-  }
+  };
   function query_game_supply() {
     const query = JSON.stringify({});
 
@@ -393,8 +398,8 @@ const Play = (props) => {
 
         setTotalGames(totalGames);
       });
-  };
-  console.log(totalGames)
+  }
+  console.log(totalGames);
   function query_games_list() {
     const query = JSON.stringify({
       from_index: 0,
@@ -481,7 +486,7 @@ const Play = (props) => {
 
   useEffect(() => {
     currentTotal !== 0 ? setPageCount(Math.ceil(currentTotal / gamesLimit)) : setPageCount(1);
-  }, [currentTotal])
+  }, [currentTotal]);
   useEffect(() => {
     if (router && router.query.type) {
       // setCategory(router.query.type);
@@ -518,21 +523,25 @@ const Play = (props) => {
               <div className="text-sm">
                 <div className="flex font-monument select-none mt-5">
                   <div
-                    className={`mr-8 tracking-wider text-xs ${claimLoading ? 'cursor-not-allowed text-indigo-lightgray' : 'cursor-pointer'
-                      } ${rewardsCategory === 'winning'
+                    className={`mr-8 tracking-wider text-xs ${
+                      claimLoading ? 'cursor-not-allowed text-indigo-lightgray' : 'cursor-pointer'
+                    } ${
+                      rewardsCategory === 'winning'
                         ? 'border-b-8 pb-2 border-indigo-buttonblue'
                         : ''
-                      }`}
+                    }`}
                     onClick={!claimLoading ? () => setRewardsCategory('winning') : undefined}
                   >
                     WINNING TEAMS
                   </div>
                   <div
-                    className={`mr-8 tracking-wider text-xs ${claimLoading ? 'cursor-not-allowed text-indigo-lightgray' : 'cursor-pointer'
-                      } ${rewardsCategory !== 'winning'
+                    className={`mr-8 tracking-wider text-xs ${
+                      claimLoading ? 'cursor-not-allowed text-indigo-lightgray' : 'cursor-pointer'
+                    } ${
+                      rewardsCategory !== 'winning'
                         ? 'border-b-8 pb-2 border-indigo-buttonblue'
                         : ''
-                      }`}
+                    }`}
                     onClick={!claimLoading ? () => setRewardsCategory('lost') : undefined}
                   >
                     NO PLACEMENT
@@ -685,8 +694,9 @@ const Play = (props) => {
                 <div className="flex font-bold md:ml-14 font-monument">
                   {categoryList.map(({ name, isActive }) => (
                     <div
-                      className={`cursor-pointer mr-6 ${isActive ? 'border-b-8 border-indigo-buttonblue' : ''
-                        }`}
+                      className={`cursor-pointer mr-6 ${
+                        isActive ? 'border-b-8 border-indigo-buttonblue' : ''
+                      }`}
                       onClick={() => {
                         changecategoryList(name);
                         setCategory(name);
@@ -712,19 +722,21 @@ const Play = (props) => {
                         {(categoryList[0].isActive
                           ? newGames
                           : categoryList[1].isActive
-                            ? ongoingGames
-                            : emptyGames
+                          ? ongoingGames
+                          : emptyGames
                         ).length > 0 &&
                           (categoryList[0].isActive
                             ? newGames
                             : categoryList[1].isActive
-                              ? ongoingGames
-                              : emptyGames
-                          ).filter((data, i) => i >= gamesOffset && i < (gamesOffset + gamesLimit)).map((data, i) => {
-                            return (
-                              <div key={i} className="flex">
-                                <div className="mr-6 cursor-pointer">
-                                  {/* <a href={`/PlayDetails?id=${data.id}`}>
+                            ? ongoingGames
+                            : emptyGames
+                          )
+                            .filter((data, i) => i >= gamesOffset && i < gamesOffset + gamesLimit)
+                            .map((data, i) => {
+                              return (
+                                <div key={i} className="flex">
+                                  <div className="mr-6 cursor-pointer">
+                                    {/* <a href={`/PlayDetails?id=${data.id}`}>
                                           <div className="mr-6">
                                             <PlayComponent
                                               type={activeCategory}
@@ -741,12 +753,81 @@ const Play = (props) => {
                                             />
                                           </div>
                                         </a> */}
-                                  <Link href={`/PlayDetails/${data.game_id}`} passHref>
-                                    <div className="mt-4 mr-6">
+                                    <Link href={`/PlayDetails/${data.game_id}`} passHref>
+                                      <div className="mt-4 mr-6">
+                                        <PlayComponent
+                                          type={activeCategory}
+                                          game_id={data.game_id}
+                                          icon="test"
+                                          startDate={data.start_time}
+                                          endDate={data.end_time}
+                                          img={data.image}
+                                          fetchGames={fetchGamesLoading}
+                                          index={() => changeIndex(1)}
+                                        />
+                                      </div>
+                                    </Link>
+
+                                    {activeCategory === 'completed' && 'test' && (
+                                      <div className="">
+                                        {/* {data.isClaimed === 'unclaimed' ? ( */}
+                                        {'unclaimed' === 'unclaimed' ? (
+                                          // data.hasEnded ? (
+                                          'data.hasEnded ' ? (
+                                            <button
+                                              className={`bg-indigo-buttonblue w-full h-12 text-center font-bold rounded-md text-sm mt-4 self-center`}
+                                              onClick={() =>
+                                                'data.hasEnded'
+                                                  ? // data.hasEnded
+                                                    fetchTeamPlacements('test')
+                                                  : // ? fetchTeamPlacements(data.id)
+                                                    undefined
+                                              }
+                                            >
+                                              <div className="text-indigo-white">
+                                                CLAIM {'test' ? 'REWARD' : 'TEAM'}
+                                                {/* CLAIM {data.hasRewards ? 'REWARD' : 'TEAM'} */}
+                                              </div>
+                                            </button>
+                                          ) : (
+                                            <button
+                                              className={`bg-indigo-lightblue cursor-not-allowed  w-full h-12 text-center font-bold rounded-md text-sm mt-4 self-center`}
+                                            >
+                                              <div className="text-indigo-white">
+                                                Please wait for the game to end
+                                              </div>
+                                            </button>
+                                          )
+                                        ) : (
+                                          ''
+                                        )}
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+                              );
+                            })}
+                      </div>
+                      <div className="mt-4 md:ml-10 grid grid-cols-0 md:grid-cols-3">
+                        {(categoryList[2].isActive ? completedGames : emptyGames).length > 0 &&
+                          (categoryList[2].isActive ? completedGames : emptyGames)
+                            .filter((data, i) => i >= gamesOffset && i < gamesOffset + gamesLimit)
+                            .map((data, i) => {
+                              console.log(currentTotal);
+                              return (
+                                <div key={i} className="flex">
+                                  <div
+                                    className="mr-6 cursor-pointer "
+                                    onClick={() =>
+                                      alert('ERROR: Game ' + data.game_id + ' is already finished.')
+                                    }
+                                  >
+                                    <div className="mr-6">
                                       <PlayComponent
                                         type={activeCategory}
                                         game_id={data.game_id}
                                         icon="test"
+                                        prizePool="2,300"
                                         startDate={data.start_time}
                                         endDate={data.end_time}
                                         img={data.image}
@@ -754,75 +835,11 @@ const Play = (props) => {
                                         index={() => changeIndex(1)}
                                       />
                                     </div>
-                                  </Link>
-
-                                  {activeCategory === 'completed' && "test" && (
-                                    <div className="">
-                                      {/* {data.isClaimed === 'unclaimed' ? ( */}
-                                      {"unclaimed" === 'unclaimed' ? (
-                                        // data.hasEnded ? (
-                                        "data.hasEnded " ? (
-                                          <button
-                                            className={`bg-indigo-buttonblue w-full h-12 text-center font-bold rounded-md text-sm mt-4 self-center`}
-                                            onClick={() =>
-                                              "data.hasEnded"
-                                                // data.hasEnded
-                                                ? fetchTeamPlacements("test")
-                                                // ? fetchTeamPlacements(data.id)
-                                                : undefined
-                                            }
-                                          >
-                                            <div className="text-indigo-white">
-                                              CLAIM {"test" ? 'REWARD' : 'TEAM'}
-                                              {/* CLAIM {data.hasRewards ? 'REWARD' : 'TEAM'} */}
-                                            </div>
-                                          </button>
-                                        ) : (
-                                          <button
-                                            className={`bg-indigo-lightblue cursor-not-allowed  w-full h-12 text-center font-bold rounded-md text-sm mt-4 self-center`}
-                                          >
-                                            <div className="text-indigo-white">
-                                              Please wait for the game to end
-                                            </div>
-                                          </button>
-                                        )
-                                      ) : (
-                                        ''
-                                      )}
-                                    </div>
-                                  )}
-                                </div>
-                              </div>
-                            );
-                          })}
-                      </div>
-                      <div className="mt-4 md:ml-10 grid grid-cols-0 md:grid-cols-3">
-                        {(categoryList[2].isActive ? completedGames : emptyGames).length > 0 &&
-                          (categoryList[2].isActive ? completedGames : emptyGames).filter((data, i) => i >= gamesOffset && i < (gamesOffset + gamesLimit)).map((data, i) => {
-                            console.log(currentTotal);
-                            return (
-                              <div key={i} className="flex">
-                                <div className="mr-6 cursor-pointer " onClick={() => alert("ERROR: Game " + data.game_id + " is already finished.")}>
-                                  <div className="mr-6">
-                                    <PlayComponent
-                                      type={activeCategory}
-                                      game_id={data.game_id}
-                                      icon="test"
-                                      prizePool="2,300"
-                                      startDate={data.start_time}
-                                      endDate={data.end_time}
-                                      img={data.image}
-                                      fetchGames={fetchGamesLoading}
-                                      index={() => changeIndex(1)}
-                                    />
                                   </div>
                                 </div>
-                              </div>
-                            )
-                          })}
+                              );
+                            })}
                       </div>
-
-
                     </>
                   ) : (
                     <>
@@ -847,7 +864,6 @@ const Play = (props) => {
                         renderOnZeroPageCount={null}
                       />
                     </div>
-
                   </div>
                 </>
               </div>
