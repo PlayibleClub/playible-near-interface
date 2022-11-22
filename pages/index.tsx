@@ -166,55 +166,6 @@ export default function Home(props) {
                     </div>
                   </div>
                 </div>
-
-                {activeGames ? (
-                  <>
-                    <div className="flex flex-col md:border md:border-indigo-slate rounded-lg md:p-6 md:mr-8 mt-8">
-                      <div className="flex items-center">
-                        <div className="ml-8 md:ml-0">
-                          <div className="text-xl font-bold font-monument">ACTIVE GAMES</div>
-                          <img src={underlineIcon} className="mt-1" />
-                        </div>
-                        {activeGames.length > 0 ? (
-                          <>
-                            <Link href="/Play?type=active">
-                              <a className="ml-12 md:ml-16 text-indigo-black underline text-xs font-bold md:mb-2">
-                                VIEW ALL
-                              </a>
-                            </Link>
-                          </>
-                        ) : (
-                          <></>
-                        )}
-                      </div>
-
-                      <div className="flex flex-row md:grid-cols-2 gap-x-6 gap-y-6 mt-8 ml-8 md:ml-0 pr-8 overflow-x-auto">
-                        {activeGames.length > 0 ? (
-                          <>
-                            {activeGames.map((data: any, i) => {
-                              return (
-                                <>
-                                  <PrizePoolComponent
-                                    icon={i.toString()}
-                                    prizePool={data.prize}
-                                    gameName={data.name}
-                                    gameId={data.id}
-                                  />
-                                </>
-                              );
-                            })}
-                          </>
-                        ) : (
-                          <>
-                            <div>Contests opening soon...</div>
-                          </>
-                        )}
-                      </div>
-                    </div>
-                  </>
-                ) : (
-                  ''
-                )}
               </div>
 
               <div className="flex flex-col rounded-lg md:w-1/3 md:border md:border-indigo-slate md:p-6 md:mr-8 md:mt-0 mt-8 md:mb-4 pointer-events-none">
