@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 
-import underlineIcon from '../../../public/images/blackunderline.png';
-
 const CongratsModal = (props) => {
   const {
     onClose, //displayCongrats(false)
@@ -20,7 +18,7 @@ const CongratsModal = (props) => {
 
         <div className="font-bold flex flex-col">
           CONGRATULATIONS!
-          <img src={underlineIcon} className="sm:object-none md:w-6" />
+          <div className="underline" />
         </div>
       </div>
     </div>

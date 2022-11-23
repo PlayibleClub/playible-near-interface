@@ -13,7 +13,6 @@ import { getUTCDateFromLocal, getUTCTimestampFromLocal } from 'utils/date/helper
 import { truncate } from '../../utils/wallet/index';
 import { ADMIN } from '../../data/constants/address';
 import Link from 'next/link';
-import Head from 'next/dist/next-server/lib/head';
 import 'regenerator-runtime/runtime';
 import LoadingPageDark from '../../components/loading/LoadingPageDark';
 import { providers } from 'near-api-js';
@@ -302,7 +301,12 @@ export default function PlayDetails(props) {
                                   <div className="md:-mr-20">
                                     <div className="mt-7 flex justify-center md:self-left md:mr-8">
                                       <div className="-ml-7 mr-7">
-                                        <Image src="/images/game.png" width={550} height={279} />
+                                        <Image
+                                          src="/images/game.png"
+                                          width={550}
+                                          height={279}
+                                          alt="game-image"
+                                        />
                                       </div>
                                       <div className="-mt-7 w-96">
                                         <PortfolioContainer

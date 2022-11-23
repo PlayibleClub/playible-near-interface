@@ -24,14 +24,14 @@ const PlayComponent = (props) => {
           <div className="flex mt-2">
             <div className="flex">
               <div className="mr-2">
-                <Image src={rewardicon} height={15} width={15} />
+                <Image src={rewardicon} height={15} width={15} alt="reward-icon" />
               </div>
               <div className="font-bold">{reward}</div>
             </div>
 
             <div className="flex ml-4">
               <div className="mr-2">
-                <Image src={bars} height={15} width={15} />
+                <Image src={bars} height={15} width={15} alt="bars-icon" />
               </div>
               <div className="font-bold">{score}</div>
             </div>

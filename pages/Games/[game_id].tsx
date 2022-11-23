@@ -7,7 +7,7 @@ import { getContract, getRPCProvider } from 'utils/near';
 import { providers } from 'near-api-js';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
 import { useEffect, useState } from 'react';
-import { GAME,ATHLETE } from 'data/constants/nearContracts';
+import { GAME, ATHLETE } from 'data/constants/nearContracts';
 import { getAthleteInfoById, convertNftToAthlete } from 'utils/athlete/helper';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
@@ -148,68 +148,64 @@ const Games = (props) => {
   return (
     <Container activeName="GAMES">
       <div className="flex flex-row md:flex-col">
-      <Main color="indigo-white">
-        <div className="mt-8 ml-6">
-          <BackFunction prev="/Play" />
-        </div>
+        <Main color="indigo-white">
+          <div className="mt-8 ml-6">
+            <BackFunction prev="/Play" />
+          </div>
           <div className="md:ml-6 mt-11 flex w-auto">
             <div className="md:ml-7 mr-12">
-              <Image src="/images/game.png" width={550} height={279} />
+              <Image src="/images/game.png" width={550} height={279} alt="game-image" />
             </div>
             <div className="md:ml-18 md:-mt-6 ml-18 -mt-6">
-              <ModalPortfolioContainer textcolor="indigo-black" title={'LEADERBOARD'} /> 
+              <ModalPortfolioContainer textcolor="indigo-black" title={'LEADERBOARD'} />
               <div>
                 {playerLineups.length > 0
                   ? playerLineups.map((item, index) => {
-                    return (
-                     <LeaderboardComponent
-                     teamName={item.teamName}
-                     teamScore={item.sumScore}
-                     index={index}
-                     />
-                    );
-                  })
-                : 'Leaderboard ranks are currently not available at this time.'}
+                      return (
+                        <LeaderboardComponent
+                          teamName={item.teamName}
+                          teamScore={item.sumScore}
+                          index={index}
+                        />
+                      );
+                    })
+                  : 'Leaderboard ranks are currently not available at this time.'}
               </div>
             </div>
           </div>
 
-
-          <div className='mt-7 ml-6 w-3/5 md:w-1/3 md:ml-12 md:mt-2'>
-          <ModalPortfolioContainer title="VIEW TEAMS" textcolor="text-indigo-black mb-5" />
-          {
-            /* @ts-expect-error */
-            playerTeams.team_names == undefined ? (
-              <p>No teams assigned</p>
-            ) : (
-              <div>
-                {/* @ts-expect-error */}
-                {playerTeams.team_names.map((data) => {
-                  return (
-                    <div className="p-5 px-6 bg-black-dark text-indigo-white mb-5 flex justify-between">
-                      <p className="font-monument">{data}</p>
-                      <Link
-                        href={{
-                          pathname: '/EntrySummary/[game_id]',
-                          query: {
-                            team_id: data,
-                            game_id: gameId,
-                          },
-                        }}
-                        as={`/EntrySummary/${gameId}/${data}`}
-                      >
-                        <a>
+          <div className="mt-7 ml-6 w-3/5 md:w-1/3 md:ml-12 md:mt-2">
+            <ModalPortfolioContainer title="VIEW TEAMS" textcolor="text-indigo-black mb-5" />
+            {
+              /* @ts-expect-error */
+              playerTeams.team_names == undefined ? (
+                <p>No teams assigned</p>
+              ) : (
+                <div>
+                  {/* @ts-expect-error */}
+                  {playerTeams.team_names.map((data) => {
+                    return (
+                      <div className="p-5 px-6 bg-black-dark text-indigo-white mb-5 flex justify-between">
+                        <p className="font-monument">{data}</p>
+                        <Link
+                          href={{
+                            pathname: '/EntrySummary/[game_id]',
+                            query: {
+                              team_id: data,
+                              game_id: gameId,
+                            },
+                          }}
+                          as={`/EntrySummary/${gameId}/${data}`}
+                        >
                           <img src={'/images/arrow-top-right.png'} />
-                        </a>
-                      </Link>
-                    </div>
-                  );
-                })}
-              </div>
-            )
-          }
+                        </Link>
+                      </div>
+                    );
+                  })}
+                </div>
+              )
+            }
           </div>
-
         </Main>
       </div>
     </Container>
