@@ -19,14 +19,15 @@ const PerformerContainer = (props) => {
     index,
     hoverable = true,
     athletePosition,
+    isInGame,
   } = props;
   return (
     <div
       data-test="PerformerContainer"
-      className={`justify-center flex flex-col w-full h-full pb-12`}
+      className={`justify-center flex flex-col w-full h-full pb-12` }
     >
       <div className="self-center mr-10">
-        {status === true && (
+        {isInGame && (
           <div className="bg-indigo-lightgreen text-indigo-white text-center text-xs font-bold py-1 px-3 mb-2">
             IN GAME
           </div>
@@ -35,7 +36,7 @@ const PerformerContainer = (props) => {
       <div
         className={`flex justify-center h-2/3 ${
           hoverable ? 'cursor-pointer hover:-translate-y-1 transform transition-all' : ''
-        }`}
+        } ${isInGame ? 'opacity-50' : ''}`}
       >
         {uri ? (
           <div className="relative" style={{ width: '120px', height: '160px' }}>
@@ -79,6 +80,7 @@ PerformerContainer.propTypes = {
   index: PropTypes.number,
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
   athletePosition: PropTypes.string,
+  isInGame: PropTypes.bool
 };
 
 export default PerformerContainer;

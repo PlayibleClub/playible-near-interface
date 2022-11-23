@@ -192,6 +192,7 @@ const Portfolio = () => {
     // setSortedList([]);
   }, [totalAthletes, athleteLimit, athleteOffset, position, team, name]);
 
+
   //[dispatch]
 
   useEffect(() => { }, [limit, offset, filter, search]);
@@ -325,6 +326,7 @@ const Portfolio = () => {
                   <div className="grid grid-cols-4 gap-y-8 mt-4 md:grid-cols-4 md:ml-7 md:mt-12">
                     {athletes.map((item) => {
                       const accountAthleteIndex = athletes.indexOf(item, 0) + athleteOffset;
+                      
                       return (
                         <PerformerContainer
                           key={item.athlete_id}
@@ -334,6 +336,7 @@ const Portfolio = () => {
                           uri={item.image}
                           index={accountAthleteIndex}
                           athletePosition={item.position}
+                          isInGame={item.isInGame}
                         // rarity={path.rarity}
                         // status={player.is_locked}
                         ></PerformerContainer>
