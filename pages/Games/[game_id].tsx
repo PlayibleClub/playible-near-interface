@@ -13,6 +13,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import moment from 'moment';
 import Main from 'components/Main';
+import LeaderboardComponent from './components/LeaderboardComponent';
 
 const Games = (props) => {
   const { query } = props;
@@ -161,23 +162,14 @@ const Games = (props) => {
                 {playerLineups.length > 0
                   ? playerLineups.map((item, index) => {
                     return (
-                      <div className="flex flex-row" key={index}>
-                        <div
-                          className={`w-10 font-monument text-2xl ${
-                            index + 1 > 3 ? 'text-indigo-white' : ''
-                          }`}
-                        >
-                          {index + 1 <= 9 ? '0' + (index + 1) : index + 1}
-                        </div>
-                        <div className="ml-6 bg-indigo-black text-indigo-white
-                        w-full text-center p-1 text-base font-monument mb-5">
-                        {item.teamName}
-                        </div>
-                        <div className="ml-16 w-10 text-center font-black">{item.sumScore}</div>
-                      </div>
+                     <LeaderboardComponent
+                     teamName={item.teamName}
+                     teamScore={item.sumScore}
+                     index={index}
+                     />
                     );
                   })
-                : ''}
+                : 'Leaderboard ranks are currently not available at this time.'}
               </div>
             </div>
           </div>
@@ -217,7 +209,7 @@ const Games = (props) => {
             )
           }
           </div>
-          
+
         </Main>
       </div>
     </Container>
