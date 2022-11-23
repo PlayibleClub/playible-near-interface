@@ -500,10 +500,6 @@ const Play = (props) => {
 
   return (
     <>
-      <Head>
-        <title>Playible - Next Generation of Sports Collectibles</title>
-        <link rel="icon" type="image/png" sizes="16x16" href="images/favicon.png" />
-      </Head>
       {claimModal === true && (
         <>
           <div className="fixed w-screen h-screen bg-opacity-70 z-50 overflow-auto bg-indigo-gray flex font-montserrat">

@@ -50,10 +50,6 @@ const TokenDrawPageFront = () => {
 
   return (
     <>
-      <Head>
-          <title>Playible - Next Generation of Sports Collectibles</title>
-          <link rel="icon" type="image/png" sizes="16x16" href="images/favicon.png" />
-      </Head>
       <Container>
         {loading ? (
           <LoadingPageDark />

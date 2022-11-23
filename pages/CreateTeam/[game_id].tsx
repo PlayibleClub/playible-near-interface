@@ -401,10 +401,6 @@ export default function CreateLineup(props) {
     <>
       <>
         <Container activeName="PLAY">
-          <Head>
-            <title>Playible - Next Generation of Sports Collectibles</title>
-            <link rel="icon" type="image/png" sizes="16x16" href="images/favicon.png" />
-          </Head>
           <div className="flex flex-col w-full hide-scroll max-h-screen justify-center self-center">
             <Main color="indigo-white">
               <div className="md:ml-6 md:mt-8">
