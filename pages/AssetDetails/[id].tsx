@@ -84,10 +84,6 @@ const AssetDetails = (props) => {
   }
   return (
     <Container activeName="ATHLETES">
-      <Head>
-          <title>Playible - Next Generation of Sports Collectibles</title>
-          <link rel="icon" type="image/png" sizes="16x16" href="images/favicon.png" />
-      </Head>
       <div className="md:ml-6 mt-12">
         <BackFunction prev={query.origin ? `/${query.origin}` : '/Portfolio'}></BackFunction>
       </div>

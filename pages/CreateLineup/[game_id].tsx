@@ -90,10 +90,6 @@ export default function CreateLineup(props) {
   return (
     <>
       <Container activeName="PLAY">
-        <Head>
-          <title>Playible - Next Generation of Sports Collectibles</title>
-          <link rel="icon" type="image/png" sizes="16x16" href="images/favicon.png" />
-        </Head>
         <div className="flex flex-row md:flex-col">
           <Main color="indigo-white">
             <div className="mt-8 ml-6">

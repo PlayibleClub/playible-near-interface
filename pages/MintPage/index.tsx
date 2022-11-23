@@ -354,10 +354,6 @@ export default function Home(props) {
 
   return (
     <>
-      <Head>
-        <title>Playible - Next Generation of Sports Collectibles</title>
-        <link rel="icon" type="image/png" sizes="16x16" href="images/favicon.png" />
-      </Head>
       <Container activeName="MINT">
         <div className="flex flex-col w-screen md:w-full overflow-y-auto h-screen justify-center self-center md:pb-12 text-indigo-black">
           <Main color="indigo-white">

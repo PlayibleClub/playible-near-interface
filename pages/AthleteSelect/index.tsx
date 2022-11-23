@@ -163,10 +163,6 @@ const AthleteSelect = (props) => {
   return (
     <>
       <Container activeName="PLAY">
-        <Head>
-          <title>Playible - Next Generation of Sports Collectibles</title>
-          <link rel="icon" type="image/png" sizes="16x16" href="images/favicon.png" />
-        </Head>
         <div className="md:ml-6 md:mt-12">
           <BackFunction prev={`/CreateTeam/${gameId}`} />
           <PortfolioContainer
