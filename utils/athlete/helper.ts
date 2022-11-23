@@ -31,30 +31,6 @@ async function getAthleteInfoById(item) {
   return returningData;
 }
 
-async function getAthleteInfoNoStats(item) {
-  let value = item.extra.map((item) => item.value);
-  const { data } = await client.query({
-    query: GET_ATHLETE_BY_ID,
-    variables: { getAthleteById: parseFloat(value[0]) },
-  });
-
-  const returningData = {
-    primary_id: value[0],
-    athlete_id: item.token_id,
-    usage: value[2],
-    name: value[3],
-    team: value[4],
-    position: value[5],
-    release: value[6],
-    isOpen: false,
-    animation: data.getAthleteById.nftAnimation,
-    image: data.getAthleteById.nftImage,
-    fantasy_score: getAvgFantasyScore(data.getAthleteById.stats),
-    isInGame: item.metadata['starts_at'] > getUTCTimestampFromLocal() ? true : false
-  };
-  return returningData;
-}
-
 function getAvgFantasyScore(array) {
   if (Array.isArray(array) && array.length > 0) {
     return array.filter((item) => {
@@ -79,4 +55,4 @@ function convertNftToAthlete(item) {
   };
 }
 
-export { convertNftToAthlete, getAthleteInfoById, getAthleteInfoNoStats };
+export { convertNftToAthlete, getAthleteInfoById };

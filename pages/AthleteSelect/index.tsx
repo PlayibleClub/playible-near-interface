@@ -10,7 +10,6 @@ import { useWalletSelector } from 'contexts/WalletSelectorContext';
 import {
   convertNftToAthlete,
   getAthleteInfoById,
-  getAthleteInfoNoStats,
 } from 'utils/athlete/helper';
 import { ATHLETE } from 'data/constants/nearContracts';
 import AthleteSelectContainer from 'components/containers/AthleteSelectContainer';
@@ -91,7 +90,7 @@ const AthleteSelect = (props) => {
         const result = JSON.parse(Buffer.from(data.result).toString());
         console.log(result);
         const result_two = await Promise.all(
-          result.map(convertNftToAthlete).map(getAthleteInfoNoStats)
+          result.map(convertNftToAthlete).map(getAthleteInfoById)
         );
 
         console.log(result_two);
