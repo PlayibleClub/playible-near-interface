@@ -29,11 +29,14 @@ const PerformerContainer = (props) => {
       className={`justify-center flex flex-col w-full h-full pb-12` }
     >
       <div className="self-center mr-10">
-        {isInGame && (
+        <div className={`h-6 py-1 px-3 mb-2 ${isInGame ? 'bg-indigo-lightgreen text-indigo-white text-center text-xs font-bold' : ''} `}>
+          {isInGame ? 'IN GAME' : ''}
+        </div>
+        {/* {isInGame && (
           <div className="bg-indigo-lightgreen text-indigo-white text-center text-xs font-bold py-1 px-3 mb-2">
             IN GAME
           </div>
-        )}
+        )} */}
       </div>
       <div
         className={`flex justify-center h-2/3 ${
