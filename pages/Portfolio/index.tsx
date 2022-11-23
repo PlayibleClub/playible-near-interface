@@ -337,6 +337,7 @@ const Portfolio = () => {
                           index={accountAthleteIndex}
                           athletePosition={item.position}
                           isInGame={item.isInGame}
+                          fromPortfolio={true}
                         // rarity={path.rarity}
                         // status={player.is_locked}
                         ></PerformerContainer>

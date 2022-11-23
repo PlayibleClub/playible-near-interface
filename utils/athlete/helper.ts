@@ -50,6 +50,7 @@ async function getAthleteInfoNoStats(item) {
     animation: data.getAthleteById.nftAnimation,
     image: data.getAthleteById.nftImage,
     fantasy_score: getAvgFantasyScore(data.getAthleteById.stats),
+    isInGame: item.metadata['starts_at'] > getUTCTimestampFromLocal() ? true : false
   };
   return returningData;
 }
