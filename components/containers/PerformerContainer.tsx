@@ -44,10 +44,10 @@ const PerformerContainer = (props) => {
           <div className="relative" style={{ width: '120px', height: '160px' }}>
             {fromPortfolio === true && 
               <Link href={`/AssetDetails/${id}`} passHref>
-              
+                <div className="absolute z-50" style={{ width: '120px', height: '160px' }}></div>
               </Link>
             }
-            <div className="absolute z-50" style={{ width: '120px', height: '160px' }}></div>
+            
             <object
               className="absolute z-10"
               type="image/svg+xml"
