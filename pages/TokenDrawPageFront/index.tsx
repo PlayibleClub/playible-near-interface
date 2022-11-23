@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import * as statusCode from '../../data/constants/status';
+import Head from 'next/dist/next-server/lib/head';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { BrowserView, MobileView } from 'react-device-detect';
@@ -49,6 +50,10 @@ const TokenDrawPageFront = () => {
 
   return (
     <>
+      <Head>
+          <title>Playible - Next Generation of Sports Collectibles</title>
+          <link rel="icon" type="image/png" sizes="16x16" href="images/favicon.png" />
+      </Head>
       <Container>
         {loading ? (
           <LoadingPageDark />

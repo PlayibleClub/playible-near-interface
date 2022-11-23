@@ -9,6 +9,7 @@ import { OPENPACK, PACK } from '../../data/constants/nearContracts';
 import { providers } from 'near-api-js';
 import BigNumber from 'bignumber.js';
 import { DEFAULT_MAX_FEES, MINT_STORAGE_COST } from 'data/constants/gasFees';
+import Head from 'next/dist/next-server/lib/head';
 
 export default function PackDetails(props) {
   const { query } = props;
@@ -57,6 +58,10 @@ export default function PackDetails(props) {
   return (
     <Container activeName="PACKS">
       <div className="md:ml-6 mt-12">
+        <Head>
+          <title>Playible - Next Generation of Sports Collectibles</title>
+          <link rel="icon" type="image/png" sizes="16x16" href="images/favicon.png" />
+        </Head>
         <BackFunction prev={query.origin ? `/${query.origin}` : '/Packs'}></BackFunction>
       </div>
       <div className="flex flex-col w-full overflow-y-auto h-screen pb-40">
