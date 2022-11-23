@@ -36,7 +36,7 @@ export default function Home(props) {
         args: {
           filter: {
             sport: 'nfl',
-            statType: "season",
+            statType: 'season',
           },
           pagination: {
             limit: 4,
@@ -52,18 +52,17 @@ export default function Home(props) {
     fetchTopAthletes();
   }, []);
 
-  function getAvgFantasyScore(array){
+  function getAvgFantasyScore(array) {
     let totalFantasy = 0;
-    if(Array.isArray(array) && array.length > 0){
-      for(let i = 0; i < array.length; i++){
+    if (Array.isArray(array) && array.length > 0) {
+      for (let i = 0; i < array.length; i++) {
         let obj = array[i];
-        if(obj.type === "weekly"){
+        if (obj.type === 'weekly') {
           totalFantasy += obj.fantasyScore;
         }
       }
       return totalFantasy / (array.length - 1);
-    }
-    else{
+    } else {
       return 0;
     }
   }
@@ -97,12 +96,9 @@ export default function Home(props) {
   };
 
   const [currentIndex, setCurrentIndex] = useState(0);
-  const featuredImagesDesktop = [
-    '/images/promotionheaderDesktop.png',
-    'images/promotionheaderDesktop2.png',
-  ];
+  const featuredImagesDesktop = ['/images/promotionheaderDesktop.png'];
 
-  const featuredImagesMobile = ['/images/promotionheader.png', '/images/promotionheader2.png'];
+  const featuredImagesMobile = ['/images/promotionheader.png'];
 
   const startSlider = () => {
     setInterval(() => {
@@ -170,55 +166,6 @@ export default function Home(props) {
                     </div>
                   </div>
                 </div>
-
-                {activeGames ? (
-                  <>
-                    <div className="flex flex-col md:border md:border-indigo-slate rounded-lg md:p-6 md:mr-8 mt-8">
-                      <div className="flex items-center">
-                        <div className="ml-8 md:ml-0">
-                          <div className="text-xl font-bold font-monument">ACTIVE GAMES</div>
-                          <img src={underlineIcon} className="mt-1" />
-                        </div>
-                        {activeGames.length > 0 ? (
-                          <>
-                            <Link href="/Play?type=active">
-                              <a className="ml-12 md:ml-16 text-indigo-black underline text-xs font-bold md:mb-2">
-                                VIEW ALL
-                              </a>
-                            </Link>
-                          </>
-                        ) : (
-                          <></>
-                        )}
-                      </div>
-
-                      <div className="flex flex-row md:grid-cols-2 gap-x-6 gap-y-6 mt-8 ml-8 md:ml-0 pr-8 overflow-x-auto">
-                        {activeGames.length > 0 ? (
-                          <>
-                            {activeGames.map((data: any, i) => {
-                              return (
-                                <>
-                                  <PrizePoolComponent
-                                    icon={i.toString()}
-                                    prizePool={data.prize}
-                                    gameName={data.name}
-                                    gameId={data.id}
-                                  />
-                                </>
-                              );
-                            })}
-                          </>
-                        ) : (
-                          <>
-                            <div>Contests opening soon...</div>
-                          </>
-                        )}
-                      </div>
-                    </div>
-                  </>
-                ) : (
-                  ''
-                )}
               </div>
 
               <div className="flex flex-col rounded-lg md:w-1/3 md:border md:border-indigo-slate md:p-6 md:mr-8 md:mt-0 mt-8 md:mb-4 pointer-events-none">
@@ -254,12 +201,19 @@ export default function Home(props) {
                   </div>
                 ) : data?.getAthletes.length > 0 ? (
                   <div className="grid grid-cols-2 gap-x-4 mt-8">
-                    {data.getAthletes.map(function ({ firstName, lastName, id, nftImage, stats, }, i) {
+                    {data.getAthletes.map(function (
+                      { firstName, lastName, id, nftImage, stats },
+                      i
+                    ) {
                       return (
                         <div className="" key={i}>
                           <PerformerContainer
                             AthleteName={`${firstName} ${lastName}`}
-                            AvgScore={stats.length == 1 ? stats[0].fantasyScore.toFixed(2) : getAvgFantasyScore(stats).toFixed(2)}
+                            AvgScore={
+                              stats.length == 1
+                                ? stats[0].fantasyScore.toFixed(2)
+                                : getAvgFantasyScore(stats).toFixed(2)
+                            }
                             id={id}
                             uri={nftImage || null}
                             hoverable={false}
