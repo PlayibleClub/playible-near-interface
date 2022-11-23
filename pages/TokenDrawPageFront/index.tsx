@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import * as statusCode from '../../data/constants/status';
+import Head from 'next/dist/next-server/lib/head';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { BrowserView, MobileView } from 'react-device-detect';

@@ -12,6 +12,7 @@ import Popup from 'reactjs-popup';
 import 'reactjs-popup/dist/index.css';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import Head from 'next/dist/next-server/lib/head';
 
 const AssetDetails = (props) => {
   const { query } = props;

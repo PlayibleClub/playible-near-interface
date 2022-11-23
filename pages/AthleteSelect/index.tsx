@@ -10,13 +10,12 @@ import { useWalletSelector } from 'contexts/WalletSelectorContext';
 import {
   convertNftToAthlete,
   getAthleteInfoById,
-  getAthleteInfoNoStats,
 } from 'utils/athlete/helper';
 import { ATHLETE } from 'data/constants/nearContracts';
 import AthleteSelectContainer from 'components/containers/AthleteSelectContainer';
 import Link from 'next/link';
 import ReactPaginate from 'react-paginate';
-
+import PerformerContainer from 'components/containers/PerformerContainer';
 const AthleteSelect = (props) => {
   const { query } = props;
 
@@ -91,7 +90,7 @@ const AthleteSelect = (props) => {
         const result = JSON.parse(Buffer.from(data.result).toString());
         console.log(result);
         const result_two = await Promise.all(
-          result.map(convertNftToAthlete).map(getAthleteInfoNoStats)
+          result.map(convertNftToAthlete).map(getAthleteInfoById)
         );
 
         console.log(result_two);
@@ -163,10 +162,6 @@ const AthleteSelect = (props) => {
   return (
     <>
       <Container activeName="PLAY">
-        <Head>
-          <title>Playible - Next Generation of Sports Collectibles</title>
-          <link rel="icon" type="image/png" sizes="16x16" href="images/favicon.png" />
-        </Head>
         <div className="md:ml-6 md:mt-12">
           <BackFunction prev={`/CreateTeam/${gameId}`} />
           <PortfolioContainer
@@ -182,16 +177,19 @@ const AthleteSelect = (props) => {
 
               return (
                 <>
-                  {checkIfAthleteExists(item.athlete_id) ? (
-                    <div className="w-4/5 h-5/6 border-transparent opacity-50 pointer-events-none">
+                  {checkIfAthleteExists(item.athlete_id) || item.isInGame ? (
+                    <div className="w-4/5 h-5/6 border-transparent pointer-events-none">
                       <div className="mt-1.5 w-full h-14px mb-1"></div>
-                      <AthleteSelectContainer
+                      <PerformerContainer
                         key={item.athlete_id}
-                        athleteName={item.name}
-                        avgScore={item.fantasy_score.toFixed(2)}
+                        AthleteName={item.name}
+                        AvgScore={item.fantasy_score.toFixed(2)}
                         id={item.athlete_id}
                         uri={item.image}
                         index={accountAthleteIndex}
+                        isSelected={true}
+                        isInGame={item.isInGame}
+                        fromPortfolio={false}
                       />
                     </div>
                   ) : (
@@ -204,13 +202,14 @@ const AthleteSelect = (props) => {
                           value={i}
                           onChange={(e) => handleRadioClick(e.target.value)}
                         ></input>
-                        <AthleteSelectContainer
+                        <PerformerContainer
                           key={item.athlete_id}
-                          athleteName={item.name}
-                          avgScore={item.fantasy_score.toFixed(2)}
+                          AthleteName={item.name}
+                          AvgScore={item.fantasy_score.toFixed(2)}
                           id={item.athlete_id}
                           uri={item.image}
                           index={accountAthleteIndex}
+                          fromPortfolio={false}
                         />
                       </div>
                     </label>

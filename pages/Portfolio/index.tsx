@@ -192,6 +192,7 @@ const Portfolio = () => {
     // setSortedList([]);
   }, [totalAthletes, athleteLimit, athleteOffset, position, team, name]);
 
+
   //[dispatch]
 
   useEffect(() => { }, [limit, offset, filter, search]);
@@ -238,10 +239,6 @@ const Portfolio = () => {
 
   return (
     <Container activeName="SQUAD">
-      <Head>
-        <title>Playible - Next Generation of Sports Collectibles</title>
-        <link rel="icon" type="image/png" sizes="16x16" href="images/favicon.png" />
-      </Head>
       <div className="flex flex-col w-full overflow-y-auto h-screen pb-12 mb-12">
         <Main color="indigo-white">
           <div className="flex flex-row h-8">
@@ -325,6 +322,7 @@ const Portfolio = () => {
                   <div className="grid grid-cols-4 gap-y-8 mt-4 md:grid-cols-4 md:ml-7 md:mt-12">
                     {athletes.map((item) => {
                       const accountAthleteIndex = athletes.indexOf(item, 0) + athleteOffset;
+                      
                       return (
                         <PerformerContainer
                           key={item.athlete_id}
@@ -334,6 +332,8 @@ const Portfolio = () => {
                           uri={item.image}
                           index={accountAthleteIndex}
                           athletePosition={item.position}
+                          isInGame={item.isInGame}
+                          fromPortfolio={true}
                         // rarity={path.rarity}
                         // status={player.is_locked}
                         ></PerformerContainer>

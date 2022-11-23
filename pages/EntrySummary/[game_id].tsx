@@ -19,6 +19,7 @@ import { GAME, ATHLETE } from 'data/constants/nearContracts';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
 import { convertNftToAthlete, getAthleteInfoById } from 'utils/athlete/helper';
 import { getUTCDateFromLocal } from 'utils/date/helper';
+import Head from 'next/dist/next-server/lib/head';
 
 export default function EntrySummary(props) {
   const { query } = props;

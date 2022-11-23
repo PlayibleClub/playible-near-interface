@@ -19,29 +19,41 @@ const PerformerContainer = (props) => {
     index,
     hoverable = true,
     athletePosition,
+    isInGame,
+    isSelected,
+    fromPortfolio,
   } = props;
   return (
     <div
       data-test="PerformerContainer"
-      className={`justify-center flex flex-col w-full h-full pb-12`}
+      className={`justify-center flex flex-col w-full h-full pb-12` }
     >
       <div className="self-center mr-10">
-        {status === true && (
+        <div className={`h-6 py-1 px-3 mb-2 ${isInGame ? 'bg-indigo-lightgreen text-indigo-white text-center text-xs font-bold' : ''} `}>
+          {isInGame ? 'IN GAME' : ''}
+        </div>
+        {/* {isInGame && (
           <div className="bg-indigo-lightgreen text-indigo-white text-center text-xs font-bold py-1 px-3 mb-2">
             IN GAME
           </div>
-        )}
+        )} */}
       </div>
       <div
         className={`flex justify-center h-2/3 ${
           hoverable ? 'cursor-pointer hover:-translate-y-1 transform transition-all' : ''
-        }`}
+        } ${isInGame || isSelected ? 'opacity-50' : ''}`}
       >
         {uri ? (
           <div className="relative" style={{ width: '120px', height: '160px' }}>
-            <Link href={`/AssetDetails/${id}`} passHref>
+            {fromPortfolio === true ? (
+              <Link href={`/AssetDetails/${id}`} passHref>
+                <div className="absolute z-50" style={{ width: '120px', height: '160px' }}></div>
+              </Link>
+            ) : (
               <div className="absolute z-50" style={{ width: '120px', height: '160px' }}></div>
-            </Link>
+            )
+            }
+            
             <object
               className="absolute z-10"
               type="image/svg+xml"
@@ -79,6 +91,9 @@ PerformerContainer.propTypes = {
   index: PropTypes.number,
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
   athletePosition: PropTypes.string,
+  isInGame: PropTypes.bool,
+  isSelected: PropTypes.bool,
+  fromPortfolio: PropTypes.bool,
 };
 
 export default PerformerContainer;
