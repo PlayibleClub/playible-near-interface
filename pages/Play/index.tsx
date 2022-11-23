@@ -368,7 +368,7 @@ const Play = (props) => {
         </div>
         {(rewardsCategory === 'winning' ? claimData.winning_placements : claimData.no_placements)
           .length ===
-        i + 1 ? (
+          i + 1 ? (
           ''
         ) : (
           <hr className="opacity-50" />
@@ -519,25 +519,21 @@ const Play = (props) => {
               <div className="text-sm">
                 <div className="flex font-monument select-none mt-5">
                   <div
-                    className={`mr-8 tracking-wider text-xs ${
-                      claimLoading ? 'cursor-not-allowed text-indigo-lightgray' : 'cursor-pointer'
-                    } ${
-                      rewardsCategory === 'winning'
+                    className={`mr-8 tracking-wider text-xs ${claimLoading ? 'cursor-not-allowed text-indigo-lightgray' : 'cursor-pointer'
+                      } ${rewardsCategory === 'winning'
                         ? 'border-b-8 pb-2 border-indigo-buttonblue'
                         : ''
-                    }`}
+                      }`}
                     onClick={!claimLoading ? () => setRewardsCategory('winning') : undefined}
                   >
                     WINNING TEAMS
                   </div>
                   <div
-                    className={`mr-8 tracking-wider text-xs ${
-                      claimLoading ? 'cursor-not-allowed text-indigo-lightgray' : 'cursor-pointer'
-                    } ${
-                      rewardsCategory !== 'winning'
+                    className={`mr-8 tracking-wider text-xs ${claimLoading ? 'cursor-not-allowed text-indigo-lightgray' : 'cursor-pointer'
+                      } ${rewardsCategory !== 'winning'
                         ? 'border-b-8 pb-2 border-indigo-buttonblue'
                         : ''
-                    }`}
+                      }`}
                     onClick={!claimLoading ? () => setRewardsCategory('lost') : undefined}
                   >
                     NO PLACEMENT
@@ -690,9 +686,8 @@ const Play = (props) => {
                 <div className="flex font-bold md:ml-14 font-monument">
                   {categoryList.map(({ name, isActive }) => (
                     <div
-                      className={`cursor-pointer mr-6 ${
-                        isActive ? 'border-b-8 border-indigo-buttonblue' : ''
-                      }`}
+                      className={`cursor-pointer mr-6 ${isActive ? 'border-b-8 border-indigo-buttonblue' : ''
+                        }`}
                       onClick={() => {
                         changecategoryList(name);
                         setCategory(name);
@@ -715,18 +710,8 @@ const Play = (props) => {
                   {1 > 0 ? (
                     <>
                       <div className="mt-4 md:ml-10 grid grid-cols-0 md:grid-cols-3">
-                        {(categoryList[0].isActive
-                          ? newGames
-                          : categoryList[1].isActive
-                          ? ongoingGames
-                          : emptyGames
-                        ).length > 0 &&
-                          (categoryList[0].isActive
-                            ? newGames
-                            : categoryList[1].isActive
-                            ? ongoingGames
-                            : emptyGames
-                          )
+                        {(categoryList[0].isActive ? newGames : emptyGames).length > 0 &&
+                          (categoryList[0].isActive ? newGames : emptyGames)
                             .filter((data, i) => i >= gamesOffset && i < gamesOffset + gamesLimit)
                             .map((data, i) => {
                               return (
@@ -775,9 +760,9 @@ const Play = (props) => {
                                               onClick={() =>
                                                 'data.hasEnded'
                                                   ? // data.hasEnded
-                                                    fetchTeamPlacements('test')
+                                                  fetchTeamPlacements('test')
                                                   : // ? fetchTeamPlacements(data.id)
-                                                    undefined
+                                                  undefined
                                               }
                                             >
                                               <div className="text-indigo-white">
@@ -805,8 +790,8 @@ const Play = (props) => {
                             })}
                       </div>
                       <div className="mt-4 md:ml-10 grid grid-cols-0 md:grid-cols-3">
-                        {(categoryList[2].isActive ? completedGames : emptyGames).length > 0 &&
-                          (categoryList[2].isActive ? completedGames : emptyGames)
+                        {(categoryList[1].isActive ? ongoingGames : categoryList[2].isActive ? completedGames : emptyGames).length > 0 &&
+                          (categoryList[1].isActive ? ongoingGames : categoryList[2].isActive ? completedGames : emptyGames)
                             .filter((data, i) => i >= gamesOffset && i < gamesOffset + gamesLimit)
                             .map((data, i) => {
                               console.log(currentTotal);
@@ -814,25 +799,28 @@ const Play = (props) => {
                                 <div key={i} className="flex">
                                   <div
                                     className="mr-6 cursor-pointer "
-                                    onClick={() =>
-                                      alert('ERROR: Game ' + data.game_id + ' is already finished.')
-                                    }
                                   >
-                                    <div className="mr-6">
-                                      <PlayComponent
-                                        type={activeCategory}
-                                        game_id={data.game_id}
-                                        icon="test"
-                                        prizePool="2,300"
-                                        startDate={data.start_time}
-                                        endDate={data.end_time}
-                                        img={data.image}
-                                        fetchGames={fetchGamesLoading}
-                                        index={() => changeIndex(1)}
-                                      />
-                                    </div>
+                                    <Link href={`/Games/${data.game_id}`} passHref>
+                                      <div className="mr-6">
+                                        <PlayComponent
+                                          type={activeCategory}
+                                          game_id={data.game_id}
+                                          icon="test"
+                                          prizePool="2,300"
+                                          startDate={data.start_time}
+                                          endDate={data.end_time}
+                                          img={data.image}
+                                          fetchGames={fetchGamesLoading}
+                                          index={() => changeIndex(1)}
+                                        />
+
+                                      </div>
+                                    </Link>
+
                                   </div>
+
                                 </div>
+
                               );
                             })}
                       </div>
