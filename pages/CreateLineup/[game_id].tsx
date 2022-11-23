@@ -94,26 +94,25 @@ export default function CreateLineup(props) {
           <title>Playible - Next Generation of Sports Collectibles</title>
           <link rel="icon" type="image/png" sizes="16x16" href="images/favicon.png" />
         </Head>
-        <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12 ">
+        <div className="flex flex-row md:flex-col">
           <Main color="indigo-white">
-            <div className="mt-8 md:ml-6">
+            <div className="mt-8 ml-6">
               <BackFunction
                 prev={query.origin ? `/${query.origin}` : `/PlayDetails/${gameId}`}
               ></BackFunction>
             </div>
-            <div className="grid grid-cols-3 mt-11 ml-7">
-              <div className="ml-6 h-full col-span-2 row-span-2">
+            <div className="md:ml-6 mt-11 flex w-auto">
+              <div className="md:ml-7">
                 <Image src="/images/game.png" width={550} height={279} />
               </div>
-              <div className="-ml-8">
-                <div className="-ml-96 mr-12 -mt-7">
+           
+                <div className="md:ml-18 md:-mt-6 ml-14 -mt-6">
                   <ModalPortfolioContainer title="CREATE TEAM" textcolor="text-indigo-black" />
 
-                  <div className="mt-0 md:mt-4 w-2/5">
+                  <div className="md:w-2/5">
                     Create a team and showcase your collection. Enter a team into the tournament and
                     compete for cash prizes.
                   </div>
-                  <div className="mt-5">
                     <Link
                       href={{
                         pathname: '/CreateTeam/[game_id]',
@@ -128,11 +127,9 @@ export default function CreateLineup(props) {
                         CREATE YOUR LINEUP +
                       </button>
                     </Link>
-                  </div>
-                </div>
               </div>
             </div>
-            <div className="mt-7 ml-12 w-2/5">
+            <div className="mt-7 ml-6 w-3/5 md:w-1/3 md:ml-12 md:mt-2">
               <ModalPortfolioContainer title="VIEW TEAMS" textcolor="text-indigo-black mb-5" />
 
               {
