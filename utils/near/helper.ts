@@ -3,10 +3,12 @@ import { getContract, getRPCProvider } from 'utils/near';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
 import { GAME, ATHLETE } from 'data/constants/nearContracts';
 import { convertNftToAthlete, getAthleteInfoById } from 'utils/athlete/helper';
+import React, { useEffect, useState } from 'react';
 
 const provider = new providers.JsonRpcProvider({
   url: getRPCProvider(),
 });
+
 
 async function query_game_data(game_id) {
   const query = JSON.stringify({
@@ -101,7 +103,7 @@ async function query_all_players_lineup(game_id, week) {
     });
 }
 
-function query_nft_tokens_for_owner(athleteIndex) {
+async function query_nft_tokens_for_owner(athleteIndex) {
   const query = JSON.stringify({
     token_id: athleteIndex
   });
@@ -115,4 +117,48 @@ function query_nft_tokens_for_owner(athleteIndex) {
     })
   }
 
-export { query_game_data, query_all_players_lineup,query_nft_tokens_for_owner }
+async function query_filter_supply_for_owner(accountId, position, team, name) {
+  const query = JSON.stringify({ account_id: accountId, position: position, team: team, name: name });
+
+ return provider.query({
+      request_type: 'call_function',
+      finality: 'optimistic',
+      account_id: getContract(ATHLETE),
+      method_name: 'filtered_nft_supply_for_owner',
+      args_base64: Buffer.from(query).toString('base64'),
+    })
+    .then((data) => {
+      // @ts-ignore:next-line
+      const totalAthletes = JSON.parse(Buffer.from(data.result));
+
+      return totalAthletes;
+    });
+}
+
+async function query_filter_tokens_for_owner(accountId,athleteOffset,athleteLimit,position, team, name) {
+  const query = JSON.stringify({
+    account_id: accountId,
+    from_index: athleteOffset.toString(),
+    limit: athleteLimit,
+    position: position,
+    team: team,
+    name: name,
+  });
+
+ return await provider
+    .query({
+      request_type: 'call_function',
+      finality: 'optimistic',
+      account_id: getContract(ATHLETE),
+      method_name: 'filter_tokens_for_owner',
+      args_base64: Buffer.from(query).toString('base64'),
+    })
+}
+
+export { 
+  query_game_data, 
+  query_all_players_lineup, 
+  query_nft_tokens_for_owner, 
+  query_filter_supply_for_owner,
+  query_filter_tokens_for_owner,
+}

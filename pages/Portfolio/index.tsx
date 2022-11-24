@@ -21,10 +21,12 @@ import { useWalletSelector } from 'contexts/WalletSelectorContext';
 import { ATHLETE } from 'data/constants/nearContracts';
 import PackComponent from 'pages/Packs/components/PackComponent';
 import { convertNftToAthlete, getAthleteInfoById } from 'utils/athlete/helper';
+import { query_filter_supply_for_owner,query_filter_tokens_for_owner } from 'utils/near/helper';
 import ReactPaginate from 'react-paginate';
 import Select from 'react-select';
 import { isCompositeType } from 'graphql';
 import { useRef } from 'react';
+import { current } from '@reduxjs/toolkit';
 
 const Portfolio = () => {
   const [searchText, setSearchText] = useState('');
@@ -113,23 +115,9 @@ const Portfolio = () => {
     }
   }
 
-  function query_nft_supply_for_owner(position, team, name) {
-    const query = JSON.stringify({ account_id: accountId, position: position, team: team, name: name });
-
-    provider
-      .query({
-        request_type: 'call_function',
-        finality: 'optimistic',
-        account_id: getContract(ATHLETE),
-        method_name: 'filtered_nft_supply_for_owner',
-        args_base64: Buffer.from(query).toString('base64'),
-      })
-      .then((data) => {
-        // @ts-ignore:next-line
-        const totalAthletes = JSON.parse(Buffer.from(data.result));
-
-        setTotalAthletes(totalAthletes);
-      });
+  function get_filter_supply_for_owner(accountId, position, team, name) {
+    console.log(accountId)
+    query_filter_supply_for_owner(accountId, position, team, name);
   }
 
   function handleDropdownChange() {
@@ -138,37 +126,20 @@ const Portfolio = () => {
     setRemountComponent(Math.random());
   }
 
-  function query_nft_tokens_for_owner(position, team, name) {
-    const query = JSON.stringify({
-      account_id: accountId,
-      from_index: athleteOffset.toString(),
-      limit: athleteLimit,
-      position: position,
-      team: team,
-      name: name,
+  function get_filter_tokens_for_owner(accountId,athleteOffset,athleteLimit,position, team, name) {
+    query_filter_tokens_for_owner(accountId,athleteOffset,athleteLimit,position, team, name)
+    .then(async (data) => {
+      // @ts-ignore:next-line
+      const result = JSON.parse(Buffer.from(data.result).toString());
+      const result_two = await Promise.all(
+        result.map(convertNftToAthlete).map(getAthleteInfoById)
+      );
+
+      // const sortedResult = sortByKey(result_two, 'fantasy_score');
+      setCurrPosition(position);
+      setAthletes(result_two);
+      setLoading(false);
     });
-
-    provider
-      .query({
-        request_type: 'call_function',
-        finality: 'optimistic',
-        account_id: getContract(ATHLETE),
-        method_name: 'filter_tokens_for_owner',
-        args_base64: Buffer.from(query).toString('base64'),
-      })
-      .then(async (data) => {
-        // @ts-ignore:next-line
-        const result = JSON.parse(Buffer.from(data.result).toString());
-        const result_two = await Promise.all(
-          result.map(convertNftToAthlete).map(getAthleteInfoById)
-        );
-
-        // const sortedResult = sortByKey(result_two, 'fantasy_score');
-        setCurrPosition(position);
-        setAthletes(result_two);
-        setLoading(false);
-      });
-
 
   }
 
@@ -180,17 +151,17 @@ const Portfolio = () => {
   useEffect(() => {
     if (!isNaN(athleteOffset)) {
       console.log("loading");
-      query_nft_supply_for_owner(position, team, name);
+      get_filter_supply_for_owner(accountId, position, team, name);
       //getAthleteLimit();
       // setAthleteList(getAthleteList());
       setPageCount(Math.ceil(totalAthletes / athleteLimit));
       const endOffset = athleteOffset + athleteLimit;
       console.log(`Loading athletes from ${athleteOffset} to ${endOffset}`);
-      query_nft_tokens_for_owner(position, team, name);
+      get_filter_tokens_for_owner(accountId,athleteOffset,athleteLimit,position, team, name);
     }
 
     // setSortedList([]);
-  }, [totalAthletes, athleteLimit, athleteOffset, position, team, name]);
+  }, [totalAthletes, athleteLimit, athleteOffset, position, team ,name, accountId]);
 
 
   //[dispatch]
