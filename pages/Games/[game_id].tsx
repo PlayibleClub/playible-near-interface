@@ -14,6 +14,7 @@ import { useRouter } from 'next/router';
 import moment from 'moment';
 import Main from 'components/Main';
 import LeaderboardComponent from './components/LeaderboardComponent';
+import ViewTeamsContainer from 'components/containers/ViewTeamsContainer';
 
 const Games = (props) => {
   const { query } = props;
@@ -186,23 +187,10 @@ const Games = (props) => {
                 {/* @ts-expect-error */}
                 {playerTeams.team_names.map((data) => {
                   return (
-                    <div className="p-5 px-6 bg-black-dark text-indigo-white mb-5 flex justify-between">
-                      <p className="font-monument">{data}</p>
-                      <Link
-                        href={{
-                          pathname: '/EntrySummary/[game_id]',
-                          query: {
-                            team_id: data,
-                            game_id: gameId,
-                          },
-                        }}
-                        as={`/EntrySummary/${gameId}/${data}`}
-                      >
-                        <a>
-                          <img src={'/images/arrow-top-right.png'} />
-                        </a>
-                      </Link>
-                    </div>
+                    <ViewTeamsContainer
+                    teamNames = {data}
+                    gameId = {gameId}
+                    />
                   );
                 })}
               </div>

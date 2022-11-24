@@ -13,7 +13,7 @@ import { providers } from 'near-api-js';
 import { getContract, getRPCProvider } from 'utils/near';
 import { GAME } from 'data/constants/nearContracts';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
-import Head from 'next/dist/next-server/lib/head';
+import ViewTeamsContainer from 'components/containers/ViewTeamsContainer';
 
 export default function CreateLineup(props) {
   const { query } = props;
@@ -137,23 +137,10 @@ export default function CreateLineup(props) {
                     {/* @ts-expect-error */}
                     {playerTeams.team_names.map((data) => {
                       return (
-                        <div className="p-5 px-6 bg-black-dark text-indigo-white mb-5 flex justify-between">
-                          <p className="font-monument">{data}</p>
-                          <Link
-                            href={{
-                              pathname: '/EntrySummary/[game_id]',
-                              query: {
-                                team_id: data,
-                                game_id: gameId,
-                              },
-                            }}
-                            as={`/EntrySummary/${gameId}/${data}`}
-                          >
-                            <a>
-                              <img src={'/images/arrow-top-right.png'} />
-                            </a>
-                          </Link>
-                        </div>
+                        <ViewTeamsContainer
+                          teamNames = {data}
+                          gameId = {gameId}
+                        />
                       );
                     })}
                   </div>
