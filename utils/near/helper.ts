@@ -101,4 +101,18 @@ async function query_all_players_lineup(game_id, week) {
     });
 }
 
-export { query_game_data, query_all_players_lineup }
+function query_nft_tokens_for_owner(athleteIndex) {
+  const query = JSON.stringify({
+    token_id: athleteIndex
+  });
+
+  return provider.query({
+      request_type: 'call_function',
+      finality: 'optimistic',
+      account_id: getContract(ATHLETE),
+      method_name: 'nft_token_by_id',
+      args_base64: Buffer.from(query).toString('base64'),
+    })
+  }
+
+export { query_game_data, query_all_players_lineup,query_nft_tokens_for_owner }
