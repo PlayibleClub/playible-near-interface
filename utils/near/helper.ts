@@ -155,10 +155,27 @@ async function query_filter_tokens_for_owner(accountId,athleteOffset,athleteLimi
     })
 }
 
+async function query_player_teams(account, game_id,) {
+  const query = JSON.stringify({
+    account: account,
+    game_id: game_id,
+  });
+
+  return provider
+    .query({
+      request_type: 'call_function',
+      finality: 'optimistic',
+      account_id: getContract(GAME),
+      method_name: 'get_player_team',
+      args_base64: Buffer.from(query).toString('base64'),
+    })
+}
+
 export { 
   query_game_data, 
   query_all_players_lineup, 
   query_nft_tokens_for_owner, 
   query_filter_supply_for_owner,
   query_filter_tokens_for_owner,
+  query_player_teams,
 }

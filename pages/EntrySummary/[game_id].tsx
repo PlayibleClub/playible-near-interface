@@ -20,6 +20,7 @@ import { useWalletSelector } from 'contexts/WalletSelectorContext';
 import { convertNftToAthlete, getAthleteInfoById } from 'utils/athlete/helper';
 import { getUTCDateFromLocal } from 'utils/date/helper';
 import Head from 'next/dist/next-server/lib/head';
+import { query_game_data } from 'utils/near/helper';
 
 export default function EntrySummary(props) {
   const { query } = props;
@@ -144,19 +145,8 @@ export default function EntrySummary(props) {
     //setAthletes(testAthlete);
   }
 
-  function query_game_data() {
-    const query = JSON.stringify({
-      game_id: gameId,
-    });
-
-    provider
-      .query({
-        request_type: 'call_function',
-        finality: 'optimistic',
-        account_id: getContract(GAME),
-        method_name: 'get_game',
-        args_base64: Buffer.from(query).toString('base64'),
-      })
+  function get_game_data(game_id) {
+  query_game_data(game_id)
       .then(async (data) => {
         // @ts-ignore:next-line
         const result = JSON.parse(Buffer.from(data.result).toString());
@@ -166,7 +156,7 @@ export default function EntrySummary(props) {
   }
 
   useEffect(() => {
-    query_game_data();
+    get_game_data(gameId);
   }, []);
 
   useEffect(() => {

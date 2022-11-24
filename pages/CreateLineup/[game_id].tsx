@@ -14,6 +14,7 @@ import { getContract, getRPCProvider } from 'utils/near';
 import { GAME } from 'data/constants/nearContracts';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
 import ViewTeamsContainer from 'components/containers/ViewTeamsContainer';
+import { query_player_teams } from 'utils/near/helper';
 
 export default function CreateLineup(props) {
   const { query } = props;
@@ -59,20 +60,8 @@ export default function CreateLineup(props) {
   //   }
   // }, [connectedWallet]);
 
-  function query_player_teams() {
-    const query = JSON.stringify({
-      account: accountId,
-      game_id: gameId,
-    });
-
-    provider
-      .query({
-        request_type: 'call_function',
-        finality: 'optimistic',
-        account_id: getContract(GAME),
-        method_name: 'get_player_team',
-        args_base64: Buffer.from(query).toString('base64'),
-      })
+  function get_player_teams(account, game_id) {
+    query_player_teams(account, game_id)
       .then((data) => {
         // @ts-ignore:next-line
         const playerTeamNames = JSON.parse(Buffer.from(data.result));
@@ -83,7 +72,7 @@ export default function CreateLineup(props) {
 
   useEffect(() => {
     console.log('loading');
-    query_player_teams();
+    get_player_teams(accountId, gameId);
     console.log(playerTeams);
   }, []);
 
