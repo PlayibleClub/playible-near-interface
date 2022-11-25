@@ -52,7 +52,7 @@ const Payment = () => {
                   </button>
 
                   <Link href="/Marketplace">
-                    <div className="text-center font-bold text-md pt-6 pb-12 underline">CANCEL</div>
+                    <div className="text-center font-bold text-md pt-6 pb-12 underlineBig">CANCEL</div>
                   </Link>
                 </div>
               </div>

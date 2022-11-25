@@ -50,7 +50,7 @@ const Modal = (props) => {
                   className="text-lg font-medium leading-6 text-gray-900 pb-4 font-monument uppercase"
                 >
                   {title}
-                  <div class="underline" />
+                  <div className="underlineBig" />
                 </Dialog.Title>
                 {children}
                 {/* <button
