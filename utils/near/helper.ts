@@ -178,6 +178,39 @@ async function query_player_teams(account, game_id,) {
     })
 }
 
+async function query_game_supply() {
+  const query = JSON.stringify({});
+
+  return provider
+    .query({
+      request_type: 'call_function',
+      finality: 'optimistic',
+      account_id: getContract(GAME),
+      method_name: 'get_total_games',
+      args_base64: Buffer.from(query).toString('base64'),
+    }).then((data) => {
+      // @ts-ignore:next-line
+      const totalGames = JSON.parse(Buffer.from(data.result));
+
+      return totalGames;
+    });
+}
+
+async function query_games_list(totalGames) {
+  const query = JSON.stringify({
+    from_index: 0,
+    limit: totalGames,
+  });
+ return provider
+    .query({
+      request_type: 'call_function',
+      finality: 'optimistic',
+      account_id: getContract(GAME),
+      method_name: 'get_games',
+      args_base64: Buffer.from(query).toString('base64'),
+    })
+}
+
 export {
   query_game_data,
   query_all_players_lineup,
@@ -185,4 +218,6 @@ export {
   query_filter_supply_for_owner,
   query_filter_tokens_for_owner,
   query_player_teams,
+  query_game_supply,
+  query_games_list,
 }

@@ -23,6 +23,8 @@ const bars = '/images/bars.png';
 const coin = 'images/coin.png';
 const claimreward = 'images/claimreward.png';
 
+import { query_games_list, query_game_supply } from 'utils/near/helper';
+
 const Play = (props) => {
   const { error } = props;
   const [activeCategory, setCategory] = useState('NEW');
@@ -353,11 +355,11 @@ const Play = (props) => {
               <>
                 <div className="flex items-end font-monument">
                   <div className="flex items-end text-xs">
-                    <Image src={coin} className="mr-2" alt="coins" />
+                    <img src={coin} className="mr-2" alt="coins" />
                     <p>{item.prize} UST</p>
                   </div>
                   <div className="flex items-end text-xs ml-3">
-                    <Image src={bars} className="h-4 w-5 mr-2" alt="bars" />
+                    <img src={bars} className="h-4 w-5 mr-2" alt="bars" />
                     <p>{item.rank}</p>
                   </div>
                 </div>
@@ -382,39 +384,15 @@ const Play = (props) => {
     console.log(newOffset);
     setgamesOffset(newOffset);
   };
-  function query_game_supply() {
-    const query = JSON.stringify({});
 
-    provider
-      .query({
-        request_type: 'call_function',
-        finality: 'optimistic',
-        account_id: getContract(GAME),
-        method_name: 'get_total_games',
-        args_base64: Buffer.from(query).toString('base64'),
-      })
-      .then((data) => {
-        // @ts-ignore:next-line
-        const totalGames = JSON.parse(Buffer.from(data.result));
-
-        setTotalGames(totalGames);
-      });
+async function get_game_supply() {
+      setTotalGames(await query_game_supply());
   }
+
   console.log(totalGames);
-  function query_games_list() {
-    const query = JSON.stringify({
-      from_index: 0,
-      limit: totalGames,
-    });
-    provider
-      .query({
-        request_type: 'call_function',
-        finality: 'optimistic',
-        account_id: getContract(GAME),
-        method_name: 'get_games',
-        args_base64: Buffer.from(query).toString('base64'),
-      })
-      .then(async (data) => {
+  
+  function get_games_list(totalGames) {
+    query_games_list(totalGames).then(async (data) => {
         //@ts-ignore:next-line
         const result = JSON.parse(Buffer.from(data.result).toString());
 
@@ -481,8 +459,8 @@ const Play = (props) => {
   // }, [games, gamesLimit, gamesOffset]);
 
   useEffect(() => {
-    query_game_supply();
-    query_games_list();
+    get_game_supply();
+    get_games_list(totalGames);
   }, [totalGames]);
 
   useEffect(() => {
@@ -634,7 +612,7 @@ const Play = (props) => {
               >
                 <img className="h-4 w-4 " src={'/images/x.png'} />
               </button>
-              <Image src={claimreward} className="h-20 w-20 mt-5" alt="claim-reward" />
+              <img src={claimreward} className="h-20 w-20 mt-5" alt="claim-reward" />
               <div className="mt-4 bg-indigo-yellow w-min p-2 px-3 text-center text-lg font-monument">
                 CONGRATULATIONS
               </div>
@@ -658,7 +636,7 @@ const Play = (props) => {
               >
                 <img className="h-4 w-4 " src={'/images/x.png'} />
               </button>
-              <Image src={claimreward} className="h-20 w-20 mt-5" alt="claim-reward" />
+              <img src={claimreward} className="h-20 w-20 mt-5" alt="claim-reward" />
               <div className="mt-4 bg-indigo-yellow w-max p-2 px-3 text-center text-lg font-monument">
                 FAILED TRANSACTION
               </div>

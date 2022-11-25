@@ -18,7 +18,7 @@ const CongratsModal = (props) => {
 
         <div className="font-bold flex flex-col">
           CONGRATULATIONS!
-          <div className="underline" />
+          <div className="underlineBig" />
         </div>
       </div>
     </div>
