@@ -15,6 +15,8 @@ import { GAME } from 'data/constants/nearContracts';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
 import ViewTeamsContainer from 'components/containers/ViewTeamsContainer';
 import { query_player_teams } from 'utils/near/helper';
+import { Provider, useSelector, useDispatch } from 'react-redux';
+import { store } from 'redux/store';
 
 export default function CreateLineup(props) {
   const { query } = props;
@@ -26,7 +28,8 @@ export default function CreateLineup(props) {
   });
 
   const { accountId } = useWalletSelector();
-
+  const test = useSelector(state => state.athleteLineup.value);
+  console.log(test);
   const [gameData, setGameData] = useState(null);
   const [teamModal, setTeamModal] = useState(false);
   const [playerTeams, setPlayerTeams] = useState([]);
@@ -77,7 +80,7 @@ export default function CreateLineup(props) {
   }, []);
 
   return (
-    <>
+    <Provider store={store}>
       <Container activeName="PLAY">
         <div className="flex flex-row md:flex-col">
           <Main color="indigo-white">
@@ -139,7 +142,7 @@ export default function CreateLineup(props) {
           </Main>
         </div>
       </Container>
-    </>
+    </Provider>
   );
 }
 
