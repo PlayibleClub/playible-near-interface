@@ -143,7 +143,7 @@ const Games = (props) => {
                       return (
                         <LeaderboardComponent
                           teamName={item.teamName}
-                          teamScore={item.sumScore}
+                          teamScore={item.sumScore.toFixed(2)}
                           index={index}
                         />
                       );
