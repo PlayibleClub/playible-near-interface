@@ -41,6 +41,13 @@ async function query_nft_token_by_id(token_id) {
       return result_two;
     })
 }
+
+function checkIncludedWeeks(stats) {
+  for (let i = 0; i < stats.length; i++) {
+    console.log(stats[i][0].gameDate);
+  }
+}
+
 async function query_all_players_lineup(game_id, week) {
   const query = JSON.stringify({
     game_id: game_id,
@@ -109,24 +116,24 @@ async function query_nft_tokens_for_owner(athleteIndex) {
   });
 
   return provider.query({
-      request_type: 'call_function',
-      finality: 'optimistic',
-      account_id: getContract(ATHLETE),
-      method_name: 'nft_token_by_id',
-      args_base64: Buffer.from(query).toString('base64'),
-    })
-  }
+    request_type: 'call_function',
+    finality: 'optimistic',
+    account_id: getContract(ATHLETE),
+    method_name: 'nft_token_by_id',
+    args_base64: Buffer.from(query).toString('base64'),
+  })
+}
 
 async function query_filter_supply_for_owner(accountId, position, team, name) {
   const query = JSON.stringify({ account_id: accountId, position: position, team: team, name: name });
 
- return provider.query({
-      request_type: 'call_function',
-      finality: 'optimistic',
-      account_id: getContract(ATHLETE),
-      method_name: 'filtered_nft_supply_for_owner',
-      args_base64: Buffer.from(query).toString('base64'),
-    })
+  return provider.query({
+    request_type: 'call_function',
+    finality: 'optimistic',
+    account_id: getContract(ATHLETE),
+    method_name: 'filtered_nft_supply_for_owner',
+    args_base64: Buffer.from(query).toString('base64'),
+  })
     .then((data) => {
       // @ts-ignore:next-line
       const totalAthletes = JSON.parse(Buffer.from(data.result));
@@ -135,7 +142,7 @@ async function query_filter_supply_for_owner(accountId, position, team, name) {
     });
 }
 
-async function query_filter_tokens_for_owner(accountId,athleteOffset,athleteLimit,position, team, name) {
+async function query_filter_tokens_for_owner(accountId, athleteOffset, athleteLimit, position, team, name) {
   const query = JSON.stringify({
     account_id: accountId,
     from_index: athleteOffset.toString(),
@@ -145,7 +152,7 @@ async function query_filter_tokens_for_owner(accountId,athleteOffset,athleteLimi
     name: name,
   });
 
- return await provider
+  return await provider
     .query({
       request_type: 'call_function',
       finality: 'optimistic',
@@ -171,10 +178,10 @@ async function query_player_teams(account, game_id,) {
     })
 }
 
-export { 
-  query_game_data, 
-  query_all_players_lineup, 
-  query_nft_tokens_for_owner, 
+export {
+  query_game_data,
+  query_all_players_lineup,
+  query_nft_tokens_for_owner,
   query_filter_supply_for_owner,
   query_filter_tokens_for_owner,
   query_player_teams,

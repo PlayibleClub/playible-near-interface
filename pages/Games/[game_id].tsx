@@ -15,7 +15,7 @@ import moment from 'moment';
 import Main from 'components/Main';
 import LeaderboardComponent from './components/LeaderboardComponent';
 import ViewTeamsContainer from 'components/containers/ViewTeamsContainer';
-import { query_player_teams } from 'utils/near/helper';
+import { query_game_data, query_all_players_lineup, query_player_teams} from 'utils/near/helper';
 
 const Games = (props) => {
   const { query } = props;
@@ -30,94 +30,78 @@ const Games = (props) => {
   });
   const { accountId } = useWalletSelector();
   const [playerTeams, setPlayerTeams] = useState([]);
-
-  function get_all_players_lineup() {
-    const query = JSON.stringify({
-      game_id: gameId,
-    });
-
-    provider
-      .query({
-        request_type: 'call_function',
-        finality: 'optimistic',
-        account_id: getContract(GAME),
-        method_name: 'get_all_players_lineup',
-        args_base64: Buffer.from(query).toString('base64'),
-      })
-      .then(async (data) => {
-        // @ts-ignore:next-line
-        const result = JSON.parse(Buffer.from(data.result).toString());
-
-        const arrayToReturn = await Promise.all(
-          result.map(async (item) => {
-            let itemToReturn = {
-              accountId: item[0][0],
-              teamName: item[0][2],
-              lineup: item[1].lineup,
-              sumScore: 0,
-            };
-
-            itemToReturn.lineup = await Promise.all(
-              itemToReturn.lineup.map((item) => {
-                return query_nft_token_by_id(item);
-              })
-            );
-
-            itemToReturn.lineup = itemToReturn.lineup.map((lineupItem) => {
-              return {
-                ...lineupItem,
-                stats_breakdown:
-                  lineupItem.stats_breakdown
-                    .filter(
-                      (statType) =>
-                        statType.type == 'weekly' && statType.played == 1 && statType.week == week
-                    )
-                    .map((item) => {
-                      return item.fantasyScore;
-                    })[0] || 0,
-              };
-            });
-
-            itemToReturn.sumScore = itemToReturn.lineup.reduce((accumulator, object) => {
-              return accumulator + object.stats_breakdown;
-            }, 0);
-
-            return itemToReturn;
-          })
-        );
-
-        arrayToReturn.sort(function (a, b) {
-          return b.sumScore - a.sumScore;
-        });
-
-        setPlayerLineups(arrayToReturn);
-      });
+  const [gameInfo, setGameInfo] = useState([]);
+  function get_game_data(game_id){
+    
+    query_game_data(game_id).then(async (data) => {
+      //@ts-ignore:next-line
+      const result = JSON.parse(Buffer.from(data.result).toString());
+      setGameInfo(result);
+    })
   }
+  async function get_all_players_lineup() {
+    setPlayerLineups(await query_all_players_lineup(gameId, 10));
+    // const query = JSON.stringify({
+    //   game_id: gameId,
+    // });
 
-  function query_nft_token_by_id(item) {
-    const query = JSON.stringify({
-      token_id: item,
-    });
+    // provider
+    //   .query({
+    //     request_type: 'call_function',
+    //     finality: 'optimistic',
+    //     account_id: getContract(GAME),
+    //     method_name: 'get_all_players_lineup',
+    //     args_base64: Buffer.from(query).toString('base64'),
+    //   })
+    //   .then(async (data) => {
+    //     // @ts-ignore:next-line
+    //     const result = JSON.parse(Buffer.from(data.result).toString());
 
-    return provider
-      .query({
-        request_type: 'call_function',
-        finality: 'optimistic',
-        account_id: getContract(ATHLETE),
-        method_name: 'nft_token_by_id',
-        args_base64: Buffer.from(query).toString('base64'),
-      })
-      .then(async (data) => {
-        // @ts-ignore:next-line
-        const result = JSON.parse(Buffer.from(data.result).toString());
-        const result_two = await getAthleteInfoById(await convertNftToAthlete(result));
-        return result_two;
-      });
+    //     const arrayToReturn = await Promise.all(
+    //       result.map(async (item) => {
+    //         let itemToReturn = {
+    //           accountId: item[0][0],
+    //           teamName: item[0][2],
+    //           lineup: item[1].lineup,
+    //           sumScore: 0,
+    //         };
+
+    //         itemToReturn.lineup = await Promise.all(
+    //           itemToReturn.lineup.map((item) => {
+    //             return query_nft_token_by_id(item);
+    //           })
+    //         );
+
+    //         itemToReturn.lineup = itemToReturn.lineup.map((lineupItem) => {
+    //           return {
+    //             ...lineupItem,
+    //             stats_breakdown:
+    //               lineupItem.stats_breakdown
+    //                 .filter(
+    //                   (statType) =>
+    //                     statType.type == 'weekly' && statType.played == 1 && statType.week == week
+    //                 )
+    //                 .map((item) => {
+    //                   return item.fantasyScore;
+    //                 })[0] || 0,
+    //           };
+    //         });
+
+    //         itemToReturn.sumScore = itemToReturn.lineup.reduce((accumulator, object) => {
+    //           return accumulator + object.stats_breakdown;
+    //         }, 0);
+
+    //         return itemToReturn;
+    //       })
+    //     );
+
+    //     arrayToReturn.sort(function (a, b) {
+    //       return b.sumScore - a.sumScore;
+    //     });
+
+    //     setPlayerLineups(arrayToReturn);
+    //   });
   }
-
-  useEffect(() => {
-    get_all_players_lineup();
-  }, []);
 
   function get_player_teams(account, game_id,) {
     query_player_teams(account, game_id)
@@ -127,13 +111,19 @@ const Games = (props) => {
         setPlayerTeams(playerTeamNames);
       });
   }
-
+ 
   useEffect(() => {
     console.log('loading');
     get_player_teams(accountId, gameId);
     console.log(playerTeams);
   }, []);
 
+  useEffect(() => {
+    get_game_data(gameId);
+    get_all_players_lineup();
+    
+  }, []);
+  
   return (
     <Container activeName="GAMES">
       <div className="flex flex-row md:flex-col">
