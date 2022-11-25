@@ -1,7 +1,6 @@
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import Main from '../../components/Main';
-import Head from 'next/dist/next-server/lib/head';
 import PortfolioContainer from '../../components/containers/PortfolioContainer';
 import { useDispatch } from 'react-redux';
 // import { getPortfolio } from '../../redux/reducers/contract/portfolio';
@@ -9,9 +8,6 @@ import { GAME, ORACLE } from 'data/constants/nearContracts';
 import Link from 'next/link';
 import PlayComponent from './components/PlayComponent';
 import Container from '../../components/containers/Container';
-import claimreward from '../../public/images/claimreward.png';
-import coin from '../../public/images/coin.png';
-import bars from '../../public/images/bars.png';
 import { useRouter } from 'next/router';
 import 'regenerator-runtime/runtime';
 import { axiosInstance } from '../../utils/playible';
@@ -22,6 +18,11 @@ import { getContract, getRPCProvider } from 'utils/near';
 import { getGameInfoById } from 'utils/game/helper';
 import { getUTCTimestampFromLocal } from 'utils/date/helper';
 import ReactPaginate from 'react-paginate';
+
+const bars = '/images/bars.png';
+const coin = 'images/coin.png';
+const claimreward = 'images/claimreward.png';
+
 const Play = (props) => {
   const { error } = props;
   const [activeCategory, setCategory] = useState('NEW');
@@ -352,11 +353,11 @@ const Play = (props) => {
               <>
                 <div className="flex items-end font-monument">
                   <div className="flex items-end text-xs">
-                    <img src={coin} className="mr-2" />
+                    <Image src={coin} className="mr-2" alt="coins" />
                     <p>{item.prize} UST</p>
                   </div>
                   <div className="flex items-end text-xs ml-3">
-                    <img src={bars} className="h-4 w-5 mr-2" />
+                    <Image src={bars} className="h-4 w-5 mr-2" alt="bars" />
                     <p>{item.rank}</p>
                   </div>
                 </div>
@@ -368,7 +369,7 @@ const Play = (props) => {
         </div>
         {(rewardsCategory === 'winning' ? claimData.winning_placements : claimData.no_placements)
           .length ===
-          i + 1 ? (
+        i + 1 ? (
           ''
         ) : (
           <hr className="opacity-50" />
@@ -519,21 +520,25 @@ const Play = (props) => {
               <div className="text-sm">
                 <div className="flex font-monument select-none mt-5">
                   <div
-                    className={`mr-8 tracking-wider text-xs ${claimLoading ? 'cursor-not-allowed text-indigo-lightgray' : 'cursor-pointer'
-                      } ${rewardsCategory === 'winning'
+                    className={`mr-8 tracking-wider text-xs ${
+                      claimLoading ? 'cursor-not-allowed text-indigo-lightgray' : 'cursor-pointer'
+                    } ${
+                      rewardsCategory === 'winning'
                         ? 'border-b-8 pb-2 border-indigo-buttonblue'
                         : ''
-                      }`}
+                    }`}
                     onClick={!claimLoading ? () => setRewardsCategory('winning') : undefined}
                   >
                     WINNING TEAMS
                   </div>
                   <div
-                    className={`mr-8 tracking-wider text-xs ${claimLoading ? 'cursor-not-allowed text-indigo-lightgray' : 'cursor-pointer'
-                      } ${rewardsCategory !== 'winning'
+                    className={`mr-8 tracking-wider text-xs ${
+                      claimLoading ? 'cursor-not-allowed text-indigo-lightgray' : 'cursor-pointer'
+                    } ${
+                      rewardsCategory !== 'winning'
                         ? 'border-b-8 pb-2 border-indigo-buttonblue'
                         : ''
-                      }`}
+                    }`}
                     onClick={!claimLoading ? () => setRewardsCategory('lost') : undefined}
                   >
                     NO PLACEMENT
@@ -629,7 +634,7 @@ const Play = (props) => {
               >
                 <img className="h-4 w-4 " src={'/images/x.png'} />
               </button>
-              <img src={claimreward} className="h-20 w-20 mt-5" />
+              <Image src={claimreward} className="h-20 w-20 mt-5" alt="claim-reward" />
               <div className="mt-4 bg-indigo-yellow w-min p-2 px-3 text-center text-lg font-monument">
                 CONGRATULATIONS
               </div>
@@ -653,7 +658,7 @@ const Play = (props) => {
               >
                 <img className="h-4 w-4 " src={'/images/x.png'} />
               </button>
-              <img src={claimreward} className="h-20 w-20 mt-5" />
+              <Image src={claimreward} className="h-20 w-20 mt-5" alt="claim-reward" />
               <div className="mt-4 bg-indigo-yellow w-max p-2 px-3 text-center text-lg font-monument">
                 FAILED TRANSACTION
               </div>
@@ -686,8 +691,9 @@ const Play = (props) => {
                 <div className="flex font-bold md:ml-14 font-monument">
                   {categoryList.map(({ name, isActive }) => (
                     <div
-                      className={`cursor-pointer mr-6 ${isActive ? 'border-b-8 border-indigo-buttonblue' : ''
-                        }`}
+                      className={`cursor-pointer mr-6 ${
+                        isActive ? 'border-b-8 border-indigo-buttonblue' : ''
+                      }`}
                       onClick={() => {
                         changecategoryList(name);
                         setCategory(name);
@@ -760,9 +766,9 @@ const Play = (props) => {
                                               onClick={() =>
                                                 'data.hasEnded'
                                                   ? // data.hasEnded
-                                                  fetchTeamPlacements('test')
+                                                    fetchTeamPlacements('test')
                                                   : // ? fetchTeamPlacements(data.id)
-                                                  undefined
+                                                    undefined
                                               }
                                             >
                                               <div className="text-indigo-white">
@@ -790,16 +796,24 @@ const Play = (props) => {
                             })}
                       </div>
                       <div className="mt-4 md:ml-10 grid grid-cols-0 md:grid-cols-3">
-                        {(categoryList[1].isActive ? ongoingGames : categoryList[2].isActive ? completedGames : emptyGames).length > 0 &&
-                          (categoryList[1].isActive ? ongoingGames : categoryList[2].isActive ? completedGames : emptyGames)
+                        {(categoryList[1].isActive
+                          ? ongoingGames
+                          : categoryList[2].isActive
+                          ? completedGames
+                          : emptyGames
+                        ).length > 0 &&
+                          (categoryList[1].isActive
+                            ? ongoingGames
+                            : categoryList[2].isActive
+                            ? completedGames
+                            : emptyGames
+                          )
                             .filter((data, i) => i >= gamesOffset && i < gamesOffset + gamesLimit)
                             .map((data, i) => {
                               console.log(currentTotal);
                               return (
                                 <div key={i} className="flex">
-                                  <div
-                                    className="mr-6 cursor-pointer "
-                                  >
+                                  <div className="mr-6 cursor-pointer ">
                                     <Link href={`/Games/${data.game_id}`} passHref>
                                       <div className="mr-6">
                                         <PlayComponent
@@ -813,14 +827,10 @@ const Play = (props) => {
                                           fetchGames={fetchGamesLoading}
                                           index={() => changeIndex(1)}
                                         />
-
                                       </div>
                                     </Link>
-
                                   </div>
-
                                 </div>
-
                               );
                             })}
                       </div>

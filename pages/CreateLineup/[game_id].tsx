@@ -88,30 +88,30 @@ export default function CreateLineup(props) {
             </div>
             <div className="md:ml-6 mt-11 flex w-auto">
               <div className="md:ml-7">
-                <Image src="/images/game.png" width={550} height={279} />
+                <Image src="/images/game.png" width={550} height={279} alt="game-image" />
               </div>
-           
-                <div className="md:ml-18 md:-mt-6 ml-14 -mt-6">
-                  <ModalPortfolioContainer title="CREATE TEAM" textcolor="text-indigo-black" />
 
-                  <div className="md:w-2/5">
-                    Create a team and showcase your collection. Enter a team into the tournament and
-                    compete for cash prizes.
-                  </div>
-                    <Link
-                      href={{
-                        pathname: '/CreateTeam/[game_id]',
-                        query: {
-                          game_id: gameId,
-                          teamName: teamName,
-                        },
-                      }}
-                      as={`/CreateTeam/${gameId}`}
-                    >
-                      <button className="bg-indigo-buttonblue text-indigo-white whitespace-nowrap h-14 px-10 mt-16 text-center font-bold">
-                        CREATE YOUR LINEUP +
-                      </button>
-                    </Link>
+              <div className="md:ml-18 md:-mt-6 ml-14 -mt-6">
+                <ModalPortfolioContainer title="CREATE TEAM" textcolor="text-indigo-black" />
+
+                <div className="md:w-2/5">
+                  Create a team and showcase your collection. Enter a team into the tournament and
+                  compete for cash prizes.
+                </div>
+                <Link
+                  href={{
+                    pathname: '/CreateTeam/[game_id]',
+                    query: {
+                      game_id: gameId,
+                      teamName: teamName,
+                    },
+                  }}
+                  as={`/CreateTeam/${gameId}`}
+                >
+                  <button className="bg-indigo-buttonblue text-indigo-white whitespace-nowrap h-14 px-10 mt-16 text-center font-bold">
+                    CREATE YOUR LINEUP +
+                  </button>
+                </Link>
               </div>
             </div>
             <div className="mt-7 ml-6 w-3/5 md:w-1/3 md:ml-12 md:mt-2">

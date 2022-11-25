@@ -5,12 +5,8 @@ import BackFunction from 'components/buttons/BackFunction';
 import Container from 'components/containers/Container';
 import PortfolioContainer from 'components/containers/PortfolioContainer';
 import router, { useRouter } from 'next/router';
-import Head from 'next/dist/next-server/lib/head';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
-import {
-  convertNftToAthlete,
-  getAthleteInfoById,
-} from 'utils/athlete/helper';
+import { convertNftToAthlete, getAthleteInfoById } from 'utils/athlete/helper';
 import { ATHLETE } from 'data/constants/nearContracts';
 import AthleteSelectContainer from 'components/containers/AthleteSelectContainer';
 import Link from 'next/link';

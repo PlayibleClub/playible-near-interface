@@ -7,7 +7,7 @@ import { getContract, getRPCProvider } from 'utils/near';
 import { providers } from 'near-api-js';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
 import { useEffect, useState } from 'react';
-import { GAME,ATHLETE } from 'data/constants/nearContracts';
+import { GAME, ATHLETE } from 'data/constants/nearContracts';
 import { getAthleteInfoById, convertNftToAthlete } from 'utils/athlete/helper';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
@@ -127,28 +127,28 @@ const Games = (props) => {
   return (
     <Container activeName="GAMES">
       <div className="flex flex-row md:flex-col">
-      <Main color="indigo-white">
-        <div className="mt-8 ml-6">
-          <BackFunction prev="/Play" />
-        </div>
+        <Main color="indigo-white">
+          <div className="mt-8 ml-6">
+            <BackFunction prev="/Play" />
+          </div>
           <div className="md:ml-6 mt-11 flex w-auto">
             <div className="md:ml-7 mr-12">
-              <Image src="/images/game.png" width={550} height={279} />
+              <Image src="/images/game.png" width={550} height={279} alt="game-image" />
             </div>
             <div className="md:ml-18 md:-mt-6 ml-18 -mt-6">
-              <ModalPortfolioContainer textcolor="indigo-black" title={'LEADERBOARD'} /> 
+              <ModalPortfolioContainer textcolor="indigo-black" title={'LEADERBOARD'} />
               <div>
                 {playerLineups.length > 0
                   ? playerLineups.map((item, index) => {
-                    return (
-                     <LeaderboardComponent
-                     teamName={item.teamName}
-                     teamScore={item.sumScore}
-                     index={index}
-                     />
-                    );
-                  })
-                : 'Leaderboard ranks are currently not available at this time.'}
+                      return (
+                        <LeaderboardComponent
+                          teamName={item.teamName}
+                          teamScore={item.sumScore}
+                          index={index}
+                        />
+                      );
+                    })
+                  : 'Leaderboard ranks are currently not available at this time.'}
               </div>
             </div>
           </div>
@@ -175,7 +175,6 @@ const Games = (props) => {
             )
           }
           </div>
-
         </Main>
       </div>
     </Container>

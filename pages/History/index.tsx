@@ -209,7 +209,7 @@ export default function History(props) {
                       <div className="mt-6">
                         <div className="flex flex-col md:flex-row justify-center md:justify-between">
                           <div className="md:w-1/2 mr-6">
-                            <Image src={playicon} width={420} height={225} />
+                            <Image src={playicon} width={420} height={225} alt="play-icon" />
                           </div>
 
                           <div className="md:w-1/2 mt-8 md:mt-0">

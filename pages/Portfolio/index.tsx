@@ -8,7 +8,6 @@ import Link from 'next/link';
 import SquadPackComponent from '../../components/SquadPackComponent';
 import Container from '../../components/containers/Container';
 import Sorter from './components/Sorter';
-import Head from 'next/dist/next-server/lib/head';
 
 import filterIcon from '../../public/images/filterBlack.png';
 import { transactions, utils, WalletConnection, providers } from 'near-api-js';
@@ -62,11 +61,10 @@ const Portfolio = () => {
   const [filterOption, setFilterOption] = useState('');
   const [athleteList, setAthleteList] = useState([]);
 
-  const [currPosition, setCurrPosition] = useState("");
-  const [position, setPosition] = useState("allPos");
-  const [team, setTeam] = useState("allTeams");
-  const [name, setName] = useState("allNames");
-
+  const [currPosition, setCurrPosition] = useState('');
+  const [position, setPosition] = useState('allPos');
+  const [team, setTeam] = useState('allTeams');
+  const [name, setName] = useState('allNames');
 
   const [remountComponent, setRemountComponent] = useState(0);
   // const listQB = athletes.filter(athlete => athlete.position === "QB");
@@ -161,12 +159,12 @@ const Portfolio = () => {
     }
 
     // setSortedList([]);
-  }, [totalAthletes, athleteLimit, athleteOffset, position, team ,name, accountId]);
+  }, [totalAthletes, athleteLimit, athleteOffset, position, team, name]);
 
 
   //[dispatch]
 
-  useEffect(() => { }, [limit, offset, filter, search]);
+  useEffect(() => {}, [limit, offset, filter, search]);
 
   //filtering functions
   // async function checkIfFiltered() {
@@ -215,25 +213,20 @@ const Portfolio = () => {
           <div className="flex flex-row h-8">
             <div className="h-8 flex justify-between mt-3 ml-12">
               <form>
-                <select onChange={(e) => { handleDropdownChange(); setPosition(e.target.value) }}
+                <select
+                  onChange={(e) => {
+                    handleDropdownChange();
+                    setPosition(e.target.value);
+                  }}
                   className="bg-filter-icon bg-no-repeat bg-right  bg-indigo-white w-60
                       ring-2 ring-offset-4 ring-indigo-black ring-opacity-25 focus:ring-2 focus:ring-indigo-black 
-                      focus:outline-none cursor-pointer">
-                  <option value="allPos">
-                    ALL POSITIONS
-                  </option>
-                  <option value="QB">
-                    QUARTER BACK
-                  </option>
-                  <option value="RB">
-                    RUNNING BACK
-                  </option>
-                  <option value="WR">
-                    WIDE RECEIVER
-                  </option>
-                  <option value="TE">
-                    TIGHT END
-                  </option>
+                      focus:outline-none cursor-pointer"
+                >
+                  <option value="allPos">ALL POSITIONS</option>
+                  <option value="QB">QUARTER BACK</option>
+                  <option value="RB">RUNNING BACK</option>
+                  <option value="WR">WIDE RECEIVER</option>
+                  <option value="TE">TIGHT END</option>
                 </select>
               </form>
               {/* <img src={filterIcon} className="object-none w-4 mr-2" /> */}
@@ -250,35 +243,48 @@ const Portfolio = () => {
             </div>
             <div className="h-8 flex justify-between mt-3 ml-12">
               <form>
-                <select onChange={(e) => { handleDropdownChange(); setTeam(e.target.value) }}
+                <select
+                  onChange={(e) => {
+                    handleDropdownChange();
+                    setTeam(e.target.value);
+                  }}
                   className="bg-filter-icon bg-no-repeat bg-right bg-indigo-white w-60
                       ring-2 ring-offset-4 ring-indigo-black ring-opacity-25 focus:ring-2 focus:ring-indigo-black 
-                      focus:outline-none cursor-pointer">
-                  <option value="allTeams">
-                    ALL TEAMS
-                  </option>
-                  <option value="ARI">
-                    Arizona
-                  </option>
+                      focus:outline-none cursor-pointer"
+                >
+                  <option value="allTeams">ALL TEAMS</option>
+                  <option value="ARI">Arizona</option>
                 </select>
               </form>
             </div>
 
             <div className="h-8 flex justify-between mt-3 md:ml-32 lg:ml-80">
-              <form onSubmit={(e) => {
-                handleDropdownChange(); search == "" ? setName("allNames") :
-                  setName(search); e.preventDefault();
-              }}>
-                <label className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-gray-300">Search</label>
+              <form
+                onSubmit={(e) => {
+                  handleDropdownChange();
+                  search == '' ? setName('allNames') : setName(search);
+                  e.preventDefault();
+                }}
+              >
+                <label className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-gray-300">
+                  Search
+                </label>
                 <div className="relative lg:ml-80">
-                  <input type="search" id="default-search" onChange={(e) => setSearch(e.target.value)}
+                  <input
+                    type="search"
+                    id="default-search"
+                    onChange={(e) => setSearch(e.target.value)}
                     className=" bg-indigo-white w-72 pl-2
                             ring-2 ring-offset-4 ring-indigo-black ring-opacity-25 focus:ring-2 focus:ring-indigo-black 
-                            focus:outline-none" placeholder="Search Athlete" />
-                  <button type="submit"
+                            focus:outline-none"
+                    placeholder="Search Athlete"
+                  />
+                  <button
+                    type="submit"
                     className="bg-search-icon bg-no-repeat bg-center absolute -right-12 bottom-0 h-full
                             pl-6 py-2 ring-2 ring-offset-4 ring-indigo-black ring-opacity-25
-                            focus:ring-2 focus:ring-indigo-black"></button>
+                            focus:ring-2 focus:ring-indigo-black"
+                  ></button>
                 </div>
               </form>
             </div>
@@ -293,7 +299,7 @@ const Portfolio = () => {
                   <div className="grid grid-cols-4 gap-y-8 mt-4 md:grid-cols-4 md:ml-7 md:mt-12">
                     {athletes.map((item) => {
                       const accountAthleteIndex = athletes.indexOf(item, 0) + athleteOffset;
-                      
+
                       return (
                         <PerformerContainer
                           key={item.athlete_id}
@@ -305,8 +311,8 @@ const Portfolio = () => {
                           athletePosition={item.position}
                           isInGame={item.isInGame}
                           fromPortfolio={true}
-                        // rarity={path.rarity}
-                        // status={player.is_locked}
+                          // rarity={path.rarity}
+                          // status={player.is_locked}
                         ></PerformerContainer>
                       );
                     })}
@@ -330,7 +336,6 @@ const Portfolio = () => {
                   renderOnZeroPageCount={null}
                 />
               </div>
-
             </div>
             <div className="absolute bottom-10 right-10"></div>
           </div>

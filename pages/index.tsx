@@ -1,7 +1,6 @@
 import Container from '../components/containers/Container';
 import Main from '../components/Main';
 import React, { useCallback, useEffect, useState } from 'react';
-import underlineIcon from '../public/images/blackunderline.png';
 import viewall from '../public/images/viewall.png';
 import PrizePoolComponent from '../components/PrizePoolComponent';
 import Link from 'next/link';
@@ -18,7 +17,7 @@ import Head from 'next/head';
 import { AiOutlineVerticalRight, AiOutlineVerticalLeft } from 'react-icons/ai';
 import { GET_ATHLETES_TOP } from '../utils/queries';
 import { useLazyQuery, useQuery } from '@apollo/client';
-
+import Image from 'next/image';
 let count = 0;
 
 export default function Home(props) {
@@ -171,7 +170,7 @@ export default function Home(props) {
               <div className="flex flex-col rounded-lg md:w-1/3 md:border md:border-indigo-slate md:p-6 md:mr-8 md:mt-0 mt-8 md:mb-4 pointer-events-none">
                 <div className="ml-8 md:ml-0">
                   <div className="text-xl font-bold font-monument">TOP PERFORMERS</div>
-                  <img src={underlineIcon} className="mt-1" />
+                  <div className="underline" />
                 </div>
 
                 {/* <div className="bg-indigo-white h-11 flex justify-between self-center font-thin w-72 mt-6 border-2 border-indigo-lightgray border-opacity-50">

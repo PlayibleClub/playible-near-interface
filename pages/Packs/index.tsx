@@ -4,7 +4,6 @@ import { useForm } from 'react-hook-form';
 import PortfolioContainer from '../../components/containers/PortfolioContainer';
 import LargePackContainer from '../../components/containers/LargePackContainer';
 import Container from '../../components/containers/Container';
-import Head from 'next/dist/next-server/lib/head';
 import BackFunction from '../../components/buttons/BackFunction';
 import Main from '../../components/Main';
 import 'regenerator-runtime/runtime';

@@ -1,6 +1,5 @@
 import { Dialog, Transition } from '@headlessui/react';
 import React, { Fragment } from 'react';
-import underlineIcon from '../../public/images/blackunderline.png';
 
 const BaseModal = (props) => {
   const { title, children, visible, onClose = null } = props;
@@ -42,7 +41,7 @@ const BaseModal = (props) => {
               <div className="bg-indigo-white inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-lg">
                 <Dialog.Title as="h3" className="text-2xl leading-6 text-gray-900 font-bold">
                   {title}
-                  <img src={underlineIcon} className="sm:object-none w-6 py-1" />
+                  <div className="underline" />
                 </Dialog.Title>
                 {children}
                 <div className="mt-4"></div>

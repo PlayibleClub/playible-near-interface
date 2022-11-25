@@ -2,11 +2,11 @@ import { transactions, utils, WalletConnection, providers } from 'near-api-js';
 import Container from '../../components/containers/Container';
 import Main from '../../components/Main';
 import React, { useEffect, useState } from 'react';
+import Image from 'next/image';
 import banner from '../../public/images/promotionheader.png';
 import 'regenerator-runtime/runtime';
 import Head from 'next/head';
 import Select from 'react-select';
-import mint from '../../public/images/mintpage.png';
 import ProgressBar from '@ramonak/react-progress-bar';
 import Usdt from '../../public/images/SVG/usdt';
 import Usdc from '../../public/images/SVG/usdc';
@@ -372,7 +372,7 @@ export default function Home(props) {
                 </div>
                 <div className="flex md:flex-row flex-col mt-12">
                   <div className="md:w-1/2 w-full ">
-                    <img src={mint}></img>
+                    <Image src={'/images/mintpage.png'} width={400} height={400} alt="pack-image" />
                   </div>
                   <div className="md:w-1/2 w-full md:mt-0 mt-5 ml-8  ">
                     <div className="text-xl font-bold font-monument ">

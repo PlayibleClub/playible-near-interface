@@ -2,14 +2,15 @@ import React, { useState } from 'react';
 import Container from '../../components/containers/Container';
 import 'regenerator-runtime/runtime';
 import BackFunction from '../../components/buttons/BackFunction';
-import sampleImage from '../../public/images/packimages/Starter.png';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
 import { getContract } from 'utils/near';
 import { OPENPACK, PACK } from '../../data/constants/nearContracts';
 import { providers } from 'near-api-js';
 import BigNumber from 'bignumber.js';
 import { DEFAULT_MAX_FEES, MINT_STORAGE_COST } from 'data/constants/gasFees';
-import Head from 'next/dist/next-server/lib/head';
+import Image from 'next/image';
+
+const sampleImage = '/images/packimages/Starter.png';
 
 export default function PackDetails(props) {
   const { query } = props;
@@ -58,16 +59,12 @@ export default function PackDetails(props) {
   return (
     <Container activeName="PACKS">
       <div className="md:ml-6 mt-12">
-        <Head>
-          <title>Playible - Next Generation of Sports Collectibles</title>
-          <link rel="icon" type="image/png" sizes="16x16" href="images/favicon.png" />
-        </Head>
         <BackFunction prev={query.origin ? `/${query.origin}` : '/Packs'}></BackFunction>
       </div>
       <div className="flex flex-col w-full overflow-y-auto h-screen pb-40">
         <div className="flex flex-row ml-24 mt-10">
           <div>
-            <img src={sampleImage} height={200} width={200}></img>
+            <Image src={sampleImage} height="200" width="200" alt="pack-image" />
           </div>
           <div className="grid grid-rows">
             <div className="text-2xl font-bold font-monument">
@@ -78,8 +75,9 @@ export default function PackDetails(props) {
             <div className="text-sm">RELEASE 1</div>
             <button
               className="bg-indigo-buttonblue text-indigo-white w-5/6 md:w-80 h-10 text-center font-bold text-sm mt-4"
-              onClick={() => execute_open_pack()}>
-                OPEN PACK
+              onClick={() => execute_open_pack()}
+            >
+              OPEN PACK
             </button>
           </div>
         </div>

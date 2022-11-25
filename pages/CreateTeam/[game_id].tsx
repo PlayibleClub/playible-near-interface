@@ -6,8 +6,6 @@ import Link from 'next/link';
 import Container from '../../components/containers/Container';
 import BackFunction from '../../components/buttons/BackFunction';
 import 'regenerator-runtime/runtime';
-import Head from 'next/dist/next-server/lib/head';
-
 import { useRouter } from 'next/router';
 import { getContract, getRPCProvider } from 'utils/near';
 import Lineup from '../../components/Lineup';
@@ -20,12 +18,10 @@ import BaseModal from '../../components/modals/BaseModal';
 import { position } from '../../utils/athlete/position';
 import Modal from '../../components/modals/Modal';
 import { axiosInstance } from '../../utils/playible';
-import { route } from 'next/dist/next-server/server/router';
 import LoadingPageDark from '../../components/loading/LoadingPageDark';
 import { DEFAULT_MAX_FEES } from 'data/constants/gasFees';
 import { GAME } from 'data/constants/nearContracts';
 export default function CreateLineup(props) {
-
   const { query } = props;
   const gameId = query.game_id;
   const newTeamName = query.teamName;
@@ -53,7 +49,7 @@ export default function CreateLineup(props) {
   const [team, setTeam] = useState([]);
   const [selectModal, setSelectModal] = useState(false);
   const [filterPos, setFilterPos] = useState(null);
-  const [teamName, setTeamName] = useState("");
+  const [teamName, setTeamName] = useState('');
 
   const [limit, setLimit] = useState(5);
   const [offset, setOffset] = useState(0);
@@ -78,14 +74,14 @@ export default function CreateLineup(props) {
   });
 
   function getTeamName() {
-    if (newTeamName != "") {
+    if (newTeamName != '') {
       setTeamName(newTeamName);
     }
   }
 
   const [loading, setLoading] = useState(true);
   // @ts-ignore:next-line
-  const initialState = isJson(data.testing) ? JSON.parse(data.testing) : "hello";
+  const initialState = isJson(data.testing) ? JSON.parse(data.testing) : 'hello';
   const [lineup, setLineup] = isJson(data.testing) ? useState(initialState) : useState([]);
 
   const fetchGameData = async () => {
@@ -193,7 +189,6 @@ export default function CreateLineup(props) {
     }
   };
   function populateLineup() {
-
     //const array = Array(8).fill({position: "QB", isAthlete: false});
     const array = [
       { position: 'QB', isAthlete: false, amount: 1 },
@@ -202,24 +197,19 @@ export default function CreateLineup(props) {
       { position: 'TE', isAthlete: false, amount: 1 },
       { position: ['RB', 'WR', 'TE'], isAthlete: false, amount: 1 },
       { position: ['QB', 'RB', 'WR', 'TE'], isAthlete: false, amount: 1 },
-
-    ]
-
-    const array2 = [
-
     ];
+
+    const array2 = [];
 
     for (let i = 0; i < array.length; i++) {
       for (let j = 0; j < array[i].amount; j++) {
-
         if (array[i].position.length === 3) {
-          array[i].position = "FLEX"
-        }
-        else if (array[i].position.length === 4) {
-          array[i].position = "SUPERFLEX"
+          array[i].position = 'FLEX';
+        } else if (array[i].position.length === 4) {
+          array[i].position = 'SUPERFLEX';
         }
 
-        array2.push({ position: array[i].position, isAthlete: false, });
+        array2.push({ position: array[i].position, isAthlete: false });
       }
     }
     setLineup(array2);
@@ -255,23 +245,25 @@ export default function CreateLineup(props) {
         methodName: 'submit_lineup',
         args: submitLineupArgs,
         gas: DEFAULT_MAX_FEES,
-      }
-    }
+      },
+    };
 
     const wallet = await selector.wallet();
 
     const tx = wallet.signAndSendTransactions({
-      transactions: [{
-        receiverId: getContract(GAME),
-        //@ts-ignore:next-line
-        actions: [action_submit_lineup],
-      }]
-    })
+      transactions: [
+        {
+          receiverId: getContract(GAME),
+          //@ts-ignore:next-line
+          actions: [action_submit_lineup],
+        },
+      ],
+    });
   }
   function verifyLineup(game_id, team_name, lineup) {
-    const token_ids = lineup.map(data => {
+    const token_ids = lineup.map((data) => {
       return data.athlete.athlete_id;
-    })
+    });
     execute_submit_lineup(game_id, team_name, token_ids);
   }
 
@@ -312,7 +304,6 @@ export default function CreateLineup(props) {
     if (lineup.length === 0) {
       populateLineup();
     }
-
   }, []);
 
   useEffect(() => {
@@ -395,7 +386,6 @@ export default function CreateLineup(props) {
         return '';
       }
     }
-
   };
   return (
     <>
@@ -410,8 +400,9 @@ export default function CreateLineup(props) {
                 {selectModal ? (
                   <div className="absolute top-0 left-0 bottom-0 right-0 bg-indigo-white z-50">
                     <PortfolioContainer
-                      title={`SELECT YOUR ${position('baseball', filterPos).toUpperCase() || 'No filtered'
-                        }`}
+                      title={`SELECT YOUR ${
+                        position('baseball', filterPos).toUpperCase() || 'No filtered'
+                      }`}
                       textcolor="text-indigo-black"
                     >
                       <div className="grid grid-cols-2 gap-y-4 mt-4 p-2 md:p-0 md:grid-cols-4 md:mx-7 md:mt-12">
@@ -422,19 +413,15 @@ export default function CreateLineup(props) {
                             <div className="mb-4" key={i}>
                               <PerformerContainerSelectable
                                 AthleteName={
-                                  path.attributes.filter(
-                                    (item) => item.trait_type === 'name'
-                                  )[0].value
+                                  path.attributes.filter((item) => item.trait_type === 'name')[0]
+                                    .value
                                 }
                                 AvgScore={player.fantasy_score}
                                 id={path.athlete_id}
-                                uri={
-                                  player.token_info.info.token_uri || player.nft_image
-                                }
+                                uri={player.token_info.info.token_uri || player.nft_image}
                                 rarity={
-                                  path.attributes.filter(
-                                    (item) => item.trait_type === 'rarity'
-                                  )[0].value
+                                  path.attributes.filter((item) => item.trait_type === 'rarity')[0]
+                                    .value
                                 }
                                 status="ingame"
                                 index={i}
@@ -512,11 +499,8 @@ export default function CreateLineup(props) {
                   ''
                 )}
                 <div className={`${selectModal ? 'hidden h-0' : ''}`}>
-
                   <div className="md:ml-6">
-                    <PortfolioContainer
-                      title="CREATE LINEUP"
-                      textcolor="text-indigo-black" />
+                    <PortfolioContainer title="CREATE LINEUP" textcolor="text-indigo-black" />
                   </div>
                   <div className="flex flex-col -mt-8 -mb-5">
                     <div className="flex items-end pt-10 pb-3 ml-7">
@@ -541,8 +525,8 @@ export default function CreateLineup(props) {
                                   athleteLineup={lineup}
                                   index={i}
                                   test={setArray(data.position, lineup, i)}
-                                  img='/images/tokensMLB/CF.png'
-                                  player=''
+                                  img="/images/tokensMLB/CF.png"
+                                  player=""
                                   game_id={gameId}
                                   teamName={teamName}
                                   isAthlete={data.isAthlete}
@@ -564,7 +548,7 @@ export default function CreateLineup(props) {
                               </div>
                             )}
                           </>
-                        )
+                        );
                       })}
                     </div>
                   </div>
@@ -620,11 +604,7 @@ export default function CreateLineup(props) {
             ''
           )}
         </BaseModal>
-        <Modal
-          title={'Submit Team'}
-          visible={submitModal}
-          onClose={() => setSubmitModal(false)}
-        >
+        <Modal title={'Submit Team'} visible={submitModal} onClose={() => setSubmitModal(false)}>
           <div className="mt-2">
             <p className="">Confirm team lineup</p>
             <button
@@ -653,16 +633,10 @@ export default function CreateLineup(props) {
         </Modal>
         <Modal title={'SUCCESS'} visible={successModal}>
           <div className="mt-2">
-            <p className="text-center font-montserrat mb-5">
-              Team created successfully!
-            </p>
+            <p className="text-center font-montserrat mb-5">Team created successfully!</p>
           </div>
         </Modal>
-        <Modal
-          title={'FAILED'}
-          visible={failedModal}
-          onClose={() => setFailedModal(false)}
-        >
+        <Modal title={'FAILED'} visible={failedModal} onClose={() => setFailedModal(false)}>
           <div className="mt-2">
             <p className="text-center font-montserrat mb-5">
               An error occured. Please try again later.
@@ -678,10 +652,7 @@ export default function CreateLineup(props) {
           }}
         >
           <div className="mt-2 px-5">
-            <p
-              className="text-xs uppercase font-thin mb-2"
-              style={{ fontFamily: 'Montserrat' }}
-            >
+            <p className="text-xs uppercase font-thin mb-2" style={{ fontFamily: 'Montserrat' }}>
               EDIT TEAM NAME
             </p>
             <input
@@ -735,12 +706,12 @@ export async function getServerSideProps(ctx) {
   if (query.game_id && query.athlete_id) {
     return {
       props: { query },
-    }
+    };
   }
 
   return {
     props: { query },
-  }
+  };
 }
 // export async function getServerSideProps(ctx) {
 //   const { query } = ctx;

@@ -8,6 +8,7 @@ import Navbar from '../../components/navbars/Navbar';
 import walletIcon from '../../public/images/walletBlue.png';
 import Container from '../../components/containers/Container';
 import BackFunction from '../../components/buttons/BackFunction';
+import Image from 'next/image';
 import 'regenerator-runtime/runtime';
 
 const Payment = () => {
@@ -29,7 +30,7 @@ const Payment = () => {
               <div className="flex flex-col self-center justify-center">
                 <div className="mb-10">AVILABLE BALANCE</div>
                 <div className="flex border-bg-white border p-4 rounded-lg mt-6">
-                  <img src={walletIcon} className="h-6 w-7 mt-3 mr-6 ml-2" />
+                  <Image src={walletIcon} className="h-6 w-7 mt-3 mr-6 ml-2" alt="wallet-icon" />
                   <div className="flex flex-row mt-3 space-x-4 font-thin">
                     <div className="font-bold">Wallet</div>
                     <div>985 UST</div>

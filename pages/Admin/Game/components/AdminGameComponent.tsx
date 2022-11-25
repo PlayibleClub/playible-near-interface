@@ -28,7 +28,7 @@ const AdminGameComponent = (props) => {
         <div className="w-84 h-96 mb-12">
           <div className="w-full p-3">
             <div className="w-full">
-              <Image src={playicon} width="300px" height="263px" />
+              <Image src={playicon} width="300" height="263" alt="play-icon" />
             </div>
             <div className="mt-4 flex justify-between">
               <div className="">
@@ -51,7 +51,7 @@ const AdminGameComponent = (props) => {
         <div className="w-84 h-96 mb-12">
           <div className="w-full p-3">
             <div className="w-full">
-              <Image src={playicon} width="300px" height="263px" />
+              <Image src={playicon} width="300" height="263" alt="play-icon" />
             </div>
             <div className="mt-4 flex justify-between">
               <div className="">
@@ -74,7 +74,7 @@ const AdminGameComponent = (props) => {
         <div className="w-84 h-96 mb-12">
           <div className="w-full p-3">
             <div className="w-full">
-              <Image src={playicon} width="300px" height="263px" />
+              <Image src={playicon} width="300" height="263" alt="play-icon" />
             </div>
             <div className="mt-4 flex justify-between">
               <div className="">
