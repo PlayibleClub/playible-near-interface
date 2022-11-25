@@ -10,7 +10,7 @@ import { useRouter } from 'next/router';
 import { getContract, getRPCProvider } from 'utils/near';
 import Lineup from '../../components/Lineup';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
-import { useDispatch, useSelector } from 'react-redux';
+import { Provider, useDispatch, useSelector } from 'react-redux';
 import { getAccountAssets } from '../../redux/reducers/external/playible/assets';
 import PerformerContainer from '../../components/containers/PerformerContainer';
 import PerformerContainerSelectable from '../../components/containers/PerformerContainerSelectable';
@@ -21,13 +21,16 @@ import { axiosInstance } from '../../utils/playible';
 import LoadingPageDark from '../../components/loading/LoadingPageDark';
 import { DEFAULT_MAX_FEES } from 'data/constants/gasFees';
 import { GAME } from 'data/constants/nearContracts';
+import { selectAthleteLineup, selectGameId, selectIndex, selectPositions, selectTeamName} from 'redux/athlete/athleteSlice';
+import { setAthleteLineup, setGameId, setIndex, setPosition, setTeamName } from 'redux/athlete/athleteSlice';
+
 export default function CreateLineup(props) {
   const { query } = props;
   const gameId = query.game_id;
   const newTeamName = query.teamName;
-
-  const router = useRouter();
   const dispatch = useDispatch();
+  const router = useRouter();
+  const test = useSelector(selectAthleteLineup);
   const connectedWallet = {};
   const athlete = {
     athlete_id: null,
@@ -213,6 +216,7 @@ export default function CreateLineup(props) {
       }
     }
     setLineup(array2);
+
   }
 
   /* Function that checks whether a string parses into valid JSON. Used to check if data from router
@@ -301,6 +305,7 @@ export default function CreateLineup(props) {
 
   useEffect(() => {
     getTeamName();
+    console.log(test);
     if (lineup.length === 0) {
       populateLineup();
     }
@@ -308,6 +313,7 @@ export default function CreateLineup(props) {
 
   useEffect(() => {
     console.log(lineup);
+    dispatch(setAthleteLineup(lineup));
   }, [lineup]);
   const confirmTeam = async () => {
     setLimit(5);
