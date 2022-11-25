@@ -706,7 +706,7 @@ export default function Index(props) {
                         : completedGames
                       ).filter((data, i ) => i >= gamesOffset && i < (gamesOffset + gamesLimit)).map((data, i) => {
                         return (
-                          <div key={remountComponent}>
+                          <div key={i}>
                             <AdminGameComponent
                             game_id={data.game_id}
                             start_time={data.start_time}
