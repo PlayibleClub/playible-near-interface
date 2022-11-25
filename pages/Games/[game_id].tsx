@@ -15,12 +15,13 @@ import moment from 'moment';
 import Main from 'components/Main';
 import LeaderboardComponent from './components/LeaderboardComponent';
 import ViewTeamsContainer from 'components/containers/ViewTeamsContainer';
-import { query_game_data, query_all_players_lineup, query_player_teams} from 'utils/near/helper';
+import { query_game_data, query_all_players_lineup, query_player_teams } from 'utils/near/helper';
+import { getNflWeek } from 'utils/date/helper';
 
 const Games = (props) => {
   const { query } = props;
   const router = useRouter();
-  const week = router.query.week;
+  // const week = router.query.week;
   const gameId = query.game_id;
 
   const [playerLineups, setPlayerLineups] = useState([]);
@@ -31,16 +32,21 @@ const Games = (props) => {
   const { accountId } = useWalletSelector();
   const [playerTeams, setPlayerTeams] = useState([]);
   const [gameInfo, setGameInfo] = useState([]);
-  function get_game_data(game_id){
-    
+  const [week, setWeek] = useState(0);
+
+  function get_game_data(game_id) {
+
     query_game_data(game_id).then(async (data) => {
       //@ts-ignore:next-line
       const result = JSON.parse(Buffer.from(data.result).toString());
       setGameInfo(result);
     })
   }
+
+  const gameStart = (Object.values(gameInfo)[0]) / 1000;
+
   async function get_all_players_lineup() {
-    setPlayerLineups(await query_all_players_lineup(gameId, 10));
+    setPlayerLineups(await query_all_players_lineup(gameId, 11));
     // const query = JSON.stringify({
     //   game_id: gameId,
     // });
@@ -111,7 +117,7 @@ const Games = (props) => {
         setPlayerTeams(playerTeamNames);
       });
   }
- 
+
   useEffect(() => {
     console.log('loading');
     get_player_teams(accountId, gameId);
@@ -120,10 +126,12 @@ const Games = (props) => {
 
   useEffect(() => {
     get_game_data(gameId);
-    get_all_players_lineup();
-    
   }, []);
-  
+
+  useEffect(() => {
+    get_all_players_lineup();
+  }, []);
+
   return (
     <Container activeName="GAMES">
       <div className="flex flex-row md:flex-col">
@@ -131,6 +139,7 @@ const Games = (props) => {
           <div className="mt-8 ml-6">
             <BackFunction prev="/Play" />
           </div>
+          {getNflWeek(gameStart)}
           <div className="md:ml-6 mt-11 flex w-auto">
             <div className="md:ml-7 mr-12">
               <Image src="/images/game.png" width={550} height={279} alt="game-image" />
@@ -155,25 +164,25 @@ const Games = (props) => {
 
 
           <div className='mt-7 ml-6 w-3/5 md:w-1/3 md:ml-12 md:mt-2'>
-          <ModalPortfolioContainer title="VIEW TEAMS" textcolor="text-indigo-black mb-5" />
-          {
-            /* @ts-expect-error */
-            playerTeams.team_names == undefined ? (
-              <p>No teams assigned</p>
-            ) : (
-              <div>
-                {/* @ts-expect-error */}
-                {playerTeams.team_names.map((data) => {
-                  return (
-                    <ViewTeamsContainer
-                    teamNames = {data}
-                    gameId = {gameId}
-                    />
-                  );
-                })}
-              </div>
-            )
-          }
+            <ModalPortfolioContainer title="VIEW TEAMS" textcolor="text-indigo-black mb-5" />
+            {
+              /* @ts-expect-error */
+              playerTeams.team_names == undefined ? (
+                <p>No teams assigned</p>
+              ) : (
+                <div>
+                  {/* @ts-expect-error */}
+                  {playerTeams.team_names.map((data) => {
+                    return (
+                      <ViewTeamsContainer
+                        teamNames={data}
+                        gameId={gameId}
+                      />
+                    );
+                  })}
+                </div>
+              )
+            }
           </div>
         </Main>
       </div>
