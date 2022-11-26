@@ -462,7 +462,7 @@ export default function Home(props) {
                           (
                             ((minterConfig.nft_pack_max_sale_supply -
                               minterConfig.nft_pack_mint_counter -
-                              205) *
+                              218) *
                               100) /
                             (minterConfig.nft_pack_max_sale_supply + RESERVED_AMOUNT)
                           ).toFixed(2)
