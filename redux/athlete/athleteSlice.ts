@@ -1,23 +1,45 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { HYDRATE } from 'next-redux-wrapper';
+import { string } from 'prop-types';
 
 
 const initialState = {
-  athleteState: ["hello", "world"],
+  athleteLineup: [],
+  game_id: 0,
+  index: 0,
+  teamName: "",
+  position: ""
 }
+
 
 export const athleteSlice = createSlice({
   name: "athleteLineup",
   initialState,
   reducers: {
 
-    setAthleteState(state, action) {
-      state.athleteState = action.payload;
+    setAthleteLineup(state, action) {
+      state.athleteLineup = action.payload;
     },
+    setGameId(state, action) {
+      state.game_id = action.payload;
+    },
+    setIndex(state, action) {
+      state.index = action.payload;
+    },
+    setTeamName(state, action) {
+      state.teamName = action.payload;
+    },
+    setPosition(state, action) {
+      state.position = action.payload;
+    }
 
   }
 });
 
-export const { setAthleteState } = athleteSlice.actions;
+export const { setAthleteLineup, setGameId, setIndex, setTeamName, setPosition } = athleteSlice.actions;
 
+export const selectAthleteLineup = (state) => state.athlete.athleteLineup;
+export const selectGameId = (state) => state.athlete.game_id;
+export const selectIndex = (state) => state.athlete.index;
+export const selectTeamName = (state) => state.athlete.teamName;
+export const selectPosition = (state) => state.athlete.position;
 export default athleteSlice.reducer;

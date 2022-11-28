@@ -586,7 +586,7 @@ function get_games_list(totalGames) {
   async function execute_add_game() {
     const addGameArgs = Buffer.from(
       JSON.stringify({
-        game_id: gameIdToAdd.toString(),
+        game_id: (totalGames + 1).toString(),
         game_time_start: dateStart,
         game_time_end: dateEnd,
         usage_cost: 1,
@@ -628,6 +628,7 @@ function get_games_list(totalGames) {
   useEffect(() => {
     currentTotal !== 0 ? setPageCount(Math.ceil(currentTotal / gamesLimit)) : setPageCount(1);
   }, [ currentTotal]);
+
   return (
     <Container isAdmin>
       <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">

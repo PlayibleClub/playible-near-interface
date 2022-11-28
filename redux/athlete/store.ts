@@ -1,7 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit';
-import athleteReducer from '../athlete/athleteSlice';
+
+import athleteReducer from './athleteSlice';
+
 export default configureStore({
   reducer: {
-    athleteLineup: athleteReducer
+    athlete: athleteReducer
   }
-})
+});
