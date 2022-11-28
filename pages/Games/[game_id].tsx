@@ -109,13 +109,8 @@ const Games = (props) => {
     //   });
   }
 
-  function get_player_teams(account, game_id,) {
-    query_player_teams(account, game_id)
-      .then((data) => {
-        // @ts-ignore:next-line
-        const playerTeamNames = JSON.parse(Buffer.from(data.result));
-        setPlayerTeams(playerTeamNames);
-      });
+  async function get_player_teams(account, game_id) {
+    setPlayerTeams(await query_player_teams(account, game_id));
   }
 
   useEffect(() => {
