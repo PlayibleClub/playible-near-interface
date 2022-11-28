@@ -10,6 +10,7 @@ const initialState = {
   position: ""
 }
 
+
 export const athleteSlice = createSlice({
   name: "athleteLineup",
   initialState,
@@ -40,5 +41,5 @@ export const selectAthleteLineup = (state) => state.athlete.athleteLineup;
 export const selectGameId = (state) => state.athlete.game_id;
 export const selectIndex = (state) => state.athlete.index;
 export const selectTeamName = (state) => state.athlete.teamName;
-export const selectPositions = (state) => state.athlete.positions;
+export const selectPosition = (state) => state.athlete.position;
 export default athleteSlice.reducer;

@@ -21,7 +21,7 @@ import { axiosInstance } from '../../utils/playible';
 import LoadingPageDark from '../../components/loading/LoadingPageDark';
 import { DEFAULT_MAX_FEES } from 'data/constants/gasFees';
 import { GAME } from 'data/constants/nearContracts';
-import { selectAthleteLineup, selectGameId, selectIndex, selectPositions, selectTeamName} from 'redux/athlete/athleteSlice';
+import { selectAthleteLineup, selectGameId, selectIndex, selectPosition, selectTeamName} from 'redux/athlete/athleteSlice';
 import { setAthleteLineup, setGameId, setIndex, setPosition, setTeamName } from 'redux/athlete/athleteSlice';
 
 export default function CreateLineup(props) {
@@ -30,7 +30,7 @@ export default function CreateLineup(props) {
   const newTeamName = query.teamName;
   const dispatch = useDispatch();
   const router = useRouter();
-  const test = useSelector(selectAthleteLineup);
+  const reduxLineup = useSelector(selectAthleteLineup);
   const connectedWallet = {};
   const athlete = {
     athlete_id: null,
@@ -84,8 +84,9 @@ export default function CreateLineup(props) {
 
   const [loading, setLoading] = useState(true);
   // @ts-ignore:next-line
-  const initialState = isJson(data.testing) ? JSON.parse(data.testing) : 'hello';
-  const [lineup, setLineup] = isJson(data.testing) ? useState(initialState) : useState([]);
+  const initialState = reduxLineup ? reduxLineup : [];
+  // const initialState = isJson(data.testing) ? JSON.parse(data.testing) : 'hello';
+  const [lineup, setLineup] = initialState ? useState(initialState) : useState([]);
 
   const fetchGameData = async () => {
     const res = await axiosInstance.get(`/fantasy/game/${router.query.id}/`);
@@ -302,19 +303,21 @@ export default function CreateLineup(props) {
 
     return hasEmptySlot;
   };
-
+  const handleLineupClick = (game_id, position, athleteLineup, index, teamName) => {
+    dispatch(setGameId(game_id));
+    dispatch(setPosition(position));
+    dispatch(setAthleteLineup(athleteLineup));
+    dispatch(setIndex(index));
+    //dispatch(setTeamName(teamName));
+    router.push('/AthleteSelect');
+  }
   useEffect(() => {
     getTeamName();
-    console.log(test);
     if (lineup.length === 0) {
       populateLineup();
     }
   }, []);
 
-  useEffect(() => {
-    console.log(lineup);
-    dispatch(setAthleteLineup(lineup));
-  }, [lineup]);
   const confirmTeam = async () => {
     setLimit(5);
     setOffset(0);
@@ -522,10 +525,12 @@ export default function CreateLineup(props) {
                     </div>
                     <div className="grid grid-cols-2 gap-y-4 mt-2 mb-2 md:mb-10 md:grid-cols-4 md:ml-7 md:mt-12">
                       {lineup.map((data, i) => {
+                        console.log(lineup);
                         return (
                           <>
                             {data.isAthlete === false ? (
-                              <div>
+                              <div className="cursor-pointer" 
+                                   onClick={() => handleLineupClick(gameId, data.position, lineup, i, teamName)}>
                                 <Lineup
                                   position={data.position}
                                   athleteLineup={lineup}
@@ -538,6 +543,7 @@ export default function CreateLineup(props) {
                                   isAthlete={data.isAthlete}
                                 />
                               </div>
+                              
                             ) : (
                               <div>
                                 <Lineup
