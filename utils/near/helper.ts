@@ -168,14 +168,19 @@ async function query_player_teams(account, game_id,) {
     game_id: game_id,
   });
 
-  return provider
+  return await provider
     .query({
       request_type: 'call_function',
       finality: 'optimistic',
       account_id: getContract(GAME),
       method_name: 'get_player_team',
       args_base64: Buffer.from(query).toString('base64'),
-    })
+    }).then((data) => {
+      // @ts-ignore:next-line
+      const playerTeamNames = JSON.parse(Buffer.from(data.result));
+
+      return playerTeamNames;
+    });
 }
 
 async function query_game_supply() {

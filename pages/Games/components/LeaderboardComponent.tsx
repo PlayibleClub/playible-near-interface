@@ -21,14 +21,14 @@ return (
         w-full text-center p-1 text-base font-monument mb-5">
         {teamName}
         </div>
-        <div className="ml-16 w-10 text-center font-black">{teamScore}</div>
+        <div className="ml-16 w-10 text-center font-black">{teamScore.toFixed(2)}</div>
     </div>
 )
 };
 
 LeaderboardComponent.propTypes = {
 teamName: PropTypes.string,
-teamScore: PropTypes.string,
+teamScore: PropTypes.number,
 index: PropTypes.number,
 };
 export default LeaderboardComponent;
