@@ -20,6 +20,7 @@ const PackContainer = (props) => {
             }
             width={120}
             height={150}
+            alt="squad-pack"
           />
         </div>
         <div className="h-1/2 flex justify-center mb-6">

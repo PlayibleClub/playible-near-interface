@@ -19,8 +19,7 @@ const AthleteSelectContainer = (props) => {
     <div className="justify-center flex flex-col w-full h-full pb-4">
       <div className="self-center mr-10">
         {status === true && (
-          <div className="bg-indigo-lightgreen text-indigo-white text-center text-xs font-bold px-3 mb-2">
-          </div>
+          <div className="bg-indigo-lightgreen text-indigo-white text-center text-xs font-bold px-3 mb-2"></div>
         )}
       </div>
       <div
@@ -29,9 +28,9 @@ const AthleteSelectContainer = (props) => {
         }`}
       >
         {uri ? (
-          <div className="relative" style={{ width: '120px', height: '160px'}}>
+          <div className="relative" style={{ width: '120px', height: '160px' }}>
             <div className="focus:outline-none focus:ring focus:ring-blue-300">
-              <div className="absolute z-50" style={{ width: '120px', height: '160px'}}></div>
+              <div className="absolute z-50" style={{ width: '120px', height: '160px' }}></div>
             </div>
             <object
               className="absolute-z10"
@@ -42,7 +41,7 @@ const AthleteSelectContainer = (props) => {
             />
           </div>
         ) : (
-          <Image src={'/images/tokensMLB/SP.png'} width={120} height={160} />
+          <Image src={'/images/tokensMLB/SP.png'} width={120} height={160} alt="token-bare" />
         )}
       </div>
       <div className="h-full mt-16 flex justify-center ">
@@ -53,8 +52,8 @@ const AthleteSelectContainer = (props) => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
 AthleteSelectContainer.propTypes = {
   uri: PropTypes.string,

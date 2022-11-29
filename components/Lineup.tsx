@@ -42,10 +42,7 @@ const Lineup = (props) => {
     <>
       <div className="flex justify-center">
         {img ? (
-          <div
-            className="justify-center relative mb-7"
-            style={{ width: '120px', height: '162px' }}
-          >
+          <div className="justify-center relative mb-7" style={{ width: '120px', height: '162px' }}>
             <div className="absolute z-40" style={{ width: '120px', height: '160px' }}></div>
             <object
               className="absolute z-10"
@@ -59,7 +56,7 @@ const Lineup = (props) => {
             </div>
           </div>
         ) : (
-          <Image src={lineupPosition} width={143} height={190} />
+          <Image src={lineupPosition} width={143} height={190} alt="play-position" />
         )}
         {/* </Link> */}
       </div>

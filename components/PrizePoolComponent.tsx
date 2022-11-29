@@ -38,7 +38,7 @@ const PrizePoolComponent = (props) => {
               <div className="flex">
                 <div className="font-bold">PLAY NOW</div>
                 <div className="ml-2">
-                  <Image src={nexticon} width="20px" height="20px" />
+                  <Image src={nexticon} width="20" height="20" alt="next-icon" />
                 </div>
               </div>
             </button>

@@ -14,6 +14,7 @@ const LargePackContainer = (props) => {
             src={imagesrc}
             width={120}
             height={150}
+            alt="large-pack"
           />
           <div className="mt-3 mb-1 font-bold text-sm">{PackName}</div>
           <div className="font-thin md:text-xs transition-all">Release {releaseValue}</div>

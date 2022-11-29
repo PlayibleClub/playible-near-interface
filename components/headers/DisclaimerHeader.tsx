@@ -1,5 +1,4 @@
 import PropTypes from 'prop-types';
-import disclaimer from '../../public/images/disclaimer.png';
 import Image from 'next/link';
 import React, { useState } from 'react';
 
@@ -17,7 +16,7 @@ const DisclaimerHeader = (props) => {
     >
       <div className="w-full h-full flex items-center bg-indigo-buttonblue font-montserrat text-indigo-white p-4 pl-5">
         <div className="mr-8 flex justify-center md:h-auto md:w-auto h-auto w-20">
-          <img src={disclaimer} className="" />
+          <img className="" />
         </div>
         <div className="text-xs">
           WE ARE IN CONTACT WITH SECURITY AUDIT, UNTIL A FULL AUDIT REPORT WE RECOMMEND TO USE

@@ -8,7 +8,12 @@ const MarketplaceContainer = (props) => {
   return (
     <div data-test="PerformerContainer" className={`justify-center flex flex-col w-full h-full`}>
       <div className="flex justify-center h-2/3">
-        <Image src={'/../public/images/tokens/' + id + '.png'} width={120} height={160} />
+        <Image
+          src={'/../public/images/tokens/' + id + '.png'}
+          width={120}
+          height={160}
+          alt="token-image"
+        />
       </div>
       {children}
       <div className="h-1/2 flex justify-center mb-2">

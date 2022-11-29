@@ -26,10 +26,14 @@ const PerformerContainer = (props) => {
   return (
     <div
       data-test="PerformerContainer"
-      className={`justify-center flex flex-col w-full h-full pb-12` }
+      className={`justify-center flex flex-col w-full h-full pb-12`}
     >
       <div className="self-center mr-10">
-        <div className={`h-6 py-1 px-3 mb-2 ${isInGame ? 'bg-indigo-lightgreen text-indigo-white text-center text-xs font-bold' : ''} `}>
+        <div
+          className={`h-6 py-1 px-3 mb-2 ${
+            isInGame ? 'bg-indigo-lightgreen text-indigo-white text-center text-xs font-bold' : ''
+          } `}
+        >
           {isInGame ? 'IN GAME' : ''}
         </div>
         {/* {isInGame && (
@@ -51,9 +55,8 @@ const PerformerContainer = (props) => {
               </Link>
             ) : (
               <div className="absolute z-50" style={{ width: '120px', height: '160px' }}></div>
-            )
-            }
-            
+            )}
+
             <object
               className="absolute z-10"
               type="image/svg+xml"
@@ -63,7 +66,7 @@ const PerformerContainer = (props) => {
             />
           </div>
         ) : (
-          <Image src={'/images/tokensMLB/SP.png'} width={120} height={160} />
+          <Image src={'/images/tokensMLB/SP.png'} width={120} height={160} alt="token-bare" />
         )}
       </div>
       {children}

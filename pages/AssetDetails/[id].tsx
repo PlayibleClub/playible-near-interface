@@ -12,7 +12,6 @@ import Popup from 'reactjs-popup';
 import 'reactjs-popup/dist/index.css';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import Head from 'next/dist/next-server/lib/head';
 import { query_nft_tokens_for_owner } from 'utils/near/helper';
 
 const AssetDetails = (props) => {
@@ -27,7 +26,6 @@ const AssetDetails = (props) => {
 
   const [athlete, setAthlete] = useState(null);
   const athleteImage = athlete?.image;
-
 
   function getDateOfGame(gameDate) {
     let date = new Date(Date.parse(gameDate));
@@ -50,13 +48,12 @@ const AssetDetails = (props) => {
   }
 
   function get_nft_tokens_for_owner(athleteIndex) {
-    
-      query_nft_tokens_for_owner(athleteIndex).then(async (data) => {
-        // @ts-ignore:next-line
-        const result = JSON.parse(Buffer.from(data.result).toString());
-        const result_two = await getAthleteInfoById(await convertNftToAthlete(result));
-        setAthlete(result_two);
-      });
+    query_nft_tokens_for_owner(athleteIndex).then(async (data) => {
+      // @ts-ignore:next-line
+      const result = JSON.parse(Buffer.from(data.result).toString());
+      const result_two = await getAthleteInfoById(await convertNftToAthlete(result));
+      setAthlete(result_two);
+    });
   }
 
   useEffect(() => {

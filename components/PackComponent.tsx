@@ -10,7 +10,7 @@ const TokenComponent = (props) => {
   return (
     <div className="overflow-hidden ease-in-out">
       <div className="mt-10">
-        <Image src={tokenType} width={170} height={270} />
+        <Image src={tokenType} width={170} height={270} alt="pack-image" />
       </div>
 
       <div>
