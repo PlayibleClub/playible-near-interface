@@ -16,7 +16,7 @@ const ModalPortfolioContainer = (props) => {
             <div className="flex w-full">
               <div className="w-2/3 text-2xl pb-3 pt-20 md:pt-14 justify-between align-center">
                 {title}
-                <div className="underline" />
+                <div className="underlineBig" />
               </div>
               <div
                 className="w-32 h-32"
@@ -33,7 +33,7 @@ const ModalPortfolioContainer = (props) => {
           ) : (
             <div className="pb-3 pt-6 justify-start align-center text-2xl font-monument">
               {title}
-              <div className="underline" />
+              <div className="underlineBig" />
             </div>
           )}
         </div>

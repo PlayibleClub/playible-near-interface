@@ -52,14 +52,19 @@ select {
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
 }
+
 .hide-scroll ::-webkit-scrollbar {
   display: none;
 }
 
-.underline {
+.underlineBig {
   width: 38px;
   height: 7px;
   background-color: black;
+}
+
+.font-outline-1 {
+  -webkit-text-stroke: 1px black;
 }
 
 svg:hover{

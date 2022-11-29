@@ -13,6 +13,7 @@ import 'reactjs-popup/dist/index.css';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import Head from 'next/dist/next-server/lib/head';
+import { query_nft_tokens_for_owner } from 'utils/near/helper';
 
 const AssetDetails = (props) => {
   const { query } = props;
@@ -48,20 +49,9 @@ const AssetDetails = (props) => {
     return months[date.getMonth()] + '. ' + date.getDate();
   }
 
-  function query_nft_tokens_for_owner() {
-    const query = JSON.stringify({
-      token_id: athleteIndex
-    });
-
-    provider
-      .query({
-        request_type: 'call_function',
-        finality: 'optimistic',
-        account_id: getContract(ATHLETE),
-        method_name: 'nft_token_by_id',
-        args_base64: Buffer.from(query).toString('base64'),
-      })
-      .then(async (data) => {
+  function get_nft_tokens_for_owner(athleteIndex) {
+    
+      query_nft_tokens_for_owner(athleteIndex).then(async (data) => {
         // @ts-ignore:next-line
         const result = JSON.parse(Buffer.from(data.result).toString());
         const result_two = await getAthleteInfoById(await convertNftToAthlete(result));
@@ -70,7 +60,7 @@ const AssetDetails = (props) => {
   }
 
   useEffect(() => {
-    query_nft_tokens_for_owner();
+    get_nft_tokens_for_owner(athleteIndex);
   }, []);
 
   function getGamesPlayed() {

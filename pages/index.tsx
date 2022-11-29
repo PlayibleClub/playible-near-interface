@@ -18,6 +18,9 @@ import { AiOutlineVerticalRight, AiOutlineVerticalLeft } from 'react-icons/ai';
 import { GET_ATHLETES_TOP } from '../utils/queries';
 import { useLazyQuery, useQuery } from '@apollo/client';
 import Image from 'next/image';
+import {store} from 'redux/athlete/store';
+import {Provider} from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
 let count = 0;
 
 export default function Home(props) {
@@ -25,7 +28,6 @@ export default function Home(props) {
   const [topAthletes, setTopAthletes] = useState([]);
   const [athletesLoading, setAthletesLoading] = useState(true);
   // const { loading, error, data } = useQuery(GET_ATHLETES_TOP, {
-
   // });
   const [getAthletes, { loading, error, data }] = useLazyQuery(GET_ATHLETES_TOP);
 
@@ -110,7 +112,7 @@ export default function Home(props) {
   }, []);
 
   return (
-    <>
+    <Provider store={store}>
       <Head>
         <title>Playible - Next Generation of Sports Collectibles</title>
         <link rel="icon" type="image/png" sizes="16x16" href="images/favicon.png" />
@@ -170,7 +172,7 @@ export default function Home(props) {
               <div className="flex flex-col rounded-lg md:w-1/3 md:border md:border-indigo-slate md:p-6 md:mr-8 md:mt-0 mt-8 md:mb-4 pointer-events-none">
                 <div className="ml-8 md:ml-0">
                   <div className="text-xl font-bold font-monument">TOP PERFORMERS</div>
-                  <div className="underline" />
+                  <div className="underlineBig" />
                 </div>
 
                 {/* <div className="bg-indigo-white h-11 flex justify-between self-center font-thin w-72 mt-6 border-2 border-indigo-lightgray border-opacity-50">
@@ -229,7 +231,7 @@ export default function Home(props) {
           </Main>
         </div>
       </Container>
-    </>
+    </Provider>
   );
 }
 

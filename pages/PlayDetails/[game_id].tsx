@@ -21,9 +21,11 @@ import { useWalletSelector } from 'contexts/WalletSelectorContext';
 import { GAME } from 'data/constants/nearContracts';
 import Router from 'next/router';
 import BaseModal from 'components/modals/BaseModal';
+import { query_game_data } from 'utils/near/helper';
+
 export default function PlayDetails(props) {
   const { query } = props;
-
+  
   const gameId = query.game_id;
 
   const provider = new providers.JsonRpcProvider({
@@ -61,25 +63,8 @@ export default function PlayDetails(props) {
     }, 1000);
   }
 
-  function query_game_data() {
-    const query = JSON.stringify({
-      game_id: gameId,
-    });
-
-    provider
-      .query({
-        request_type: 'call_function',
-        finality: 'optimistic',
-        account_id: getContract(GAME),
-        method_name: 'get_game',
-        args_base64: Buffer.from(query).toString('base64'),
-      })
-      .then(async (data) => {
-        // @ts-ignore:next-line
-        const result = JSON.parse(Buffer.from(data.result).toString());
-        console.log(result);
-        setGameData(result);
-      });
+  async function get_game_data(game_id) {
+    setGameData(await query_game_data(game_id));
   }
 
   function query_player_team() {
@@ -112,12 +97,12 @@ export default function PlayDetails(props) {
       );
     } else {
       setgameFreeOrPaid('FREE GAME');
-      setdetailsFreeOrPaid("*Winning in this game will reward your player's token usage by 1.");
+      setdetailsFreeOrPaid("*Winning in t his game will reward your player's token usage by 1.");
     }
   }
 
   useEffect(() => {
-    query_game_data();
+    get_game_data(gameId);
     query_player_team();
   }, []);
 

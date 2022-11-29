@@ -25,6 +25,8 @@ import AdminGameComponent from './components/AdminGameComponent';
 import moment from 'moment';
 import {getUTCTimestampFromLocal} from 'utils/date/helper';
 import ReactPaginate from 'react-paginate';
+import { query_games_list, query_game_supply } from 'utils/near/helper';
+
 TimeAgo.addDefaultLocale(en);
 
 export default function Index(props) {
@@ -543,73 +545,48 @@ export default function Index(props) {
   const startFormattedTimestamp = moment(dateStartFormatted).toLocaleString();
   const endFormattedTimestamp = moment(dateEndFormatted).toLocaleString();
 
-  function query_game_supply() {
-    const query = JSON.stringify({ });
+  async function get_game_supply() {
+    setTotalGames(await query_game_supply());
+}
 
-    provider
-      .query({
-        request_type: 'call_function',
-        finality: 'optimistic',
-        account_id: getContract(GAME),
-        method_name: 'get_total_games',
-        args_base64: Buffer.from(query).toString('base64'),
-      })
-      .then((data) => {
-        // @ts-ignore:next-line
-        const totalGames = JSON.parse(Buffer.from(data.result));
+function get_games_list(totalGames) {
+  query_games_list(totalGames).then(async (data) => {
+      //@ts-ignore:next-line
+      const result = JSON.parse(Buffer.from(data.result).toString());
 
-        setTotalGames(totalGames);
-      });
-  };
+      const upcomingGames = await Promise.all(
+        result
+          .filter((x) => x[1].start_time > getUTCTimestampFromLocal())
+          .map((item) => getGameInfoById(item))
+      );
 
-  function query_games_list() {
-    const query = JSON.stringify({
-      from_index: 0, //offset for pagination
-      limit: totalGames,
+      const completedGames = await Promise.all(
+        result
+          .filter((x) => x[1].end_time < getUTCTimestampFromLocal())
+          .map((item) => getGameInfoById(item))
+      );
+
+      const ongoingGames = await Promise.all(
+        result
+          .filter(
+            (x) =>
+              x[1].start_time < getUTCTimestampFromLocal() &&
+              x[1].end_time > getUTCTimestampFromLocal()
+          )
+          .map((item) => getGameInfoById(item))
+      );
+      console.table(completedGames);
+      setCurrentTotal(upcomingGames.length);
+      setNewGames(upcomingGames);
+      setCompletedGames(completedGames);
+      setOngoingGames(ongoingGames);
     });
-    provider
-      .query({
-        request_type: 'call_function',
-        finality: 'optimistic',
-        account_id: getContract(GAME),
-        method_name: 'get_games',
-        args_base64: Buffer.from(query).toString('base64'),
-      })
-      .then(async (data) => {
-        //@ts-ignore:next-line
-        const result = JSON.parse(Buffer.from(data.result).toString());
-        //@ts-ignore:next-lines
-        //console.table(Buffer.from(data.result).toString());
-        //console.table(result);
-        const upcomingGames = await Promise.all(
-          result.filter((x) => x[1].start_time > getUTCTimestampFromLocal()).map((item) => getGameInfoById(item))
-        );
-        const completedGames = await Promise.all(
-          result.filter((x) => x[1].end_time < getUTCTimestampFromLocal()).map((item) => getGameInfoById(item))
-        );
-
-        const onGoingGames = await Promise.all(
-          result
-            .filter((x) => x[1].start_time < getUTCTimestampFromLocal() && x[1].end_time > getUTCTimestampFromLocal())
-            .map((item) => getGameInfoById(item))
-        );
-
-        const latestGameId = result.reduce((a, value) => {
-          return Math.max(a, parseInt(value[0]));
-        }, 0);
-        setCurrentTotal(upcomingGames.length);
-        setNewGames(upcomingGames);
-        setCompletedGames(completedGames);
-        setOngoingGames(onGoingGames);
-        setGameIdToAdd(latestGameId + 1);
-        //setGames(gamesList);
-      });
-  }
+}
 
   async function execute_add_game() {
     const addGameArgs = Buffer.from(
       JSON.stringify({
-        game_id: gameIdToAdd.toString(),
+        game_id: (totalGames + 1).toString(),
         game_time_start: dateStart,
         game_time_end: dateEnd,
         usage_cost: 1,
@@ -645,12 +622,13 @@ export default function Index(props) {
   }, [distribution]);
 
   useEffect(() => {
-    query_games_list();
-    query_game_supply();
+    get_games_list(totalGames);
+    get_game_supply();
   }, [totalGames]);
   useEffect(() => {
     currentTotal !== 0 ? setPageCount(Math.ceil(currentTotal / gamesLimit)) : setPageCount(1);
   }, [ currentTotal]);
+
   return (
     <Container isAdmin>
       <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
@@ -706,7 +684,7 @@ export default function Index(props) {
                         : completedGames
                       ).filter((data, i ) => i >= gamesOffset && i < (gamesOffset + gamesLimit)).map((data, i) => {
                         return (
-                          <div key={remountComponent}>
+                          <div key={i}>
                             <AdminGameComponent
                             game_id={data.game_id}
                             start_time={data.start_time}

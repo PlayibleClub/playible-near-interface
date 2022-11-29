@@ -12,18 +12,30 @@ import AthleteSelectContainer from 'components/containers/AthleteSelectContainer
 import Link from 'next/link';
 import ReactPaginate from 'react-paginate';
 import PerformerContainer from 'components/containers/PerformerContainer';
+import { Provider, useDispatch, useSelector} from 'react-redux';
+import { selectAthleteLineup, selectGameId, selectIndex, selectPosition, selectTeamName} from 'redux/athlete/athleteSlice';
+import { setAthleteLineup, setGameId, setIndex, setPosition, setTeamNameRedux } from 'redux/athlete/athleteSlice';
 const AthleteSelect = (props) => {
   const { query } = props;
+  
+  //const teamName = query.teamName;
 
-  const gameId = query.game_id;
-  const teamName = query.teamName;
-
-  const position = query.position;
+  //const position = query.position;
   const router = useRouter();
   const data = router.query;
   let pass = data;
+  const dispatch = useDispatch();
+  //Get the data from redux store
+  const gameId = useSelector(selectGameId);
+  const position = useSelector(selectPosition);
+  const index = useSelector(selectIndex);
+  console.log(position);
+  console.log(useSelector(selectAthleteLineup));
+  const reduxLineup = useSelector(selectAthleteLineup);
+  let passedLineup = [...reduxLineup];
+  //let passedLineup = JSON.parse(useSelector(selectAthleteLineup));
   // @ts-ignore:next-line
-  let passedLineup = JSON.parse(data.athleteLineup);
+  //let passedLineup = JSON.parse(data.athleteLineup);
   const [athletes, setAthletes] = useState([]);
   const [athleteOffset, setAthleteOffset] = useState(0);
   const [athleteLimit, setAthleteLimit] = useState(7);
@@ -95,11 +107,11 @@ const AthleteSelect = (props) => {
       });
   }
   //TODO: might encounter error w/ loading duplicate athlete
-  function setAthleteRadio(index) {
-    passedLineup.splice(pass.index, 1, {
+  function setAthleteRadio(radioIndex) {
+    passedLineup.splice(index, 1, {
       position: position,
       isAthlete: true,
-      athlete: athletes[index],
+      athlete: athletes[radioIndex],
     });
     console.table(passedLineup);
     setLineup(passedLineup);
@@ -134,7 +146,7 @@ const AthleteSelect = (props) => {
   const handlePageClick = (e) => {
     const newOffset = (e.selected * athleteLimit) % totalAthletes;
     //add reset of lineup
-    passedLineup.splice(pass.index, 1, {
+    passedLineup.splice(index, 1, {
       position: position,
       isAthlete: false,
     });
@@ -146,6 +158,15 @@ const AthleteSelect = (props) => {
     setRadioSelected(value);
     setAthleteRadio(value);
   };
+
+  const handleProceedClick = (game_id, lineup) => {
+    dispatch(setGameId(game_id));
+    dispatch(setAthleteLineup(lineup));
+    router.push({
+      pathname: '/CreateTeam/[game_id]',
+      query: {game_id: game_id},
+    });
+  }
   useEffect(() => {
     if (!isNaN(athleteOffset)) {
       query_nft_supply_for_owner(position, team, name);
@@ -232,21 +253,21 @@ const AthleteSelect = (props) => {
               previousLabel="<"
               renderOnZeroPageCount={null}
             />
-            <Link
+            {/* <Link
               href={{
                 pathname: '/CreateTeam/[game_id]',
                 query: {
                   game_id: gameId,
                   testing: JSON.stringify(lineup),
-                  teamName: teamName,
+                  
                 },
               }}
               as={`/CreateTeam/${gameId}`}
-            >
-              <button className="bg-indigo-buttonblue text-indigo-white w-full ml-7 mt-4 md:w-60 h-14 text-center font-bold text-md">
+            > */}
+              <button className="bg-indigo-buttonblue text-indigo-white w-full ml-7 mt-4 md:w-60 h-14 text-center font-bold text-md" onClick={() => handleProceedClick(gameId, lineup)}>
                 PROCEED
               </button>
-            </Link>
+            {/* </Link> */}
           </div>
         </div>
       </Container>

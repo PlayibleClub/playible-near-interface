@@ -1,6 +1,6 @@
 import '../styles/globals.css';
 import { Provider, useDispatch } from 'react-redux';
-import { store } from '../redux/store';
+import {store} from '../redux/athlete/store'
 import 'regenerator-runtime/runtime';
 import client from '../apollo-client';
 import { ApolloProvider } from '@apollo/client';

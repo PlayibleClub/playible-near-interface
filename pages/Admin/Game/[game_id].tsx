@@ -4,6 +4,7 @@ import { getContract, getRPCProvider } from 'utils/near';
 import { GAME, ATHLETE } from 'data/constants/nearContracts';
 import { providers } from 'near-api-js';
 import { getAthleteInfoById, convertNftToAthlete } from 'utils/athlete/helper';
+import { query_all_players_lineup } from 'utils/near/helper';
 import { array } from 'prop-types';
 
 export default function AdminPlayerLineup(props) {
@@ -18,88 +19,8 @@ export default function AdminPlayerLineup(props) {
     url: getRPCProvider(),
   });
 
-  function get_all_players_lineup() {
-    const query = JSON.stringify({
-      game_id: gameId,
-    });
-
-    provider
-      .query({
-        request_type: 'call_function',
-        finality: 'optimistic',
-        account_id: getContract(GAME),
-        method_name: 'get_all_players_lineup',
-        args_base64: Buffer.from(query).toString('base64'),
-      })
-      .then(async (data) => {
-        // @ts-ignore:next-line
-        const result = JSON.parse(Buffer.from(data.result).toString());
-
-        const arrayToReturn = await Promise.all(
-          result.map(async (item) => {
-            let itemToReturn = {
-              accountId: item[0][0],
-              teamName: item[0][2],
-              lineup: item[1].lineup,
-              sumScore: 0,
-            };
-
-            itemToReturn.lineup = await Promise.all(
-              itemToReturn.lineup.map((item) => {
-                return query_nft_token_by_id(item);
-              })
-            );
-
-            itemToReturn.lineup = itemToReturn.lineup.map((lineupItem) => {
-              return {
-                ...lineupItem,
-                stats_breakdown:
-                  lineupItem.stats_breakdown
-                    .filter(
-                      (statType) =>
-                        statType.type == 'weekly' && statType.played == 1 && statType.week == week
-                    )
-                    .map((item) => {
-                      return item.fantasyScore;
-                    })[0] || 0,
-              };
-            });
-
-            itemToReturn.sumScore = itemToReturn.lineup.reduce((accumulator, object) => {
-              return accumulator + object.stats_breakdown;
-            }, 0);
-
-            return itemToReturn;
-          })
-        );
-
-        arrayToReturn.sort(function (a, b) {
-          return b.sumScore - a.sumScore;
-        });
-
-        setPlayerLineups(arrayToReturn);
-      });
-  }
-
-  function query_nft_token_by_id(item) {
-    const query = JSON.stringify({
-      token_id: item,
-    });
-
-    return provider
-      .query({
-        request_type: 'call_function',
-        finality: 'optimistic',
-        account_id: getContract(ATHLETE),
-        method_name: 'nft_token_by_id',
-        args_base64: Buffer.from(query).toString('base64'),
-      })
-      .then(async (data) => {
-        // @ts-ignore:next-line
-        const result = JSON.parse(Buffer.from(data.result).toString());
-        const result_two = await getAthleteInfoById(await convertNftToAthlete(result));
-        return result_two;
-      });
+  async function get_all_players_lineup() {
+    setPlayerLineups(await query_all_players_lineup(gameId, week));
   }
 
   useEffect(() => {

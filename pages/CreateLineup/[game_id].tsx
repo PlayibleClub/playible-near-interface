@@ -13,18 +13,17 @@ import { providers } from 'near-api-js';
 import { getContract, getRPCProvider } from 'utils/near';
 import { GAME } from 'data/constants/nearContracts';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
+import ViewTeamsContainer from 'components/containers/ViewTeamsContainer';
+import { query_player_teams } from 'utils/near/helper';
+import { Provider, useSelector, useDispatch } from 'react-redux';
+import { store, persistor} from 'redux/athlete/store';
 
 export default function CreateLineup(props) {
   const { query } = props;
-
   const gameId = query.game_id;
   const teamName = 'Team 1';
-  const provider = new providers.JsonRpcProvider({
-    url: getRPCProvider(),
-  });
-
+  
   const { accountId } = useWalletSelector();
-
   const [gameData, setGameData] = useState(null);
   const [teamModal, setTeamModal] = useState(false);
   const [playerTeams, setPlayerTeams] = useState([]);
@@ -42,52 +41,19 @@ export default function CreateLineup(props) {
     return () => clearInterval(id);
   }, [startDate]);
 
-  // useEffect(() => {
-  //   setErr(null);
-  //   if (connectedWallet) {
-  //     if (connectedWallet?.network?.name === 'testnet') {
-  //       await fetchGameData();
-  //       setErr(null);
-  //     } else {
-  //       setErr('You are connected to mainnet. Please connect to testnet');
-  //       setLoading(false);
-  //     }
-  //   } else {
-  //     setErr('Waiting for wallet connection...');
-  //     setLoading(false);
-  //   }
-  // }, [connectedWallet]);
-
-  function query_player_teams() {
-    const query = JSON.stringify({
-      account: accountId,
-      game_id: gameId,
-    });
-
-    provider
-      .query({
-        request_type: 'call_function',
-        finality: 'optimistic',
-        account_id: getContract(GAME),
-        method_name: 'get_player_team',
-        args_base64: Buffer.from(query).toString('base64'),
-      })
-      .then((data) => {
-        // @ts-ignore:next-line
-        const playerTeamNames = JSON.parse(Buffer.from(data.result));
-
-        setPlayerTeams(playerTeamNames);
-      });
+  async function get_player_teams(account, game_id) {
+    setPlayerTeams(await query_player_teams(account, game_id));
   }
 
   useEffect(() => {
+    setTimeout(() => persistor.purge(), 200);
     console.log('loading');
-    query_player_teams();
+    get_player_teams(accountId, gameId);
     console.log(playerTeams);
   }, []);
 
   return (
-    <>
+    <Provider store={store}>
       <Container activeName="PLAY">
         <div className="flex flex-row md:flex-col">
           <Main color="indigo-white">
@@ -136,21 +102,10 @@ export default function CreateLineup(props) {
                     {/* @ts-expect-error */}
                     {playerTeams.team_names.map((data) => {
                       return (
-                        <div className="p-5 px-6 bg-black-dark text-indigo-white mb-5 flex justify-between">
-                          <p className="font-monument">{data}</p>
-                          <Link
-                            href={{
-                              pathname: '/EntrySummary/[game_id]',
-                              query: {
-                                team_id: data,
-                                game_id: gameId,
-                              },
-                            }}
-                            as={`/EntrySummary/${gameId}/${data}`}
-                          >
-                            <img src={'/images/arrow-top-right.png'} />
-                          </Link>
-                        </div>
+                        <ViewTeamsContainer
+                          teamNames = {data}
+                          gameId = {gameId}
+                        />
                       );
                     })}
                   </div>
@@ -160,7 +115,7 @@ export default function CreateLineup(props) {
           </Main>
         </div>
       </Container>
-    </>
+    </Provider>
   );
 }
 

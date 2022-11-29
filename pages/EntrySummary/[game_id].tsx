@@ -19,6 +19,9 @@ import { GAME, ATHLETE } from 'data/constants/nearContracts';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
 import { convertNftToAthlete, getAthleteInfoById } from 'utils/athlete/helper';
 import { getUTCDateFromLocal } from 'utils/date/helper';
+import Head from 'next/dist/next-server/lib/head';
+import { query_game_data, query_nft_tokens_for_owner } from 'utils/near/helper';
+import EntrySummaryBack from 'components/buttons/EntrySummaryBack';
 
 export default function EntrySummary(props) {
   const { query } = props;
@@ -143,29 +146,12 @@ export default function EntrySummary(props) {
     //setAthletes(testAthlete);
   }
 
-  function query_game_data() {
-    const query = JSON.stringify({
-      game_id: gameId,
-    });
-
-    provider
-      .query({
-        request_type: 'call_function',
-        finality: 'optimistic',
-        account_id: getContract(GAME),
-        method_name: 'get_game',
-        args_base64: Buffer.from(query).toString('base64'),
-      })
-      .then(async (data) => {
-        // @ts-ignore:next-line
-        const result = JSON.parse(Buffer.from(data.result).toString());
-        console.log(result);
-        setGameData(result);
-      });
+  async function get_game_data(game_id) {
+    setGameData(await query_game_data(game_id));
   }
 
   useEffect(() => {
-    query_game_data();
+    get_game_data(gameId);
   }, []);
 
   useEffect(() => {
@@ -196,7 +182,7 @@ export default function EntrySummary(props) {
             <>
               <>
                 <div className="mt-8 md:ml-6">
-                  <BackFunction prev={router.query.origin || `/CreateLineup/${gameId}`} />
+                  <EntrySummaryBack/>
                 </div>
                 <div className="md:ml-7 flex flex-row md:flex-row">
                   <div className="md:mr-12">
