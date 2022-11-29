@@ -27,7 +27,7 @@ import { setAthleteLineup, setGameId, setIndex, setPosition, setTeamNameRedux } 
 export default function CreateLineup(props) {
   const { query } = props;
   const gameId = query.game_id;
-  const newTeamName = query.teamName;
+  const newTeamName = useSelector(selectTeamName);
   const dispatch = useDispatch();
   const router = useRouter();
   const reduxLineup = useSelector(selectAthleteLineup);
