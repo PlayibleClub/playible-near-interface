@@ -113,9 +113,10 @@ const Portfolio = () => {
     }
   }
 
-  function get_filter_supply_for_owner(accountId, position, team, name) {
+  async function get_filter_supply_for_owner(accountId, position, team, name) {
     console.log(accountId)
-    query_filter_supply_for_owner(accountId, position, team, name);
+    setTotalAthletes(await query_filter_supply_for_owner(accountId, position, team, name));
+    
   }
 
   function handleDropdownChange() {
