@@ -18,8 +18,9 @@ import { AiOutlineVerticalRight, AiOutlineVerticalLeft } from 'react-icons/ai';
 import { GET_ATHLETES_TOP } from '../utils/queries';
 import { useLazyQuery, useQuery } from '@apollo/client';
 import Image from 'next/image';
-import store from 'redux/athlete/store';
+import {store} from 'redux/athlete/store';
 import {Provider} from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
 let count = 0;
 
 export default function Home(props) {
@@ -27,7 +28,6 @@ export default function Home(props) {
   const [topAthletes, setTopAthletes] = useState([]);
   const [athletesLoading, setAthletesLoading] = useState(true);
   // const { loading, error, data } = useQuery(GET_ATHLETES_TOP, {
-
   // });
   const [getAthletes, { loading, error, data }] = useLazyQuery(GET_ATHLETES_TOP);
 

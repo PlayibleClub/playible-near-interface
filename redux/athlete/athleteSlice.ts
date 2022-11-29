@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { string } from 'prop-types';
-
+import { PURGE } from 'redux-persist';
 
 const initialState = {
   athleteLineup: [],
@@ -32,6 +32,9 @@ export const athleteSlice = createSlice({
       state.position = action.payload;
     }
 
+  },
+  extraReducers: (builder) => {
+    builder.addCase(PURGE, () => initialState);
   }
 });
 

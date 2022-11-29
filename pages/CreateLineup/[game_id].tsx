@@ -16,17 +16,16 @@ import { useWalletSelector } from 'contexts/WalletSelectorContext';
 import ViewTeamsContainer from 'components/containers/ViewTeamsContainer';
 import { query_player_teams } from 'utils/near/helper';
 import { Provider, useSelector, useDispatch } from 'react-redux';
-import { store } from 'redux/store';
+import { store, persistor} from 'redux/athlete/store';
 
 export default function CreateLineup(props) {
   const { query } = props;
-
   const gameId = query.game_id;
   const teamName = 'Team 1';
   const provider = new providers.JsonRpcProvider({
     url: getRPCProvider(),
   });
-
+  
   const { accountId } = useWalletSelector();
   const [gameData, setGameData] = useState(null);
   const [teamModal, setTeamModal] = useState(false);
@@ -66,6 +65,7 @@ export default function CreateLineup(props) {
   }
 
   useEffect(() => {
+    setTimeout(() => persistor.purge(), 200);
     console.log('loading');
     get_player_teams(accountId, gameId);
     console.log(playerTeams);
