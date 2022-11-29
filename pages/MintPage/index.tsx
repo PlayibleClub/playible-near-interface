@@ -3,7 +3,6 @@ import Container from '../../components/containers/Container';
 import Main from '../../components/Main';
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
-import banner from '../../public/images/promotionheader.png';
 import 'regenerator-runtime/runtime';
 import Head from 'next/head';
 import Select from 'react-select';
