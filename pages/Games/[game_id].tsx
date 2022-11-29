@@ -29,13 +29,10 @@ const Games = (props) => {
   const [gameInfo, setGameInfo] = useState([]);
   const [week, setWeek] = useState(0);
 
-  function get_game_data(game_id) {
+ async function get_game_data(game_id) {
 
-    query_game_data(game_id).then(async (data) => {
-      //@ts-ignore:next-line
-      const result = JSON.parse(Buffer.from(data.result).toString());
-      setGameInfo(result);
-    })
+    setGameInfo(await query_game_data(game_id));
+
   }
 
   const gameStart = (Object.values(gameInfo)[0]) / 1000;
