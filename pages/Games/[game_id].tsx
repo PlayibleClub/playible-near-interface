@@ -81,7 +81,7 @@ const Games = (props) => {
             </div>
             <div className="md:ml-18 md:-mt-6 ml-18 -mt-6">
               <ModalPortfolioContainer textcolor="indigo-black" title={'LEADERBOARD'} />
-              <div>
+              <div className='absolute'>
                 {playerLineups.length > 0
                   ? playerLineups.map((item, index) => {
                     return (
