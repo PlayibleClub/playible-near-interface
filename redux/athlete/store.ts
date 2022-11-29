@@ -1,19 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit';
-import storage from 'redux-persist/lib/storage';
-import { persistReducer, persistStore } from 'redux-persist';
+
 import athleteReducer from './athleteSlice';
 
-const persistConfig = {
-  key: 'root',
-  storage,
-}
-
-const persistedReducer = persistReducer(persistConfig, athleteReducer);
-
-export const store = configureStore({
+export default configureStore({
   reducer: {
-    athlete: persistedReducer
+    athlete: athleteReducer
   }
 });
-
-export const persistor = persistStore(store);
