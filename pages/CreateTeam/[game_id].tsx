@@ -10,7 +10,7 @@ import { useRouter } from 'next/router';
 import { getContract, getRPCProvider } from 'utils/near';
 import Lineup from '../../components/Lineup';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
-import { useDispatch, useSelector } from 'react-redux';
+import { Provider, useDispatch, useSelector } from 'react-redux';
 import { getAccountAssets } from '../../redux/reducers/external/playible/assets';
 import PerformerContainer from '../../components/containers/PerformerContainer';
 import PerformerContainerSelectable from '../../components/containers/PerformerContainerSelectable';
@@ -21,13 +21,16 @@ import { axiosInstance } from '../../utils/playible';
 import LoadingPageDark from '../../components/loading/LoadingPageDark';
 import { DEFAULT_MAX_FEES } from 'data/constants/gasFees';
 import { GAME } from 'data/constants/nearContracts';
+import { selectAthleteLineup, selectGameId, selectIndex, selectPosition, selectTeamName} from 'redux/athlete/athleteSlice';
+import { setAthleteLineup, setGameId, setIndex, setPosition, setTeamName } from 'redux/athlete/athleteSlice';
+
 export default function CreateLineup(props) {
   const { query } = props;
   const gameId = query.game_id;
   const newTeamName = query.teamName;
-
-  const router = useRouter();
   const dispatch = useDispatch();
+  const router = useRouter();
+  const reduxLineup = useSelector(selectAthleteLineup);
   const connectedWallet = {};
   const athlete = {
     athlete_id: null,
@@ -81,8 +84,9 @@ export default function CreateLineup(props) {
 
   const [loading, setLoading] = useState(true);
   // @ts-ignore:next-line
-  const initialState = isJson(data.testing) ? JSON.parse(data.testing) : 'hello';
-  const [lineup, setLineup] = isJson(data.testing) ? useState(initialState) : useState([]);
+  const initialState = reduxLineup ? reduxLineup : [];
+  // const initialState = isJson(data.testing) ? JSON.parse(data.testing) : 'hello';
+  const [lineup, setLineup] = initialState ? useState(initialState) : useState([]);
 
   const fetchGameData = async () => {
     const res = await axiosInstance.get(`/fantasy/game/${router.query.id}/`);
@@ -213,6 +217,7 @@ export default function CreateLineup(props) {
       }
     }
     setLineup(array2);
+
   }
 
   /* Function that checks whether a string parses into valid JSON. Used to check if data from router
@@ -298,7 +303,14 @@ export default function CreateLineup(props) {
 
     return hasEmptySlot;
   };
-
+  const handleLineupClick = (game_id, position, athleteLineup, index, teamName) => {
+    dispatch(setGameId(game_id));
+    dispatch(setPosition(position));
+    dispatch(setAthleteLineup(athleteLineup));
+    dispatch(setIndex(index));
+    //dispatch(setTeamName(teamName));
+    router.push('/AthleteSelect');
+  }
   useEffect(() => {
     getTeamName();
     if (lineup.length === 0) {
@@ -306,9 +318,6 @@ export default function CreateLineup(props) {
     }
   }, []);
 
-  useEffect(() => {
-    console.log(lineup);
-  }, [lineup]);
   const confirmTeam = async () => {
     setLimit(5);
     setOffset(0);
@@ -516,10 +525,12 @@ export default function CreateLineup(props) {
                     </div>
                     <div className="grid grid-cols-2 gap-y-4 mt-2 mb-2 md:mb-10 md:grid-cols-4 md:ml-7 md:mt-12">
                       {lineup.map((data, i) => {
+                        console.log(lineup);
                         return (
                           <>
                             {data.isAthlete === false ? (
-                              <div>
+                              <div className="cursor-pointer" 
+                                   onClick={() => handleLineupClick(gameId, data.position, lineup, i, teamName)}>
                                 <Lineup
                                   position={data.position}
                                   athleteLineup={lineup}
@@ -532,6 +543,7 @@ export default function CreateLineup(props) {
                                   isAthlete={data.isAthlete}
                                 />
                               </div>
+                              
                             ) : (
                               <div>
                                 <Lineup

@@ -40,8 +40,8 @@ const Lineup = (props) => {
   const lineupPosition = '/images/tokensMLB/' + position + '.png';
   return (
     <>
-      <div className="flex justify-center cursor-pointer">
-        <Link
+      <div className="flex justify-center">
+        {/* <Link
           href={{
             pathname: '/AthleteSelect',
             query: {
@@ -53,28 +53,28 @@ const Lineup = (props) => {
             },
           }}
           as="/AthleteSelect"
-        >
-          {img ? (
-            <div
-              className="justify-center relative mb-7"
-              style={{ width: '120px', height: '162px' }}
-            >
-              <div className="absolute z-40" style={{ width: '120px', height: '160px' }}></div>
-              <object
-                className="absolute z-10"
-                type="image/svg+xml"
-                data={img}
-                width={143}
-                height={190}
-              />
-              <div className="w-24 ml-1 text-center font-montserrat absolute z-50 text-sm top-1/3 left-4 text-indigo-white">
-                {isAthlete ? '' : getPositionDisplay(position)}
-              </div>
+        > */}
+        {img ? (
+          <div
+            className="justify-center relative mb-7"
+            style={{ width: '120px', height: '162px' }}
+          >
+            <div className="absolute z-40" style={{ width: '120px', height: '160px' }}></div>
+            <object
+              className="absolute z-10"
+              type="image/svg+xml"
+              data={img}
+              width={143}
+              height={190}
+            />
+            <div className="w-24 ml-1 text-center font-montserrat absolute z-50 text-sm top-1/3 left-4 text-indigo-white">
+              {isAthlete ? '' : getPositionDisplay(position)}
             </div>
-          ) : (
-            <Image src={lineupPosition} width={143} height={190} />
-          )}
-        </Link>
+          </div>
+        ) : (
+          <Image src={lineupPosition} width={143} height={190} />
+        )}
+        {/* </Link> */}
       </div>
       <div className="flex justify-center">
         <div className="flex flex-col mt-4">

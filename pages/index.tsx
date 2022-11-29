@@ -18,6 +18,8 @@ import { AiOutlineVerticalRight, AiOutlineVerticalLeft } from 'react-icons/ai';
 import { GET_ATHLETES_TOP } from '../utils/queries';
 import { useLazyQuery, useQuery } from '@apollo/client';
 import Image from 'next/image';
+import store from 'redux/athlete/store';
+import {Provider} from 'react-redux';
 let count = 0;
 
 export default function Home(props) {
@@ -110,7 +112,7 @@ export default function Home(props) {
   }, []);
 
   return (
-    <>
+    <Provider store={store}>
       <Head>
         <title>Playible - Next Generation of Sports Collectibles</title>
         <link rel="icon" type="image/png" sizes="16x16" href="images/favicon.png" />
@@ -229,7 +231,7 @@ export default function Home(props) {
           </Main>
         </div>
       </Container>
-    </>
+    </Provider>
   );
 }
 
