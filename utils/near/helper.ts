@@ -21,8 +21,14 @@ async function query_game_data(game_id) {
     account_id: getContract(GAME),
     method_name: 'get_game',
     args_base64: Buffer.from(query).toString('base64'),
+  }).then(async (data) => {
+    // @ts-ignore:next-line
+    const result = JSON.parse(Buffer.from(data.result).toString());
+    console.log(result);
+    return result;
   });
 }
+
 async function query_nft_token_by_id(token_id) {
   const query = JSON.stringify({
     token_id: token_id,

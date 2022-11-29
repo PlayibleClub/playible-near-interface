@@ -63,14 +63,8 @@ export default function PlayDetails(props) {
     }, 1000);
   }
 
-  function get_game_data(game_id) {
-    query_game_data(game_id)
-      .then(async (data) => {
-        // @ts-ignore:next-line
-        const result = JSON.parse(Buffer.from(data.result).toString());
-        console.log(result);
-        setGameData(result);
-      });
+  async function get_game_data(game_id) {
+    setGameData(await query_game_data(game_id));
   }
 
   function query_player_team() {
