@@ -9,7 +9,6 @@ import SquadPackComponent from '../../components/SquadPackComponent';
 import Container from '../../components/containers/Container';
 import Sorter from './components/Sorter';
 
-import filterIcon from '../../public/images/filterBlack.png';
 import { transactions, utils, WalletConnection, providers } from 'near-api-js';
 import { getRPCProvider, getContract } from 'utils/near';
 import { PACK } from '../../data/constants/nearContracts';
@@ -67,39 +66,12 @@ const Portfolio = () => {
   const [name, setName] = useState('allNames');
 
   const [remountComponent, setRemountComponent] = useState(0);
-  // const listQB = athletes.filter(athlete => athlete.position === "QB");
-  // const listRB = athletes.filter(athlete => athlete.position === "RB");
-  // const listWR = athletes.filter(athlete => athlete.position === "WR");
-  // const listTE = athletes.filter(athlete => athlete.position === "TE");
-  // const walletConnection = useSelector((state) => state.external.playible.wallet.data);
-  // const { list } = useSelector((state) => state.assets);
 
   const { accountId } = useWalletSelector();
 
   const provider = new providers.JsonRpcProvider({
     url: getRPCProvider(),
   });
-
-  // function getAthleteList() {
-  //   if (isFiltered) {
-  //     if (filterOption.length == 0)
-  //     {
-  //       return listQB;
-  //     }
-  //     if (filterOption == "QB") {
-  //       return listQB;
-  //     }
-  //     if (filterOption == "RB") {
-  //       return listRB;
-  //     }
-  //     if (filterOption == "WR") {
-  //       return listWR;
-  //     }
-  //     if (filterOption == "TE") {
-  //       return listTE;
-  //     }
-  //   }
-  // }
 
   function getAthleteLimit() {
     try {
@@ -162,50 +134,7 @@ const Portfolio = () => {
     // setSortedList([]);
   }, [totalAthletes, athleteLimit, athleteOffset, position, team, name]);
 
-
-  //[dispatch]
-
   useEffect(() => {}, [limit, offset, filter, search]);
-
-  //filtering functions
-  // async function checkIfFiltered() {
-  //   try {
-  //     if (filterOption != "All Positions") {
-  //       setIsFiltered(true);
-  //     }
-  //   } catch (e) {
-  //     setIsFiltered(false);
-  //   }
-  // }
-
-  // function selectFilter() {
-  //   const filterOptions = ["All Positions", "QB", "RB", "WR", "TE"];
-  //   let filterList = [];
-  //   filterOptions.forEach(function(element) {
-  //     filterList.push({ label:element, value: element})
-  //   });
-  //   return (
-  //     <>
-  //       <Select
-  //         onChange={(event) => setFilterOption(event.value)}
-  //         options={filterList}
-  //         className="md:w-1/5"
-  //       />
-  //     </>
-  //   );
-  // }
-
-  //   function sortByKey(athletes, key) {
-  //     return athletes.sort(function(a, b) {
-  //         const x = a[key];
-  //         const y = b[key];
-  //         return (
-  //           (x < y) ? 1 : ((x > y) ? -1 : 0)
-  //         );
-  //     });
-  // }
-
-  // console.log("sorted id: " + JSON.stringify(sortedAthletes));
 
   return (
     <Container activeName="SQUAD">
@@ -297,7 +226,7 @@ const Portfolio = () => {
                 {loading ? (
                   <LoadingPageDark />
                 ) : (
-                  <div className="grid grid-cols-4 gap-y-8 mt-4 md:grid-cols-4 md:ml-7 md:mt-4">
+                  <div className="grid grid-cols-4 gap-y-8 mt-4 md:grid-cols-4 md:mt-4">
                     {athletes.map((item) => {
                       const accountAthleteIndex = athletes.indexOf(item, 0) + athleteOffset;
 
