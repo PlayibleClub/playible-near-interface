@@ -22,9 +22,6 @@ export default function CreateLineup(props) {
   const { query } = props;
   const gameId = query.game_id;
   const teamName = 'Team 1';
-  const provider = new providers.JsonRpcProvider({
-    url: getRPCProvider(),
-  });
   
   const { accountId } = useWalletSelector();
   const [gameData, setGameData] = useState(null);
@@ -43,22 +40,6 @@ export default function CreateLineup(props) {
     }, 1000);
     return () => clearInterval(id);
   }, [startDate]);
-
-  // useEffect(() => {
-  //   setErr(null);
-  //   if (connectedWallet) {
-  //     if (connectedWallet?.network?.name === 'testnet') {
-  //       await fetchGameData();
-  //       setErr(null);
-  //     } else {
-  //       setErr('You are connected to mainnet. Please connect to testnet');
-  //       setLoading(false);
-  //     }
-  //   } else {
-  //     setErr('Waiting for wallet connection...');
-  //     setLoading(false);
-  //   }
-  // }, [connectedWallet]);
 
   async function get_player_teams(account, game_id) {
     setPlayerTeams(await query_player_teams(account, game_id));
