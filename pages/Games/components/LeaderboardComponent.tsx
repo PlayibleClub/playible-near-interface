@@ -12,7 +12,7 @@ return (
     <div className="flex flex-row" key={index}>
         <div
             className={`w-10 font-monument text-2xl ${
-            index + 1 > 3 ? 'text-indigo-white' : ''
+            index + 1 > 3 ? 'text-indigo-white font-outline-1' : ''
             }`}
         >
             {index + 1 <= 9 ? '0' + (index + 1) : index + 1}

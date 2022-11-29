@@ -70,7 +70,7 @@ const Games = (props) => {
 
   return (
     <Container activeName="GAMES">
-      <div className="flex flex-row md:flex-col">
+      <div className="flex flex-col w-full overflow-y-auto h-screen">
         <Main color="indigo-white">
           <div className="mt-8 ml-6">
             <BackFunction prev="/Play" />
@@ -103,7 +103,7 @@ const Games = (props) => {
             {
               /* @ts-expect-error */
               playerTeams.team_names == undefined ? (
-                <p>No teams assigned</p>
+                'No Teams Assigned'
               ) : (
                 <div>
                   {/* @ts-expect-error */}
