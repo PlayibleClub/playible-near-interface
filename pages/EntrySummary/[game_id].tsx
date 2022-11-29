@@ -20,7 +20,7 @@ import { useWalletSelector } from 'contexts/WalletSelectorContext';
 import { convertNftToAthlete, getAthleteInfoById } from 'utils/athlete/helper';
 import { getUTCDateFromLocal } from 'utils/date/helper';
 import Head from 'next/dist/next-server/lib/head';
-import { query_game_data } from 'utils/near/helper';
+import { query_game_data,query_nft_tokens_for_owner } from 'utils/near/helper';
 
 export default function EntrySummary(props) {
   const { query } = props;
@@ -145,14 +145,9 @@ export default function EntrySummary(props) {
     //setAthletes(testAthlete);
   }
 
-  function get_game_data(game_id) {
-  query_game_data(game_id)
-      .then(async (data) => {
-        // @ts-ignore:next-line
-        const result = JSON.parse(Buffer.from(data.result).toString());
-        console.log(result);
-        setGameData(result);
-      });
+  async function get_game_data(game_id) {
+  setGameData(await query_game_data(game_id));
+      
   }
 
   useEffect(() => {
