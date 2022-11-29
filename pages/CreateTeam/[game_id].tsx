@@ -545,7 +545,8 @@ export default function CreateLineup(props) {
                               </div>
                               
                             ) : (
-                              <div>
+                              <div className="cursor-pointer"
+                                    onClick={() => handleLineupClick(gameId, data.position, lineup, i, teamName)}>
                                 <Lineup
                                   position={data.position}
                                   athleteLineup={lineup}

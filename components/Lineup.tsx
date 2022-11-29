@@ -41,19 +41,6 @@ const Lineup = (props) => {
   return (
     <>
       <div className="flex justify-center">
-        {/* <Link
-          href={{
-            pathname: '/AthleteSelect',
-            query: {
-              game_id: game_id,
-              position: test[0].position,
-              athleteLineup: JSON.stringify(test[1].lineup),
-              index: test[2].index,
-              teamName: teamName,
-            },
-          }}
-          as="/AthleteSelect"
-        > */}
         {img ? (
           <div
             className="justify-center relative mb-7"
@@ -78,9 +65,9 @@ const Lineup = (props) => {
       </div>
       <div className="flex justify-center">
         <div className="flex flex-col mt-4">
-          <div className="mb-3 text-sm uppercase">{player === '' ? '-' : player}</div>
-          <div className="text-xs font-thin">FANTASY SCORE </div>
-          <div className="text-xs">{score === '' ? '-' : score}</div>
+          <div className="mb-3 text-sm uppercase font-bold">{player === '' ? '-' : player}</div>
+          <div className="text-xs font-thin">FANTASY SCORE</div>
+          <div className="text-xs font-bold">{score === '' ? '-' : score}</div>
         </div>
       </div>
     </>
