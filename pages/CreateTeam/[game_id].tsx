@@ -715,12 +715,17 @@ export default function CreateLineup(props) {
 export async function getServerSideProps(ctx) {
   const { query } = ctx;
 
-  if (query.game_id && query.athlete_id) {
-    return {
-      props: { query },
-    };
+  if (query) {
+    if (query.transactionHashes) {
+      return {
+        
+        redirect: {
+          destination: query.origin || `/CreateLineup/${query.game_id}`,
+          permanent: false,
+        },
+      };
+    } 
   }
-
   return {
     props: { query },
   };
