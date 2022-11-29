@@ -1,5 +1,3 @@
-import token1 from '../public/images/tokens/1.png';
-
 export default [
   {
     id: 0,
