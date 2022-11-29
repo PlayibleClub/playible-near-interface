@@ -20,15 +20,10 @@ import { getNflWeek } from 'utils/date/helper';
 
 const Games = (props) => {
   const { query } = props;
-  const router = useRouter();
-  // const week = router.query.week;
   const gameId = query.game_id;
 
   const [playerLineups, setPlayerLineups] = useState([]);
 
-  const provider = new providers.JsonRpcProvider({
-    url: getRPCProvider(),
-  });
   const { accountId } = useWalletSelector();
   const [playerTeams, setPlayerTeams] = useState([]);
   const [gameInfo, setGameInfo] = useState([]);
@@ -44,69 +39,14 @@ const Games = (props) => {
   }
 
   const gameStart = (Object.values(gameInfo)[0]) / 1000;
+  console.log("nfl week: " + week);
+
+  async function get_game_week() {
+    setWeek(await getNflWeek(gameStart));
+  }
 
   async function get_all_players_lineup() {
-    setPlayerLineups(await query_all_players_lineup(gameId, 11));
-    // const query = JSON.stringify({
-    //   game_id: gameId,
-    // });
-
-    // provider
-    //   .query({
-    //     request_type: 'call_function',
-    //     finality: 'optimistic',
-    //     account_id: getContract(GAME),
-    //     method_name: 'get_all_players_lineup',
-    //     args_base64: Buffer.from(query).toString('base64'),
-    //   })
-    //   .then(async (data) => {
-    //     // @ts-ignore:next-line
-    //     const result = JSON.parse(Buffer.from(data.result).toString());
-
-    //     const arrayToReturn = await Promise.all(
-    //       result.map(async (item) => {
-    //         let itemToReturn = {
-    //           accountId: item[0][0],
-    //           teamName: item[0][2],
-    //           lineup: item[1].lineup,
-    //           sumScore: 0,
-    //         };
-
-    //         itemToReturn.lineup = await Promise.all(
-    //           itemToReturn.lineup.map((item) => {
-    //             return query_nft_token_by_id(item);
-    //           })
-    //         );
-
-    //         itemToReturn.lineup = itemToReturn.lineup.map((lineupItem) => {
-    //           return {
-    //             ...lineupItem,
-    //             stats_breakdown:
-    //               lineupItem.stats_breakdown
-    //                 .filter(
-    //                   (statType) =>
-    //                     statType.type == 'weekly' && statType.played == 1 && statType.week == week
-    //                 )
-    //                 .map((item) => {
-    //                   return item.fantasyScore;
-    //                 })[0] || 0,
-    //           };
-    //         });
-
-    //         itemToReturn.sumScore = itemToReturn.lineup.reduce((accumulator, object) => {
-    //           return accumulator + object.stats_breakdown;
-    //         }, 0);
-
-    //         return itemToReturn;
-    //       })
-    //     );
-
-    //     arrayToReturn.sort(function (a, b) {
-    //       return b.sumScore - a.sumScore;
-    //     });
-
-    //     setPlayerLineups(arrayToReturn);
-    //   });
+    setPlayerLineups(await query_all_players_lineup(gameId, week));
   }
 
   async function get_player_teams(account, game_id) {
@@ -124,8 +64,12 @@ const Games = (props) => {
   }, []);
 
   useEffect(() => {
+    get_game_week();
+  })
+
+  useEffect(() => {
     get_all_players_lineup();
-  }, []);
+  }, [week]);
 
   return (
     <Container activeName="GAMES">
@@ -134,7 +78,6 @@ const Games = (props) => {
           <div className="mt-8 ml-6">
             <BackFunction prev="/Play" />
           </div>
-          {getNflWeek(gameStart)}
           <div className="md:ml-6 mt-11 flex w-auto">
             <div className="md:ml-7 mr-12">
               <Image src="/images/game.png" width={550} height={279} alt="game-image" />
@@ -144,14 +87,14 @@ const Games = (props) => {
               <div>
                 {playerLineups.length > 0
                   ? playerLineups.map((item, index) => {
-                      return (
-                        <LeaderboardComponent
-                          teamName={item.teamName}
-                          teamScore={item.sumScore}
-                          index={index}
-                        />
-                      );
-                    })
+                    return (
+                      <LeaderboardComponent
+                        teamName={item.teamName}
+                        teamScore={item.sumScore}
+                        index={index}
+                      />
+                    );
+                  })
                   : 'Leaderboard ranks are currently not available at this time.'}
               </div>
             </div>

@@ -28,8 +28,6 @@ export default function CreateLineup(props) {
   });
 
   const { accountId } = useWalletSelector();
-  const test = useSelector(state => state.athleteLineup.value);
-  console.log(test);
   const [gameData, setGameData] = useState(null);
   const [teamModal, setTeamModal] = useState(false);
   const [playerTeams, setPlayerTeams] = useState([]);
