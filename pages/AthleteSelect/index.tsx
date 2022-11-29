@@ -14,7 +14,7 @@ import ReactPaginate from 'react-paginate';
 import PerformerContainer from 'components/containers/PerformerContainer';
 import { Provider, useDispatch, useSelector} from 'react-redux';
 import { selectAthleteLineup, selectGameId, selectIndex, selectPosition, selectTeamName} from 'redux/athlete/athleteSlice';
-import { setAthleteLineup, setGameId, setIndex, setPosition, setTeamName } from 'redux/athlete/athleteSlice';
+import { setAthleteLineup, setGameId, setIndex, setPosition, setTeamNameRedux } from 'redux/athlete/athleteSlice';
 const AthleteSelect = (props) => {
   const { query } = props;
   
@@ -146,7 +146,7 @@ const AthleteSelect = (props) => {
   const handlePageClick = (e) => {
     const newOffset = (e.selected * athleteLimit) % totalAthletes;
     //add reset of lineup
-    passedLineup.splice(pass.index, 1, {
+    passedLineup.splice(index, 1, {
       position: position,
       isAthlete: false,
     });

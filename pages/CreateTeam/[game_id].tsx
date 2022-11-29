@@ -22,7 +22,7 @@ import LoadingPageDark from '../../components/loading/LoadingPageDark';
 import { DEFAULT_MAX_FEES } from 'data/constants/gasFees';
 import { GAME } from 'data/constants/nearContracts';
 import { selectAthleteLineup, selectGameId, selectIndex, selectPosition, selectTeamName} from 'redux/athlete/athleteSlice';
-import { setAthleteLineup, setGameId, setIndex, setPosition, setTeamName } from 'redux/athlete/athleteSlice';
+import { setAthleteLineup, setGameId, setIndex, setPosition, setTeamNameRedux } from 'redux/athlete/athleteSlice';
 
 export default function CreateLineup(props) {
   const { query } = props;
@@ -308,7 +308,7 @@ export default function CreateLineup(props) {
     dispatch(setPosition(position));
     dispatch(setAthleteLineup(athleteLineup));
     dispatch(setIndex(index));
-    //dispatch(setTeamName(teamName));
+    dispatch(setTeamNameRedux(teamName));
     router.push('/AthleteSelect');
   }
   useEffect(() => {
