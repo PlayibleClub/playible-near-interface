@@ -169,7 +169,7 @@ const AthleteSelect = (props) => {
           <form
             onSubmit={(e) => {
               handleDropdownChange();
-              search == '' ? setName('allNames') : setName(search);
+              search == '' ? setName(['allNames']) : setName([search]);
               e.preventDefault();
             }}
           >
