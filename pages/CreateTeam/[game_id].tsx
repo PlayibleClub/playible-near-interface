@@ -195,28 +195,13 @@ export default function CreateLineup(props) {
   function populateLineup() {
     //const array = Array(8).fill({position: "QB", isAthlete: false});
     const array = [
-      { position: 'QB', isAthlete: false, amount: 1 },
-      { position: 'RB', isAthlete: false, amount: 2 },
-      { position: 'WR', isAthlete: false, amount: 2 },
-      { position: 'TE', isAthlete: false, amount: 1 },
+      { position: ['QB'], isAthlete: false, amount: 1 },
+      { position: ['RB'], isAthlete: false, amount: 2 },
+      { position: ['WR'], isAthlete: false, amount: 2 },
+      { position: ['TE'], isAthlete: false, amount: 1 },
       { position: ['RB', 'WR', 'TE'], isAthlete: false, amount: 1 },
       { position: ['QB', 'RB', 'WR', 'TE'], isAthlete: false, amount: 1 },
     ];
-
-    const array2 = [];
-
-    for (let i = 0; i < array.length; i++) {
-      for (let j = 0; j < array[i].amount; j++) {
-        if (array[i].position.length === 3) {
-          array[i].position = 'FLEX';
-        } else if (array[i].position.length === 4) {
-          array[i].position = 'SUPERFLEX';
-        }
-
-        array2.push({ position: array[i].position, isAthlete: false });
-      }
-    }
-    setLineup(array2);
 
   }
 
