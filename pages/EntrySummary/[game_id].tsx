@@ -121,21 +121,9 @@ export default function EntrySummary(props) {
       });
   }
 
-  function query_nft_tokens_for_owner() {
+  function get_nft_tokens_for_owner() {
     playerLineup.forEach((token_id) => {
-      const query = JSON.stringify({
-        token_id: token_id,
-      });
-
-      provider
-        .query({
-          request_type: 'call_function',
-          finality: 'optimistic',
-          account_id: getContract(ATHLETE),
-          method_name: 'nft_token_by_id',
-          args_base64: Buffer.from(query).toString('base64'),
-        })
-        .then(async (data) => {
+      query_nft_tokens_for_owner(token_id).then(async (data) => {
           // @ts-ignore:next-line
           const result = JSON.parse(Buffer.from(data.result).toString());
           const result_two = await getAthleteInfoById(await convertNftToAthlete(result));
@@ -162,7 +150,7 @@ export default function EntrySummary(props) {
   useEffect(() => {
     if (playerLineup.length > 0 && athletes.length === 0) {
       console.log(playerLineup);
-      query_nft_tokens_for_owner();
+      get_nft_tokens_for_owner();
     }
   }, [playerLineup]);
   useEffect(() => {
