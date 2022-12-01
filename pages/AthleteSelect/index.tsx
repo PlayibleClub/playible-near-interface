@@ -165,7 +165,7 @@ const AthleteSelect = (props) => {
           />
         </div>
 
-        <div className="h-8 flex relative w-32">
+        <div className="h-8 flex absolute top-36 right-20">
           <form
             onSubmit={(e) => {
               handleDropdownChange();
