@@ -75,17 +75,42 @@ const Games = (props) => {
           <div className="mt-8 ml-6">
             <BackFunction prev="/Play" />
           </div>
-          <div className="md:ml-6 mt-11 flex w-auto">
+          <div className="flex flex-row">
+          <div className="md:ml-6 mt-11 flex flex-col w-auto">
             <div className="md:ml-7 mr-12">
               <Image src="/images/game.png" width={550} height={279} alt="game-image" />
             </div>
-            <div className="md:ml-18 md:-mt-6 ml-18 -mt-6">
+            <div className='mt-7 ml-6 w-3/5 md:w-1/2 md:ml-7 md:mt-2'>
+              <ModalPortfolioContainer title="VIEW TEAMS" textcolor="text-indigo-black mb-5" />
+              {
+                /* @ts-expect-error */
+                playerTeams.team_names == undefined ? (
+                  'No Teams Assigned'
+                ) : (
+                  <div>
+                    {/* @ts-expect-error */}
+                    {playerTeams.team_names.map((data) => {
+                      return (
+                        <ViewTeamsContainer
+                          teamNames={data}
+                          gameId={gameId}
+                        />
+                      );
+                    })}
+                  </div>
+                )
+              }
+            </div>
+          </div>
+
+          <div className="md:ml-18 ml-18 mt-4">
               <ModalPortfolioContainer textcolor="indigo-black" title={'LEADERBOARD'} />
-              <div className='absolute'>
+              <div className='overflow-y-auto'>
                 {playerLineups.length > 0
-                  ? playerLineups.map((item, index) => {
+                  ? playerLineups.slice(0,10).map((item, index) => {
                     return (
                       <LeaderboardComponent
+                        accountId={item.accountId}
                         teamName={item.teamName}
                         teamScore={item.sumScore}
                         index={index}
@@ -95,30 +120,7 @@ const Games = (props) => {
                   : 'Leaderboard ranks are currently not available at this time.'}
               </div>
             </div>
-          </div>
-
-
-          <div className='mt-7 ml-6 w-3/5 md:w-1/3 md:ml-12 md:mt-2'>
-            <ModalPortfolioContainer title="VIEW TEAMS" textcolor="text-indigo-black mb-5" />
-            {
-              /* @ts-expect-error */
-              playerTeams.team_names == undefined ? (
-                'No Teams Assigned'
-              ) : (
-                <div>
-                  {/* @ts-expect-error */}
-                  {playerTeams.team_names.map((data) => {
-                    return (
-                      <ViewTeamsContainer
-                        teamNames={data}
-                        gameId={gameId}
-                      />
-                    );
-                  })}
-                </div>
-              )
-            }
-          </div>
+         </div>              
         </Main>
       </div>
     </Container>

@@ -6,6 +6,7 @@ const {
 teamName,
 teamScore,
 index,
+accountId,
 } = props;
 
 return (
@@ -18,10 +19,10 @@ return (
             {index + 1 <= 9 ? '0' + (index + 1) : index + 1}
         </div>
         <div className="ml-6 bg-indigo-black text-indigo-white
-        w-full text-center p-1 text-base font-monument mb-5">
-        {teamName}
+        w-1/2 text-center p-1 text-base font-monument mb-5">
+        {teamName}  {accountId}
         </div>
-        <div className="ml-16 w-10 text-center font-black">{teamScore.toFixed(2)}</div>
+        <div className="ml-10 w-12 text-center font-black">{teamScore.toFixed(2)}</div>
     </div>
 )
 };
@@ -30,5 +31,6 @@ LeaderboardComponent.propTypes = {
 teamName: PropTypes.string,
 teamScore: PropTypes.number,
 index: PropTypes.number,
+accountId: PropTypes.string,
 };
 export default LeaderboardComponent;

@@ -22,7 +22,9 @@ const Lineup = (props) => {
   } = props;
 
   function getPositionDisplay(position) {
-    switch (position) {
+    if(position.length === 3) return 'FLEX';
+    if(position.length === 4) return 'SUPERFLEX';
+    switch (position[0]) {
       case 'QB':
         return 'QUARTER BACK';
       case 'RB':
@@ -31,9 +33,6 @@ const Lineup = (props) => {
         return 'WIDE RECEIVER';
       case 'TE':
         return 'TIGHT END';
-      case 'FLEX':
-      case 'SUPERFLEX':
-        return position;
     }
   }
   //const { position, player = '', img = null, id, score, nextposition, onClick = null } = props;
