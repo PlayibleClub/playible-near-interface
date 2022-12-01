@@ -23,6 +23,10 @@ import { transactions, utils, WalletConnection, providers } from 'near-api-js';
 import { getGameInfoById } from 'utils/game/helper';
 import AdminGameComponent from './components/AdminGameComponent';
 import moment from 'moment';
+import {getUTCTimestampFromLocal} from 'utils/date/helper';
+import ReactPaginate from 'react-paginate';
+import { query_games_list, query_game_supply } from 'utils/near/helper';
+
 TimeAgo.addDefaultLocale(en);
 
 export default function Index(props) {
@@ -36,7 +40,7 @@ export default function Index(props) {
   const [content, setContent] = useState(false);
   const [gameDuration, setGameDuration] = useState(0);
   const [totalGames, setTotalGames] = useState(0);
-
+  const [gameIdToAdd, setGameIdToAdd] = useState(0);
   //gameinfo
   const [gameInfo, setGameInfo] = useState({});
 
@@ -112,6 +116,10 @@ export default function Index(props) {
   const [completedGames, setCompletedGames] = useState([]);
   const [ongoingGames, setOngoingGames] = useState([]);
   const [gameId, setGameId] = useState(null);
+  const [gamesLimit, setGamesLimit] = useState(10);
+  const [pageCount, setPageCount] = useState(0);
+  const [gamesOffset, setGamesOffset] = useState(0);
+  const [currentTotal, setCurrentTotal] = useState(0);
   const [err, setErr] = useState(null);
   const [endLoading, setEndLoading] = useState(false);
   const [confirmModal, setConfirmModal] = useState(false);
@@ -130,10 +138,13 @@ export default function Index(props) {
   });
 
   const [percentTotal, setPercentTotal] = useState(0);
-
+  const [remountComponent, setRemountComponent] = useState(0);
   const changeTab = (name) => {
+    setGamesOffset(0);
+    setGamesLimit(10);
+    setRemountComponent(Math.random());
     const tabList = [...tabs];
-
+    
     tabList.forEach((item) => {
       if (item.name === name) {
         item.isActive = true;
@@ -147,7 +158,14 @@ export default function Index(props) {
 
   const changeGameTab = (name) => {
     const tabList = [...gameTabs];
-
+    setGamesOffset(0);
+    setGamesLimit(10);
+    setRemountComponent(Math.random());
+    switch(name){
+      case 'NEW' : setCurrentTotal(newGames.length); break;
+      case 'ON-GOING': setCurrentTotal(ongoingGames.length); break;
+      case 'COMPLETED': setCurrentTotal(completedGames.length); break;
+    }
     tabList.forEach((item) => {
       if (item.name === name) {
         item.isActive = true;
@@ -210,7 +228,10 @@ export default function Index(props) {
       });
     }
   };
-
+  const handlePageClick = (event) => {
+    const newOffset = (event.selected * gamesLimit) % currentTotal;
+    setGamesOffset(newOffset);
+  }
   const checkValidity = () => {
     let errors = [];
     let sortPercentage = [...distribution].sort((a, b) => b.percentage - a.percentage);
@@ -516,92 +537,58 @@ export default function Index(props) {
     { positions: ['QB', 'RB', 'WR', 'TE'], amount: 1 },
   ];
 
-  const dateStr = moment(details.startTime).format('YYYY-MM-DD HH:mm:ss');
-  const dateDateStr = new Date(dateStr);
-  const dateStrEnd = moment(details.endTime).format('YYYY-MM-DD HH:mm:ss');
-  const dateDateStrEnd = new Date(dateStrEnd);
+  const dateStartFormatted = moment(details.startTime).format('YYYY-MM-DD HH:mm:ss');
+  const dateStart = moment(dateStartFormatted).utc().unix() * 1000;
+  const dateEndFormatted = moment(details.endTime).format('YYYY-MM-DD HH:mm:ss');
+  const dateEnd = moment(dateEndFormatted).utc().unix() * 1000;
 
-  const startUnixTimestamp = Math.floor(dateDateStr.getTime() / 1000);
-  const endUnixTimeStamp = Math.floor(dateDateStrEnd.getTime() / 1000);
+  const startFormattedTimestamp = moment(dateStartFormatted).toLocaleString();
+  const endFormattedTimestamp = moment(dateEndFormatted).toLocaleString();
 
-  const startMilliseconds = startUnixTimestamp * 1000;
-  const startMsDate = new Date(startMilliseconds);
-  const startFormattedTimestamp = startMsDate.toLocaleString();
-  const endMilliseconds = endUnixTimeStamp * 1000;
-  const endMsDate = new Date(endMilliseconds);
-  const endFormattedTimestamp = endMsDate.toLocaleString();
+  async function get_game_supply() {
+    setTotalGames(await query_game_supply());
+}
 
-  function query_game_supply() {
-    const query = JSON.stringify({ account_id: getContract(GAME) });
+function get_games_list(totalGames) {
+  query_games_list(totalGames).then(async (data) => {
+      //@ts-ignore:next-line
+      const result = JSON.parse(Buffer.from(data.result).toString());
 
-    provider
-      .query({
-        request_type: 'call_function',
-        finality: 'optimistic',
-        account_id: getContract(GAME),
-        method_name: 'nft_supply_for_owner',
-        args_base64: Buffer.from(query).toString('base64'),
-      })
-      .then((data) => {
-        // @ts-ignore:next-line
-        const totalGames = JSON.parse(Buffer.from(data.result));
+      const upcomingGames = await Promise.all(
+        result
+          .filter((x) => x[1].start_time > getUTCTimestampFromLocal())
+          .map((item) => getGameInfoById(item))
+      );
 
-        setTotalGames(totalGames);
-      });
-  }
+      const completedGames = await Promise.all(
+        result
+          .filter((x) => x[1].end_time < getUTCTimestampFromLocal())
+          .map((item) => getGameInfoById(item))
+      );
 
-  function query_games_list() {
-    const query = JSON.stringify({
-      from_index: 0, //offset for pagination
-      limit: 100,
+      const ongoingGames = await Promise.all(
+        result
+          .filter(
+            (x) =>
+              x[1].start_time < getUTCTimestampFromLocal() &&
+              x[1].end_time > getUTCTimestampFromLocal()
+          )
+          .map((item) => getGameInfoById(item))
+      );
+      console.table(completedGames);
+      setCurrentTotal(upcomingGames.length);
+      setNewGames(upcomingGames);
+      setCompletedGames(completedGames);
+      setOngoingGames(ongoingGames);
     });
-    provider
-      .query({
-        request_type: 'call_function',
-        finality: 'optimistic',
-        account_id: getContract(GAME),
-        method_name: 'get_games',
-        args_base64: Buffer.from(query).toString('base64'),
-      })
-      .then(async (data) => {
-        //@ts-ignore:next-line
-        const result = JSON.parse(Buffer.from(data.result).toString());
-        //@ts-ignore:next-lines
-        //console.table(Buffer.from(data.result).toString());
-        //console.table(result);
-        const upcomingGames = await Promise.all(
-          result.filter((x) => x[1].start_time > Date.now()).map((item) => getGameInfoById(item))
-        );
-        const completedGames = await Promise.all(
-          result.filter((x) => x[1].end_time < Date.now()).map((item) => getGameInfoById(item))
-        );
-
-        const onGoingGames = await Promise.all(
-          result
-            .filter((x) => x[1].start_time < Date.now() && x[1].end_time > Date.now())
-            .map((item) => getGameInfoById(item))
-        );
-
-        setNewGames(upcomingGames);
-        setCompletedGames(completedGames);
-        setOngoingGames(onGoingGames);
-        //setGames(gamesList);
-      });
-  }
-
-  function newGameID() {
-    let newGameId = 0;
-    newGameId = ongoingGames.length + completedGames.length + newGames.length + 1;
-
-    return newGameId.toString();
-  }
+}
 
   async function execute_add_game() {
     const addGameArgs = Buffer.from(
       JSON.stringify({
-        game_id: newGameID(),
-        game_time_start: startMilliseconds,
-        game_time_end: endMilliseconds,
+        game_id: (totalGames + 1).toString(),
+        game_time_start: dateStart,
+        game_time_end: dateEnd,
         usage_cost: 1,
         positions: testPositions,
         lineup_len: 8,
@@ -635,9 +622,12 @@ export default function Index(props) {
   }, [distribution]);
 
   useEffect(() => {
-    query_games_list();
-    // query_game_supply();
-  }, []);
+    get_games_list(totalGames);
+    get_game_supply();
+  }, [totalGames]);
+  useEffect(() => {
+    currentTotal !== 0 ? setPageCount(Math.ceil(currentTotal / gamesLimit)) : setPageCount(1);
+  }, [ currentTotal]);
 
   return (
     <Container isAdmin>
@@ -680,7 +670,7 @@ export default function Index(props) {
                       </div>
                     ))}
                   </div>
-                  <div className="flex flex-row">
+                  <div  className="mt-4 ml-6 grid grid-cols-0 md:grid-cols-3">
                     {(gameTabs[0].isActive
                       ? newGames
                       : gameTabs[1].isActive
@@ -692,9 +682,10 @@ export default function Index(props) {
                         : gameTabs[1].isActive
                         ? ongoingGames
                         : completedGames
-                      ).map((data, i) => {
+                      ).filter((data, i ) => i >= gamesOffset && i < (gamesOffset + gamesLimit)).map((data, i) => {
                         return (
-                          <AdminGameComponent
+                          <div key={i}>
+                            <AdminGameComponent
                             game_id={data.game_id}
                             start_time={data.start_time}
                             end_time={data.end_time}
@@ -707,6 +698,8 @@ export default function Index(props) {
                             isCompleted={data.isCompleted}
                             status={data.status}
                           />
+                          </div>
+                          
                         );
                       })}
                     {/* {(gameTabs[0].isActive ? upcomingGames: completedGames).length > 0 &&
@@ -754,7 +747,25 @@ export default function Index(props) {
                             // );
                           })} */}
                   </div>
+                  <div className="absolute bottom-10 right-10 iphone5:bottom-4 iphone5:right-2 iphoneX:bottom-4 iphoneX:right-4 iphoneX-fixed">
+                    <div key={remountComponent}>
+                    <ReactPaginate
+                      className="p-2 text-center bg-indigo-buttonblue text-indigo-white flex flex-row space-x-4 select-none ml-7"
+                      pageClassName="hover:font-bold"
+                      activeClassName="rounded-lg text-center bg-indigo-white text-indigo-black pr-1 pl-1 font-bold"
+                      pageLinkClassName="rounded-lg text-center hover:font-bold hover:bg-indigo-white hover:text-indigo-black"
+                      breakLabel="..."
+                      nextLabel=">"
+                      onPageChange={handlePageClick}
+                      pageRangeDisplayed={5}
+                      pageCount={pageCount}
+                      previousLabel="<"
+                      renderOnZeroPageCount={null}
+                    />
+                  </div>
+              </div>
                 </div>
+                
               ) : (
                 <>
                   <div className="flex">
@@ -881,9 +892,9 @@ export default function Index(props) {
                   </div>
                 </>
               )}
+              
             </div>
           </div>
-          ))
         </Main>
       </div>
       <BaseModal title={endMsg.title} visible={endLoading} onClose={() => console.log()}>

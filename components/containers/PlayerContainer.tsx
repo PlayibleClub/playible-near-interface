@@ -32,7 +32,7 @@ const PlayerContainer = (props) => {
       {img ? (
         <object type="image/svg+xml" data={img} width={120} height={160} />
       ) : (
-        <Image src={'/images/tokensMLB/SP.png'} width={120} height={160} />
+        <Image src={'/images/tokensMLB/SP.png'} width={120} height={160} alt="token-bare" />
       )}
     </div>
   );

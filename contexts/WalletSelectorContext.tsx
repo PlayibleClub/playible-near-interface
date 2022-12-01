@@ -8,8 +8,6 @@ import { setupNearWallet } from '@near-wallet-selector/near-wallet';
 import { setupMyNearWallet } from '@near-wallet-selector/my-near-wallet';
 import { getConfig, getContract } from '../utils/near';
 import { MINTER } from '../data/constants/nearContracts';
-import myNearWalletIconUrl from '@near-wallet-selector/my-near-wallet/assets/my-near-wallet-icon.png';
-import nearWalletIconUrl from '@near-wallet-selector/near-wallet/assets/near-wallet-icon.png';
 
 declare global {
   interface Window {
@@ -26,6 +24,7 @@ interface WalletSelectorContextValue {
 
 const WalletSelectorContext = React.createContext<WalletSelectorContextValue | null>(null);
 
+// @ts-ignore:next-line
 export const WalletSelectorContextProvider: React.FC = ({ children }) => {
   const [selector, setSelector] = useState<WalletSelector | null>(null);
   const [modal, setModal] = useState<WalletSelectorModal | null>(null);
@@ -35,10 +34,7 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
     const _selector = await setupWalletSelector({
       network: getConfig(),
       debug: true,
-      modules: [
-        setupNearWallet({ iconUrl: nearWalletIconUrl }),
-        setupMyNearWallet({ iconUrl: myNearWalletIconUrl }),
-      ],
+      modules: [setupNearWallet(), setupMyNearWallet()],
     });
     const _modal = setupModal(_selector, {
       contractId: getContract(MINTER),

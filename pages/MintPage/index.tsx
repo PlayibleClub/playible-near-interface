@@ -2,11 +2,10 @@ import { transactions, utils, WalletConnection, providers } from 'near-api-js';
 import Container from '../../components/containers/Container';
 import Main from '../../components/Main';
 import React, { useEffect, useState } from 'react';
-import banner from '../../public/images/promotionheader.png';
+import Image from 'next/image';
 import 'regenerator-runtime/runtime';
 import Head from 'next/head';
 import Select from 'react-select';
-import mint from '../../public/images/mintpage.png';
 import ProgressBar from '@ramonak/react-progress-bar';
 import Usdt from '../../public/images/SVG/usdt';
 import Usdc from '../../public/images/SVG/usdc';
@@ -14,7 +13,7 @@ import USN from '../../public/images/SVG/usn';
 import { useWalletSelector } from '../../contexts/WalletSelectorContext';
 import BigNumber from 'bignumber.js';
 import { getConfig, getContract, getRPCProvider } from '../../utils/near';
-
+import PortfolioContainer from '../../components/containers/PortfolioContainer';
 import { MINTER, NEP141USDC, NEP141USDT, NEP141USN } from '../../data/constants/nearContracts';
 
 import { MINT_STORAGE_COST, DEFAULT_MAX_FEES } from 'data/constants/gasFees';
@@ -354,23 +353,14 @@ export default function Home(props) {
 
   return (
     <>
-      <Head>
-        <title>Playible - Next Generation of Sports Collectibles</title>
-        <link rel="icon" type="image/png" sizes="16x16" href="images/favicon.png" />
-      </Head>
       <Container activeName="MINT">
         <div className="flex flex-col w-screen md:w-full overflow-y-auto h-screen justify-center self-center md:pb-12 text-indigo-black">
           <Main color="indigo-white">
+            <div className="flex-initial md:ml-6 md:mt-8">
+              <PortfolioContainer title="MINT PACKS" textcolor="text-indigo-black" />
+            </div>
             <div className="flex flex-col md:flex-row md:ml-12">
               <div className="md:w-full overflow-x-hidden">
-                <div className="flex-col flex justify-center align-center md:flex-row md:flex md:justify-between w-full ml-4 mt-8">
-                  <div className="text-xl mt-5 font-bold font-monument ">
-                    MINT PACKS
-                    <hr className="w-10 border-4"></hr>
-                  </div>
-
-                  {/**<Select options={options} className="md:w-1/3 w-4/5 mr-9 mt-5" />**/}
-                </div>
                 <div className="flex-col flex w-full mt-8 ">
                   <div className="align-center justify-center border-2 p-8 mr-8 rounded-lg">
                     <div className="text-m">
@@ -381,7 +371,7 @@ export default function Home(props) {
                 </div>
                 <div className="flex md:flex-row flex-col mt-12">
                   <div className="md:w-1/2 w-full ">
-                    <img src={mint}></img>
+                    <Image src={'/images/mintpage.png'} width={400} height={400} alt="pack-image" />
                   </div>
                   <div className="md:w-1/2 w-full md:mt-0 mt-5 ml-8  ">
                     <div className="text-xl font-bold font-monument ">
@@ -467,7 +457,7 @@ export default function Home(props) {
                           (
                             ((minterConfig.nft_pack_max_sale_supply -
                               minterConfig.nft_pack_mint_counter -
-                              205) *
+                              262) *
                               100) /
                             (minterConfig.nft_pack_max_sale_supply + RESERVED_AMOUNT)
                           ).toFixed(2)
@@ -480,7 +470,7 @@ export default function Home(props) {
                       {' '}
                       {minterConfig.nft_pack_max_sale_supply -
                         minterConfig.nft_pack_mint_counter -
-                        249}
+                        262}
                       /{minterConfig.nft_pack_max_sale_supply + RESERVED_AMOUNT} packs remaining
                     </div>
                     <div>{selectMint()}</div>

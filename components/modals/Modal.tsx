@@ -2,7 +2,6 @@ import { Dialog, Transition } from '@headlessui/react';
 import React, { Fragment, useState } from 'react';
 import * as statusCode from '../../data/constants/status';
 import LoadingModal from '../loading/LoadingModal';
-import underlineIcon from '../../public/images/blackunderline.png';
 
 // TODO: Make data presentable
 // TODO: Modal Design for dark mode and light mode
@@ -51,7 +50,7 @@ const Modal = (props) => {
                   className="text-lg font-medium leading-6 text-gray-900 pb-4 font-monument uppercase"
                 >
                   {title}
-                  <img src={underlineIcon} className="sm:object-none w-6 py-1" />
+                  <div className="underlineBig" />
                 </Dialog.Title>
                 {children}
                 {/* <button

@@ -12,7 +12,7 @@ const Lineup = (props) => {
         {img ? (
           <img src={img} width={143} height={190} />
         ) : (
-          <Image src={lineupPosition} width={143} height={190} />
+          <Image src={lineupPosition} width={143} height={190} alt="lineup-image" />
         )}
       </div>
       <div className="flex justify-center">

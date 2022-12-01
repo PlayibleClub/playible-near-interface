@@ -2,9 +2,10 @@ import React, { Component, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Image from 'next/image';
 import moment from 'moment';
+import { getUTCDateFromLocal } from 'utils/date/helper';
 
 const PlayDetailsComponent = (props) => {
-  const { startDate, endDate, fetch, game, gameEnd } = props;
+  const { startDate, endDate, type, fetch, game, gameEnd } = props;
 
   const [day, setDay] = useState(0);
   const [hour, setHour] = useState(0);
@@ -19,28 +20,21 @@ const PlayDetailsComponent = (props) => {
 
   useEffect(() => {
     setGetGames(false);
-    setDay(null);
-    setHour(null);
-    setMinute(null);
-    setSecond(null);
+    setDay(0);
+    setHour(0);
+    setMinute(0);
+    setSecond(0);
     const id = setInterval(() => {
-      const currentDate = new Date();
-      const endDate = new Date(startDate);
-      // const totalSeconds = (endDate - currentDate) / 1000;
+      const currentDate = getUTCDateFromLocal();
+      const end = moment.utc(moment(startDate) <= moment() && moment(endDate) > moment() ? endDate : startDate);
+      setDay(formatTime(Math.floor(end.diff(currentDate, 'second') / 3600 / 24)));
+      setHour(formatTime(Math.floor((end.diff(currentDate, 'second') / 3600) % 24)));
+      setMinute(formatTime(Math.floor((end.diff(currentDate, 'second') / 60) % 60)));
+      setSecond(formatTime(Math.floor(end.diff(currentDate, 'second') % 60)));
 
-      // const days = Math.floor(totalSeconds / 2600 / 24);
-      // const hours = Math.floor(totalSeconds / 3600) % 24;
-      // const minutes = Math.floor(totalSeconds / 60) % 60;
-      // const seconds = Math.floor(totalSeconds) % 60;
-
-      // setDay(formatTime(days));
-      // setHour(formatTime(hours));
-      // setMinute(formatTime(minutes));
-      // setSecond(formatTime(seconds));
-
-      // if (Math.floor(totalSeconds) > 0) {
-      //   game();
-      // }
+      if (Math.floor(end.diff(currentDate, 'second')) === 0) {
+        setGetGames(true);
+      }
     }, 1000);
     return () => clearInterval(id);
   }, [getGames]);
@@ -58,7 +52,7 @@ const PlayDetailsComponent = (props) => {
           {minute || ''}
         </div>
         <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
-          {second  || ''}
+          {second || ''}
         </div>
       </div>
     </div>

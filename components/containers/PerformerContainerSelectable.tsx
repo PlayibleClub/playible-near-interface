@@ -64,7 +64,7 @@ const PerformerContainerSelectable = (props) => {
             />
           </div>
         ) : (
-          <Image src={'/images/tokensMLB/SP.png'} width={120} height={160} />
+          <Image src={'/images/tokensMLB/SP.png'} width={120} height={160} alt="token-bare" />
         )}
       </div>
       {children}

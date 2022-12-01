@@ -1,7 +1,7 @@
 import client from 'apollo-client';
+import { getUTCTimestampFromLocal } from 'utils/date/helper';
 
-
-async function getGameInfoById(item){
+async function getGameInfoById(item) {
   // let game_id = item[0];
   // let end_time = item[1].end_time;s
   // let whitelist = item[1].whitelist;
@@ -18,14 +18,19 @@ async function getGameInfoById(item){
     lineup_len: item[1].lineup_len,
     joined_player_counter: item[1].joined_player_counter,
     jointed_team_counter: item[1].joined_team_counter,
-    isCompleted: Date.now() >= item[1].end_time ? true : false,
-    status: Date.now() >= item[1].end_time ? 'completed' :
-            Date.now() < item[1].start_time ? 'new' :
-            Date.now() > item[1].start_time && Date.now() < item[1].end_time ? 'ongoing' : 'invalid'
-  }
-
+    isCompleted: getUTCTimestampFromLocal() >= item[1].end_time ? true : false,
+    status:
+      getUTCTimestampFromLocal() >= item[1].end_time
+        ? 'completed'
+        : getUTCTimestampFromLocal() < item[1].start_time
+        ? 'new'
+        : getUTCTimestampFromLocal() > item[1].start_time &&
+          getUTCTimestampFromLocal() < item[1].end_time
+        ? 'ongoing'
+        : 'invalid',
+  };
 
   return returningData;
 }
 
-export { getGameInfoById};
+export { getGameInfoById };

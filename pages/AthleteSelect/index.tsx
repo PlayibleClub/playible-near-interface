@@ -6,28 +6,36 @@ import Container from 'components/containers/Container';
 import PortfolioContainer from 'components/containers/PortfolioContainer';
 import router, { useRouter } from 'next/router';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
-import {
-  convertNftToAthlete,
-  getAthleteInfoById,
-  getAthleteInfoNoStats,
-} from 'utils/athlete/helper';
+import { convertNftToAthlete, getAthleteInfoById } from 'utils/athlete/helper';
 import { ATHLETE } from 'data/constants/nearContracts';
 import AthleteSelectContainer from 'components/containers/AthleteSelectContainer';
 import Link from 'next/link';
 import ReactPaginate from 'react-paginate';
-
+import PerformerContainer from 'components/containers/PerformerContainer';
+import { Provider, useDispatch, useSelector} from 'react-redux';
+import { selectAthleteLineup, selectGameId, selectIndex, selectPosition, selectTeamName} from 'redux/athlete/athleteSlice';
+import { setAthleteLineup, setGameId, setIndex, setPosition, setTeamNameRedux } from 'redux/athlete/athleteSlice';
 const AthleteSelect = (props) => {
   const { query } = props;
+  
+  //const teamName = query.teamName;
 
-  const gameId = query.game_id;
-  const teamName = query.teamName;
-
-  const position = query.position;
+  //const position = query.position;
   const router = useRouter();
   const data = router.query;
   let pass = data;
+  const dispatch = useDispatch();
+  //Get the data from redux store
+  const gameId = useSelector(selectGameId);
+  const position = useSelector(selectPosition);
+  const index = useSelector(selectIndex);
+  console.log(position);
+  console.log(useSelector(selectAthleteLineup));
+  const reduxLineup = useSelector(selectAthleteLineup);
+  let passedLineup = [...reduxLineup];
+  //let passedLineup = JSON.parse(useSelector(selectAthleteLineup));
   // @ts-ignore:next-line
-  let passedLineup = JSON.parse(data.athleteLineup);
+  //let passedLineup = JSON.parse(data.athleteLineup);
   const [athletes, setAthletes] = useState([]);
   const [athleteOffset, setAthleteOffset] = useState(0);
   const [athleteLimit, setAthleteLimit] = useState(7);
@@ -90,7 +98,7 @@ const AthleteSelect = (props) => {
         const result = JSON.parse(Buffer.from(data.result).toString());
         console.log(result);
         const result_two = await Promise.all(
-          result.map(convertNftToAthlete).map(getAthleteInfoNoStats)
+          result.map(convertNftToAthlete).map(getAthleteInfoById)
         );
 
         console.log(result_two);
@@ -99,11 +107,11 @@ const AthleteSelect = (props) => {
       });
   }
   //TODO: might encounter error w/ loading duplicate athlete
-  function setAthleteRadio(index) {
-    passedLineup.splice(pass.index, 1, {
+  function setAthleteRadio(radioIndex) {
+    passedLineup.splice(index, 1, {
       position: position,
       isAthlete: true,
-      athlete: athletes[index],
+      athlete: athletes[radioIndex],
     });
     console.table(passedLineup);
     setLineup(passedLineup);
@@ -138,7 +146,7 @@ const AthleteSelect = (props) => {
   const handlePageClick = (e) => {
     const newOffset = (e.selected * athleteLimit) % totalAthletes;
     //add reset of lineup
-    passedLineup.splice(pass.index, 1, {
+    passedLineup.splice(index, 1, {
       position: position,
       isAthlete: false,
     });
@@ -150,6 +158,15 @@ const AthleteSelect = (props) => {
     setRadioSelected(value);
     setAthleteRadio(value);
   };
+
+  const handleProceedClick = (game_id, lineup) => {
+    dispatch(setGameId(game_id));
+    dispatch(setAthleteLineup(lineup));
+    router.push({
+      pathname: '/CreateTeam/[game_id]',
+      query: {game_id: game_id},
+    });
+  }
   useEffect(() => {
     if (!isNaN(athleteOffset)) {
       query_nft_supply_for_owner(position, team, name);
@@ -162,65 +179,69 @@ const AthleteSelect = (props) => {
   return (
     <>
       <Container activeName="PLAY">
-        <div className="mt-4">
+        <div className="md:ml-6 md:mt-12">
           <BackFunction prev={`/CreateTeam/${gameId}`} />
+          <PortfolioContainer
+            title={'SELECT YOUR ' + getPositionDisplay(position)}
+            textcolor="text-indigo-black"
+          />
         </div>
-        <PortfolioContainer
-          title={'SELECT YOUR ' + getPositionDisplay(position)}
-          textcolor="text-indigo-black"
-        >
-          <div className="flex flex-col">
-            <div className="grid grid-cols-4 mt-1 md:grid-cols-4 md:ml-7 md:mt-2">
-              {athletes.map((item, i) => {
-                const accountAthleteIndex = athletes.indexOf(item, 0) + athleteOffset;
 
-                return (
-                  <>
-                    {checkIfAthleteExists(item.athlete_id) ? (
-                      <div className="w-4/5 h-5/6 border-transparent opacity-50 pointer-events-none">
-                        <div className="mt-1.5 w-full h-14px mb-1"></div>
-                        <AthleteSelectContainer
+        <div className="flex flex-col">
+          <div className="grid grid-cols-4 mt-1 md:grid-cols-4 md:ml-7 md:mt-2">
+            {athletes.map((item, i) => {
+              const accountAthleteIndex = athletes.indexOf(item, 0) + athleteOffset;
+
+              return (
+                <>
+                  {checkIfAthleteExists(item.athlete_id) || item.isInGame ? (
+                    <div className="w-4/5 h-5/6 border-transparent pointer-events-none">
+                      <div className="mt-1.5 w-full h-14px mb-1"></div>
+                      <PerformerContainer
+                        key={item.athlete_id}
+                        AthleteName={item.name}
+                        AvgScore={item.fantasy_score.toFixed(2)}
+                        id={item.athlete_id}
+                        uri={item.image}
+                        index={accountAthleteIndex}
+                        isSelected={true}
+                        isInGame={item.isInGame}
+                        fromPortfolio={false}
+                      />
+                    </div>
+                  ) : (
+                    <label className="w-4/5 h-5/6">
+                      <div className="w-full h-full border-transparent focus:border-transparent focus:ring-2 focus:ring-blue-300 focus:border-transparent">
+                        <input
+                          className="justify-self-end"
+                          type="radio"
+                          checked={radioSelected == i}
+                          value={i}
+                          onChange={(e) => handleRadioClick(e.target.value)}
+                        ></input>
+                        <PerformerContainer
                           key={item.athlete_id}
-                          athleteName={item.name}
-                          avgScore={item.fantasy_score.toFixed(2)}
+                          AthleteName={item.name}
+                          AvgScore={item.fantasy_score.toFixed(2)}
                           id={item.athlete_id}
                           uri={item.image}
                           index={accountAthleteIndex}
+                          fromPortfolio={false}
                         />
                       </div>
-                    ) : (
-                      <label className="w-4/5 h-5/6">
-                        <div className="w-full h-full border-transparent focus:border-transparent focus:ring-2 focus:ring-blue-300 focus:border-transparent">
-                          <input
-                            className="justify-self-end"
-                            type="radio"
-                            checked={radioSelected == i}
-                            value={i}
-                            onChange={(e) => handleRadioClick(e.target.value)}
-                          ></input>
-                          <AthleteSelectContainer
-                            key={item.athlete_id}
-                            athleteName={item.name}
-                            avgScore={item.fantasy_score.toFixed(2)}
-                            id={item.athlete_id}
-                            uri={item.image}
-                            index={accountAthleteIndex}
-                          />
-                        </div>
-                      </label>
-                    )}
-                  </>
-                );
-              })}
-            </div>
+                    </label>
+                  )}
+                </>
+              );
+            })}
           </div>
+        </div>
 
-          <div className="absolute bottom-10 right-10"></div>
-        </PortfolioContainer>
+        <div className="absolute bottom-10 right-10"></div>
         <div className="absolute z-0 bottom-10 right-10 iphone5:bottom-4 iphone5:right-2 iphone5:fixed iphoneX:bottom-4 iphoneX:right-4 iphoneX-fixed">
           <div key={remountComponent}>
             <ReactPaginate
-              className="p-2 text-center bg-indigo-buttonblue text-indigo-white flex flex-row space-x-4 select-none ml-7"
+              className="p-2 content-center justify-center bg-indigo-buttonblue text-indigo-white flex flex-row space-x-4 select-none ml-7"
               pageClassName="hover:font-bold"
               activeClassName="rounded-lg text-center bg-indigo-white text-indigo-black pr-1 pl-1 font-bold"
               pageLinkClassName="rounded-lg text-center hover:font-bold hover:bg-indigo-white hover:text-indigo-black"
@@ -232,21 +253,21 @@ const AthleteSelect = (props) => {
               previousLabel="<"
               renderOnZeroPageCount={null}
             />
-            <Link
+            {/* <Link
               href={{
                 pathname: '/CreateTeam/[game_id]',
                 query: {
                   game_id: gameId,
                   testing: JSON.stringify(lineup),
-                  teamName: teamName,
+                  
                 },
               }}
               as={`/CreateTeam/${gameId}`}
-            >
-              <button className="bg-indigo-buttonblue text-indigo-white w-full ml-7 mt-4 md:w-60 h-14 text-center font-bold text-md">
+            > */}
+              <button className="bg-indigo-buttonblue text-indigo-white w-full ml-7 mt-4 md:w-60 h-14 text-center font-bold text-md" onClick={() => handleProceedClick(gameId, lineup)}>
                 PROCEED
               </button>
-            </Link>
+            {/* </Link> */}
           </div>
         </div>
       </Container>

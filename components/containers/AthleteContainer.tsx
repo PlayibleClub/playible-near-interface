@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import warriorLogo from '../../public/images/warriors.png';
 
 const AthleteContainer = (props) => {
   const {
@@ -30,7 +29,7 @@ const AthleteContainer = (props) => {
         <div className="ml-4 text-xs">{TeamName}</div>
         <div className="flow-root">
           <div className="mt-3 mr-2 float-right">
-            <img src={warriorLogo} />
+            <img />
           </div>
         </div>
       </div>

@@ -140,7 +140,7 @@ export default function Packs() {
     <Container activeName="SQUAD">
       <div className="flex flex-col w-full overflow-y-auto h-screen pb-12 mb-12">
         <Main color="indigo-white">
-          <div className="md:ml-6">
+          <div className="md:ml-6 md:mt-8">
             <PortfolioContainer textcolor="indigo-black" title="PACKS">
               <div className="flex flex-col">
                 <div className="grid grid-cols-4 gap-y-8 mt-4 md:grid-cols-4 md:ml-7 md:mt-12">
