@@ -12,12 +12,14 @@ import AthleteSelectContainer from 'components/containers/AthleteSelectContainer
 import Link from 'next/link';
 import ReactPaginate from 'react-paginate';
 import PerformerContainer from 'components/containers/PerformerContainer';
-import { Provider, useDispatch, useSelector} from 'react-redux';
-import { selectAthleteLineup, selectGameId, selectIndex, selectPosition, selectTeamName} from 'redux/athlete/athleteSlice';
+import { Provider, useDispatch, useSelector } from 'react-redux';
+import { selectAthleteLineup, selectGameId, selectIndex, selectPosition, selectTeamName } from 'redux/athlete/athleteSlice';
 import { setAthleteLineup, setGameId, setIndex, setPosition, setTeamNameRedux } from 'redux/athlete/athleteSlice';
+import { query_filter_supply_for_owner, query_filter_tokens_for_owner } from 'utils/near/helper';
+
 const AthleteSelect = (props) => {
   const { query } = props;
-  
+
   //const teamName = query.teamName;
 
   //const position = query.position;
@@ -33,9 +35,6 @@ const AthleteSelect = (props) => {
   console.log(useSelector(selectAthleteLineup));
   const reduxLineup = useSelector(selectAthleteLineup);
   let passedLineup = [...reduxLineup];
-  //let passedLineup = JSON.parse(useSelector(selectAthleteLineup));
-  // @ts-ignore:next-line
-  //let passedLineup = JSON.parse(data.athleteLineup);
   const [athletes, setAthletes] = useState([]);
   const [athleteOffset, setAthleteOffset] = useState(0);
   const [athleteLimit, setAthleteLimit] = useState(7);
@@ -47,65 +46,35 @@ const AthleteSelect = (props) => {
   const { accountId } = useWalletSelector();
   const [pageCount, setPageCount] = useState(0);
   const [remountComponent, setRemountComponent] = useState(0);
+  const [search, setSearch] = useState('');
+  const [currPosition, setCurrPosition] = useState('');
+  const [loading, setLoading] = useState(true);
   const provider = new providers.JsonRpcProvider({
     url: getRPCProvider(),
   });
 
-  function query_nft_supply_for_owner(position, team, name) {
-    const query = JSON.stringify({
-      account_id: accountId,
-      position: position,
-      team: team,
-      name: name,
-    });
-
-    provider
-      .query({
-        request_type: 'call_function',
-        finality: 'optimistic',
-        account_id: getContract(ATHLETE),
-        method_name: 'filtered_nft_supply_for_owner',
-        args_base64: Buffer.from(query).toString('base64'),
-      })
-      .then((data) => {
-        //@ts-ignore:next-line
-        const totalAthletes = JSON.parse(Buffer.from(data.result));
-        console.log(totalAthletes);
-        setTotalAthletes(totalAthletes);
-      });
+  async function get_filter_supply_for_owner(accountId, position, team, name) {
+    console.log(accountId)
+    setTotalAthletes(await query_filter_supply_for_owner(accountId, position, team, name));
   }
 
-  function query_nft_tokens_for_owner(position, team, name) {
-    const query = JSON.stringify({
-      account_id: accountId,
-      from_index: athleteOffset.toString(),
-      limit: athleteLimit,
-      position: position,
-      team: team,
-      name: name,
-    });
-
-    provider
-      .query({
-        request_type: 'call_function',
-        finality: 'optimistic',
-        account_id: getContract(ATHLETE),
-        method_name: 'filter_tokens_for_owner',
-        args_base64: Buffer.from(query).toString('base64'),
-      })
+  function get_filter_tokens_for_owner(accountId, athleteOffset, athleteLimit, position, team, name) {
+    query_filter_tokens_for_owner(accountId, athleteOffset, athleteLimit, position, team, name)
       .then(async (data) => {
         // @ts-ignore:next-line
         const result = JSON.parse(Buffer.from(data.result).toString());
-        console.log(result);
         const result_two = await Promise.all(
           result.map(convertNftToAthlete).map(getAthleteInfoById)
         );
 
-        console.log(result_two);
         // const sortedResult = sortByKey(result_two, 'fantasy_score');
+        setCurrPosition(position);
         setAthletes(result_two);
+        setLoading(false);
       });
+
   }
+
   //TODO: might encounter error w/ loading duplicate athlete
   function setAthleteRadio(radioIndex) {
     passedLineup.splice(index, 1, {
@@ -143,6 +112,12 @@ const AthleteSelect = (props) => {
     return false;
   }
 
+  function handleDropdownChange() {
+    setAthleteOffset(0);
+    setAthleteLimit(7);
+    setRemountComponent(Math.random());
+  }
+
   const handlePageClick = (e) => {
     const newOffset = (e.selected * athleteLimit) % totalAthletes;
     //add reset of lineup
@@ -164,17 +139,20 @@ const AthleteSelect = (props) => {
     dispatch(setAthleteLineup(lineup));
     router.push({
       pathname: '/CreateTeam/[game_id]',
-      query: {game_id: game_id},
+      query: { game_id: game_id },
     });
   }
   useEffect(() => {
     if (!isNaN(athleteOffset)) {
-      query_nft_supply_for_owner(position, team, name);
+      get_filter_supply_for_owner(accountId, position, team, name);
       setPageCount(Math.ceil(totalAthletes / athleteLimit));
       const endOffset = athleteOffset + athleteLimit;
-      query_nft_tokens_for_owner(position, team, name);
+      console.log(`Loading athletes from ${athleteOffset} to ${endOffset}`);
+      get_filter_tokens_for_owner(accountId, athleteOffset, athleteLimit, position, team, name);
     }
-  }, [totalAthletes, athleteLimit, athleteOffset]);
+  }, [totalAthletes, athleteLimit, athleteOffset, position, team, name]);
+
+  useEffect(() => { }, [search]);
 
   return (
     <>
@@ -185,6 +163,37 @@ const AthleteSelect = (props) => {
             title={'SELECT YOUR ' + getPositionDisplay(position)}
             textcolor="text-indigo-black"
           />
+        </div>
+
+        <div className="h-8 flex relative w-32">
+          <form
+            onSubmit={(e) => {
+              handleDropdownChange();
+              search == '' ? setName('allNames') : setName(search);
+              e.preventDefault();
+            }}
+          >
+            <label className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-gray-300">
+              Search
+            </label>
+            <div className="relative lg:ml-80">
+              <input
+                type="search"
+                id="default-search"
+                onChange={(e) => setSearch(e.target.value)}
+                className=" bg-indigo-white w-72 pl-2
+                            ring-2 ring-offset-4 ring-indigo-black ring-opacity-25 focus:ring-2 focus:ring-indigo-black 
+                            focus:outline-none"
+                placeholder="Search Athlete"
+              />
+              <button
+                type="submit"
+                className="bg-search-icon bg-no-repeat bg-center absolute -right-12 bottom-0 h-full
+                            pl-6 py-2 ring-2 ring-offset-4 ring-indigo-black ring-opacity-25
+                            focus:ring-2 focus:ring-indigo-black"
+              ></button>
+            </div>
+          </form>
         </div>
 
         <div className="flex flex-col">
@@ -253,21 +262,9 @@ const AthleteSelect = (props) => {
               previousLabel="<"
               renderOnZeroPageCount={null}
             />
-            {/* <Link
-              href={{
-                pathname: '/CreateTeam/[game_id]',
-                query: {
-                  game_id: gameId,
-                  testing: JSON.stringify(lineup),
-                  
-                },
-              }}
-              as={`/CreateTeam/${gameId}`}
-            > */}
-              <button className="bg-indigo-buttonblue text-indigo-white w-full ml-7 mt-4 md:w-60 h-14 text-center font-bold text-md" onClick={() => handleProceedClick(gameId, lineup)}>
-                PROCEED
-              </button>
-            {/* </Link> */}
+            <button className="bg-indigo-buttonblue text-indigo-white w-full ml-7 mt-4 md:w-60 h-14 text-center font-bold text-md" onClick={() => handleProceedClick(gameId, lineup)}>
+              PROCEED
+            </button>
           </div>
         </div>
       </Container>

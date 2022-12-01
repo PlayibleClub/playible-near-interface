@@ -19,7 +19,7 @@ import { useWalletSelector } from 'contexts/WalletSelectorContext';
 import { ATHLETE } from 'data/constants/nearContracts';
 import PackComponent from 'pages/Packs/components/PackComponent';
 import { convertNftToAthlete, getAthleteInfoById } from 'utils/athlete/helper';
-import { query_filter_supply_for_owner,query_filter_tokens_for_owner } from 'utils/near/helper';
+import { query_filter_supply_for_owner, query_filter_tokens_for_owner } from 'utils/near/helper';
 import ReactPaginate from 'react-paginate';
 import Select from 'react-select';
 import { isCompositeType } from 'graphql';
@@ -88,7 +88,6 @@ const Portfolio = () => {
   async function get_filter_supply_for_owner(accountId, position, team, name) {
     console.log(accountId)
     setTotalAthletes(await query_filter_supply_for_owner(accountId, position, team, name));
-    
   }
 
   function handleDropdownChange() {
@@ -97,20 +96,20 @@ const Portfolio = () => {
     setRemountComponent(Math.random());
   }
 
-  function get_filter_tokens_for_owner(accountId,athleteOffset,athleteLimit,position, team, name) {
-    query_filter_tokens_for_owner(accountId,athleteOffset,athleteLimit,position, team, name)
-    .then(async (data) => {
-      // @ts-ignore:next-line
-      const result = JSON.parse(Buffer.from(data.result).toString());
-      const result_two = await Promise.all(
-        result.map(convertNftToAthlete).map(getAthleteInfoById)
-      );
+  function get_filter_tokens_for_owner(accountId, athleteOffset, athleteLimit, position, team, name) {
+    query_filter_tokens_for_owner(accountId, athleteOffset, athleteLimit, position, team, name)
+      .then(async (data) => {
+        // @ts-ignore:next-line
+        const result = JSON.parse(Buffer.from(data.result).toString());
+        const result_two = await Promise.all(
+          result.map(convertNftToAthlete).map(getAthleteInfoById)
+        );
 
-      // const sortedResult = sortByKey(result_two, 'fantasy_score');
-      setCurrPosition(position);
-      setAthletes(result_two);
-      setLoading(false);
-    });
+        // const sortedResult = sortByKey(result_two, 'fantasy_score');
+        setCurrPosition(position);
+        setAthletes(result_two);
+        setLoading(false);
+      });
 
   }
 
@@ -128,13 +127,13 @@ const Portfolio = () => {
       setPageCount(Math.ceil(totalAthletes / athleteLimit));
       const endOffset = athleteOffset + athleteLimit;
       console.log(`Loading athletes from ${athleteOffset} to ${endOffset}`);
-      get_filter_tokens_for_owner(accountId,athleteOffset,athleteLimit,position, team, name);
+      get_filter_tokens_for_owner(accountId, athleteOffset, athleteLimit, position, team, name);
     }
 
     // setSortedList([]);
   }, [totalAthletes, athleteLimit, athleteOffset, position, team, name]);
 
-  useEffect(() => {}, [limit, offset, filter, search]);
+  useEffect(() => { }, [limit, offset, filter, search]);
 
   return (
     <Container activeName="SQUAD">
@@ -159,17 +158,7 @@ const Portfolio = () => {
                   <option value="TE">TIGHT END</option>
                 </select>
               </form>
-              {/* <img src={filterIcon} className="object-none w-4 mr-2" /> */}
-              {/* <form>
-                      <select onChange={(e) => console.log(e)} className="filter-select bg-white">
-                        <option value="allTeams">
-                          ALL
-                        </option>
-                        <option value="TEN">
-                          Tennessee
-                        </option>
-                      </select>
-                    </form> */}
+
             </div>
             <div className="h-8 flex justify-between mt-3 ml-12">
               <form>
@@ -229,7 +218,6 @@ const Portfolio = () => {
                   <div className="grid grid-cols-4 gap-y-8 mt-4 md:grid-cols-4 md:mt-4">
                     {athletes.map((item) => {
                       const accountAthleteIndex = athletes.indexOf(item, 0) + athleteOffset;
-
                       return (
                         <PerformerContainer
                           key={item.athlete_id}
@@ -241,8 +229,6 @@ const Portfolio = () => {
                           athletePosition={item.position}
                           isInGame={item.isInGame}
                           fromPortfolio={true}
-                          // rarity={path.rarity}
-                          // status={player.is_locked}
                         ></PerformerContainer>
                       );
                     })}
