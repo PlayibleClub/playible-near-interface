@@ -16,13 +16,13 @@ import { useWalletSelector } from 'contexts/WalletSelectorContext';
 import ViewTeamsContainer from 'components/containers/ViewTeamsContainer';
 import { query_player_teams } from 'utils/near/helper';
 import { Provider, useSelector, useDispatch } from 'react-redux';
-import { store, persistor} from 'redux/athlete/store';
+import { store, persistor } from 'redux/athlete/store';
 
 export default function CreateLineup(props) {
   const { query } = props;
   const gameId = query.game_id;
   const teamName = 'Team 1';
-  
+
   const { accountId } = useWalletSelector();
   const [gameData, setGameData] = useState(null);
   const [teamModal, setTeamModal] = useState(false);
@@ -71,8 +71,8 @@ export default function CreateLineup(props) {
                 <ModalPortfolioContainer title="CREATE TEAM" textcolor="text-indigo-black" />
 
                 <div className="md:w-2/5">
-                  Create a team and showcase your collection. Enter a team into the tournament and
-                  compete for cash prizes.
+                  Enter your team to compete for cash prizes and entry into the Football
+                  Championship with $35,000 USD up for grabs.
                 </div>
                 <Link
                   href={{
@@ -101,12 +101,7 @@ export default function CreateLineup(props) {
                   <div>
                     {/* @ts-expect-error */}
                     {playerTeams.team_names.map((data) => {
-                      return (
-                        <ViewTeamsContainer
-                          teamNames = {data}
-                          gameId = {gameId}
-                        />
-                      );
+                      return <ViewTeamsContainer teamNames={data} gameId={gameId} />;
                     })}
                   </div>
                 )

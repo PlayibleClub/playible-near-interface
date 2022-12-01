@@ -183,7 +183,7 @@ export default function EntrySummary(props) {
                           <div className="ml-7">
                             <div>PRIZE POOL</div>
                             <div className=" font-monument text-lg">
-                              {(gameData && gameData.prize) || 'N/A'}
+                              {(gameData && gameData.prize) || '$100 + 2 Championship Tickets'}
                             </div>
                           </div>
                           <div>
