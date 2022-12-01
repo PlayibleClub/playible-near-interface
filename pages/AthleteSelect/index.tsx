@@ -40,8 +40,8 @@ const AthleteSelect = (props) => {
   const [athleteLimit, setAthleteLimit] = useState(7);
   const [totalAthletes, setTotalAthletes] = useState(0);
   const [radioSelected, setRadioSelected] = useState(null);
-  const [team, setTeam] = useState('allTeams');
-  const [name, setName] = useState('allNames');
+  const [team, setTeam] = useState(['allTeams']);
+  const [name, setName] = useState(['allNames']);
   const [lineup, setLineup] = useState([]);
   const { accountId } = useWalletSelector();
   const [pageCount, setPageCount] = useState(0);
@@ -86,7 +86,9 @@ const AthleteSelect = (props) => {
     setLineup(passedLineup);
   }
   function getPositionDisplay(position) {
-    switch (position) {
+    if(position.length === 3) return 'FLEX';
+    if(position.length === 4) return 'SUPERFLEX';
+    switch (position[0]) {
       case 'QB':
         return 'QUARTER BACK';
       case 'RB':
@@ -95,11 +97,9 @@ const AthleteSelect = (props) => {
         return 'WIDE RECEIVER';
       case 'TE':
         return 'TIGHT END';
-      case 'FLEX':
-        return 'FLEX (RB/WR/TE)';
-      case 'SUPERFLEX':
-        return 'SUPERFLEX (QB/RB/WR/TE)';
     }
+
+    
   }
   function checkIfAthleteExists(athlete_id) {
     for (let i = 0; i < passedLineup.length; i++) {

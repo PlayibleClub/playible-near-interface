@@ -202,8 +202,14 @@ export default function CreateLineup(props) {
       { position: ['RB', 'WR', 'TE'], isAthlete: false, amount: 1 },
       { position: ['QB', 'RB', 'WR', 'TE'], isAthlete: false, amount: 1 },
     ];
-
-  }
+    const array2 = [];
+    for(let i = 0; i < array.length; i++){
+      for(let j = 0; j < array[i].amount; j++){
+        array2.push({position: array[i].position, isAthlete: false});
+      }
+    }
+    setLineup(array2);
+  } 
 
   /* Function that checks whether a string parses into valid JSON. Used to check if data from router
      query parses into a JSON that holds the athlete data coming from AthleteSelect. Returns false

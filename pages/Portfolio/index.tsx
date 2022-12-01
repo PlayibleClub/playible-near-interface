@@ -61,9 +61,9 @@ const Portfolio = () => {
   const [athleteList, setAthleteList] = useState([]);
 
   const [currPosition, setCurrPosition] = useState('');
-  const [position, setPosition] = useState('allPos');
-  const [team, setTeam] = useState('allTeams');
-  const [name, setName] = useState('allNames');
+  const [position, setPosition] = useState(['allPos']);
+  const [team, setTeam] = useState(['allTeams']);
+  const [name, setName] = useState(['allNames']);
 
   const [remountComponent, setRemountComponent] = useState(0);
 
@@ -145,7 +145,7 @@ const Portfolio = () => {
                 <select
                   onChange={(e) => {
                     handleDropdownChange();
-                    setPosition(e.target.value);
+                    setPosition([e.target.value]);
                   }}
                   className="bg-filter-icon bg-no-repeat bg-right  bg-indigo-white w-60
                       ring-2 ring-offset-4 ring-indigo-black ring-opacity-25 focus:ring-2 focus:ring-indigo-black 
@@ -165,7 +165,7 @@ const Portfolio = () => {
                 <select
                   onChange={(e) => {
                     handleDropdownChange();
-                    setTeam(e.target.value);
+                    setTeam([e.target.value]);
                   }}
                   className="bg-filter-icon bg-no-repeat bg-right bg-indigo-white w-60
                       ring-2 ring-offset-4 ring-indigo-black ring-opacity-25 focus:ring-2 focus:ring-indigo-black 
@@ -181,7 +181,7 @@ const Portfolio = () => {
               <form
                 onSubmit={(e) => {
                   handleDropdownChange();
-                  search == '' ? setName('allNames') : setName(search);
+                  search == '' ? setName(['allNames']) : setName([search]);
                   e.preventDefault();
                 }}
               >
