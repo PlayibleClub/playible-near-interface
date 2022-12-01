@@ -157,7 +157,7 @@ const AthleteSelect = (props) => {
   return (
     <>
       <Container activeName="PLAY">
-        <div className="md:ml-6 md:mt-12">
+        <div className="mt-44 md:ml-6 md:mt-6">
           <BackFunction prev={`/CreateTeam/${gameId}`} />
           <PortfolioContainer
             title={'SELECT YOUR ' + getPositionDisplay(position)}
@@ -165,7 +165,7 @@ const AthleteSelect = (props) => {
           />
         </div>
 
-        <div className="h-8 flex absolute top-36 right-20">
+        <div className="h-8 flex absolute ml-3 top-32 mr-8 md:top-24 md:right-20 md:-mt-5 ">
           <form
             onSubmit={(e) => {
               handleDropdownChange();
@@ -189,7 +189,7 @@ const AthleteSelect = (props) => {
               <button
                 type="submit"
                 className="bg-search-icon bg-no-repeat bg-center absolute -right-12 bottom-0 h-full
-                            pl-6 py-2 ring-2 ring-offset-4 ring-indigo-black ring-opacity-25
+                            pl-8 md:pl-6 py-2 ring-2 ring-offset-4 ring-indigo-black ring-opacity-25
                             focus:ring-2 focus:ring-indigo-black"
               ></button>
             </div>

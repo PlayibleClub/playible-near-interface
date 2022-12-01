@@ -30,7 +30,7 @@ const PerformerContainer = (props) => {
     >
       <div className="self-center mr-10">
         <div
-          className={`h-6 py-1 px-3 mb-2 ${
+          className={`h-10 md:h-6 py-1 px-3 mb-2 ${
             isInGame ? 'bg-indigo-lightgreen text-indigo-white text-center text-xs font-bold' : ''
           } `}
         >
