@@ -25,7 +25,7 @@ import { query_game_data } from 'utils/near/helper';
 
 export default function PlayDetails(props) {
   const { query } = props;
-  
+
   const gameId = query.game_id;
 
   const provider = new providers.JsonRpcProvider({
@@ -302,7 +302,8 @@ export default function PlayDetails(props) {
                                           <div className="ml-7">
                                             <div>PRIZE POOL</div>
                                             <div className=" font-monument text-lg">
-                                              {(gameData && gameData.prize) || 'N/A'}
+                                              {(gameData && gameData.prize) ||
+                                                '$100 + 2 Championship Tickets'}
                                             </div>
                                           </div>
                                           <div>
@@ -501,9 +502,9 @@ export default function PlayDetails(props) {
             <>
               <PortfolioContainer textcolor="indigo-black" title="GAMEPLAY" />
 
-              {/* if paid game */}
+              {/* if paid game
               <div className="ml-7 mt-5 font-bold text-indigo-red">{detailsFreeOrPaid}</div>
-
+              */}
               <div className="ml-7 mt-3 font-normal">
                 Enter a team into the The Blitz tournament to compete for cash prizes.
               </div>
