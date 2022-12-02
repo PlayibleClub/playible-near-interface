@@ -17,6 +17,7 @@ import LeaderboardComponent from './components/LeaderboardComponent';
 import ViewTeamsContainer from 'components/containers/ViewTeamsContainer';
 import { query_game_data, query_all_players_lineup, query_player_teams } from 'utils/near/helper';
 import { getNflWeek } from 'utils/date/helper';
+import LoadingPageDark from 'components/loading/LoadingPageDark';
 
 const Games = (props) => {
   const { query } = props;
@@ -90,12 +91,7 @@ const Games = (props) => {
                   <div>
                     {/* @ts-expect-error */}
                     {playerTeams.team_names.map((data) => {
-                      return (
-                        <ViewTeamsContainer
-                          teamNames={data}
-                          gameId={gameId}
-                        />
-                      );
+                      return <ViewTeamsContainer teamNames={data} gameId={gameId} />;
                     })}
                   </div>
                 )
@@ -117,7 +113,10 @@ const Games = (props) => {
                       />
                     );
                   })
-                  : 'Leaderboard ranks are currently not available at this time.'}
+                  : 
+                  <div className="-mt-10 -ml-12">
+                  <LoadingPageDark />
+                  </div>}
               </div>
             </div>
          </div>              
