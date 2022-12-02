@@ -10,6 +10,7 @@ import { convertNftToAthlete, getAthleteInfoById } from 'utils/athlete/helper';
 import { ATHLETE } from 'data/constants/nearContracts';
 import AthleteSelectContainer from 'components/containers/AthleteSelectContainer';
 import Link from 'next/link';
+import SearchComponent from 'components/SearchComponent';
 import ReactPaginate from 'react-paginate';
 import PerformerContainer from 'components/containers/PerformerContainer';
 import { Provider, useDispatch, useSelector } from 'react-redux';
@@ -166,7 +167,11 @@ const AthleteSelect = (props) => {
         </div>
 
         <div className="h-8 flex absolute ml-3 top-32 mr-8 md:top-24 md:right-20 md:-mt-5 ">
-          <form
+          <SearchComponent
+            onChangeFn={(search) => setName(search)}
+            onSubmitFn={(search) => setName(search)}
+          />
+          {/* <form
             onSubmit={(e) => {
               handleDropdownChange();
               search == '' ? setName(['allNames']) : setName([search]);
@@ -193,7 +198,7 @@ const AthleteSelect = (props) => {
                             focus:ring-2 focus:ring-indigo-black"
               ></button>
             </div>
-          </form>
+          </form> */}
         </div>
 
         <div className="flex flex-col">
