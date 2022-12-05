@@ -55,7 +55,8 @@ const Games = (props) => {
     console.log('loading');
     get_player_teams(accountId, gameId);
     console.log(playerTeams);
-  }, []);
+    get_all_players_lineup();
+  },[week]);
 
   useEffect(() => {
     get_game_data(gameId);
@@ -64,10 +65,6 @@ const Games = (props) => {
   useEffect(() => {
     get_game_week();
   })
-
-  useEffect(() => {
-    get_all_players_lineup();
-  }, [week]);
 
   return (
     <Container activeName="GAMES">

@@ -23,7 +23,7 @@ import { transactions, utils, WalletConnection, providers } from 'near-api-js';
 import { getGameInfoById } from 'utils/game/helper';
 import AdminGameComponent from './components/AdminGameComponent';
 import moment from 'moment';
-import {getUTCTimestampFromLocal} from 'utils/date/helper';
+import { getUTCTimestampFromLocal } from 'utils/date/helper';
 import ReactPaginate from 'react-paginate';
 import { query_games_list, query_game_supply } from 'utils/near/helper';
 
@@ -128,7 +128,7 @@ export default function Index(props) {
     title: '',
     content: '',
   });
-
+  const [positionsInfo, setPositionsInfo] = useState([]);
   const provider = new providers.JsonRpcProvider({
     url: getRPCProvider(),
   });
@@ -139,12 +139,13 @@ export default function Index(props) {
 
   const [percentTotal, setPercentTotal] = useState(0);
   const [remountComponent, setRemountComponent] = useState(0);
+  const [remountPositionArea, setRemountPositionArea] = useState(0);
   const changeTab = (name) => {
     setGamesOffset(0);
     setGamesLimit(10);
     setRemountComponent(Math.random());
     const tabList = [...tabs];
-    
+
     tabList.forEach((item) => {
       if (item.name === name) {
         item.isActive = true;
@@ -161,8 +162,8 @@ export default function Index(props) {
     setGamesOffset(0);
     setGamesLimit(10);
     setRemountComponent(Math.random());
-    switch(name){
-      case 'NEW' : setCurrentTotal(newGames.length); break;
+    switch (name) {
+      case 'NEW': setCurrentTotal(newGames.length); break;
       case 'ON-GOING': setCurrentTotal(ongoingGames.length); break;
       case 'COMPLETED': setCurrentTotal(completedGames.length); break;
     }
@@ -213,12 +214,12 @@ export default function Index(props) {
   };
 
   const onChange = (e) => {
-    if (e.target.name === 'duration' || e.target.name === 'prize') {
+    if (e.target.name === 'positionAmount') {
       console.log(e.target.name, e.target.value);
-      if (parseInt(e.target.value) > 0) {
+      if (parseInt(e.target.value) > -1) {
         setDetails({
           ...details,
-          [e.target.name]: e.target.value,
+          [e.target.name]: parseInt(e.target.value),
         });
       }
     } else {
@@ -262,8 +263,8 @@ export default function Index(props) {
     if (distribution.length < 10) {
       errors.push(
         'Exactly 10 rank distribution must be provided. (Only ' +
-          distribution.length +
-          ' was provided)'
+        distribution.length +
+        ' was provided)'
       );
     }
 
@@ -515,20 +516,47 @@ export default function Index(props) {
       },
     ]);
   };
-
-  //placeholder test for calling game contract functions
-
+  const handleButtonClick = (e) => {
+    e.preventDefault();
+    //get current position and amount from details
+    let position = [details['position']];
+    let amount = details['positionAmount'];
+    switch(position[0]){
+      case 'FLEX' : position = ['RB', 'WR', 'TE']; break;
+      case 'SUPERFLEX' : position = ['QB', 'RB', 'WR', 'TE']; break;
+    }
+    let found = positionsInfo.findIndex(e => e.positions.join() === position) 
+    console.log(found);
+    
+    if (positionsInfo.length === 0){
+      let object = {positions: position, amount: amount};
+      setPositionsInfo([object]);
+    }
+    //could not find
+    else if (found === -1){
+      let object = {positions: position, amount: amount}
+      setPositionsInfo(current => [...current, object]);
+    } else {
+      //found has index of same position
+      let current = positionsInfo;
+      //@ts-ignore:next-line
+      current[found].amount += amount;
+      setPositionsInfo(current);
+    }
+  }
+  const NFL_POSITIONS = ['QB', 'RB', 'WR', 'TE', 'FLEX', 'SUPERFLEX'];
   const [details, setDetails] = useState({
     // name: '',
     startTime: '',
     endTime: '',
     prize: 1,
+    usage: 1,
     description: '',
+    position: NFL_POSITIONS[0],
+    positionAmount: 1,
   });
-
-  // const testWhitelist = ["lilith87.testnet", "kishidev.testnet"];
-
-  const testPositions = [
+  
+  const nflPositions = [
     { positions: ['QB'], amount: 1 },
     { positions: ['RB'], amount: 2 },
     { positions: ['WR'], amount: 2 },
@@ -536,7 +564,6 @@ export default function Index(props) {
     { positions: ['RB', 'WR', 'TE'], amount: 1 },
     { positions: ['QB', 'RB', 'WR', 'TE'], amount: 1 },
   ];
-
   const dateStartFormatted = moment(details.startTime).format('YYYY-MM-DD HH:mm:ss');
   const dateStart = moment(dateStartFormatted).utc().unix() * 1000;
   const dateEndFormatted = moment(details.endTime).format('YYYY-MM-DD HH:mm:ss');
@@ -547,10 +574,10 @@ export default function Index(props) {
 
   async function get_game_supply() {
     setTotalGames(await query_game_supply());
-}
+  }
 
-function get_games_list(totalGames) {
-  query_games_list(totalGames).then(async (data) => {
+  function get_games_list(totalGames) {
+    query_games_list(totalGames).then(async (data) => {
       //@ts-ignore:next-line
       const result = JSON.parse(Buffer.from(data.result).toString());
 
@@ -581,7 +608,7 @@ function get_games_list(totalGames) {
       setCompletedGames(completedGames);
       setOngoingGames(ongoingGames);
     });
-}
+  }
 
   async function execute_add_game() {
     const addGameArgs = Buffer.from(
@@ -589,8 +616,9 @@ function get_games_list(totalGames) {
         game_id: (totalGames + 1).toString(),
         game_time_start: dateStart,
         game_time_end: dateEnd,
-        usage_cost: 1,
-        positions: testPositions,
+        usage_cost: Number(details.usage),
+        whitelist: null,
+        positions: nflPositions,
         lineup_len: 8,
       })
     );
@@ -620,32 +648,27 @@ function get_games_list(totalGames) {
   useEffect(() => {
     getTotalPercent();
   }, [distribution]);
-
+  useEffect(() => {
+    console.log(positionsInfo);
+  }, [positionsInfo]);
   useEffect(() => {
     get_games_list(totalGames);
     get_game_supply();
   }, [totalGames]);
   useEffect(() => {
     currentTotal !== 0 ? setPageCount(Math.ceil(currentTotal / gamesLimit)) : setPageCount(1);
-  }, [ currentTotal]);
+  }, [currentTotal]);
 
   return (
     <Container isAdmin>
       <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
         <Main color="indigo-white">
-          {/* {content &&
-            (contentLoading ? (
-              <LoadingPageDark />
-            ) : err ? (
-              <p className="ml-12 mt-5">{err}</p>
-            ) : ( */}
           <div className="flex flex-col w-full overflow-y-auto overflow-x-hidden h-screen self-center text-indigo-black">
             <div className="flex md:ml-4 font-bold font-monument mt-5">
               {tabs.map(({ name, isActive }) => (
                 <div
-                  className={`cursor-pointer mr-6 ${
-                    isActive ? 'border-b-8 border-indigo-buttonblue' : ''
-                  }`}
+                  className={`cursor-pointer mr-6 ${isActive ? 'border-b-8 border-indigo-buttonblue' : ''
+                    }`}
                   onClick={() => changeTab(name)}
                 >
                   {name}
@@ -661,45 +684,44 @@ function get_games_list(totalGames) {
                   <div className="flex font-bold -ml-16 font-monument">
                     {gameTabs.map(({ name, isActive }) => (
                       <div
-                        className={`cursor-pointer mr-6 ${
-                          isActive ? 'border-b-8 border-indigo-buttonblue' : ''
-                        }`}
+                        className={`cursor-pointer mr-6 ${isActive ? 'border-b-8 border-indigo-buttonblue' : ''
+                          }`}
                         onClick={() => changeGameTab(name)}
                       >
                         {name}
                       </div>
                     ))}
                   </div>
-                  <div  className="mt-4 ml-6 grid grid-cols-0 md:grid-cols-3">
+                  <div className="mt-4 ml-6 grid grid-cols-0 md:grid-cols-3">
                     {(gameTabs[0].isActive
                       ? newGames
                       : gameTabs[1].isActive
-                      ? ongoingGames
-                      : completedGames
+                        ? ongoingGames
+                        : completedGames
                     ).length > 0 &&
                       (gameTabs[0].isActive
                         ? newGames
                         : gameTabs[1].isActive
-                        ? ongoingGames
-                        : completedGames
-                      ).filter((data, i ) => i >= gamesOffset && i < (gamesOffset + gamesLimit)).map((data, i) => {
+                          ? ongoingGames
+                          : completedGames
+                      ).filter((data, i) => i >= gamesOffset && i < (gamesOffset + gamesLimit)).map((data, i) => {
                         return (
                           <div key={i}>
                             <AdminGameComponent
-                            game_id={data.game_id}
-                            start_time={data.start_time}
-                            end_time={data.end_time}
-                            whitelist={data.whitelist}
-                            positions={data.positions}
-                            lineup_len={data.lineup_len}
-                            joined_player_counter={data.joined_player_counter}
-                            joined_team-counter={data.joined_team_counter}
-                            type="upcoming"
-                            isCompleted={data.isCompleted}
-                            status={data.status}
-                          />
+                              game_id={data.game_id}
+                              start_time={data.start_time}
+                              end_time={data.end_time}
+                              whitelist={data.whitelist}
+                              positions={data.positions}
+                              lineup_len={data.lineup_len}
+                              joined_player_counter={data.joined_player_counter}
+                              joined_team-counter={data.joined_team_counter}
+                              type="upcoming"
+                              isCompleted={data.isCompleted}
+                              status={data.status}
+                            />
                           </div>
-                          
+
                         );
                       })}
                     {/* {(gameTabs[0].isActive ? upcomingGames: completedGames).length > 0 &&
@@ -749,23 +771,23 @@ function get_games_list(totalGames) {
                   </div>
                   <div className="absolute bottom-10 right-10 iphone5:bottom-4 iphone5:right-2 iphoneX:bottom-4 iphoneX:right-4 iphoneX-fixed">
                     <div key={remountComponent}>
-                    <ReactPaginate
-                      className="p-2 text-center bg-indigo-buttonblue text-indigo-white flex flex-row space-x-4 select-none ml-7"
-                      pageClassName="hover:font-bold"
-                      activeClassName="rounded-lg text-center bg-indigo-white text-indigo-black pr-1 pl-1 font-bold"
-                      pageLinkClassName="rounded-lg text-center hover:font-bold hover:bg-indigo-white hover:text-indigo-black"
-                      breakLabel="..."
-                      nextLabel=">"
-                      onPageChange={handlePageClick}
-                      pageRangeDisplayed={5}
-                      pageCount={pageCount}
-                      previousLabel="<"
-                      renderOnZeroPageCount={null}
-                    />
+                      <ReactPaginate
+                        className="p-2 text-center bg-indigo-buttonblue text-indigo-white flex flex-row space-x-4 select-none ml-7"
+                        pageClassName="hover:font-bold"
+                        activeClassName="rounded-lg text-center bg-indigo-white text-indigo-black pr-1 pl-1 font-bold"
+                        pageLinkClassName="rounded-lg text-center hover:font-bold hover:bg-indigo-white hover:text-indigo-black"
+                        breakLabel="..."
+                        nextLabel=">"
+                        onPageChange={handlePageClick}
+                        pageRangeDisplayed={5}
+                        pageCount={pageCount}
+                        previousLabel="<"
+                        renderOnZeroPageCount={null}
+                      />
+                    </div>
                   </div>
-              </div>
                 </div>
-                
+
               ) : (
                 <>
                   <div className="flex">
@@ -816,44 +838,102 @@ function get_games_list(totalGames) {
                       />
                     </div>
 
+                    {/* USAGE COST */}
+                    <div className="flex flex-col lg:w-1/2">
+                      <label className="font-monument" htmlFor="usage">
+                        USAGE COST
+                      </label>
+                      <input
+                        className="border outline-none rounded-lg px-3 p-2"
+                        type="number"
+                        id="usage"
+                        name="usage"
+                        pattern="[0-9]*"
+                        placeholder="Enter usage cost"
+                        onChange={(e) => onChange(e)}
+                        value={details.usage}
+                      />
+                    </div>
+
                     {/* PRIZE */}
                     {/* <div className="flex flex-col lg:w-1/2">
-                          <label className="font-monument" htmlFor="prize">
-                            PRIZE
-                          </label>
-                          <input
-                            className="border outline-none rounded-lg px-3 p-2"
-                            id="prize"
-                            type="number"
-                            name="prize"
-                            min={1}
-                            placeholder="Enter amount"
-                            onChange={(e) => onChange(e)}
-                            value={details.prize}
-                          />
-                        </div> */}
+                      <label className="font-monument" htmlFor="prize">
+                        PRIZE
+                      </label>
+                      <input
+                        className="border outline-none rounded-lg px-3 p-2"
+                        id="prize"
+                        type="number"
+                        name="prize"
+                        min={1}
+                        placeholder="Enter amount"
+                        onChange={(e) => onChange(e)}
+                        value={details.prize}
+                      />
+                    </div> */}
+
                   </div>
 
                   <div className="flex mt-8">
                     {/* DESCRIPTION */}
-                    {/* <div className="flex flex-col w-full">
+                    <div className="flex flex-col w-1/2">
                           <label className="font-monument" htmlFor="duration">
-                            DESCRIPTION
+                            WHITELIST
                           </label>
                           <textarea
                             className="border outline-none rounded-lg px-3 p-2"
                             id="description"
                             name="description"
                             // type="text"
-                            placeholder="Description of game"
+                            placeholder="Enter accounts to whitelist. One account per line. Leave empty for no whitelist."
                             onChange={(e) => onChange(e)}
                             value={details.description}
                             style={{
-                              minHeight: '220px',
+                              minHeight: '120px',
                             }}
                           />
-                        </div> */}
+                        </div>
                   </div>
+                  <div className="flex mt-8">
+                    {/* POSITIONS */}
+                    <div className="flex flex-col w-1/2">
+                      <label className="font-monument" htmlFor="positions">
+                        POSITIONS
+                      </label>
+                      <form>
+                        <select
+                          className="bg-filter-icon bg-no-repeat bg-origin-content bg-right bg-indigo-white iphone5:w-28 w-36 md:w-42 lg:w-60
+                          ring-indigo-black focus:outline-none cursor-pointer rounded-lg text-xs md:text-base mr-4 border outline-none px-3 p-2"
+                          name="position"
+                          onChange={(e) => onChange(e)}>
+                          {NFL_POSITIONS.map((x) => {
+                          return (
+                            <option value={x}>{x}</option>
+                          )
+                        })}  
+                        </select>
+                        <input
+                          className="border outline-none rounded-lg px-3 p-2 w-24 mr-4"
+                          type="number"
+                          id="positionAmount"
+                          name="positionAmount"
+                          pattern="[0-9]*"
+                          placeholder="Enter position amount"
+                          onChange={(e) => onChange(e)}
+                          value={details.positionAmount}
+                        />
+                        <button className="border outline-none rounded-lg px-3 p-2" onClick={(e) => handleButtonClick(e)}>+</button>
+                      </form>
+                      
+                    </div>
+                  </div>
+                  <div className="flex mt-8">
+                    <div className="flex flex-col w-1/2">
+                        <div key={remountPositionArea} className="border outline-none rounded-lg px-3 p-2">
+
+                        </div>
+                    </div>
+                  </div> 
 
                   {/* DISTRIBUTION FORM */}
                   {/* <div className="mt-8">
@@ -892,7 +972,7 @@ function get_games_list(totalGames) {
                   </div>
                 </>
               )}
-              
+
             </div>
           </div>
         </Main>
@@ -912,15 +992,14 @@ function get_games_list(totalGames) {
         )}
       </BaseModal>
       <BaseModal title={'Confirm'} visible={confirmModal} onClose={() => setConfirmModal(false)}>
-        <p className="mt-5">Are you sure?</p>
-        <p>GAME DETAILS:</p>
-        <p>Start Date:</p> {startFormattedTimestamp}
-        <p>End Date:</p> {endFormattedTimestamp}
+        <p className="mt-2">Are you sure?</p>
+        <p className="font-bold">GAME DETAILS:</p>
+        <p className="font-bold">Start Date:</p> {startFormattedTimestamp}
+        <p className="font-bold">End Date:</p> {endFormattedTimestamp}
+        <p className="font-bold">Usage Cost:</p> {details.usage}
         <button
           className="bg-indigo-green font-monument tracking-widest text-indigo-white w-full h-16 text-center text-sm mt-4"
           onClick={() => {
-            // createGame();
-            // newGame();
             execute_add_game();
             setConfirmModal(false);
           }}

@@ -130,7 +130,7 @@ export default function Home(props) {
               </div> */}
 
                 <div className="md:mr-8">
-                  <div className="w-full relative select-none mx-2">
+                  <div className="w-full relative select-none mx-2 mt-24 md:mt-0">
                     <img
                       className="object-fill h-48 w-full visible md:hidden rounded-lg"
                       src={featuredImagesMobile[currentIndex]}
@@ -190,7 +190,7 @@ export default function Home(props) {
                     <div className="w-5 h-5 rounded-full bg-indigo-buttonblue animate-bounce"></div>
                   </div>
                 ) : data?.getAthletes.length > 0 ? (
-                  <div className="grid grid-cols-2 gap-x-4 mt-8">
+                  <div className="grid grid-cols-2 gap-x-4 -mt-4 md:mt-8">
                     {data.getAthletes.map(function (
                       { firstName, lastName, id, nftImage, stats },
                       i
