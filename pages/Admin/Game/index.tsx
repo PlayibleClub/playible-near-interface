@@ -213,7 +213,7 @@ export default function Index(props) {
   };
 
   const onChange = (e) => {
-    if (e.target.name === 'duration' || e.target.name === 'prize' || e.target.name === 'usage') {
+    if (e.target.name === 'duration' || e.target.name === 'prize' || e.target.name === 'usage' || e.target.name === 'positionAmount') {
       console.log(e.target.name, e.target.value);
       if (parseInt(e.target.value) > -1) {
         setDetails({
@@ -523,8 +523,9 @@ export default function Index(props) {
     prize: 1,
     usage: 1,
     description: '',
+    positionAmount: 1,
   });
-
+  const NFL_POSITIONS = ['QB', 'RB', 'WR', 'TE', 'FLEX', 'SUPERFLEX'];
   const nflPositions = [
     { positions: ['QB'], amount: 1 },
     { positions: ['RB'], amount: 2 },
@@ -862,6 +863,36 @@ export default function Index(props) {
                           />
                         </div>
                   </div>
+                  <div className="flex mt-8">
+                    {/* POSITIONS */}
+                    <div className="flex flex-col w-1/2">
+                      <label className="font-monument" htmlFor="positions">
+                        POSITIONS
+                      </label>
+                      <form>
+                        <select
+                          className="bg-filter-icon bg-no-repeat bg-origin-content bg-right bg-indigo-white iphone5:w-28 w-36 md:w-42 lg:w-60
+                          ring-indigo-black focus:outline-none cursor-pointer rounded-lg text-xs md:text-base mr-4 border outline-none px-3 p-2">
+                          {NFL_POSITIONS.map((x) => {
+                          return (
+                            <option value={x.toLocaleLowerCase()}>{x}</option>
+                          )
+                        })}  
+                        </select>
+                        <input
+                          className="border outline-none rounded-lg px-3 p-2 w-24"
+                          type="number"
+                          id="positionAmount"
+                          name="positionAmount"
+                          pattern="[0-9]*"
+                          placeholder="Enter position amount"
+                          onChange={(e) => onChange(e)}
+                          value={details.positionAmount}
+                        />
+                      </form>
+                    </div> 
+                  </div>
+
 
                   {/* DISTRIBUTION FORM */}
                   {/* <div className="mt-8">
