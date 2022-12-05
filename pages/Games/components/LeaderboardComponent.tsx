@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
-
+import { cutAddress } from 'utils/address/helper';
 const LeaderboardComponent = (props) => {
 const {
 teamName,
@@ -20,7 +20,7 @@ return (
         </div>
         <div className="ml-6 bg-indigo-black text-indigo-white
         w-1/2 text-center p-1 text-base font-monument mb-5">
-        {teamName}  {accountId}
+        {teamName}  {cutAddress(accountId)}
         </div>
         <div className="ml-10 w-12 text-center font-black">{teamScore.toFixed(2)}</div>
     </div>

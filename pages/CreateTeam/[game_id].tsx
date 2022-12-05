@@ -215,16 +215,6 @@ export default function CreateLineup(props) {
      query parses into a JSON that holds the athlete data coming from AthleteSelect. Returns false
      otherwise if the user is coming from CreateLineup
   */
-  function isJson(str) {
-    try {
-      let json = JSON.parse(str);
-      if (typeof json === 'object') {
-        return true;
-      }
-    } catch (e) {
-      return false;
-    }
-  }
 
   async function execute_submit_lineup(game_id, team_name, token_ids) {
     const submitLineupArgs = Buffer.from(

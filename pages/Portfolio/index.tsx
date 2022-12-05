@@ -8,7 +8,7 @@ import Link from 'next/link';
 import SquadPackComponent from '../../components/SquadPackComponent';
 import Container from '../../components/containers/Container';
 import Sorter from './components/Sorter';
-
+import SearchComponent from 'components/SearchComponent';
 import { transactions, utils, WalletConnection, providers } from 'near-api-js';
 import { getRPCProvider, getContract } from 'utils/near';
 import { PACK } from '../../data/constants/nearContracts';
@@ -64,7 +64,6 @@ const Portfolio = () => {
   const [position, setPosition] = useState(['allPos']);
   const [team, setTeam] = useState(['allTeams']);
   const [name, setName] = useState(['allNames']);
-
   const [remountComponent, setRemountComponent] = useState(0);
 
   const { accountId } = useWalletSelector();
@@ -112,12 +111,31 @@ const Portfolio = () => {
       });
 
   }
-
+  const handleSearchDynamic = (value) => {
+    setName(value);
+  }
+  const handleSearchSubmit = (value) => {
+    handleDropdownChange();
+    setName(value);
+  }
   const handlePageClick = (event) => {
     const newOffset = (event.selected * athleteLimit) % totalAthletes;
     setAthleteOffset(newOffset);
   };
+  // const startCountdown = (value) => {
+  //   setSearch(value);
+  //   setCountdown(1);
+  //   //setIsTyping(true);
+  // }
 
+  useEffect(() => {
+    const delay = setTimeout(() => {
+      console.log(search);
+      setName([search]);
+    }, 1000);
+
+    return () => clearTimeout(delay);
+  }, [search])
   useEffect(() => {
     if (!isNaN(athleteOffset)) {
       console.log("loading");
@@ -176,8 +194,14 @@ const Portfolio = () => {
                 </select>
               </form>
             </div>
-
             <div className="h-8 flex justify-between mt-3 md:ml-24 lg:ml-80">
+              <SearchComponent
+                onChangeFn={(search) => handleSearchDynamic(search)}
+                onSubmitFn={(search) => handleSearchSubmit(search)}
+              />
+            </div>
+            
+            {/* <div className="h-8 flex justify-between mt-3 md:ml-24 lg:ml-80">
               <form
                 onSubmit={(e) => {
                   handleDropdownChange();
@@ -192,7 +216,7 @@ const Portfolio = () => {
                   <input
                     type="search"
                     id="default-search"
-                    onChange={(e) => setSearch(e.target.value)}
+                    onChange={(e) => setSearch(e.target.value !== "" ? e.target.value : "allNames")}
                     className=" bg-indigo-white w-36 ml-4 pl-2 iphone5:w-36 md:w-60 lg:w-72 text-xs md:text-base
                             ring-2 ring-offset-4 ring-indigo-black ring-opacity-25 focus:ring-2 focus:ring-indigo-black 
                             focus:outline-none"
@@ -206,7 +230,7 @@ const Portfolio = () => {
                   ></button>
                 </div>
               </form>
-            </div>
+            </div> */}
           </div>
 
           <div className="md:ml-6">
