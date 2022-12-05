@@ -22,7 +22,8 @@ return (
         w-1/2 text-center p-1 text-base font-monument mb-5">
         {teamName}  {cutAddress(accountId)}
         </div>
-        <div className="ml-10 w-12 text-center font-black">{teamScore.toFixed(2)}</div>
+        <div className="ml-10 w-12 text-center font-black">
+        {teamScore?.toFixed(2)}</div>
     </div>
 )
 };
