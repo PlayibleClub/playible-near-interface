@@ -128,7 +128,7 @@ export default function Index(props) {
     title: '',
     content: '',
   });
-
+  const [positionsInfo, setPositionsInfo] = useState([]);
   const provider = new providers.JsonRpcProvider({
     url: getRPCProvider(),
   });
@@ -139,6 +139,7 @@ export default function Index(props) {
 
   const [percentTotal, setPercentTotal] = useState(0);
   const [remountComponent, setRemountComponent] = useState(0);
+  const [remountPositionArea, setRemountPositionArea] = useState(0);
   const changeTab = (name) => {
     setGamesOffset(0);
     setGamesLimit(10);
@@ -213,12 +214,12 @@ export default function Index(props) {
   };
 
   const onChange = (e) => {
-    if (e.target.name === 'duration' || e.target.name === 'prize' || e.target.name === 'usage' || e.target.name === 'positionAmount') {
+    if (e.target.name === 'positionAmount') {
       console.log(e.target.name, e.target.value);
       if (parseInt(e.target.value) > -1) {
         setDetails({
           ...details,
-          [e.target.name]: e.target.value,
+          [e.target.name]: parseInt(e.target.value),
         });
       }
     } else {
@@ -515,7 +516,35 @@ export default function Index(props) {
       },
     ]);
   };
-
+  const handleButtonClick = (e) => {
+    e.preventDefault();
+    //get current position and amount from details
+    let position = [details['position']];
+    let amount = details['positionAmount'];
+    switch(position[0]){
+      case 'FLEX' : position = ['RB', 'WR', 'TE']; break;
+      case 'SUPERFLEX' : position = ['QB', 'RB', 'WR', 'TE']; break;
+    }
+    let found = positionsInfo.findIndex(e => e.positions.join() === position) 
+    console.log(found);
+    
+    if (positionsInfo.length === 0){
+      let object = {positions: position, amount: amount};
+      setPositionsInfo([object]);
+    }
+    //could not find
+    else if (found === -1){
+      let object = {positions: position, amount: amount}
+      setPositionsInfo(current => [...current, object]);
+    } else {
+      //found has index of same position
+      let current = positionsInfo;
+      //@ts-ignore:next-line
+      current[found].amount += amount;
+      setPositionsInfo(current);
+    }
+  }
+  const NFL_POSITIONS = ['QB', 'RB', 'WR', 'TE', 'FLEX', 'SUPERFLEX'];
   const [details, setDetails] = useState({
     // name: '',
     startTime: '',
@@ -523,9 +552,10 @@ export default function Index(props) {
     prize: 1,
     usage: 1,
     description: '',
+    position: NFL_POSITIONS[0],
     positionAmount: 1,
   });
-  const NFL_POSITIONS = ['QB', 'RB', 'WR', 'TE', 'FLEX', 'SUPERFLEX'];
+  
   const nflPositions = [
     { positions: ['QB'], amount: 1 },
     { positions: ['RB'], amount: 2 },
@@ -534,7 +564,6 @@ export default function Index(props) {
     { positions: ['RB', 'WR', 'TE'], amount: 1 },
     { positions: ['QB', 'RB', 'WR', 'TE'], amount: 1 },
   ];
-
   const dateStartFormatted = moment(details.startTime).format('YYYY-MM-DD HH:mm:ss');
   const dateStart = moment(dateStartFormatted).utc().unix() * 1000;
   const dateEndFormatted = moment(details.endTime).format('YYYY-MM-DD HH:mm:ss');
@@ -619,7 +648,9 @@ export default function Index(props) {
   useEffect(() => {
     getTotalPercent();
   }, [distribution]);
-
+  useEffect(() => {
+    console.log(positionsInfo);
+  }, [positionsInfo]);
   useEffect(() => {
     get_games_list(totalGames);
     get_game_supply();
@@ -872,15 +903,17 @@ export default function Index(props) {
                       <form>
                         <select
                           className="bg-filter-icon bg-no-repeat bg-origin-content bg-right bg-indigo-white iphone5:w-28 w-36 md:w-42 lg:w-60
-                          ring-indigo-black focus:outline-none cursor-pointer rounded-lg text-xs md:text-base mr-4 border outline-none px-3 p-2">
+                          ring-indigo-black focus:outline-none cursor-pointer rounded-lg text-xs md:text-base mr-4 border outline-none px-3 p-2"
+                          name="position"
+                          onChange={(e) => onChange(e)}>
                           {NFL_POSITIONS.map((x) => {
                           return (
-                            <option value={x.toLocaleLowerCase()}>{x}</option>
+                            <option value={x}>{x}</option>
                           )
                         })}  
                         </select>
                         <input
-                          className="border outline-none rounded-lg px-3 p-2 w-24"
+                          className="border outline-none rounded-lg px-3 p-2 w-24 mr-4"
                           type="number"
                           id="positionAmount"
                           name="positionAmount"
@@ -889,10 +922,18 @@ export default function Index(props) {
                           onChange={(e) => onChange(e)}
                           value={details.positionAmount}
                         />
+                        <button className="border outline-none rounded-lg px-3 p-2" onClick={(e) => handleButtonClick(e)}>+</button>
                       </form>
-                    </div> 
+                      
+                    </div>
                   </div>
+                  <div className="flex mt-8">
+                    <div className="flex flex-col w-1/2">
+                        <div key={remountPositionArea} className="border outline-none rounded-lg px-3 p-2">
 
+                        </div>
+                    </div>
+                  </div> 
 
                   {/* DISTRIBUTION FORM */}
                   {/* <div className="mt-8">
