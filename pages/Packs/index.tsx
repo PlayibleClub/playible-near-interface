@@ -183,7 +183,8 @@ export default function Packs() {
         <Main color="indigo-white">
           <div className="iphone5:mt-20 md:ml-6 md:mt-8">
             <button className="bg-indigo-buttonblue text-indigo-white w-5/6 md:w-80 h-10 
-              text-center font-bold text-xs self-center justify-center float-right md:mt-0 iphone5:mr-9 iphone5:mt-20">
+              text-center font-bold text-xs self-center justify-center float-right md:mt-0 iphone5:mr-9 iphone5:mt-20"
+              onClick={(e) => handleButtonClick(e)}>
               CLAIM SOULDBOUND PACK
             </button>
             <PortfolioContainer textcolor="indigo-black" title="PACKS">
