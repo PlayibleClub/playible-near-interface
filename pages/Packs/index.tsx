@@ -12,8 +12,10 @@ import PackComponent from './components/PackComponent';
 import PlayComponent from '../Play/components/PlayComponent';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
 import { getRPCProvider, getContract } from 'utils/near';
-import { PACK } from '../../data/constants/nearContracts';
+import { OPEN_SOULBOUND_PACK, PACK, PACK_SOULBOUND} from '../../data/constants/nearContracts';
 import ReactPaginate from 'react-paginate';
+import BigNumber from 'bignumber.js';
+import { DEFAULT_MAX_FEES, MINT_STORAGE_COST } from 'data/constants/gasFees';
 
 export default function Packs() {
   const { selector, modal, accounts, accountId } = useWalletSelector();
@@ -44,7 +46,7 @@ export default function Packs() {
       .query({
         request_type: 'call_function',
         finality: 'optimistic',
-        account_id: getContract(PACK),
+        account_id: getContract(PACK_SOULBOUND),
         method_name: 'nft_supply_for_owner',
         args_base64: Buffer.from(query).toString('base64'),
       })
@@ -93,7 +95,7 @@ export default function Packs() {
       .query({
         request_type: 'call_function',
         finality: 'optimistic',
-        account_id: getContract(PACK),
+        account_id: getContract(PACK_SOULBOUND),
         method_name: 'nft_tokens_for_owner',
         args_base64: Buffer.from(query).toString('base64'),
       })
@@ -104,6 +106,38 @@ export default function Packs() {
         console.log(result);
         setPacks(result);
       });
+  }
+
+  async function execute_claim_soulbound_pack(){
+    const transferArgs = Buffer.from(
+      JSON.stringify({
+        msg: 'Test',
+      })
+    );
+
+    const deposit = new BigNumber(8).multipliedBy(new BigNumber(MINT_STORAGE_COST)).toFixed();
+
+    const action_transfer_call = {
+      type: 'FunctionCall',
+      params: {
+        methodName: 'claim_promo_pack',
+        args: transferArgs,
+        gas: DEFAULT_MAX_FEES,
+        deposit: deposit,
+      }
+    };
+
+    const wallet = await selector.wallet();
+    // @ts-ignore:next-line;
+    const tx = wallet.signAndSendTransactions({
+      transactions: [
+        {
+          receiverId: getContract(PACK_SOULBOUND),
+          //@ts-ignore:next-line
+          actions: [action_transfer_call],
+        },
+      ],
+    })
   }
 
   const onSubmit = (data) => {
@@ -117,7 +151,14 @@ export default function Packs() {
     else setPosFilter('');
   };
   const [isNarrowScreen, setIsNarrowScreen] = useState(false);
+  const handleButtonClick = (e) => {
+    e.preventDefault();
+    execute_claim_soulbound_pack();
+  }
 
+  useEffect(() => {
+    console.log(packs);
+  }, [packs])
   // useEffect(() => {
   //     // set initial value
   //     const mediaWatcher = window.matchMedia("(max-width: 500px)")

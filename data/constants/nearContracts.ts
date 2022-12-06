@@ -52,7 +52,14 @@ export const PACK = {
     changeMethods: ['nft_transfer', 'nft_transfer_call', 'nft_resolve_transfer'],
   },
 }; //Pack Contract
-
+export const PACK_SOULBOUND = {
+  mainnet: '',
+  testnet: 'pack.soulbound.nfl.playible.testnet',
+  interface: {
+    viewMethods: ['nft_tokens_for_owner', 'nft_supply_for_owner'],
+    changeMethods: ['nft_transfer', 'nft_transfer_call', 'nft_resolve_transfer', 'claim_promo_pack'],
+  }
+}
 export const PLAYIBLE = {
   mainnet: 'guest-book.testnet',
   testnet: 'guest-book.mainnet',
@@ -90,10 +97,18 @@ export const OPENPACK = {
   mainnet: 'open_pack.nfl.playible.near',
   testnet: 'open_pack.nfl.playible.testnet',
   interface: {
-    viewMethods: ['getMessages'],
-    changeMethods: ['execute_add_athletes, execute_open_pack'],
+    viewMethods: [],
+    changeMethods: [],
   },
 }; //OpenPack Contract
+export const OPEN_SOULBOUND_PACK = {
+  mainnet: '',
+  testnet: 'open_pack.soulbound.nfl.playible.testnet',
+  interface: {
+    viewMethods: ['getMessages'],
+    changeMethods: ['claim_promo_pack'],
+  }
+}
 export const ORACLE = {
   mainnet: 'guest-book.testnet',
   testnet: 'guest-book.mainnet',
