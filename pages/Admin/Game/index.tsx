@@ -129,6 +129,7 @@ export default function Index(props) {
     content: '',
   });
   const [positionsInfo, setPositionsInfo] = useState([]);
+  const [positionsDisplay, setPositionsDisplay] = useState([]);
   const provider = new providers.JsonRpcProvider({
     url: getRPCProvider(),
   });
@@ -520,29 +521,45 @@ export default function Index(props) {
     e.preventDefault();
     //get current position and amount from details
     let position = [details['position']];
+    console.log(position);
+    let display = position;
     let amount = details['positionAmount'];
     switch(position[0]){
       case 'FLEX' : position = ['RB', 'WR', 'TE']; break;
       case 'SUPERFLEX' : position = ['QB', 'RB', 'WR', 'TE']; break;
     }
-    let found = positionsInfo.findIndex(e => e.positions.join() === position) 
+    let found = positionsInfo.findIndex(e => e.positions.join() === position.join()) 
     console.log(found);
     
     if (positionsInfo.length === 0){
       let object = {positions: position, amount: amount};
+      let object2 = {positions: display, amount: amount};
       setPositionsInfo([object]);
+      setPositionsDisplay([object2]);
     }
     //could not find
     else if (found === -1){
       let object = {positions: position, amount: amount}
+      let object2 = {positions: display, amount: amount}
       setPositionsInfo(current => [...current, object]);
+      setPositionsDisplay(current => [...current, object2]);
     } else {
       //found has index of same position
       let current = positionsInfo;
+      let current2 = positionsDisplay;
       //@ts-ignore:next-line
       current[found].amount += amount;
+      current2[found].amount += amount;
       setPositionsInfo(current);
+      setPositionsDisplay(current2);
+      setRemountPositionArea(Math.random());
     }
+  }
+  const handleRemove = (e) => {
+    e.preventDefault(); 
+    positionsInfo.pop(); 
+    positionsDisplay.pop(); 
+    setRemountPositionArea(Math.random())
   }
   const NFL_POSITIONS = ['QB', 'RB', 'WR', 'TE', 'FLEX', 'SUPERFLEX'];
   const [details, setDetails] = useState({
@@ -649,8 +666,9 @@ export default function Index(props) {
     getTotalPercent();
   }, [distribution]);
   useEffect(() => {
-    console.log(positionsInfo);
-  }, [positionsInfo]);
+    setRemountPositionArea(Math.random());
+    console.log(positionsDisplay);
+  }, [positionsInfo, positionsDisplay]);
   useEffect(() => {
     get_games_list(totalGames);
     get_game_supply();
@@ -922,7 +940,8 @@ export default function Index(props) {
                           onChange={(e) => onChange(e)}
                           value={details.positionAmount}
                         />
-                        <button className="border outline-none rounded-lg px-3 p-2" onClick={(e) => handleButtonClick(e)}>+</button>
+                        <button className="border outline-none rounded-lg px-3 p-2 mr-4" onClick={(e) => handleButtonClick(e)}>+</button>
+                        <button className="border outline-none rounded-lg px-3 p-2" onClick={(e) => handleRemove(e)}>-</button>
                       </form>
                       
                     </div>
@@ -930,7 +949,11 @@ export default function Index(props) {
                   <div className="flex mt-8">
                     <div className="flex flex-col w-1/2">
                         <div key={remountPositionArea} className="border outline-none rounded-lg px-3 p-2">
-
+                          {positionsDisplay.map((x) => {
+                            return(
+                              <label className="flex w-full whitespace-pre-line">Position: {x.positions} Amount: {x.amount}</label>
+                            )
+                          })}
                         </div>
                     </div>
                   </div> 
