@@ -105,7 +105,7 @@ export const OPEN_SOULBOUND_PACK = {
   mainnet: '',
   testnet: 'open_pack.soulbound.nfl.playible.testnet',
   interface: {
-    viewMethods: ['getMessages'],
+    viewMethods: ['getMessages', 'check_claim_status'],
     changeMethods: ['claim_promo_pack'],
   }
 }
