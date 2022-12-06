@@ -46,7 +46,7 @@ export default function Packs() {
       .query({
         request_type: 'call_function',
         finality: 'optimistic',
-        account_id: getContract(PACK_SOULBOUND),
+        account_id: getContract(PACK),
         method_name: 'nft_supply_for_owner',
         args_base64: Buffer.from(query).toString('base64'),
       })
@@ -95,7 +95,7 @@ export default function Packs() {
       .query({
         request_type: 'call_function',
         finality: 'optimistic',
-        account_id: getContract(PACK_SOULBOUND),
+        account_id: getContract(PACK),
         method_name: 'nft_tokens_for_owner',
         args_base64: Buffer.from(query).toString('base64'),
       })
