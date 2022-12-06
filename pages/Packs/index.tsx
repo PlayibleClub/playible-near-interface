@@ -33,12 +33,55 @@ export default function Packs() {
   const [filterMode, setMode] = useState(false);
   const [showFilter, setFilter] = useState(false);
   const [packs, setPacks] = useState([]);
+  const [soulboundPacks, setSoulboundPacks] = useState([]);
 
   const [pageCount, setPageCount] = useState(0);
   const [packOffset, setPackOffset] = useState(0);
   const [packLimit, setPackLimit] = useState(30);
+  const [soulboundPackLimit, setSoulboundPackLimit] = useState(30);
   const [totalPacks, setTotalPacks] = useState(0);
-  const [isClaimed, setIsClaimed] = useState(false);
+  const [isClaimed, setIsClaimed] = useState(false);  
+  const [totalSoulboundPacks, setTotalSoulboundPacks] = useState(0);
+  const [activeCategory, setCategory] = useState('NEW');
+  const [currentTotal, setCurrentTotal] = useState(0);
+
+  const [categoryList, setcategoryList] = useState([
+    {
+      name: 'STARTER',
+      isActive: true,
+    },
+    {
+      name: 'SOULBOUND',
+      isActive: false,
+    },
+  ]);
+
+  const [remountComponent, setRemountComponent] = useState(0);
+  const changecategoryList = (name) => {
+    const tabList = [...categoryList];
+    setPackOffset(0);
+    setPackLimit(10);
+    setRemountComponent(Math.random());
+    switch (name) {
+      case 'STARTER':
+        setCurrentTotal(packs.length);
+        break;
+      case 'SOULBOUND':
+        setCurrentTotal(soulboundPacks.length);
+        break;
+    }
+
+    tabList.forEach((item) => {
+      if (item.name === name) {
+        item.isActive = true;
+      } else {
+        item.isActive = false;
+      }
+    });
+
+    setcategoryList([...tabList]);
+  };
+
   function query_nft_supply_for_owner() {
     const query = JSON.stringify({ account_id: accountId });
 
@@ -58,6 +101,25 @@ export default function Packs() {
       });
   }
 
+  function query_nft_soulbound_supply_for_owner() {
+    const query = JSON.stringify({ account_id: accountId });
+
+    provider
+      .query({
+        request_type: 'call_function',
+        finality: 'optimistic',
+        account_id: getContract(PACK_SOULBOUND),
+        method_name: 'nft_supply_for_owner',
+        args_base64: Buffer.from(query).toString('base64'),
+      })
+      .then((data) => {
+        // @ts-ignore:next-line
+        const totalSoulboundPacks = JSON.parse(Buffer.from(data.result));
+
+        setTotalSoulboundPacks(totalSoulboundPacks);
+      });
+  }
+
   function getPackLimit() {
     try {
       if (totalPacks > 30) {
@@ -72,12 +134,14 @@ export default function Packs() {
 
   useEffect(() => {
     query_nft_supply_for_owner();
+    query_nft_soulbound_supply_for_owner();
     getPackLimit();
     setPageCount(Math.ceil(totalPacks / packLimit));
     const endOffset = packOffset + packLimit;
     console.log(`Loading packs from ${packOffset} to ${endOffset}`);
     query_nft_tokens_for_owner();
-  }, [totalPacks, packLimit, packOffset]);
+    query_nft_soulbound_tokens_for_owner();
+  }, [totalPacks, packLimit, packOffset, totalSoulboundPacks,soulboundPackLimit]);
 
   const handlePageClick = (event) => {
     const newOffset = (event.selected * packLimit) % totalPacks;
@@ -126,6 +190,31 @@ export default function Packs() {
         setIsClaimed(result);
       })
   }
+
+  function query_nft_soulbound_tokens_for_owner() {
+    const query = JSON.stringify({
+      account_id: accountId,
+      from_index: packOffset.toString(),
+      limit: soulboundPackLimit,
+    });
+
+    provider
+      .query({
+        request_type: 'call_function',
+        finality: 'optimistic',
+        account_id: getContract(PACK_SOULBOUND),
+        method_name: 'nft_tokens_for_owner',
+        args_base64: Buffer.from(query).toString('base64'),
+      })
+      .then((data) => {
+        // @ts-ignore:next-line
+        const result = JSON.parse(Buffer.from(data.result).toString());
+
+        console.log(result);
+        setSoulboundPacks(result);
+      });
+  }
+
   async function execute_claim_soulbound_pack(){
     const transferArgs = Buffer.from(
       JSON.stringify({
@@ -211,12 +300,34 @@ export default function Packs() {
             <button className={`bg-indigo-buttonblue text-indigo-white w-5/6 md:w-80 h-10 
               text-center font-bold text-xs self-center justify-center float-right md:mt-0 iphone5:mr-9 iphone5:mt-20 ${isClaimed} ? hidden : ''`}
               onClick={(e) => handleButtonClick(e)}>
-              CLAIM SOULDBOUND PACK
+              CLAIM SOULBOUND PACK
             </button>
             <PortfolioContainer textcolor="indigo-black" title="PACKS">
+              <div className="flex flex-col mt-6">
+                <div className="flex font-bold md:ml-7 iphone5:mt-10 iphone5:ml-7 md:mt-0 font-monument">
+                  {categoryList.map(({ name, isActive }) => (
+                    <div
+                      className={`cursor-pointer mr-6 ${
+                        isActive ? 'border-b-8 border-indigo-buttonblue' : ''
+                      }`}
+                      onClick={() => {
+                        changecategoryList(name);
+                        setCategory(name);
+                      }}
+                    >
+                      {name}
+                    </div>
+                  ))}
+                </div>
+                <hr className="opacity-10"/>
+              </div>
+                
               <div className="flex flex-col">
                 <div className="grid grid-cols-4 gap-y-8 mt-4 md:grid-cols-4 iphone5:mt-15 iphone5:ml-2 md:ml-7 md:mt-12 ">
-                  {packs.map(({ metadata, token_id }) => (
+                  {(categoryList[0].isActive ? packs : soulboundPacks).length > 0 && 
+                  (categoryList[0].isActive ? packs : soulboundPacks).
+                  filter((data, i) => i >= packOffset && i < packOffset + packLimit)
+                  .map(({ metadata, token_id }) => (
                     <PackComponent
                       key={token_id}
                       image={metadata.media}
@@ -227,6 +338,7 @@ export default function Packs() {
               </div>
             </PortfolioContainer>
             <div className="absolute bottom-10 right-10">
+              <div key={remountComponent}>
               <ReactPaginate
                 className="p-2 bg-indigo-buttonblue text-indigo-white flex flex-row space-x-4 select-none ml-7"
                 pageClassName="hover:font-bold"
@@ -240,6 +352,7 @@ export default function Packs() {
                 previousLabel="<"
                 renderOnZeroPageCount={null}
               />
+              </div>
             </div>
           </div>
         </Main>
