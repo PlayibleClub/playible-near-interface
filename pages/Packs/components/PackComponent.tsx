@@ -22,10 +22,11 @@ const PackComponent = (props) => {
       <div className="iphone5:ml-5 md:ml-5">#{id}</div>
       <div className="pointer-events-auto cursor-pointer hover:-translate-y-1 transform transition-all">
         <button>
-          <Link href={`/PackDetails/${id}`} passHref>
+          <Link href={`/PackDetails/${`${encodeURIComponent(id)}`}`} passHref>
             <img src={image} height={200} width={200} />
           </Link>
         </button>
+        {console.log(id)}
       </div>
     </div>
   );
