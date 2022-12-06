@@ -356,13 +356,17 @@ export default function Home(props) {
       <Container activeName="MINT">
         <div className="flex flex-col w-screen md:w-full overflow-y-auto h-screen justify-center self-center md:pb-12 text-indigo-black">
           <Main color="indigo-white">
-            <div className="flex-initial md:ml-6 md:mt-8">
+            <div className="flex-initial iphone5:mt-20 md:ml-6 md:mt-8">
+            <button className="bg-indigo-buttonblue text-indigo-white w-5/6 md:w-80 h-10 
+              text-center font-bold text-xs self-center justify-center float-right mr-8 md:mt-0 iphone5:mt-28">
+              CLAIM SOULDBOUND PACK
+            </button>
               <PortfolioContainer title="MINT PACKS" textcolor="text-indigo-black" />
             </div>
             <div className="flex flex-col md:flex-row md:ml-12">
               <div className="md:w-full overflow-x-hidden">
                 <div className="flex-col flex w-full mt-8 ">
-                  <div className="align-center justify-center border-2 p-8 mr-8 rounded-lg">
+                  <div className="align-center justify-center border-2 p-8 iphone5:ml-2 iphone5:mr-2 md:mr-8 rounded-lg">
                     <div className="text-m">
                       Early Bird Offer: The first 500 minted will receive an additional free
                       promotional pack.
@@ -529,7 +533,7 @@ export default function Home(props) {
                     {/*TODO: end */}
                   </div>
                 </div>
-                <div className="ml-8 md:ml-2">
+                <div className="iphone5:mt-5 md:mt-0 ml-8 md:ml-2">
                   <div className="text-xl font-bold font-monument ">
                     PACK DETAILS
                     <hr className="w-10 border-4"></hr>

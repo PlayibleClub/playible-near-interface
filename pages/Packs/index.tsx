@@ -140,10 +140,14 @@ export default function Packs() {
     <Container activeName="SQUAD">
       <div className="flex flex-col w-full overflow-y-auto h-screen pb-12 mb-12">
         <Main color="indigo-white">
-          <div className="md:ml-6 md:mt-8">
+          <div className="iphone5:mt-20 md:ml-6 md:mt-8">
+            <button className="bg-indigo-buttonblue text-indigo-white w-5/6 md:w-80 h-10 
+              text-center font-bold text-xs self-center justify-center float-right md:mt-0 iphone5:mr-9 iphone5:mt-20">
+              CLAIM SOULDBOUND PACK
+            </button>
             <PortfolioContainer textcolor="indigo-black" title="PACKS">
               <div className="flex flex-col">
-                <div className="grid grid-cols-4 gap-y-8 mt-4 md:grid-cols-4 md:ml-7 md:mt-12">
+                <div className="grid grid-cols-4 gap-y-8 mt-4 md:grid-cols-4 iphone5:mt-15 iphone5:ml-2 md:ml-7 md:mt-12">
                   {packs.map(({ metadata, token_id }) => (
                     <PackComponent
                       key={token_id}

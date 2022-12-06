@@ -18,8 +18,8 @@ const PackComponent = (props) => {
   }
 
   return (
-    <div className="md:w-48">
-      <div className="ml-5">#{id}</div>
+    <div className="iphone5:w-36 md:w-48">
+      <div className="iphone5:ml-5 md:ml-5">#{id}</div>
       <div className="pointer-events-auto cursor-pointer hover:-translate-y-1 transform transition-all">
         <button>
           <Link href={`/PackDetails/${id}`} passHref>
