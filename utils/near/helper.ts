@@ -9,43 +9,45 @@ const provider = new providers.JsonRpcProvider({
   url: getRPCProvider(),
 });
 
-
 async function query_game_data(game_id) {
   const query = JSON.stringify({
     game_id: game_id,
-  })
-
-  return await provider.query({
-    request_type: 'call_function',
-    finality: 'optimistic',
-    account_id: getContract(GAME),
-    method_name: 'get_game',
-    args_base64: Buffer.from(query).toString('base64'),
-  }).then(async (data) => {
-    // @ts-ignore:next-line
-    const result = JSON.parse(Buffer.from(data.result).toString());
-    console.log(result);
-    return result;
   });
+
+  return await provider
+    .query({
+      request_type: 'call_function',
+      finality: 'optimistic',
+      account_id: getContract(GAME),
+      method_name: 'get_game',
+      args_base64: Buffer.from(query).toString('base64'),
+    })
+    .then(async (data) => {
+      // @ts-ignore:next-line
+      const result = JSON.parse(Buffer.from(data.result).toString());
+      console.log(result);
+      return result;
+    });
 }
 
 async function query_nft_token_by_id(token_id) {
   const query = JSON.stringify({
     token_id: token_id,
   });
-  return provider.query({
-    request_type: 'call_function',
-    finality: 'optimistic',
-    account_id: getContract(ATHLETE),
-    method_name: 'nft_token_by_id',
-    args_base64: Buffer.from(query).toString('base64'),
-  })
+  return provider
+    .query({
+      request_type: 'call_function',
+      finality: 'optimistic',
+      account_id: getContract(ATHLETE),
+      method_name: 'nft_token_by_id',
+      args_base64: Buffer.from(query).toString('base64'),
+    })
     .then(async (data) => {
       //@ts-ignore:next-line
       const result = JSON.parse(Buffer.from(data.result).toString());
       const result_two = await getAthleteInfoById(await convertNftToAthlete(result));
       return result_two;
-    })
+    });
 }
 
 function checkIncludedWeeks(stats) {
@@ -59,13 +61,14 @@ async function query_all_players_lineup(game_id, week) {
     game_id: game_id,
   });
 
-  return await provider.query({
-    request_type: 'call_function',
-    finality: 'optimistic',
-    account_id: getContract(GAME),
-    method_name: 'get_all_players_lineup',
-    args_base64: Buffer.from(query).toString('base64'),
-  })
+  return await provider
+    .query({
+      request_type: 'call_function',
+      finality: 'optimistic',
+      account_id: getContract(GAME),
+      method_name: 'get_all_players_lineup',
+      args_base64: Buffer.from(query).toString('base64'),
+    })
     .then(async (data) => {
       // @ts-ignore:next-line
       const result = JSON.parse(Buffer.from(data.result).toString());
@@ -118,7 +121,7 @@ async function query_all_players_lineup(game_id, week) {
 
 async function query_nft_tokens_for_owner(athleteIndex) {
   const query = JSON.stringify({
-    token_id: athleteIndex
+    token_id: athleteIndex,
   });
 
   return provider.query({
@@ -127,19 +130,25 @@ async function query_nft_tokens_for_owner(athleteIndex) {
     account_id: getContract(ATHLETE),
     method_name: 'nft_token_by_id',
     args_base64: Buffer.from(query).toString('base64'),
-  })
+  });
 }
 
 async function query_filter_supply_for_owner(accountId, position, team, name) {
-  const query = JSON.stringify({ account_id: accountId, position: position, team: team, name: name });
+  const query = JSON.stringify({
+    account_id: accountId,
+    position: position,
+    team: team,
+    name: name,
+  });
 
-  return provider.query({
-    request_type: 'call_function',
-    finality: 'optimistic',
-    account_id: getContract(ATHLETE),
-    method_name: 'filtered_nft_supply_for_owner',
-    args_base64: Buffer.from(query).toString('base64'),
-  })
+  return provider
+    .query({
+      request_type: 'call_function',
+      finality: 'optimistic',
+      account_id: getContract(ATHLETE),
+      method_name: 'filtered_nft_supply_for_owner',
+      args_base64: Buffer.from(query).toString('base64'),
+    })
     .then((data) => {
       // @ts-ignore:next-line
       const totalAthletes = JSON.parse(Buffer.from(data.result));
@@ -148,7 +157,14 @@ async function query_filter_supply_for_owner(accountId, position, team, name) {
     });
 }
 
-async function query_filter_tokens_for_owner(accountId, athleteOffset, athleteLimit, position, team, name) {
+async function query_filter_tokens_for_owner(
+  accountId,
+  athleteOffset,
+  athleteLimit,
+  position,
+  team,
+  name
+) {
   const query = JSON.stringify({
     account_id: accountId,
     from_index: athleteOffset.toString(),
@@ -158,17 +174,16 @@ async function query_filter_tokens_for_owner(accountId, athleteOffset, athleteLi
     name: name,
   });
 
-  return await provider
-    .query({
-      request_type: 'call_function',
-      finality: 'optimistic',
-      account_id: getContract(ATHLETE),
-      method_name: 'filter_tokens_for_owner',
-      args_base64: Buffer.from(query).toString('base64'),
-    })
+  return await provider.query({
+    request_type: 'call_function',
+    finality: 'optimistic',
+    account_id: getContract(ATHLETE),
+    method_name: 'filter_tokens_for_owner',
+    args_base64: Buffer.from(query).toString('base64'),
+  });
 }
 
-async function query_player_teams(account, game_id,) {
+async function query_player_teams(account, game_id) {
   const query = JSON.stringify({
     account: account,
     game_id: game_id,
@@ -181,7 +196,8 @@ async function query_player_teams(account, game_id,) {
       account_id: getContract(GAME),
       method_name: 'get_player_team',
       args_base64: Buffer.from(query).toString('base64'),
-    }).then((data) => {
+    })
+    .then((data) => {
       // @ts-ignore:next-line
       const playerTeamNames = JSON.parse(Buffer.from(data.result));
 
@@ -199,9 +215,11 @@ async function query_game_supply() {
       account_id: getContract(GAME),
       method_name: 'get_total_games',
       args_base64: Buffer.from(query).toString('base64'),
-    }).then((data) => {
+    })
+    .then((data) => {
+      // + 2 since first game never existed.
       // @ts-ignore:next-line
-      const totalGames = JSON.parse(Buffer.from(data.result));
+      const totalGames = JSON.parse(Buffer.from(data.result)) + 1;
 
       return totalGames;
     });
@@ -212,14 +230,13 @@ async function query_games_list(totalGames) {
     from_index: 0,
     limit: totalGames,
   });
- return provider
-    .query({
-      request_type: 'call_function',
-      finality: 'optimistic',
-      account_id: getContract(GAME),
-      method_name: 'get_games',
-      args_base64: Buffer.from(query).toString('base64'),
-    })
+  return provider.query({
+    request_type: 'call_function',
+    finality: 'optimistic',
+    account_id: getContract(GAME),
+    method_name: 'get_games',
+    args_base64: Buffer.from(query).toString('base64'),
+  });
 }
 
 export {
@@ -231,4 +248,4 @@ export {
   query_player_teams,
   query_game_supply,
   query_games_list,
-}
+};
