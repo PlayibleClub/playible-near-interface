@@ -22,7 +22,7 @@ export default function PackDetails(props) {
 
   const { selector } = useWalletSelector();
   const id = query.id.toString();
-  console.log(id.length);
+  console.log(query.id);
   const myPack = {
     packName: id.length === 64 || id.includes('SB') ? 'SOULBOUND PACK' : 'STARTER PACK',
     id: id,
