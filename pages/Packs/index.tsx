@@ -16,6 +16,14 @@ import { OPEN_SOULBOUND_PACK, PACK, PACK_SOULBOUND } from '../../data/constants/
 import ReactPaginate from 'react-paginate';
 import BigNumber from 'bignumber.js';
 import { DEFAULT_MAX_FEES, MINT_STORAGE_COST } from 'data/constants/gasFees';
+import {
+  execute_claim_soulbound_pack,
+  query_claim_status,
+  query_nft_pack_supply_for_owner,
+  query_nft_pack_tokens_for_owner,
+  query_nft_soulbound_supply_for_owner,
+  query_nft_soulbound_tokens_for_owner,
+} from 'utils/near/helper';
 
 export default function Packs() {
   const { selector, modal, accounts, accountId } = useWalletSelector();
@@ -82,42 +90,12 @@ export default function Packs() {
     setcategoryList([...tabList]);
   };
 
-  function query_nft_supply_for_owner() {
-    const query = JSON.stringify({ account_id: accountId });
-
-    provider
-      .query({
-        request_type: 'call_function',
-        finality: 'optimistic',
-        account_id: getContract(PACK),
-        method_name: 'nft_supply_for_owner',
-        args_base64: Buffer.from(query).toString('base64'),
-      })
-      .then((data) => {
-        // @ts-ignore:next-line
-        const totalPacks = JSON.parse(Buffer.from(data.result));
-
-        setTotalPacks(totalPacks);
-      });
+  async function get_nft_pack_supply_for_owner(accountId) {
+    setTotalPacks(await query_nft_pack_supply_for_owner(accountId));
   }
 
-  function query_nft_soulbound_supply_for_owner() {
-    const query = JSON.stringify({ account_id: accountId });
-
-    provider
-      .query({
-        request_type: 'call_function',
-        finality: 'optimistic',
-        account_id: getContract(PACK_SOULBOUND),
-        method_name: 'nft_supply_for_owner',
-        args_base64: Buffer.from(query).toString('base64'),
-      })
-      .then((data) => {
-        // @ts-ignore:next-line
-        const totalSoulboundPacks = JSON.parse(Buffer.from(data.result));
-
-        setTotalSoulboundPacks(totalSoulboundPacks);
-      });
+  async function get_nft_soulbound_supply_for_owner(accountId) {
+    setTotalSoulboundPacks(await query_nft_soulbound_supply_for_owner(accountId));
   }
 
   function getPackLimit() {
@@ -133,14 +111,14 @@ export default function Packs() {
   }
 
   useEffect(() => {
-    query_nft_supply_for_owner();
-    query_nft_soulbound_supply_for_owner();
+    get_nft_pack_supply_for_owner(accountId);
+    get_nft_soulbound_supply_for_owner(accountId);
     getPackLimit();
     setPageCount(Math.ceil(totalPacks / packLimit));
     const endOffset = packOffset + packLimit;
     console.log(`Loading packs from ${packOffset} to ${endOffset}`);
-    query_nft_tokens_for_owner();
-    query_nft_soulbound_tokens_for_owner();
+    get_nft_pack_tokens_for_owner(accountId, packOffset, packLimit);
+    get_nft_soulbound_tokens_for_owner(accountId, packOffset, soulboundPackLimit);
   }, [totalPacks, packLimit, packOffset, totalSoulboundPacks, soulboundPackLimit]);
 
   const handlePageClick = (event) => {
@@ -148,103 +126,22 @@ export default function Packs() {
     setPackOffset(newOffset);
   };
 
-  function query_nft_tokens_for_owner() {
-    const query = JSON.stringify({
-      account_id: accountId,
-      from_index: packOffset.toString(),
-      limit: packLimit,
-    });
-
-    provider
-      .query({
-        request_type: 'call_function',
-        finality: 'optimistic',
-        account_id: getContract(PACK),
-        method_name: 'nft_tokens_for_owner',
-        args_base64: Buffer.from(query).toString('base64'),
-      })
-      .then((data) => {
-        // @ts-ignore:next-line
-        const result = JSON.parse(Buffer.from(data.result).toString());
-
-        console.log(result);
-        setPacks(result);
-      });
-  }
-  function query_claim_status() {
-    const query = JSON.stringify({
-      account_id: accountId,
-    });
-
-    provider
-      .query({
-        request_type: 'call_function',
-        finality: 'optimistic',
-        account_id: getContract(PACK_SOULBOUND),
-        method_name: 'check_claim_status',
-        args_base64: Buffer.from(query).toString('base64'),
-      })
-      .then((data) => {
-        //@ts-ignore:next-line
-        const result = JSON.parse(Buffer.from(data.result));
-        setIsClaimed(result);
-      });
+  async function get_nft_pack_tokens_for_owner(accountId, packOffset, packLimit) {
+    setPacks(await query_nft_pack_tokens_for_owner(accountId, packOffset, packLimit));
   }
 
-  function query_nft_soulbound_tokens_for_owner() {
-    const query = JSON.stringify({
-      account_id: accountId,
-      from_index: packOffset.toString(),
-      limit: soulboundPackLimit,
-    });
-
-    provider
-      .query({
-        request_type: 'call_function',
-        finality: 'optimistic',
-        account_id: getContract(PACK_SOULBOUND),
-        method_name: 'nft_tokens_for_owner',
-        args_base64: Buffer.from(query).toString('base64'),
-      })
-      .then((data) => {
-        // @ts-ignore:next-line
-        const result = JSON.parse(Buffer.from(data.result).toString());
-
-        console.log(result);
-        setSoulboundPacks(result);
-      });
+  async function get_claim_status(accountId) {
+    setIsClaimed(await query_claim_status(accountId));
   }
 
-  async function execute_claim_soulbound_pack() {
-    const transferArgs = Buffer.from(
-      JSON.stringify({
-        msg: 'Test',
-      })
+  async function get_nft_soulbound_tokens_for_owner(accountId, packOffset, soulboundPackLimit) {
+    setSoulboundPacks(
+      await query_nft_soulbound_tokens_for_owner(accountId, packOffset, soulboundPackLimit)
     );
+  }
 
-    const deposit = new BigNumber(8).multipliedBy(new BigNumber(MINT_STORAGE_COST)).toFixed();
-
-    const action_transfer_call = {
-      type: 'FunctionCall',
-      params: {
-        methodName: 'claim_promo_pack',
-        args: transferArgs,
-        gas: DEFAULT_MAX_FEES,
-        deposit: deposit,
-      },
-    };
-
-    const wallet = await selector.wallet();
-    // @ts-ignore:next-line;
-    const tx = wallet.signAndSendTransactions({
-      transactions: [
-        {
-          receiverId: getContract(PACK_SOULBOUND),
-          //@ts-ignore:next-line
-          actions: [action_transfer_call],
-        },
-      ],
-    });
+  async function get_soulbound_pack(selector) {
+    execute_claim_soulbound_pack(selector);
   }
 
   const onSubmit = (data) => {
@@ -260,7 +157,7 @@ export default function Packs() {
   const [isNarrowScreen, setIsNarrowScreen] = useState(false);
   const handleButtonClick = (e) => {
     e.preventDefault();
-    execute_claim_soulbound_pack();
+    get_soulbound_pack(selector);
   };
 
   useEffect(() => {
@@ -268,7 +165,7 @@ export default function Packs() {
   }, [packs]);
 
   useEffect(() => {
-    query_claim_status();
+    get_claim_status(accountId);
   }, []);
 
   useEffect(() => {

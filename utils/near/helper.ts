@@ -1,51 +1,55 @@
 import { providers } from 'near-api-js';
 import { getContract, getRPCProvider } from 'utils/near';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
-import { GAME, ATHLETE } from 'data/constants/nearContracts';
+import { GAME, ATHLETE, PACK_SOULBOUND, PACK } from 'data/constants/nearContracts';
 import { convertNftToAthlete, getAthleteInfoById } from 'utils/athlete/helper';
 import React, { useEffect, useState } from 'react';
+import { DEFAULT_MAX_FEES, MINT_STORAGE_COST } from 'data/constants/gasFees';
+import BigNumber from 'bignumber.js';
 
 const provider = new providers.JsonRpcProvider({
   url: getRPCProvider(),
 });
 
-
 async function query_game_data(game_id) {
   const query = JSON.stringify({
     game_id: game_id,
-  })
-
-  return await provider.query({
-    request_type: 'call_function',
-    finality: 'optimistic',
-    account_id: getContract(GAME),
-    method_name: 'get_game',
-    args_base64: Buffer.from(query).toString('base64'),
-  }).then(async (data) => {
-    // @ts-ignore:next-line
-    const result = JSON.parse(Buffer.from(data.result).toString());
-    console.log(result);
-    return result;
   });
+
+  return await provider
+    .query({
+      request_type: 'call_function',
+      finality: 'optimistic',
+      account_id: getContract(GAME),
+      method_name: 'get_game',
+      args_base64: Buffer.from(query).toString('base64'),
+    })
+    .then(async (data) => {
+      // @ts-ignore:next-line
+      const result = JSON.parse(Buffer.from(data.result).toString());
+      console.log(result);
+      return result;
+    });
 }
 
 async function query_nft_token_by_id(token_id) {
   const query = JSON.stringify({
     token_id: token_id,
   });
-  return provider.query({
-    request_type: 'call_function',
-    finality: 'optimistic',
-    account_id: getContract(ATHLETE),
-    method_name: 'nft_token_by_id',
-    args_base64: Buffer.from(query).toString('base64'),
-  })
+  return provider
+    .query({
+      request_type: 'call_function',
+      finality: 'optimistic',
+      account_id: getContract(ATHLETE),
+      method_name: 'nft_token_by_id',
+      args_base64: Buffer.from(query).toString('base64'),
+    })
     .then(async (data) => {
       //@ts-ignore:next-line
       const result = JSON.parse(Buffer.from(data.result).toString());
       const result_two = await getAthleteInfoById(await convertNftToAthlete(result));
       return result_two;
-    })
+    });
 }
 
 function checkIncludedWeeks(stats) {
@@ -59,13 +63,14 @@ async function query_all_players_lineup(game_id, week) {
     game_id: game_id,
   });
 
-  return await provider.query({
-    request_type: 'call_function',
-    finality: 'optimistic',
-    account_id: getContract(GAME),
-    method_name: 'get_all_players_lineup',
-    args_base64: Buffer.from(query).toString('base64'),
-  })
+  return await provider
+    .query({
+      request_type: 'call_function',
+      finality: 'optimistic',
+      account_id: getContract(GAME),
+      method_name: 'get_all_players_lineup',
+      args_base64: Buffer.from(query).toString('base64'),
+    })
     .then(async (data) => {
       // @ts-ignore:next-line
       const result = JSON.parse(Buffer.from(data.result).toString());
@@ -118,7 +123,7 @@ async function query_all_players_lineup(game_id, week) {
 
 async function query_nft_tokens_for_owner(athleteIndex) {
   const query = JSON.stringify({
-    token_id: athleteIndex
+    token_id: athleteIndex,
   });
 
   return provider.query({
@@ -127,19 +132,25 @@ async function query_nft_tokens_for_owner(athleteIndex) {
     account_id: getContract(ATHLETE),
     method_name: 'nft_token_by_id',
     args_base64: Buffer.from(query).toString('base64'),
-  })
+  });
 }
 
 async function query_filter_supply_for_owner(accountId, position, team, name) {
-  const query = JSON.stringify({ account_id: accountId, position: position, team: team, name: name });
+  const query = JSON.stringify({
+    account_id: accountId,
+    position: position,
+    team: team,
+    name: name,
+  });
 
-  return provider.query({
-    request_type: 'call_function',
-    finality: 'optimistic',
-    account_id: getContract(ATHLETE),
-    method_name: 'filtered_nft_supply_for_owner',
-    args_base64: Buffer.from(query).toString('base64'),
-  })
+  return provider
+    .query({
+      request_type: 'call_function',
+      finality: 'optimistic',
+      account_id: getContract(ATHLETE),
+      method_name: 'filtered_nft_supply_for_owner',
+      args_base64: Buffer.from(query).toString('base64'),
+    })
     .then((data) => {
       // @ts-ignore:next-line
       const totalAthletes = JSON.parse(Buffer.from(data.result));
@@ -148,7 +159,14 @@ async function query_filter_supply_for_owner(accountId, position, team, name) {
     });
 }
 
-async function query_filter_tokens_for_owner(accountId, athleteOffset, athleteLimit, position, team, name) {
+async function query_filter_tokens_for_owner(
+  accountId,
+  athleteOffset,
+  athleteLimit,
+  position,
+  team,
+  name
+) {
   const query = JSON.stringify({
     account_id: accountId,
     from_index: athleteOffset.toString(),
@@ -158,17 +176,16 @@ async function query_filter_tokens_for_owner(accountId, athleteOffset, athleteLi
     name: name,
   });
 
-  return await provider
-    .query({
-      request_type: 'call_function',
-      finality: 'optimistic',
-      account_id: getContract(ATHLETE),
-      method_name: 'filter_tokens_for_owner',
-      args_base64: Buffer.from(query).toString('base64'),
-    })
+  return await provider.query({
+    request_type: 'call_function',
+    finality: 'optimistic',
+    account_id: getContract(ATHLETE),
+    method_name: 'filter_tokens_for_owner',
+    args_base64: Buffer.from(query).toString('base64'),
+  });
 }
 
-async function query_player_teams(account, game_id,) {
+async function query_player_teams(account, game_id) {
   const query = JSON.stringify({
     account: account,
     game_id: game_id,
@@ -181,7 +198,8 @@ async function query_player_teams(account, game_id,) {
       account_id: getContract(GAME),
       method_name: 'get_player_team',
       args_base64: Buffer.from(query).toString('base64'),
-    }).then((data) => {
+    })
+    .then((data) => {
       // @ts-ignore:next-line
       const playerTeamNames = JSON.parse(Buffer.from(data.result));
 
@@ -199,7 +217,8 @@ async function query_game_supply() {
       account_id: getContract(GAME),
       method_name: 'get_total_games',
       args_base64: Buffer.from(query).toString('base64'),
-    }).then((data) => {
+    })
+    .then((data) => {
       // @ts-ignore:next-line
       const totalGames = JSON.parse(Buffer.from(data.result));
 
@@ -212,14 +231,151 @@ async function query_games_list(totalGames) {
     from_index: 0,
     limit: totalGames,
   });
- return provider
+  return provider.query({
+    request_type: 'call_function',
+    finality: 'optimistic',
+    account_id: getContract(GAME),
+    method_name: 'get_games',
+    args_base64: Buffer.from(query).toString('base64'),
+  });
+}
+
+function query_nft_soulbound_supply_for_owner(accountId) {
+  const query = JSON.stringify({ account_id: accountId });
+
+  return provider
     .query({
       request_type: 'call_function',
       finality: 'optimistic',
-      account_id: getContract(GAME),
-      method_name: 'get_games',
+      account_id: getContract(PACK_SOULBOUND),
+      method_name: 'nft_supply_for_owner',
       args_base64: Buffer.from(query).toString('base64'),
     })
+    .then((data) => {
+      // @ts-ignore:next-line
+      const totalSoulboundPacks = JSON.parse(Buffer.from(data.result));
+
+      return totalSoulboundPacks;
+    });
+}
+
+function query_nft_soulbound_tokens_for_owner(accountId, packOffset, soulboundPackLimit) {
+  const query = JSON.stringify({
+    account_id: accountId,
+    from_index: packOffset.toString(),
+    limit: soulboundPackLimit,
+  });
+
+  return provider
+    .query({
+      request_type: 'call_function',
+      finality: 'optimistic',
+      account_id: getContract(PACK_SOULBOUND),
+      method_name: 'nft_tokens_for_owner',
+      args_base64: Buffer.from(query).toString('base64'),
+    })
+    .then((data) => {
+      // @ts-ignore:next-line
+      const result = JSON.parse(Buffer.from(data.result).toString());
+
+      console.log(result);
+      return result;
+    });
+}
+
+function query_claim_status(accountId) {
+  const query = JSON.stringify({
+    account_id: accountId,
+  });
+
+  return provider
+    .query({
+      request_type: 'call_function',
+      finality: 'optimistic',
+      account_id: getContract(PACK_SOULBOUND),
+      method_name: 'check_claim_status',
+      args_base64: Buffer.from(query).toString('base64'),
+    })
+    .then((data) => {
+      //@ts-ignore:next-line
+      const result = JSON.parse(Buffer.from(data.result));
+      return result;
+    });
+}
+
+async function execute_claim_soulbound_pack(selector) {
+  const transferArgs = Buffer.from(
+    JSON.stringify({
+      msg: 'Test',
+    })
+  );
+
+  const deposit = new BigNumber(8).multipliedBy(new BigNumber(MINT_STORAGE_COST)).toFixed();
+
+  const action_transfer_call = {
+    type: 'FunctionCall',
+    params: {
+      methodName: 'claim_promo_pack',
+      args: transferArgs,
+      gas: DEFAULT_MAX_FEES,
+      deposit: deposit,
+    },
+  };
+
+  const wallet = await selector.wallet();
+  // @ts-ignore:next-line;
+  const tx = wallet.signAndSendTransactions({
+    transactions: [
+      {
+        receiverId: getContract(PACK_SOULBOUND),
+        //@ts-ignore:next-line
+        actions: [action_transfer_call],
+      },
+    ],
+  });
+}
+
+function query_nft_pack_supply_for_owner(accountId) {
+  const query = JSON.stringify({ account_id: accountId });
+
+  return provider
+    .query({
+      request_type: 'call_function',
+      finality: 'optimistic',
+      account_id: getContract(PACK),
+      method_name: 'nft_supply_for_owner',
+      args_base64: Buffer.from(query).toString('base64'),
+    })
+    .then((data) => {
+      // @ts-ignore:next-line
+      const totalPacks = JSON.parse(Buffer.from(data.result));
+
+      return totalPacks;
+    });
+}
+
+function query_nft_pack_tokens_for_owner(accountId, packOffset, packLimit) {
+  const query = JSON.stringify({
+    account_id: accountId,
+    from_index: packOffset.toString(),
+    limit: packLimit,
+  });
+
+  return provider
+    .query({
+      request_type: 'call_function',
+      finality: 'optimistic',
+      account_id: getContract(PACK),
+      method_name: 'nft_tokens_for_owner',
+      args_base64: Buffer.from(query).toString('base64'),
+    })
+    .then((data) => {
+      // @ts-ignore:next-line
+      const result = JSON.parse(Buffer.from(data.result).toString());
+
+      console.log(result);
+      return result;
+    });
 }
 
 export {
@@ -231,4 +387,10 @@ export {
   query_player_teams,
   query_game_supply,
   query_games_list,
-}
+  query_nft_soulbound_supply_for_owner,
+  query_nft_soulbound_tokens_for_owner,
+  query_claim_status,
+  execute_claim_soulbound_pack,
+  query_nft_pack_supply_for_owner,
+  query_nft_pack_tokens_for_owner,
+};

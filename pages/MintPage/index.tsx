@@ -14,9 +14,16 @@ import { useWalletSelector } from '../../contexts/WalletSelectorContext';
 import BigNumber from 'bignumber.js';
 import { getConfig, getContract, getRPCProvider } from '../../utils/near';
 import PortfolioContainer from '../../components/containers/PortfolioContainer';
-import { MINTER, NEP141USDC, NEP141USDT, NEP141USN } from '../../data/constants/nearContracts';
+import {
+  MINTER,
+  NEP141USDC,
+  NEP141USDT,
+  NEP141USN,
+  PACK_SOULBOUND,
+} from '../../data/constants/nearContracts';
 
 import { MINT_STORAGE_COST, DEFAULT_MAX_FEES } from 'data/constants/gasFees';
+import { execute_claim_soulbound_pack, query_claim_status } from 'utils/near/helper';
 
 const DECIMALS_NEAR = 1000000000000000000000000;
 const RESERVED_AMOUNT = 200;
@@ -57,6 +64,11 @@ export default function Home(props) {
   const [useNEP141, setUseNEP141] = useState(NEP141USDT);
   const [intervalSale, setIntervalSale] = useState(0);
   const [balanceErrorMsg, setBalanceErrorMsg] = useState('');
+  const [isClaimed, setIsClaimed] = useState(false);
+
+  async function get_claim_status(accountId) {
+    setIsClaimed(await query_claim_status(accountId));
+  }
 
   function query_config_contract() {
     provider
@@ -333,6 +345,16 @@ export default function Home(props) {
       days: format_days,
     };
   }
+
+  const handleButtonClick = (e) => {
+    e.preventDefault();
+    get_soulbound_pack(selector);
+  };
+
+  async function get_soulbound_pack(selector) {
+    execute_claim_soulbound_pack(selector);
+  }
+
   useEffect(() => {
     query_config_contract();
     query_storage_deposit_account_id();
@@ -351,16 +373,23 @@ export default function Home(props) {
     return () => clearInterval(timer);
   }, [intervalSale]);
 
+  useEffect(() => {
+    get_claim_status(accountId);
+  }, []);
+
   return (
     <>
       <Container activeName="MINT">
         <div className="flex flex-col w-screen md:w-full overflow-y-auto h-screen justify-center self-center md:pb-12 text-indigo-black">
           <Main color="indigo-white">
             <div className="flex-initial iphone5:mt-20 md:ml-6 md:mt-8">
-            <button className="bg-indigo-buttonblue text-indigo-white w-5/6 md:w-80 h-10 
-              text-center font-bold text-xs self-center justify-center float-right mr-8 md:mt-0 iphone5:mt-28">
-              CLAIM SOULBOUND PACK
-            </button>
+              <button
+                className={`bg-indigo-buttonblue text-indigo-white w-5/6 md:w-80 h-10 
+              text-center font-bold text-xs self-center justify-center float-right md:mt-0 iphone5:mr-9 iphone5:mt-20 ${isClaimed} ? hidden : ''`}
+                onClick={(e) => handleButtonClick(e)}
+              >
+                CLAIM SOULBOUND PACK
+              </button>
               <PortfolioContainer title="MINT PACKS" textcolor="text-indigo-black" />
             </div>
             <div className="flex flex-col md:flex-row md:ml-12">
