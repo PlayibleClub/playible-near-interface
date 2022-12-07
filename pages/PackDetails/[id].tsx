@@ -4,7 +4,12 @@ import 'regenerator-runtime/runtime';
 import BackFunction from '../../components/buttons/BackFunction';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
 import { getContract } from 'utils/near';
-import { OPENPACK, PACK } from '../../data/constants/nearContracts';
+import {
+  OPENPACK,
+  OPEN_SOULBOUND_PACK,
+  PACK,
+  PACK_SOULBOUND,
+} from '../../data/constants/nearContracts';
 import { providers } from 'near-api-js';
 import BigNumber from 'bignumber.js';
 import { DEFAULT_MAX_FEES, MINT_STORAGE_COST } from 'data/constants/gasFees';
@@ -16,16 +21,20 @@ export default function PackDetails(props) {
   const { query } = props;
 
   const { selector } = useWalletSelector();
-
+  const id = query.id.toString();
+  console.log(id.length);
   const myPack = {
-    packName: 'STARTER PACK',
-    id: query.id,
+    packName: id.length === 64 || id.includes('SB') ? 'SOULBOUND PACK' : 'STARTER PACK',
+    id: id,
   };
 
   async function execute_open_pack() {
     const transferArgs = Buffer.from(
       JSON.stringify({
-        receiver_id: getContract(OPENPACK),
+        receiver_id:
+          myPack.packName === 'SOULBOUND PACK'
+            ? getContract(OPEN_SOULBOUND_PACK)
+            : getContract(OPENPACK),
         token_id: myPack.id,
         msg: 'Pack ' + myPack.id.toString() + ' sent.',
       })
@@ -39,7 +48,7 @@ export default function PackDetails(props) {
         methodName: 'nft_transfer_call',
         args: transferArgs,
         gas: DEFAULT_MAX_FEES,
-        deposit: deposit,
+        deposit: 1,
       },
     };
 
@@ -48,13 +57,15 @@ export default function PackDetails(props) {
     const tx = wallet.signAndSendTransactions({
       transactions: [
         {
-          receiverId: getContract(PACK),
+          receiverId:
+            myPack.packName === 'SOULBOUND PACK' ? getContract(PACK_SOULBOUND) : getContract(PACK),
           // @ts-ignore:next-line
           actions: [action_transfer_call],
         },
       ],
     });
   }
+  //can add to helper
 
   return (
     <Container activeName="PACKS">
