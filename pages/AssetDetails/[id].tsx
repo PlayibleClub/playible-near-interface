@@ -12,7 +12,7 @@ import Popup from 'reactjs-popup';
 import 'reactjs-popup/dist/index.css';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { query_nft_tokens_for_owner } from 'utils/near/helper';
+import { query_nft_tokens_by_id } from 'utils/near/helper';
 
 const AssetDetails = (props) => {
   const { query } = props;
@@ -48,7 +48,7 @@ const AssetDetails = (props) => {
   }
 
   function get_nft_tokens_for_owner(athleteIndex) {
-    query_nft_tokens_for_owner(athleteIndex).then(async (data) => {
+    query_nft_tokens_by_id(athleteIndex).then(async (data) => {
       // @ts-ignore:next-line
       const result = JSON.parse(Buffer.from(data.result).toString());
       const result_two = await getAthleteInfoById(await convertNftToAthlete(result));

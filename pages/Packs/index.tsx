@@ -19,10 +19,8 @@ import { DEFAULT_MAX_FEES, MINT_STORAGE_COST } from 'data/constants/gasFees';
 import {
   execute_claim_soulbound_pack,
   query_claim_status,
-  query_nft_pack_supply_for_owner,
-  query_nft_pack_tokens_for_owner,
-  query_nft_soulbound_supply_for_owner,
-  query_nft_soulbound_tokens_for_owner,
+  query_nft_supply_for_owner,
+  query_nft_tokens_for_owner,
 } from 'utils/near/helper';
 
 export default function Packs() {
@@ -69,7 +67,7 @@ export default function Packs() {
     const tabList = [...categoryList];
     setPackOffset(0);
     setPackLimit(10);
-    setRemountComponent(Math.random());
+    setRemountComponent(Math.random() + 1);
     switch (name) {
       case 'STARTER':
         setCurrentTotal(packs.length);
@@ -91,11 +89,13 @@ export default function Packs() {
   };
 
   async function get_nft_pack_supply_for_owner(accountId) {
-    setTotalPacks(await query_nft_pack_supply_for_owner(accountId));
+    setTotalPacks(await query_nft_supply_for_owner(accountId, getContract(PACK)));
   }
 
-  async function get_nft_soulbound_supply_for_owner(accountId) {
-    setTotalSoulboundPacks(await query_nft_soulbound_supply_for_owner(accountId));
+  async function get_nft_sb_supply_for_owner(accountId) {
+    setTotalSoulboundPacks(
+      await query_nft_supply_for_owner(accountId, getContract(PACK_SOULBOUND))
+    );
   }
 
   function getPackLimit() {
@@ -110,33 +110,34 @@ export default function Packs() {
     }
   }
 
-  useEffect(() => {
-    get_nft_pack_supply_for_owner(accountId);
-    get_nft_soulbound_supply_for_owner(accountId);
-    getPackLimit();
-    setPageCount(Math.ceil(totalPacks / packLimit));
-    const endOffset = packOffset + packLimit;
-    console.log(`Loading packs from ${packOffset} to ${endOffset}`);
-    get_nft_pack_tokens_for_owner(accountId, packOffset, packLimit);
-    get_nft_soulbound_tokens_for_owner(accountId, packOffset, soulboundPackLimit);
-  }, [totalPacks, packLimit, packOffset, totalSoulboundPacks, soulboundPackLimit]);
-
   const handlePageClick = (event) => {
     const newOffset = (event.selected * packLimit) % totalPacks;
     setPackOffset(newOffset);
   };
 
   async function get_nft_pack_tokens_for_owner(accountId, packOffset, packLimit) {
-    setPacks(await query_nft_pack_tokens_for_owner(accountId, packOffset, packLimit));
+    //@ts-ignore:next-line
+
+    query_nft_tokens_for_owner(accountId, packOffset, packLimit, getContract(PACK)).then(
+      async (data) => {
+        //@ts-ignore:next-line
+        const result = JSON.parse(Buffer.from(data.result).toString());
+        setPacks(result);
+      }
+    );
   }
 
   async function get_claim_status(accountId) {
     setIsClaimed(await query_claim_status(accountId));
   }
 
-  async function get_nft_soulbound_tokens_for_owner(accountId, packOffset, soulboundPackLimit) {
-    setSoulboundPacks(
-      await query_nft_soulbound_tokens_for_owner(accountId, packOffset, soulboundPackLimit)
+  async function get_nft_sb_pack_tokens_for_owner(accountId, packOffset, soulboundPackLimit) {
+    query_nft_tokens_for_owner(accountId, packOffset, packLimit, getContract(PACK_SOULBOUND)).then(
+      async (data) => {
+        //@ts-ignore:next-line
+        const result = JSON.parse(Buffer.from(data.result).toString());
+        setSoulboundPacks(result);
+      }
     );
   }
 
@@ -161,6 +162,19 @@ export default function Packs() {
   };
 
   useEffect(() => {
+    get_nft_pack_supply_for_owner(accountId);
+    getPackLimit();
+    setPageCount(Math.ceil(totalPacks / packLimit));
+    const endOffset = packOffset + packLimit;
+    console.log(`Loading packs from ${packOffset} to ${endOffset}`);
+    get_nft_pack_tokens_for_owner(accountId, packOffset, packLimit);
+  }, [totalPacks, packLimit, packOffset]);
+
+  useEffect(() => {
+    get_nft_sb_supply_for_owner(accountId);
+    get_nft_sb_pack_tokens_for_owner(accountId, 0, 30);
+  }, []);
+  useEffect(() => {
     console.log(packs);
   }, [packs]);
 
@@ -171,6 +185,11 @@ export default function Packs() {
   useEffect(() => {
     console.log(isClaimed);
   }, [isClaimed]);
+
+  useEffect(() => {
+    if (remountComponent !== 0) {
+    }
+  }, [remountComponent]);
   // useEffect(() => {
   //     // set initial value
   //     const mediaWatcher = window.matchMedia("(max-width: 500px)")
