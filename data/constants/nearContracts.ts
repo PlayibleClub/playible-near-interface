@@ -97,16 +97,16 @@ export const OPENPACK = {
   mainnet: 'open_pack.nfl.playible.near',
   testnet: 'open_pack.nfl.playible.testnet',
   interface: {
-    viewMethods: [],
-    changeMethods: [],
+    viewMethods: ['getMessages'],
+    changeMethods: ['execute_add_athletes', 'execute_open_pack'],
   },
 }; //OpenPack Contract
 export const OPEN_SOULBOUND_PACK = {
   mainnet: '',
   testnet: 'open_pack.soulbound.nfl.playible.testnet',
   interface: {
-    viewMethods: ['getMessages', 'check_claim_status'],
-    changeMethods: ['claim_promo_pack'],
+    viewMethods: ['getMessages'],
+    changeMethods: ['execute_open_pack'],
   }
 }
 export const ORACLE = {
