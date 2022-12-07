@@ -92,7 +92,21 @@ export const ATHLETE = {
     changeMethods: ['addMessage'],
   },
 }; //Athlete Contract
-
+export const ATHLETE_SOULBOUND= {
+  mainnet: 'athlete.soulbound.nfl.playible.near',
+  testnet: 'athlete.soulbound.nfl.playible.testnet',
+  interface: {
+    viewMethods: [
+      'nft_tokens_for_owner',
+      'nft_total_supply',
+      'nft_tokens',
+      'nft_supply_for_owner',
+      'filter_tokens_for_owner',
+      'filtered_nft_supply_for_owner',
+    ],
+    changeMethods: ['addMessage'],
+  }
+}
 export const OPENPACK = {
   mainnet: 'open_pack.nfl.playible.near',
   testnet: 'open_pack.nfl.playible.testnet',
