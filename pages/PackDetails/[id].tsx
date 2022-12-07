@@ -16,7 +16,7 @@ import { DEFAULT_MAX_FEES, MINT_STORAGE_COST } from 'data/constants/gasFees';
 import Image from 'next/image';
 
 const sampleImage = '/images/packimages/Starter.png';
-
+const sbImage = '/images/packimages/NFL-SB-Pack.png';
 export default function PackDetails(props) {
   const { query } = props;
 
@@ -75,7 +75,11 @@ export default function PackDetails(props) {
       <div className="flex flex-col w-full overflow-y-auto h-screen pb-40">
         <div className="flex flex-row ml-24 mt-10">
           <div>
-            <Image src={sampleImage} height="200" width="200" alt="pack-image" />
+            {myPack.packName === 'SOULBOUND PACK' ? (
+              <Image src={sbImage} height="200" width="200" alt="pack-image" />
+            ) : (
+              <Image src={sampleImage} height="200" width="200" alt="pack-image" />
+            )}
           </div>
           <div className="grid grid-rows">
             <div className="text-2xl font-bold font-monument">
