@@ -213,15 +213,23 @@ export default function Packs() {
       <div className="flex flex-col w-full overflow-y-auto h-screen pb-12 mb-12">
         <Main color="indigo-white">
           <div className="iphone5:mt-20 md:ml-6 md:mt-8">
-            <button
-              className={`bg-indigo-buttonblue text-indigo-white w-5/6 md:w-80 h-10 
-              text-center font-bold text-xs self-center justify-center float-right md:mt-0 iphone5:mr-9 iphone5:mt-20 ${
-                isClaimed ? 'hidden' : ''
-              } `}
-              onClick={(e) => handleButtonClick(e)}
-            >
-              CLAIM SOULBOUND PACK
-            </button>
+          {isClaimed ? (
+              <button
+                className={`bg-indigo-gray bg-opacity-40 text-indigo-white w-5/6 md:w-80 h-10 pointer-events-none 
+            text-center font-bold text-xs self-center justify-center float-right md:mt-0 iphone5:mr-9 iphone5:mt-20`}
+                onClick={(e) => handleButtonClick(e)}
+              >
+                CLAIM SOULBOUND PACK
+              </button>
+            ) : (
+              <button
+                className={`bg-indigo-buttonblue text-indigo-white w-5/6 md:w-80 h-10 
+           text-center font-bold text-xs self-center justify-center float-right md:mt-0 iphone5:mr-9 iphone5:mt-20`}
+                onClick={(e) => handleButtonClick(e)}
+              >
+                CLAIM SOULBOUND PACK
+              </button>
+            )}
             <PortfolioContainer textcolor="indigo-black" title="PACKS">
               <div className="flex flex-col mt-6">
                 <div className="flex font-bold md:ml-7 iphone5:mt-10 iphone5:ml-7 md:mt-0 font-monument">

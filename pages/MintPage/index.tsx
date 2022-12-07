@@ -383,13 +383,23 @@ export default function Home(props) {
         <div className="flex flex-col w-screen md:w-full overflow-y-auto h-screen justify-center self-center md:pb-12 text-indigo-black">
           <Main color="indigo-white">
             <div className="flex-initial iphone5:mt-20 md:ml-6 md:mt-8">
+            {isClaimed ? (
               <button
-                className={`bg-indigo-buttonblue text-indigo-white w-5/6 md:w-80 h-10 
-              text-center font-bold text-xs self-center justify-center float-right md:mt-0 iphone5:mr-9 iphone5:mt-20 ${isClaimed} ? hidden : ''`}
+                className={`bg-indigo-gray bg-opacity-40 text-indigo-white w-5/6 md:w-80 h-10 pointer-events-none 
+            text-center font-bold text-xs self-center justify-center float-right md:mt-0 iphone5:mr-9 iphone5:mt-20`}
                 onClick={(e) => handleButtonClick(e)}
               >
                 CLAIM SOULBOUND PACK
               </button>
+            ) : (
+              <button
+                className={`bg-indigo-buttonblue text-indigo-white w-5/6 md:w-80 h-10 
+           text-center font-bold text-xs self-center justify-center float-right md:mt-0 iphone5:mr-9 iphone5:mt-20`}
+                onClick={(e) => handleButtonClick(e)}
+              >
+                CLAIM SOULBOUND PACK
+              </button>
+            )}
               <PortfolioContainer title="MINT PACKS" textcolor="text-indigo-black" />
             </div>
             <div className="flex flex-col md:flex-row md:ml-12">
