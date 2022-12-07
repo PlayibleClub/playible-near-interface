@@ -12,7 +12,7 @@ import PackComponent from './components/PackComponent';
 import PlayComponent from '../Play/components/PlayComponent';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
 import { getRPCProvider, getContract } from 'utils/near';
-import { OPEN_SOULBOUND_PACK, PACK, PACK_SOULBOUND} from '../../data/constants/nearContracts';
+import { OPEN_SOULBOUND_PACK, PACK, PACK_SOULBOUND } from '../../data/constants/nearContracts';
 import ReactPaginate from 'react-paginate';
 import BigNumber from 'bignumber.js';
 import { DEFAULT_MAX_FEES, MINT_STORAGE_COST } from 'data/constants/gasFees';
@@ -40,7 +40,7 @@ export default function Packs() {
   const [packLimit, setPackLimit] = useState(30);
   const [soulboundPackLimit, setSoulboundPackLimit] = useState(30);
   const [totalPacks, setTotalPacks] = useState(0);
-  const [isClaimed, setIsClaimed] = useState(false);  
+  const [isClaimed, setIsClaimed] = useState(false);
   const [totalSoulboundPacks, setTotalSoulboundPacks] = useState(0);
   const [activeCategory, setCategory] = useState('NEW');
   const [currentTotal, setCurrentTotal] = useState(0);
@@ -141,7 +141,7 @@ export default function Packs() {
     console.log(`Loading packs from ${packOffset} to ${endOffset}`);
     query_nft_tokens_for_owner();
     query_nft_soulbound_tokens_for_owner();
-  }, [totalPacks, packLimit, packOffset, totalSoulboundPacks,soulboundPackLimit]);
+  }, [totalPacks, packLimit, packOffset, totalSoulboundPacks, soulboundPackLimit]);
 
   const handlePageClick = (event) => {
     const newOffset = (event.selected * packLimit) % totalPacks;
@@ -174,7 +174,7 @@ export default function Packs() {
   function query_claim_status() {
     const query = JSON.stringify({
       account_id: accountId,
-    })
+    });
 
     provider
       .query({
@@ -188,7 +188,7 @@ export default function Packs() {
         //@ts-ignore:next-line
         const result = JSON.parse(Buffer.from(data.result));
         setIsClaimed(result);
-      })
+      });
   }
 
   function query_nft_soulbound_tokens_for_owner() {
@@ -215,7 +215,7 @@ export default function Packs() {
       });
   }
 
-  async function execute_claim_soulbound_pack(){
+  async function execute_claim_soulbound_pack() {
     const transferArgs = Buffer.from(
       JSON.stringify({
         msg: 'Test',
@@ -231,7 +231,7 @@ export default function Packs() {
         args: transferArgs,
         gas: DEFAULT_MAX_FEES,
         deposit: deposit,
-      }
+      },
     };
 
     const wallet = await selector.wallet();
@@ -244,7 +244,7 @@ export default function Packs() {
           actions: [action_transfer_call],
         },
       ],
-    })
+    });
   }
 
   const onSubmit = (data) => {
@@ -261,11 +261,11 @@ export default function Packs() {
   const handleButtonClick = (e) => {
     e.preventDefault();
     execute_claim_soulbound_pack();
-  }
+  };
 
   useEffect(() => {
     console.log(packs);
-  }, [packs])
+  }, [packs]);
 
   useEffect(() => {
     query_claim_status();
@@ -273,7 +273,7 @@ export default function Packs() {
 
   useEffect(() => {
     console.log(isClaimed);
-  }, [isClaimed])
+  }, [isClaimed]);
   // useEffect(() => {
   //     // set initial value
   //     const mediaWatcher = window.matchMedia("(max-width: 500px)")
@@ -297,9 +297,13 @@ export default function Packs() {
       <div className="flex flex-col w-full overflow-y-auto h-screen pb-12 mb-12">
         <Main color="indigo-white">
           <div className="iphone5:mt-20 md:ml-6 md:mt-8">
-            <button className={`bg-indigo-buttonblue text-indigo-white w-5/6 md:w-80 h-10 
-              text-center font-bold text-xs self-center justify-center float-right md:mt-0 iphone5:mr-9 iphone5:mt-20 ${isClaimed} ? hidden : ''`}
-              onClick={(e) => handleButtonClick(e)}>
+            <button
+              className={`bg-indigo-buttonblue text-indigo-white w-5/6 md:w-80 h-10 
+              text-center font-bold text-xs self-center justify-center float-right md:mt-0 iphone5:mr-9 iphone5:mt-20 ${
+                isClaimed ? 'hidden' : ''
+              } `}
+              onClick={(e) => handleButtonClick(e)}
+            >
               CLAIM SOULBOUND PACK
             </button>
             <PortfolioContainer textcolor="indigo-black" title="PACKS">
@@ -319,39 +323,39 @@ export default function Packs() {
                     </div>
                   ))}
                 </div>
-                <hr className="opacity-10"/>
+                <hr className="opacity-10" />
               </div>
-                
+
               <div className="flex flex-col">
                 <div className="grid grid-cols-4 gap-y-8 mt-4 md:grid-cols-4 iphone5:mt-15 iphone5:ml-2 md:ml-7 md:mt-12 ">
-                  {(categoryList[0].isActive ? packs : soulboundPacks).length > 0 && 
-                  (categoryList[0].isActive ? packs : soulboundPacks).
-                  filter((data, i) => i >= packOffset && i < packOffset + packLimit)
-                  .map(({ metadata, token_id }) => (
-                    <PackComponent
-                      key={token_id}
-                      image={metadata.media}
-                      id={token_id}
-                    ></PackComponent>
-                  ))}
+                  {(categoryList[0].isActive ? packs : soulboundPacks).length > 0 &&
+                    (categoryList[0].isActive ? packs : soulboundPacks)
+                      .filter((data, i) => i >= packOffset && i < packOffset + packLimit)
+                      .map(({ metadata, token_id }) => (
+                        <PackComponent
+                          key={token_id}
+                          image={metadata.media}
+                          id={token_id}
+                        ></PackComponent>
+                      ))}
                 </div>
               </div>
             </PortfolioContainer>
             <div className="absolute bottom-10 right-10">
               <div key={remountComponent}>
-              <ReactPaginate
-                className="p-2 bg-indigo-buttonblue text-indigo-white flex flex-row space-x-4 select-none ml-7"
-                pageClassName="hover:font-bold"
-                activeClassName="rounded-lg bg-indigo-white text-indigo-black pr-1 pl-1 font-bold"
-                pageLinkClassName="rounded-lg hover:font-bold hover:bg-indigo-white hover:text-indigo-black pr-1 pl-1"
-                breakLabel="..."
-                nextLabel=">"
-                onPageChange={handlePageClick}
-                pageRangeDisplayed={5}
-                pageCount={pageCount}
-                previousLabel="<"
-                renderOnZeroPageCount={null}
-              />
+                <ReactPaginate
+                  className="p-2 bg-indigo-buttonblue text-indigo-white flex flex-row space-x-4 select-none ml-7"
+                  pageClassName="hover:font-bold"
+                  activeClassName="rounded-lg bg-indigo-white text-indigo-black pr-1 pl-1 font-bold"
+                  pageLinkClassName="rounded-lg hover:font-bold hover:bg-indigo-white hover:text-indigo-black pr-1 pl-1"
+                  breakLabel="..."
+                  nextLabel=">"
+                  onPageChange={handlePageClick}
+                  pageRangeDisplayed={5}
+                  pageCount={pageCount}
+                  previousLabel="<"
+                  renderOnZeroPageCount={null}
+                />
               </div>
             </div>
           </div>
