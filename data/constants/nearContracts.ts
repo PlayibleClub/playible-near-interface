@@ -106,7 +106,7 @@ export const OPEN_SOULBOUND_PACK = {
   testnet: 'open_pack.soulbound.nfl.playible.testnet',
   interface: {
     viewMethods: ['getMessages'],
-    changeMethods: ['execute_open_pack'],
+    changeMethods: ['execute_add_athletes', 'execute_open_pack'],
   }
 }
 export const ORACLE = {

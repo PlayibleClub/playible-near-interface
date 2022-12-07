@@ -48,7 +48,7 @@ export default function PackDetails(props) {
         methodName: 'nft_transfer_call',
         args: transferArgs,
         gas: DEFAULT_MAX_FEES,
-        deposit: 1,
+        deposit: deposit,
       },
     };
 
