@@ -1,7 +1,7 @@
 import { providers } from 'near-api-js';
 import { getContract, getRPCProvider } from 'utils/near';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
-import { GAME, ATHLETE, PACK_SOULBOUND, PACK } from 'data/constants/nearContracts';
+import { GAME, ATHLETE, PACK_SOULBOUND, PACK, ATHLETE_SOULBOUND } from 'data/constants/nearContracts';
 import { convertNftToAthlete, getAthleteInfoById } from 'utils/athlete/helper';
 import React, { useEffect, useState } from 'react';
 import { DEFAULT_MAX_FEES, MINT_STORAGE_COST } from 'data/constants/gasFees';
@@ -121,7 +121,7 @@ async function query_all_players_lineup(game_id, week) {
     });
 }
 
-async function query_nft_tokens_by_id(athleteIndex) {
+async function query_nft_tokens_by_id(athleteIndex, contract) {
   const query = JSON.stringify({
     token_id: athleteIndex,
   });
@@ -129,7 +129,7 @@ async function query_nft_tokens_by_id(athleteIndex) {
   return provider.query({
     request_type: 'call_function',
     finality: 'optimistic',
-    account_id: getContract(ATHLETE),
+    account_id: contract,
     method_name: 'nft_token_by_id',
     args_base64: Buffer.from(query).toString('base64'),
   });
