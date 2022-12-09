@@ -16,7 +16,7 @@ import { axiosInstance } from '../../utils/playible';
 import 'regenerator-runtime/runtime';
 import { ProvidedRequiredArgumentsOnDirectivesRule } from 'graphql/validation/rules/ProvidedRequiredArgumentsRule';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
-import { ATHLETE } from 'data/constants/nearContracts';
+import { ATHLETE, ATHLETE_SOULBOUND } from 'data/constants/nearContracts';
 import PackComponent from 'pages/Packs/components/PackComponent';
 import { convertNftToAthlete, getAthleteInfoById } from 'utils/athlete/helper';
 import { query_filter_supply_for_owner, query_filter_tokens_for_owner } from 'utils/near/helper';
@@ -84,9 +84,11 @@ const Portfolio = () => {
     }
   }
 
-  async function get_filter_supply_for_owner(accountId, position, team, name) {
-    console.log(accountId)
-    setTotalAthletes(await query_filter_supply_for_owner(accountId, position, team, name));
+  async function get_filter_supply_for_owner(accountId, position, team, name, contract) {
+    console.log(accountId);
+    setTotalAthletes(
+      await query_filter_supply_for_owner(accountId, position, team, name, contract)
+    );
   }
 
   function handleDropdownChange() {
@@ -95,29 +97,41 @@ const Portfolio = () => {
     setRemountComponent(Math.random());
   }
 
-  function get_filter_tokens_for_owner(accountId, athleteOffset, athleteLimit, position, team, name) {
-    query_filter_tokens_for_owner(accountId, athleteOffset, athleteLimit, position, team, name)
-      .then(async (data) => {
-        // @ts-ignore:next-line
-        const result = JSON.parse(Buffer.from(data.result).toString());
-        const result_two = await Promise.all(
-          result.map(convertNftToAthlete).map(getAthleteInfoById)
-        );
+  function get_filter_tokens_for_owner(
+    accountId,
+    athleteOffset,
+    athleteLimit,
+    position,
+    team,
+    name,
+    contract
+  ) {
+    query_filter_tokens_for_owner(
+      accountId,
+      athleteOffset,
+      athleteLimit,
+      position,
+      team,
+      name,
+      contract
+    ).then(async (data) => {
+      // @ts-ignore:next-line
+      const result = JSON.parse(Buffer.from(data.result).toString());
+      const result_two = await Promise.all(result.map(convertNftToAthlete).map(getAthleteInfoById));
 
-        // const sortedResult = sortByKey(result_two, 'fantasy_score');
-        setCurrPosition(position);
-        setAthletes(result_two);
-        setLoading(false);
-      });
-
+      // const sortedResult = sortByKey(result_two, 'fantasy_score');
+      setCurrPosition(position);
+      setAthletes(result_two);
+      setLoading(false);
+    });
   }
   const handleSearchDynamic = (value) => {
     setName(value);
-  }
+  };
   const handleSearchSubmit = (value) => {
     handleDropdownChange();
     setName(value);
-  }
+  };
   const handlePageClick = (event) => {
     const newOffset = (event.selected * athleteLimit) % totalAthletes;
     setAthleteOffset(newOffset);
@@ -135,23 +149,31 @@ const Portfolio = () => {
     }, 1000);
 
     return () => clearTimeout(delay);
-  }, [search])
+  }, [search]);
   useEffect(() => {
     if (!isNaN(athleteOffset)) {
-      console.log("loading");
-      get_filter_supply_for_owner(accountId, position, team, name);
+      console.log('loading');
+      get_filter_supply_for_owner(accountId, position, team, name, getContract(ATHLETE));
       //getAthleteLimit();
       // setAthleteList(getAthleteList());
       setPageCount(Math.ceil(totalAthletes / athleteLimit));
       const endOffset = athleteOffset + athleteLimit;
       console.log(`Loading athletes from ${athleteOffset} to ${endOffset}`);
-      get_filter_tokens_for_owner(accountId, athleteOffset, athleteLimit, position, team, name);
+      get_filter_tokens_for_owner(
+        accountId,
+        athleteOffset,
+        athleteLimit,
+        position,
+        team,
+        name,
+        getContract(ATHLETE)
+      );
     }
 
     // setSortedList([]);
   }, [totalAthletes, athleteLimit, athleteOffset, position, team, name]);
 
-  useEffect(() => { }, [limit, offset, filter, search]);
+  useEffect(() => {}, [limit, offset, filter, search]);
 
   return (
     <Container activeName="SQUAD">
@@ -176,7 +198,6 @@ const Portfolio = () => {
                   <option value="TE">TIGHT END</option>
                 </select>
               </form>
-
             </div>
             <div className="h-8 flex justify-between mt-3 ml-4 md:ml-12">
               <form>
@@ -200,7 +221,7 @@ const Portfolio = () => {
                 onSubmitFn={(search) => handleSearchSubmit(search)}
               />
             </div>
-            
+
             {/* <div className="h-8 flex justify-between mt-3 md:ml-24 lg:ml-80">
               <form
                 onSubmit={(e) => {

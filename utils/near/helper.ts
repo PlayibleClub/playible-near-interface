@@ -135,7 +135,7 @@ async function query_nft_tokens_by_id(athleteIndex, contract) {
   });
 }
 
-async function query_filter_supply_for_owner(accountId, position, team, name) {
+async function query_filter_supply_for_owner(accountId, position, team, name, contract) {
   const query = JSON.stringify({
     account_id: accountId,
     position: position,
@@ -147,7 +147,7 @@ async function query_filter_supply_for_owner(accountId, position, team, name) {
     .query({
       request_type: 'call_function',
       finality: 'optimistic',
-      account_id: getContract(ATHLETE),
+      account_id: contract,
       method_name: 'filtered_nft_supply_for_owner',
       args_base64: Buffer.from(query).toString('base64'),
     })
@@ -165,7 +165,8 @@ async function query_filter_tokens_for_owner(
   athleteLimit,
   position,
   team,
-  name
+  name,
+  contract,
 ) {
   const query = JSON.stringify({
     account_id: accountId,
@@ -179,7 +180,7 @@ async function query_filter_tokens_for_owner(
   return await provider.query({
     request_type: 'call_function',
     finality: 'optimistic',
-    account_id: getContract(ATHLETE),
+    account_id: contract,
     method_name: 'filter_tokens_for_owner',
     args_base64: Buffer.from(query).toString('base64'),
   });

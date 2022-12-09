@@ -12,15 +12,16 @@ async function getAthleteInfoById(item) {
     variables: { getAthleteById: parseFloat(value[0]) },
   });
   console.log("starts at: " + item.metadata['starts_at'] + " vs " + "utc :" + getUTCTimestampFromLocal());
+  const minus = value.length === 7 ? 0 : 1;
   const returningData = {
     primary_id: value[0],
     athlete_id: item.token_id,
     rarity: value[1],
-    usage: value[2],
-    name: value[3],
-    team: value[4],
-    position: value[5],
-    release: value[6],
+    usage: value.length === 7 ? value[2] : 0,
+    name: value[3 - minus],
+    team: value[4 - minus],
+    position: value[5 - minus],
+    release: value[6 - minus],
     isOpen: false,
     animation: data.getAthleteById.nftAnimation,
     image: data.getAthleteById.nftImage,
