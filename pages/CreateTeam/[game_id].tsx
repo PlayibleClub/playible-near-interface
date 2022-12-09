@@ -21,8 +21,21 @@ import { axiosInstance } from '../../utils/playible';
 import LoadingPageDark from '../../components/loading/LoadingPageDark';
 import { DEFAULT_MAX_FEES } from 'data/constants/gasFees';
 import { GAME } from 'data/constants/nearContracts';
-import { selectAthleteLineup, selectGameId, selectIndex, selectPosition, selectTeamName} from 'redux/athlete/athleteSlice';
-import { setAthleteLineup, setGameId, setIndex, setPosition, setTeamNameRedux } from 'redux/athlete/athleteSlice';
+import {
+  selectAthleteLineup,
+  selectGameId,
+  selectIndex,
+  selectPosition,
+  selectTeamName,
+} from 'redux/athlete/athleteSlice';
+import {
+  setAthleteLineup,
+  setGameId,
+  setIndex,
+  setPosition,
+  setTeamNameRedux,
+} from 'redux/athlete/athleteSlice';
+import { query_game_data } from 'utils/near/helper';
 
 export default function CreateLineup(props) {
   const { query } = props;
@@ -53,7 +66,7 @@ export default function CreateLineup(props) {
   const [selectModal, setSelectModal] = useState(false);
   const [filterPos, setFilterPos] = useState(null);
   const [teamName, setTeamName] = useState('Team 1');
-
+  const [gameData, setGameData] = useState([]);
   const [limit, setLimit] = useState(5);
   const [offset, setOffset] = useState(0);
   const [pageCount, setPageCount] = useState(0);
@@ -192,24 +205,20 @@ export default function CreateLineup(props) {
       return [];
     }
   };
-  function populateLineup() {
+  function populateLineup(array) {
     //const array = Array(8).fill({position: "QB", isAthlete: false});
-    const array = [
-      { position: ['QB'], isAthlete: false, amount: 1 },
-      { position: ['RB'], isAthlete: false, amount: 2 },
-      { position: ['WR'], isAthlete: false, amount: 2 },
-      { position: ['TE'], isAthlete: false, amount: 1 },
-      { position: ['RB', 'WR', 'TE'], isAthlete: false, amount: 1 },
-      { position: ['QB', 'RB', 'WR', 'TE'], isAthlete: false, amount: 1 },
-    ];
+
     const array2 = [];
-    for(let i = 0; i < array.length; i++){
-      for(let j = 0; j < array[i].amount; j++){
-        array2.push({position: array[i].position, isAthlete: false});
+    for (let i = 0; i < array.length; i++) {
+      for (let j = 0; j < array[i].amount; j++) {
+        array2.push({ position: array[i].positions, isAthlete: false, isPromo: false });
       }
     }
     setLineup(array2);
-  } 
+  }
+  async function get_game_data(game_id) {
+    setGameData(await query_game_data(game_id));
+  }
 
   /* Function that checks whether a string parses into valid JSON. Used to check if data from router
      query parses into a JSON that holds the athlete data coming from AthleteSelect. Returns false
@@ -291,14 +300,23 @@ export default function CreateLineup(props) {
     dispatch(setIndex(index));
     dispatch(setTeamNameRedux(teamName));
     router.push('/AthleteSelect');
-  }
+  };
   useEffect(() => {
     getTeamName();
     if (lineup.length === 0) {
-      populateLineup();
+      get_game_data(gameId);
     }
   }, []);
-
+  useEffect(() => {
+    //@ts-ignore:next-line
+    console.log(gameData);
+    if (gameData.length !== 0) {
+      populateLineup(gameData.positions);
+    }
+  }, [gameData]);
+  useEffect(() => {
+    console.log(lineup);
+  }, [lineup]);
   const confirmTeam = async () => {
     setLimit(5);
     setOffset(0);
@@ -510,8 +528,12 @@ export default function CreateLineup(props) {
                         return (
                           <>
                             {data.isAthlete === false ? (
-                              <div className="cursor-pointer" 
-                                   onClick={() => handleLineupClick(gameId, data.position, lineup, i, teamName)}>
+                              <div
+                                className="cursor-pointer"
+                                onClick={() =>
+                                  handleLineupClick(gameId, data.position, lineup, i, teamName)
+                                }
+                              >
                                 <Lineup
                                   position={data.position}
                                   athleteLineup={lineup}
@@ -524,10 +546,13 @@ export default function CreateLineup(props) {
                                   isAthlete={data.isAthlete}
                                 />
                               </div>
-                              
                             ) : (
-                              <div className="cursor-pointer"
-                                    onClick={() => handleLineupClick(gameId, data.position, lineup, i, teamName)}>
+                              <div
+                                className="cursor-pointer"
+                                onClick={() =>
+                                  handleLineupClick(gameId, data.position, lineup, i, teamName)
+                                }
+                              >
                                 <Lineup
                                   position={data.position}
                                   athleteLineup={lineup}
@@ -700,13 +725,12 @@ export async function getServerSideProps(ctx) {
   if (query) {
     if (query.transactionHashes) {
       return {
-        
         redirect: {
           destination: query.origin || `/CreateLineup/${query.game_id}`,
           permanent: false,
         },
       };
-    } 
+    }
   }
   return {
     props: { query },
