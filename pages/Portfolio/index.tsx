@@ -25,6 +25,7 @@ import Select from 'react-select';
 import { isCompositeType } from 'graphql';
 import { useRef } from 'react';
 import { current } from '@reduxjs/toolkit';
+import NftTypeComponent from './components/NftTypeComponent';
 
 const Portfolio = () => {
   const [searchText, setSearchText] = useState('');
@@ -256,6 +257,7 @@ const Portfolio = () => {
 
           <div className="md:ml-6">
             <PortfolioContainer textcolor="indigo-black" title="SQUAD">
+              <NftTypeComponent />
               <div className="flex flex-col">
                 {loading ? (
                   <LoadingPageDark />

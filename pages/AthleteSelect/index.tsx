@@ -14,8 +14,20 @@ import SearchComponent from 'components/SearchComponent';
 import ReactPaginate from 'react-paginate';
 import PerformerContainer from 'components/containers/PerformerContainer';
 import { Provider, useDispatch, useSelector } from 'react-redux';
-import { selectAthleteLineup, selectGameId, selectIndex, selectPosition, selectTeamName } from 'redux/athlete/athleteSlice';
-import { setAthleteLineup, setGameId, setIndex, setPosition, setTeamNameRedux } from 'redux/athlete/athleteSlice';
+import {
+  selectAthleteLineup,
+  selectGameId,
+  selectIndex,
+  selectPosition,
+  selectTeamName,
+} from 'redux/athlete/athleteSlice';
+import {
+  setAthleteLineup,
+  setGameId,
+  setIndex,
+  setPosition,
+  setTeamNameRedux,
+} from 'redux/athlete/athleteSlice';
 import { query_filter_supply_for_owner, query_filter_tokens_for_owner } from 'utils/near/helper';
 
 const AthleteSelect = (props) => {
@@ -54,26 +66,40 @@ const AthleteSelect = (props) => {
     url: getRPCProvider(),
   });
 
-  async function get_filter_supply_for_owner(accountId, position, team, name) {
-    console.log(accountId)
-    setTotalAthletes(await query_filter_supply_for_owner(accountId, position, team, name));
+  async function get_filter_supply_for_owner(accountId, position, team, name, contract) {
+    console.log(accountId);
+    setTotalAthletes(
+      await query_filter_supply_for_owner(accountId, position, team, name, contract)
+    );
   }
 
-  function get_filter_tokens_for_owner(accountId, athleteOffset, athleteLimit, position, team, name) {
-    query_filter_tokens_for_owner(accountId, athleteOffset, athleteLimit, position, team, name)
-      .then(async (data) => {
-        // @ts-ignore:next-line
-        const result = JSON.parse(Buffer.from(data.result).toString());
-        const result_two = await Promise.all(
-          result.map(convertNftToAthlete).map(getAthleteInfoById)
-        );
+  function get_filter_tokens_for_owner(
+    accountId,
+    athleteOffset,
+    athleteLimit,
+    position,
+    team,
+    name,
+    contract
+  ) {
+    query_filter_tokens_for_owner(
+      accountId,
+      athleteOffset,
+      athleteLimit,
+      position,
+      team,
+      name,
+      contract
+    ).then(async (data) => {
+      // @ts-ignore:next-line
+      const result = JSON.parse(Buffer.from(data.result).toString());
+      const result_two = await Promise.all(result.map(convertNftToAthlete).map(getAthleteInfoById));
 
-        // const sortedResult = sortByKey(result_two, 'fantasy_score');
-        setCurrPosition(position);
-        setAthletes(result_two);
-        setLoading(false);
-      });
-
+      // const sortedResult = sortByKey(result_two, 'fantasy_score');
+      setCurrPosition(position);
+      setAthletes(result_two);
+      setLoading(false);
+    });
   }
 
   //TODO: might encounter error w/ loading duplicate athlete
@@ -87,8 +113,8 @@ const AthleteSelect = (props) => {
     setLineup(passedLineup);
   }
   function getPositionDisplay(position) {
-    if(position.length === 3) return 'FLEX';
-    if(position.length === 4) return 'SUPERFLEX';
+    if (position.length === 3) return 'FLEX';
+    if (position.length === 4) return 'SUPERFLEX';
     switch (position[0]) {
       case 'QB':
         return 'QUARTER BACK';
@@ -99,8 +125,6 @@ const AthleteSelect = (props) => {
       case 'TE':
         return 'TIGHT END';
     }
-
-    
   }
   function checkIfAthleteExists(athlete_id) {
     for (let i = 0; i < passedLineup.length; i++) {
@@ -142,18 +166,26 @@ const AthleteSelect = (props) => {
       pathname: '/CreateTeam/[game_id]',
       query: { game_id: game_id },
     });
-  }
+  };
   useEffect(() => {
     if (!isNaN(athleteOffset)) {
-      get_filter_supply_for_owner(accountId, position, team, name);
+      get_filter_supply_for_owner(accountId, position, team, name, getContract(ATHLETE));
       setPageCount(Math.ceil(totalAthletes / athleteLimit));
       const endOffset = athleteOffset + athleteLimit;
       console.log(`Loading athletes from ${athleteOffset} to ${endOffset}`);
-      get_filter_tokens_for_owner(accountId, athleteOffset, athleteLimit, position, team, name);
+      get_filter_tokens_for_owner(
+        accountId,
+        athleteOffset,
+        athleteLimit,
+        position,
+        team,
+        name,
+        getContract(ATHLETE)
+      );
     }
   }, [totalAthletes, athleteLimit, athleteOffset, position, team, name]);
 
-  useEffect(() => { }, [search]);
+  useEffect(() => {}, [search]);
 
   return (
     <>
@@ -267,7 +299,10 @@ const AthleteSelect = (props) => {
               previousLabel="<"
               renderOnZeroPageCount={null}
             />
-            <button className="bg-indigo-buttonblue text-indigo-white w-full ml-7 mt-4 md:w-60 h-14 text-center font-bold text-md" onClick={() => handleProceedClick(gameId, lineup)}>
+            <button
+              className="bg-indigo-buttonblue text-indigo-white w-full ml-7 mt-4 md:w-60 h-14 text-center font-bold text-md"
+              onClick={() => handleProceedClick(gameId, lineup)}
+            >
               PROCEED
             </button>
           </div>
