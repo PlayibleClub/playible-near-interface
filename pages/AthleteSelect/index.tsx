@@ -7,7 +7,7 @@ import PortfolioContainer from 'components/containers/PortfolioContainer';
 import router, { useRouter } from 'next/router';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
 import { convertNftToAthlete, getAthleteInfoById } from 'utils/athlete/helper';
-import { ATHLETE } from 'data/constants/nearContracts';
+import { ATHLETE, ATHLETE_SOULBOUND } from 'data/constants/nearContracts';
 import AthleteSelectContainer from 'components/containers/AthleteSelectContainer';
 import Link from 'next/link';
 import SearchComponent from 'components/SearchComponent';
@@ -52,6 +52,7 @@ const AthleteSelect = (props) => {
   const [athleteOffset, setAthleteOffset] = useState(0);
   const [athleteLimit, setAthleteLimit] = useState(7);
   const [totalAthletes, setTotalAthletes] = useState(0);
+  const [totalSoulbound, setTotalSoulbound] = useState(0);
   const [radioSelected, setRadioSelected] = useState(null);
   const [team, setTeam] = useState(['allTeams']);
   const [name, setName] = useState(['allNames']);
@@ -104,9 +105,11 @@ const AthleteSelect = (props) => {
 
   //TODO: might encounter error w/ loading duplicate athlete
   function setAthleteRadio(radioIndex) {
+    console.log(athletes[radioIndex]);
     passedLineup.splice(index, 1, {
       position: position,
       isAthlete: true,
+      isPromo: athletes[radioIndex].athlete_id.includes('SB') ? true : false,
       athlete: athletes[radioIndex],
     });
     console.table(passedLineup);
@@ -169,7 +172,10 @@ const AthleteSelect = (props) => {
   };
   useEffect(() => {
     if (!isNaN(athleteOffset)) {
+      //if normal radio button is selected
       get_filter_supply_for_owner(accountId, position, team, name, getContract(ATHLETE));
+      //if sb radio button is selected
+      //get_filter_supply_for_owner(accountId, position, team, name, getContract(ATHLETE_SOULBOUND));
       setPageCount(Math.ceil(totalAthletes / athleteLimit));
       const endOffset = athleteOffset + athleteLimit;
       console.log(`Loading athletes from ${athleteOffset} to ${endOffset}`);
@@ -184,7 +190,9 @@ const AthleteSelect = (props) => {
       );
     }
   }, [totalAthletes, athleteLimit, athleteOffset, position, team, name]);
-
+  useEffect(() => {
+    console.log(totalAthletes);
+  }, [totalAthletes]);
   useEffect(() => {}, [search]);
 
   return (
