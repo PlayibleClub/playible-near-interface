@@ -13,6 +13,8 @@ import USN from '../../public/images/SVG/usn';
 import { useWalletSelector } from '../../contexts/WalletSelectorContext';
 import BigNumber from 'bignumber.js';
 import { getConfig, getContract, getRPCProvider } from '../../utils/near';
+import { useRouter } from 'next/router';
+import Modal from 'components/modals/Modal';
 import PortfolioContainer from '../../components/containers/PortfolioContainer';
 import {
   MINTER,
@@ -24,6 +26,7 @@ import {
 
 import { MINT_STORAGE_COST, DEFAULT_MAX_FEES } from 'data/constants/gasFees';
 import { execute_claim_soulbound_pack, query_claim_status } from 'utils/near/helper';
+import Link from 'next/link';
 
 const DECIMALS_NEAR = 1000000000000000000000000;
 const RESERVED_AMOUNT = 200;
@@ -65,6 +68,8 @@ export default function Home(props) {
   const [intervalSale, setIntervalSale] = useState(0);
   const [balanceErrorMsg, setBalanceErrorMsg] = useState('');
   const [isClaimed, setIsClaimed] = useState(false);
+  const router = useRouter();
+  const [editModal, setEditModal] = useState(false);
 
   async function get_claim_status(accountId) {
     setIsClaimed(await query_claim_status(accountId));
@@ -377,29 +382,33 @@ export default function Home(props) {
     get_claim_status(accountId);
   }, []);
 
+  useEffect(() => {
+    router.pathname === router.asPath ? setEditModal(false) : setEditModal(true);
+  }, []);
+
   return (
     <>
       <Container activeName="MINT">
         <div className="flex flex-col w-screen md:w-full overflow-y-auto h-screen justify-center self-center md:pb-12 text-indigo-black">
           <Main color="indigo-white">
             <div className="flex-initial iphone5:mt-20 md:ml-6 md:mt-8">
-            {isClaimed ? (
-              <button
-                className={`bg-indigo-gray bg-opacity-40 text-indigo-white w-5/6 md:w-80 h-10 pointer-events-none 
+              {isClaimed ? (
+                <button
+                  className={`bg-indigo-gray bg-opacity-40 text-indigo-white w-5/6 md:w-80 h-10 pointer-events-none 
             text-center font-bold text-xs self-center justify-center float-right md:mt-0 iphone5:mr-9 iphone5:mt-20`}
-                onClick={(e) => handleButtonClick(e)}
-              >
-                CLAIM SOULBOUND PACK
-              </button>
-            ) : (
-              <button
-                className={`bg-indigo-buttonblue text-indigo-white w-5/6 md:w-80 h-10 
+                  onClick={(e) => handleButtonClick(e)}
+                >
+                  CLAIM SOULBOUND PACK
+                </button>
+              ) : (
+                <button
+                  className={`bg-indigo-buttonblue text-indigo-white w-5/6 md:w-80 h-10 
            text-center font-bold text-xs self-center justify-center float-right md:mt-0 iphone5:mr-9 iphone5:mt-20`}
-                onClick={(e) => handleButtonClick(e)}
-              >
-                CLAIM SOULBOUND PACK
-              </button>
-            )}
+                  onClick={(e) => handleButtonClick(e)}
+                >
+                  CLAIM SOULBOUND PACK
+                </button>
+              )}
               <PortfolioContainer title="MINT PACKS" textcolor="text-indigo-black" />
             </div>
             <div className="flex flex-col md:flex-row md:ml-12">
@@ -594,6 +603,29 @@ export default function Home(props) {
                   </div>
                 </div>
               </div>
+              <Modal
+                title={'CONGRATULATIONS'}
+                visible={editModal}
+                onClose={() => {
+                  setEditModal(false);
+                }}
+              >
+                <div className="flex flex-wrap flex-col mt-16 mb-5 bg-opacity-70 z-50 w-full">
+                  <div className="ml-20 mb-12">
+                    <img width={240} height={340} src="/images/packimages/NFL-SB-Pack.png"></img>
+                  </div>
+                  <Link href={'/Packs'}>
+                    <button
+                      className="bg-indigo-buttonblue text-indigo-white w-full h-14 text-center tracking-widest text-md font-monument"
+                      onClick={() => {
+                        setEditModal(false);
+                      }}
+                    >
+                      CONFIRM
+                    </button>
+                  </Link>
+                </div>
+              </Modal>
             </div>
           </Main>
         </div>

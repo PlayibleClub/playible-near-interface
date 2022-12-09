@@ -8,6 +8,7 @@ import BackFunction from '../../components/buttons/BackFunction';
 import Main from '../../components/Main';
 import 'regenerator-runtime/runtime';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import PackComponent from './components/PackComponent';
 import PlayComponent from '../Play/components/PlayComponent';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
@@ -22,6 +23,7 @@ import {
   query_nft_supply_for_owner,
   query_nft_tokens_for_owner,
 } from 'utils/near/helper';
+import Modal from 'components/modals/Modal';
 
 export default function Packs() {
   const { selector, modal, accounts, accountId } = useWalletSelector();
@@ -29,7 +31,7 @@ export default function Packs() {
   const provider = new providers.JsonRpcProvider({
     url: getRPCProvider(),
   });
-
+  const router = useRouter();
   const [filterInfo, handleFilter] = useState(false);
   const { register, handleSubmit } = useForm();
   const [result, setResult] = useState('');
@@ -40,7 +42,7 @@ export default function Packs() {
   const [showFilter, setFilter] = useState(false);
   const [packs, setPacks] = useState([]);
   const [soulboundPacks, setSoulboundPacks] = useState([]);
-
+  const [editModal, setEditModal] = useState(false);
   const [pageCount, setPageCount] = useState(0);
   const [packOffset, setPackOffset] = useState(0);
   const [packLimit, setPackLimit] = useState(30);
@@ -190,6 +192,10 @@ export default function Packs() {
     if (remountComponent !== 0) {
     }
   }, [remountComponent]);
+
+  useEffect(() => {
+    router.pathname === router.asPath ? setEditModal(false) : setEditModal(true);
+  }, []);
   // useEffect(() => {
   //     // set initial value
   //     const mediaWatcher = window.matchMedia("(max-width: 500px)")
@@ -213,7 +219,7 @@ export default function Packs() {
       <div className="flex flex-col w-full overflow-y-auto h-screen pb-12 mb-12">
         <Main color="indigo-white">
           <div className="iphone5:mt-20 md:ml-6 md:mt-8">
-          {isClaimed ? (
+            {isClaimed ? (
               <button
                 className={`bg-indigo-gray bg-opacity-40 text-indigo-white w-5/6 md:w-80 h-10 pointer-events-none 
             text-center font-bold text-xs self-center justify-center float-right md:mt-0 iphone5:mr-9 iphone5:mt-20`}
@@ -282,6 +288,29 @@ export default function Packs() {
                 />
               </div>
             </div>
+            <Modal
+              title={'CONGRATULATIONS'}
+              visible={editModal}
+              onClose={() => {
+                setEditModal(false);
+              }}
+            >
+              <div className="flex flex-wrap flex-col mt-16 mb-5 bg-opacity-70 z-50 w-full">
+                <div className="ml-20 mb-12">
+                  <img width={240} height={340} src="/images/packimages/NFL-SB-Pack.png"></img>
+                </div>
+                <Link href={router.pathname}>
+                  <button
+                    className="bg-indigo-buttonblue text-indigo-white w-full h-14 text-center tracking-widest text-md font-monument"
+                    onClick={() => {
+                      setEditModal(false);
+                    }}
+                  >
+                    CONFIRM
+                  </button>
+                </Link>
+              </div>
+            </Modal>
           </div>
         </Main>
       </div>
