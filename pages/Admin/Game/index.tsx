@@ -43,7 +43,8 @@ export default function Index(props) {
   const [gameIdToAdd, setGameIdToAdd] = useState(0);
   //gameinfo
   const [gameInfo, setGameInfo] = useState({});
-  const [whitelistInfo, setWhitelistInfo] = useState({});
+  const [whitelistInfo, setWhitelistInfo] = useState(null);
+  const [lineupLength, setLineupLength] = useState(0);
   const [tabs, setTabs] = useState([
     {
       name: 'GAMES',
@@ -228,23 +229,31 @@ export default function Index(props) {
           [e.target.name]: parseInt(e.target.value),
         });
       }
-    } else if (e.target.name === 'description') {
-      setDetails({
-        ...details,
-        [e.target.name]: e.target.value,
-      });
-
-      let whitelist = [details['description']];
-
-      let object = { description: whitelist };
-
-      setWhitelistInfo(object);
-      console.log(object);
     } else {
       setDetails({
         ...details,
         [e.target.name]: e.target.value,
       });
+    }
+  };
+
+  const onChangeWhitelist = (e) => {
+    if (e.target.name === 'description') {
+      if (e.target.value !== "") {
+        const whitelistArray = (e.target.value).split('\n').filter(n => n);
+        console.log(whitelistArray)
+        setWhitelistInfo(whitelistArray);
+        setDetails({
+          ...details,
+          [e.target.name]: e.target.value,
+        });
+      } else if (e.target.value.length === 0) {
+        setWhitelistInfo(null)
+        setDetails({
+          ...details,
+          [e.target.name]: e.target.value,
+        })
+      }
     }
   };
 
@@ -255,21 +264,6 @@ export default function Index(props) {
   const checkValidity = () => {
     let errors = [];
     let sortPercentage = [...distribution].sort((a, b) => b.percentage - a.percentage);
-    // if (!Number.isInteger(details.duration)) {
-    //   errors.push('Duration must be a positive integer that is expressed in days');
-    // }
-
-    // if (!details.name) {
-    //   errors.push('Game is missing a title');
-    // }
-
-    // if (new Date(details.startTime) < new Date() || !details.startTime) {
-    //   errors.push('Invalid Date & Time values');
-    // }
-
-    // if (new Date(details.endTime) > new Date(details.startTime) ) {
-    //   errors.push('Invalid Date & Time values');
-    // }
 
     if (distribution.length === 1 && percentTotal === 0) {
       errors.push('Invalid Distribution values');
@@ -282,8 +276,8 @@ export default function Index(props) {
     if (distribution.length < 10) {
       errors.push(
         'Exactly 10 rank distribution must be provided. (Only ' +
-          distribution.length +
-          ' was provided)'
+        distribution.length +
+        ' was provided)'
       );
     }
 
@@ -589,9 +583,9 @@ export default function Index(props) {
     startTime: '',
     endTime: '',
     prize: 1,
-    usage: 1,
+    usage: 0,
     description: '',
-    whitelist: '',
+    whitelist: whitelistInfo,
     position: NFL_POSITIONS[0],
     positionAmount: 1,
   });
@@ -642,12 +636,19 @@ export default function Index(props) {
           )
           .map((item) => getGameInfoById(item))
       );
-      console.table(completedGames);
       setCurrentTotal(upcomingGames.length);
       setNewGames(upcomingGames);
       setCompletedGames(completedGames);
       setOngoingGames(ongoingGames);
     });
+  }
+
+  function getLineupLength() {
+    let counter = 0;
+    for (let i = 0; i < positionsInfo.length; i++) {
+      counter = counter + positionsInfo[i]?.amount;
+    }
+    return counter;
   }
 
   async function execute_add_game() {
@@ -656,10 +657,9 @@ export default function Index(props) {
         game_id: (totalGames + 1).toString(),
         game_time_start: dateStart,
         game_time_end: dateEnd,
-        usage_cost: Number(details.usage),
-        whitelist: null,
-        positions: nflPositions,
-        lineup_len: 8,
+        whitelist: whitelistInfo,
+        positions: positionsInfo,
+        lineup_len: getLineupLength(),
       })
     );
 
@@ -708,9 +708,8 @@ export default function Index(props) {
             <div className="flex md:ml-4 font-bold font-monument mt-5">
               {tabs.map(({ name, isActive }) => (
                 <div
-                  className={`cursor-pointer mr-6 ${
-                    isActive ? 'border-b-8 border-indigo-buttonblue' : ''
-                  }`}
+                  className={`cursor-pointer mr-6 ${isActive ? 'border-b-8 border-indigo-buttonblue' : ''
+                    }`}
                   onClick={() => changeTab(name)}
                 >
                   {name}
@@ -726,9 +725,8 @@ export default function Index(props) {
                   <div className="flex font-bold -ml-16 font-monument">
                     {gameTabs.map(({ name, isActive }) => (
                       <div
-                        className={`cursor-pointer mr-6 ${
-                          isActive ? 'border-b-8 border-indigo-buttonblue' : ''
-                        }`}
+                        className={`cursor-pointer mr-6 ${isActive ? 'border-b-8 border-indigo-buttonblue' : ''
+                          }`}
                         onClick={() => changeGameTab(name)}
                       >
                         {name}
@@ -739,14 +737,14 @@ export default function Index(props) {
                     {(gameTabs[0].isActive
                       ? newGames
                       : gameTabs[1].isActive
-                      ? ongoingGames
-                      : completedGames
+                        ? ongoingGames
+                        : completedGames
                     ).length > 0 &&
                       (gameTabs[0].isActive
                         ? newGames
                         : gameTabs[1].isActive
-                        ? ongoingGames
-                        : completedGames
+                          ? ongoingGames
+                          : completedGames
                       )
                         .filter((data, i) => i >= gamesOffset && i < gamesOffset + gamesLimit)
                         .map((data, i) => {
@@ -881,23 +879,6 @@ export default function Index(props) {
                       />
                     </div>
 
-                    {/* USAGE COST */}
-                    <div className="flex flex-col lg:w-1/2">
-                      <label className="font-monument" htmlFor="usage">
-                        USAGE COST
-                      </label>
-                      <input
-                        className="border outline-none rounded-lg px-3 p-2"
-                        type="number"
-                        id="usage"
-                        name="usage"
-                        pattern="[0-9]*"
-                        placeholder="Enter usage cost"
-                        onChange={(e) => onChange(e)}
-                        value={details.usage}
-                      />
-                    </div>
-
                     {/* PRIZE */}
                     {/* <div className="flex flex-col lg:w-1/2">
                       <label className="font-monument" htmlFor="prize">
@@ -928,8 +909,8 @@ export default function Index(props) {
                         name="description"
                         // type="text"
                         placeholder="Enter accounts to whitelist. One account per line. Leave empty for no whitelist."
-                        onChange={(e) => onChange(e)}
-                        value={details.description}
+                        onChange={(e) => onChangeWhitelist(e)}
+                        // value={details.description}
                         style={{
                           minHeight: '120px',
                         }}
@@ -1054,9 +1035,8 @@ export default function Index(props) {
         <p className="mt-2">Are you sure?</p>
         <p className="font-bold">GAME DETAILS:</p>
         <p className="font-bold">Start Date:</p> {startFormattedTimestamp}
-        <p className="font-bold">Whitelist: </p> {whitelistInfo}
+        {/* <p className="font-bold">Whitelist: </p> {whitelistInfo} */}
         <p className="font-bold">End Date:</p> {endFormattedTimestamp}
-        <p className="font-bold">Usage Cost:</p> {details.usage}
         <button
           className="bg-indigo-green font-monument tracking-widest text-indigo-white w-full h-16 text-center text-sm mt-4"
           onClick={() => {
