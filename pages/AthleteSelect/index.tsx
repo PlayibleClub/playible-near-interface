@@ -231,8 +231,14 @@ const AthleteSelect = (props) => {
   const handlePageClick = (e) => {
     let newOffset;
     console.log(e.selected);
-    if (soulPage === -1) newOffset = (e.selected * athleteLimit) % totalAthletes;
-    else if (soulPage > -1) {
+    if (soulPage === -1) {
+      if (e.selected * athleteLimit >= totalAthletes) {
+        setSoulPage(0);
+        newOffset = 0 * athleteLimit;
+      } else {
+        newOffset = (e.selected * athleteLimit) % totalAthletes;
+      }
+    } else if (soulPage > -1) {
       let newPage = e.selected;
       let compute = newPage - currentPage;
       console.log(compute);
