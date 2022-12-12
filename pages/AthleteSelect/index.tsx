@@ -162,6 +162,7 @@ const AthleteSelect = (props) => {
       console.log('length: ' + result.length);
       console.log('limit: ' + athleteLimit);
       console.log('total: ' + totalAthletes);
+      //regular athletes don't meet the athlete limit, so have to add soulbound to array
       if (result.length < athleteLimit && soulPage === -1) {
         let sbLimit = athleteLimit - result.length;
         get_filter_tokens_for_owner(
@@ -177,12 +178,13 @@ const AthleteSelect = (props) => {
             setAthletes(result2);
             setSoulPage(0);
           } else if (result.length > 0) {
+            //soulbound offset for the next pages
             let diff = result.length - result2.length;
             console.log(diff);
             result2.map((obj) => result.push(obj));
             setAthletes([...result]);
-
             setSoulPage(0);
+            //soulbound array length is greater than regular
             if (diff < 0) {
               setSoulOffset(Math.abs(diff) + 1);
             } else if (diff > 0) {
@@ -191,9 +193,10 @@ const AthleteSelect = (props) => {
           }
         });
       } else if (result.length === athleteLimit && soulPage === -1) {
-        console.log(currentPage);
+        //when there's enough regular athletes to fill the array
+
+        //basically checking if this is the last page for regular athletes
         if (result.length * (currentPage + 1) === totalAthletes) {
-          console.log('did go here');
           setAthletes(result);
           setSoulPage(0);
         } else {
@@ -203,6 +206,7 @@ const AthleteSelect = (props) => {
         //   setSoulPage(0);
         // }
       } else if (soulPage === 0) {
+        //currently getting soulbound athletes
         setAthletes(result);
       }
     });
@@ -239,7 +243,9 @@ const AthleteSelect = (props) => {
   const handlePageClick = (e) => {
     let newOffset;
     console.log(e.selected);
+    //soulbound athlete not needed yet
     if (soulPage === -1) {
+      //skipping to last page that has soulbound athletes
       if (e.selected * athleteLimit >= totalAthletes) {
         setSoulPage(0);
         newOffset = 0 * athleteLimit;
@@ -252,6 +258,7 @@ const AthleteSelect = (props) => {
       console.log(compute);
       let test = soulPage - compute;
       console.log(test);
+      //getting page offset for soulbound
       if (soulPage - compute <= -1) {
         console.log(soulPage + ' + ' + compute);
         newOffset = (soulPage + (compute - 1)) * athleteLimit + soulOffset;
