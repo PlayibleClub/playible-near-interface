@@ -49,7 +49,8 @@ const Portfolio = () => {
   const [loading, setLoading] = useState(true);
   const [playerList, setPlayerList] = useState(null);
   const [athletes, setAthletes] = useState([]);
-
+  const [selected, setSelected] = useState(false);
+  const [selected2, setSelected2] = useState(false);
   const [athleteCount, setAthleteCount] = useState(0);
   const [athleteOffset, setAthleteOffset] = useState(0);
   const [athleteLimit, setAthleteLimit] = useState(10);
@@ -174,7 +175,7 @@ const Portfolio = () => {
     // setSortedList([]);
   }, [totalAthletes, athleteLimit, athleteOffset, position, team, name]);
 
-  useEffect(() => {}, [limit, offset, filter, search]);
+  useEffect(() => {}, [limit, offset, filter, search, selected, selected2]);
 
   return (
     <Container activeName="SQUAD">
@@ -257,7 +258,12 @@ const Portfolio = () => {
 
           <div className="md:ml-6">
             <PortfolioContainer textcolor="indigo-black" title="SQUAD">
-              <NftTypeComponent />
+              <NftTypeComponent
+                onChangeFn={(selected, selected2) => {
+                  setSelected(selected);
+                  setSelected2(selected2);
+                }}
+              />
               <div className="flex flex-col">
                 {loading ? (
                   <LoadingPageDark />
