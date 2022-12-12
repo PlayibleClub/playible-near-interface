@@ -177,9 +177,17 @@ const AthleteSelect = (props) => {
             setAthletes(result2);
             setSoulPage(0);
           } else if (result.length > 0) {
+            let diff = result.length - result2.length;
+            console.log(diff);
             result2.map((obj) => result.push(obj));
             setAthletes([...result]);
+
             setSoulPage(0);
+            if (diff < 0) {
+              setSoulOffset(Math.abs(diff) + 1);
+            } else if (diff > 0) {
+              setSoulOffset(athleteLimit - diff - 1);
+            }
           }
         });
       } else if (result.length === athleteLimit && soulPage === -1) {
@@ -236,7 +244,7 @@ const AthleteSelect = (props) => {
         setSoulPage(0);
         newOffset = 0 * athleteLimit;
       } else {
-        newOffset = (e.selected * athleteLimit) % totalAthletes;
+        newOffset = ((e.selected * athleteLimit) % totalAthletes) + soulOffset;
       }
     } else if (soulPage > -1) {
       let newPage = e.selected;
@@ -246,11 +254,12 @@ const AthleteSelect = (props) => {
       console.log(test);
       if (soulPage - compute <= -1) {
         console.log(soulPage + ' + ' + compute);
-        newOffset = (soulPage + (compute - 1)) * athleteLimit;
+        newOffset = (soulPage + (compute - 1)) * athleteLimit + soulOffset;
       } else {
         console.log('test');
         newOffset = (e.selected * athleteLimit) % totalAthletes;
         setSoulPage(-1);
+        setSoulOffset(0);
       }
     }
     // const newOffset = (e.selected * athleteLimit) % totalAthletes;
@@ -320,7 +329,12 @@ const AthleteSelect = (props) => {
   //   console.log(totalSoulbound);
   // }, [totalAthletes, totalSoulbound]);
   useEffect(() => {}, [search]);
-
+  useEffect(() => {
+    console.log('soul offset: ' + soulOffset);
+  }, [soulOffset]);
+  useEffect(() => {
+    console.log('total soulbound: ' + totalSoulbound);
+  }, [totalSoulbound]);
   return (
     <>
       <Container activeName="PLAY">
