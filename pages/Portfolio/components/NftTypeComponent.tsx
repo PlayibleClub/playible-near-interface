@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 
 const NftTypeComponent = (props) => {
+  const { onChangeFn } = props;
+
   const [selected, setSelected] = useState(false);
   const [selected2, setSelected2] = useState(false);
 
@@ -17,6 +19,9 @@ const NftTypeComponent = (props) => {
     }
   };
 
+  useEffect(() => {
+    onChangeFn(selected, selected2);
+  }, [selected, selected2]);
   return (
     <form>
       <div className="flex flex-col float-right mr-60">
@@ -34,5 +39,8 @@ const NftTypeComponent = (props) => {
       </div>
     </form>
   );
+};
+NftTypeComponent.propTypes = {
+  onChangeFn: PropTypes.func,
 };
 export default NftTypeComponent;
