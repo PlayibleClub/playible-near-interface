@@ -21,7 +21,7 @@ import {
   NEP141USDC,
   NEP141USDT,
   NEP141USN,
-  PACK_SOULBOUND,
+  PACK_PROMO,
 } from '../../data/constants/nearContracts';
 
 import { MINT_STORAGE_COST, DEFAULT_MAX_FEES } from 'data/constants/gasFees';
@@ -383,10 +383,9 @@ export default function Home(props) {
   }, []);
 
   useEffect(() => {
-    if (router.asPath.indexOf("transactionHashes") > -1) {
+    if (router.asPath.indexOf('transactionHashes') > -1) {
       setEditModal(true);
     }
-    
   }, []);
 
   return (
@@ -612,11 +611,10 @@ export default function Home(props) {
                 onClose={() => {
                   setEditModal(false);
                 }}
-              >Your pack has been minted successfully!
+              >
+                Your pack has been minted successfully!
                 <div className="flex flex-wrap flex-col mt-10 mb-5 bg-opacity-70 z-50 w-full">
-                  
                   <div className="ml-20 mb-12">
-                    
                     <img width={240} height={340} src="/images/packimages/NFL-SB-Pack.png"></img>
                   </div>
                   <Link href={'/Packs'}>
