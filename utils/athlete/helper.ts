@@ -12,7 +12,6 @@ async function getAthleteInfoById(item) {
     query: GET_ATHLETE_BY_ID,
     variables: { getAthleteById: parseFloat(value[0]) },
   });
-  console.log(value);
   const diff = item.token_id.includes('SB') ? 1 : 0;
   const isPromo = item.token_id.includes('SB');
   //console.log("starts at: " + item.metadata['starts_at'] + " vs " + "utc :" + getUTCTimestampFromLocal());

@@ -40,7 +40,7 @@ async function query_nft_token_by_id(token_id) {
     .query({
       request_type: 'call_function',
       finality: 'optimistic',
-      account_id: getContract(ATHLETE),
+      account_id: token_id.includes('SB') ? getContract(ATHLETE_PROMO) : getContract(ATHLETE),
       method_name: 'nft_token_by_id',
       args_base64: Buffer.from(query).toString('base64'),
     })
@@ -74,7 +74,7 @@ async function query_all_players_lineup(game_id, week) {
     .then(async (data) => {
       // @ts-ignore:next-line
       const result = JSON.parse(Buffer.from(data.result).toString());
-
+      console.log(result);
       const arrayToReturn = await Promise.all(
         result.map(async (item) => {
           let itemToReturn = {
