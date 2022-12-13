@@ -257,17 +257,25 @@ export default function CreateLineup(props) {
     });
   }
   function verifyLineup(game_id, team_name, lineup) {
-    const token_ids = lineup.filter((data) => {
-      return data.isPromo === false && data.isAthlete === true;
-    });
+    const token_ids = lineup
+      .filter((data) => {
+        return data.isPromo === false && data.isAthlete === true;
+      })
+      .map((data) => {
+        return data.athlete.athlete_id;
+      });
 
-    const promo_ids = lineup.filter((data) => {
-      return data.isPromo === true && data.isAthlete === true;
-    });
+    const promo_ids = lineup
+      .filter((data) => {
+        return data.isPromo === true && data.isAthlete === true;
+      })
+      .map((data) => {
+        return data.athlete.athlete_id;
+      });
 
     console.log(token_ids);
     console.log(promo_ids);
-    execute_submit_lineup(game_id, team_name, token_ids, promo_ids);
+    //execute_submit_lineup(game_id, team_name, token_ids, promo_ids);
   }
 
   const updateTeamSlots = () => {
