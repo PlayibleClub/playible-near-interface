@@ -220,26 +220,28 @@ export default function Packs() {
       <div className="flex flex-col w-full overflow-y-auto h-screen pb-12 mb-12">
         <Main color="indigo-white">
           <div className="iphone5:mt-20 md:ml-6 md:mt-8">
-            {isClaimed ? (
-              <button
-                className={`bg-indigo-gray bg-opacity-40 text-indigo-white w-5/6 md:w-80 h-10 pointer-events-none 
-            text-center font-bold text-xs self-center justify-center float-right md:mt-0 iphone5:mr-9 iphone5:mt-20`}
-                onClick={(e) => handleButtonClick(e)}
-              >
-                CLAIM SOULBOUND PACK
-              </button>
-            ) : (
-              <button
-                className={`bg-indigo-buttonblue text-indigo-white w-5/6 md:w-80 h-10 
-           text-center font-bold text-xs self-center justify-center float-right md:mt-0 iphone5:mr-9 iphone5:mt-20`}
-                onClick={(e) => handleButtonClick(e)}
-              >
-                CLAIM SOULBOUND PACK
-              </button>
-            )}
             <PortfolioContainer textcolor="indigo-black" title="PACKS">
+              <div className="md:mb-0 md:ml-6">
+                {isClaimed ? (
+                  <button
+                    className={`bg-indigo-gray bg-opacity-40 text-indigo-white w-5/6 md:w-80 h-10 pointer-events-none 
+            text-center font-bold text-xs self-center justify-center float-right md:-mt-12 iphone5:mr-9 iphone5:mt-4`}
+                    onClick={(e) => handleButtonClick(e)}
+                  >
+                    CLAIM SOULBOUND PACK
+                  </button>
+                ) : (
+                  <button
+                    className={`bg-indigo-buttonblue text-indigo-white w-5/6 md:w-80 h-10 
+           text-center font-bold text-xs self-center justify-center float-right md:-mt-12 iphone5:mr-9 iphone5:mt-4`}
+                    onClick={(e) => handleButtonClick(e)}
+                  >
+                    CLAIM SOULBOUND PACK
+                  </button>
+                )}
+              </div>
               <div className="flex flex-col mt-6">
-                <div className="flex font-bold md:ml-7 iphone5:mt-10 iphone5:ml-7 md:mt-0 font-monument">
+                <div className="flex font-bold md:ml-7 iphone5:mt-4 iphone5:ml-7 md:mt-0 font-monument">
                   {categoryList.map(({ name, isActive }) => (
                     <div
                       className={`cursor-pointer mr-6 ${
@@ -254,11 +256,11 @@ export default function Packs() {
                     </div>
                   ))}
                 </div>
-                <hr className="opacity-10" />
               </div>
 
               <div className="flex flex-col">
-                <div className="grid grid-cols-4 gap-y-8 mt-4 md:grid-cols-4 iphone5:mt-15 iphone5:ml-2 md:ml-7 md:mt-12 ">
+                <hr className="opacity-10 -ml-6" />
+                <div className="grid grid-cols-4 gap-y-8 mt-4 md:grid-cols-4 iphone5:mt-8 iphone5:ml-2 md:ml-7 md:mt-9 ">
                   {(categoryList[0].isActive ? packs : soulboundPacks).length > 0 &&
                     (categoryList[0].isActive ? packs : soulboundPacks)
                       .filter((data, i) => i >= packOffset && i < packOffset + packLimit)

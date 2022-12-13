@@ -397,7 +397,7 @@ export default function Home(props) {
               {isClaimed ? (
                 <button
                   className={`bg-indigo-gray bg-opacity-40 text-indigo-white w-5/6 md:w-80 h-10 pointer-events-none 
-            text-center font-bold text-xs self-center justify-center float-right md:mt-0 iphone5:mr-9 iphone5:mt-20`}
+            text-center font-bold text-xs self-center justify-center float-right md:mt-7 iphone5:mr-9 iphone5:mt-20`}
                   onClick={(e) => handleButtonClick(e)}
                 >
                   CLAIM SOULBOUND PACK
@@ -405,7 +405,7 @@ export default function Home(props) {
               ) : (
                 <button
                   className={`bg-indigo-buttonblue text-indigo-white w-5/6 md:w-80 h-10 
-           text-center font-bold text-xs self-center justify-center float-right md:mt-0 iphone5:mr-9 iphone5:mt-20`}
+           text-center font-bold text-xs self-center justify-center float-right md:mt-7 iphone5:mr-9 iphone5:mt-20`}
                   onClick={(e) => handleButtonClick(e)}
                 >
                   CLAIM SOULBOUND PACK
