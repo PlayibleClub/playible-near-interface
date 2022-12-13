@@ -281,6 +281,11 @@ const AthleteSelect = (props) => {
       setSoulPage(false);
       newOffset = (e.selected * athleteLimit) % totalAthletes;
     }
+    passedLineup.splice(index, 1, {
+      position: position,
+      isAthlete: false,
+      isPromo: false,
+    });
 
     setRadioSelected(null);
     setAthleteOffset(newOffset);

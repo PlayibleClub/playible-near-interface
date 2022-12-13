@@ -256,10 +256,17 @@ export default function CreateLineup(props) {
     });
   }
   function verifyLineup(game_id, team_name, lineup) {
-    const token_ids = lineup.map((data) => {
-      return data.athlete.athlete_id;
+    const token_ids = lineup.filter((data) => {
+      return data.isPromo === false && data.isAthlete === true;
     });
-    execute_submit_lineup(game_id, team_name, token_ids);
+
+    const promo_ids = lineup.filter((data) => {
+      return data.isPromo === true && data.isAthlete === true;
+    });
+
+    console.log(token_ids);
+    console.log(promo_ids);
+    //execute_submit_lineup(game_id, team_name, token_ids);
   }
 
   const updateTeamSlots = () => {
