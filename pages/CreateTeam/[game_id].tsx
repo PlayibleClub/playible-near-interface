@@ -225,12 +225,13 @@ export default function CreateLineup(props) {
      otherwise if the user is coming from CreateLineup
   */
 
-  async function execute_submit_lineup(game_id, team_name, token_ids) {
+  async function execute_submit_lineup(game_id, team_name, token_ids, promo_ids) {
     const submitLineupArgs = Buffer.from(
       JSON.stringify({
         game_id: game_id,
         team_name: team_name,
-        token_ids: token_ids,
+        token_ids: token_ids.length === 0 ? null : token_ids,
+        promo_ids: promo_ids.length === 0 ? null : promo_ids,
       })
     );
 
@@ -266,7 +267,7 @@ export default function CreateLineup(props) {
 
     console.log(token_ids);
     console.log(promo_ids);
-    //execute_submit_lineup(game_id, team_name, token_ids);
+    execute_submit_lineup(game_id, team_name, token_ids, promo_ids);
   }
 
   const updateTeamSlots = () => {
