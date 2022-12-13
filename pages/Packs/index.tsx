@@ -13,7 +13,7 @@ import PackComponent from './components/PackComponent';
 import PlayComponent from '../Play/components/PlayComponent';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
 import { getRPCProvider, getContract } from 'utils/near';
-import { OPEN_SOULBOUND_PACK, PACK, PACK_SOULBOUND } from '../../data/constants/nearContracts';
+import { OPENPACK_PROMO, PACK, PACK_PROMO } from '../../data/constants/nearContracts';
 import ReactPaginate from 'react-paginate';
 import BigNumber from 'bignumber.js';
 import { DEFAULT_MAX_FEES, MINT_STORAGE_COST } from 'data/constants/gasFees';
@@ -95,9 +95,7 @@ export default function Packs() {
   }
 
   async function get_nft_sb_supply_for_owner(accountId) {
-    setTotalSoulboundPacks(
-      await query_nft_supply_for_owner(accountId, getContract(PACK_SOULBOUND))
-    );
+    setTotalSoulboundPacks(await query_nft_supply_for_owner(accountId, getContract(PACK_PROMO)));
   }
 
   function getPackLimit() {
@@ -134,7 +132,7 @@ export default function Packs() {
   }
 
   async function get_nft_sb_pack_tokens_for_owner(accountId, packOffset, soulboundPackLimit) {
-    query_nft_tokens_for_owner(accountId, packOffset, packLimit, getContract(PACK_SOULBOUND)).then(
+    query_nft_tokens_for_owner(accountId, packOffset, packLimit, getContract(PACK_PROMO)).then(
       async (data) => {
         //@ts-ignore:next-line
         const result = JSON.parse(Buffer.from(data.result).toString());
@@ -194,7 +192,7 @@ export default function Packs() {
   }, [remountComponent]);
 
   useEffect(() => {
-    if (router.asPath.indexOf("transactionHashes") > -1) {
+    if (router.asPath.indexOf('transactionHashes') > -1) {
       setEditModal(true);
     }
     // router.pathname === router.asPath ? setEditModal(false) : setEditModal(true);
@@ -297,7 +295,8 @@ export default function Packs() {
               onClose={() => {
                 setEditModal(false);
               }}
-            >Your pack has been minted successfully!
+            >
+              Your pack has been minted successfully!
               <div className="flex flex-wrap flex-col mt-10 mb-5 bg-opacity-70 z-50 w-full">
                 <div className="ml-20 mb-12">
                   <img width={240} height={340} src="/images/packimages/NFL-SB-Pack.png"></img>

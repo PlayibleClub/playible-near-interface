@@ -16,7 +16,7 @@ import { axiosInstance } from '../../utils/playible';
 import 'regenerator-runtime/runtime';
 import { ProvidedRequiredArgumentsOnDirectivesRule } from 'graphql/validation/rules/ProvidedRequiredArgumentsRule';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
-import { ATHLETE, ATHLETE_SOULBOUND } from 'data/constants/nearContracts';
+import { ATHLETE, ATHLETE_PROMO } from 'data/constants/nearContracts';
 import PackComponent from 'pages/Packs/components/PackComponent';
 import { convertNftToAthlete, getAthleteInfoById } from 'utils/athlete/helper';
 import { query_filter_supply_for_owner, query_filter_tokens_for_owner } from 'utils/near/helper';

@@ -1,7 +1,7 @@
 import { providers } from 'near-api-js';
 import { getContract, getRPCProvider } from 'utils/near';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
-import { GAME, ATHLETE, PACK_SOULBOUND, PACK, ATHLETE_SOULBOUND } from 'data/constants/nearContracts';
+import { GAME, ATHLETE, PACK_PROMO, PACK, ATHLETE_PROMO } from 'data/constants/nearContracts';
 import { convertNftToAthlete, getAthleteInfoById } from 'utils/athlete/helper';
 import React, { useEffect, useState } from 'react';
 import { DEFAULT_MAX_FEES, MINT_STORAGE_COST } from 'data/constants/gasFees';
@@ -287,7 +287,7 @@ function query_claim_status(accountId) {
     .query({
       request_type: 'call_function',
       finality: 'optimistic',
-      account_id: getContract(PACK_SOULBOUND),
+      account_id: getContract(PACK_PROMO),
       method_name: 'check_claim_status',
       args_base64: Buffer.from(query).toString('base64'),
     })
@@ -322,7 +322,7 @@ async function execute_claim_soulbound_pack(selector) {
   const tx = wallet.signAndSendTransactions({
     transactions: [
       {
-        receiverId: getContract(PACK_SOULBOUND),
+        receiverId: getContract(PACK_PROMO),
         //@ts-ignore:next-line
         actions: [action_transfer_call],
       },
