@@ -4,12 +4,7 @@ import 'regenerator-runtime/runtime';
 import BackFunction from '../../components/buttons/BackFunction';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
 import { getContract } from 'utils/near';
-import {
-  OPENPACK,
-  OPEN_SOULBOUND_PACK,
-  PACK,
-  PACK_SOULBOUND,
-} from '../../data/constants/nearContracts';
+import { OPENPACK, OPENPACK_PROMO, PACK, PACK_PROMO } from '../../data/constants/nearContracts';
 import { providers } from 'near-api-js';
 import BigNumber from 'bignumber.js';
 import { DEFAULT_MAX_FEES, MINT_STORAGE_COST } from 'data/constants/gasFees';
@@ -33,7 +28,7 @@ export default function PackDetails(props) {
       JSON.stringify({
         receiver_id:
           myPack.packName === 'SOULBOUND PACK'
-            ? getContract(OPEN_SOULBOUND_PACK)
+            ? getContract(OPENPACK_PROMO)
             : getContract(OPENPACK),
         token_id: myPack.id,
         msg: 'Pack ' + myPack.id.toString() + ' sent.',
@@ -58,7 +53,7 @@ export default function PackDetails(props) {
       transactions: [
         {
           receiverId:
-            myPack.packName === 'SOULBOUND PACK' ? getContract(PACK_SOULBOUND) : getContract(PACK),
+            myPack.packName === 'SOULBOUND PACK' ? getContract(PACK_PROMO) : getContract(PACK),
           // @ts-ignore:next-line
           actions: [action_transfer_call],
         },
