@@ -7,7 +7,7 @@ import PortfolioContainer from 'components/containers/PortfolioContainer';
 import router, { useRouter } from 'next/router';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
 import { convertNftToAthlete, getAthleteInfoById } from 'utils/athlete/helper';
-import { ATHLETE, ATHLETE_SOULBOUND } from 'data/constants/nearContracts';
+import { ATHLETE, ATHLETE_PROMO } from 'data/constants/nearContracts';
 import AthleteSelectContainer from 'components/containers/AthleteSelectContainer';
 import Link from 'next/link';
 import SearchComponent from 'components/SearchComponent';
@@ -49,7 +49,7 @@ const AthleteSelect = (props) => {
   const [athleteOffset, setAthleteOffset] = useState(0);
   const [regularOffset, setRegularOffset] = useState(0);
   const [soulOffset, setSoulOffset] = useState(0);
-  const [soulPage, setSoulPage] = useState(-1);
+  const [soulPage, setSoulPage] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
   const [isUsingSoul, setIsUsingSoul] = useState(false);
   const [athleteLimit, setAthleteLimit] = useState(8);
@@ -156,14 +156,14 @@ const AthleteSelect = (props) => {
       position,
       team,
       name,
-      soulPage === -1 ? getContract(ATHLETE) : getContract(ATHLETE_SOULBOUND)
+      soulPage === false ? getContract(ATHLETE) : getContract(ATHLETE_PROMO)
     ).then((result) => {
       console.log(soulPage);
       console.log('length: ' + result.length);
       console.log('limit: ' + athleteLimit);
       console.log('total: ' + totalAthletes);
       //regular athletes don't meet the athlete limit, so have to add soulbound to array
-      if (result.length < athleteLimit && soulPage === -1) {
+      if (result.length < athleteLimit && soulPage === false) {
         let sbLimit = athleteLimit - result.length;
         get_filter_tokens_for_owner(
           accountId,
@@ -172,18 +172,18 @@ const AthleteSelect = (props) => {
           position,
           team,
           name,
-          getContract(ATHLETE_SOULBOUND)
+          getContract(ATHLETE_PROMO)
         ).then((result2) => {
           if (result.length === 0) {
             setAthletes(result2);
-            setSoulPage(0);
+            setSoulPage(true);
           } else if (result.length > 0) {
             //soulbound offset for the next pages
             let diff = result.length - result2.length;
             console.log(diff);
             result2.map((obj) => result.push(obj));
             setAthletes([...result]);
-            setSoulPage(0);
+            setSoulPage(true);
             //soulbound array length is greater than regular
             if (diff < 0) {
               setSoulOffset(Math.abs(diff) + 1);
@@ -192,20 +192,20 @@ const AthleteSelect = (props) => {
             }
           }
         });
-      } else if (result.length === athleteLimit && soulPage === -1) {
+      } else if (result.length === athleteLimit && soulPage === false) {
         //when there's enough regular athletes to fill the array
 
         //basically checking if this is the last page for regular athletes
         if (result.length * (currentPage + 1) === totalAthletes) {
           setAthletes(result);
-          setSoulPage(0);
+          setSoulPage(true);
         } else {
           setAthletes(result);
         }
         // if (result.length * currentPage === totalAthletes) {
         //   setSoulPage(0);
         // }
-      } else if (soulPage === 0) {
+      } else if (soulPage === true) {
         //currently getting soulbound athletes
         setAthletes(result);
       }
@@ -234,6 +234,58 @@ const AthleteSelect = (props) => {
     //   setAthletes(regular);
     // }
   }
+
+  async function alternativeMethod() {
+    await get_filter_tokens_for_owner(
+      accountId,
+      soulPage ? athleteOffset + soulOffset : athleteOffset,
+      athleteLimit,
+      position,
+      team,
+      name,
+      soulPage ? getContract(ATHLETE_PROMO) : getContract(ATHLETE)
+    ).then((result) => {
+      if (result.length < athleteLimit && !soulPage) {
+        let sbLimit = athleteLimit - result.length;
+        get_filter_tokens_for_owner(
+          accountId,
+          0,
+          sbLimit,
+          position,
+          team,
+          name,
+          getContract(ATHLETE_PROMO)
+        ).then((result2) => {
+          result2.map((obj) => result.push(obj));
+          setAthletes(result);
+        });
+      } else {
+        setAthletes(result);
+      }
+    });
+  }
+
+  const alternativeHandling = (e) => {
+    let newOffset;
+    if (e.selected * athleteLimit >= totalAthletes) {
+      let offset;
+      if (athleteLimit - totalAthletes < 0 && (athleteLimit - totalAthletes) % athleteLimit !== 0) {
+        offset = ((athleteLimit - totalAthletes) % athleteLimit) + athleteLimit;
+      } else offset = (athleteLimit - totalAthletes) % athleteLimit;
+      let extra = 0;
+      if (totalSoulbound >= offset + athleteLimit + 1) extra = 1;
+      newOffset = Math.abs(Math.abs(e.selected + 1 - pageCount) - extra) * athleteLimit;
+      setSoulOffset(offset);
+      setSoulPage(true);
+    } else {
+      setSoulPage(false);
+      newOffset = (e.selected * athleteLimit) % totalAthletes;
+    }
+
+    setRadioSelected(null);
+    setAthleteOffset(newOffset);
+    setCurrentPage(e.selected);
+  };
   function handleDropdownChange() {
     setAthleteOffset(0);
     setAthleteLimit(7);
@@ -244,30 +296,38 @@ const AthleteSelect = (props) => {
     let newOffset;
     console.log(e.selected);
     //soulbound athlete not needed yet
-    if (soulPage === -1) {
+    if (soulPage === false) {
       //skipping to last page that has soulbound athletes
       if (e.selected * athleteLimit >= totalAthletes) {
-        setSoulPage(0);
-        newOffset = 0 * athleteLimit;
+        setSoulPage(true);
+        //newOffset = (athleteLimit * Math.floor(totalSoulbound / athleteLimit) - )
+        //newOffset = (athleteLimit * Math.ceil(totalSoulbound / athleteLimit) - (totalAthletes % athleteLimit));
+        if (totalAthletes % athleteLimit === 0) {
+          newOffset =
+            (Math.floor(totalSoulbound / athleteLimit) - Math.abs(e.selected - pageCount)) *
+              athleteLimit -
+            athleteLimit;
+        } else {
+          //prettier-ignore
+          newOffset = athleteLimit - (totalAthletes % athleteLimit) + (Math.floor(totalSoulbound / athleteLimit) - Math.abs(e.selected - pageCount)) * athleteLimit - athleteLimit;
+        }
       } else {
         newOffset = ((e.selected * athleteLimit) % totalAthletes) + soulOffset;
       }
-    } else if (soulPage > -1) {
+    } else if (soulPage > true) {
       let newPage = e.selected;
       let compute = newPage - currentPage;
       console.log(compute);
-      let test = soulPage - compute;
-      console.log(test);
       //getting page offset for soulbound
-      if (soulPage - compute <= -1) {
-        console.log(soulPage + ' + ' + compute);
-        newOffset = (soulPage + (compute - 1)) * athleteLimit + soulOffset;
-      } else {
-        console.log('test');
-        newOffset = (e.selected * athleteLimit) % totalAthletes;
-        setSoulPage(-1);
-        setSoulOffset(0);
-      }
+      // if (soulPage - compute <= -1) {
+      //   console.log(soulPage + ' + ' + compute);
+      //   newOffset = (soulPage + (compute - 1)) * athleteLimit + soulOffset;
+      // } else {
+      //   console.log('test');
+      //   newOffset = (e.selected * athleteLimit) % totalAthletes;
+      //   setSoulPage(-1);
+      //   setSoulOffset(0);
+      // }
     }
     // const newOffset = (e.selected * athleteLimit) % totalAthletes;
     //add reset of lineup
@@ -297,7 +357,7 @@ const AthleteSelect = (props) => {
   useEffect(() => {
     //if regular and soulbound radio buttons are enabled
 
-    handleRegularSoulboundPagination();
+    alternativeMethod();
     //else
     // if (!isNaN(athleteOffset)) {
     //   //if normal radio button is selected
@@ -326,7 +386,7 @@ const AthleteSelect = (props) => {
       position,
       team,
       name,
-      getContract(ATHLETE_SOULBOUND)
+      getContract(ATHLETE_PROMO)
     );
     setPageCount(Math.ceil((totalAthletes + totalSoulbound) / athleteLimit));
     //setup regular_offset, soulbound_offset
@@ -448,7 +508,7 @@ const AthleteSelect = (props) => {
               pageLinkClassName="rounded-lg text-center hover:font-bold hover:bg-indigo-white hover:text-indigo-black"
               breakLabel="..."
               nextLabel=">"
-              onPageChange={handlePageClick}
+              onPageChange={alternativeHandling}
               pageRangeDisplayed={5}
               pageCount={pageCount}
               previousLabel="<"
