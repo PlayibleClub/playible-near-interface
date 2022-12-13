@@ -383,7 +383,10 @@ export default function Home(props) {
   }, []);
 
   useEffect(() => {
-    router.pathname === router.asPath ? setEditModal(false) : setEditModal(true);
+    if (router.asPath.indexOf("transactionHashes") > -1) {
+      setEditModal(true);
+    }
+    
   }, []);
 
   return (
@@ -609,9 +612,11 @@ export default function Home(props) {
                 onClose={() => {
                   setEditModal(false);
                 }}
-              >
-                <div className="flex flex-wrap flex-col mt-16 mb-5 bg-opacity-70 z-50 w-full">
+              >Your pack has been minted successfully!
+                <div className="flex flex-wrap flex-col mt-10 mb-5 bg-opacity-70 z-50 w-full">
+                  
                   <div className="ml-20 mb-12">
+                    
                     <img width={240} height={340} src="/images/packimages/NFL-SB-Pack.png"></img>
                   </div>
                   <Link href={'/Packs'}>
