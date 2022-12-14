@@ -67,7 +67,7 @@ export default function Home(props) {
   const [useNEP141, setUseNEP141] = useState(NEP141USDT);
   const [intervalSale, setIntervalSale] = useState(0);
   const [balanceErrorMsg, setBalanceErrorMsg] = useState('');
-  const [isClaimed, setIsClaimed] = useState(0);
+  const [isClaimed, setIsClaimed] = useState(false);
   const router = useRouter();
   const [editModal, setEditModal] = useState(false);
 
@@ -394,7 +394,7 @@ export default function Home(props) {
         <div className="flex flex-col w-screen md:w-full overflow-y-auto h-screen justify-center self-center md:pb-12 text-indigo-black">
           <Main color="indigo-white">
             <div className="flex-initial iphone5:mt-20 md:ml-6 md:mt-8">
-              {isClaimed >= 2 ? (
+              {isClaimed ? (
                 <button
                   className={`bg-indigo-gray bg-opacity-40 text-indigo-white w-5/6 md:w-80 h-10 pointer-events-none 
             text-center font-bold text-xs self-center justify-center float-right md:mt-7 iphone5:mr-9 iphone5:mt-32`}
