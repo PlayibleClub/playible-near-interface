@@ -222,7 +222,6 @@ export default function Index(props) {
 
   const onChange = (e) => {
     if (e.target.name === 'positionAmount') {
-      console.log(e.target.name, e.target.value);
       if (parseInt(e.target.value) > -1) {
         setDetails({
           ...details,
@@ -241,7 +240,6 @@ export default function Index(props) {
     if (e.target.name === 'description') {
       if (e.target.value !== "") {
         const whitelistArray = (e.target.value).split('\n').filter(n => n);
-        console.log(whitelistArray)
         setWhitelistInfo(whitelistArray);
         setDetails({
           ...details,
@@ -307,233 +305,10 @@ export default function Index(props) {
     }
   };
 
-  const endGame = async (id) => {
-    if (connectedWallet) {
-      setEndLoading(true);
-
-      setEndMsg({
-        title: 'Ending Game',
-        content: 'Officially ending game',
-      });
-
-      setEndModal(true);
-
-      const leaderboard = await axiosInstance.get(`/fantasy/game/${id}/leaderboard/`);
-
-      // if (leaderboard.status === 200) {
-      //   const endGameRes = await executeContract(connectedWallet, ORACLE, [
-      //     {
-      //       contractAddr: ORACLE,
-      //       msg: {
-      //         add_leaderboard: {
-      //           game_id: id.toString(),
-      //           leaderboard: leaderboard.data,
-      //         },
-      //       },
-      //     },
-      //     {
-      //       contractAddr: GAME,
-      //       msg: {
-      //         end_game: {
-      //           game_id: id.toString(),
-      //         },
-      //       },
-      //     },
-      //   ]);
-
-      //   if (
-      //     !endGameRes.txResult ||
-      //     (endGameRes.txResult && !endGameRes.txResult.success) ||
-      //     endGameRes.txError
-      //   ) {
-      //     setMsg({
-      //       title: 'Failed',
-      //       content:
-      //         endGameRes.txResult && !endGameRes.txResult.success
-      //           ? 'Blockchain error! Please try again later.'
-      //           : endGameRes.txError,
-      //     });
-      //   } else {
-      //     setMsg({
-      //       title: 'SUCCESS',
-      //       content: 'Successfully ended game',
-      //     });
-      //   }
-      //   // fetchGames();
-      //   setModal(true);
-      //   setEndModal(false);
-      //   router.reload();
-      // } else {
-      //   setMsg({
-      //     title: 'Error',
-      //     content: 'An error occurred when ending the game',
-      //   });
-      //   setModal(true);
-      //   setEndModal(false);
-      // }
-
-      setEndLoading(false);
-    }
-  };
-
-  const createGame = async () => {
-    if (connectedWallet) {
-      const formData = {
-        ...details,
-        // DURATION IS EXPRESSED IN DAYS BUT WILL BE CONVERTED TO MINUTES
-        // duration: parseInt(details.duration) * 60 * 24,
-        duration: 1,
-      };
-
-      setLoading(true);
-
-      const res = await axiosInstance.post('/fantasy/game/', formData);
-
-      if (res.status === 201) {
-        setMsg({
-          title: 'Success',
-          content: `${res.data.name} created!`,
-        });
-        const distributionList = distribution.map((item) => {
-          return {
-            ...item,
-            percentage: (item.percentage / 100) * 1000000,
-          };
-        });
-
-        //   const resContract = await executeContract(connectedWallet, ORACLE, [
-        //     {
-        //       contractAddr: ORACLE,
-        //       msg: {
-        //         add_game: {
-        //           game_id: res.data.id.toString(),
-        //           prize: parseInt(res.data.prize),
-        //           distribution: distributionList,
-        //         },
-        //       },
-        //     },
-        //     {
-        //       contractAddr: GAME,
-        //       msg: {
-        //         add_game: {
-        //           game_id: res.data.id.toString(),
-        //           game_time_start: Math.ceil(convertToMinutes(formData.startTime)),
-        //           duration: Math.ceil(formData.duration),
-        //         },
-        //       },
-        //     },
-        //   ]);
-
-        //   if (
-        //     !resContract.txResult ||
-        //     (resContract.txResult && !resContract.txResult.success) ||
-        //     resContract.txError
-        //   ) {
-        //     let deleteSuccess = false;
-        //     while (!deleteSuccess) {
-        //       const deleteRes = await axiosInstance.delete(`/fantasy/game/${res.data.id}/`);
-
-        //       if (deleteRes.status === 204) {
-        //         deleteSuccess = true;
-        //       }
-        //     }
-
-        //     setMsg({
-        //       title: 'Failed',
-        //       content:
-        //         resContract.txResult && !resContract.txResult.success
-        //           ? 'Blockchain error! Please try again later.'
-        //           : resContract.txError,
-        //     });
-        //   }
-        //   resetForm();
-        //   // fetchGames();
-        // } else {
-        //   setMsg({
-        //     title: 'Failed',
-        //     content: 'An error occurred! Please try again later.',
-        //   });
-        // }
-        setLoading(false);
-      } else {
-        alert('Connect to your wallet first');
-      }
-    }
-  };
-
-  const newGame = async () => {
-    const formData = {
-      ...details,
-      duration: 1,
-    };
-
-    createNewGame({
-      variables: {
-        args: formData,
-      },
-    });
-
-    console.log('error', error);
-    console.log('data', data);
-  };
-
-  // const convertToMinutes = (time) => {
-  //   const now = new Date();
-  //   const gameStart = new Date(time);
-  //   const timeDiff = gameStart / 1000 - now / 1000;
-
-  //   return timeDiff / 60;
-  // };
-
-  const fetchGames = async () => {
-    setContentLoading(true);
-    const res = await axiosInstance.get('/fantasy/game/new/');
-    const completedRes = await axiosInstance.get('/fantasy/game/completed/');
-
-    if (res.status === 200 && res.data.length > 0) {
-      // const sortedData = [...res.data].sort(
-      //   (a, b) => new Date(a.startTime) - new Date(b.startTime)
-      // );
-      // setGames(sortedData);
-    }
-    if (completedRes.status === 200 && completedRes.data.length > 0) {
-      const data = completedRes.data;
-      const completedList = data.map(async (item) => {
-        // const hasEnded = await lcd.wasm.contractQuery(GAME, {
-        //   game_info: { game_id: item.id.toString() },
-        // });
-        // return {
-        //   ...item,
-        //   hasEnded: !!hasEnded?.has_ended,
-        // };
-      });
-
-      const completedGamesList = await Promise.all(completedList);
-
-      setCompletedGames(completedGamesList.filter((item) => !item.hasEnded));
-    }
-    setContentLoading(false);
-  };
-
-  const resetForm = () => {
-    // setDetails({
-    //   name: '',
-    //   startTime: '',
-    //   duration: 1,
-    //   prize: 1,
-    // });
-    setDistribution([
-      {
-        rank: 1,
-        percentage: 0,
-      },
-    ]);
-  };
   const handleButtonClick = (e) => {
     e.preventDefault();
     //get current position and amount from details
     let position = [details['position']];
-    console.log(position);
     let display = position;
     let amount = details['positionAmount'];
     switch (position[0]) {
@@ -545,7 +320,6 @@ export default function Index(props) {
         break;
     }
     let found = positionsInfo.findIndex((e) => e.positions.join() === position.join());
-    console.log(found);
 
     if (positionsInfo.length === 0) {
       let object = { positions: position, amount: amount };
@@ -571,13 +345,16 @@ export default function Index(props) {
       setRemountPositionArea(Math.random());
     }
   };
+
   const handleRemove = (e) => {
     e.preventDefault();
     positionsInfo.pop();
     positionsDisplay.pop();
     setRemountPositionArea(Math.random());
   };
+
   const NFL_POSITIONS = ['QB', 'RB', 'WR', 'TE', 'FLEX', 'SUPERFLEX'];
+
   const [details, setDetails] = useState({
     // name: '',
     startTime: '',
@@ -590,14 +367,6 @@ export default function Index(props) {
     positionAmount: 1,
   });
 
-  const nflPositions = [
-    { positions: ['QB'], amount: 1 },
-    { positions: ['RB'], amount: 2 },
-    { positions: ['WR'], amount: 2 },
-    { positions: ['TE'], amount: 1 },
-    { positions: ['RB', 'WR', 'TE'], amount: 1 },
-    { positions: ['QB', 'RB', 'WR', 'TE'], amount: 1 },
-  ];
   const dateStartFormatted = moment(details.startTime).format('YYYY-MM-DD HH:mm:ss');
   const dateStart = moment(dateStartFormatted).utc().unix() * 1000;
   const dateEndFormatted = moment(details.endTime).format('YYYY-MM-DD HH:mm:ss');
@@ -690,7 +459,6 @@ export default function Index(props) {
   }, [distribution]);
   useEffect(() => {
     setRemountPositionArea(Math.random());
-    console.log(positionsDisplay);
   }, [positionsInfo, positionsDisplay]);
   useEffect(() => {
     get_games_list(totalGames);
