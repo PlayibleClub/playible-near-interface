@@ -28,7 +28,11 @@ import {
   setPosition,
   setTeamNameRedux,
 } from 'redux/athlete/athleteSlice';
-import { query_filter_supply_for_owner, query_mixed_tokens_pagination } from 'utils/near/helper';
+import {
+  query_filter_supply_for_owner,
+  query_filter_tokens_for_owner,
+  query_mixed_tokens_pagination,
+} from 'utils/near/helper';
 
 const AthleteSelect = (props) => {
   const { query } = props;
@@ -116,7 +120,19 @@ const AthleteSelect = (props) => {
     }
     return false;
   }
-
+  async function get_filter_tokens_for_owner(contract) {
+    setAthletes(
+      await query_filter_tokens_for_owner(
+        accountId,
+        athleteOffset,
+        athleteLimit,
+        position,
+        team,
+        name,
+        contract
+      )
+    );
+  }
   async function get_mixed_tokens_for_pagination() {
     setAthletes(
       await query_mixed_tokens_pagination(
