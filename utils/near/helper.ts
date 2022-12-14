@@ -213,7 +213,7 @@ async function query_player_teams(account, game_id) {
       return playerTeamNames;
     });
 }
-async function query_mixed_tokens_pagination(accountId, isPromoPage, athleteOffset, promoOffset, athleteLimit, position, team, name){
+async function query_mixed_tokens_pagination(accountId, isPromoPage, athleteOffset, promoOffset, promoSupply, athleteLimit, position, team, name){
   return await query_filter_tokens_for_owner(
     accountId,
     isPromoPage ? athleteOffset + promoOffset : athleteOffset,
@@ -223,7 +223,7 @@ async function query_mixed_tokens_pagination(accountId, isPromoPage, athleteOffs
     name,
     isPromoPage ? getContract(ATHLETE_PROMO) : getContract(ATHLETE),
   ).then((result) => {
-    if (result.length < athleteLimit && !isPromoPage){
+    if (result.length < athleteLimit && !isPromoPage && promoSupply !== 0){
       let sbLimit = athleteLimit - result.length;
       query_filter_tokens_for_owner(
         accountId,

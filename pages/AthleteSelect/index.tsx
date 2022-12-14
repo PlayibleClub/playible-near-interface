@@ -57,7 +57,7 @@ const AthleteSelect = (props) => {
   const [currentPage, setCurrentPage] = useState(0);
   const [athleteLimit, setAthleteLimit] = useState(8);
   const [totalAthletes, setTotalAthletes] = useState(0);
-  const [totalSoulbound, setTotalSoulbound] = useState(0);
+  const [totalPromo, setTotalPromo] = useState(0);
   const [radioSelected, setRadioSelected] = useState(null);
   const [team, setTeam] = useState(['allTeams']);
   const [name, setName] = useState(['allNames']);
@@ -68,6 +68,7 @@ const AthleteSelect = (props) => {
   const [search, setSearch] = useState('');
   const [currPosition, setCurrPosition] = useState('');
   const [loading, setLoading] = useState(true);
+  const [remountAthlete, setRemountAthlete] = useState(0);
   const provider = new providers.JsonRpcProvider({
     url: getRPCProvider(),
   });
@@ -79,9 +80,7 @@ const AthleteSelect = (props) => {
   }
 
   async function get_filter_soulbound_supply_for_owner(accountId, position, team, name, contract) {
-    setTotalSoulbound(
-      await query_filter_supply_for_owner(accountId, position, team, name, contract)
-    );
+    setTotalPromo(await query_filter_supply_for_owner(accountId, position, team, name, contract));
   }
 
   //TODO: might encounter error w/ loading duplicate athlete
@@ -134,18 +133,48 @@ const AthleteSelect = (props) => {
     );
   }
   async function get_mixed_tokens_for_pagination() {
-    setAthletes(
-      await query_mixed_tokens_pagination(
-        accountId,
-        isPromoPage,
-        athleteOffset,
-        promoOffset,
-        athleteLimit,
-        position,
-        team,
-        name
-      )
-    );
+    // setAthletes(
+    //   await query_mixed_tokens_pagination(
+    //     accountId,
+    //     isPromoPage,
+    //     athleteOffset,
+    //     promoOffset,
+    //     totalPromo,
+    //     athleteLimit,
+    //     position,
+    //     team,
+    //     name
+    //   )
+    // );
+    // setRemountAthlete(Math.random() + 1);
+    query_filter_tokens_for_owner(
+      accountId,
+      isPromoPage ? athleteOffset + promoOffset : athleteOffset,
+      athleteLimit,
+      position,
+      team,
+      name,
+      isPromoPage ? getContract(ATHLETE_PROMO) : getContract(ATHLETE)
+    ).then((result) => {
+      console.log(result);
+      if (result.length < athleteLimit && !isPromoPage && totalPromo !== 0) {
+        let sbLimit = athleteLimit - result.length;
+        query_filter_tokens_for_owner(
+          accountId,
+          0,
+          sbLimit,
+          position,
+          team,
+          name,
+          getContract(ATHLETE_PROMO)
+        ).then((result2) => {
+          result2.map((obj) => result.push(obj));
+          setAthletes(result);
+        });
+      } else {
+        setAthletes(result);
+      }
+    });
   }
   const mixedPaginationHandling = (e) => {
     let newOffset;
@@ -155,7 +184,7 @@ const AthleteSelect = (props) => {
         offset = ((athleteLimit - totalAthletes) % athleteLimit) + athleteLimit;
       } else offset = (athleteLimit - totalAthletes) % athleteLimit;
       let extra = 0;
-      if (totalSoulbound >= offset + athleteLimit + 1) extra = 1;
+      if (totalPromo >= offset + athleteLimit + 1) extra = 1;
       newOffset = Math.abs(Math.abs(e.selected + 1 - pageCount) - extra) * athleteLimit;
       setPromoOffset(offset);
       setIsPromoPage(true);
@@ -266,7 +295,11 @@ const AthleteSelect = (props) => {
     //   );
     // }
   }, [totalAthletes, currentPage]);
-
+  useEffect(() => {
+    console.log('try remount');
+    console.log(athletes);
+    setRemountAthlete(Math.random() + 1);
+  }, [athletes]);
   useEffect(() => {
     get_filter_supply_for_owner(accountId, position, team, name, getContract(ATHLETE));
     get_filter_soulbound_supply_for_owner(
@@ -276,7 +309,7 @@ const AthleteSelect = (props) => {
       name,
       getContract(ATHLETE_PROMO)
     );
-    setPageCount(Math.ceil((totalAthletes + totalSoulbound) / athleteLimit));
+    setPageCount(Math.ceil((totalAthletes + totalPromo) / athleteLimit));
     //setup regular_offset, soulbound_offset
   }, [team, name]);
   // useEffect(() => {
@@ -288,8 +321,8 @@ const AthleteSelect = (props) => {
     console.log('soul offset: ' + promoOffset);
   }, [promoOffset]);
   useEffect(() => {
-    console.log('total soulbound: ' + totalSoulbound);
-  }, [totalSoulbound]);
+    console.log('total soulbound: ' + totalPromo);
+  }, [totalPromo]);
   return (
     <>
       <Container activeName="PLAY">
@@ -336,9 +369,9 @@ const AthleteSelect = (props) => {
           </form> */}
         </div>
 
-        <div className="flex flex-col">
+        <div key={remountAthlete} className="flex flex-col">
           <div className="grid grid-cols-4 mt-1 md:grid-cols-4 md:ml-7 md:mt-2">
-            {athletes.map((item, i) => {
+            {athletes?.map((item, i) => {
               const accountAthleteIndex = athletes.indexOf(item, 0) + athleteOffset;
 
               return (
