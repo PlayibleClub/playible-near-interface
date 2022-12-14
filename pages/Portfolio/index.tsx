@@ -80,7 +80,7 @@ const Portfolio = () => {
   const [team, setTeam] = useState(['allTeams']);
   const [name, setName] = useState(['allNames']);
   const [remountComponent, setRemountComponent] = useState(0);
-
+  const [remountAthlete, setRemountAthlete] = useState(0);
   const { accountId } = useWalletSelector();
 
   const provider = new providers.JsonRpcProvider({
@@ -104,7 +104,6 @@ const Portfolio = () => {
   }
 
   async function get_filter_supply_for_owner(accountId, position, team, name, contract) {
-    console.log(accountId);
     setTotalAthletes(
       await query_filter_supply_for_owner(accountId, position, team, name, contract)
     );
@@ -184,8 +183,10 @@ const Portfolio = () => {
       get_filter_tokens_for_owner(getContract(ATHLETE_PROMO));
     } else if (selectedRegular !== false && selectedPromo !== false) {
       get_mixed_tokens_for_pagination();
+    } else {
+      setAthletes([]);
     }
-  }, [totalAthletes, currentPage, selectedRegular, selectedPromo]);
+  }, [totalAthletes, totalPromo, athleteOffset, currentPage]);
 
   const handleSearchDynamic = (value) => {
     setName(value);
@@ -197,13 +198,20 @@ const Portfolio = () => {
   const handlePageClick = (event) => {
     const newOffset = (event.selected * athleteLimit) % totalAthletes;
     setAthleteOffset(newOffset);
+    setCurrentPage(event.selected);
   };
   // const startCountdown = (value) => {
   //   setSearch(value);
   //   setCountdown(1);
   //   //setIsTyping(true);
   // }
-
+  useEffect(() => {
+    setAthleteOffset(0);
+    setRemountComponent(Math.random());
+  }, [selectedRegular, selectedPromo]);
+  useEffect(() => {
+    setRemountAthlete(Math.random() + 1);
+  }, [athletes]);
   useEffect(() => {
     if (selectedRegular !== false && selectedPromo === false) {
       get_filter_supply_for_owner(accountId, position, team, name, getContract(ATHLETE));
@@ -226,10 +234,13 @@ const Portfolio = () => {
         name,
         getContract(ATHLETE_PROMO)
       );
+    } else {
+      setTotalAthletes(0);
+      setTotalPromo(0);
     }
     setPageCount(Math.ceil((totalAthletes + totalPromo) / athleteLimit));
     //setup regular_offset, soulbound_offset
-  }, [team, name, totalAthletes, totalPromo, selectedRegular, selectedPromo]);
+  }, [position, team, name, totalAthletes, totalPromo, selectedRegular, selectedPromo]);
 
   useEffect(() => {
     const delay = setTimeout(() => {
@@ -329,7 +340,7 @@ const Portfolio = () => {
                   setRemountComponent(Math.random());
                 }}
               />
-              <div className="flex flex-col">
+              <div key={remountAthlete} className="flex flex-col">
                 {loading ? (
                   <LoadingPageDark />
                 ) : (
@@ -363,7 +374,11 @@ const Portfolio = () => {
                   pageLinkClassName="rounded-lg hover:font-bold hover:bg-indigo-white hover:text-indigo-black pr-1 pl-1"
                   breakLabel="..."
                   nextLabel=">"
-                  onPageChange={mixedPaginationHandling}
+                  onPageChange={
+                    selectedRegular !== false && selectedPromo !== false
+                      ? mixedPaginationHandling
+                      : handlePageClick
+                  }
                   pageRangeDisplayed={5}
                   pageCount={pageCount}
                   previousLabel="<"
