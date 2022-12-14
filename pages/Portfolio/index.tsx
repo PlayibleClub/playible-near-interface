@@ -324,20 +324,23 @@ const Portfolio = () => {
             </div> */}
           </div>
 
-          <div className="md:ml-6">
-            <PortfolioContainer textcolor="indigo-black" title="SQUAD">
-              <NftTypeComponent
+          <div className='md:mt-20 md:mb-10'>
+          <NftTypeComponent
                 onChangeFn={(selectedRegular, selectedPromo) => {
                   setSelectedRegular(selectedRegular);
                   setSelectedPromo(selectedPromo);
                   setRemountComponent(Math.random());
                 }}
               />
+              </div>
+          <div className="md:ml-6 md:-mt-48">
+            <PortfolioContainer textcolor="indigo-black" title="SQUAD">
+              
               <div key={remountAthlete} className="flex flex-col">
                 {loading ? (
                   <LoadingPageDark />
                 ) : (
-                  <div className="grid grid-cols-4 gap-y-8 mt-4 md:grid-cols-4 md:mt-4">
+                  <div className="grid grid-cols-4 gap-y-8 mt-4 md:grid-cols-4 md:mt-16 md:mr-12">
                     {athletes.map((item) => {
                       const accountAthleteIndex = athletes.indexOf(item, 0) + athleteOffset;
                       return (

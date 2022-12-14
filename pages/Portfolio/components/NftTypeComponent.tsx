@@ -25,7 +25,7 @@ const NftTypeComponent = (props) => {
   }, [selectedRegular, selectedPromo]);
   return (
     <form>
-      <div className="flex flex-col float-right mr-60">
+      <div className="flex flex-col float-right mr-40">
         NFT Type
         <div className="ml-9">
           <div>
