@@ -48,10 +48,9 @@ const AthleteSelect = (props) => {
   const [athletes, setAthletes] = useState([]);
   const [athleteOffset, setAthleteOffset] = useState(0);
   const [regularOffset, setRegularOffset] = useState(0);
-  const [soulOffset, setSoulOffset] = useState(0);
-  const [soulPage, setSoulPage] = useState(false);
+  const [promoOffset, setPromoOffset] = useState(0);
+  const [isPromoPage, setIsPromoPage] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
-  const [isUsingSoul, setIsUsingSoul] = useState(false);
   const [athleteLimit, setAthleteLimit] = useState(8);
   const [totalAthletes, setTotalAthletes] = useState(0);
   const [totalSoulbound, setTotalSoulbound] = useState(0);
@@ -122,9 +121,9 @@ const AthleteSelect = (props) => {
     setAthletes(
       await query_mixed_tokens_pagination(
         accountId,
-        soulPage,
+        isPromoPage,
         athleteOffset,
-        soulOffset,
+        promoOffset,
         athleteLimit,
         position,
         team,
@@ -142,10 +141,10 @@ const AthleteSelect = (props) => {
       let extra = 0;
       if (totalSoulbound >= offset + athleteLimit + 1) extra = 1;
       newOffset = Math.abs(Math.abs(e.selected + 1 - pageCount) - extra) * athleteLimit;
-      setSoulOffset(offset);
-      setSoulPage(true);
+      setPromoOffset(offset);
+      setIsPromoPage(true);
     } else {
-      setSoulPage(false);
+      setIsPromoPage(false);
       newOffset = (e.selected * athleteLimit) % totalAthletes;
     }
     passedLineup.splice(index, 1, {
@@ -270,8 +269,8 @@ const AthleteSelect = (props) => {
   // }, [totalAthletes, totalSoulbound]);
   useEffect(() => {}, [search]);
   useEffect(() => {
-    console.log('soul offset: ' + soulOffset);
-  }, [soulOffset]);
+    console.log('soul offset: ' + promoOffset);
+  }, [promoOffset]);
   useEffect(() => {
     console.log('total soulbound: ' + totalSoulbound);
   }, [totalSoulbound]);
