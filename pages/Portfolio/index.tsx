@@ -324,7 +324,7 @@ const Portfolio = () => {
             </div> */}
           </div>
 
-          <div className='md:mt-20 md:mb-10'>
+          <div className='md:mt-20 md:mb-10 z-0'>
           <NftTypeComponent
                 onChangeFn={(selectedRegular, selectedPromo) => {
                   setSelectedRegular(selectedRegular);
