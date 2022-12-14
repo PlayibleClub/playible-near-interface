@@ -221,7 +221,7 @@ export default function Packs() {
         <Main color="indigo-white">
           <div className="iphone5:mt-20 md:ml-6 md:mt-8">
             <PortfolioContainer textcolor="indigo-black" title="PACKS">
-              <div className="md:mb-0 md:ml-6">
+              <div className="">
                 {isClaimed ? (
                   <button
                     className={`bg-indigo-gray bg-opacity-40 text-indigo-white w-5/6 md:w-80 h-10 pointer-events-none 
@@ -239,22 +239,22 @@ export default function Packs() {
                     CLAIM SOULBOUND PACK
                   </button>
                 )}
-              </div>
-              <div className="flex flex-col mt-6">
-                <div className="flex font-bold md:ml-7 iphone5:mt-4 iphone5:ml-7 md:mt-0 font-monument">
-                  {categoryList.map(({ name, isActive }) => (
-                    <div
-                      className={`cursor-pointer mr-6 ${
-                        isActive ? 'border-b-8 border-indigo-buttonblue' : ''
-                      }`}
-                      onClick={() => {
-                        changecategoryList(name);
-                        setCategory(name);
-                      }}
-                    >
-                      {name}
-                    </div>
-                  ))}
+                <div className="flex flex-col mt-6">
+                  <div className="flex font-bold md:ml-7 iphone5:mt-14 iphone5:ml-7 md:mt-0 font-monument">
+                    {categoryList.map(({ name, isActive }) => (
+                      <div
+                        className={`cursor-pointer mr-6 ${
+                          isActive ? 'border-b-8 border-indigo-buttonblue' : ''
+                        }`}
+                        onClick={() => {
+                          changecategoryList(name);
+                          setCategory(name);
+                        }}
+                      >
+                        {name}
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
 
