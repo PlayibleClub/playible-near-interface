@@ -88,14 +88,12 @@ const AthleteSelect = (props) => {
 
   //TODO: might encounter error w/ loading duplicate athlete
   function setAthleteRadio(radioIndex) {
-    console.log(athletes[radioIndex]);
     passedLineup.splice(index, 1, {
       position: position,
       isAthlete: true,
       isPromo: athletes[radioIndex].athlete_id.includes('SB') ? true : false,
       athlete: athletes[radioIndex],
     });
-    console.table(passedLineup);
     setLineup(passedLineup);
   }
   function getPositionDisplay(position) {
@@ -261,7 +259,6 @@ const AthleteSelect = (props) => {
   // };
 
   const handleRadioClick = (value) => {
-    console.log(value);
     setRadioSelected(value);
     setAthleteRadio(value);
   };
@@ -277,7 +274,13 @@ const AthleteSelect = (props) => {
 
   const handlePageClick = (event) => {
     const newOffset = (event.selected * athleteLimit) % totalAthletes;
+    passedLineup.splice(index, 1, {
+      position: position,
+      isAthlete: false,
+      isPromo: false,
+    });
     setAthleteOffset(newOffset);
+    setCurrentPage(event.selected);
   };
 
   useEffect(() => {
@@ -291,7 +294,7 @@ const AthleteSelect = (props) => {
     } else {
       setAthletes([]);
     }
-    setAthleteOffset(0);
+
     //else
     // if (!isNaN(athleteOffset)) {
     //   //if normal radio button is selected
@@ -311,10 +314,14 @@ const AthleteSelect = (props) => {
     //     getContract(ATHLETE)
     //   );
     // }
-  }, [totalAthletes, currentPage, selectedRegular, selectedPromo]);
+  }, [totalAthletes, totalPromo, athleteOffset, currentPage]);
+
   useEffect(() => {
-    console.log('try remount');
-    console.log(athletes);
+    setAthleteOffset(0);
+    setRemountComponent(Math.random());
+  }, [selectedRegular, selectedPromo]);
+
+  useEffect(() => {
     setRemountAthlete(Math.random() + 1);
   }, [athletes]);
   useEffect(() => {
@@ -351,12 +358,7 @@ const AthleteSelect = (props) => {
   //   console.log(totalSoulbound);
   // }, [totalAthletes, totalSoulbound]);
   useEffect(() => {}, [search]);
-  useEffect(() => {
-    console.log('soul offset: ' + promoOffset);
-  }, [promoOffset]);
-  useEffect(() => {
-    console.log('total soulbound: ' + totalPromo);
-  }, [totalPromo]);
+
   return (
     <>
       <Container activeName="PLAY">
@@ -442,7 +444,7 @@ const AthleteSelect = (props) => {
                         ></input>
                         <PerformerContainer
                           key={item.athlete_id}
-                          AthleteName={item.athlete_id.includes('SB') ? 'SOULBOUND' : item.name}
+                          AthleteName={item.name}
                           AvgScore={item.fantasy_score.toFixed(2)}
                           id={item.athlete_id}
                           uri={item.image}
@@ -468,7 +470,11 @@ const AthleteSelect = (props) => {
               pageLinkClassName="rounded-lg text-center hover:font-bold hover:bg-indigo-white hover:text-indigo-black"
               breakLabel="..."
               nextLabel=">"
-              onPageChange={mixedPaginationHandling}
+              onPageChange={
+                selectedRegular !== false && selectedPromo !== false
+                  ? mixedPaginationHandling
+                  : handlePageClick
+              }
               pageRangeDisplayed={5}
               pageCount={pageCount}
               previousLabel="<"
