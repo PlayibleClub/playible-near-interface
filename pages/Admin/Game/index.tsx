@@ -43,7 +43,7 @@ export default function Index(props) {
   const [gameIdToAdd, setGameIdToAdd] = useState(0);
   //gameinfo
   const [gameInfo, setGameInfo] = useState({});
-  const [whitelistInfo, setWhitelistInfo] = useState({});
+
   const [tabs, setTabs] = useState([
     {
       name: 'GAMES',
@@ -137,6 +137,7 @@ export default function Index(props) {
     title: '',
     content: '',
   });
+
   const [percentTotal, setPercentTotal] = useState(0);
   const [remountComponent, setRemountComponent] = useState(0);
   const [remountPositionArea, setRemountPositionArea] = useState(0);
@@ -163,15 +164,9 @@ export default function Index(props) {
     setGamesLimit(10);
     setRemountComponent(Math.random());
     switch (name) {
-      case 'NEW':
-        setCurrentTotal(newGames.length);
-        break;
-      case 'ON-GOING':
-        setCurrentTotal(ongoingGames.length);
-        break;
-      case 'COMPLETED':
-        setCurrentTotal(completedGames.length);
-        break;
+      case 'NEW': setCurrentTotal(newGames.length); break;
+      case 'ON-GOING': setCurrentTotal(ongoingGames.length); break;
+      case 'COMPLETED': setCurrentTotal(completedGames.length); break;
     }
     tabList.forEach((item) => {
       if (item.name === name) {
@@ -228,18 +223,6 @@ export default function Index(props) {
           [e.target.name]: parseInt(e.target.value),
         });
       }
-    } else if (e.target.name === 'description') {
-      setDetails({
-        ...details,
-        [e.target.name]: e.target.value,
-      });
-
-      let whitelist = [details['description']];
-
-      let object = { description: whitelist };
-
-      setWhitelistInfo(object);
-      console.log(object);
     } else {
       setDetails({
         ...details,
@@ -247,11 +230,10 @@ export default function Index(props) {
       });
     }
   };
-
   const handlePageClick = (event) => {
     const newOffset = (event.selected * gamesLimit) % currentTotal;
     setGamesOffset(newOffset);
-  };
+  }
   const checkValidity = () => {
     let errors = [];
     let sortPercentage = [...distribution].sort((a, b) => b.percentage - a.percentage);
@@ -282,8 +264,8 @@ export default function Index(props) {
     if (distribution.length < 10) {
       errors.push(
         'Exactly 10 rank distribution must be provided. (Only ' +
-          distribution.length +
-          ' was provided)'
+        distribution.length +
+        ' was provided)'
       );
     }
 
@@ -542,29 +524,25 @@ export default function Index(props) {
     console.log(position);
     let display = position;
     let amount = details['positionAmount'];
-    switch (position[0]) {
-      case 'FLEX':
-        position = ['RB', 'WR', 'TE'];
-        break;
-      case 'SUPERFLEX':
-        position = ['QB', 'RB', 'WR', 'TE'];
-        break;
+    switch(position[0]){
+      case 'FLEX' : position = ['RB', 'WR', 'TE']; break;
+      case 'SUPERFLEX' : position = ['QB', 'RB', 'WR', 'TE']; break;
     }
-    let found = positionsInfo.findIndex((e) => e.positions.join() === position.join());
+    let found = positionsInfo.findIndex(e => e.positions.join() === position.join()) 
     console.log(found);
-
-    if (positionsInfo.length === 0) {
-      let object = { positions: position, amount: amount };
-      let object2 = { positions: display, amount: amount };
+    
+    if (positionsInfo.length === 0){
+      let object = {positions: position, amount: amount};
+      let object2 = {positions: display, amount: amount};
       setPositionsInfo([object]);
       setPositionsDisplay([object2]);
     }
     //could not find
-    else if (found === -1) {
-      let object = { positions: position, amount: amount };
-      let object2 = { positions: display, amount: amount };
-      setPositionsInfo((current) => [...current, object]);
-      setPositionsDisplay((current) => [...current, object2]);
+    else if (found === -1){
+      let object = {positions: position, amount: amount}
+      let object2 = {positions: display, amount: amount}
+      setPositionsInfo(current => [...current, object]);
+      setPositionsDisplay(current => [...current, object2]);
     } else {
       //found has index of same position
       let current = positionsInfo;
@@ -576,13 +554,13 @@ export default function Index(props) {
       setPositionsDisplay(current2);
       setRemountPositionArea(Math.random());
     }
-  };
+  }
   const handleRemove = (e) => {
-    e.preventDefault();
-    positionsInfo.pop();
-    positionsDisplay.pop();
-    setRemountPositionArea(Math.random());
-  };
+    e.preventDefault(); 
+    positionsInfo.pop(); 
+    positionsDisplay.pop(); 
+    setRemountPositionArea(Math.random())
+  }
   const NFL_POSITIONS = ['QB', 'RB', 'WR', 'TE', 'FLEX', 'SUPERFLEX'];
   const [details, setDetails] = useState({
     // name: '',
@@ -591,11 +569,10 @@ export default function Index(props) {
     prize: 1,
     usage: 1,
     description: '',
-    whitelist: '',
     position: NFL_POSITIONS[0],
     positionAmount: 1,
   });
-
+  
   const nflPositions = [
     { positions: ['QB'], amount: 1 },
     { positions: ['RB'], amount: 2 },
@@ -708,9 +685,8 @@ export default function Index(props) {
             <div className="flex md:ml-4 font-bold font-monument mt-5">
               {tabs.map(({ name, isActive }) => (
                 <div
-                  className={`cursor-pointer mr-6 ${
-                    isActive ? 'border-b-8 border-indigo-buttonblue' : ''
-                  }`}
+                  className={`cursor-pointer mr-6 ${isActive ? 'border-b-8 border-indigo-buttonblue' : ''
+                    }`}
                   onClick={() => changeTab(name)}
                 >
                   {name}
@@ -726,9 +702,8 @@ export default function Index(props) {
                   <div className="flex font-bold -ml-16 font-monument">
                     {gameTabs.map(({ name, isActive }) => (
                       <div
-                        className={`cursor-pointer mr-6 ${
-                          isActive ? 'border-b-8 border-indigo-buttonblue' : ''
-                        }`}
+                        className={`cursor-pointer mr-6 ${isActive ? 'border-b-8 border-indigo-buttonblue' : ''
+                          }`}
                         onClick={() => changeGameTab(name)}
                       >
                         {name}
@@ -739,35 +714,34 @@ export default function Index(props) {
                     {(gameTabs[0].isActive
                       ? newGames
                       : gameTabs[1].isActive
-                      ? ongoingGames
-                      : completedGames
+                        ? ongoingGames
+                        : completedGames
                     ).length > 0 &&
                       (gameTabs[0].isActive
                         ? newGames
                         : gameTabs[1].isActive
-                        ? ongoingGames
-                        : completedGames
-                      )
-                        .filter((data, i) => i >= gamesOffset && i < gamesOffset + gamesLimit)
-                        .map((data, i) => {
-                          return (
-                            <div key={i}>
-                              <AdminGameComponent
-                                game_id={data.game_id}
-                                start_time={data.start_time}
-                                end_time={data.end_time}
-                                whitelist={data.whitelist}
-                                positions={data.positions}
-                                lineup_len={data.lineup_len}
-                                joined_player_counter={data.joined_player_counter}
-                                joined_team-counter={data.joined_team_counter}
-                                type="upcoming"
-                                isCompleted={data.isCompleted}
-                                status={data.status}
-                              />
-                            </div>
-                          );
-                        })}
+                          ? ongoingGames
+                          : completedGames
+                      ).filter((data, i) => i >= gamesOffset && i < (gamesOffset + gamesLimit)).map((data, i) => {
+                        return (
+                          <div key={i}>
+                            <AdminGameComponent
+                              game_id={data.game_id}
+                              start_time={data.start_time}
+                              end_time={data.end_time}
+                              whitelist={data.whitelist}
+                              positions={data.positions}
+                              lineup_len={data.lineup_len}
+                              joined_player_counter={data.joined_player_counter}
+                              joined_team-counter={data.joined_team_counter}
+                              type="upcoming"
+                              isCompleted={data.isCompleted}
+                              status={data.status}
+                            />
+                          </div>
+
+                        );
+                      })}
                     {/* {(gameTabs[0].isActive ? upcomingGames: completedGames).length > 0 &&
                           (gameTabs[0].isActive ? upcomingGames : completedGames).map(function (data, i) {
                             return(
@@ -831,6 +805,7 @@ export default function Index(props) {
                     </div>
                   </div>
                 </div>
+
               ) : (
                 <>
                   <div className="flex">
@@ -914,27 +889,28 @@ export default function Index(props) {
                         value={details.prize}
                       />
                     </div> */}
+
                   </div>
 
                   <div className="flex mt-8">
                     {/* DESCRIPTION */}
                     <div className="flex flex-col w-1/2">
-                      <label className="font-monument" htmlFor="duration">
-                        WHITELIST
-                      </label>
-                      <textarea
-                        className="border outline-none rounded-lg px-3 p-2"
-                        id="description"
-                        name="description"
-                        // type="text"
-                        placeholder="Enter accounts to whitelist. One account per line. Leave empty for no whitelist."
-                        onChange={(e) => onChange(e)}
-                        value={details.description}
-                        style={{
-                          minHeight: '120px',
-                        }}
-                      />
-                    </div>
+                          <label className="font-monument" htmlFor="duration">
+                            WHITELIST
+                          </label>
+                          <textarea
+                            className="border outline-none rounded-lg px-3 p-2"
+                            id="description"
+                            name="description"
+                            // type="text"
+                            placeholder="Enter accounts to whitelist. One account per line. Leave empty for no whitelist."
+                            onChange={(e) => onChange(e)}
+                            value={details.description}
+                            style={{
+                              minHeight: '120px',
+                            }}
+                          />
+                        </div>
                   </div>
                   <div className="flex mt-8">
                     {/* POSITIONS */}
@@ -947,11 +923,12 @@ export default function Index(props) {
                           className="bg-filter-icon bg-no-repeat bg-origin-content bg-right bg-indigo-white iphone5:w-28 w-36 md:w-42 lg:w-60
                           ring-indigo-black focus:outline-none cursor-pointer rounded-lg text-xs md:text-base mr-4 border outline-none px-3 p-2"
                           name="position"
-                          onChange={(e) => onChange(e)}
-                        >
+                          onChange={(e) => onChange(e)}>
                           {NFL_POSITIONS.map((x) => {
-                            return <option value={x}>{x}</option>;
-                          })}
+                          return (
+                            <option value={x}>{x}</option>
+                          )
+                        })}  
                         </select>
                         <input
                           className="border outline-none rounded-lg px-3 p-2 w-24 mr-4"
@@ -963,37 +940,23 @@ export default function Index(props) {
                           onChange={(e) => onChange(e)}
                           value={details.positionAmount}
                         />
-                        <button
-                          className="border outline-none rounded-lg px-3 p-2 mr-4"
-                          onClick={(e) => handleButtonClick(e)}
-                        >
-                          +
-                        </button>
-                        <button
-                          className="border outline-none rounded-lg px-3 p-2"
-                          onClick={(e) => handleRemove(e)}
-                        >
-                          -
-                        </button>
+                        <button className="border outline-none rounded-lg px-3 p-2 mr-4" onClick={(e) => handleButtonClick(e)}>+</button>
+                        <button className="border outline-none rounded-lg px-3 p-2" onClick={(e) => handleRemove(e)}>-</button>
                       </form>
+                      
                     </div>
                   </div>
                   <div className="flex mt-8">
                     <div className="flex flex-col w-1/2">
-                      <div
-                        key={remountPositionArea}
-                        className="border outline-none rounded-lg px-3 p-2"
-                      >
-                        {positionsDisplay.map((x) => {
-                          return (
-                            <label className="flex w-full whitespace-pre-line">
-                              Position: {x.positions} Amount: {x.amount}
-                            </label>
-                          );
-                        })}
-                      </div>
+                        <div key={remountPositionArea} className="border outline-none rounded-lg px-3 p-2">
+                          {positionsDisplay.map((x) => {
+                            return(
+                              <label className="flex w-full whitespace-pre-line">Position: {x.positions} Amount: {x.amount}</label>
+                            )
+                          })}
+                        </div>
                     </div>
-                  </div>
+                  </div> 
 
                   {/* DISTRIBUTION FORM */}
                   {/* <div className="mt-8">
@@ -1032,6 +995,7 @@ export default function Index(props) {
                   </div>
                 </>
               )}
+
             </div>
           </div>
         </Main>
@@ -1054,7 +1018,6 @@ export default function Index(props) {
         <p className="mt-2">Are you sure?</p>
         <p className="font-bold">GAME DETAILS:</p>
         <p className="font-bold">Start Date:</p> {startFormattedTimestamp}
-        <p className="font-bold">Whitelist: </p> {whitelistInfo}
         <p className="font-bold">End Date:</p> {endFormattedTimestamp}
         <p className="font-bold">Usage Cost:</p> {details.usage}
         <button
