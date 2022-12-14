@@ -4,35 +4,49 @@ import PropTypes from 'prop-types';
 const NftTypeComponent = (props) => {
   const { onChangeFn } = props;
 
-  const [selected, setSelected] = useState(false);
-  const [selected2, setSelected2] = useState(false);
+  const [selectedRegular, setSelectedRegular] = useState('Regular');
+  const [selectedPromo, setSelectedPromo] = useState(false);
 
   const handleChange = (event) => {
-    if (event.target.value === selected) {
-      setSelected(false);
-    } else if (event.target.value === selected2) {
-      setSelected2(false);
+    if (event.target.value === selectedRegular) {
+      // @ts-ignore:next-line
+      setSelectedRegular(false);
+    } else if (event.target.value === selectedPromo) {
+      setSelectedPromo(false);
     } else if (event.target.value === 'Regular') {
-      setSelected(event.target.value);
-    } else if (event.target.value === 'Soulbound') {
-      setSelected2(event.target.value);
+      setSelectedRegular(event.target.value);
+    } else if (event.target.value === 'Promo') {
+      setSelectedPromo(event.target.value);
     }
   };
 
   useEffect(() => {
-    onChangeFn(selected, selected2);
-  }, [selected, selected2]);
+    onChangeFn(selectedRegular, selectedPromo);
+  }, [selectedRegular, selectedPromo]);
   return (
     <form>
       <div className="flex flex-col float-right mr-60">
         NFT Type
         <div className="ml-9">
           <div>
-            <input type="radio" value="Regular" checked={selected} onChange={handleChange} />
+            <input
+              type="radio"
+              name="Regular"
+              value="Regular"
+              // @ts-ignore:next-line
+              checked={selectedRegular}
+              onChange={handleChange}
+            />
             Regular
           </div>
           <div>
-            <input type="radio" value="Soulbound" checked={selected2} onChange={handleChange} />
+            <input
+              type="radio"
+              name="Promo"
+              value="Promo"
+              checked={selectedPromo}
+              onChange={handleChange}
+            />
             Soulbound
           </div>
         </div>

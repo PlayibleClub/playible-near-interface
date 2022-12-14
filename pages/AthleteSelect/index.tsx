@@ -33,6 +33,7 @@ import {
   query_filter_tokens_for_owner,
   query_mixed_tokens_pagination,
 } from 'utils/near/helper';
+import NftTypeComponent from 'pages/Portfolio/components/NftTypeComponent';
 
 const AthleteSelect = (props) => {
   const { query } = props;
@@ -50,6 +51,8 @@ const AthleteSelect = (props) => {
   const reduxLineup = useSelector(selectAthleteLineup);
   let passedLineup = [...reduxLineup];
   const [athletes, setAthletes] = useState([]);
+  const [selectedRegular, setSelectedRegular] = useState(false);
+  const [selectedPromo, setSelectedPromo] = useState(false);
   const [athleteOffset, setAthleteOffset] = useState(0);
   const [regularOffset, setRegularOffset] = useState(0);
   const [promoOffset, setPromoOffset] = useState(0);
@@ -271,10 +274,21 @@ const AthleteSelect = (props) => {
       query: { game_id: game_id },
     });
   };
+
+  const handlePageClick = (event) => {
+    const newOffset = (event.selected * athleteLimit) % totalAthletes;
+    setAthleteOffset(newOffset);
+  };
+
   useEffect(() => {
     //if regular and soulbound radio buttons are enabled
-
-    get_mixed_tokens_for_pagination();
+    if (selectedRegular !== false && selectedPromo === false) {
+      get_filter_tokens_for_owner(getContract(ATHLETE));
+    } else if (selectedRegular === false && selectedPromo !== false) {
+      get_filter_tokens_for_owner(getContract(ATHLETE_PROMO));
+    } else if (selectedRegular !== false && selectedPromo !== false) {
+      get_mixed_tokens_for_pagination();
+    }
     //else
     // if (!isNaN(athleteOffset)) {
     //   //if normal radio button is selected
@@ -294,24 +308,38 @@ const AthleteSelect = (props) => {
     //     getContract(ATHLETE)
     //   );
     // }
-  }, [totalAthletes, currentPage]);
+  }, [totalAthletes, currentPage, selectedRegular, selectedPromo]);
   useEffect(() => {
     console.log('try remount');
     console.log(athletes);
     setRemountAthlete(Math.random() + 1);
   }, [athletes]);
   useEffect(() => {
-    get_filter_supply_for_owner(accountId, position, team, name, getContract(ATHLETE));
-    get_filter_soulbound_supply_for_owner(
-      accountId,
-      position,
-      team,
-      name,
-      getContract(ATHLETE_PROMO)
-    );
+    if (selectedRegular !== false && selectedPromo === false) {
+      get_filter_supply_for_owner(accountId, position, team, name, getContract(ATHLETE));
+      setTotalPromo(0);
+    } else if (selectedRegular === false && selectedPromo !== false) {
+      get_filter_soulbound_supply_for_owner(
+        accountId,
+        position,
+        team,
+        name,
+        getContract(ATHLETE_PROMO)
+      );
+      setTotalAthletes(0);
+    } else if (selectedRegular !== false && selectedPromo !== false) {
+      get_filter_supply_for_owner(accountId, position, team, name, getContract(ATHLETE));
+      get_filter_soulbound_supply_for_owner(
+        accountId,
+        position,
+        team,
+        name,
+        getContract(ATHLETE_PROMO)
+      );
+    }
     setPageCount(Math.ceil((totalAthletes + totalPromo) / athleteLimit));
     //setup regular_offset, soulbound_offset
-  }, [team, name]);
+  }, [team, name, totalAthletes, totalPromo, selectedRegular, selectedPromo]);
   // useEffect(() => {
   //   console.log(totalAthletes);
   //   console.log(totalSoulbound);
@@ -333,7 +361,13 @@ const AthleteSelect = (props) => {
             textcolor="text-indigo-black"
           />
         </div>
-
+        <NftTypeComponent
+          onChangeFn={(selectedRegular, selectedPromo) => {
+            setSelectedRegular(selectedRegular);
+            setSelectedPromo(selectedPromo);
+            setRemountComponent(Math.random());
+          }}
+        />
         <div className="h-8 flex absolute ml-3 top-32 mr-8 md:top-24 md:right-20 md:-mt-5 ">
           <SearchComponent
             onChangeFn={(search) => setName(search)}
@@ -371,9 +405,8 @@ const AthleteSelect = (props) => {
 
         <div key={remountAthlete} className="flex flex-col">
           <div className="grid grid-cols-4 mt-1 md:grid-cols-4 md:ml-7 md:mt-2">
-            {athletes?.map((item, i) => {
+            {athletes.map((item, i) => {
               const accountAthleteIndex = athletes.indexOf(item, 0) + athleteOffset;
-
               return (
                 <>
                   {checkIfAthleteExists(item.athlete_id) || item.isInGame ? (
