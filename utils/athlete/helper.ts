@@ -5,9 +5,7 @@ import { getUTCTimestampFromLocal } from 'utils/date/helper';
 // pull from graphQL and append the nft animation
 // return assembled Athlete
 async function getAthleteInfoById(item) {
-  console.log(item);
   let value = item.extra.map((item) => item.value);
-  console.log(item);
   const { data } = await client.query({
     query: GET_ATHLETE_BY_ID,
     variables: { getAthleteById: parseFloat(value[0]) },

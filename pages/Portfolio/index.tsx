@@ -238,7 +238,6 @@ const Portfolio = () => {
 
   useEffect(() => {
     const delay = setTimeout(() => {
-      console.log(search);
       setName([search]);
     }, 1000);
     return () => clearTimeout(delay);
