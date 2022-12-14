@@ -291,6 +291,7 @@ const AthleteSelect = (props) => {
     } else {
       setAthletes([]);
     }
+    setAthleteOffset(0);
     //else
     // if (!isNaN(athleteOffset)) {
     //   //if normal radio button is selected
