@@ -6,7 +6,7 @@ import Image from 'next/image';
 import BackFunction from '../../components/buttons/BackFunction';
 import { providers } from 'near-api-js';
 import { getContract, getRPCProvider } from 'utils/near';
-import { ATHLETE, ATHLETE_SOULBOUND } from 'data/constants/nearContracts';
+import { ATHLETE, ATHLETE_PROMO } from 'data/constants/nearContracts';
 import StatsComponent from './components/StatsComponent';
 import Popup from 'reactjs-popup';
 import 'reactjs-popup/dist/index.css';
@@ -60,7 +60,7 @@ const AssetDetails = (props) => {
   useEffect(() => {
     get_nft_tokens_by_id(
       athleteIndex,
-      isSoulbound ? getContract(ATHLETE_SOULBOUND) : getContract(ATHLETE)
+      isSoulbound ? getContract(ATHLETE_PROMO) : getContract(ATHLETE)
     );
   }, []);
 
