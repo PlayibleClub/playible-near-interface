@@ -419,7 +419,7 @@ const AthleteSelect = (props) => {
                       <div className="mt-1.5 w-full h-14px mb-1"></div>
                       <PerformerContainer
                         key={item.athlete_id}
-                        AthleteName={item.athlete_id.includes('SB') ? 'SOULBOUND' : item.name}
+                        AthleteName={item.name}
                         AvgScore={item.fantasy_score.toFixed(2)}
                         id={item.athlete_id}
                         uri={item.image}
