@@ -48,7 +48,7 @@ export default function Packs() {
   const [packLimit, setPackLimit] = useState(30);
   const [soulboundPackLimit, setSoulboundPackLimit] = useState(30);
   const [totalPacks, setTotalPacks] = useState(0);
-  const [isClaimed, setIsClaimed] = useState(false);
+  const [isClaimed, setIsClaimed] = useState(0);
   const [totalSoulboundPacks, setTotalSoulboundPacks] = useState(0);
   const [activeCategory, setCategory] = useState('NEW');
   const [currentTotal, setCurrentTotal] = useState(0);
@@ -174,18 +174,10 @@ export default function Packs() {
     get_nft_sb_supply_for_owner(accountId);
     get_nft_sb_pack_tokens_for_owner(accountId, 0, 30);
   }, []);
-  useEffect(() => {
-    console.log(packs);
-  }, [packs]);
-
-  useEffect(() => {
-    get_claim_status(accountId);
-  }, []);
 
   useEffect(() => {
     console.log(isClaimed);
   }, [isClaimed]);
-
   useEffect(() => {
     if (remountComponent !== 0) {
     }
@@ -222,7 +214,7 @@ export default function Packs() {
           <div className="iphone5:mt-20 md:ml-6 md:mt-8">
             <PortfolioContainer textcolor="indigo-black" title="PACKS">
               <div className="">
-                {isClaimed ? (
+                {isClaimed >= 2 ? (
                   <button
                     className={`bg-indigo-gray bg-opacity-40 text-indigo-white w-5/6 md:w-80 h-10 pointer-events-none 
             text-center font-bold text-xs self-center justify-center float-right md:-mt-12 iphone5:mr-9 iphone5:mt-4`}
