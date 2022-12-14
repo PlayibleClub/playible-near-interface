@@ -133,48 +133,48 @@ const AthleteSelect = (props) => {
     );
   }
   async function get_mixed_tokens_for_pagination() {
-    // setAthletes(
-    //   await query_mixed_tokens_pagination(
-    //     accountId,
-    //     isPromoPage,
-    //     athleteOffset,
-    //     promoOffset,
-    //     totalPromo,
-    //     athleteLimit,
-    //     position,
-    //     team,
-    //     name
-    //   )
-    // );
-    // setRemountAthlete(Math.random() + 1);
-    query_filter_tokens_for_owner(
+    await query_mixed_tokens_pagination(
       accountId,
-      isPromoPage ? athleteOffset + promoOffset : athleteOffset,
+      isPromoPage,
+      athleteOffset,
+      promoOffset,
+      totalPromo,
       athleteLimit,
       position,
       team,
-      name,
-      isPromoPage ? getContract(ATHLETE_PROMO) : getContract(ATHLETE)
+      name
     ).then((result) => {
-      console.log(result);
-      if (result.length < athleteLimit && !isPromoPage && totalPromo !== 0) {
-        let sbLimit = athleteLimit - result.length;
-        query_filter_tokens_for_owner(
-          accountId,
-          0,
-          sbLimit,
-          position,
-          team,
-          name,
-          getContract(ATHLETE_PROMO)
-        ).then((result2) => {
-          result2.map((obj) => result.push(obj));
-          setAthletes(result);
-        });
-      } else {
-        setAthletes(result);
-      }
+      setAthletes(result);
     });
+    //setRemountAthlete(Math.random() + 1);
+    // query_filter_tokens_for_owner(
+    //   accountId,
+    //   isPromoPage ? athleteOffset + promoOffset : athleteOffset,
+    //   athleteLimit,
+    //   position,
+    //   team,
+    //   name,
+    //   isPromoPage ? getContract(ATHLETE_PROMO) : getContract(ATHLETE)
+    // ).then((result) => {
+    //   console.log(result);
+    //   if (result.length < athleteLimit && !isPromoPage && totalPromo !== 0) {
+    //     let sbLimit = athleteLimit - result.length;
+    //     query_filter_tokens_for_owner(
+    //       accountId,
+    //       0,
+    //       sbLimit,
+    //       position,
+    //       team,
+    //       name,
+    //       getContract(ATHLETE_PROMO)
+    //     ).then((result2) => {
+    //       result2.map((obj) => result.push(obj));
+    //       setAthletes(result);
+    //     });
+    //   } else {
+    //     setAthletes(result);
+    //   }
+    // });
   }
   const mixedPaginationHandling = (e) => {
     let newOffset;

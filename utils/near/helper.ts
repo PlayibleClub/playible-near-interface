@@ -222,21 +222,27 @@ async function query_mixed_tokens_pagination(accountId, isPromoPage, athleteOffs
     team,
     name,
     isPromoPage ? getContract(ATHLETE_PROMO) : getContract(ATHLETE),
-  ).then((result) => {
+  ).then(async (result) => {
     if (result.length < athleteLimit && !isPromoPage && promoSupply !== 0){
       let sbLimit = athleteLimit - result.length;
-      query_filter_tokens_for_owner(
-        accountId,
-        0,
-        sbLimit,
-        position,
-        team,
-        name,
-        getContract(ATHLETE_PROMO)
-      ).then((result2) => {
+      let arrayToReturn =  await Promise.all(await query_filter_tokens_for_owner(accountId, 0, sbLimit, position, team, name, 
+        getContract(ATHLETE_PROMO))).then((result2) => {
         result2.map((obj) => result.push(obj));
         return result;
       })
+      return arrayToReturn;
+      // query_filter_tokens_for_owner(
+      //   accountId,
+      //   0,
+      //   sbLimit,
+      //   position,
+      //   team,
+      //   name,
+      //   getContract(ATHLETE_PROMO)
+      // ).then((result2) => {
+      //   result2.map((obj) => result.push(obj));
+      //   return result;
+      // })
     } else{
       return result;
     }
