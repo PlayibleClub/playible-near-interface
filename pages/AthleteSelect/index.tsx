@@ -131,7 +131,7 @@ const AthleteSelect = (props) => {
       )
     );
   }
-  const alternativeHandling = (e) => {
+  const mixedPaginationHandling = (e) => {
     let newOffset;
     if (e.selected * athleteLimit >= totalAthletes) {
       let offset;
@@ -380,7 +380,7 @@ const AthleteSelect = (props) => {
               pageLinkClassName="rounded-lg text-center hover:font-bold hover:bg-indigo-white hover:text-indigo-black"
               breakLabel="..."
               nextLabel=">"
-              onPageChange={alternativeHandling}
+              onPageChange={mixedPaginationHandling}
               pageRangeDisplayed={5}
               pageCount={pageCount}
               previousLabel="<"
