@@ -288,6 +288,8 @@ const AthleteSelect = (props) => {
       get_filter_tokens_for_owner(getContract(ATHLETE_PROMO));
     } else if (selectedRegular !== false && selectedPromo !== false) {
       get_mixed_tokens_for_pagination();
+    } else {
+      setAthletes([]);
     }
     //else
     // if (!isNaN(athleteOffset)) {
@@ -336,6 +338,9 @@ const AthleteSelect = (props) => {
         name,
         getContract(ATHLETE_PROMO)
       );
+    } else {
+      setTotalAthletes(0);
+      setTotalPromo(0);
     }
     setPageCount(Math.ceil((totalAthletes + totalPromo) / athleteLimit));
     //setup regular_offset, soulbound_offset
