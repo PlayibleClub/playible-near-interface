@@ -60,11 +60,11 @@ const Portfolio = () => {
   const [athleteCount, setAthleteCount] = useState(0);
   const [athleteOffset, setAthleteOffset] = useState(0);
   const [athleteLimit, setAthleteLimit] = useState(10);
-  const [totalAthletes, setTotalAthletes] = useState(0);
+  const [totalRegularSupply, setTotalRegularSupply] = useState(0);
   const [pageCount, setPageCount] = useState(0);
   const [promoOffset, setPromoOffset] = useState(0);
   const [isPromoPage, setIsPromoPage] = useState(false);
-  const [totalPromo, setTotalPromo] = useState(0);
+  const [totalPromoSupply, setTotalPromoSupply] = useState(0);
   const reduxLineup = useSelector(selectAthleteLineup);
   let passedLineup = [...reduxLineup];
   const index = useSelector(selectIndex);
@@ -89,7 +89,7 @@ const Portfolio = () => {
 
   function getAthleteLimit() {
     try {
-      if (totalAthletes > 30) {
+      if (totalRegularSupply > 30) {
         const _athleteLimit = 15;
         console.log('Reloading packs');
         setAthleteLimit(_athleteLimit);
@@ -99,12 +99,14 @@ const Portfolio = () => {
     }
   }
 
-  async function get_filter_soulbound_supply_for_owner(accountId, position, team, name, contract) {
-    setTotalPromo(await query_filter_supply_for_owner(accountId, position, team, name, contract));
+  async function get_filter_soulbound_supply_for_owner(contract) {
+    setTotalPromoSupply(
+      await query_filter_supply_for_owner(accountId, position, team, name, contract)
+    );
   }
 
-  async function get_filter_supply_for_owner(accountId, position, team, name, contract) {
-    setTotalAthletes(
+  async function get_filter_supply_for_owner(contract) {
+    setTotalRegularSupply(
       await query_filter_supply_for_owner(accountId, position, team, name, contract)
     );
   }
@@ -121,7 +123,7 @@ const Portfolio = () => {
       isPromoPage,
       athleteOffset,
       promoOffset,
-      totalPromo,
+      totalPromoSupply,
       athleteLimit,
       position,
       team,
@@ -147,19 +149,22 @@ const Portfolio = () => {
 
   const mixedPaginationHandling = (e) => {
     let newOffset;
-    if (e.selected * athleteLimit >= totalAthletes) {
+    if (e.selected * athleteLimit >= totalRegularSupply) {
       let offset;
-      if (athleteLimit - totalAthletes < 0 && (athleteLimit - totalAthletes) % athleteLimit !== 0) {
-        offset = ((athleteLimit - totalAthletes) % athleteLimit) + athleteLimit;
-      } else offset = (athleteLimit - totalAthletes) % athleteLimit;
+      if (
+        athleteLimit - totalRegularSupply < 0 &&
+        (athleteLimit - totalRegularSupply) % athleteLimit !== 0
+      ) {
+        offset = ((athleteLimit - totalRegularSupply) % athleteLimit) + athleteLimit;
+      } else offset = (athleteLimit - totalRegularSupply) % athleteLimit;
       let extra = 0;
-      if (totalPromo >= offset + athleteLimit + 1) extra = 1;
+      if (totalPromoSupply >= offset + athleteLimit + 1) extra = 1;
       newOffset = Math.abs(Math.abs(e.selected + 1 - pageCount) - extra) * athleteLimit;
       setPromoOffset(offset);
       setIsPromoPage(true);
     } else {
       setIsPromoPage(false);
-      newOffset = (e.selected * athleteLimit) % totalAthletes;
+      newOffset = (e.selected * athleteLimit) % totalRegularSupply;
     }
     passedLineup.splice(index, 1, {
       position: position,
@@ -186,7 +191,7 @@ const Portfolio = () => {
     } else {
       setAthletes([]);
     }
-  }, [totalAthletes, totalPromo, athleteOffset, currentPage]);
+  }, [totalRegularSupply, totalPromoSupply, athleteOffset, currentPage]);
 
   const handleSearchDynamic = (value) => {
     setName(value);
@@ -196,7 +201,7 @@ const Portfolio = () => {
     setName(value);
   };
   const handlePageClick = (event) => {
-    let total = selectedRegular ? totalAthletes : selectedPromo ? totalPromo : 0;
+    let total = selectedRegular ? totalRegularSupply : selectedPromo ? totalPromoSupply : 0;
     const newOffset = (event.selected * athleteLimit) % total;
     setAthleteOffset(newOffset);
     setCurrentPage(event.selected);
@@ -215,33 +220,21 @@ const Portfolio = () => {
   }, [athletes]);
   useEffect(() => {
     if (selectedRegular !== false && selectedPromo === false) {
-      get_filter_supply_for_owner(accountId, position, team, name, getContract(ATHLETE));
-      setTotalPromo(0);
+      get_filter_supply_for_owner(getContract(ATHLETE));
+      setTotalPromoSupply(0);
     } else if (selectedRegular === false && selectedPromo !== false) {
-      get_filter_soulbound_supply_for_owner(
-        accountId,
-        position,
-        team,
-        name,
-        getContract(ATHLETE_PROMO)
-      );
-      setTotalAthletes(0);
+      get_filter_soulbound_supply_for_owner(getContract(ATHLETE_PROMO));
+      setTotalRegularSupply(0);
     } else if (selectedRegular !== false && selectedPromo !== false) {
-      get_filter_supply_for_owner(accountId, position, team, name, getContract(ATHLETE));
-      get_filter_soulbound_supply_for_owner(
-        accountId,
-        position,
-        team,
-        name,
-        getContract(ATHLETE_PROMO)
-      );
+      get_filter_supply_for_owner(getContract(ATHLETE));
+      get_filter_soulbound_supply_for_owner(getContract(ATHLETE_PROMO));
     } else {
-      setTotalAthletes(0);
-      setTotalPromo(0);
+      setTotalRegularSupply(0);
+      setTotalPromoSupply(0);
     }
-    setPageCount(Math.ceil((totalAthletes + totalPromo) / athleteLimit));
+    setPageCount(Math.ceil((totalRegularSupply + totalPromoSupply) / athleteLimit));
     //setup regular_offset, soulbound_offset
-  }, [position, team, name, totalAthletes, totalPromo, selectedRegular, selectedPromo]);
+  }, [position, team, name, totalRegularSupply, totalPromoSupply, selectedRegular, selectedPromo]);
 
   useEffect(() => {
     const delay = setTimeout(() => {

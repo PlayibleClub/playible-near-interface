@@ -59,8 +59,8 @@ const AthleteSelect = (props) => {
   const [isPromoPage, setIsPromoPage] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
   const [athleteLimit, setAthleteLimit] = useState(7);
-  const [totalAthletes, setTotalAthletes] = useState(0);
-  const [totalPromo, setTotalPromo] = useState(0);
+  const [totalRegularSupply, setTotalRegularSupply] = useState(0);
+  const [totalPromoSupply, setTotalPromoSupply] = useState(0);
   const [radioSelected, setRadioSelected] = useState(null);
   const [team, setTeam] = useState(['allTeams']);
   const [name, setName] = useState(['allNames']);
@@ -76,14 +76,16 @@ const AthleteSelect = (props) => {
     url: getRPCProvider(),
   });
 
-  async function get_filter_supply_for_owner(accountId, position, team, name, contract) {
-    setTotalAthletes(
+  async function get_filter_supply_for_owner(contract) {
+    setTotalRegularSupply(
       await query_filter_supply_for_owner(accountId, position, team, name, contract)
     );
   }
 
-  async function get_filter_soulbound_supply_for_owner(accountId, position, team, name, contract) {
-    setTotalPromo(await query_filter_supply_for_owner(accountId, position, team, name, contract));
+  async function get_filter_soulbound_supply_for_owner(contract) {
+    setTotalPromoSupply(
+      await query_filter_supply_for_owner(accountId, position, team, name, contract)
+    );
   }
 
   //TODO: might encounter error w/ loading duplicate athlete
@@ -139,7 +141,7 @@ const AthleteSelect = (props) => {
       isPromoPage,
       athleteOffset,
       promoOffset,
-      totalPromo,
+      totalPromoSupply,
       athleteLimit,
       position,
       team,
@@ -179,19 +181,22 @@ const AthleteSelect = (props) => {
   }
   const mixedPaginationHandling = (e) => {
     let newOffset;
-    if (e.selected * athleteLimit >= totalAthletes) {
+    if (e.selected * athleteLimit >= totalRegularSupply) {
       let offset;
-      if (athleteLimit - totalAthletes < 0 && (athleteLimit - totalAthletes) % athleteLimit !== 0) {
-        offset = ((athleteLimit - totalAthletes) % athleteLimit) + athleteLimit;
-      } else offset = (athleteLimit - totalAthletes) % athleteLimit;
+      if (
+        athleteLimit - totalRegularSupply < 0 &&
+        (athleteLimit - totalRegularSupply) % athleteLimit !== 0
+      ) {
+        offset = ((athleteLimit - totalRegularSupply) % athleteLimit) + athleteLimit;
+      } else offset = (athleteLimit - totalRegularSupply) % athleteLimit;
       let extra = 0;
-      if (totalPromo >= offset + athleteLimit + 1) extra = 1;
+      if (totalPromoSupply >= offset + athleteLimit + 1) extra = 1;
       newOffset = Math.abs(Math.abs(e.selected + 1 - pageCount) - extra) * athleteLimit;
       setPromoOffset(offset);
       setIsPromoPage(true);
     } else {
       setIsPromoPage(false);
-      newOffset = (e.selected * athleteLimit) % totalAthletes;
+      newOffset = (e.selected * athleteLimit) % totalRegularSupply;
     }
     passedLineup.splice(index, 1, {
       position: position,
@@ -273,7 +278,7 @@ const AthleteSelect = (props) => {
   };
 
   const handlePageClick = (event) => {
-    let total = selectedRegular ? totalAthletes : selectedPromo ? totalPromo : 0;
+    let total = selectedRegular ? totalRegularSupply : selectedPromo ? totalPromoSupply : 0;
     const newOffset = (event.selected * athleteLimit) % total;
 
     passedLineup.splice(index, 1, {
@@ -316,7 +321,7 @@ const AthleteSelect = (props) => {
     //     getContract(ATHLETE)
     //   );
     // }
-  }, [totalAthletes, totalPromo, athleteOffset, currentPage]);
+  }, [totalRegularSupply, totalPromoSupply, athleteOffset, currentPage]);
 
   useEffect(() => {
     setAthleteOffset(0);
@@ -328,33 +333,21 @@ const AthleteSelect = (props) => {
   }, [athletes]);
   useEffect(() => {
     if (selectedRegular !== false && selectedPromo === false) {
-      get_filter_supply_for_owner(accountId, position, team, name, getContract(ATHLETE));
-      setTotalPromo(0);
+      get_filter_supply_for_owner(getContract(ATHLETE));
+      setTotalPromoSupply(0);
     } else if (selectedRegular === false && selectedPromo !== false) {
-      get_filter_soulbound_supply_for_owner(
-        accountId,
-        position,
-        team,
-        name,
-        getContract(ATHLETE_PROMO)
-      );
-      setTotalAthletes(0);
+      get_filter_soulbound_supply_for_owner(getContract(ATHLETE_PROMO));
+      setTotalRegularSupply(0);
     } else if (selectedRegular !== false && selectedPromo !== false) {
-      get_filter_supply_for_owner(accountId, position, team, name, getContract(ATHLETE));
-      get_filter_soulbound_supply_for_owner(
-        accountId,
-        position,
-        team,
-        name,
-        getContract(ATHLETE_PROMO)
-      );
+      get_filter_supply_for_owner(getContract(ATHLETE));
+      get_filter_soulbound_supply_for_owner(getContract(ATHLETE_PROMO));
     } else {
-      setTotalAthletes(0);
-      setTotalPromo(0);
+      setTotalRegularSupply(0);
+      setTotalPromoSupply(0);
     }
-    setPageCount(Math.ceil((totalAthletes + totalPromo) / athleteLimit));
+    setPageCount(Math.ceil((totalRegularSupply + totalPromoSupply) / athleteLimit));
     //setup regular_offset, soulbound_offset
-  }, [team, name, totalAthletes, totalPromo, selectedRegular, selectedPromo]);
+  }, [team, name, totalRegularSupply, totalPromoSupply, selectedRegular, selectedPromo]);
   // useEffect(() => {
   //   console.log(totalAthletes);
   //   console.log(totalSoulbound);
