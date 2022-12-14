@@ -186,6 +186,11 @@ export default function Packs() {
     }
     // router.pathname === router.asPath ? setEditModal(false) : setEditModal(true);
   }, []);
+
+  useEffect(() => {
+    get_claim_status(accountId);
+  }, []);
+
   // useEffect(() => {
   //     // set initial value
   //     const mediaWatcher = window.matchMedia("(max-width: 500px)")
