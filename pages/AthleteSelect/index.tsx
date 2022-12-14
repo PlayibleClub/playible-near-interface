@@ -273,7 +273,9 @@ const AthleteSelect = (props) => {
   };
 
   const handlePageClick = (event) => {
-    const newOffset = (event.selected * athleteLimit) % totalAthletes;
+    let total = selectedRegular ? totalAthletes : selectedPromo ? totalPromo : 0;
+    const newOffset = (event.selected * athleteLimit) % total;
+
     passedLineup.splice(index, 1, {
       position: position,
       isAthlete: false,
