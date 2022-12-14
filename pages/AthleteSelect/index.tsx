@@ -58,7 +58,7 @@ const AthleteSelect = (props) => {
   const [promoOffset, setPromoOffset] = useState(0);
   const [isPromoPage, setIsPromoPage] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
-  const [athleteLimit, setAthleteLimit] = useState(8);
+  const [athleteLimit, setAthleteLimit] = useState(7);
   const [totalAthletes, setTotalAthletes] = useState(0);
   const [totalPromo, setTotalPromo] = useState(0);
   const [radioSelected, setRadioSelected] = useState(null);
