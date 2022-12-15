@@ -365,6 +365,8 @@ export default function Index(props) {
     whitelist: whitelistInfo,
     position: NFL_POSITIONS[0],
     positionAmount: 1,
+    gameDescription:'',
+    prizeDescription:'',
   });
 
   const dateStartFormatted = moment(details.startTime).format('YYYY-MM-DD HH:mm:ss');
@@ -629,11 +631,7 @@ export default function Index(props) {
                         value={details.startTime}
                       />
                     </div>
-                  </div>
-
-                  <div className="flex mt-8">
-                    {/* DURATION */}
-                    <div className="flex flex-col lg:w-1/2 lg:mr-10">
+                    <div className="flex flex-col lg:w-1/2 ml-10">
                       <label className="font-monument" htmlFor="datetime">
                         END TIME
                       </label>
@@ -646,6 +644,13 @@ export default function Index(props) {
                         value={details.endTime}
                       />
                     </div>
+                   
+                  </div>
+
+                  <div className="flex">
+                    {/* DURATION */}
+                     
+                   
 
                     {/* PRIZE */}
                     {/* <div className="flex flex-col lg:w-1/2">
@@ -684,7 +689,44 @@ export default function Index(props) {
                         }}
                       />
                     </div>
+                    <div className="flex flex-col w-1/2 ml-10">
+                      <label className="font-monument" htmlFor="duration">
+                        GAME DESCRIPTION
+                      </label>
+                      <textarea
+                        maxLength={160}
+                        className="border outline-none rounded-lg px-3 p-2"
+                        id="description"
+                        name="description"
+                        // type="text"
+                        placeholder="Game Description Enter text up to 160 text."
+                        onChange={(e) => onChangeWhitelist(e)}
+                        // value={details.description}
+                        style={{
+                          minHeight: '120px',
+                        }}
+                      />
+                    </div>
                   </div>
+                 
+                    <div className="flex flex-col w-2/5 mt-8">
+                      <label className="font-monument" htmlFor="duration">
+                        PRIZE DESCRIPTION
+                      </label>
+                      <textarea
+                        maxLength={50}
+                        className="border outline-none rounded-lg px-3 p-2"
+                        id="description"
+                        name="description"
+                        // type="text"
+                        placeholder="Prize Description Enter text up to 50 text."
+                        onChange={(e) => onChangeWhitelist(e)}
+                        // value={details.description}
+                        style={{
+                          minHeight: '120px',
+                        }}
+                      />
+                    </div>
                   <div className="flex mt-8">
                     {/* POSITIONS */}
                     <div className="flex flex-col w-1/2">
@@ -728,7 +770,7 @@ export default function Index(props) {
                     </div>
                   </div>
                   <div className="flex mt-8">
-                    <div className="flex flex-col w-1/2">
+                    <div className="flex flex-col w-2/5">
                       <div
                         key={remountPositionArea}
                         className="border outline-none rounded-lg px-3 p-2"
