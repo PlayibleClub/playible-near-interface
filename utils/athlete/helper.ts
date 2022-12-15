@@ -12,7 +12,7 @@ async function getAthleteInfoById(item) {
   });
   const diff = item.token_id.includes('SB') ? 1 : 0;
   const isPromo = item.token_id.includes('SB');
-  //console.log("starts at: " + item.metadata['starts_at'] + " vs " + "utc :" + getUTCTimestampFromLocal());
+
   const returningData = {
     primary_id: value[0],
     athlete_id: item.token_id,
@@ -21,11 +21,11 @@ async function getAthleteInfoById(item) {
     name: value[3 - diff],
     team: value[4 - diff],
     position: value[5 - diff],
-    release : value[6 - diff],
-    ...isPromo && {type : value[7 - diff]},
+    release: value[6 - diff],
+    ...(isPromo && { type: value[7 - diff] }),
     isOpen: false,
     animation: data.getAthleteById.nftAnimation,
-    image: data.getAthleteById.nftImage,
+    image: item.metadata.media,
     fantasy_score: getAvgFantasyScore(data.getAthleteById.stats),
     stats_breakdown: data.getAthleteById.stats,
     isInGame: item.metadata['starts_at'] > getUTCTimestampFromLocal() ? true : false,
