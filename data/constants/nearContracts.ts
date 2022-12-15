@@ -53,13 +53,18 @@ export const PACK = {
   },
 }; //Pack Contract
 export const PACK_PROMO = {
-  mainnet: '',
+  mainnet: 'pack.promotional.nfl.playible.near',
   testnet: 'pack.promotional.nfl.playible.testnet',
   interface: {
     viewMethods: ['nft_tokens_for_owner', 'nft_supply_for_owner'],
-    changeMethods: ['nft_transfer', 'nft_transfer_call', 'nft_resolve_transfer', 'claim_promo_pack'],
-  }
-}
+    changeMethods: [
+      'nft_transfer',
+      'nft_transfer_call',
+      'nft_resolve_transfer',
+      'claim_promo_pack',
+    ],
+  },
+};
 export const PLAYIBLE = {
   mainnet: 'guest-book.testnet',
   testnet: 'guest-book.mainnet',
@@ -92,7 +97,7 @@ export const ATHLETE = {
     changeMethods: ['addMessage'],
   },
 }; //Athlete Contract
-export const ATHLETE_PROMO= {
+export const ATHLETE_PROMO = {
   mainnet: 'athlete.promotional.nfl.playible.near',
   testnet: 'athlete.promotional.nfl.playible.testnet',
   interface: {
@@ -105,8 +110,8 @@ export const ATHLETE_PROMO= {
       'filtered_nft_supply_for_owner',
     ],
     changeMethods: ['addMessage'],
-  }
-}
+  },
+};
 export const OPENPACK = {
   mainnet: 'open_pack.nfl.playible.near',
   testnet: 'open_pack.nfl.playible.testnet',
@@ -116,13 +121,13 @@ export const OPENPACK = {
   },
 }; //OpenPack Contract
 export const OPENPACK_PROMO = {
-  mainnet: '',
+  mainnet: 'open_pack.promotional.nfl.playible.near',
   testnet: 'open_pack.promotional.nfl.playible.testnet',
   interface: {
     viewMethods: ['getMessages'],
     changeMethods: ['execute_add_athletes', 'execute_open_pack'],
-  }
-}
+  },
+};
 export const ORACLE = {
   mainnet: 'guest-book.testnet',
   testnet: 'guest-book.mainnet',

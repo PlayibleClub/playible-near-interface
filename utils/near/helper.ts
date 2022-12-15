@@ -166,7 +166,7 @@ async function query_filter_tokens_for_owner(
   position,
   team,
   name,
-  contract,
+  contract
 ) {
   const query = JSON.stringify({
     account_id: accountId,
@@ -177,19 +177,21 @@ async function query_filter_tokens_for_owner(
     name: name,
   });
 
-  return await provider.query({
-    request_type: 'call_function',
-    finality: 'optimistic',
-    account_id: contract,
-    method_name: 'filter_tokens_for_owner',
-    args_base64: Buffer.from(query).toString('base64'),
-  }).then((data) => {
-    //@ts-ignore:next-line
-    const result = JSON.parse(Buffer.from(data.result).toString());
-    const result_two =  Promise.all(result.map(convertNftToAthlete).map(getAthleteInfoById));
+  return await provider
+    .query({
+      request_type: 'call_function',
+      finality: 'optimistic',
+      account_id: contract,
+      method_name: 'filter_tokens_for_owner',
+      args_base64: Buffer.from(query).toString('base64'),
+    })
+    .then((data) => {
+      //@ts-ignore:next-line
+      const result = JSON.parse(Buffer.from(data.result).toString());
+      const result_two = Promise.all(result.map(convertNftToAthlete).map(getAthleteInfoById));
 
-    return result_two;
-  });
+      return result_two;
+    });
 }
 
 async function query_player_teams(account, game_id) {
@@ -213,7 +215,17 @@ async function query_player_teams(account, game_id) {
       return playerTeamNames;
     });
 }
-async function query_mixed_tokens_pagination(accountId, isPromoPage, athleteOffset, promoOffset, promoSupply, athleteLimit, position, team, name){
+async function query_mixed_tokens_pagination(
+  accountId,
+  isPromoPage,
+  athleteOffset,
+  promoOffset,
+  promoSupply,
+  athleteLimit,
+  position,
+  team,
+  name
+) {
   return await query_filter_tokens_for_owner(
     accountId,
     isPromoPage ? athleteOffset + promoOffset : athleteOffset,
@@ -221,15 +233,24 @@ async function query_mixed_tokens_pagination(accountId, isPromoPage, athleteOffs
     position,
     team,
     name,
-    isPromoPage ? getContract(ATHLETE_PROMO) : getContract(ATHLETE),
+    isPromoPage ? getContract(ATHLETE_PROMO) : getContract(ATHLETE)
   ).then(async (result) => {
-    if (result.length < athleteLimit && !isPromoPage && promoSupply !== 0){
+    if (result.length < athleteLimit && !isPromoPage && promoSupply !== 0) {
       let sbLimit = athleteLimit - result.length;
-      let arrayToReturn =  await Promise.all(await query_filter_tokens_for_owner(accountId, 0, sbLimit, position, team, name, 
-        getContract(ATHLETE_PROMO))).then((result2) => {
+      let arrayToReturn = await Promise.all(
+        await query_filter_tokens_for_owner(
+          accountId,
+          0,
+          sbLimit,
+          position,
+          team,
+          name,
+          getContract(ATHLETE_PROMO)
+        )
+      ).then((result2) => {
         result2.map((obj) => result.push(obj));
         return result;
-      })
+      });
       return arrayToReturn;
       // query_filter_tokens_for_owner(
       //   accountId,
@@ -243,10 +264,10 @@ async function query_mixed_tokens_pagination(accountId, isPromoPage, athleteOffs
       //   result2.map((obj) => result.push(obj));
       //   return result;
       // })
-    } else{
+    } else {
       return result;
     }
-  })
+  });
 }
 async function query_game_supply() {
   const query = JSON.stringify({});
@@ -269,7 +290,7 @@ async function query_game_supply() {
 
 async function query_games_list(totalGames) {
   const query = JSON.stringify({
-    from_index: 0, 
+    from_index: 0,
     limit: totalGames,
   });
   return provider.query({
@@ -296,8 +317,7 @@ function query_nft_supply_for_owner(accountId, contract) {
       //@ts-ignore:next-line
       const total = JSON.parse(Buffer.from(data.result));
       return total;
-    })
-    
+    });
 }
 
 function query_nft_tokens_for_owner(accountId, packOffset, packLimit, contract) {
@@ -307,15 +327,13 @@ function query_nft_tokens_for_owner(accountId, packOffset, packLimit, contract) 
     limit: packLimit,
   });
 
-  return provider
-    .query({
-      request_type: 'call_function',
-      finality: 'optimistic',
-      account_id: contract,
-      method_name: 'nft_tokens_for_owner',
-      args_base64: Buffer.from(query).toString('base64'),
-    })
-    
+  return provider.query({
+    request_type: 'call_function',
+    finality: 'optimistic',
+    account_id: contract,
+    method_name: 'nft_tokens_for_owner',
+    args_base64: Buffer.from(query).toString('base64'),
+  });
 }
 
 function query_claim_status(accountId) {
@@ -345,7 +363,7 @@ async function execute_claim_soulbound_pack(selector) {
     })
   );
 
-  const deposit = new BigNumber(8).multipliedBy(new BigNumber(MINT_STORAGE_COST)).toFixed();
+  const deposit = new BigNumber(MINT_STORAGE_COST).toFixed();
 
   const action_transfer_call = {
     type: 'FunctionCall',
@@ -369,7 +387,6 @@ async function execute_claim_soulbound_pack(selector) {
     ],
   });
 }
-
 
 export {
   query_game_data,
