@@ -173,7 +173,8 @@ const TokenDrawPage = (props) => {
                         usage={data.usage}
                         name={data.name}
                         isOpen={data.isOpen}
-                        img={data.animation}
+                        img={data.image}
+                        animation={data.animation}
                       />
                     </div>
                   </div>

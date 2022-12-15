@@ -11,7 +11,6 @@ import Container from '../../components/containers/Container';
 import HeaderBase from '../../components/headers/HeaderBase';
 import Navbar from '../../components/navbars/Navbar';
 import HorizontalScrollContainer from '../../components/containers/HorizontalScrollContainer';
-import TokenComponent from '../../components/TokenComponent';
 import Main from '../../components/Main';
 import 'regenerator-runtime/runtime';
 
