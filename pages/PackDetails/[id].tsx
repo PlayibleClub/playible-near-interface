@@ -4,28 +4,32 @@ import 'regenerator-runtime/runtime';
 import BackFunction from '../../components/buttons/BackFunction';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
 import { getContract } from 'utils/near';
-import { OPENPACK, PACK } from '../../data/constants/nearContracts';
+import { OPENPACK, OPENPACK_PROMO, PACK, PACK_PROMO } from '../../data/constants/nearContracts';
 import { providers } from 'near-api-js';
 import BigNumber from 'bignumber.js';
 import { DEFAULT_MAX_FEES, MINT_STORAGE_COST } from 'data/constants/gasFees';
 import Image from 'next/image';
 
 const sampleImage = '/images/packimages/Starter.png';
-
+const sbImage = '/images/packimages/NFL-SB-Pack.png';
 export default function PackDetails(props) {
   const { query } = props;
 
   const { selector } = useWalletSelector();
-
+  const id = query.id.toString();
+  console.log(query.id);
   const myPack = {
-    packName: 'STARTER PACK',
-    id: query.id,
+    packName: id.length === 64 || id.includes('SB') ? 'SOULBOUND PACK' : 'STARTER PACK',
+    id: id,
   };
 
   async function execute_open_pack() {
     const transferArgs = Buffer.from(
       JSON.stringify({
-        receiver_id: getContract(OPENPACK),
+        receiver_id:
+          myPack.packName === 'SOULBOUND PACK'
+            ? getContract(OPENPACK_PROMO)
+            : getContract(OPENPACK),
         token_id: myPack.id,
         msg: 'Pack ' + myPack.id.toString() + ' sent.',
       })
@@ -48,13 +52,15 @@ export default function PackDetails(props) {
     const tx = wallet.signAndSendTransactions({
       transactions: [
         {
-          receiverId: getContract(PACK),
+          receiverId:
+            myPack.packName === 'SOULBOUND PACK' ? getContract(PACK_PROMO) : getContract(PACK),
           // @ts-ignore:next-line
           actions: [action_transfer_call],
         },
       ],
     });
   }
+  //can add to helper
 
   return (
     <Container activeName="PACKS">
@@ -64,7 +70,11 @@ export default function PackDetails(props) {
       <div className="flex flex-col w-full overflow-y-auto h-screen pb-40">
         <div className="flex flex-row ml-24 mt-10">
           <div>
-            <Image src={sampleImage} height="200" width="200" alt="pack-image" />
+            {myPack.packName === 'SOULBOUND PACK' ? (
+              <Image src={sbImage} height="200" width="200" alt="pack-image" />
+            ) : (
+              <Image src={sampleImage} height="200" width="200" alt="pack-image" />
+            )}
           </div>
           <div className="grid grid-rows">
             <div className="text-2xl font-bold font-monument">

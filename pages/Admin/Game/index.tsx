@@ -43,7 +43,8 @@ export default function Index(props) {
   const [gameIdToAdd, setGameIdToAdd] = useState(0);
   //gameinfo
   const [gameInfo, setGameInfo] = useState({});
-
+  const [whitelistInfo, setWhitelistInfo] = useState(null);
+  const [lineupLength, setLineupLength] = useState(0);
   const [tabs, setTabs] = useState([
     {
       name: 'GAMES',
@@ -129,6 +130,7 @@ export default function Index(props) {
     content: '',
   });
   const [positionsInfo, setPositionsInfo] = useState([]);
+  const [positionsDisplay, setPositionsDisplay] = useState([]);
   const provider = new providers.JsonRpcProvider({
     url: getRPCProvider(),
   });
@@ -136,7 +138,6 @@ export default function Index(props) {
     title: '',
     content: '',
   });
-
   const [percentTotal, setPercentTotal] = useState(0);
   const [remountComponent, setRemountComponent] = useState(0);
   const [remountPositionArea, setRemountPositionArea] = useState(0);
@@ -221,7 +222,6 @@ export default function Index(props) {
 
   const onChange = (e) => {
     if (e.target.name === 'positionAmount') {
-      console.log(e.target.name, e.target.value);
       if (parseInt(e.target.value) > -1) {
         setDetails({
           ...details,
@@ -235,6 +235,26 @@ export default function Index(props) {
       });
     }
   };
+
+  const onChangeWhitelist = (e) => {
+    if (e.target.name === 'description') {
+      if (e.target.value !== "") {
+        const whitelistArray = (e.target.value).split('\n').filter(n => n);
+        setWhitelistInfo(whitelistArray);
+        setDetails({
+          ...details,
+          [e.target.name]: e.target.value,
+        });
+      } else if (e.target.value.length === 0) {
+        setWhitelistInfo(null)
+        setDetails({
+          ...details,
+          [e.target.name]: e.target.value,
+        })
+      }
+    }
+  };
+
   const handlePageClick = (event) => {
     const newOffset = (event.selected * gamesLimit) % currentTotal;
     setGamesOffset(newOffset);
@@ -242,21 +262,6 @@ export default function Index(props) {
   const checkValidity = () => {
     let errors = [];
     let sortPercentage = [...distribution].sort((a, b) => b.percentage - a.percentage);
-    // if (!Number.isInteger(details.duration)) {
-    //   errors.push('Duration must be a positive integer that is expressed in days');
-    // }
-
-    // if (!details.name) {
-    //   errors.push('Game is missing a title');
-    // }
-
-    // if (new Date(details.startTime) < new Date() || !details.startTime) {
-    //   errors.push('Invalid Date & Time values');
-    // }
-
-    // if (new Date(details.endTime) > new Date(details.startTime) ) {
-    //   errors.push('Invalid Date & Time values');
-    // }
 
     if (distribution.length === 1 && percentTotal === 0) {
       errors.push('Invalid Distribution values');
@@ -304,6 +309,7 @@ export default function Index(props) {
     e.preventDefault();
     //get current position and amount from details
     let position = [details['position']];
+    let display = position;
     let amount = details['positionAmount'];
     switch (position[0]) {
       case 'FLEX':
@@ -313,45 +319,54 @@ export default function Index(props) {
         position = ['QB', 'RB', 'WR', 'TE'];
         break;
     }
-    let found = positionsInfo.findIndex((e) => e.positions.join() === position);
-    console.log(found);
+    let found = positionsInfo.findIndex((e) => e.positions.join() === position.join());
 
     if (positionsInfo.length === 0) {
       let object = { positions: position, amount: amount };
+      let object2 = { positions: display, amount: amount };
       setPositionsInfo([object]);
+      setPositionsDisplay([object2]);
     }
     //could not find
     else if (found === -1) {
       let object = { positions: position, amount: amount };
+      let object2 = { positions: display, amount: amount };
       setPositionsInfo((current) => [...current, object]);
+      setPositionsDisplay((current) => [...current, object2]);
     } else {
       //found has index of same position
       let current = positionsInfo;
+      let current2 = positionsDisplay;
       //@ts-ignore:next-line
       current[found].amount += amount;
+      current2[found].amount += amount;
       setPositionsInfo(current);
+      setPositionsDisplay(current2);
+      setRemountPositionArea(Math.random());
     }
   };
+
+  const handleRemove = (e) => {
+    e.preventDefault();
+    positionsInfo.pop();
+    positionsDisplay.pop();
+    setRemountPositionArea(Math.random());
+  };
+
   const NFL_POSITIONS = ['QB', 'RB', 'WR', 'TE', 'FLEX', 'SUPERFLEX'];
+
   const [details, setDetails] = useState({
     // name: '',
     startTime: '',
     endTime: '',
     prize: 1,
-    usage: 1,
+    usage: 0,
     description: '',
+    whitelist: whitelistInfo,
     position: NFL_POSITIONS[0],
     positionAmount: 1,
   });
 
-  const nflPositions = [
-    { positions: ['QB'], amount: 1 },
-    { positions: ['RB'], amount: 2 },
-    { positions: ['WR'], amount: 2 },
-    { positions: ['TE'], amount: 1 },
-    { positions: ['RB', 'WR', 'TE'], amount: 1 },
-    { positions: ['QB', 'RB', 'WR', 'TE'], amount: 1 },
-  ];
   const dateStartFormatted = moment(details.startTime).format('YYYY-MM-DD HH:mm:ss');
   const dateStart = moment(dateStartFormatted).utc().unix() * 1000;
   const dateEndFormatted = moment(details.endTime).format('YYYY-MM-DD HH:mm:ss');
@@ -390,12 +405,19 @@ export default function Index(props) {
           )
           .map((item) => getGameInfoById(item))
       );
-      console.table(completedGames);
       setCurrentTotal(upcomingGames.length);
       setNewGames(upcomingGames);
       setCompletedGames(completedGames);
       setOngoingGames(ongoingGames);
     });
+  }
+
+  function getLineupLength() {
+    let counter = 0;
+    for (let i = 0; i < positionsInfo.length; i++) {
+      counter = counter + positionsInfo[i]?.amount;
+    }
+    return counter;
   }
 
   async function execute_add_game() {
@@ -404,10 +426,9 @@ export default function Index(props) {
         game_id: (totalGames + 1).toString(),
         game_time_start: dateStart,
         game_time_end: dateEnd,
-        usage_cost: Number(details.usage),
-        whitelist: null,
-        positions: nflPositions,
-        lineup_len: 8,
+        whitelist: whitelistInfo,
+        positions: positionsInfo,
+        lineup_len: getLineupLength(),
       })
     );
 
@@ -437,8 +458,8 @@ export default function Index(props) {
     getTotalPercent();
   }, [distribution]);
   useEffect(() => {
-    console.log(positionsInfo);
-  }, [positionsInfo]);
+    setRemountPositionArea(Math.random());
+  }, [positionsInfo, positionsDisplay]);
   useEffect(() => {
     get_games_list(totalGames);
     get_game_supply();
@@ -492,8 +513,8 @@ export default function Index(props) {
                       (gameTabs[0].isActive
                         ? newGames
                         : gameTabs[1].isActive
-                        ? ongoingGames
-                        : completedGames
+                          ? ongoingGames
+                          : completedGames
                       )
                         .filter((data, i) => i >= gamesOffset && i < gamesOffset + gamesLimit)
                         .map((data, i) => {
@@ -628,23 +649,6 @@ export default function Index(props) {
                       />
                     </div>
 
-                    {/* USAGE COST */}
-                    <div className="flex flex-col lg:w-1/2">
-                      <label className="font-monument" htmlFor="usage">
-                        USAGE COST
-                      </label>
-                      <input
-                        className="border outline-none rounded-lg px-3 p-2"
-                        type="number"
-                        id="usage"
-                        name="usage"
-                        pattern="[0-9]*"
-                        placeholder="Enter usage cost"
-                        onChange={(e) => onChange(e)}
-                        value={details.usage}
-                      />
-                    </div>
-
                     {/* PRIZE */}
                     {/* <div className="flex flex-col lg:w-1/2">
                       <label className="font-monument" htmlFor="prize">
@@ -675,8 +679,8 @@ export default function Index(props) {
                         name="description"
                         // type="text"
                         placeholder="Enter accounts to whitelist. One account per line. Leave empty for no whitelist."
-                        onChange={(e) => onChange(e)}
-                        value={details.description}
+                        onChange={(e) => onChangeWhitelist(e)}
+                        // value={details.description}
                         style={{
                           minHeight: '120px',
                         }}
@@ -711,10 +715,16 @@ export default function Index(props) {
                           value={details.positionAmount}
                         />
                         <button
-                          className="border outline-none rounded-lg px-3 p-2"
+                          className="border outline-none rounded-lg px-3 p-2 mr-4"
                           onClick={(e) => handleButtonClick(e)}
                         >
                           +
+                        </button>
+                        <button
+                          className="border outline-none rounded-lg px-3 p-2"
+                          onClick={(e) => handleRemove(e)}
+                        >
+                          -
                         </button>
                       </form>
                     </div>
@@ -724,7 +734,15 @@ export default function Index(props) {
                       <div
                         key={remountPositionArea}
                         className="border outline-none rounded-lg px-3 p-2"
-                      ></div>
+                      >
+                        {positionsDisplay.map((x) => {
+                          return (
+                            <label className="flex w-full whitespace-pre-line">
+                              Position: {x.positions} Amount: {x.amount}
+                            </label>
+                          );
+                        })}
+                      </div>
                     </div>
                   </div>
 
@@ -787,8 +805,8 @@ export default function Index(props) {
         <p className="mt-2">Are you sure?</p>
         <p className="font-bold">GAME DETAILS:</p>
         <p className="font-bold">Start Date:</p> {startFormattedTimestamp}
+        {/* <p className="font-bold">Whitelist: </p> {whitelistInfo} */}
         <p className="font-bold">End Date:</p> {endFormattedTimestamp}
-        <p className="font-bold">Usage Cost:</p> {details.usage}
         <button
           className="bg-indigo-green font-monument tracking-widest text-indigo-white w-full h-16 text-center text-sm mt-4"
           onClick={() => {

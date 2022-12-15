@@ -6,21 +6,23 @@ import { getUTCTimestampFromLocal } from 'utils/date/helper';
 // return assembled Athlete
 async function getAthleteInfoById(item) {
   let value = item.extra.map((item) => item.value);
-  console.log(item);
   const { data } = await client.query({
     query: GET_ATHLETE_BY_ID,
     variables: { getAthleteById: parseFloat(value[0]) },
   });
-  console.log("starts at: " + item.metadata['starts_at'] + " vs " + "utc :" + getUTCTimestampFromLocal());
+  const diff = item.token_id.includes('SB') ? 1 : 0;
+  const isPromo = item.token_id.includes('SB');
+  //console.log("starts at: " + item.metadata['starts_at'] + " vs " + "utc :" + getUTCTimestampFromLocal());
   const returningData = {
     primary_id: value[0],
     athlete_id: item.token_id,
     rarity: value[1],
-    usage: value[2],
-    name: value[3],
-    team: value[4],
-    position: value[5],
-    release: value[6],
+    usage: isPromo ? 0 : value[2],
+    name: value[3 - diff],
+    team: value[4 - diff],
+    position: value[5 - diff],
+    release : value[6 - diff],
+    ...isPromo && {type : value[7 - diff]},
     isOpen: false,
     animation: data.getAthleteById.nftAnimation,
     image: data.getAthleteById.nftImage,

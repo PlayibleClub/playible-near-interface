@@ -7,16 +7,33 @@ import PortfolioContainer from 'components/containers/PortfolioContainer';
 import router, { useRouter } from 'next/router';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
 import { convertNftToAthlete, getAthleteInfoById } from 'utils/athlete/helper';
-import { ATHLETE } from 'data/constants/nearContracts';
+import { ATHLETE, ATHLETE_PROMO } from 'data/constants/nearContracts';
 import AthleteSelectContainer from 'components/containers/AthleteSelectContainer';
 import Link from 'next/link';
 import SearchComponent from 'components/SearchComponent';
 import ReactPaginate from 'react-paginate';
 import PerformerContainer from 'components/containers/PerformerContainer';
 import { Provider, useDispatch, useSelector } from 'react-redux';
-import { selectAthleteLineup, selectGameId, selectIndex, selectPosition, selectTeamName } from 'redux/athlete/athleteSlice';
-import { setAthleteLineup, setGameId, setIndex, setPosition, setTeamNameRedux } from 'redux/athlete/athleteSlice';
-import { query_filter_supply_for_owner, query_filter_tokens_for_owner } from 'utils/near/helper';
+import {
+  selectAthleteLineup,
+  selectGameId,
+  selectIndex,
+  selectPosition,
+  selectTeamName,
+} from 'redux/athlete/athleteSlice';
+import {
+  setAthleteLineup,
+  setGameId,
+  setIndex,
+  setPosition,
+  setTeamNameRedux,
+} from 'redux/athlete/athleteSlice';
+import {
+  query_filter_supply_for_owner,
+  query_filter_tokens_for_owner,
+  query_mixed_tokens_pagination,
+} from 'utils/near/helper';
+import NftTypeComponent from 'pages/Portfolio/components/NftTypeComponent';
 
 const AthleteSelect = (props) => {
   const { query } = props;
@@ -26,20 +43,24 @@ const AthleteSelect = (props) => {
   //const position = query.position;
   const router = useRouter();
   const data = router.query;
-  let pass = data;
   const dispatch = useDispatch();
   //Get the data from redux store
   const gameId = useSelector(selectGameId);
   const position = useSelector(selectPosition);
   const index = useSelector(selectIndex);
-  console.log(position);
-  console.log(useSelector(selectAthleteLineup));
   const reduxLineup = useSelector(selectAthleteLineup);
   let passedLineup = [...reduxLineup];
   const [athletes, setAthletes] = useState([]);
+  const [selectedRegular, setSelectedRegular] = useState(false);
+  const [selectedPromo, setSelectedPromo] = useState(false);
   const [athleteOffset, setAthleteOffset] = useState(0);
+  const [regularOffset, setRegularOffset] = useState(0);
+  const [promoOffset, setPromoOffset] = useState(0);
+  const [isPromoPage, setIsPromoPage] = useState(false);
+  const [currentPage, setCurrentPage] = useState(0);
   const [athleteLimit, setAthleteLimit] = useState(7);
-  const [totalAthletes, setTotalAthletes] = useState(0);
+  const [totalRegularSupply, setTotalRegularSupply] = useState(0);
+  const [totalPromoSupply, setTotalPromoSupply] = useState(0);
   const [radioSelected, setRadioSelected] = useState(null);
   const [team, setTeam] = useState(['allTeams']);
   const [name, setName] = useState(['allNames']);
@@ -50,30 +71,21 @@ const AthleteSelect = (props) => {
   const [search, setSearch] = useState('');
   const [currPosition, setCurrPosition] = useState('');
   const [loading, setLoading] = useState(true);
+  const [remountAthlete, setRemountAthlete] = useState(0);
   const provider = new providers.JsonRpcProvider({
     url: getRPCProvider(),
   });
 
-  async function get_filter_supply_for_owner(accountId, position, team, name) {
-    console.log(accountId)
-    setTotalAthletes(await query_filter_supply_for_owner(accountId, position, team, name));
+  async function get_filter_supply_for_owner(contract) {
+    setTotalRegularSupply(
+      await query_filter_supply_for_owner(accountId, position, team, name, contract)
+    );
   }
 
-  function get_filter_tokens_for_owner(accountId, athleteOffset, athleteLimit, position, team, name) {
-    query_filter_tokens_for_owner(accountId, athleteOffset, athleteLimit, position, team, name)
-      .then(async (data) => {
-        // @ts-ignore:next-line
-        const result = JSON.parse(Buffer.from(data.result).toString());
-        const result_two = await Promise.all(
-          result.map(convertNftToAthlete).map(getAthleteInfoById)
-        );
-
-        // const sortedResult = sortByKey(result_two, 'fantasy_score');
-        setCurrPosition(position);
-        setAthletes(result_two);
-        setLoading(false);
-      });
-
+  async function get_filter_soulbound_supply_for_owner(contract) {
+    setTotalPromoSupply(
+      await query_filter_supply_for_owner(accountId, position, team, name, contract)
+    );
   }
 
   //TODO: might encounter error w/ loading duplicate athlete
@@ -81,14 +93,14 @@ const AthleteSelect = (props) => {
     passedLineup.splice(index, 1, {
       position: position,
       isAthlete: true,
+      isPromo: athletes[radioIndex].athlete_id.includes('SB') ? true : false,
       athlete: athletes[radioIndex],
     });
-    console.table(passedLineup);
     setLineup(passedLineup);
   }
   function getPositionDisplay(position) {
-    if(position.length === 3) return 'FLEX';
-    if(position.length === 4) return 'SUPERFLEX';
+    if (position.length === 3) return 'FLEX';
+    if (position.length === 4) return 'SUPERFLEX';
     switch (position[0]) {
       case 'QB':
         return 'QUARTER BACK';
@@ -99,8 +111,6 @@ const AthleteSelect = (props) => {
       case 'TE':
         return 'TIGHT END';
     }
-
-    
   }
   function checkIfAthleteExists(athlete_id) {
     for (let i = 0; i < passedLineup.length; i++) {
@@ -112,25 +122,148 @@ const AthleteSelect = (props) => {
     }
     return false;
   }
+  async function get_filter_tokens_for_owner(contract) {
+    setAthletes(
+      await query_filter_tokens_for_owner(
+        accountId,
+        athleteOffset,
+        athleteLimit,
+        position,
+        team,
+        name,
+        contract
+      )
+    );
+  }
+  async function get_mixed_tokens_for_pagination() {
+    await query_mixed_tokens_pagination(
+      accountId,
+      isPromoPage,
+      athleteOffset,
+      promoOffset,
+      totalPromoSupply,
+      athleteLimit,
+      position,
+      team,
+      name
+    ).then((result) => {
+      setAthletes(result);
+    });
+    //setRemountAthlete(Math.random() + 1);
+    // query_filter_tokens_for_owner(
+    //   accountId,
+    //   isPromoPage ? athleteOffset + promoOffset : athleteOffset,
+    //   athleteLimit,
+    //   position,
+    //   team,
+    //   name,
+    //   isPromoPage ? getContract(ATHLETE_PROMO) : getContract(ATHLETE)
+    // ).then((result) => {
+    //   console.log(result);
+    //   if (result.length < athleteLimit && !isPromoPage && totalPromo !== 0) {
+    //     let sbLimit = athleteLimit - result.length;
+    //     query_filter_tokens_for_owner(
+    //       accountId,
+    //       0,
+    //       sbLimit,
+    //       position,
+    //       team,
+    //       name,
+    //       getContract(ATHLETE_PROMO)
+    //     ).then((result2) => {
+    //       result2.map((obj) => result.push(obj));
+    //       setAthletes(result);
+    //     });
+    //   } else {
+    //     setAthletes(result);
+    //   }
+    // });
+  }
+  const mixedPaginationHandling = (e) => {
+    let newOffset;
+    if (e.selected * athleteLimit >= totalRegularSupply) {
+      let offset;
+      if (
+        athleteLimit - totalRegularSupply < 0 &&
+        (athleteLimit - totalRegularSupply) % athleteLimit !== 0
+      ) {
+        offset = ((athleteLimit - totalRegularSupply) % athleteLimit) + athleteLimit;
+      } else offset = (athleteLimit - totalRegularSupply) % athleteLimit;
+      let extra = 0;
+      if (totalPromoSupply >= offset + athleteLimit + 1) extra = 1;
+      newOffset = Math.abs(Math.abs(e.selected + 1 - pageCount) - extra) * athleteLimit;
+      setPromoOffset(offset);
+      setIsPromoPage(true);
+    } else {
+      setIsPromoPage(false);
+      newOffset = (e.selected * athleteLimit) % totalRegularSupply;
+    }
+    passedLineup.splice(index, 1, {
+      position: position,
+      isAthlete: false,
+      isPromo: false,
+    });
 
+    setRadioSelected(null);
+    setAthleteOffset(newOffset);
+    setCurrentPage(e.selected);
+  };
   function handleDropdownChange() {
     setAthleteOffset(0);
     setAthleteLimit(7);
     setRemountComponent(Math.random());
   }
 
-  const handlePageClick = (e) => {
-    const newOffset = (e.selected * athleteLimit) % totalAthletes;
-    //add reset of lineup
-    passedLineup.splice(index, 1, {
-      position: position,
-      isAthlete: false,
-    });
-    setRadioSelected(null);
-    setAthleteOffset(newOffset);
-  };
+  // const handlePageClick = (e) => {
+  //   let newOffset;
+  //   console.log(e.selected);
+  //   //soulbound athlete not needed yet
+  //   if (soulPage === false) {
+  //     //skipping to last page that has soulbound athletes
+  //     if (e.selected * athleteLimit >= totalAthletes) {
+  //       setSoulPage(true);
+  //       //newOffset = (athleteLimit * Math.floor(totalSoulbound / athleteLimit) - )
+  //       //newOffset = (athleteLimit * Math.ceil(totalSoulbound / athleteLimit) - (totalAthletes % athleteLimit));
+  //       if (totalAthletes % athleteLimit === 0) {
+  //         newOffset =
+  //           (Math.floor(totalSoulbound / athleteLimit) - Math.abs(e.selected - pageCount)) *
+  //             athleteLimit -
+  //           athleteLimit;
+  //       } else {
+  //         //prettier-ignore
+  //         newOffset = athleteLimit - (totalAthletes % athleteLimit) + (Math.floor(totalSoulbound / athleteLimit) - Math.abs(e.selected - pageCount)) * athleteLimit - athleteLimit;
+  //       }
+  //     } else {
+  //       newOffset = ((e.selected * athleteLimit) % totalAthletes) + soulOffset;
+  //     }
+  //   } else if (soulPage > true) {
+  //     let newPage = e.selected;
+  //     let compute = newPage - currentPage;
+  //     console.log(compute);
+  //     //getting page offset for soulbound
+  //     // if (soulPage - compute <= -1) {
+  //     //   console.log(soulPage + ' + ' + compute);
+  //     //   newOffset = (soulPage + (compute - 1)) * athleteLimit + soulOffset;
+  //     // } else {
+  //     //   console.log('test');
+  //     //   newOffset = (e.selected * athleteLimit) % totalAthletes;
+  //     //   setSoulPage(-1);
+  //     //   setSoulOffset(0);
+  //     // }
+  //   }
+  //   // const newOffset = (e.selected * athleteLimit) % totalAthletes;
+  //   //add reset of lineup
+  //   passedLineup.splice(index, 1, {
+  //     position: position,
+  //     isAthlete: false,
+  //     isPromo: false,
+  //   });
+  //   setRadioSelected(null);
+  //   setAthleteOffset(newOffset);
+  //   setCurrentPage(e.selected);
+  // };
+
   const handleRadioClick = (value) => {
-    console.log(value);
     setRadioSelected(value);
     setAthleteRadio(value);
   };
@@ -142,18 +275,84 @@ const AthleteSelect = (props) => {
       pathname: '/CreateTeam/[game_id]',
       query: { game_id: game_id },
     });
-  }
-  useEffect(() => {
-    if (!isNaN(athleteOffset)) {
-      get_filter_supply_for_owner(accountId, position, team, name);
-      setPageCount(Math.ceil(totalAthletes / athleteLimit));
-      const endOffset = athleteOffset + athleteLimit;
-      console.log(`Loading athletes from ${athleteOffset} to ${endOffset}`);
-      get_filter_tokens_for_owner(accountId, athleteOffset, athleteLimit, position, team, name);
-    }
-  }, [totalAthletes, athleteLimit, athleteOffset, position, team, name]);
+  };
 
-  useEffect(() => { }, [search]);
+  const handlePageClick = (event) => {
+    let total = selectedRegular ? totalRegularSupply : selectedPromo ? totalPromoSupply : 0;
+    const newOffset = (event.selected * athleteLimit) % total;
+
+    passedLineup.splice(index, 1, {
+      position: position,
+      isAthlete: false,
+      isPromo: false,
+    });
+    setAthleteOffset(newOffset);
+    setCurrentPage(event.selected);
+  };
+
+  useEffect(() => {
+    //if regular and soulbound radio buttons are enabled
+    if (selectedRegular !== false && selectedPromo === false) {
+      get_filter_tokens_for_owner(getContract(ATHLETE));
+    } else if (selectedRegular === false && selectedPromo !== false) {
+      get_filter_tokens_for_owner(getContract(ATHLETE_PROMO));
+    } else if (selectedRegular !== false && selectedPromo !== false) {
+      get_mixed_tokens_for_pagination();
+    } else {
+      setAthletes([]);
+    }
+
+    //else
+    // if (!isNaN(athleteOffset)) {
+    //   //if normal radio button is selected
+    //   get_filter_supply_for_owner(accountId, position, team, name, getContract(ATHLETE));
+    //   //if sb radio button is selected
+    //   //get_filter_supply_for_owner(accountId, position, team, name, getContract(ATHLETE_SOULBOUND));
+    //   setPageCount(Math.ceil(totalAthletes / athleteLimit));
+    //   const endOffset = athleteOffset + athleteLimit;
+    //   console.log(`Loading athletes from ${athleteOffset} to ${endOffset}`);
+    //   get_filter_tokens_for_owner(
+    //     accountId,
+    //     athleteOffset,
+    //     athleteLimit,
+    //     position,
+    //     team,
+    //     name,
+    //     getContract(ATHLETE)
+    //   );
+    // }
+  }, [totalRegularSupply, totalPromoSupply, athleteOffset, currentPage]);
+
+  useEffect(() => {
+    setAthleteOffset(0);
+    setRemountComponent(Math.random());
+  }, [selectedRegular, selectedPromo]);
+
+  useEffect(() => {
+    setRemountAthlete(Math.random() + 1);
+  }, [athletes]);
+  useEffect(() => {
+    if (selectedRegular !== false && selectedPromo === false) {
+      get_filter_supply_for_owner(getContract(ATHLETE));
+      setTotalPromoSupply(0);
+    } else if (selectedRegular === false && selectedPromo !== false) {
+      get_filter_soulbound_supply_for_owner(getContract(ATHLETE_PROMO));
+      setTotalRegularSupply(0);
+    } else if (selectedRegular !== false && selectedPromo !== false) {
+      get_filter_supply_for_owner(getContract(ATHLETE));
+      get_filter_soulbound_supply_for_owner(getContract(ATHLETE_PROMO));
+    } else {
+      setTotalRegularSupply(0);
+      setTotalPromoSupply(0);
+    }
+    setPageCount(Math.ceil((totalRegularSupply + totalPromoSupply) / athleteLimit));
+    //setup regular_offset, soulbound_offset
+  }, [team, name, totalRegularSupply, totalPromoSupply, selectedRegular, selectedPromo]);
+  // useEffect(() => {
+  //   console.log(totalAthletes);
+  //   console.log(totalSoulbound);
+  // }, [totalAthletes, totalSoulbound]);
+  useEffect(() => {}, [search]);
 
   return (
     <>
@@ -165,7 +364,13 @@ const AthleteSelect = (props) => {
             textcolor="text-indigo-black"
           />
         </div>
-
+        <NftTypeComponent
+          onChangeFn={(selectedRegular, selectedPromo) => {
+            setSelectedRegular(selectedRegular);
+            setSelectedPromo(selectedPromo);
+            setRemountComponent(Math.random());
+          }}
+        />
         <div className="h-8 flex absolute ml-3 top-32 mr-8 md:top-24 md:right-20 md:-mt-5 ">
           <SearchComponent
             onChangeFn={(search) => setName(search)}
@@ -201,11 +406,10 @@ const AthleteSelect = (props) => {
           </form> */}
         </div>
 
-        <div className="flex flex-col">
+        <div key={remountAthlete} className="flex flex-col">
           <div className="grid grid-cols-4 mt-1 md:grid-cols-4 md:ml-7 md:mt-2">
             {athletes.map((item, i) => {
               const accountAthleteIndex = athletes.indexOf(item, 0) + athleteOffset;
-
               return (
                 <>
                   {checkIfAthleteExists(item.athlete_id) || item.isInGame ? (
@@ -261,13 +465,20 @@ const AthleteSelect = (props) => {
               pageLinkClassName="rounded-lg text-center hover:font-bold hover:bg-indigo-white hover:text-indigo-black"
               breakLabel="..."
               nextLabel=">"
-              onPageChange={handlePageClick}
+              onPageChange={
+                selectedRegular !== false && selectedPromo !== false
+                  ? mixedPaginationHandling
+                  : handlePageClick
+              }
               pageRangeDisplayed={5}
               pageCount={pageCount}
               previousLabel="<"
               renderOnZeroPageCount={null}
             />
-            <button className="bg-indigo-buttonblue text-indigo-white w-full ml-7 mt-4 md:w-60 h-14 text-center font-bold text-md" onClick={() => handleProceedClick(gameId, lineup)}>
+            <button
+              className="bg-indigo-buttonblue text-indigo-white w-full ml-7 mt-4 md:w-60 h-14 text-center font-bold text-md"
+              onClick={() => handleProceedClick(gameId, lineup)}
+            >
               PROCEED
             </button>
           </div>

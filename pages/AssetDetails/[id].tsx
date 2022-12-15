@@ -6,18 +6,19 @@ import Image from 'next/image';
 import BackFunction from '../../components/buttons/BackFunction';
 import { providers } from 'near-api-js';
 import { getContract, getRPCProvider } from 'utils/near';
-import { ATHLETE } from 'data/constants/nearContracts';
+import { ATHLETE, ATHLETE_PROMO } from 'data/constants/nearContracts';
 import StatsComponent from './components/StatsComponent';
 import Popup from 'reactjs-popup';
 import 'reactjs-popup/dist/index.css';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { query_nft_tokens_for_owner } from 'utils/near/helper';
+import { query_nft_tokens_by_id } from 'utils/near/helper';
 
 const AssetDetails = (props) => {
   const { query } = props;
 
   const athleteIndex = query.id;
+  const isSoulbound = athleteIndex.includes('SB') ? true : false;
   const { accountId } = useWalletSelector();
 
   const provider = new providers.JsonRpcProvider({
@@ -47,8 +48,8 @@ const AssetDetails = (props) => {
     return months[date.getMonth()] + '. ' + date.getDate();
   }
 
-  function get_nft_tokens_for_owner(athleteIndex) {
-    query_nft_tokens_for_owner(athleteIndex).then(async (data) => {
+  function get_nft_tokens_by_id(athleteIndex, contract) {
+    query_nft_tokens_by_id(athleteIndex, contract).then(async (data) => {
       // @ts-ignore:next-line
       const result = JSON.parse(Buffer.from(data.result).toString());
       const result_two = await getAthleteInfoById(await convertNftToAthlete(result));
@@ -57,7 +58,10 @@ const AssetDetails = (props) => {
   }
 
   useEffect(() => {
-    get_nft_tokens_for_owner(athleteIndex);
+    get_nft_tokens_by_id(
+      athleteIndex,
+      isSoulbound ? getContract(ATHLETE_PROMO) : getContract(ATHLETE)
+    );
   }, []);
 
   function getGamesPlayed() {

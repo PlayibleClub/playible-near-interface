@@ -15,11 +15,15 @@ import 'regenerator-runtime/runtime';
 import LoadingPageDark from '../../components/loading/LoadingPageDark';
 import { providers } from 'near-api-js';
 import { getContract, getRPCProvider } from 'utils/near';
-import { GAME, ATHLETE } from 'data/constants/nearContracts';
+import { GAME, ATHLETE, ATHLETE_PROMO } from 'data/constants/nearContracts';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
 import { convertNftToAthlete, getAthleteInfoById } from 'utils/athlete/helper';
 import { getUTCDateFromLocal } from 'utils/date/helper';
-import { query_game_data, query_nft_tokens_for_owner } from 'utils/near/helper';
+import {
+  query_game_data,
+  query_nft_tokens_by_id,
+  query_nft_tokens_for_owner,
+} from 'utils/near/helper';
 import EntrySummaryBack from 'components/buttons/EntrySummaryBack';
 
 export default function EntrySummary(props) {
@@ -123,12 +127,14 @@ export default function EntrySummary(props) {
 
   function get_nft_tokens_for_owner() {
     playerLineup.forEach((token_id) => {
-      query_nft_tokens_for_owner(token_id).then(async (data) => {
-          // @ts-ignore:next-line
-          const result = JSON.parse(Buffer.from(data.result).toString());
-          const result_two = await getAthleteInfoById(await convertNftToAthlete(result));
-          setAthletes((athletes) => [...athletes, result_two]);
-        });
+      //check if token_id contains sb, then query with soulbound contract
+      let contract = token_id.includes('SB') ? getContract(ATHLETE_PROMO) : getContract(ATHLETE);
+      query_nft_tokens_by_id(token_id, contract).then(async (data) => {
+        // @ts-ignore:next-line
+        const result = JSON.parse(Buffer.from(data.result).toString());
+        const result_two = await getAthleteInfoById(await convertNftToAthlete(result));
+        setAthletes((athletes) => [...athletes, result_two]);
+      });
     });
     //setAthletes(testAthlete);
   }

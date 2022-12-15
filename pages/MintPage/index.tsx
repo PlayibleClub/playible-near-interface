@@ -13,10 +13,20 @@ import USN from '../../public/images/SVG/usn';
 import { useWalletSelector } from '../../contexts/WalletSelectorContext';
 import BigNumber from 'bignumber.js';
 import { getConfig, getContract, getRPCProvider } from '../../utils/near';
+import { useRouter } from 'next/router';
+import Modal from 'components/modals/Modal';
 import PortfolioContainer from '../../components/containers/PortfolioContainer';
-import { MINTER, NEP141USDC, NEP141USDT, NEP141USN } from '../../data/constants/nearContracts';
+import {
+  MINTER,
+  NEP141USDC,
+  NEP141USDT,
+  NEP141USN,
+  PACK_PROMO,
+} from '../../data/constants/nearContracts';
 
 import { MINT_STORAGE_COST, DEFAULT_MAX_FEES } from 'data/constants/gasFees';
+import { execute_claim_soulbound_pack, query_claim_status } from 'utils/near/helper';
+import Link from 'next/link';
 
 const DECIMALS_NEAR = 1000000000000000000000000;
 const RESERVED_AMOUNT = 200;
@@ -57,6 +67,13 @@ export default function Home(props) {
   const [useNEP141, setUseNEP141] = useState(NEP141USDT);
   const [intervalSale, setIntervalSale] = useState(0);
   const [balanceErrorMsg, setBalanceErrorMsg] = useState('');
+  const [isClaimed, setIsClaimed] = useState(false);
+  const router = useRouter();
+  const [editModal, setEditModal] = useState(false);
+
+  async function get_claim_status(accountId) {
+    setIsClaimed(await query_claim_status(accountId));
+  }
 
   function query_config_contract() {
     provider
@@ -333,6 +350,16 @@ export default function Home(props) {
       days: format_days,
     };
   }
+
+  const handleButtonClick = (e) => {
+    e.preventDefault();
+    get_soulbound_pack(selector);
+  };
+
+  async function get_soulbound_pack(selector) {
+    execute_claim_soulbound_pack(selector);
+  }
+
   useEffect(() => {
     query_config_contract();
     query_storage_deposit_account_id();
@@ -351,18 +378,45 @@ export default function Home(props) {
     return () => clearInterval(timer);
   }, [intervalSale]);
 
+  useEffect(() => {
+    get_claim_status(accountId);
+  }, []);
+
+  useEffect(() => {
+    if (router.asPath.indexOf('transactionHashes') > -1) {
+      setEditModal(true);
+    }
+  }, []);
+
   return (
     <>
       <Container activeName="MINT">
         <div className="flex flex-col w-screen md:w-full overflow-y-auto h-screen justify-center self-center md:pb-12 text-indigo-black">
           <Main color="indigo-white">
-            <div className="flex-initial md:ml-6 md:mt-8">
+            <div className="flex-initial iphone5:mt-20 md:ml-6 md:mt-8">
+              {isClaimed ? (
+                <button
+                  className={`bg-indigo-gray bg-opacity-40 text-indigo-white w-5/6 md:w-80 h-10 pointer-events-none 
+            text-center font-bold text-xs self-center justify-center float-right md:mt-7 iphone5:mr-9 iphone5:mt-32`}
+                  onClick={(e) => handleButtonClick(e)}
+                >
+                  CLAIM SOULBOUND PACK
+                </button>
+              ) : (
+                <button
+                  className={`bg-indigo-buttonblue text-indigo-white w-5/6 md:w-80 h-10 
+           text-center font-bold text-xs self-center justify-center float-right md:mt-7 iphone5:mr-9 iphone5:mt-32`}
+                  onClick={(e) => handleButtonClick(e)}
+                >
+                  CLAIM SOULBOUND PACK
+                </button>
+              )}
               <PortfolioContainer title="MINT PACKS" textcolor="text-indigo-black" />
             </div>
             <div className="flex flex-col md:flex-row md:ml-12">
               <div className="md:w-full overflow-x-hidden">
                 <div className="flex-col flex w-full mt-8 ">
-                  <div className="align-center justify-center border-2 p-8 mr-8 rounded-lg">
+                  <div className="align-center justify-center border-2 p-8 iphone5:ml-2 iphone5:mr-2 md:mr-8 rounded-lg">
                     <div className="text-m">
                       Early Bird Offer: The first 500 minted will receive an additional free
                       promotional pack.
@@ -529,7 +583,7 @@ export default function Home(props) {
                     {/*TODO: end */}
                   </div>
                 </div>
-                <div className="ml-8 md:ml-2">
+                <div className="iphone5:mt-5 md:mt-0 ml-8 md:ml-2">
                   <div className="text-xl font-bold font-monument ">
                     PACK DETAILS
                     <hr className="w-10 border-4"></hr>
@@ -551,6 +605,30 @@ export default function Home(props) {
                   </div>
                 </div>
               </div>
+              <Modal
+                title={'CONGRATULATIONS'}
+                visible={editModal}
+                onClose={() => {
+                  setEditModal(false);
+                }}
+              >
+                Your pack has been minted successfully!
+                <div className="flex flex-wrap flex-col mt-10 mb-5 bg-opacity-70 z-50 w-full">
+                  <div className="ml-20 mb-12">
+                    <img width={240} height={340} src="/images/packimages/NFL-SB-Pack.png"></img>
+                  </div>
+                  <Link href={'/Packs'}>
+                    <button
+                      className="bg-indigo-buttonblue text-indigo-white w-full h-14 text-center tracking-widest text-md font-monument"
+                      onClick={() => {
+                        setEditModal(false);
+                      }}
+                    >
+                      CONFIRM
+                    </button>
+                  </Link>
+                </div>
+              </Modal>
             </div>
           </Main>
         </div>
