@@ -30,14 +30,12 @@ const Games = (props) => {
   const [gameInfo, setGameInfo] = useState([]);
   const [week, setWeek] = useState(0);
 
- async function get_game_data(game_id) {
-
+  async function get_game_data(game_id) {
     setGameInfo(await query_game_data(game_id));
-
   }
 
-  const gameStart = (Object.values(gameInfo)[0]) / 1000;
-  console.log("nfl week: " + week);
+  const gameStart = Object.values(gameInfo)[0] / 1000;
+  console.log('nfl week: ' + week);
 
   async function get_game_week() {
     setWeek(await getNflWeek(gameStart));
@@ -56,7 +54,7 @@ const Games = (props) => {
     get_player_teams(accountId, gameId);
     console.log(playerTeams);
     get_all_players_lineup();
-  },[week]);
+  }, [week]);
 
   useEffect(() => {
     get_game_data(gameId);
@@ -64,7 +62,7 @@ const Games = (props) => {
 
   useEffect(() => {
     get_game_week();
-  })
+  });
 
   return (
     <Container activeName="GAMES">
@@ -74,49 +72,52 @@ const Games = (props) => {
             <BackFunction prev="/Play" />
           </div>
           <div className="flex flex-row">
-          <div className="md:ml-6 mt-11 flex flex-col w-auto">
-            <div className="md:ml-7 mr-12">
-              <Image src="/images/game.png" width={550} height={279} alt="game-image" />
+            <div className="md:ml-6 mt-11 flex flex-col w-auto">
+              <div className="md:ml-7 mr-12">
+                <Image src="/images/game.png" width={550} height={279} alt="game-image" />
+              </div>
+              <div className="mt-7 ml-6 w-3/5 md:w-1/2 md:ml-7 md:mt-2">
+                <ModalPortfolioContainer title="VIEW TEAMS" textcolor="text-indigo-black mb-5" />
+                {
+                  /* @ts-expect-error */
+                  playerTeams.team_names == undefined ? (
+                    'No Teams Assigned'
+                  ) : (
+                    <div>
+                      {console.log(playerTeams)}
+                      {/* @ts-expect-error */}
+                      {playerTeams.team_names.map((data) => {
+                        return <ViewTeamsContainer teamNames={data} gameId={gameId} />;
+                      })}
+                    </div>
+                  )
+                }
+              </div>
             </div>
-            <div className='mt-7 ml-6 w-3/5 md:w-1/2 md:ml-7 md:mt-2'>
-              <ModalPortfolioContainer title="VIEW TEAMS" textcolor="text-indigo-black mb-5" />
-              {
-                /* @ts-expect-error */
-                playerTeams.team_names == undefined ? (
-                  'No Teams Assigned'
-                ) : (
-                  <div>
-                    {/* @ts-expect-error */}
-                    {playerTeams.team_names.map((data) => {
-                      return <ViewTeamsContainer teamNames={data} gameId={gameId} />;
-                    })}
-                  </div>
-                )
-              }
-            </div>
-          </div>
 
-          <div className="md:ml-18 ml-18 mt-4">
+            <div className="md:ml-18 ml-18 mt-4">
               <ModalPortfolioContainer textcolor="indigo-black" title={'LEADERBOARD'} />
-              <div className='overflow-y-auto'>
-                {playerLineups.length > 0
-                  ? playerLineups.slice(0,10).map((item, index) => {
+              <div className="overflow-y-auto">
+                {playerLineups.length > 0 ? (
+                  playerLineups.slice(0, 10).map((item, index) => {
                     return (
                       <LeaderboardComponent
                         accountId={item.accountId}
                         teamName={item.teamName}
                         teamScore={item.sumScore}
                         index={index}
+                        gameId={gameId}
                       />
                     );
                   })
-                  : 
+                ) : (
                   <div className="-mt-10 -ml-12">
-                  <LoadingPageDark />
-                  </div>}
+                    <LoadingPageDark />
+                  </div>
+                )}
               </div>
             </div>
-         </div>              
+          </div>
         </Main>
       </div>
     </Container>
