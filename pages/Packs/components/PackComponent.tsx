@@ -26,7 +26,6 @@ const PackComponent = (props) => {
             <img src={image} height={200} width={200} />
           </Link>
         </button>
-        {console.log(id)}
       </div>
     </div>
   );

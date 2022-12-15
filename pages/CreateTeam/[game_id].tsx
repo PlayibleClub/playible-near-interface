@@ -327,6 +327,7 @@ export default function CreateLineup(props) {
     //@ts-ignore:next-line
     console.log(gameData);
     if (gameData.length !== 0) {
+      //@ts-ignore:next-line
       populateLineup(gameData.positions);
     }
   }, [gameData]);
