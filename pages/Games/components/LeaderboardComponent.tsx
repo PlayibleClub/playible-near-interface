@@ -8,9 +8,10 @@ const LeaderboardComponent = (props) => {
   return (
     <div className="flex flex-row mt-6" key={index}>
       <div
-        className={`w-10 flex items-center justify-center font-monument text-2xl ml-3 ${
-          index + 1 > 3 ? 'text-indigo-white font-outline-1' : ''
-        }`}
+        className={`w-10 flex items-center justify-center font-monument text-2xl ml-3 ${index + 1 > 3
+          ? 'text-indigo-white font-outline-1'
+          : ''
+          }`}
       >
         {index + 1 <= 9 ? '0' + (index + 1) : index + 1}
       </div>
@@ -24,20 +25,6 @@ const LeaderboardComponent = (props) => {
         {teamScore?.toFixed(2)}
       </div>
       <div className="flex items-center justify-center ml-6">
-        {/* <Link
-          href={{
-            pathname: '/EntrySummary/[game_id]',
-            query: {
-              team_id: teamName,
-              game_id: gameId,
-            },
-          }}
-          as={`/EntrySummary/${gameId}/${teamName}`}
-        >
-          <a>
-            <img className="filter invert" src={'/images/arrow-top-right.png'} />
-          </a>
-        </Link> */}
         <button
           onClick={(e) => {
             e.preventDefault();
