@@ -19,11 +19,14 @@ import { GAME, ATHLETE, ATHLETE_PROMO } from 'data/constants/nearContracts';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
 import { convertNftToAthlete, getAthleteInfoById } from 'utils/athlete/helper';
 import { getUTCDateFromLocal } from 'utils/date/helper';
+import { useSelector } from 'react-redux';
+import { selectTeamName, selectAccountId, selectGameId } from 'redux/athlete/teamSlice';
 import {
   query_game_data,
   query_nft_tokens_by_id,
   query_nft_tokens_for_owner,
 } from 'utils/near/helper';
+import { cutAddress } from 'utils/address/helper';
 import EntrySummaryBack from 'components/buttons/EntrySummaryBack';
 
 export default function EntrySummary(props) {
@@ -32,15 +35,15 @@ export default function EntrySummary(props) {
     url: getRPCProvider(),
   });
   const router = useRouter();
-  const { accountId } = useWalletSelector();
-  const playerTeamName = query.team_id;
+  const accountId = useSelector(selectAccountId);
+  const playerTeamName = useSelector(selectTeamName);
   const [name, setName] = useState('');
   const [gameData, setGameData] = useState(null);
   const [teamModal, setTeamModal] = useState(false);
   const [team, setTeam] = useState([]);
   const [gameEnd, setGameEnd] = useState(false);
   const [remountComponent, setRemountComponent] = useState(0);
-  const gameId = query.game_id;
+  const gameId = useSelector(selectGameId);
   const [playerLineup, setPlayerLineup] = useState([]);
   const [athletes, setAthletes] = useState([]);
 
@@ -155,17 +158,9 @@ export default function EntrySummary(props) {
 
   useEffect(() => {
     if (playerLineup.length > 0 && athletes.length === 0) {
-      console.log(playerLineup);
       get_nft_tokens_for_owner();
     }
   }, [playerLineup]);
-  useEffect(() => {
-    console.log(athletes);
-  }, [athletes]);
-
-  useEffect(() => {
-    console.log(athletes);
-  }, [remountComponent]);
 
   return (
     <>
@@ -244,6 +239,7 @@ export default function EntrySummary(props) {
                 <div className="flex items-center ml-14">
                   <ModalPortfolioContainer
                     title={playerTeamName}
+                    accountId={cutAddress(accountId)}
                     textcolor="text-indigo-black mb-5"
                   />
                 </div>
