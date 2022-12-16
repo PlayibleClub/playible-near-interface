@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { cutAddress } from 'utils/address/helper';
 import Link from 'next/link';
 const LeaderboardComponent = (props) => {
-  const { teamName, teamScore, index, accountId, gameId } = props;
+  const { teamName, teamScore, index, accountId, gameId, onClickFn } = props;
 
   return (
     <div className="flex flex-row mb-6" key={index}>
@@ -24,7 +24,7 @@ const LeaderboardComponent = (props) => {
         {teamScore?.toFixed(2)}
       </div>
       <div className="flex items-center justify-center ml-6">
-        <Link
+        {/* <Link
           href={{
             pathname: '/EntrySummary/[game_id]',
             query: {
@@ -37,7 +37,15 @@ const LeaderboardComponent = (props) => {
           <a>
             <img className="filter invert" src={'/images/arrow-top-right.png'} />
           </a>
-        </Link>
+        </Link> */}
+        <button
+          onClick={(e) => {
+            e.preventDefault();
+            onClickFn(teamName, accountId, gameId);
+          }}
+        >
+          <img className="filter invert" src={'/images/arrow-top-right.png'}></img>
+        </button>
       </div>
     </div>
   );
@@ -49,5 +57,6 @@ LeaderboardComponent.propTypes = {
   index: PropTypes.number,
   accountId: PropTypes.string,
   gameId: PropTypes.number,
+  onClickFn: PropTypes.func,
 };
 export default LeaderboardComponent;

@@ -18,11 +18,14 @@ import ViewTeamsContainer from 'components/containers/ViewTeamsContainer';
 import { query_game_data, query_all_players_lineup, query_player_teams } from 'utils/near/helper';
 import { getNflWeek } from 'utils/date/helper';
 import LoadingPageDark from 'components/loading/LoadingPageDark';
-
+import { setTeamName, setAccountId, setGameId } from 'redux/athlete/teamSlice';
+import { useDispatch } from 'react-redux';
+import { store, persistor } from 'redux/athlete/store';
 const Games = (props) => {
   const { query } = props;
   const gameId = query.game_id;
-
+  const router = useRouter();
+  const dispatch = useDispatch();
   const [playerLineups, setPlayerLineups] = useState([]);
 
   const { accountId } = useWalletSelector();
@@ -48,7 +51,12 @@ const Games = (props) => {
   async function get_player_teams(account, game_id) {
     setPlayerTeams(await query_player_teams(account, game_id));
   }
-
+  const handleButtonClick = (teamName, accountId, gameId) => {
+    dispatch(setTeamName(teamName));
+    dispatch(setAccountId(accountId));
+    dispatch(setGameId(gameId));
+    router.push('/EntrySummary');
+  };
   useEffect(() => {
     console.log('loading');
     get_player_teams(accountId, gameId);
@@ -57,6 +65,7 @@ const Games = (props) => {
   }, [week]);
 
   useEffect(() => {
+    setTimeout(() => persistor.purge(), 200);
     get_game_data(gameId);
   }, []);
 
@@ -87,7 +96,16 @@ const Games = (props) => {
                       {console.log(playerTeams)}
                       {/* @ts-expect-error */}
                       {playerTeams.team_names.map((data) => {
-                        return <ViewTeamsContainer teamNames={data} gameId={gameId} />;
+                        return (
+                          <ViewTeamsContainer
+                            teamNames={data}
+                            gameId={gameId}
+                            accountId={accountId}
+                            onClickFn={(teamName, accountId, gameId) =>
+                              handleButtonClick(teamName, accountId, gameId)
+                            }
+                          />
+                        );
                       })}
                     </div>
                   )
@@ -107,6 +125,9 @@ const Games = (props) => {
                         teamScore={item.sumScore}
                         index={index}
                         gameId={gameId}
+                        onClickFn={(teamName, accountId, gameId) =>
+                          handleButtonClick(teamName, accountId, gameId)
+                        }
                       />
                     );
                   })
