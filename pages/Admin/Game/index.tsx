@@ -22,10 +22,11 @@ import { DEFAULT_MAX_FEES, MINT_STORAGE_COST } from 'data/constants/gasFees';
 import { transactions, utils, WalletConnection, providers } from 'near-api-js';
 import { getGameInfoById } from 'utils/game/helper';
 import AdminGameComponent from './components/AdminGameComponent';
-import moment from 'moment';
-import { getUTCTimestampFromLocal } from 'utils/date/helper';
+import moment, { utc } from 'moment';
+import { getUTCDateFromLocal, getUTCTimestampFromLocal } from 'utils/date/helper';
 import ReactPaginate from 'react-paginate';
 import { query_games_list, query_game_supply } from 'utils/near/helper';
+import { position } from 'utils/athlete/position';
 
 TimeAgo.addDefaultLocale(en);
 
@@ -129,8 +130,22 @@ export default function Index(props) {
     title: '',
     content: '',
   });
-  const [positionsInfo, setPositionsInfo] = useState([]);
-  const [positionsDisplay, setPositionsDisplay] = useState([]);
+  const [positionsInfo, setPositionsInfo] = useState([
+    { positions: ['QB'], amount: 1 },
+    { positions: ['RB'], amount: 2 },
+    { positions: ['WR'], amount: 2 },
+    { positions: ['TE'], amount: 1 },
+    { positions: ['FLEX'], amount: 1 },
+    { positions: ['SUPERFLEX'], amount: 1 },
+  ]);
+  const [positionsDisplay, setPositionsDisplay] = useState([
+    { positions: ['QB'], amount: 1 },
+    { positions: ['RB'], amount: 2 },
+    { positions: ['WR'], amount: 2 },
+    { positions: ['TE'], amount: 1 },
+    { positions: ['FLEX'], amount: 1 },
+    { positions: ['SUPERFLEX'], amount: 1 },
+  ]);
   const provider = new providers.JsonRpcProvider({
     url: getRPCProvider(),
   });
@@ -238,19 +253,19 @@ export default function Index(props) {
 
   const onChangeWhitelist = (e) => {
     if (e.target.name === 'description') {
-      if (e.target.value !== "") {
-        const whitelistArray = (e.target.value).split('\n').filter(n => n);
+      if (e.target.value !== '') {
+        const whitelistArray = e.target.value.split('\n').filter((n) => n);
         setWhitelistInfo(whitelistArray);
         setDetails({
           ...details,
           [e.target.name]: e.target.value,
         });
       } else if (e.target.value.length === 0) {
-        setWhitelistInfo(null)
+        setWhitelistInfo(null);
         setDetails({
           ...details,
           [e.target.name]: e.target.value,
-        })
+        });
       }
     }
   };
@@ -274,9 +289,25 @@ export default function Index(props) {
     if (distribution.length < 10) {
       errors.push(
         'Exactly 10 rank distribution must be provided. (Only ' +
-        distribution.length +
-        ' was provided)'
+          distribution.length +
+          ' was provided)'
       );
+    }
+
+    if (dateEnd < dateStart) {
+      errors.push('End Time can not be earlier than Start Time');
+    }
+
+    if (Number.isNaN(dateEnd)) {
+      errors.push('End date has no value');
+    }
+
+    if (Number.isNaN(dateStart)) {
+      errors.push('Start date has no value');
+    }
+
+    if (positionsInfo.length === 0 ) {
+      errors.push('Positions can not be empty');
     }
 
     if (distribution.filter((item) => item.percentage === 0 || item.percentage < 0).length > 0) {
@@ -365,8 +396,8 @@ export default function Index(props) {
     whitelist: whitelistInfo,
     position: NFL_POSITIONS[0],
     positionAmount: 1,
-    gameDescription:'',
-    prizeDescription:'',
+    gameDescription: '',
+    prizeDescription: '',
   });
 
   const dateStartFormatted = moment(details.startTime).format('YYYY-MM-DD HH:mm:ss');
@@ -469,7 +500,6 @@ export default function Index(props) {
   useEffect(() => {
     currentTotal !== 0 ? setPageCount(Math.ceil(currentTotal / gamesLimit)) : setPageCount(1);
   }, [currentTotal]);
-
   return (
     <Container isAdmin>
       <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
@@ -478,8 +508,9 @@ export default function Index(props) {
             <div className="flex md:ml-4 font-bold font-monument mt-5">
               {tabs.map(({ name, isActive }) => (
                 <div
-                  className={`cursor-pointer mr-6 ${isActive ? 'border-b-8 border-indigo-buttonblue' : ''
-                    }`}
+                  className={`cursor-pointer mr-6 ${
+                    isActive ? 'border-b-8 border-indigo-buttonblue' : ''
+                  }`}
                   onClick={() => changeTab(name)}
                 >
                   {name}
@@ -495,8 +526,9 @@ export default function Index(props) {
                   <div className="flex font-bold -ml-16 font-monument">
                     {gameTabs.map(({ name, isActive }) => (
                       <div
-                        className={`cursor-pointer mr-6 ${isActive ? 'border-b-8 border-indigo-buttonblue' : ''
-                          }`}
+                        className={`cursor-pointer mr-6 ${
+                          isActive ? 'border-b-8 border-indigo-buttonblue' : ''
+                        }`}
                         onClick={() => changeGameTab(name)}
                       >
                         {name}
@@ -507,14 +539,14 @@ export default function Index(props) {
                     {(gameTabs[0].isActive
                       ? newGames
                       : gameTabs[1].isActive
-                        ? ongoingGames
-                        : completedGames
+                      ? ongoingGames
+                      : completedGames
                     ).length > 0 &&
                       (gameTabs[0].isActive
                         ? newGames
                         : gameTabs[1].isActive
-                          ? ongoingGames
-                          : completedGames
+                        ? ongoingGames
+                        : completedGames
                       )
                         .filter((data, i) => i >= gamesOffset && i < gamesOffset + gamesLimit)
                         .map((data, i) => {
@@ -644,13 +676,10 @@ export default function Index(props) {
                         value={details.endTime}
                       />
                     </div>
-                   
                   </div>
 
                   <div className="flex">
                     {/* DURATION */}
-                     
-                   
 
                     {/* PRIZE */}
                     {/* <div className="flex flex-col lg:w-1/2">
@@ -696,8 +725,8 @@ export default function Index(props) {
                       <textarea
                         maxLength={160}
                         className="border outline-none rounded-lg px-3 p-2"
-                        id="description"
-                        name="description"
+                        // id="description"
+                        // name="description"
                         // type="text"
                         placeholder="Game Description Enter text up to 160 text."
                         onChange={(e) => onChangeWhitelist(e)}
@@ -708,25 +737,25 @@ export default function Index(props) {
                       />
                     </div>
                   </div>
-                 
-                    <div className="flex flex-col w-2/5 mt-8">
-                      <label className="font-monument" htmlFor="duration">
-                        PRIZE DESCRIPTION
-                      </label>
-                      <textarea
-                        maxLength={50}
-                        className="border outline-none rounded-lg px-3 p-2"
-                        id="description"
-                        name="description"
-                        // type="text"
-                        placeholder="Prize Description Enter text up to 50 text."
-                        onChange={(e) => onChangeWhitelist(e)}
-                        // value={details.description}
-                        style={{
-                          minHeight: '120px',
-                        }}
-                      />
-                    </div>
+
+                  <div className="flex flex-col w-2/5 mt-8">
+                    <label className="font-monument" htmlFor="duration">
+                      PRIZE DESCRIPTION
+                    </label>
+                    <textarea
+                      maxLength={50}
+                      className="border outline-none rounded-lg px-3 p-2"
+                      // id="description"
+                      // name="description"
+                      // type="text"
+                      placeholder="Prize Description Enter text up to 50 text."
+                      onChange={(e) => onChangeWhitelist(e)}
+                      // value={details.description}
+                      style={{
+                        minHeight: '120px',
+                      }}
+                    />
+                  </div>
                   <div className="flex mt-8">
                     {/* POSITIONS */}
                     <div className="flex flex-col w-1/2">
