@@ -97,9 +97,15 @@ export default function Home(props) {
   };
 
   const [currentIndex, setCurrentIndex] = useState(0);
-  const featuredImagesDesktop = ['/images/promotionheaderDesktop.png'];
+  const featuredImagesDesktop = [
+    '/images/promotionheaderDesktop.png',
+    '/images/basketballChampionship.png',
+  ];
 
-  const featuredImagesMobile = ['/images/promotionheader.png'];
+  const featuredImagesMobile = [
+    '/images/promotionheader.png',
+    '/images/basketballChampionship.png',
+  ];
 
   const startSlider = () => {
     setInterval(() => {

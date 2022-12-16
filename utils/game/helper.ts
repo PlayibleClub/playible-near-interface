@@ -33,4 +33,22 @@ async function getGameInfoById(item) {
   return returningData;
 }
 
-export { getGameInfoById };
+function getImage(gameId: string): string {
+  switch (gameId) {
+    case '21':
+      return '/images/wild_card.jpg';
+    default:
+      return '/images/game.png';
+  }
+}
+
+function getDescription(gameId: string): string {
+  switch (gameId) {
+    case '21':
+      return 'This is your last chance to earn a spot in next week’s $35K USDC Football Championship. \nOnly those who have not yet won entry into the Championship are eligible.';
+    default:
+      return 'Enter a team into the The Blitz tournament to compete for cash prizes. \nCreate a lineup by selecting 8 Playible Football Athlete Tokens now.';
+  }
+}
+
+export { getGameInfoById, getImage, getDescription };

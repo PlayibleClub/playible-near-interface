@@ -2,6 +2,7 @@ import React, { Component, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Image from 'next/image';
 import moment from 'moment';
+import { getImage } from 'utils/game/helper';
 const AdminGameComponent = (props) => {
   const {
     game_id,
@@ -20,7 +21,7 @@ const AdminGameComponent = (props) => {
 
   const formatString = 'MM/DD/YYYY HH:mm:ss Z';
 
-  const playicon = '/images/playthumbnails/key.png';
+  const playicon = getImage(game_id);
   return (
     <>
       {console.log(status + ' ' + game_id)}

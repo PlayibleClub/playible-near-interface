@@ -17,6 +17,7 @@ import 'regenerator-runtime/runtime';
 import LoadingPageDark from '../../components/loading/LoadingPageDark';
 import { providers } from 'near-api-js';
 import { getContract, getRPCProvider } from 'utils/near';
+import { getImage, getDescription } from 'utils/game/helper';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
 import { GAME } from 'data/constants/nearContracts';
 import Router from 'next/router';
@@ -287,7 +288,7 @@ export default function PlayDetails(props) {
                                     <div className="mt-7 flex justify-center md:self-left md:mr-8">
                                       <div className="-ml-7 mr-7">
                                         <Image
-                                          src="/images/game.png"
+                                          src={getImage(gameId)}
                                           width={550}
                                           height={279}
                                           alt="game-image"
@@ -505,12 +506,8 @@ export default function PlayDetails(props) {
               {/* if paid game
               <div className="ml-7 mt-5 font-bold text-indigo-red">{detailsFreeOrPaid}</div>
               */}
-              <div className="ml-7 mt-3 font-normal">
-                Enter a team into the The Blitz tournament to compete for cash prizes.
-              </div>
-
-              <div className="ml-7 mt-1 font-normal">
-                Create a lineup by selecting 8 Playible Football Athlete Tokens now.
+              <div className="ml-7 mt-3">
+                <pre className="font-monument font-normal">{getDescription(gameId)}</pre>
               </div>
             </>
           </div>

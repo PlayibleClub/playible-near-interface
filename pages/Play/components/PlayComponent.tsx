@@ -2,6 +2,7 @@ import React, { Component, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Image from 'next/image';
 import moment from 'moment';
+import { getImage } from 'utils/game/helper';
 import { getUTCDateFromLocal } from 'utils/date/helper';
 
 const PlayComponent = (props) => {
@@ -22,7 +23,7 @@ const PlayComponent = (props) => {
     fetchGames,
     index,
   } = props;
-  const playicon = '/images/playthumbnails/key.png';
+  const playicon = getImage(game_id);
   const ranking = '/images/icons/Ranking.svg';
 
   const [day, setDay] = useState(0);

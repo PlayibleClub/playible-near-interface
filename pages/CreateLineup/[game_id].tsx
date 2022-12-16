@@ -15,6 +15,7 @@ import { GAME } from 'data/constants/nearContracts';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
 import ViewTeamsContainer from 'components/containers/ViewTeamsContainer';
 import { query_player_teams } from 'utils/near/helper';
+import { getImage } from 'utils/game/helper';
 import { Provider, useSelector, useDispatch } from 'react-redux';
 import { store, persistor } from 'redux/athlete/store';
 
@@ -64,7 +65,7 @@ export default function CreateLineup(props) {
             </div>
             <div className="md:ml-6 mt-11 flex w-auto">
               <div className="md:ml-7">
-                <Image src="/images/game.png" width={550} height={279} alt="game-image" />
+                <Image src={getImage(gameId)} width={550} height={279} alt="game-image" />
               </div>
 
               <div className="md:ml-18 md:-mt-6 ml-14 -mt-6">

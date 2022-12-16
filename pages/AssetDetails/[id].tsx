@@ -97,6 +97,7 @@ const AssetDetails = (props) => {
             <div className="mt-10 text-m h-0 font-bold">{athlete?.name}</div>
             <div className="mt-10 text-sm grid grid-rows-2 grid-cols-2">
               <div>FANTASY SCORE</div>
+              {/*}
               <div>
                 PLAY BALANCE
                 <Popup
@@ -113,8 +114,9 @@ const AssetDetails = (props) => {
                   </div>
                 </Popup>
               </div>
+                {*/}
               <div>{athlete?.fantasy_score.toFixed(2)}</div>
-              <div>{athlete?.usage}</div>
+              {/*<div>{athlete?.usage}</div>*/}
             </div>
             <Link href="https://paras.id/collection/athlete.nfl.playible.near">
               <button
