@@ -32,7 +32,7 @@ const ModalPortfolioContainer = (props) => {
             </div>
           ) : (
             <div className="pb-3 pt-6 justify-start align-center text-2xl font-monument">
-              {title} | {accountId}
+              {accountId ? <div>{title} | {accountId}</div> : title}
               <div className="underlineBig" />
             </div>
           )}
