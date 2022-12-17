@@ -324,18 +324,17 @@ const Portfolio = () => {
             </div> */}
           </div>
 
-          <div className='md:mt-20 md:mb-10 z-0'>
-          <NftTypeComponent
-                onChangeFn={(selectedRegular, selectedPromo) => {
-                  setSelectedRegular(selectedRegular);
-                  setSelectedPromo(selectedPromo);
-                  setRemountComponent(Math.random());
-                }}
-              />
-              </div>
+          <div className="md:mt-20 md:mb-10 z-0">
+            <NftTypeComponent
+              onChangeFn={(selectedRegular, selectedPromo) => {
+                setSelectedRegular(selectedRegular);
+                setSelectedPromo(selectedPromo);
+                setRemountComponent(Math.random());
+              }}
+            />
+          </div>
           <div className="md:ml-6 md:-mt-48">
             <PortfolioContainer textcolor="indigo-black" title="SQUAD">
-              
               <div key={remountAthlete} className="flex flex-col">
                 {loading ? (
                   <LoadingPageDark />

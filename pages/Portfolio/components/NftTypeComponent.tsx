@@ -4,25 +4,23 @@ import PropTypes from 'prop-types';
 const NftTypeComponent = (props) => {
   const { onChangeFn } = props;
 
-  const [selectedRegular, setSelectedRegular] = useState('Regular');
-  const [selectedPromo, setSelectedPromo] = useState(false);
+  const [selectedRegular, setSelectedRegular] = useState(true);
+  const [selectedPromo, setSelectedPromo] = useState(true);
 
-  const handleChange = (event) => {
-    if (event.target.value === selectedRegular) {
-      // @ts-ignore:next-line
-      setSelectedRegular(false);
-    } else if (event.target.value === selectedPromo) {
-      setSelectedPromo(false);
-    } else if (event.target.value === 'Regular') {
-      setSelectedRegular(event.target.value);
-    } else if (event.target.value === 'Promo') {
-      setSelectedPromo(event.target.value);
-    }
+  const handleRegularChange = (event) => {
+    setSelectedRegular(event.target.checked);
+    onChangeFn(selectedRegular, selectedPromo);
+  };
+
+  const handlePromoChange = (event) => {
+    setSelectedPromo(event.target.checked);
+    onChangeFn(selectedRegular, selectedPromo);
   };
 
   useEffect(() => {
     onChangeFn(selectedRegular, selectedPromo);
   }, [selectedRegular, selectedPromo]);
+
   return (
     <form>
       <div className="flex flex-col float-right mr-40">
@@ -30,22 +28,22 @@ const NftTypeComponent = (props) => {
         <div className="ml-9">
           <div>
             <input
-              type="radio"
+              type="checkbox"
               name="Regular"
               value="Regular"
               // @ts-ignore:next-line
               checked={selectedRegular}
-              onChange={handleChange}
+              onChange={handleRegularChange}
             />
             Regular
           </div>
           <div>
             <input
-              type="radio"
+              type="checkbox"
               name="Promo"
               value="Promo"
               checked={selectedPromo}
-              onChange={handleChange}
+              onChange={handlePromoChange}
             />
             Soulbound
           </div>

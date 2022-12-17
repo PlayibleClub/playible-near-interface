@@ -110,11 +110,11 @@ export default function Home(props) {
   const startSlider = () => {
     setInterval(() => {
       handleOnNextClick();
-    }, 5000);
+    }, 3000);
   };
 
   useEffect(() => {
-    // startSlider();
+    startSlider();
   }, []);
 
   return (
