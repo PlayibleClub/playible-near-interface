@@ -27,7 +27,7 @@ import { getUTCDateFromLocal, getUTCTimestampFromLocal } from 'utils/date/helper
 import ReactPaginate from 'react-paginate';
 import { query_games_list, query_game_supply } from 'utils/near/helper';
 import { position } from 'utils/athlete/position';
-
+// import ReactS3 from 'react-s3';
 TimeAgo.addDefaultLocale(en);
 
 export default function Index(props) {
@@ -46,6 +46,7 @@ export default function Index(props) {
   const [gameInfo, setGameInfo] = useState({});
   const [whitelistInfo, setWhitelistInfo] = useState(null);
   const [lineupLength, setLineupLength] = useState(0);
+  const [gameImage, setGameImage] = useState(null);
   const [tabs, setTabs] = useState([
     {
       name: 'GAMES',
@@ -270,6 +271,19 @@ export default function Index(props) {
     }
   };
 
+  const handleUpload = (e) => {
+    // ReactS3.upload(gameImage, config)
+    //   .then((data) => {
+    //     setDetails({
+    //       ...details,
+    //       [e.target.name]: data.location,
+    //     });
+    //   })
+    //   .catch((err) => {
+    //     alert(err);
+    //   });
+  };
+
   const handlePageClick = (event) => {
     const newOffset = (event.selected * gamesLimit) % currentTotal;
     setGamesOffset(newOffset);
@@ -306,7 +320,7 @@ export default function Index(props) {
       errors.push('Start date has no value');
     }
 
-    if (positionsInfo.length === 0 ) {
+    if (positionsInfo.length === 0) {
       errors.push('Positions can not be empty');
     }
 
@@ -398,6 +412,7 @@ export default function Index(props) {
     positionAmount: 1,
     gameDescription: '',
     prizeDescription: '',
+    image: '',
   });
 
   const dateStartFormatted = moment(details.startTime).format('YYYY-MM-DD HH:mm:ss');
@@ -738,24 +753,44 @@ export default function Index(props) {
                     </div>
                   </div>
 
-                  <div className="flex flex-col w-2/5 mt-8">
-                    <label className="font-monument" htmlFor="duration">
-                      PRIZE DESCRIPTION
-                    </label>
-                    <textarea
-                      maxLength={50}
-                      className="border outline-none rounded-lg px-3 p-2"
-                      // id="description"
-                      // name="description"
-                      // type="text"
-                      placeholder="Prize Description Enter text up to 50 text."
-                      onChange={(e) => onChangeWhitelist(e)}
-                      // value={details.description}
-                      style={{
-                        minHeight: '120px',
-                      }}
-                    />
+                  <div className="flex mt-8">
+                    <div className="flex flex-col w-1/2">
+                      <label className="font-monument" htmlFor="duration">
+                        PRIZE DESCRIPTION
+                      </label>
+                      <textarea
+                        maxLength={50}
+                        className="border outline-none rounded-lg px-3 p-2"
+                        // id="description"
+                        // name="description"
+                        // type="text"
+                        placeholder="Prize Description Enter text up to 50 text."
+                        onChange={(e) => onChangeWhitelist(e)}
+                        // value={details.description}
+                        style={{
+                          minHeight: '120px',
+                        }}
+                      />
+                    </div>
+                    <div className="flex flex-col w-1/2 ml-10">
+                      <label className="font-monument">GAME IMAGE</label>
+                      <input
+                        type="file"
+                        onChange={(e) => {
+                          setGameImage(e.target.files[0]);
+                        }}
+                      ></input>
+                      <button
+                        className="mt-5 bg-indigo-buttonblue h-10 text-indigo-white"
+                        id="image"
+                        name="image"
+                        onClick={handleUpload}
+                      >
+                        UPLOAD GAME IMAGE
+                      </button>
+                    </div>
                   </div>
+
                   <div className="flex mt-8">
                     {/* POSITIONS */}
                     <div className="flex flex-col w-1/2">
