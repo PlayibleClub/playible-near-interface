@@ -45,8 +45,10 @@ export default function Index(props) {
   //gameinfo
   const [gameInfo, setGameInfo] = useState({});
   const [whitelistInfo, setWhitelistInfo] = useState(null);
+  const [gameDescription, setGameDescription] = useState(null);
+  const [prizeDescription, setPrizeDescription] = useState(null);
   const [lineupLength, setLineupLength] = useState(0);
-  const [gameImage, setGameImage] = useState(null);
+    const [gameImage, setGameImage] = useState(null);
   const [tabs, setTabs] = useState([
     {
       name: 'GAMES',
@@ -284,6 +286,40 @@ export default function Index(props) {
     //   });
   };
 
+  const onGameDescriptionChange = (e) => {
+    if (e.target.name === 'game_description') {
+      if (e.target.value !== '') {
+        setDetails({
+          ...details,
+          [e.target.name]: e.target.value,
+        });
+      } else if (e.target.value.length === 0) {
+        setGameDescription(null);
+        setDetails({
+          ...details,
+          [e.target.name]: e.target.value,
+        });
+      }
+    }
+  };
+
+  const onPrizeDescriptionChange = (e) => {
+    if (e.target.name === 'prize_description') {
+      if (e.target.value !== '') {
+        setDetails({
+          ...details,
+          [e.target.name]: e.target.value,
+        });
+      } else if (e.target.value.length === 0) {
+        setPrizeDescription(null);
+        setDetails({
+          ...details,
+          [e.target.name]: e.target.value,
+        });
+      }
+    }
+  };
+
   const handlePageClick = (event) => {
     const newOffset = (event.selected * gamesLimit) % currentTotal;
     setGamesOffset(newOffset);
@@ -318,6 +354,10 @@ export default function Index(props) {
 
     if (Number.isNaN(dateStart)) {
       errors.push('Start date has no value');
+    }
+
+    if (dateStart < Date.now()) {
+      errors.push('Start date is earlier than local time');
     }
 
     if (positionsInfo.length === 0) {
@@ -410,11 +450,12 @@ export default function Index(props) {
     whitelist: whitelistInfo,
     position: NFL_POSITIONS[0],
     positionAmount: 1,
-    gameDescription: '',
-    prizeDescription: '',
+    game_description: '',
+    prize_description: '',
     image: '',
   });
 
+  console.log(Date.now());
   const dateStartFormatted = moment(details.startTime).format('YYYY-MM-DD HH:mm:ss');
   const dateStart = moment(dateStartFormatted).utc().unix() * 1000;
   const dateEndFormatted = moment(details.endTime).format('YYYY-MM-DD HH:mm:ss');
@@ -477,6 +518,8 @@ export default function Index(props) {
         whitelist: whitelistInfo,
         positions: positionsInfo,
         lineup_len: getLineupLength(),
+        game_description: '',
+        prize_descriptiom: '',
       })
     );
 
@@ -740,11 +783,11 @@ export default function Index(props) {
                       <textarea
                         maxLength={160}
                         className="border outline-none rounded-lg px-3 p-2"
-                        // id="description"
-                        // name="description"
+                        id="game_description"
+                        name="game_description"
                         // type="text"
                         placeholder="Game Description Enter text up to 160 text."
-                        onChange={(e) => onChangeWhitelist(e)}
+                        onChange={(e) => onGameDescriptionChange(e)}
                         // value={details.description}
                         style={{
                           minHeight: '120px',
@@ -755,23 +798,23 @@ export default function Index(props) {
 
                   <div className="flex mt-8">
                     <div className="flex flex-col w-1/2">
-                      <label className="font-monument" htmlFor="duration">
-                        PRIZE DESCRIPTION
-                      </label>
-                      <textarea
-                        maxLength={50}
-                        className="border outline-none rounded-lg px-3 p-2"
-                        // id="description"
-                        // name="description"
-                        // type="text"
-                        placeholder="Prize Description Enter text up to 50 text."
-                        onChange={(e) => onChangeWhitelist(e)}
-                        // value={details.description}
-                        style={{
-                          minHeight: '120px',
-                        }}
-                      />
-                    </div>
+                    <label className="font-monument" htmlFor="duration">
+                      PRIZE DESCRIPTION
+                    </label>
+                    <textarea
+                      maxLength={50}
+                      className="border outline-none rounded-lg px-3 p-2"
+                      id="prize_description"
+                      name="prize_description"
+                      // type="text"
+                      placeholder="Prize Description Enter text up to 50 text."
+                      onChange={(e) => onPrizeDescriptionChange(e)}
+                      // value={details.description}
+                      style={{
+                        minHeight: '120px',
+                      }}
+                    />
+                  </div>
                     <div className="flex flex-col w-1/2 ml-10">
                       <label className="font-monument">GAME IMAGE</label>
                       <input
@@ -909,8 +952,13 @@ export default function Index(props) {
         <p className="mt-2">Are you sure?</p>
         <p className="font-bold">GAME DETAILS:</p>
         <p className="font-bold">Start Date:</p> {startFormattedTimestamp}
-        {/* <p className="font-bold">Whitelist: </p> {whitelistInfo} */}
         <p className="font-bold">End Date:</p> {endFormattedTimestamp}
+        <p className="font-bold">Whitelist: </p>{' '}
+        {whitelistInfo === null ? '' : whitelistInfo.join(',')}
+        {/* <p className="font-bold">Positions:</p> {positionsInfo.map(position) => {
+            return <div>
+{positionsInfo.amount}            </div>
+          }} */}
         <button
           className="bg-indigo-green font-monument tracking-widest text-indigo-white w-full h-16 text-center text-sm mt-4"
           onClick={() => {
