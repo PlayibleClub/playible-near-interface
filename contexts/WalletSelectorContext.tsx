@@ -5,6 +5,9 @@ import { WalletSelector, AccountState } from '@near-wallet-selector/core';
 import { setupModal } from '@near-wallet-selector/modal-ui';
 import { WalletSelectorModal } from '@near-wallet-selector/modal-ui';
 import { setupNearWallet } from '@near-wallet-selector/near-wallet';
+import { setupNeth } from '@near-wallet-selector/neth';
+import { setupLedger } from '@near-wallet-selector/ledger';
+import { setupNightly } from '@near-wallet-selector/nightly';
 import { setupMyNearWallet } from '@near-wallet-selector/my-near-wallet';
 import { getConfig, getContract } from '../utils/near';
 import { MINTER } from '../data/constants/nearContracts';
@@ -34,7 +37,7 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
     const _selector = await setupWalletSelector({
       network: getConfig(),
       debug: true,
-      modules: [setupNearWallet(), setupMyNearWallet()],
+      modules: [setupNearWallet(), setupMyNearWallet(), setupNeth(), setupLedger(), setupNightly()],
     });
     const _modal = setupModal(_selector, {
       contractId: getContract(MINTER),
