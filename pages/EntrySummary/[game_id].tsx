@@ -24,7 +24,7 @@ import {
   query_nft_tokens_by_id,
   query_nft_tokens_for_owner,
 } from 'utils/near/helper';
-import { getImage } from 'utils/game/helper';
+import { getImage, getPrizePool } from 'utils/game/helper';
 import EntrySummaryBack from 'components/buttons/EntrySummaryBack';
 
 export default function EntrySummary(props) {
@@ -190,7 +190,7 @@ export default function EntrySummary(props) {
                           <div className="ml-7">
                             <div>PRIZE POOL</div>
                             <div className=" font-monument text-lg">
-                              {(gameData && gameData.prize) || '$100 + 2 Championship Tickets'}
+                              {(gameData && gameData.prize) || getPrizePool(gameId)}
                             </div>
                           </div>
                           <div>

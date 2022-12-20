@@ -17,7 +17,7 @@ import 'regenerator-runtime/runtime';
 import LoadingPageDark from '../../components/loading/LoadingPageDark';
 import { providers } from 'near-api-js';
 import { getContract, getRPCProvider } from 'utils/near';
-import { getImage, getDescription } from 'utils/game/helper';
+import { getImage, getDescription, getPrizePool } from 'utils/game/helper';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
 import { GAME } from 'data/constants/nearContracts';
 import Router from 'next/router';
@@ -303,8 +303,7 @@ export default function PlayDetails(props) {
                                           <div className="ml-7">
                                             <div>PRIZE POOL</div>
                                             <div className=" font-monument text-lg">
-                                              {(gameData && gameData.prize) ||
-                                                '$100 + 2 Championship Tickets'}
+                                              {(gameData && gameData.prize) || getPrizePool(gameId)}
                                             </div>
                                           </div>
                                           <div>
