@@ -45,10 +45,12 @@ export default function Index(props) {
   //gameinfo
   const [gameInfo, setGameInfo] = useState({});
   const [whitelistInfo, setWhitelistInfo] = useState(null);
-  const [gameDescription, setGameDescription] = useState(null);
-  const [prizeDescription, setPrizeDescription] = useState(null);
+  const [gameDescription, setGameDescription] = useState(
+    'Enter a team into the The Blitz tournament to compete for cash prizes. Create a lineup by selecting 8 Playible Football Athlete Tokens now.'
+  );
+  const [prizeDescription, setPrizeDescription] = useState('$100 + 2 Championship Tickets');
   const [lineupLength, setLineupLength] = useState(0);
-    const [gameImage, setGameImage] = useState(null);
+  const [gameImage, setGameImage] = useState(null);
   const [tabs, setTabs] = useState([
     {
       name: 'GAMES',
@@ -450,12 +452,11 @@ export default function Index(props) {
     whitelist: whitelistInfo,
     position: NFL_POSITIONS[0],
     positionAmount: 1,
-    game_description: '',
-    prize_description: '',
+    game_description: gameDescription,
+    prize_description: prizeDescription,
     image: '',
   });
 
-  console.log(Date.now());
   const dateStartFormatted = moment(details.startTime).format('YYYY-MM-DD HH:mm:ss');
   const dateStart = moment(dateStartFormatted).utc().unix() * 1000;
   const dateEndFormatted = moment(details.endTime).format('YYYY-MM-DD HH:mm:ss');
@@ -518,8 +519,8 @@ export default function Index(props) {
         whitelist: whitelistInfo,
         positions: positionsInfo,
         lineup_len: getLineupLength(),
-        game_description: '',
-        prize_descriptiom: '',
+        game_description: gameDescription,
+        prize_descriptiom: prizeDescription,
       })
     );
 
@@ -798,23 +799,23 @@ export default function Index(props) {
 
                   <div className="flex mt-8">
                     <div className="flex flex-col w-1/2">
-                    <label className="font-monument" htmlFor="duration">
-                      PRIZE DESCRIPTION
-                    </label>
-                    <textarea
-                      maxLength={50}
-                      className="border outline-none rounded-lg px-3 p-2"
-                      id="prize_description"
-                      name="prize_description"
-                      // type="text"
-                      placeholder="Prize Description Enter text up to 50 text."
-                      onChange={(e) => onPrizeDescriptionChange(e)}
-                      // value={details.description}
-                      style={{
-                        minHeight: '120px',
-                      }}
-                    />
-                  </div>
+                      <label className="font-monument" htmlFor="duration">
+                        PRIZE DESCRIPTION
+                      </label>
+                      <textarea
+                        maxLength={50}
+                        className="border outline-none rounded-lg px-3 p-2"
+                        id="prize_description"
+                        name="prize_description"
+                        // type="text"
+                        placeholder="Prize Description Enter text up to 50 text."
+                        onChange={(e) => onPrizeDescriptionChange(e)}
+                        // value={details.description}
+                        style={{
+                          minHeight: '120px',
+                        }}
+                      />
+                    </div>
                     <div className="flex flex-col w-1/2 ml-10">
                       <label className="font-monument">GAME IMAGE</label>
                       <input
@@ -954,11 +955,13 @@ export default function Index(props) {
         <p className="font-bold">Start Date:</p> {startFormattedTimestamp}
         <p className="font-bold">End Date:</p> {endFormattedTimestamp}
         <p className="font-bold">Whitelist: </p>{' '}
-        {whitelistInfo === null ? '' : whitelistInfo.join(',')}
-        {/* <p className="font-bold">Positions:</p> {positionsInfo.map(position) => {
-            return <div>
-{positionsInfo.amount}            </div>
-          }} */}
+        {whitelistInfo === null ? '' : whitelistInfo.join(', ')}
+        <p className="font-bold">Positions:</p>
+        {positionsInfo.map((position) => (
+          <li>
+            {position.positions} {position.amount}x
+          </li>
+        ))}
         <button
           className="bg-indigo-green font-monument tracking-widest text-indigo-white w-full h-16 text-center text-sm mt-4"
           onClick={() => {
