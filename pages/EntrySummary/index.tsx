@@ -174,20 +174,20 @@ export default function EntrySummary(props) {
                 </div>
                 <div className="md:ml-7 flex flex-row md:flex-row">
                   <div className="md:mr-12">
-                    <div className="mt-11 flex justify-center md:self-left md:mr-8 md:ml-6">
-                      <div className="">
+                    <div className="mt-11 flex flex-col md:flex-row justify-center md:self-left md:mr-8 md:ml-6">
+                      <div className="w-auto mr-6 ml-6">
                         <Image src="/images/game.png" width={550} height={279} alt="game-image" />
                       </div>
-                      <div className="-mt-7 ml-7">
+                      <div className="-mt-7 md:ml-7">
                         <PortfolioContainer textcolor="indigo-black" title="ENTRY SUMMARY" />
-                        <div className="flex space-x-14 mt-4">
-                          <div className="ml-7">
+                        <div className="flex md:space-x-14 mt-4 ">
+                          <div className="ml-6 md:ml-7">
                             <div>PRIZE POOL</div>
                             <div className=" font-monument text-lg">
                               {(gameData && gameData.prize) || '$100 + 2 Championship Tickets'}
                             </div>
                           </div>
-                          <div>
+                          <div className="mr-4 md:mr-0">
                             <div>START DATE</div>
                             <div className=" font-monument text-lg">
                               {(gameData && moment(gameData.start_time).format('MM/DD/YYYY')) ||
@@ -236,7 +236,7 @@ export default function EntrySummary(props) {
                     </div>
                   </div>
                 </div>
-                <div className="flex items-center ml-14">
+                <div className="flex items-center ml-6 md:ml-14">
                   <ModalPortfolioContainer
                     title={playerTeamName}
                     accountId={cutAddress(accountId)}
@@ -245,7 +245,7 @@ export default function EntrySummary(props) {
                 </div>
                 <div
                   key={remountComponent}
-                  className="grid grid-cols-4 gap-y-4 mt-4 md:grid-cols-4 md:ml-2 md:mt-17 w-3/4"
+                  className="grid grid-cols-2 gap-x-16 md:gap-x-0 md:gap-y-4 md:mt-4 md:grid-cols-4 ml-8 md:ml-2 md:mt-17 w-3/4"
                 >
                   {athletes.length === 0
                     ? 'Loading athletes...'

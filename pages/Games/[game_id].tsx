@@ -76,10 +76,10 @@ const Games = (props) => {
           </div>
           <div className="flex flex-col md:flex-row">
             <div className="md:ml-6 mt-11 flex flex-col w-auto">
-              <div className="md:ml-7 mr-12">
+              <div className="w-auto md:w-full ml-6 md:ml-7 mr-6 md:r-12">
                 <Image src="/images/game.png" width={550} height={279} alt="game-image" />
               </div>
-              <div className="ml-2 mr-2 mt-7 w-auto md:w-1/2 md:ml-7 md:mt-2">
+              <div className="ml-6 mr-6 md:mr-2 mt-7 w-auto md:w-1/2 md:ml-7 md:mt-2">
                 <ModalPortfolioContainer title="VIEW TEAMS" textcolor="text-indigo-black mb-5" />
                 {
                   /* @ts-expect-error */
@@ -107,7 +107,7 @@ const Games = (props) => {
               </div>
             </div>
 
-            <div className="ml-2 mr-2 w-auto md:ml-18 ml-18 mt-4">
+            <div className="ml-6 md:ml-2 mr-6 md:mr-2 w-auto md:ml-18 mt-4">
               <ModalPortfolioContainer textcolor="indigo-black" title={'LEADERBOARD'} />
               <div className="overflow-y-auto">
                 {playerLineups.length > 0 ? (

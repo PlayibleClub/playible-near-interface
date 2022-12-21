@@ -8,15 +8,14 @@ const LeaderboardComponent = (props) => {
   return (
     <div className="flex flex-row mt-6" key={index}>
       <div
-        className={`w-10 flex items-center justify-center font-monument text-2xl ml-3 ${index + 1 > 3
-          ? 'text-indigo-white font-outline-1'
-          : ''
-          }`}
+        className={`w-10 flex items-center justify-center font-monument text-2xl ${
+          index + 1 > 3 ? 'text-indigo-white font-outline-1' : ''
+        }`}
       >
         {index + 1 <= 9 ? '0' + (index + 1) : index + 1}
       </div>
       <div
-        className="flex items-center justify-center ml-6 bg-indigo-black text-indigo-white
+        className="flex items-center justify-center ml-2 md:ml-6 bg-indigo-black text-indigo-white
         w-1/2 text-center p-1 text-base font-monument"
       >
         {teamName} {cutAddress(accountId)}

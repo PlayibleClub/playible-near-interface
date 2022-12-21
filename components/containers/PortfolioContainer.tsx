@@ -58,7 +58,7 @@ const PortfolioContainer = (props) => {
               </div>
             </div>
           ) : (
-            <div className="pb-3 pt-6 ml-7 justify-start align-center text-2xl font-monument">
+            <div className="pb-3 pt-6 ml-6 md:ml-7 justify-start align-center text-2xl font-monument">
               {title}
               <img src={'/images/blackunderline.png'} className="object-none" />
             </div>
