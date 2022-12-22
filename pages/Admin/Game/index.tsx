@@ -45,10 +45,8 @@ export default function Index(props) {
   //gameinfo
   const [gameInfo, setGameInfo] = useState({});
   const [whitelistInfo, setWhitelistInfo] = useState(null);
-  const [gameDescription, setGameDescription] = useState(
-    'Enter a team into the The Blitz tournament to compete for cash prizes. Create a lineup by selecting 8 Playible Football Athlete Tokens now.'
-  );
-  const [prizeDescription, setPrizeDescription] = useState('$100 + 2 Championship Tickets');
+  const [gameDescription, setGameDescription] = useState(null);
+  const [prizeDescription, setPrizeDescription] = useState(null);
   const [lineupLength, setLineupLength] = useState(0);
   const [gameImage, setGameImage] = useState(null);
   const [tabs, setTabs] = useState([
@@ -151,6 +149,11 @@ export default function Index(props) {
     { positions: ['FLEX'], amount: 1 },
     { positions: ['SUPERFLEX'], amount: 1 },
   ]);
+
+  const defaultGameDescription =
+    'Enter a team into the The Blitz tournament to compete for cash prizes. Create a lineup by selecting 8 Playible Football Athlete Tokens now.';
+  const defaultPrizeDescription = '$100 + 2 Championship Tickets';
+  const defaultGameImage = 'https://playible-game-image.s3.ap-southeast-1.amazonaws.com/game.png';
   const provider = new providers.JsonRpcProvider({
     url: getRPCProvider(),
   });
@@ -176,6 +179,24 @@ export default function Index(props) {
     });
 
     setTabs([...tabList]);
+  };
+
+  const checkGameDescription = () => {
+    if (gameDescription === null) {
+      setGameDescription(defaultGameDescription);
+    }
+  };
+
+  const checkPrizeDescription = () => {
+    if (gameDescription === null) {
+      setPrizeDescription(defaultPrizeDescription);
+    }
+  };
+
+  const checkGameImage = () => {
+    if (gameImage === null) {
+      setGameImage(defaultGameImage);
+    }
   };
 
   const changeGameTab = (name) => {
@@ -291,6 +312,8 @@ export default function Index(props) {
   const onGameDescriptionChange = (e) => {
     if (e.target.name === 'game_description') {
       if (e.target.value !== '') {
+        const gameDesc = e.target.value;
+        setGameDescription(gameDesc);
         setDetails({
           ...details,
           [e.target.name]: e.target.value,
@@ -308,6 +331,8 @@ export default function Index(props) {
   const onPrizeDescriptionChange = (e) => {
     if (e.target.name === 'prize_description') {
       if (e.target.value !== '') {
+        const prizeDesc = e.target.value;
+        setGameDescription(prizeDesc);
         setDetails({
           ...details,
           [e.target.name]: e.target.value,
@@ -454,7 +479,7 @@ export default function Index(props) {
     positionAmount: 1,
     game_description: gameDescription,
     prize_description: prizeDescription,
-    image: '',
+    game_image: '',
   });
 
   const dateStartFormatted = moment(details.startTime).format('YYYY-MM-DD HH:mm:ss');
@@ -520,7 +545,8 @@ export default function Index(props) {
         positions: positionsInfo,
         lineup_len: getLineupLength(),
         game_description: gameDescription,
-        prize_descriptiom: prizeDescription,
+        prize_description: prizeDescription,
+        game_image: gameImage,
       })
     );
 
@@ -924,7 +950,12 @@ export default function Index(props) {
                   <div className="flex mt-4 mb-10">
                     <button
                       className="bg-indigo-green font-monument tracking-widest text-indigo-white w-5/6 md:w-80 h-16 text-center text-sm mt-4"
-                      onClick={validateGame}
+                      onClick={() => {
+                        validateGame();
+                        checkGameDescription();
+                        checkPrizeDescription();
+                        checkGameImage();
+                      }}
                     >
                       CREATE GAME
                     </button>
