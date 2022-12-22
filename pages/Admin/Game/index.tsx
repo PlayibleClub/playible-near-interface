@@ -313,6 +313,8 @@ export default function Index(props) {
         game_image: res.location,
       });
 
+      setGameImage(res.location);
+
       alert('✔️Successfully uploaded image!');
 
       /*
