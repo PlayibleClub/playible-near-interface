@@ -29,7 +29,7 @@ const Container = (props) => {
             secondcolor="indigo-navbargrad1"
             activeName={activeName}
           />
-          <div className="flex flex-col w-screen h-full">
+          <div className="flex flex-col w-screen h-screen">
             <DesktopHeaderBase />
             {children}
           </div>

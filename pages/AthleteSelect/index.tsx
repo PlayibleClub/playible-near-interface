@@ -355,15 +355,13 @@ const AthleteSelect = (props) => {
   useEffect(() => {}, [search]);
 
   return (
-    <>
-      <Container activeName="PLAY">
-        <div className="mt-44 md:ml-6 md:mt-6">
-          <BackFunction prev={`/CreateTeam/${gameId}`} />
-          <PortfolioContainer
-            title={'SELECT YOUR ' + getPositionDisplay(position)}
-            textcolor="text-indigo-black"
-          />
-        </div>
+    <Container activeName="PLAY">
+      <div className="mt-44 md:ml-6 md:mt-6 mb-2">
+        <BackFunction prev={`/CreateTeam/${gameId}`} />
+        <PortfolioContainer
+          title={'SELECT YOUR ' + getPositionDisplay(position)}
+          textcolor="text-indigo-black"
+        />
         <NftTypeComponent
           onChangeFn={(selectedRegular, selectedPromo) => {
             setSelectedRegular(selectedRegular);
@@ -371,12 +369,14 @@ const AthleteSelect = (props) => {
             setRemountComponent(Math.random());
           }}
         />
-        <div className="h-8 flex absolute ml-3 top-32 mr-8 md:top-24 md:right-20 md:-mt-5 ">
-          <SearchComponent
-            onChangeFn={(search) => setName(search)}
-            onSubmitFn={(search) => setName(search)}
-          />
-          {/* <form
+      </div>
+
+      <div className="h-8 flex absolute ml-3 top-32 mr-8 md:top-24 md:right-20 md:-mt-5 ">
+        <SearchComponent
+          onChangeFn={(search) => setName(search)}
+          onSubmitFn={(search) => setName(search)}
+        />
+        {/* <form
             onSubmit={(e) => {
               handleDropdownChange();
               search == '' ? setName(['allNames']) : setName([search]);
@@ -404,17 +404,39 @@ const AthleteSelect = (props) => {
               ></button>
             </div>
           </form> */}
-        </div>
+      </div>
 
-        <div key={remountAthlete} className="flex flex-col">
-          <div className="grid grid-cols-4 mt-1 md:grid-cols-4 md:ml-7 md:mt-2">
-            {athletes.map((item, i) => {
-              const accountAthleteIndex = athletes.indexOf(item, 0) + athleteOffset;
-              return (
-                <>
-                  {checkIfAthleteExists(item.athlete_id) || item.isInGame ? (
-                    <div className="w-4/5 h-5/6 border-transparent pointer-events-none">
-                      <div className="mt-1.5 w-full h-14px mb-1"></div>
+      <div key={remountAthlete} className="flex flex-col overflow-y-scroll">
+        <div className="grid grid-cols-4 mt-1 md:grid-cols-4 md:ml-7 md:mt-2">
+          {athletes.map((item, i) => {
+            const accountAthleteIndex = athletes.indexOf(item, 0) + athleteOffset;
+            return (
+              <>
+                {checkIfAthleteExists(item.athlete_id) || item.isInGame ? (
+                  <div className="w-4/5 h-5/6 border-transparent pointer-events-none">
+                    <div className="mt-1.5 w-full h-14px mb-1"></div>
+                    <PerformerContainer
+                      key={item.athlete_id}
+                      AthleteName={item.name}
+                      AvgScore={item.fantasy_score.toFixed(2)}
+                      id={item.athlete_id}
+                      uri={item.image}
+                      index={accountAthleteIndex}
+                      isSelected={true}
+                      isInGame={item.isInGame}
+                      fromPortfolio={false}
+                    />
+                  </div>
+                ) : (
+                  <label className="w-4/5 h-5/6">
+                    <div className="w-full h-full border-transparent focus:border-transparent focus:ring-2 focus:ring-blue-300 focus:border-transparent">
+                      <input
+                        className="justify-self-end"
+                        type="radio"
+                        checked={radioSelected == i}
+                        value={i}
+                        onChange={(e) => handleRadioClick(e.target.value)}
+                      ></input>
                       <PerformerContainer
                         key={item.athlete_id}
                         AthleteName={item.name}
@@ -422,69 +444,46 @@ const AthleteSelect = (props) => {
                         id={item.athlete_id}
                         uri={item.image}
                         index={accountAthleteIndex}
-                        isSelected={true}
-                        isInGame={item.isInGame}
                         fromPortfolio={false}
                       />
                     </div>
-                  ) : (
-                    <label className="w-4/5 h-5/6">
-                      <div className="w-full h-full border-transparent focus:border-transparent focus:ring-2 focus:ring-blue-300 focus:border-transparent">
-                        <input
-                          className="justify-self-end"
-                          type="radio"
-                          checked={radioSelected == i}
-                          value={i}
-                          onChange={(e) => handleRadioClick(e.target.value)}
-                        ></input>
-                        <PerformerContainer
-                          key={item.athlete_id}
-                          AthleteName={item.name}
-                          AvgScore={item.fantasy_score.toFixed(2)}
-                          id={item.athlete_id}
-                          uri={item.image}
-                          index={accountAthleteIndex}
-                          fromPortfolio={false}
-                        />
-                      </div>
-                    </label>
-                  )}
-                </>
-              );
-            })}
-          </div>
+                  </label>
+                )}
+              </>
+            );
+          })}
         </div>
+      </div>
 
-        <div className="absolute bottom-10 right-10"></div>
-        <div className="absolute z-0 bottom-10 right-10 iphone5:bottom-4 iphone5:right-2 iphone5:fixed iphoneX:bottom-4 iphoneX:right-4 iphoneX-fixed">
-          <div key={remountComponent}>
-            <ReactPaginate
-              className="p-2 content-center justify-center bg-indigo-buttonblue text-indigo-white flex flex-row space-x-4 select-none ml-7"
-              pageClassName="hover:font-bold"
-              activeClassName="rounded-lg text-center bg-indigo-white text-indigo-black pr-1 pl-1 font-bold"
-              pageLinkClassName="rounded-lg text-center hover:font-bold hover:bg-indigo-white hover:text-indigo-black"
-              breakLabel="..."
-              nextLabel=">"
-              onPageChange={
-                selectedRegular !== false && selectedPromo !== false
-                  ? mixedPaginationHandling
-                  : handlePageClick
-              }
-              pageRangeDisplayed={5}
-              pageCount={pageCount}
-              previousLabel="<"
-              renderOnZeroPageCount={null}
-            />
-            <button
-              className="bg-indigo-buttonblue text-indigo-white w-full ml-7 mt-4 md:w-60 h-14 text-center font-bold text-md"
-              onClick={() => handleProceedClick(gameId, lineup)}
-            >
-              PROCEED
-            </button>
-          </div>
+      <div className="absolute bottom-10 right-10"></div>
+      <div className="absolute z-0 bottom-10 right-10 iphone5:bottom-4 iphone5:right-2 iphone5:fixed iphoneX:bottom-4 iphoneX:right-4 iphoneX-fixed">
+        <div key={remountComponent}>
+          <ReactPaginate
+            className="p-2 content-center justify-center bg-indigo-buttonblue text-indigo-white flex flex-row space-x-4 select-none ml-7"
+            pageClassName="hover:font-bold"
+            activeClassName="rounded-lg text-center bg-indigo-white text-indigo-black pr-1 pl-1 font-bold"
+            pageLinkClassName="rounded-lg text-center hover:font-bold hover:bg-indigo-white hover:text-indigo-black"
+            breakLabel="..."
+            nextLabel=">"
+            onPageChange={
+              selectedRegular !== false && selectedPromo !== false
+                ? mixedPaginationHandling
+                : handlePageClick
+            }
+            pageRangeDisplayed={5}
+            pageCount={pageCount}
+            previousLabel="<"
+            renderOnZeroPageCount={null}
+          />
+          <button
+            className="bg-indigo-buttonblue text-indigo-white w-full ml-7 mt-4 md:w-60 h-14 text-center font-bold text-md"
+            onClick={() => handleProceedClick(gameId, lineup)}
+          >
+            PROCEED
+          </button>
         </div>
-      </Container>
-    </>
+      </div>
+    </Container>
   );
 };
 export default AthleteSelect;

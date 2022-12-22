@@ -29,6 +29,16 @@ const NftTypeComponent = (props) => {
           <div>
             <input
               type="checkbox"
+              name="Promo"
+              value="Promo"
+              checked={selectedPromo}
+              onChange={handlePromoChange}
+            />
+            Soulbound
+          </div>
+          <div>
+            <input
+              type="checkbox"
               name="Regular"
               value="Regular"
               // @ts-ignore:next-line
@@ -36,16 +46,6 @@ const NftTypeComponent = (props) => {
               onChange={handleRegularChange}
             />
             Regular
-          </div>
-          <div>
-            <input
-              type="checkbox"
-              name="Promo"
-              value="Promo"
-              checked={selectedPromo}
-              onChange={handlePromoChange}
-            />
-            Soulbound
           </div>
         </div>
       </div>
