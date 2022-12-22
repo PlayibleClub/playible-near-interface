@@ -27,7 +27,9 @@ import { getUTCDateFromLocal, getUTCTimestampFromLocal } from 'utils/date/helper
 import ReactPaginate from 'react-paginate';
 import { query_games_list, query_game_supply } from 'utils/near/helper';
 import { position } from 'utils/athlete/position';
-// import ReactS3 from 'react-s3';
+import ReactS3Client from 'react-aws-s3-typescript';
+import { s3Config } from 's3config';
+import { ErrorResponse } from '@remix-run/router';
 TimeAgo.addDefaultLocale(en);
 
 export default function Index(props) {
@@ -182,20 +184,24 @@ export default function Index(props) {
   };
 
   const checkGameDescription = () => {
-    if (gameDescription === null) {
+    if (gameDescription === null || gameDescription.length === 0) {
       setGameDescription(defaultGameDescription);
     }
   };
 
   const checkPrizeDescription = () => {
-    if (gameDescription === null) {
+    if (prizeDescription === null || prizeDescription.length === 0) {
       setPrizeDescription(defaultPrizeDescription);
     }
   };
 
   const checkGameImage = () => {
-    if (gameImage === null) {
+    if (gameImage === null || gameImage === undefined) {
       setGameImage(defaultGameImage);
+      setDetails({
+        ...details,
+        game_image: defaultGameImage,
+      });
     }
   };
 
@@ -296,17 +302,31 @@ export default function Index(props) {
     }
   };
 
-  const handleUpload = (e) => {
-    // ReactS3.upload(gameImage, config)
-    //   .then((data) => {
-    //     setDetails({
-    //       ...details,
-    //       [e.target.name]: data.location,
-    //     });
-    //   })
-    //   .catch((err) => {
-    //     alert(err);
-    //   });
+  const handleUpload = async () => {
+    const s3 = new ReactS3Client(s3Config);
+
+    try {
+      const res = await s3.uploadFile(gameImage);
+
+      setDetails({
+        ...details,
+        game_image: res.location,
+      });
+
+      alert('✔️Successfully uploaded image!');
+
+      /*
+       * {
+       *   Response: {
+       *     bucket: "bucket-name",
+       *     key: "directory-name/filename-to-be-uploaded",
+       *     location: "https:/your-aws-s3-bucket-url/directory-name/filename-to-be-uploaded"
+       *   }
+       * }
+       */
+    } catch (exception) {
+      alert('❌Failed to upload image');
+    }
   };
 
   const onGameDescriptionChange = (e) => {
@@ -319,7 +339,7 @@ export default function Index(props) {
           [e.target.name]: e.target.value,
         });
       } else if (e.target.value.length === 0) {
-        setGameDescription(null);
+        setGameDescription(defaultGameDescription);
         setDetails({
           ...details,
           [e.target.name]: e.target.value,
@@ -332,13 +352,13 @@ export default function Index(props) {
     if (e.target.name === 'prize_description') {
       if (e.target.value !== '') {
         const prizeDesc = e.target.value;
-        setGameDescription(prizeDesc);
+        setPrizeDescription(prizeDesc);
         setDetails({
           ...details,
           [e.target.name]: e.target.value,
         });
       } else if (e.target.value.length === 0) {
-        setPrizeDescription(null);
+        setPrizeDescription(defaultPrizeDescription);
         setDetails({
           ...details,
           [e.target.name]: e.target.value,
@@ -987,12 +1007,18 @@ export default function Index(props) {
         <p className="font-bold">End Date:</p> {endFormattedTimestamp}
         <p className="font-bold">Whitelist: </p>{' '}
         {whitelistInfo === null ? '' : whitelistInfo.join(', ')}
+        <p className="font-bold">Game Description: </p>
+        {gameDescription}
+        <p className="font-bold">Prize Description: </p>
+        {prizeDescription}
         <p className="font-bold">Positions:</p>
         {positionsInfo.map((position) => (
           <li>
             {position.positions} {position.amount}x
           </li>
         ))}
+        <p className="font-bold">Image: </p>
+        <img src={details.game_image} />
         <button
           className="bg-indigo-green font-monument tracking-widest text-indigo-white w-full h-16 text-center text-sm mt-4"
           onClick={() => {

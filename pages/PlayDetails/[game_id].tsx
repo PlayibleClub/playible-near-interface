@@ -244,7 +244,7 @@ export default function PlayDetails(props) {
       <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
         <Main color="indigo-white">
           <div className="md:ml-6">
-            <div className="mt-8">
+            <div className="iphone5:mt-24 md:mt-8">
               <BackFunction prev="/Play" />
             </div>
             {/* {loading ? (
@@ -284,7 +284,7 @@ export default function PlayDetails(props) {
                               <>
                                 <div className="md:ml-7 flex flex-row md:flex-row">
                                   <div className="md:-mr-20">
-                                    <div className="mt-7 flex justify-center md:self-left md:mr-8">
+                                    <div className="iphone5:mt-4 md:mt-7 flex justify-center md:self-left md:mr-8 iphone5:flex-col md:flex-row">
                                       <div className="-ml-7 mr-7">
                                         <Image
                                           src="/images/game.png"
@@ -293,13 +293,15 @@ export default function PlayDetails(props) {
                                           alt="game-image"
                                         />
                                       </div>
-                                      <div className="-mt-7 w-96">
-                                        <PortfolioContainer
-                                          textcolor="indigo-black"
-                                          title={gameFreeOrPaid}
-                                        />
-                                        <div className="flex space-x-14 mt-4">
-                                          <div className="ml-7">
+                                      <div className="md:-mt-7 w-96">
+                                        <div className="iphone5:-ml-7 md:ml-0">
+                                          <PortfolioContainer
+                                            textcolor="indigo-black"
+                                            title={gameFreeOrPaid}
+                                          />
+                                        </div>
+                                        <div className="flex md:space-x-14 mt-4 iphone5:flex-col md:flex-row">
+                                          <div className="iphone5:ml-0 md:ml-7">
                                             <div>PRIZE POOL</div>
                                             <div className=" font-monument text-lg">
                                               {(gameData && gameData.prize) ||
@@ -307,7 +309,7 @@ export default function PlayDetails(props) {
                                             </div>
                                           </div>
                                           <div>
-                                            <div>START DATE</div>
+                                            <div className="iphone5:mt-4 md:mt-0">START DATE</div>
                                             <div className=" font-monument text-lg">
                                               {(gameData &&
                                                 moment(gameData.start_time).format('MM/DD/YYYY')) ||
@@ -350,9 +352,9 @@ export default function PlayDetails(props) {
                                               ) : (
                                                 ''
                                               ))}
-                                            <div className="flex justify-center md:justify-start">
+                                            <div className="flex iphone5:justify-left md:justify-start iphone5:-ml-7 md:ml-0">
                                               <Link href={`/CreateLineup/${gameId}`}>
-                                                <button className="bg-indigo-buttonblue text-indigo-white w-full h-12 text-center font-bold text-md mt-8">
+                                                <button className="bg-indigo-buttonblue text-indigo-white iphone5:w-80 iphone5:h-12 md:max-w-full md:h-12 text-center font-bold text-md mt-8">
                                                   ENTER GAME
                                                 </button>
                                               </Link>
