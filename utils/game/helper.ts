@@ -59,6 +59,8 @@ function getPrizePool(gameId: string): string {
   switch (gameId) {
     case '22':
       return '$35K ($10K to 1st)';
+    case '23':
+      return '$100';
     default:
       return '$100 + 2 Championship Tickets';
   }
