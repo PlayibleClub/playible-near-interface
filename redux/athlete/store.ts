@@ -13,7 +13,7 @@ const persistedSport = persistReducer(persistConfig, sportReducer);
 export const store = configureStore({
   reducer: {
     athlete: persistedAthlete,
-    teamDetails: persistedSport,
+    sportType: persistedSport,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

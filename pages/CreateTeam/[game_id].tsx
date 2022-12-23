@@ -22,11 +22,11 @@ import LoadingPageDark from '../../components/loading/LoadingPageDark';
 import { DEFAULT_MAX_FEES } from 'data/constants/gasFees';
 import { GAME } from 'data/constants/nearContracts';
 import {
-  selectAthleteLineup,
-  selectGameId,
-  selectIndex,
-  selectPosition,
-  selectTeamName,
+  getAthleteLineup,
+  getGameId,
+  getIndex,
+  getPosition,
+  getTeamName,
 } from 'redux/athlete/athleteSlice';
 import {
   setAthleteLineup,
@@ -40,10 +40,10 @@ import { query_game_data } from 'utils/near/helper';
 export default function CreateLineup(props) {
   const { query } = props;
   const gameId = query.game_id;
-  const newTeamName = useSelector(selectTeamName);
+  const newTeamName = useSelector(getTeamName);
   const dispatch = useDispatch();
   const router = useRouter();
-  const reduxLineup = useSelector(selectAthleteLineup);
+  const reduxLineup = useSelector(getAthleteLineup);
   const connectedWallet = {};
   const athlete = {
     athlete_id: null,
@@ -89,7 +89,7 @@ export default function CreateLineup(props) {
     content: '',
   });
 
-  function getTeamName() {
+  function getTeamNamePage() {
     if (newTeamName != '') {
       setTeamName(newTeamName);
     }
@@ -318,7 +318,7 @@ export default function CreateLineup(props) {
     router.push('/AthleteSelect');
   };
   useEffect(() => {
-    getTeamName();
+    getTeamNamePage();
     if (lineup.length === 0) {
       get_game_data(gameId);
     }
