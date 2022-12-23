@@ -39,6 +39,8 @@ function getImage(gameId: string): string {
       return '/images/wild_card.jpg';
     case '22':
       return '/images/footballChampsionship.jpg';
+    case '24':
+      return '/images/holidayContest.jpg';
     default:
       return '/images/game.png';
   }
@@ -50,6 +52,8 @@ function getDescription(gameId: string): string {
       return 'This is your last chance to earn a spot in next week’s $35K USDC Football Championship. \nOnly those who have not yet won entry into the Championship are eligible.';
     case '22':
       return 'The first annual Playible Football Championship. Only those who won tickets can enter and compete for $35K.';
+    case '24':
+      return 'Only Sunday games will be eligible to score points in this game. Enjoy the holidays!';
     default:
       return 'Enter a team into the The Blitz tournament to compete for cash prizes. \nCreate a lineup by selecting 8 Playible Football Athlete Tokens now.';
   }
@@ -61,6 +65,8 @@ function getPrizePool(gameId: string): string {
       return '$35K ($10K to 1st)';
     case '23':
       return '$100';
+    case '24':
+      return 'Playible Athlete NFTs';
     default:
       return '$100 + 2 Championship Tickets';
   }
