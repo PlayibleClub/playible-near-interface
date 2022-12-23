@@ -78,9 +78,18 @@ const AssetDetails = (props) => {
       <div className="md:ml-6 mt-12">
         <BackFunction prev={query.origin ? `/${query.origin}` : '/Portfolio'}></BackFunction>
       </div>
-      <div className="flex flex-col w-full overflow-y-auto h-screen pb-40">
-        <div className="flex flex-row ml-16 mt-10">
-          <div className="mr-10">
+      <div className="flex flex-col w-full overflow-y-auto h-screen pb-40 md:ml-14">
+        <div className="ml-10 mt-24 md:hidden">
+          <object
+            className=""
+            type="image/svg+xml"
+            data={athleteImage !== undefined ? athleteImage : '/images/tokensMLB/SP.png'}
+            width={120}
+            height={160}
+          />
+        </div>
+        <div className="flex flex-row ml-10 mt-10">
+          <div className="ml-10 mt-24 md:-ml-8 md:mt-0 lg:block iphone5:hidden md:block">
             <object
               className=""
               type="image/svg+xml"
@@ -89,7 +98,8 @@ const AssetDetails = (props) => {
               height={160}
             />
           </div>
-          <div className="grid grid-rows">
+          
+          <div className="grid grid-rows md:ml-10">
             <div className="text-2xl font-bold font-monument">
               PLAYER DETAILS
               <hr className="w-10 border-4"></hr>
@@ -120,7 +130,7 @@ const AssetDetails = (props) => {
             </div>
             <Link href="https://paras.id/collection/athlete.nfl.playible.near">
               <button
-                className="bg-indigo-lightblue text-indigo-buttonblue w-5/6 md:w-80 h-10 
+                className="bg-indigo-lightblue text-indigo-buttonblue w-full md:w-80 h-10 
                   text-center font-bold text-md mt-12 self-center justify-center"
               >
                 PLACE FOR SALE
@@ -130,12 +140,12 @@ const AssetDetails = (props) => {
           </div>
         </div>
 
-        <div className="text-2xl font-bold font-monument ml-24 mt-16 mr-8 align-baseline">
+        <div className="text-2xl font-bold font-monument ml-10 mt-16 mr-8 align-baseline">
           SEASON STATS
           <hr className="w-10 border-4"></hr>
         </div>
-        <div className="grid grid-cols-2 ml-24 mt-10 mb-20 w-5/12">
-          <div className="mr-2 p-4 border border-indigo-slate rounded-lg text-center">
+        <div className="grid grid-cols-2 ml-10 mt-10 mb-20 w-3/4 md:w-5/12 md:text-center">
+          <div className="mr-2 p-4 border border-indigo-slate rounded-lg">
             <div className="font-monument text-3xl">{athlete?.fantasy_score.toFixed(2)}</div>
             <div className="text-sm">AVG.FANTASY SCORE</div>
           </div>
@@ -149,11 +159,11 @@ const AssetDetails = (props) => {
 
         <StatsComponent id={athlete?.primary_id} position={athlete?.position} />
 
-        <div className="text-2xl font-bold font-monument -mt-14 ml-24 mb-10 mr-8 align-baseline">
+        <div className="text-2xl font-bold font-monument mt-3 ml-10 mb-10 mr-8 align-baseline md:-mt-14 ">
           GAME SCORES
           <hr className="w-10 border-4"></hr>
         </div>
-        <table className="table-auto ml-24 mr-24 mb-40 border border-indigo-slate">
+        <table className="table-auto ml-2 mr-24 md:mr-40 mb-40 border border-indigo-slate md:ml-10">
           <thead>
             <tr className="border border-indigo-slate">
               <th> </th>

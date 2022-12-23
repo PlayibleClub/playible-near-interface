@@ -78,13 +78,13 @@ const StatsComponent = (props) => {
   return (
     <>
       <div
-        className="flex h-1/8 w-1/3 ml-24 -mt-16 justify-center content-center select-none text-center text-4xl 
+        className="flex h-1/8 w-3/4 ml-10 md:w-1/3 -mt-16 justify-center content-center select-none text-center text-4xl 
             bg-indigo-black font-monument text-indigo-white p-2 pl-5"
       >
         <div className="">{statNames[0]}</div>
       </div>
 
-      <div className="mt-14 ml-24 w-1/2 text-sm grid grid-rows-4 grid-cols-4">
+      <div className="mt-10 ml-10 text-sm grid grid-rows-4 grid-cols-2 md:grid-cols-4 md:w-1/2 md:mt-14">
         <div>
           <div className="font-monument text-5xl -mb-6">{athleteData[1]}</div>
           <br></br>
