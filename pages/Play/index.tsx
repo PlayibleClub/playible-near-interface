@@ -385,44 +385,44 @@ const Play = (props) => {
     setgamesOffset(newOffset);
   };
 
-async function get_game_supply() {
-      setTotalGames(await query_game_supply());
+  async function get_game_supply() {
+    setTotalGames(await query_game_supply());
   }
 
   console.log(totalGames);
-  
+
   function get_games_list(totalGames) {
     query_games_list(totalGames).then(async (data) => {
-        //@ts-ignore:next-line
-        const result = JSON.parse(Buffer.from(data.result).toString());
+      //@ts-ignore:next-line
+      const result = JSON.parse(Buffer.from(data.result).toString());
 
-        const upcomingGames = await Promise.all(
-          result
-            .filter((x) => x[1].start_time > getUTCTimestampFromLocal())
-            .map((item) => getGameInfoById(item))
-        );
+      const upcomingGames = await Promise.all(
+        result
+          .filter((x) => x[1].start_time > getUTCTimestampFromLocal())
+          .map((item) => getGameInfoById(item))
+      );
 
-        const completedGames = await Promise.all(
-          result
-            .filter((x) => x[1].end_time < getUTCTimestampFromLocal())
-            .map((item) => getGameInfoById(item))
-        );
+      const completedGames = await Promise.all(
+        result
+          .filter((x) => x[1].end_time < getUTCTimestampFromLocal())
+          .map((item) => getGameInfoById(item))
+      );
 
-        const ongoingGames = await Promise.all(
-          result
-            .filter(
-              (x) =>
-                x[1].start_time < getUTCTimestampFromLocal() &&
-                x[1].end_time > getUTCTimestampFromLocal()
-            )
-            .map((item) => getGameInfoById(item))
-        );
-        console.table(completedGames);
-        setCurrentTotal(upcomingGames.length);
-        setNewGames(upcomingGames);
-        setCompletedGames(completedGames);
-        setOngoingGames(ongoingGames);
-      });
+      const ongoingGames = await Promise.all(
+        result
+          .filter(
+            (x) =>
+              x[1].start_time < getUTCTimestampFromLocal() &&
+              x[1].end_time > getUTCTimestampFromLocal()
+          )
+          .map((item) => getGameInfoById(item))
+      );
+      console.table(completedGames);
+      setCurrentTotal(upcomingGames.length);
+      setNewGames(upcomingGames);
+      setCompletedGames(completedGames);
+      setOngoingGames(ongoingGames);
+    });
   }
   const claimRewards = async (gameId) => {
     setClaimLoading(true);
@@ -655,7 +655,7 @@ async function get_game_supply() {
           <Main color="indigo-white">
             <div className="flex flex-col mb-10">
               <div className="flex">
-                <div className="flex-initial md:ml-6 md:mt-8">
+                <div className="flex-initial md:ml-6 md:mt-8 iphone5:mt-20">
                   <PortfolioContainer title="PLAY" textcolor="text-indigo-black" />
                 </div>
                 {/* <Link href="/MyActivity">
@@ -666,10 +666,10 @@ async function get_game_supply() {
               </div>
 
               <div className="flex flex-col mt-6">
-                <div className="flex font-bold md:ml-14 font-monument">
+                <div className="flex font-bold font-monument iphone5:ml-7 md:ml-14 ">
                   {categoryList.map(({ name, isActive }) => (
                     <div
-                      className={`cursor-pointer mr-6 ${
+                      className={`cursor-pointer iphone5:mr-4 iphoneX:mr-10 md:mr-6 ${
                         isActive ? 'border-b-8 border-indigo-buttonblue' : ''
                       }`}
                       onClick={() => {
@@ -773,7 +773,7 @@ async function get_game_supply() {
                               );
                             })}
                       </div>
-                      <div className="mt-4 md:ml-10 grid grid-cols-0 md:grid-cols-3">
+                      <div className="mt-4 md:ml-10 grid grid-cols-0 md:grid-cols-3 iphone5:self-center">
                         {(categoryList[1].isActive
                           ? ongoingGames
                           : categoryList[2].isActive
@@ -791,9 +791,9 @@ async function get_game_supply() {
                               console.log(currentTotal);
                               return (
                                 <div key={i} className="flex">
-                                  <div className="mr-6 cursor-pointer ">
+                                  <div className="iphone5:mr-0 md:mr-6 cursor-pointer ">
                                     <Link href={`/Games/${data.game_id}`} passHref>
-                                      <div className="mr-6">
+                                      <div className="iphone5:mr-0 md:mr-6">
                                         <PlayComponent
                                           type={activeCategory}
                                           game_id={data.game_id}
