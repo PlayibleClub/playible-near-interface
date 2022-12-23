@@ -40,9 +40,9 @@ export const athleteSlice = createSlice({
 
 export const { setAthleteLineup, setGameId, setIndex, setTeamNameRedux, setPosition } = athleteSlice.actions;
 
-export const selectAthleteLineup = (state) => state.athlete.athleteLineup;
-export const selectGameId = (state) => state.athlete.game_id;
-export const selectIndex = (state) => state.athlete.index;
-export const selectTeamName = (state) => state.athlete.teamName;
-export const selectPosition = (state) => state.athlete.position;
+export const getAthleteLineup = (state) => state.athlete.athleteLineup;
+export const getGameId = (state) => state.athlete.game_id;
+export const getIndex = (state) => state.athlete.index;
+export const getTeamName = (state) => state.athlete.teamName;
+export const getPosition = (state) => state.athlete.position;
 export default athleteSlice.reducer;
