@@ -24,15 +24,17 @@ import {
   query_filter_tokens_for_owner,
   query_mixed_tokens_pagination,
 } from 'utils/near/helper';
+import { getSportType } from 'redux/athlete/sportSlice';
 import ReactPaginate from 'react-paginate';
 import Select from 'react-select';
 import { isCompositeType } from 'graphql';
 import { useRef } from 'react';
 import { current } from '@reduxjs/toolkit';
 import NftTypeComponent from './components/NftTypeComponent';
-import { selectAthleteLineup, selectIndex } from 'redux/athlete/athleteSlice';
+import { getAthleteLineup, getIndex } from 'redux/athlete/athleteSlice';
 import { GET_ATHLETE_BY_ID } from 'utils/queries';
-
+import { SPORT_TYPES } from 'data/constants/sportConstants';
+import SportType from 'components/buttons/SportType';
 const Portfolio = () => {
   const [searchText, setSearchText] = useState('');
   const [displayMode, setDisplay] = useState(true);
@@ -65,16 +67,15 @@ const Portfolio = () => {
   const [promoOffset, setPromoOffset] = useState(0);
   const [isPromoPage, setIsPromoPage] = useState(false);
   const [totalPromoSupply, setTotalPromoSupply] = useState(0);
-  const reduxLineup = useSelector(selectAthleteLineup);
-  let passedLineup = [...reduxLineup];
-  const index = useSelector(selectIndex);
+  const index = useSelector(getIndex);
   const [currentPage, setCurrentPage] = useState(0);
 
   const [filteredTotal, setFilteredTotal] = useState(30);
   const [isFiltered, setIsFiltered] = useState(false);
   const [filterOption, setFilterOption] = useState('');
   const [athleteList, setAthleteList] = useState([]);
-
+  const sport: String = useSelector(getSportType);
+  const [sportType, setSportType] = useState(sport);
   const [currPosition, setCurrPosition] = useState('');
   const [position, setPosition] = useState(['allPos']);
   const [team, setTeam] = useState(['allTeams']);
@@ -82,11 +83,33 @@ const Portfolio = () => {
   const [remountComponent, setRemountComponent] = useState(0);
   const [remountAthlete, setRemountAthlete] = useState(0);
   const { accountId } = useWalletSelector();
-
   const provider = new providers.JsonRpcProvider({
     url: getRPCProvider(),
   });
-
+  const [category, setCategory] = useState('FOOTBALL');
+  const [categoryList, setCategoryList] = useState([
+    {
+      name: 'FOOTBALL',
+      key: 'NFL',
+      isActive: true,
+    },
+    {
+      name: 'BASKETBALL',
+      key: 'NBA',
+      isActive: false,
+    },
+  ]);
+  const changeCategoryList = (name) => {
+    const tabList = [...categoryList];
+    tabList.forEach((item) => {
+      if (item.name === name) {
+        item.isActive = true;
+      } else {
+        item.isActive = false;
+      }
+    });
+    setCategoryList([...tabList]);
+  };
   function getAthleteLimit() {
     try {
       if (totalRegularSupply > 30) {
@@ -166,11 +189,6 @@ const Portfolio = () => {
       setIsPromoPage(false);
       newOffset = (e.selected * athleteLimit) % totalRegularSupply;
     }
-    passedLineup.splice(index, 1, {
-      position: position,
-      isAthlete: false,
-      isPromo: false,
-    });
     setAthleteOffset(newOffset);
     setCurrentPage(e.selected);
   };
@@ -242,7 +260,9 @@ const Portfolio = () => {
     }, 1000);
     return () => clearTimeout(delay);
   }, [search]);
-
+  useEffect(() => {
+    console.log(sportType);
+  }, [sportType]);
   useEffect(() => {}, [limit, offset, filter, search, selectedRegular, selectedPromo]);
 
   return (
@@ -250,25 +270,6 @@ const Portfolio = () => {
       <div className="flex flex-col w-full overflow-y-auto h-screen pb-12 mb-12">
         <Main color="indigo-white">
           <div className="flex flex-row h-8 mt-24 md:mt-0">
-            <div className="h-8 md:ml-10 lg:ml-12 flex justify-between mt-3">
-              <form>
-                <select
-                  onChange={(e) => {
-                    handleDropdownChange();
-                    setPosition([e.target.value]);
-                  }}
-                  className="bg-filter-icon bg-no-repeat bg-right bg-indigo-white iphone5:w-28 w-36 md:w-42 lg:w-60
-                      ring-2 ring-offset-4 ring-indigo-black ring-opacity-25 focus:ring-2 focus:ring-indigo-black 
-                      focus:outline-none cursor-pointer text-xs md:text-base"
-                >
-                  <option value="allPos">ALL POSITIONS</option>
-                  <option value="QB">QUARTER BACK</option>
-                  <option value="RB">RUNNING BACK</option>
-                  <option value="WR">WIDE RECEIVER</option>
-                  <option value="TE">TIGHT END</option>
-                </select>
-              </form>
-            </div>
             <div className="h-8 flex justify-between mt-3 ml-4 md:ml-12">
               <form>
                 <select
@@ -285,7 +286,10 @@ const Portfolio = () => {
                 </select>
               </form>
             </div>
-            <div className="h-8 flex justify-between mt-3 md:ml-24 lg:ml-80">
+            {/* <div className="h-8 flex mt-3">
+              <SportType sportTypes={SPORT_TYPES} />
+            </div> */}
+            <div className="h-8 flex justify-between mt-3 md:ml-80">
               <SearchComponent
                 onChangeFn={(search) => handleSearchDynamic(search)}
                 onSubmitFn={(search) => handleSearchSubmit(search)}
@@ -323,23 +327,66 @@ const Portfolio = () => {
               </form>
             </div> */}
           </div>
-
-          <div className="md:mt-20 md:mb-10 z-0">
-            <NftTypeComponent
-              onChangeFn={(selectedRegular, selectedPromo) => {
-                setSelectedRegular(selectedRegular);
-                setSelectedPromo(selectedPromo);
-                setRemountComponent(Math.random());
-              }}
-            />
-          </div>
-          <div className="md:ml-6 md:-mt-48">
+          {/* <div className="md:pt-20 z-0">
+                <NftTypeComponent
+                  onChangeFn={(selectedRegular, selectedPromo) => {
+                    setSelectedRegular(selectedRegular);
+                    setSelectedPromo(selectedPromo);
+                    setRemountComponent(Math.random());
+                  }}
+                />
+          </div> */}
+          <div className="md:ml-6">
             <PortfolioContainer textcolor="indigo-black" title="SQUAD">
+              <div className="flex font-bold max-w-full ml-6 md:ml-7 font-monument">
+                {categoryList.map(({ name, isActive }) => (
+                  <div
+                    className={`cursor-pointer mr-6 ${
+                      isActive ? 'border-b-8 border-indigo-buttonblue' : ''
+                    }`}
+                    onClick={() => {
+                      changeCategoryList(name);
+                      setCategory(name);
+                    }}
+                  >
+                    {name}
+                  </div>
+                ))}
+              </div>
+              <hr className="opacity-10"></hr>
+              <div className="md:mt-4 font-normal">
+                <div className="float-left h-8 md:ml-10 lg:ml-12 flex justify-between mt-3">
+                  <form>
+                    <select
+                      onChange={(e) => {
+                        handleDropdownChange();
+                        setPosition([e.target.value]);
+                      }}
+                      className="bg-filter-icon bg-no-repeat bg-right bg-indigo-white iphone5:w-28 w-36 md:w-42 lg:w-60
+                      ring-2 ring-offset-4 ring-indigo-black ring-opacity-25 focus:ring-2 focus:ring-indigo-black 
+                      focus:outline-none cursor-pointer text-xs md:text-base"
+                    >
+                      <option value="allPos">ALL POSITIONS</option>
+                      <option value="QB">QUARTER BACK</option>
+                      <option value="RB">RUNNING BACK</option>
+                      <option value="WR">WIDE RECEIVER</option>
+                      <option value="TE">TIGHT END</option>
+                    </select>
+                  </form>
+                </div>
+                <NftTypeComponent
+                  onChangeFn={(selectedRegular, selectedPromo) => {
+                    setSelectedRegular(selectedRegular);
+                    setSelectedPromo(selectedPromo);
+                    setRemountComponent(Math.random());
+                  }}
+                />
+              </div>
               <div key={remountAthlete} className="flex flex-col">
                 {loading ? (
                   <LoadingPageDark />
                 ) : (
-                  <div className="grid grid-cols-4 gap-y-8 mt-4 md:grid-cols-4 md:mt-16 md:mr-12">
+                  <div className="grid grid-cols-2 gap-x-12 md:gap-x-0 gap-y-8 mt-4 md:grid-cols-4 md:mt-4 md:mr-12">
                     {athletes.map((item) => {
                       const accountAthleteIndex = athletes.indexOf(item, 0) + athleteOffset;
                       return (

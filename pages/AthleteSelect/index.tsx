@@ -15,11 +15,11 @@ import ReactPaginate from 'react-paginate';
 import PerformerContainer from 'components/containers/PerformerContainer';
 import { Provider, useDispatch, useSelector } from 'react-redux';
 import {
-  selectAthleteLineup,
-  selectGameId,
-  selectIndex,
-  selectPosition,
-  selectTeamName,
+  getAthleteLineup,
+  getGameId,
+  getIndex,
+  getPosition,
+  getTeamName,
 } from 'redux/athlete/athleteSlice';
 import {
   setAthleteLineup,
@@ -45,10 +45,10 @@ const AthleteSelect = (props) => {
   const data = router.query;
   const dispatch = useDispatch();
   //Get the data from redux store
-  const gameId = useSelector(selectGameId);
-  const position = useSelector(selectPosition);
-  const index = useSelector(selectIndex);
-  const reduxLineup = useSelector(selectAthleteLineup);
+  const gameId = useSelector(getGameId);
+  const position = useSelector(getPosition);
+  const index = useSelector(getIndex);
+  const reduxLineup = useSelector(getAthleteLineup);
   let passedLineup = [...reduxLineup];
   const [athletes, setAthletes] = useState([]);
   const [selectedRegular, setSelectedRegular] = useState(false);
