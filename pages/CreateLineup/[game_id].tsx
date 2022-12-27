@@ -58,17 +58,17 @@ export default function CreateLineup(props) {
       <Container activeName="PLAY">
         <div className="flex flex-row md:flex-col">
           <Main color="indigo-white">
-            <div className="mt-8 ml-6">
+            <div className="md:mt-8 md:ml-6 iphone5:mt-28">
               <BackFunction
                 prev={query.origin ? `/${query.origin}` : `/PlayDetails/${gameId}`}
               ></BackFunction>
             </div>
-            <div className="md:ml-6 mt-11 flex w-auto">
+            <div className="md:ml-6 mt-11 flex w-auto md:flex-row iphone5:flex-col">
               <div className="md:ml-7">
                 <Image src={getImage(gameId)} width={550} height={279} alt="game-image" />
               </div>
 
-              <div className="md:ml-18 md:-mt-6 ml-14 -mt-6">
+              <div className="md:ml-18 md:-mt-6 md:ml-14 -mt-6 md:mr-0 iphone5:mr-4 iphone5:ml-6 iphone5:mt-0 ">
                 <ModalPortfolioContainer title="CREATE TEAM" textcolor="text-indigo-black" />
 
                 <div className="md:w-2/5">
@@ -85,7 +85,7 @@ export default function CreateLineup(props) {
                   }}
                   as={`/CreateTeam/${gameId}`}
                 >
-                  <button className="bg-indigo-buttonblue text-indigo-white whitespace-nowrap h-14 px-10 mt-16 text-center font-bold">
+                  <button className="bg-indigo-buttonblue text-indigo-white whitespace-nowrap h-14 px-10 md:mt-16 iphone5:mt-8 text-center font-bold">
                     CREATE YOUR LINEUP +
                   </button>
                 </Link>
