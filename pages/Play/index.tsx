@@ -22,7 +22,7 @@ import ReactPaginate from 'react-paginate';
 const bars = '/images/bars.png';
 const coin = 'images/coin.png';
 const claimreward = 'images/claimreward.png';
-
+import { SPORT_TYPES } from 'data/constants/sportConstants';
 import { query_games_list, query_game_supply } from 'utils/near/helper';
 
 const Play = (props) => {
@@ -78,6 +78,14 @@ const Play = (props) => {
       isActive: false,
     },
   ]);
+  const sportObj = SPORT_TYPES.map((x) => ({ name: x.sport, isActive: false }));
+  const [sportList, setSportList] = useState([
+    {
+      name: 'ALL',
+      isActive: true,
+    },
+    ...sportObj,
+  ]);
   const [remountComponent, setRemountComponent] = useState(0);
   const changecategoryList = (name) => {
     const tabList = [...categoryList];
@@ -105,6 +113,19 @@ const Play = (props) => {
     });
 
     setcategoryList([...tabList]);
+  };
+  const changeSportList = (name) => {
+    const sports = [...sportList];
+
+    sports.forEach((item) => {
+      if (item.name === name) {
+        item.isActive = true;
+      } else {
+        item.isActive = false;
+      }
+    });
+
+    setSportList([...sports]);
   };
 
   const Test = [1, 2, 3, 4, 5];
@@ -385,44 +406,44 @@ const Play = (props) => {
     setgamesOffset(newOffset);
   };
 
-async function get_game_supply() {
-      setTotalGames(await query_game_supply());
+  async function get_game_supply() {
+    setTotalGames(await query_game_supply());
   }
 
   console.log(totalGames);
-  
+
   function get_games_list(totalGames) {
     query_games_list(totalGames).then(async (data) => {
-        //@ts-ignore:next-line
-        const result = JSON.parse(Buffer.from(data.result).toString());
+      //@ts-ignore:next-line
+      const result = JSON.parse(Buffer.from(data.result).toString());
 
-        const upcomingGames = await Promise.all(
-          result
-            .filter((x) => x[1].start_time > getUTCTimestampFromLocal())
-            .map((item) => getGameInfoById(item))
-        );
+      const upcomingGames = await Promise.all(
+        result
+          .filter((x) => x[1].start_time > getUTCTimestampFromLocal())
+          .map((item) => getGameInfoById(item))
+      );
 
-        const completedGames = await Promise.all(
-          result
-            .filter((x) => x[1].end_time < getUTCTimestampFromLocal())
-            .map((item) => getGameInfoById(item))
-        );
+      const completedGames = await Promise.all(
+        result
+          .filter((x) => x[1].end_time < getUTCTimestampFromLocal())
+          .map((item) => getGameInfoById(item))
+      );
 
-        const ongoingGames = await Promise.all(
-          result
-            .filter(
-              (x) =>
-                x[1].start_time < getUTCTimestampFromLocal() &&
-                x[1].end_time > getUTCTimestampFromLocal()
-            )
-            .map((item) => getGameInfoById(item))
-        );
-        console.table(completedGames);
-        setCurrentTotal(upcomingGames.length);
-        setNewGames(upcomingGames);
-        setCompletedGames(completedGames);
-        setOngoingGames(ongoingGames);
-      });
+      const ongoingGames = await Promise.all(
+        result
+          .filter(
+            (x) =>
+              x[1].start_time < getUTCTimestampFromLocal() &&
+              x[1].end_time > getUTCTimestampFromLocal()
+          )
+          .map((item) => getGameInfoById(item))
+      );
+      console.table(completedGames);
+      setCurrentTotal(upcomingGames.length);
+      setNewGames(upcomingGames);
+      setCompletedGames(completedGames);
+      setOngoingGames(ongoingGames);
+    });
   }
   const claimRewards = async (gameId) => {
     setClaimLoading(true);
@@ -459,6 +480,7 @@ async function get_game_supply() {
   // }, [games, gamesLimit, gamesOffset]);
 
   useEffect(() => {
+    console.log(sportList);
     get_game_supply();
     get_games_list(totalGames);
   }, [totalGames]);
@@ -689,6 +711,26 @@ async function get_game_supply() {
                       {err ? (
                         <p className="py-10 ml-7">{err}</p>
                       ) : ( */}
+                <div className="flex flex-row first:md:ml-14">
+                  {sportList.map((x, index) => {
+                    return (
+                      <button
+                        className={`rounded-lg border mt-4 px-8 p-1 text-xs md:font-medium font-monument ${
+                          index === 0 ? `md:ml-14` : 'md:ml-4'
+                        } ${
+                          x.isActive
+                            ? 'bg-indigo-buttonblue text-indigo-white border-indigo-buttonblue'
+                            : ''
+                        }`}
+                        onClick={() => {
+                          changeSportList(x.name);
+                        }}
+                      >
+                        {x.name}
+                      </button>
+                    );
+                  })}
+                </div>
                 <>
                   {/* {sortedList.length > 0 ? ( */}
                   {1 > 0 ? (
