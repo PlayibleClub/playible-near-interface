@@ -64,6 +64,7 @@ const Play = (props) => {
   const [search, setSearch] = useState('');
   const [err, setErr] = useState(error);
   const [currentTotal, setCurrentTotal] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
   const [categoryList, setcategoryList] = useState([
     {
       name: 'NEW',
@@ -78,6 +79,7 @@ const Play = (props) => {
       isActive: false,
     },
   ]);
+
   const sportObj = SPORT_TYPES.map((x) => ({ name: x.sport, isActive: false }));
   const [sportList, setSportList] = useState([
     {
@@ -363,7 +365,13 @@ const Play = (props) => {
     await setSortedList([]);
     fetchGames(activeCategory);
   };
-
+  const handleResize = () => {
+    if (window.innerWidth < 768) {
+      setIsMobile(true);
+    } else {
+      setIsMobile(false);
+    }
+  };
   const renderPlacements = (item, i, winning = false) => {
     return (
       <>
@@ -498,7 +506,12 @@ const Play = (props) => {
       setClaimData(null);
     }
   }, [claimModal]);
-
+  useEffect(() => {
+    console.log(sportList);
+  }, [sportList]);
+  useEffect(() => {
+    window.addEventListener('resize', handleResize);
+  });
   return (
     <>
       {claimModal === true && (
@@ -712,24 +725,39 @@ const Play = (props) => {
                         <p className="py-10 ml-7">{err}</p>
                       ) : ( */}
                 <div className="flex flex-row first:md:ml-14">
-                  {sportList.map((x, index) => {
-                    return (
-                      <button
-                        className={`rounded-lg border mt-4 px-8 p-1 text-xs md:font-medium font-monument ${
-                          index === 0 ? `md:ml-14` : 'md:ml-4'
-                        } ${
-                          x.isActive
-                            ? 'bg-indigo-buttonblue text-indigo-white border-indigo-buttonblue'
-                            : ''
-                        }`}
-                        onClick={() => {
-                          changeSportList(x.name);
+                  {isMobile ? (
+                    <form>
+                      <select
+                        onChange={(e) => {
+                          changeSportList(e.target.value);
                         }}
+                        className="bg-filter-icon bg-no-repeat bg-right cursor-pointer text-xs"
                       >
-                        {x.name}
-                      </button>
-                    );
-                  })}
+                        {sportList.map((x) => {
+                          return <option value={x.name}>{x.name}</option>;
+                        })}
+                      </select>
+                    </form>
+                  ) : (
+                    sportList.map((x, index) => {
+                      return (
+                        <button
+                          className={`rounded-lg border mt-4 px-8 p-1 text-xs md:font-medium font-monument ${
+                            index === 0 ? `md:ml-14` : 'md:ml-4'
+                          } ${
+                            x.isActive
+                              ? 'bg-indigo-buttonblue text-indigo-white border-indigo-buttonblue'
+                              : ''
+                          }`}
+                          onClick={() => {
+                            changeSportList(x.name);
+                          }}
+                        >
+                          {x.name}
+                        </button>
+                      );
+                    })
+                  )}
                 </div>
                 <>
                   {/* {sortedList.length > 0 ? ( */}
