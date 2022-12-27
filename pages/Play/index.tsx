@@ -385,44 +385,44 @@ const Play = (props) => {
     setgamesOffset(newOffset);
   };
 
-async function get_game_supply() {
-      setTotalGames(await query_game_supply());
+  async function get_game_supply() {
+    setTotalGames(await query_game_supply());
   }
 
   console.log(totalGames);
-  
+
   function get_games_list(totalGames) {
     query_games_list(totalGames).then(async (data) => {
-        //@ts-ignore:next-line
-        const result = JSON.parse(Buffer.from(data.result).toString());
+      //@ts-ignore:next-line
+      const result = JSON.parse(Buffer.from(data.result).toString());
 
-        const upcomingGames = await Promise.all(
-          result
-            .filter((x) => x[1].start_time > getUTCTimestampFromLocal())
-            .map((item) => getGameInfoById(item))
-        );
+      const upcomingGames = await Promise.all(
+        result
+          .filter((x) => x[1].start_time > getUTCTimestampFromLocal())
+          .map((item) => getGameInfoById(item))
+      );
 
-        const completedGames = await Promise.all(
-          result
-            .filter((x) => x[1].end_time < getUTCTimestampFromLocal())
-            .map((item) => getGameInfoById(item))
-        );
+      const completedGames = await Promise.all(
+        result
+          .filter((x) => x[1].end_time < getUTCTimestampFromLocal())
+          .map((item) => getGameInfoById(item))
+      );
 
-        const ongoingGames = await Promise.all(
-          result
-            .filter(
-              (x) =>
-                x[1].start_time < getUTCTimestampFromLocal() &&
-                x[1].end_time > getUTCTimestampFromLocal()
-            )
-            .map((item) => getGameInfoById(item))
-        );
-        console.table(completedGames);
-        setCurrentTotal(upcomingGames.length);
-        setNewGames(upcomingGames);
-        setCompletedGames(completedGames);
-        setOngoingGames(ongoingGames);
-      });
+      const ongoingGames = await Promise.all(
+        result
+          .filter(
+            (x) =>
+              x[1].start_time < getUTCTimestampFromLocal() &&
+              x[1].end_time > getUTCTimestampFromLocal()
+          )
+          .map((item) => getGameInfoById(item))
+      );
+      console.table(completedGames);
+      setCurrentTotal(upcomingGames.length);
+      setNewGames(upcomingGames);
+      setCompletedGames(completedGames);
+      setOngoingGames(ongoingGames);
+    });
   }
   const claimRewards = async (gameId) => {
     setClaimLoading(true);
@@ -726,7 +726,8 @@ async function get_game_supply() {
                                           icon="test"
                                           startDate={data.start_time}
                                           endDate={data.end_time}
-                                          img={data.image}
+                                          img={data.game_image}
+                                          prizePool={data.prize_description}
                                           fetchGames={fetchGamesLoading}
                                           index={() => changeIndex(1)}
                                         />
@@ -798,10 +799,10 @@ async function get_game_supply() {
                                           type={activeCategory}
                                           game_id={data.game_id}
                                           icon="test"
-                                          prizePool="2,300"
+                                          prizePool={data.prize_description}
                                           startDate={data.start_time}
                                           endDate={data.end_time}
-                                          img={data.image}
+                                          img={data.game_image}
                                           fetchGames={fetchGamesLoading}
                                           index={() => changeIndex(1)}
                                         />

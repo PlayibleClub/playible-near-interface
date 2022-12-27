@@ -18,7 +18,7 @@ const PlayComponent = (props) => {
     month,
     date,
     year,
-    img = null,
+    img,
     fetchGames,
     index,
   } = props;
@@ -76,18 +76,18 @@ const PlayComponent = (props) => {
                 <div className="text-base font-monument">${prizePool}</div>
               </div> */}
               <div className="">
-                <div className="font-thin text-sm">STATUS</div>
+                <div className="font-normal text-sm">STATUS</div>
                 <div className="text-base font-monument">COMPLETE</div>
               </div>
               <div>
-                <div className="font-thin text-sm">GAME ID</div>
+                <div className="font-normal text-sm">GAME ID</div>
                 <div className="text-base font-monument">{game_id}</div>
               </div>
             </div>
 
             <div className="mt-4 flex justify-between">
               <div className="">
-                <div className="font-thin text-sm">RANKING</div>
+                <div className="font-normal text-sm">RANKING</div>
                 <div className="text-base font-monument">
                   <img src={ranking} className="w-3 h-3" />
                   {/*  */}
@@ -100,7 +100,7 @@ const PlayComponent = (props) => {
         <div className="w-84 h-96 mb-12">
           <div className="w-full p-3">
             <div className="w-full">
-              <Image src={playicon} width="300" height="263" alt="play-icon" />
+              <Image src={img ? img : playicon} width={300} height={263} alt="play-icon" />
             </div>
 
             <div className="mt-4 flex justify-between">
