@@ -99,6 +99,31 @@ const Portfolio = () => {
       isActive: false,
     },
   ]);
+
+  // const [contractList, setContractList] = useState([
+  //   {
+  //     name: 'FOOTBALL',
+  //     regContract: getContract(ATHLETE),
+  //     promoContract: getContract(ATHLETE_PROMO),
+  //   },
+  //   {
+  //     name: 'BASKETBALL',
+  //     regContract: getContract(ATHLETE),
+  //     promoContract: getContract(ATHLETE_PROMO),
+  //   },
+  // ]);
+  const contractList = [
+    {
+      name: 'FOOTBALL',
+      regContract: getContract(ATHLETE),
+      promoContract: getContract(ATHLETE_PROMO),
+    },
+    {
+      name: 'BASKETBALL',
+      regContract: getContract(ATHLETE),
+      promoContract: getContract(ATHLETE_PROMO),
+    },
+  ];
   const changeCategoryList = (name) => {
     const tabList = [...categoryList];
     tabList.forEach((item) => {
@@ -237,22 +262,34 @@ const Portfolio = () => {
     setRemountAthlete(Math.random() + 1);
   }, [athletes]);
   useEffect(() => {
+    const contract = SPORT_TYPES.find((x) => x.sport === category);
+    console.log(contract.regContract);
+    if (contract.sport === 'BASKETBALL') console.log('Basketball');
     if (selectedRegular !== false && selectedPromo === false) {
-      get_filter_supply_for_owner(getContract(ATHLETE));
+      get_filter_supply_for_owner(contract.regContract);
       setTotalPromoSupply(0);
     } else if (selectedRegular === false && selectedPromo !== false) {
-      get_filter_soulbound_supply_for_owner(getContract(ATHLETE_PROMO));
+      get_filter_soulbound_supply_for_owner(contract.promoContract);
       setTotalRegularSupply(0);
     } else if (selectedRegular !== false && selectedPromo !== false) {
-      get_filter_supply_for_owner(getContract(ATHLETE));
-      get_filter_soulbound_supply_for_owner(getContract(ATHLETE_PROMO));
+      get_filter_supply_for_owner(contract.regContract);
+      get_filter_soulbound_supply_for_owner(contract.promoContract);
     } else {
       setTotalRegularSupply(0);
       setTotalPromoSupply(0);
     }
     setPageCount(Math.ceil((totalRegularSupply + totalPromoSupply) / athleteLimit));
     //setup regular_offset, soulbound_offset
-  }, [position, team, name, totalRegularSupply, totalPromoSupply, selectedRegular, selectedPromo]);
+  }, [
+    position,
+    team,
+    name,
+    totalRegularSupply,
+    totalPromoSupply,
+    selectedRegular,
+    selectedPromo,
+    category,
+  ]);
 
   useEffect(() => {
     const delay = setTimeout(() => {
