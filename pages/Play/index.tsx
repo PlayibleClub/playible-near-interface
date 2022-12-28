@@ -669,7 +669,7 @@ const Play = (props) => {
                 <div className="flex font-bold font-monument iphone5:ml-7 md:ml-14 ">
                   {categoryList.map(({ name, isActive }) => (
                     <div
-                      className={`cursor-pointer iphone5:mr-4 iphoneX:mr-10 md:mr-6 ${
+                      className={`cursor-pointer iphone5:mr-8 iphone5:text-xs md:text-base md:mr-6 ${
                         isActive ? 'border-b-8 border-indigo-buttonblue' : ''
                       }`}
                       onClick={() => {
@@ -681,7 +681,7 @@ const Play = (props) => {
                     </div>
                   ))}
                 </div>
-                <hr className="opacity-10" />
+                <hr className="opacity-10 w-screen" />
                 {/* {loading ? (
                     <LoadingPageDark />
                   ) : (
@@ -693,14 +693,14 @@ const Play = (props) => {
                   {/* {sortedList.length > 0 ? ( */}
                   {1 > 0 ? (
                     <>
-                      <div className="mt-4 md:ml-10 grid grid-cols-0 md:grid-cols-3">
+                      <div className="mt-4 md:ml-10 grid grid-cols-0 md:grid-cols-3 iphone5:self-center md:self-start">
                         {(categoryList[0].isActive ? newGames : emptyGames).length > 0 &&
                           (categoryList[0].isActive ? newGames : emptyGames)
                             .filter((data, i) => i >= gamesOffset && i < gamesOffset + gamesLimit)
                             .map((data, i) => {
                               return (
                                 <div key={i} className="flex">
-                                  <div className="mr-6 cursor-pointer">
+                                  <div className="iphone5:mr-0 md:mr-6 cursor-pointer">
                                     {/* <a href={`/PlayDetails?id=${data.id}`}>
                                           <div className="mr-6">
                                             <PlayComponent
@@ -719,7 +719,7 @@ const Play = (props) => {
                                           </div>
                                         </a> */}
                                     <Link href={`/PlayDetails/${data.game_id}`} passHref>
-                                      <div className="mt-4 mr-6">
+                                      <div className="iphone5:mr-0 md:mr-6">
                                         <PlayComponent
                                           type={activeCategory}
                                           game_id={data.game_id}
@@ -773,7 +773,7 @@ const Play = (props) => {
                               );
                             })}
                       </div>
-                      <div className="mt-4 md:ml-10 grid grid-cols-0 md:grid-cols-3 iphone5:self-center">
+                      <div className="mt-4 md:ml-10 grid grid-cols-0 md:grid-cols-3 iphone5:self-center md:self-start">
                         {(categoryList[1].isActive
                           ? ongoingGames
                           : categoryList[2].isActive
