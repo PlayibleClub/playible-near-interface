@@ -33,7 +33,7 @@ import { current } from '@reduxjs/toolkit';
 import NftTypeComponent from './components/NftTypeComponent';
 import { getAthleteLineup, getIndex } from 'redux/athlete/athleteSlice';
 import { GET_ATHLETE_BY_ID } from 'utils/queries';
-import { SPORT_TYPES } from 'data/constants/sportConstants';
+import { NBA_POSITIONS, NFL_POSITIONS, SPORT_TYPES } from 'data/constants/sportConstants';
 import SportType from 'components/buttons/SportType';
 const Portfolio = () => {
   const [searchText, setSearchText] = useState('');
@@ -87,6 +87,7 @@ const Portfolio = () => {
     url: getRPCProvider(),
   });
   const [category, setCategory] = useState('FOOTBALL');
+  const [positionList, setPositionList] = useState(SPORT_TYPES[0].positionList);
   const [categoryList, setCategoryList] = useState([
     {
       name: 'FOOTBALL',
@@ -165,6 +166,20 @@ const Portfolio = () => {
     setRemountComponent(Math.random());
   }
 
+  function getCurrentPositionList() {
+    SPORT_TYPES.forEach((x) => {
+      if (x.sport === category) {
+        console.log('test hello');
+        return x.positionList;
+      }
+    });
+    return [];
+    // const curr = SPORT_TYPES.find((item) => item.sport === category);
+    // if (curr === undefined) {
+    //   console.log('undefined');
+    //   return [];
+    // } else return curr.positionList;
+  }
   async function get_mixed_tokens_for_pagination() {
     await query_mixed_tokens_pagination(
       accountId,
@@ -298,8 +313,11 @@ const Portfolio = () => {
     return () => clearTimeout(delay);
   }, [search]);
   useEffect(() => {
-    console.log(sportType);
-  }, [sportType]);
+    //getting positionList value from sportConstants
+    const list = SPORT_TYPES.find((x) => x.sport === category);
+    console.log(SPORT_TYPES[index]);
+    setPositionList(list.positionList);
+  }, [category]);
   useEffect(() => {}, [limit, offset, filter, search, selectedRegular, selectedPromo]);
 
   return (
@@ -404,10 +422,13 @@ const Portfolio = () => {
                       focus:outline-none cursor-pointer text-xs md:text-base"
                     >
                       <option value="allPos">ALL POSITIONS</option>
-                      <option value="QB">QUARTER BACK</option>
+                      {/* <option value="QB">QUARTER BACK</option>
                       <option value="RB">RUNNING BACK</option>
                       <option value="WR">WIDE RECEIVER</option>
-                      <option value="TE">TIGHT END</option>
+                      <option value="TE">TIGHT END</option> */}
+                      {positionList.map((x) => {
+                        return <option value={x.key}>{x.name}</option>;
+                      })}
                     </select>
                   </form>
                 </div>

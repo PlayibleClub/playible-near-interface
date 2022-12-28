@@ -47,11 +47,13 @@ export const SPORT_TYPES = [
     key: 'NFL',
     sport: 'FOOTBALL',
     regContract: getContract(ATHLETE),
-    promoContract: getContract(ATHLETE_PROMO)
+    promoContract: getContract(ATHLETE_PROMO),
+    positionList: NFL_POSITIONS,
   },
   {
     key: 'NBA',
     sport: 'BASKETBALL',
     regContract: getContract(ATHLETE),
     promoContract: getContract(ATHLETE_PROMO),
+    positionList: NBA_POSITIONS,
   }];
