@@ -41,6 +41,8 @@ function getImage(gameId: string): string {
       return '/images/footballChampsionship.jpg';
     case '24':
       return '/images/holidayContest.jpg';
+    case '25':
+      return '/images/footballChampsionship.jpg';
     default:
       return '/images/game.png';
   }
@@ -54,6 +56,8 @@ function getDescription(gameId: string): string {
       return 'The first annual Playible Football Championship. Only those who won tickets can enter and compete for $35K.';
     case '24':
       return 'Only Sunday games will be eligible to score points in this game. Enjoy the holidays!';
+    case '25':
+      return 'The first annual Playible Football Championship. Only those who won tickets can enter and compete for $35K.';
     default:
       return 'Enter a team into the The Blitz tournament to compete for cash prizes. \nCreate a lineup by selecting 8 Playible Football Athlete Tokens now.';
   }
@@ -67,6 +71,8 @@ function getPrizePool(gameId: string): string {
       return '$100';
     case '24':
       return 'Playible Athlete NFTs';
+    case '25':
+      return '$35K ($10K to 1st)';
     default:
       return '$100 + 2 Championship Tickets';
   }
