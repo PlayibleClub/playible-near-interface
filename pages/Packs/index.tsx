@@ -24,7 +24,7 @@ import {
   query_nft_tokens_for_owner,
 } from 'utils/near/helper';
 import Modal from 'components/modals/Modal';
-
+import { SPORT_TYPES } from 'data/constants/sportConstants';
 export default function Packs() {
   const { selector, modal, accounts, accountId } = useWalletSelector();
 
@@ -52,7 +52,7 @@ export default function Packs() {
   const [totalSoulboundPacks, setTotalSoulboundPacks] = useState(0);
   const [activeCategory, setCategory] = useState('NEW');
   const [currentTotal, setCurrentTotal] = useState(0);
-
+  const [isMobile, setIsMobile] = useState(false);
   const [categoryList, setcategoryList] = useState([
     {
       name: 'STARTER',
@@ -63,7 +63,9 @@ export default function Packs() {
       isActive: false,
     },
   ]);
-
+  const sportObj = SPORT_TYPES.map((x) => ({ ...x, isActive: false }));
+  sportObj[0].isActive = true;
+  const [sportList, setSportList] = useState([...sportObj]);
   const [remountComponent, setRemountComponent] = useState(0);
   const changecategoryList = (name) => {
     const tabList = [...categoryList];
@@ -89,7 +91,16 @@ export default function Packs() {
 
     setcategoryList([...tabList]);
   };
-
+  const changeSportList = (name) => {
+    const sports = [...sportList];
+    sports.forEach((item) => {
+      if (item.sport === name) {
+        item.isActive = true;
+      } else {
+        item.isActive = false;
+      }
+    });
+  };
   async function get_nft_pack_supply_for_owner(accountId) {
     setTotalPacks(await query_nft_supply_for_owner(accountId, getContract(PACK)));
   }
@@ -160,7 +171,13 @@ export default function Packs() {
     e.preventDefault();
     get_soulbound_pack(selector);
   };
-
+  const handleResize = () => {
+    if (window.innerWidth < 768) {
+      setIsMobile(true);
+    } else {
+      setIsMobile(false);
+    }
+  };
   useEffect(() => {
     get_nft_pack_supply_for_owner(accountId);
     getPackLimit();
@@ -191,6 +208,9 @@ export default function Packs() {
     get_claim_status(accountId);
   }, []);
 
+  useEffect(() => {
+    window.addEventListener('resize', handleResize);
+  });
   // useEffect(() => {
   //     // set initial value
   //     const mediaWatcher = window.matchMedia("(max-width: 500px)")
@@ -254,6 +274,41 @@ export default function Packs() {
 
               <div className="flex flex-col">
                 <hr className="opacity-10 -ml-6" />
+                <div className="flex flex-row first:md:ml-10">
+                  {isMobile ? (
+                    <form>
+                      <select
+                        onChange={(e) => {
+                          changeSportList(e.target.value);
+                        }}
+                        className="bg-filter-icon bg-no-repeat bg-right cursor-pointer text-xs"
+                      >
+                        {sportList.map((x) => {
+                          return <option value={x.sport}>{x.sport}</option>;
+                        })}
+                      </select>
+                    </form>
+                  ) : (
+                    sportList.map((x, index) => {
+                      return (
+                        <button
+                          className={`rounded-lg border mt-4 px-8 p-1 text-xs md:font-medium font-monument ${
+                            index === 0 ? `md:ml-7` : 'md:ml-4'
+                          } ${
+                            x.isActive
+                              ? 'bg-indigo-buttonblue text-indigo-white border-indigo-buttonblue'
+                              : ''
+                          }`}
+                          onClick={() => {
+                            changeSportList(x.sport);
+                          }}
+                        >
+                          {x.sport}
+                        </button>
+                      );
+                    })
+                  )}
+                </div>
                 <div className="grid grid-cols-4 gap-y-8 mt-4 md:grid-cols-4 iphone5:mt-8 iphone5:ml-2 md:ml-7 md:mt-9 ">
                   {(categoryList[0].isActive ? packs : soulboundPacks).length > 0 &&
                     (categoryList[0].isActive ? packs : soulboundPacks)
