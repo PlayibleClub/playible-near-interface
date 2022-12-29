@@ -167,6 +167,10 @@ export default function EntrySummary(props) {
     console.log(athletes);
   }, [remountComponent]);
 
+  useEffect(() => {
+    get_game_data(gameId);
+  }, []);
+
   return (
     <>
       <Container activeName="PLAY">
@@ -181,7 +185,12 @@ export default function EntrySummary(props) {
                   <div className="md:mr-12">
                     <div className="mt-11 flex justify-center md:self-left md:mr-8 md:ml-6">
                       <div className="">
-                        <Image src="/images/game.png" width={550} height={279} alt="game-image" />
+                        <Image
+                          src={gameData?.game_image}
+                          width={550}
+                          height={279}
+                          alt="game-image"
+                        />
                       </div>
                       <div className="-mt-7 ml-7">
                         <PortfolioContainer textcolor="indigo-black" title="ENTRY SUMMARY" />
@@ -189,7 +198,7 @@ export default function EntrySummary(props) {
                           <div className="ml-7">
                             <div>PRIZE POOL</div>
                             <div className=" font-monument text-lg">
-                              {(gameData && gameData.prize) || '$100 + 2 Championship Tickets'}
+                              {gameData?.prize_description}
                             </div>
                           </div>
                           <div>
