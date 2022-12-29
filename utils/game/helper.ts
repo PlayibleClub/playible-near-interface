@@ -73,6 +73,12 @@ function getPrizePool(gameId: string): string {
       return 'Playible Athlete NFTs';
     case '25':
       return '$35K ($10K to 1st)';
+    case '26':
+      return '$100';
+    case '27':
+      return 'Playible Basketball Starter Pack';
+    case '28':
+      return 'Playible Football Athlete NFTs';
     default:
       return '$100 + 2 Championship Tickets';
   }
