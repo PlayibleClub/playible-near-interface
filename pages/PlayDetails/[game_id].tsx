@@ -33,7 +33,8 @@ export default function PlayDetails(props) {
   });
 
   const { accountId } = useWalletSelector();
-
+  const defaultGameImage = '/images/game.png';
+  const defaultPrizeDescription = '$100 + 2 Championship Tickets';
   const [gameData, setGameData] = useState(null);
   const [leaderboard, setLeaderboard] = useState([]);
   const [registeredTeams, setRegisteredTeams] = useState([]);
@@ -287,7 +288,11 @@ export default function PlayDetails(props) {
                                     <div className="iphone5:mt-4 md:mt-7 flex justify-center md:self-left md:mr-8 iphone5:flex-col md:flex-row">
                                       <div className="-ml-7 mr-7">
                                         <Image
-                                          src={gameData?.game_image}
+                                          src={
+                                            gameData?.game_image
+                                              ? gameData.game_image
+                                              : defaultGameImage
+                                          }
                                           width={550}
                                           height={279}
                                           alt="game-image"
@@ -304,8 +309,9 @@ export default function PlayDetails(props) {
                                           <div className="iphone5:ml-0 md:ml-7">
                                             <div>PRIZE POOL</div>
                                             <div className=" font-monument text-lg">
-                                              {(gameData && gameData.prize_description) ||
-                                                '$100 + 2 Championship Tickets'}
+                                              {gameData?.prize_description
+                                                ? gameData.prize_description
+                                                : defaultPrizeDescription}
                                             </div>
                                           </div>
                                           <div>
