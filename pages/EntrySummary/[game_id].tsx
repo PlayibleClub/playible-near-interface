@@ -43,7 +43,8 @@ export default function EntrySummary(props) {
   const gameId = query.game_id;
   const [playerLineup, setPlayerLineup] = useState([]);
   const [athletes, setAthletes] = useState([]);
-
+  const defaultGameImage = '/images/game.png';
+  const defaultPrizeDescription = '$100 + 2 Championship Tickets';
   // const { error } = props;
   const [loading, setLoading] = useState(true);
   // const [err, setErr] = useState(error);
@@ -186,7 +187,7 @@ export default function EntrySummary(props) {
                     <div className="mt-11 flex justify-center md:self-left md:mr-8 md:ml-6">
                       <div className="">
                         <Image
-                          src={gameData?.game_image}
+                          src={gameData?.game_image ? gameData.game_image : defaultGameImage}
                           width={550}
                           height={279}
                           alt="game-image"
@@ -198,7 +199,7 @@ export default function EntrySummary(props) {
                           <div className="ml-7">
                             <div>PRIZE POOL</div>
                             <div className=" font-monument text-lg">
-                              {gameData?.prize_description}
+                              {gameData?.prize_description ? gameData.prize_description : defaultPrizeDescription}
                             </div>
                           </div>
                           <div>
