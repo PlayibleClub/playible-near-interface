@@ -11,12 +11,12 @@ import Sorter from './components/Sorter';
 import SearchComponent from 'components/SearchComponent';
 import { transactions, utils, WalletConnection, providers } from 'near-api-js';
 import { getRPCProvider, getContract } from 'utils/near';
-import { PACK } from '../../data/constants/nearContracts';
+import { PACK_NFL } from '../../data/constants/nearContracts';
 import { axiosInstance } from '../../utils/playible';
 import 'regenerator-runtime/runtime';
 import { ProvidedRequiredArgumentsOnDirectivesRule } from 'graphql/validation/rules/ProvidedRequiredArgumentsRule';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
-import { ATHLETE, ATHLETE_PROMO } from 'data/constants/nearContracts';
+import { ATHLETE_NFL, ATHLETE_PROMO_NFL } from 'data/constants/nearContracts';
 import PackComponent from 'pages/Packs/components/PackComponent';
 import { convertNftToAthlete, getAthleteInfoById } from 'utils/athlete/helper';
 import {
@@ -116,13 +116,13 @@ const Portfolio = () => {
   const contractList = [
     {
       name: 'FOOTBALL',
-      regContract: getContract(ATHLETE),
-      promoContract: getContract(ATHLETE_PROMO),
+      regContract: getContract(ATHLETE_NFL),
+      promoContract: getContract(ATHLETE_PROMO_NFL),
     },
     {
       name: 'BASKETBALL',
-      regContract: getContract(ATHLETE),
-      promoContract: getContract(ATHLETE_PROMO),
+      regContract: getContract(ATHLETE_NFL),
+      promoContract: getContract(ATHLETE_PROMO_NFL),
     },
   ];
   const changeCategoryList = (name) => {
@@ -241,9 +241,9 @@ const Portfolio = () => {
   useEffect(() => {
     //if regular and soulbound radio buttons are enabled
     if (selectedRegular !== false && selectedPromo === false) {
-      get_filter_tokens_for_owner(getContract(ATHLETE));
+      get_filter_tokens_for_owner(getContract(ATHLETE_NFL));
     } else if (selectedRegular === false && selectedPromo !== false) {
-      get_filter_tokens_for_owner(getContract(ATHLETE_PROMO));
+      get_filter_tokens_for_owner(getContract(ATHLETE_PROMO_NFL));
     } else if (selectedRegular !== false && selectedPromo !== false) {
       get_mixed_tokens_for_pagination();
     } else {

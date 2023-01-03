@@ -1,4 +1,4 @@
-export const MINTER = {
+export const MINTER_NFL = {
   mainnet: 'pack_minter.playible.near',
   testnet: 'pack_minter.playible.testnet',
   interface: {
@@ -44,7 +44,7 @@ export const NEP141USN = {
   },
 }; //Near NEP-141 equivalent CW-20 or ERC-20
 
-export const PACK = {
+export const PACK_NFL = {
   mainnet: 'pack.pack_minter.playible.near',
   testnet: 'pack.pack_minter.playible.testnet',
   interface: {
@@ -52,7 +52,7 @@ export const PACK = {
     changeMethods: ['nft_transfer', 'nft_transfer_call', 'nft_resolve_transfer'],
   },
 }; //Pack Contract
-export const PACK_PROMO = {
+export const PACK_PROMO_NFL = {
   mainnet: 'pack.promotional.nfl.playible.near',
   testnet: 'pack.promotional.nfl.playible.testnet',
   interface: {
@@ -82,7 +82,7 @@ export const MARKETPLACE = {
     changeMethods: ['addMessage'],
   },
 }; //Marketplace Contract
-export const ATHLETE = {
+export const ATHLETE_NFL = {
   mainnet: 'athlete.nfl.playible.near',
   testnet: 'athlete.nfl.playible.testnet',
   interface: {
@@ -97,7 +97,7 @@ export const ATHLETE = {
     changeMethods: ['addMessage'],
   },
 }; //Athlete Contract
-export const ATHLETE_PROMO = {
+export const ATHLETE_PROMO_NFL = {
   mainnet: 'athlete.promotional.nfl.playible.near',
   testnet: 'athlete.promotional.nfl.playible.testnet',
   interface: {
@@ -112,7 +112,7 @@ export const ATHLETE_PROMO = {
     changeMethods: ['addMessage'],
   },
 };
-export const OPENPACK = {
+export const OPENPACK_NFL = {
   mainnet: 'open_pack.nfl.playible.near',
   testnet: 'open_pack.nfl.playible.testnet',
   interface: {
@@ -120,7 +120,7 @@ export const OPENPACK = {
     changeMethods: ['execute_add_athletes', 'execute_open_pack'],
   },
 }; //OpenPack Contract
-export const OPENPACK_PROMO = {
+export const OPENPACK_PROMO_NFL = {
   mainnet: 'open_pack.promotional.nfl.playible.near',
   testnet: 'open_pack.promotional.nfl.playible.testnet',
   interface: {
@@ -144,7 +144,7 @@ export const CONTROLLER = {
     changeMethods: ['addMessage'],
   },
 }; // Controller Contract
-export const GAME = {
+export const GAME_NFL = {
   mainnet: 'game.nfl.playible.near',
   testnet: 'game.nfl.playible.testnet',
   interface: {

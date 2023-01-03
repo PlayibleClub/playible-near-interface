@@ -13,7 +13,7 @@ import PackComponent from './components/PackComponent';
 import PlayComponent from '../Play/components/PlayComponent';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
 import { getRPCProvider, getContract } from 'utils/near';
-import { OPENPACK_PROMO, PACK, PACK_PROMO } from '../../data/constants/nearContracts';
+import { OPENPACK_PROMO_NFL, PACK_NFL, PACK_PROMO_NFL } from '../../data/constants/nearContracts';
 import ReactPaginate from 'react-paginate';
 import BigNumber from 'bignumber.js';
 import { DEFAULT_MAX_FEES, MINT_STORAGE_COST } from 'data/constants/gasFees';
@@ -102,11 +102,13 @@ export default function Packs() {
     });
   };
   async function get_nft_pack_supply_for_owner(accountId) {
-    setTotalPacks(await query_nft_supply_for_owner(accountId, getContract(PACK)));
+    setTotalPacks(await query_nft_supply_for_owner(accountId, getContract(PACK_NFL)));
   }
 
   async function get_nft_sb_supply_for_owner(accountId) {
-    setTotalSoulboundPacks(await query_nft_supply_for_owner(accountId, getContract(PACK_PROMO)));
+    setTotalSoulboundPacks(
+      await query_nft_supply_for_owner(accountId, getContract(PACK_PROMO_NFL))
+    );
   }
 
   function getPackLimit() {
@@ -143,7 +145,7 @@ export default function Packs() {
   }
 
   async function get_nft_sb_pack_tokens_for_owner(accountId, packOffset, soulboundPackLimit) {
-    query_nft_tokens_for_owner(accountId, packOffset, packLimit, getContract(PACK_PROMO)).then(
+    query_nft_tokens_for_owner(accountId, packOffset, packLimit, getContract(PACK_PROMO_NFL)).then(
       async (data) => {
         //@ts-ignore:next-line
         const result = JSON.parse(Buffer.from(data.result).toString());

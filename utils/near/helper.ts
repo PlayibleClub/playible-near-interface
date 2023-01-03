@@ -1,7 +1,7 @@
 import { providers } from 'near-api-js';
 import { getContract, getRPCProvider } from 'utils/near';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
-import { GAME, ATHLETE, PACK_PROMO, PACK, ATHLETE_PROMO } from 'data/constants/nearContracts';
+import { GAME_NFL, ATHLETE_NFL, PACK_PROMO_NFL, PACK_NFL, ATHLETE_PROMO_NFL } from 'data/constants/nearContracts';
 import { convertNftToAthlete, getAthleteInfoById } from 'utils/athlete/helper';
 import React, { useEffect, useState } from 'react';
 import { DEFAULT_MAX_FEES, MINT_STORAGE_COST } from 'data/constants/gasFees';
@@ -20,7 +20,7 @@ async function query_game_data(game_id) {
     .query({
       request_type: 'call_function',
       finality: 'optimistic',
-      account_id: getContract(GAME),
+      account_id: getContract(GAME_NFL),
       method_name: 'get_game',
       args_base64: Buffer.from(query).toString('base64'),
     })
@@ -40,7 +40,7 @@ async function query_nft_token_by_id(token_id) {
     .query({
       request_type: 'call_function',
       finality: 'optimistic',
-      account_id: token_id.includes('SB') ? getContract(ATHLETE_PROMO) : getContract(ATHLETE),
+      account_id: token_id.includes('SB') ? getContract(ATHLETE_PROMO_NFL) : getContract(ATHLETE_NFL),
       method_name: 'nft_token_by_id',
       args_base64: Buffer.from(query).toString('base64'),
     })
@@ -67,7 +67,7 @@ async function query_all_players_lineup(game_id, week) {
     .query({
       request_type: 'call_function',
       finality: 'optimistic',
-      account_id: getContract(GAME),
+      account_id: getContract(GAME_NFL),
       method_name: 'get_all_players_lineup',
       args_base64: Buffer.from(query).toString('base64'),
     })
@@ -204,7 +204,7 @@ async function query_player_teams(account, game_id) {
     .query({
       request_type: 'call_function',
       finality: 'optimistic',
-      account_id: getContract(GAME),
+      account_id: getContract(GAME_NFL),
       method_name: 'get_player_team',
       args_base64: Buffer.from(query).toString('base64'),
     })
@@ -233,7 +233,7 @@ async function query_mixed_tokens_pagination(
     position,
     team,
     name,
-    isPromoPage ? getContract(ATHLETE_PROMO) : getContract(ATHLETE)
+    isPromoPage ? getContract(ATHLETE_PROMO_NFL) : getContract(ATHLETE_NFL)
   ).then(async (result) => {
     if (result.length < athleteLimit && !isPromoPage && promoSupply !== 0) {
       let sbLimit = athleteLimit - result.length;
@@ -245,7 +245,7 @@ async function query_mixed_tokens_pagination(
           position,
           team,
           name,
-          getContract(ATHLETE_PROMO)
+          getContract(ATHLETE_PROMO_NFL)
         )
       ).then((result2) => {
         result2.map((obj) => result.push(obj));
@@ -276,7 +276,7 @@ async function query_game_supply() {
     .query({
       request_type: 'call_function',
       finality: 'optimistic',
-      account_id: getContract(GAME),
+      account_id: getContract(GAME_NFL),
       method_name: 'get_total_games',
       args_base64: Buffer.from(query).toString('base64'),
     })
@@ -296,7 +296,7 @@ async function query_games_list(totalGames) {
   return provider.query({
     request_type: 'call_function',
     finality: 'optimistic',
-    account_id: getContract(GAME),
+    account_id: getContract(GAME_NFL),
     method_name: 'get_games',
     args_base64: Buffer.from(query).toString('base64'),
   });
@@ -345,7 +345,7 @@ function query_claim_status(accountId) {
     .query({
       request_type: 'call_function',
       finality: 'optimistic',
-      account_id: getContract(PACK_PROMO),
+      account_id: getContract(PACK_PROMO_NFL),
       method_name: 'check_claim_status',
       args_base64: Buffer.from(query).toString('base64'),
     })
@@ -380,7 +380,7 @@ async function execute_claim_soulbound_pack(selector) {
   const tx = wallet.signAndSendTransactions({
     transactions: [
       {
-        receiverId: getContract(PACK_PROMO),
+        receiverId: getContract(PACK_PROMO_NFL),
         //@ts-ignore:next-line
         actions: [action_transfer_call],
       },

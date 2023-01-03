@@ -4,7 +4,7 @@ import Main from '../../components/Main';
 import PortfolioContainer from '../../components/containers/PortfolioContainer';
 import { useDispatch } from 'react-redux';
 // import { getPortfolio } from '../../redux/reducers/contract/portfolio';
-import { GAME, ORACLE } from 'data/constants/nearContracts';
+import { GAME_NFL, ORACLE } from 'data/constants/nearContracts';
 import Link from 'next/link';
 import PlayComponent from './components/PlayComponent';
 import Container from '../../components/containers/Container';
