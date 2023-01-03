@@ -410,7 +410,7 @@ const Portfolio = () => {
                   />
                 </div>
               </div> */}
-              <div className="flex font-bold max-w-full ml-5 md:ml-6 font-monument">
+              <div className="flex font-bold max-w-full ml-5 md:ml-6 font-monument ">
                 {categoryList.map(({ name, isActive }) => (
                   <div
                     className={`cursor-pointer mr-6 ${
@@ -425,7 +425,7 @@ const Portfolio = () => {
                   </div>
                 ))}
               </div>
-              <hr className="opacity-10"></hr>
+              <hr className="opacity-10 iphone5:w-screen md:w-auto" />
               <div className="md:mt-4 font-normal">
                 <div className="float-left h-8 ml-7 md:ml-10 lg:ml-12 flex justify-between mt-3">
                   <form>
@@ -434,7 +434,7 @@ const Portfolio = () => {
                         handleDropdownChange();
                         setPosition([e.target.value]);
                       }}
-                      className="bg-filter-icon bg-no-repeat bg-right bg-indigo-white iphone5:w-28 w-36 md:w-42 lg:w-60
+                      className="bg-filter-icon bg-no-repeat bg-right bg-indigo-white iphone5:w-36 w-36 md:w-42 lg:w-60
                       ring-2 ring-offset-4 ring-indigo-black ring-opacity-25 focus:ring-2 focus:ring-indigo-black 
                       focus:outline-none cursor-pointer text-xs md:text-base"
                     >
@@ -475,7 +475,7 @@ const Portfolio = () => {
                 {loading ? (
                   <LoadingPageDark />
                 ) : (
-                  <div className="grid grid-cols-2 gap-x-12 md:gap-x-0 gap-y-8 mt-4 md:grid-cols-4 md:mt-4 md:mr-12">
+                  <div className="grid grid-cols-2 gap-x-12 md:gap-x-0 gap-y-8 iphone5:mt-0 md:grid-cols-4 md:mt-4 md:mr-12">
                     {athletes.map((item) => {
                       const accountAthleteIndex = athletes.indexOf(item, 0) + athleteOffset;
                       return (

@@ -17,16 +17,17 @@ import { useRouter } from 'next/router';
 import Modal from 'components/modals/Modal';
 import PortfolioContainer from '../../components/containers/PortfolioContainer';
 import {
-  MINTER,
+  MINTER_NFL,
   NEP141USDC,
   NEP141USDT,
   NEP141USN,
-  PACK_PROMO,
+  PACK_PROMO_NFL,
 } from '../../data/constants/nearContracts';
 
 import { MINT_STORAGE_COST, DEFAULT_MAX_FEES } from 'data/constants/gasFees';
 import { execute_claim_soulbound_pack, query_claim_status } from 'utils/near/helper';
 import Link from 'next/link';
+import { SPORT_TYPES } from 'data/constants/sportConstants';
 
 const DECIMALS_NEAR = 1000000000000000000000000;
 const RESERVED_AMOUNT = 200;
@@ -40,7 +41,8 @@ export default function Home(props) {
     url: getRPCProvider(),
   });
   const { contract } = selector.store.getState();
-
+  const sportObj = SPORT_TYPES.map((x) => ({ ...x, isActive: false }));
+  const [sportList, setSportList] = useState([...sportObj]);
   const options = [
     { value: 'national', label: 'National Football League' },
     { value: 'local', label: 'Local Football League' },
@@ -80,7 +82,7 @@ export default function Home(props) {
       .query({
         request_type: 'call_function',
         finality: 'optimistic',
-        account_id: getContract(MINTER),
+        account_id: getContract(MINTER_NFL),
         method_name: 'get_config',
         args_base64: '',
       })
@@ -112,6 +114,17 @@ export default function Home(props) {
       setMinted(0);
     }
   }
+
+  const changeSportList = (name) => {
+    const sports = [...sportList];
+    sports.forEach((item) => {
+      if (item.sport === name) {
+        item.isActive = true;
+      } else {
+        item.isActive = false;
+      }
+    });
+  };
 
   async function query_storage_deposit_account_id() {
     try {
@@ -394,23 +407,40 @@ export default function Home(props) {
         <div className="flex flex-col w-screen md:w-full overflow-y-auto h-screen justify-center self-center md:pb-12 text-indigo-black">
           <Main color="indigo-white">
             <div className="flex-initial iphone5:mt-20 md:ml-6 md:mt-8">
-              {isClaimed ? (
-                <button
-                  className={`bg-indigo-gray bg-opacity-40 text-indigo-white w-5/6 md:w-80 h-10 pointer-events-none 
-            text-center font-bold text-xs self-center justify-center float-right md:mt-7 iphone5:mr-9 iphone5:mt-32`}
-                  onClick={(e) => handleButtonClick(e)}
-                >
-                  CLAIM SOULBOUND PACK
-                </button>
-              ) : (
-                <button
-                  className={`bg-indigo-buttonblue text-indigo-white w-5/6 md:w-80 h-10 
-           text-center font-bold text-xs self-center justify-center float-right md:mt-7 iphone5:mr-9 iphone5:mt-32`}
-                  onClick={(e) => handleButtonClick(e)}
-                >
-                  CLAIM SOULBOUND PACK
-                </button>
-              )}
+              <div className="flex md:flex-row md:float-right iphone5:flex-col md:mt-0">
+                <div className="md:mr-5 md:mt-4">
+                  <form>
+                    <select
+                      onChange={(e) => {
+                        changeSportList(e.target.value);
+                      }}
+                      className="bg-filter-icon bg-no-repeat bg-right bg-indigo-white ring-2 ring-offset-4 ring-indigo-black ring-opacity-25 focus:ring-2 focus:ring-indigo-black 
+                        focus:outline-none cursor-pointer text-xs iphone5:ml-8 iphone5:w-4/6 md:text-base md:ml-8 md:mt-5 md:w-36"
+                    >
+                      {sportList.map((x) => {
+                        return <option value={x.sport}>{x.sport}</option>;
+                      })}
+                    </select>
+                  </form>
+                </div>
+                {isClaimed ? (
+                  <button
+                    className={`bg-indigo-gray bg-opacity-40 text-indigo-white w-5/6 md:w-80 h-10 pointer-events-none 
+            text-center font-bold text-xs self-center justify-center float-right md:mt-7 iphone5:mr-9 iphone5:mt-6`}
+                    onClick={(e) => handleButtonClick(e)}
+                  >
+                    CLAIM SOULBOUND PACK
+                  </button>
+                ) : (
+                  <button
+                    className={`bg-indigo-buttonblue text-indigo-white w-5/6 md:w-80 h-10 
+            text-center font-bold text-xs self-center justify-center float-right md:mt-7 iphone5:mr-9 iphone5:mt-6`}
+                    onClick={(e) => handleButtonClick(e)}
+                  >
+                    CLAIM SOULBOUND PACK
+                  </button>
+                )}
+              </div>
               <PortfolioContainer title="MINT PACKS" textcolor="text-indigo-black" />
             </div>
             <div className="flex flex-col md:flex-row md:ml-12">

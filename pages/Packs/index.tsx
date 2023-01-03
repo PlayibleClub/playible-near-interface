@@ -131,7 +131,7 @@ export default function Packs() {
   async function get_nft_pack_tokens_for_owner(accountId, packOffset, packLimit) {
     //@ts-ignore:next-line
 
-    query_nft_tokens_for_owner(accountId, packOffset, packLimit, getContract(PACK)).then(
+    query_nft_tokens_for_owner(accountId, packOffset, packLimit, getContract(PACK_NFL)).then(
       async (data) => {
         //@ts-ignore:next-line
         const result = JSON.parse(Buffer.from(data.result).toString());
@@ -283,7 +283,8 @@ export default function Packs() {
                         onChange={(e) => {
                           changeSportList(e.target.value);
                         }}
-                        className="bg-filter-icon bg-no-repeat bg-right cursor-pointer text-xs"
+                        className="bg-filter-icon bg-no-repeat bg-right bg-indigo-white ring-2 ring-offset-4 ring-indigo-black ring-opacity-25 focus:ring-2 focus:ring-indigo-black 
+                        focus:outline-none cursor-pointer text-xs md:text-base ml-8 mt-5 w-28"
                       >
                         {sportList.map((x) => {
                           return <option value={x.sport}>{x.sport}</option>;

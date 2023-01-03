@@ -23,10 +23,10 @@ const NftTypeComponent = (props) => {
 
   return (
     <form>
-      <div className="flex text-sm md:text-base flex-col float-right mr-10 md:mr-40">
+      <div className="flex text-sm md:text-base flex-col iphone5:float-left iphone5:ml-6 md:float-right md:mr-10 md:mr-40 iphone5:mt-3 md:mt-0">
         NFT Type
-        <div className="ml-9">
-          <div>
+        <div className="flex iphone5:flex-row md:flex-col md:ml-9 iphone5:mt-2">
+          <div className="iphone5:mr-10 ">
             <input
               type="checkbox"
               name="Promo"

@@ -726,7 +726,8 @@ const Play = (props) => {
                         onChange={(e) => {
                           changeSportList(e.target.value);
                         }}
-                        className="bg-filter-icon bg-no-repeat bg-right cursor-pointer text-xs"
+                        className="bg-filter-icon bg-no-repeat bg-right bg-indigo-white ring-2 ring-offset-4 ring-indigo-black ring-opacity-25 focus:ring-2 focus:ring-indigo-black 
+                        focus:outline-none cursor-pointer text-xs md:text-base ml-8 mt-5 w-28"
                       >
                         {sportList.map((x) => {
                           return <option value={x.name}>{x.name}</option>;
