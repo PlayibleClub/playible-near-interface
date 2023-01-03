@@ -324,8 +324,8 @@ const Portfolio = () => {
     <Container activeName="SQUAD">
       <div className="flex flex-col w-full overflow-y-auto h-screen pb-12 mb-12">
         <Main color="indigo-white">
-          <div className="flex flex-row h-8 mt-24 md:mt-0">
-            <div className="h-8 flex justify-between mt-3 ml-4 md:ml-12">
+          <div className="flex flex-row h-8 mt-24 justify-end md:mt-0">
+            {/* <div className="h-8 flex justify-between mt-3 ml-4 md:ml-12">
               <form>
                 <select
                   onChange={(e) => {
@@ -334,22 +334,22 @@ const Portfolio = () => {
                   }}
                   className="bg-filter-icon bg-no-repeat bg-right bg-indigo-white iphone5:w-28 w-36 md:w-42 lg:w-60
                       ring-2 ring-offset-4 ring-indigo-black ring-opacity-25 focus:ring-2 focus:ring-indigo-black 
-                      focus:outline-none cursor-pointer text-xs md:text-base invisible"
+                      focus:outline-none cursor-pointer text-xs md:text-base"
                 >
                   <option value="allTeams">ALL TEAMS</option>
                   <option value="ARI">Arizona</option>
                 </select>
               </form>
-            </div>
+            </div> */}
             {/* <div className="h-8 flex mt-3">
               <SportType sportTypes={SPORT_TYPES} />
             </div> */}
-            <div className="h-8 flex justify-between mt-3 md:ml-80">
+            {/* <div className="flex mt-15 md:mr-20">
               <SearchComponent
                 onChangeFn={(search) => handleSearchDynamic(search)}
                 onSubmitFn={(search) => handleSearchSubmit(search)}
               />
-            </div>
+            </div> */}
 
             {/* <div className="h-8 flex justify-between mt-3 md:ml-24 lg:ml-80">
               <form
@@ -391,9 +391,26 @@ const Portfolio = () => {
                   }}
                 />
           </div> */}
-          <div className="md:ml-6">
-            <PortfolioContainer textcolor="indigo-black" title="SQUAD">
-              <div className="flex font-bold max-w-full ml-6 md:ml-7 font-monument">
+          <div className="md:ml-6 overflow-x-hidden">
+            <PortfolioContainer
+              textcolor="indigo-black"
+              title="SQUAD"
+              searchbar={
+                <SearchComponent
+                  onChangeFn={(search) => handleSearchDynamic(search)}
+                  onSubmitFn={(search) => handleSearchSubmit(search)}
+                />
+              }
+            >
+              {/* <div className="flex justify-end">
+                <div className="flex md:mr-20">
+                  <SearchComponent
+                    onChangeFn={(search) => handleSearchDynamic(search)}
+                    onSubmitFn={(search) => handleSearchSubmit(search)}
+                  />
+                </div>
+              </div> */}
+              <div className="flex font-bold max-w-full ml-5 md:ml-6 font-monument">
                 {categoryList.map(({ name, isActive }) => (
                   <div
                     className={`cursor-pointer mr-6 ${
@@ -410,7 +427,7 @@ const Portfolio = () => {
               </div>
               <hr className="opacity-10"></hr>
               <div className="md:mt-4 font-normal">
-                <div className="float-left h-8 md:ml-10 lg:ml-12 flex justify-between mt-3">
+                <div className="float-left h-8 ml-7 md:ml-10 lg:ml-12 flex justify-between mt-3">
                   <form>
                     <select
                       onChange={(e) => {
@@ -429,6 +446,20 @@ const Portfolio = () => {
                       {positionList.map((x) => {
                         return <option value={x.key}>{x.name}</option>;
                       })}
+                    </select>
+                  </form>
+                  <form>
+                    <select
+                      onChange={(e) => {
+                        handleDropdownChange();
+                        setTeam([e.target.value]);
+                      }}
+                      className="bg-filter-icon bg-no-repeat bg-right bg-indigo-white iphone5:w-28 w-36 md:w-42 lg:w-60
+                      ring-2 ring-offset-4 ring-indigo-black ring-opacity-25 focus:ring-2 focus:ring-indigo-black 
+                      focus:outline-none cursor-pointer text-xs md:text-base ml-8"
+                    >
+                      <option value="allTeams">ALL TEAMS</option>
+                      <option value="ARI">Arizona</option>
                     </select>
                   </form>
                 </div>
