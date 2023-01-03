@@ -81,13 +81,8 @@ const Play = (props) => {
   ]);
 
   const sportObj = SPORT_TYPES.map((x) => ({ name: x.sport, isActive: false }));
-  const [sportList, setSportList] = useState([
-    {
-      name: 'ALL',
-      isActive: true,
-    },
-    ...sportObj,
-  ]);
+  sportObj[0].isActive = true;
+  const [sportList, setSportList] = useState([...sportObj]);
   const [remountComponent, setRemountComponent] = useState(0);
   const changecategoryList = (name) => {
     const tabList = [...categoryList];
