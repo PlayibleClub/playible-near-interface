@@ -26,9 +26,11 @@ const Games = (props) => {
   const [playerTeams, setPlayerTeams] = useState([]);
   const [gameInfo, setGameInfo] = useState([]);
   const [week, setWeek] = useState(0);
-
+  const [gameData, setGameData] = useState(null);
+  const playGameImage = '/images/game.png';
   async function get_game_data(game_id) {
     setGameInfo(await query_game_data(game_id));
+    setGameData(await query_game_data(game_id));
   }
 
   const gameStart = Object.values(gameInfo)[0] / 1000;
@@ -74,12 +76,17 @@ const Games = (props) => {
           <div className="mt-8 ml-6">
             <BackFunction prev="/Play" />
           </div>
-          <div className="flex flex-col md:flex-row">
+          <div className="flex flex-row">
             <div className="md:ml-6 mt-11 flex flex-col w-auto">
-              <div className="w-auto md:w-full ml-6 md:ml-7 mr-6 md:r-12">
-                <Image src="/images/game.png" width={550} height={279} alt="game-image" />
+              <div className="md:ml-7 mr-12">
+                <Image
+                  src={gameData?.game_image ? gameData?.game_image : playGameImage}
+                  width={550}
+                  height={279}
+                  alt="game-image"
+                />
               </div>
-              <div className="ml-6 mr-6 md:mr-2 mt-7 w-auto md:w-1/2 md:ml-7 md:mt-2">
+              <div className="mt-7 ml-6 w-3/5 md:w-1/2 md:ml-7 md:mt-2">
                 <ModalPortfolioContainer title="VIEW TEAMS" textcolor="text-indigo-black mb-5" />
                 {
                   /* @ts-expect-error */
@@ -87,19 +94,9 @@ const Games = (props) => {
                     'No Teams Assigned'
                   ) : (
                     <div>
-                      {console.log(playerTeams)}
                       {/* @ts-expect-error */}
                       {playerTeams.team_names.map((data) => {
-                        return (
-                          <ViewTeamsContainer
-                            teamNames={data}
-                            gameId={gameId}
-                            accountId={accountId}
-                            onClickFn={(teamName, accountId, gameId) =>
-                              handleButtonClick(teamName, accountId, gameId)
-                            }
-                          />
-                        );
+                        return <ViewTeamsContainer teamNames={data} gameId={gameId} />;
                       })}
                     </div>
                   )
@@ -107,7 +104,7 @@ const Games = (props) => {
               </div>
             </div>
 
-            <div className="ml-6 md:ml-2 mr-6 md:mr-2 w-auto md:ml-18 mt-4">
+            <div className="md:ml-18 ml-18 mt-4">
               <ModalPortfolioContainer textcolor="indigo-black" title={'LEADERBOARD'} />
               <div className="overflow-y-auto">
                 {playerLineups.length > 0 ? (

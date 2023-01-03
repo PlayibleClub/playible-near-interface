@@ -34,7 +34,8 @@ export default function PlayDetails(props) {
   });
 
   const { accountId } = useWalletSelector();
-
+  const defaultGameImage = '/images/game.png';
+  const defaultPrizeDescription = '$100 + 2 Championship Tickets';
   const [gameData, setGameData] = useState(null);
   const [leaderboard, setLeaderboard] = useState([]);
   const [registeredTeams, setRegisteredTeams] = useState([]);
@@ -288,7 +289,11 @@ export default function PlayDetails(props) {
                                     <div className="iphone5:mt-4 md:mt-7 flex justify-center md:self-left md:mr-8 iphone5:flex-col md:flex-row">
                                       <div className="-ml-7 mr-7">
                                         <Image
-                                          src={getImage(gameId)}
+                                          src={
+                                            gameData?.game_image
+                                              ? gameData.game_image
+                                              : defaultGameImage
+                                          }
                                           width={550}
                                           height={279}
                                           alt="game-image"
@@ -305,7 +310,9 @@ export default function PlayDetails(props) {
                                           <div className="iphone5:ml-0 md:ml-7">
                                             <div>PRIZE POOL</div>
                                             <div className=" font-monument text-lg">
-                                              {(gameData && gameData.prize) || getPrizePool(gameId)}
+                                              {gameData?.prize_description
+                                                ? gameData.prize_description
+                                                : defaultPrizeDescription}
                                             </div>
                                           </div>
                                           <div>
@@ -317,7 +324,7 @@ export default function PlayDetails(props) {
                                             </div>
                                           </div>
                                         </div>
-                                        <div className="ml-7">
+                                        <div className="md:ml-7">
                                           <div className="mt-4">
                                             {gameData &&
                                               (moment(gameData.start_time) <= moment() &&
@@ -352,7 +359,7 @@ export default function PlayDetails(props) {
                                               ) : (
                                                 ''
                                               ))}
-                                            <div className="flex iphone5:justify-left md:justify-start iphone5:-ml-7 md:ml-0">
+                                            <div className="flex iphone5:justify-left md:justify-start iphone5:ml-0 md:ml-0">
                                               <Link href={`/CreateLineup/${gameId}`}>
                                                 <button className="bg-indigo-buttonblue text-indigo-white iphone5:w-80 iphone5:h-12 md:max-w-full md:h-12 text-center font-bold text-md mt-8">
                                                   ENTER GAME
@@ -507,9 +514,7 @@ export default function PlayDetails(props) {
               {/* if paid game
               <div className="ml-7 mt-5 font-bold text-indigo-red">{detailsFreeOrPaid}</div>
               */}
-              <div className="ml-7 mt-3">
-                <pre className="font-monument font-normal">{getDescription(gameId)}</pre>
-              </div>
+              <div className="ml-7 mt-3 font-normal mr-24">{gameData?.game_description}</div>
             </>
           </div>
         </Main>
