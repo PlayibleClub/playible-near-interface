@@ -26,7 +26,7 @@ const PerformerContainer = (props) => {
   return (
     <div
       data-test="PerformerContainer"
-      className={`justify-center flex flex-col w-full h-full pb-12`}
+      className={`justify-center flex flex-col w-full h-full md:pb-12`}
     >
       <div className="self-center mr-10">
         <div

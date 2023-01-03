@@ -2,28 +2,24 @@ import Container from 'components/containers/Container';
 import PortfolioContainer from 'components/containers/PortfolioContainer';
 import BackFunction from 'components/buttons/BackFunction';
 import ModalPortfolioContainer from 'components/containers/ModalPortfolioContainer';
-import Link from 'next/link';
-import { getContract, getRPCProvider } from 'utils/near';
-import { providers } from 'near-api-js';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
 import { useEffect, useState } from 'react';
-import { GAME, ATHLETE } from 'data/constants/nearContracts';
-import { getAthleteInfoById, convertNftToAthlete } from 'utils/athlete/helper';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import moment from 'moment';
 import Main from 'components/Main';
 import LeaderboardComponent from './components/LeaderboardComponent';
 import ViewTeamsContainer from 'components/containers/ViewTeamsContainer';
 import { query_game_data, query_all_players_lineup, query_player_teams } from 'utils/near/helper';
 import { getNflWeek } from 'utils/date/helper';
 import LoadingPageDark from 'components/loading/LoadingPageDark';
-import { getImage } from 'utils/game/helper';
-
+import { setTeamName, setAccountId, setGameId } from 'redux/athlete/teamSlice';
+import { useDispatch } from 'react-redux';
+import { persistor } from 'redux/athlete/store';
 const Games = (props) => {
   const { query } = props;
   const gameId = query.game_id;
-
+  const router = useRouter();
+  const dispatch = useDispatch();
   const [playerLineups, setPlayerLineups] = useState([]);
 
   const { accountId } = useWalletSelector();
@@ -49,7 +45,12 @@ const Games = (props) => {
   async function get_player_teams(account, game_id) {
     setPlayerTeams(await query_player_teams(account, game_id));
   }
-
+  const handleButtonClick = (teamName, accountId, gameId) => {
+    dispatch(setTeamName(teamName));
+    dispatch(setAccountId(accountId));
+    dispatch(setGameId(gameId));
+    router.push('/EntrySummary');
+  };
   useEffect(() => {
     console.log('loading');
     get_player_teams(accountId, gameId);
@@ -58,6 +59,7 @@ const Games = (props) => {
   }, [week]);
 
   useEffect(() => {
+    setTimeout(() => persistor.purge(), 200);
     get_game_data(gameId);
   }, []);
 
@@ -72,12 +74,12 @@ const Games = (props) => {
           <div className="mt-8 ml-6">
             <BackFunction prev="/Play" />
           </div>
-          <div className="flex flex-row">
+          <div className="flex flex-col md:flex-row">
             <div className="md:ml-6 mt-11 flex flex-col w-auto">
-              <div className="md:ml-7 mr-12">
-                <Image src={getImage(gameId)} width={550} height={279} alt="game-image" />
+              <div className="w-auto md:w-full ml-6 md:ml-7 mr-6 md:r-12">
+                <Image src="/images/game.png" width={550} height={279} alt="game-image" />
               </div>
-              <div className="mt-7 ml-6 w-3/5 md:w-1/2 md:ml-7 md:mt-2">
+              <div className="ml-6 mr-6 md:mr-2 mt-7 w-auto md:w-1/2 md:ml-7 md:mt-2">
                 <ModalPortfolioContainer title="VIEW TEAMS" textcolor="text-indigo-black mb-5" />
                 {
                   /* @ts-expect-error */
@@ -85,9 +87,19 @@ const Games = (props) => {
                     'No Teams Assigned'
                   ) : (
                     <div>
+                      {console.log(playerTeams)}
                       {/* @ts-expect-error */}
                       {playerTeams.team_names.map((data) => {
-                        return <ViewTeamsContainer teamNames={data} gameId={gameId} />;
+                        return (
+                          <ViewTeamsContainer
+                            teamNames={data}
+                            gameId={gameId}
+                            accountId={accountId}
+                            onClickFn={(teamName, accountId, gameId) =>
+                              handleButtonClick(teamName, accountId, gameId)
+                            }
+                          />
+                        );
                       })}
                     </div>
                   )
@@ -95,7 +107,7 @@ const Games = (props) => {
               </div>
             </div>
 
-            <div className="md:ml-18 ml-18 mt-4">
+            <div className="ml-6 md:ml-2 mr-6 md:mr-2 w-auto md:ml-18 mt-4">
               <ModalPortfolioContainer textcolor="indigo-black" title={'LEADERBOARD'} />
               <div className="overflow-y-auto">
                 {playerLineups.length > 0 ? (
@@ -106,6 +118,10 @@ const Games = (props) => {
                         teamName={item.teamName}
                         teamScore={item.sumScore}
                         index={index}
+                        gameId={gameId}
+                        onClickFn={(teamName, accountId, gameId) =>
+                          handleButtonClick(teamName, accountId, gameId)
+                        }
                       />
                     );
                   })
