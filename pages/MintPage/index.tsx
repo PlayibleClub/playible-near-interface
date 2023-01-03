@@ -48,6 +48,7 @@ export default function Home(props) {
     { value: 'local', label: 'Local Football League' },
     { value: 'international', label: 'International Football League' },
   ];
+  const [currentSport, setCurrentSport] = useState(sportObj[0].sport);
   // Re-use this data to display the state
   const [minterConfig, setMinterConfig] = useState({
     minting_price_decimals_6: '',
@@ -114,17 +115,6 @@ export default function Home(props) {
       setMinted(0);
     }
   }
-
-  const changeSportList = (name) => {
-    const sports = [...sportList];
-    sports.forEach((item) => {
-      if (item.sport === name) {
-        item.isActive = true;
-      } else {
-        item.isActive = false;
-      }
-    });
-  };
 
   async function query_storage_deposit_account_id() {
     try {
@@ -412,7 +402,7 @@ export default function Home(props) {
                   <form>
                     <select
                       onChange={(e) => {
-                        changeSportList(e.target.value);
+                        setCurrentSport(e.target.value);
                       }}
                       className="bg-filter-icon bg-no-repeat bg-right bg-indigo-white ring-2 ring-offset-4 ring-indigo-black ring-opacity-25 focus:ring-2 focus:ring-indigo-black 
                         focus:outline-none cursor-pointer text-xs iphone5:ml-8 iphone5:w-4/6 md:text-base md:ml-8 md:mt-5 md:w-36"
