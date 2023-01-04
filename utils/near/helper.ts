@@ -6,10 +6,11 @@ import { convertNftToAthlete, getAthleteInfoById } from 'utils/athlete/helper';
 import React, { useEffect, useState } from 'react';
 import { DEFAULT_MAX_FEES, MINT_STORAGE_COST } from 'data/constants/gasFees';
 import BigNumber from 'bignumber.js';
-
+import { getSportType } from 'data/constants/sportConstants';
 const provider = new providers.JsonRpcProvider({
   url: getRPCProvider(),
 });
+
 
 async function query_game_data(game_id) {
   const query = JSON.stringify({
@@ -204,7 +205,7 @@ async function query_player_teams(account, game_id) {
     .query({
       request_type: 'call_function',
       finality: 'optimistic',
-      account_id: getContract(GAME_NFL),
+      account_id: getSportType('FOOTBALL').gameContract,
       method_name: 'get_player_team',
       args_base64: Buffer.from(query).toString('base64'),
     })
@@ -402,4 +403,5 @@ export {
   query_nft_tokens_for_owner,
   query_claim_status,
   execute_claim_soulbound_pack,
+
 };

@@ -58,3 +58,9 @@ export const SPORT_TYPES = [
     promoContract: getContract(ATHLETE_PROMO_NFL),
     positionList: NBA_POSITIONS,
   }];
+
+  function getSportType(sport){
+    return SPORT_TYPES.find((x) => x.sport === sport);
+  }
+
+  export { getSportType };
