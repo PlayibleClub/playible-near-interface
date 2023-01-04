@@ -12,6 +12,20 @@ export const MINTER_NFL = {
     changeMethods: ['storage_deposit', 'storage_withdraw_all'],
   },
 }; // Near Minter contract
+
+export const MINTER_BASKETBALL = {
+  testnet: 'pack_minter.basketball.playible.testnet',
+  interface: {
+    viewMethods: [
+      'get_config',
+      'get_account_whitelist',
+      'get_storage_balance_of',
+      'get_whitelist',
+      'get_minting_of',
+    ],
+    changeMethods: ['storage_deposit', 'storage_withdraw_all'],
+  }
+}
 export const NEP141USDC = {
   title: 'USDC',
   mainnet: 'a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.factory.bridge.near',
@@ -65,6 +79,25 @@ export const PACK_PROMO_NFL = {
     ],
   },
 };
+export const PACK_BASKETBALL = {
+  testnet: 'pack.pack_minter.basketball.playible.testnet',
+  interface: {
+    viewMethods: ['nft_tokens_for_owner', 'nft_total_supply', 'nft_tokens', 'nft_supply_for_owner'],
+    changeMethods: ['nft_transfer', 'nft_transfer_call', 'nft_resolve_transfer'],
+  },
+}
+export const PACK_PROMO_BASKETBALL = {
+  testnet: 'pack.promotional.basketball.playible.testnet',
+  interface: {
+    viewMethods: ['nft_tokens_for_owner', 'nft_supply_for_owner'],
+    changeMethods: [
+      'nft_transfer',
+      'nft_transfer_call',
+      'nft_resolve_transfer',
+      'claim_promo_pack',
+    ],
+  },
+}
 export const PLAYIBLE = {
   mainnet: 'guest-book.testnet',
   testnet: 'guest-book.mainnet',
@@ -112,6 +145,35 @@ export const ATHLETE_PROMO_NFL = {
     changeMethods: ['addMessage'],
   },
 };
+
+export const ATHLETE_BASKETBALL = {
+  testnet: 'athlete.basketball.playible.testnet',
+  interface: {
+    viewMethods: [
+      'nft_tokens_for_owner',
+      'nft_total_supply',
+      'nft_tokens',
+      'nft_supply_for_owner',
+      'filter_tokens_for_owner',
+      'filtered_nft_supply_for_owner',
+    ],
+    changeMethods: ['addMessage'],
+  }
+}
+export const ATHLETE_PROMO_BASKETBALL = {
+  testnet: 'athlete.promotional.basketball.playible.testnet',
+  interface: {
+    viewMethods: [
+      'nft_tokens_for_owner',
+      'nft_total_supply',
+      'nft_tokens',
+      'nft_supply_for_owner',
+      'filter_tokens_for_owner',
+      'filtered_nft_supply_for_owner',
+    ],
+    changeMethods: ['addMessage'],
+  },
+}
 export const OPENPACK_NFL = {
   mainnet: 'open_pack.nfl.playible.near',
   testnet: 'open_pack.nfl.playible.testnet',
@@ -128,6 +190,20 @@ export const OPENPACK_PROMO_NFL = {
     changeMethods: ['execute_add_athletes', 'execute_open_pack'],
   },
 };
+export const OPENPACK_BASKETBALL = {
+  testnet: 'open_pack.basketball.playible.testnet',
+  interface: {
+    viewMethods: ['getMessages'],
+    changeMethods: ['execute_add_athletes', 'execute_open_pack'],
+  },
+}
+export const OPENPACK_PROMO_BASKETBALL = {
+  testnet: 'open_pack.promotional.basketball.playible.testnet',
+  interface: {
+    viewMethods: ['getMessages'],
+    changeMethods: ['execute_add_athletes', 'execute_open_pack'],
+  },
+}
 export const ORACLE = {
   mainnet: 'guest-book.testnet',
   testnet: 'guest-book.mainnet',
@@ -152,3 +228,10 @@ export const GAME_NFL = {
     changeMethods: ['add_game'],
   },
 }; //Game Contract
+export const GAME_BASKETBALL = {
+  testnet: 'game.basketball.playible.testnet',
+  interface: {
+    viewMethods: ['get_games, get_game, get_total_games, get_player_team, get_player_lineup'],
+    changeMethods: ['add_game'],
+  },
+}
