@@ -24,7 +24,7 @@ import {
   query_filter_tokens_for_owner,
   query_mixed_tokens_pagination,
 } from 'utils/near/helper';
-import { getSportType } from 'redux/athlete/sportSlice';
+import { getSportType } from 'data/constants/sportConstants';
 import ReactPaginate from 'react-paginate';
 import Select from 'react-select';
 import { isCompositeType } from 'graphql';
@@ -33,8 +33,8 @@ import { current } from '@reduxjs/toolkit';
 import NftTypeComponent from './components/NftTypeComponent';
 import { getAthleteLineup, getIndex } from 'redux/athlete/athleteSlice';
 import { GET_ATHLETE_BY_ID } from 'utils/queries';
-import { NBA_POSITIONS, NFL_POSITIONS, SPORT_TYPES } from 'data/constants/sportConstants';
-import SportType from 'components/buttons/SportType';
+import { SPORT_TYPES } from 'data/constants/sportConstants';
+
 const Portfolio = () => {
   const [searchText, setSearchText] = useState('');
   const [displayMode, setDisplay] = useState(true);
@@ -74,8 +74,6 @@ const Portfolio = () => {
   const [isFiltered, setIsFiltered] = useState(false);
   const [filterOption, setFilterOption] = useState('');
   const [athleteList, setAthleteList] = useState([]);
-  const sport: String = useSelector(getSportType);
-  const [sportType, setSportType] = useState(sport);
   const [currPosition, setCurrPosition] = useState('');
   const [position, setPosition] = useState(['allPos']);
   const [team, setTeam] = useState(['allTeams']);
@@ -86,21 +84,12 @@ const Portfolio = () => {
   const provider = new providers.JsonRpcProvider({
     url: getRPCProvider(),
   });
-  const [category, setCategory] = useState('FOOTBALL');
-  const [positionList, setPositionList] = useState(SPORT_TYPES[0].positionList);
-  const [categoryList, setCategoryList] = useState([
-    {
-      name: 'FOOTBALL',
-      key: 'NFL',
-      isActive: true,
-    },
-    {
-      name: 'BASKETBALL',
-      key: 'NBA',
-      isActive: false,
-    },
-  ]);
 
+  const [positionList, setPositionList] = useState(SPORT_TYPES[0].positionList);
+  const sportObj = SPORT_TYPES.map((x) => ({ ...x, isActive: false }));
+  sportObj[0].isActive = true;
+  const [categoryList, setCategoryList] = useState([...sportObj]);
+  const [currentSport, setCurrentSport] = useState(sportObj[0].sport);
   // const [contractList, setContractList] = useState([
   //   {
   //     name: 'FOOTBALL',
@@ -113,28 +102,18 @@ const Portfolio = () => {
   //     promoContract: getContract(ATHLETE_PROMO),
   //   },
   // ]);
-  const contractList = [
-    {
-      name: 'FOOTBALL',
-      regContract: getContract(ATHLETE_NFL),
-      promoContract: getContract(ATHLETE_PROMO_NFL),
-    },
-    {
-      name: 'BASKETBALL',
-      regContract: getContract(ATHLETE_NFL),
-      promoContract: getContract(ATHLETE_PROMO_NFL),
-    },
-  ];
+
   const changeCategoryList = (name) => {
     const tabList = [...categoryList];
     tabList.forEach((item) => {
-      if (item.name === name) {
+      if (item.sport === name) {
         item.isActive = true;
       } else {
         item.isActive = false;
       }
     });
     setCategoryList([...tabList]);
+    setCurrentSport(name);
   };
   function getAthleteLimit() {
     try {
@@ -148,15 +127,27 @@ const Portfolio = () => {
     }
   }
 
-  async function get_filter_soulbound_supply_for_owner(contract) {
+  async function get_filter_soulbound_supply_for_owner() {
     setTotalPromoSupply(
-      await query_filter_supply_for_owner(accountId, position, team, name, contract)
+      await query_filter_supply_for_owner(
+        accountId,
+        position,
+        team,
+        name,
+        getSportType(currentSport).promoContract
+      )
     );
   }
 
-  async function get_filter_supply_for_owner(contract) {
+  async function get_filter_supply_for_owner() {
     setTotalRegularSupply(
-      await query_filter_supply_for_owner(accountId, position, team, name, contract)
+      await query_filter_supply_for_owner(
+        accountId,
+        position,
+        team,
+        name,
+        getSportType(currentSport).regContract
+      )
     );
   }
 
@@ -166,20 +157,6 @@ const Portfolio = () => {
     setRemountComponent(Math.random());
   }
 
-  function getCurrentPositionList() {
-    SPORT_TYPES.forEach((x) => {
-      if (x.sport === category) {
-        console.log('test hello');
-        return x.positionList;
-      }
-    });
-    return [];
-    // const curr = SPORT_TYPES.find((item) => item.sport === category);
-    // if (curr === undefined) {
-    //   console.log('undefined');
-    //   return [];
-    // } else return curr.positionList;
-  }
   async function get_mixed_tokens_for_pagination() {
     await query_mixed_tokens_pagination(
       accountId,
@@ -190,7 +167,8 @@ const Portfolio = () => {
       athleteLimit,
       position,
       team,
-      name
+      name,
+      currentSport
     ).then((result) => {
       setAthletes(result);
     });
@@ -241,9 +219,9 @@ const Portfolio = () => {
   useEffect(() => {
     //if regular and soulbound radio buttons are enabled
     if (selectedRegular !== false && selectedPromo === false) {
-      get_filter_tokens_for_owner(getContract(ATHLETE_NFL));
+      get_filter_tokens_for_owner(getSportType(currentSport).regContract);
     } else if (selectedRegular === false && selectedPromo !== false) {
-      get_filter_tokens_for_owner(getContract(ATHLETE_PROMO_NFL));
+      get_filter_tokens_for_owner(getSportType(currentSport).promoContract);
     } else if (selectedRegular !== false && selectedPromo !== false) {
       get_mixed_tokens_for_pagination();
     } else {
@@ -277,18 +255,15 @@ const Portfolio = () => {
     setRemountAthlete(Math.random() + 1);
   }, [athletes]);
   useEffect(() => {
-    const contract = SPORT_TYPES.find((x) => x.sport === category);
-    console.log(contract.regContract);
-    if (contract.sport === 'BASKETBALL') console.log('Basketball');
     if (selectedRegular !== false && selectedPromo === false) {
-      get_filter_supply_for_owner(contract.regContract);
+      get_filter_supply_for_owner();
       setTotalPromoSupply(0);
     } else if (selectedRegular === false && selectedPromo !== false) {
-      get_filter_soulbound_supply_for_owner(contract.promoContract);
+      get_filter_soulbound_supply_for_owner();
       setTotalRegularSupply(0);
     } else if (selectedRegular !== false && selectedPromo !== false) {
-      get_filter_supply_for_owner(contract.regContract);
-      get_filter_soulbound_supply_for_owner(contract.promoContract);
+      get_filter_supply_for_owner();
+      get_filter_soulbound_supply_for_owner();
     } else {
       setTotalRegularSupply(0);
       setTotalPromoSupply(0);
@@ -303,7 +278,7 @@ const Portfolio = () => {
     totalPromoSupply,
     selectedRegular,
     selectedPromo,
-    category,
+    currentSport,
   ]);
 
   useEffect(() => {
@@ -314,10 +289,10 @@ const Portfolio = () => {
   }, [search]);
   useEffect(() => {
     //getting positionList value from sportConstants
-    const list = SPORT_TYPES.find((x) => x.sport === category);
-    console.log(SPORT_TYPES[index]);
+    const list = SPORT_TYPES.find((x) => x.sport === currentSport);
+
     setPositionList(list.positionList);
-  }, [category]);
+  }, [currentSport]);
   useEffect(() => {}, [limit, offset, filter, search, selectedRegular, selectedPromo]);
 
   return (
@@ -411,17 +386,16 @@ const Portfolio = () => {
                 </div>
               </div> */}
               <div className="flex font-bold max-w-full ml-5 md:ml-6 font-monument ">
-                {categoryList.map(({ name, isActive }) => (
+                {categoryList.map(({ sport, isActive }) => (
                   <div
                     className={`cursor-pointer mr-6 ${
                       isActive ? 'border-b-8 border-indigo-buttonblue' : ''
                     }`}
                     onClick={() => {
-                      changeCategoryList(name);
-                      setCategory(name);
+                      changeCategoryList(sport);
                     }}
                   >
-                    {name}
+                    {sport}
                   </div>
                 ))}
               </div>

@@ -225,7 +225,8 @@ async function query_mixed_tokens_pagination(
   athleteLimit,
   position,
   team,
-  name
+  name,
+  currentSport
 ) {
   return await query_filter_tokens_for_owner(
     accountId,
@@ -234,7 +235,7 @@ async function query_mixed_tokens_pagination(
     position,
     team,
     name,
-    isPromoPage ? getContract(ATHLETE_PROMO_NFL) : getContract(ATHLETE_NFL)
+    isPromoPage ? getSportType(currentSport).promoContract : getSportType(currentSport).regContract
   ).then(async (result) => {
     if (result.length < athleteLimit && !isPromoPage && promoSupply !== 0) {
       let sbLimit = athleteLimit - result.length;
@@ -246,7 +247,7 @@ async function query_mixed_tokens_pagination(
           position,
           team,
           name,
-          getContract(ATHLETE_PROMO_NFL)
+          getSportType(currentSport).promoContract
         )
       ).then((result2) => {
         result2.map((obj) => result.push(obj));
