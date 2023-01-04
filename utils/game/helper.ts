@@ -61,7 +61,7 @@ function getDescription(gameId: string): string {
     case '25':
       return 'The first annual Playible Football Championship. Only those who won tickets can enter and compete for $35K.';
     default:
-      return 'Enter a team into the The Blitz tournament to compete for cash prizes. \nCreate a lineup by selecting 8 Playible Football Athlete Tokens now.';
+      return 'Enter your team to compete for the prizes up for grabs this week.\n Create your lineup by selecting Playible Football Athletes from your squad';
   }
 }
 
