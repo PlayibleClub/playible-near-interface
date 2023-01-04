@@ -85,7 +85,7 @@ export default function PackDetails(props) {
           </div>
           <div className="grid grid-rows">
             <div className="text-2xl font-bold font-monument">
-              {myPack.packName}
+              {myPack.sport + ' ' + myPack.packName}
               <hr className="w-10 border-4"></hr>
             </div>
             <div className="text-lg h-0 font-bold">#{myPack.id}</div>
@@ -103,20 +103,38 @@ export default function PackDetails(props) {
             PACK DETAILS
             <hr className="w-10 border-4"></hr>
           </div>
-          <div className="mt-10">
-            This pack will contain 8 randomly generated <br></br>
-            American Football players.
-          </div>
+          {query.sport.toString().toUpperCase() === 'FOOTBALL' ? (
+            <div className="mt-10">
+              This pack will contain 8 randomly generated <br></br>
+              American Football players.
+            </div>
+          ) : (
+            <div className="mt-10">
+              This pack will contain 6 randomly generated <br></br>
+              American Basketball players.
+            </div>
+          )}
           <div className="mt-5 mb-12">
             <div className="mb-5">1 for each of the positions below:</div>
-            <ul className="marker list-disc pl-5 space-y-3 ">
-              <li>1 Quarter Back (QB)</li>
-              <li>2 Running Back (RB) </li>
-              <li>2 Wide Receivers (WR) </li>
-              <li>1 Tight End (TE)</li>
-              <li>1 Flex (RB/WR/TE) </li>
-              <li>1 Super Flex (QB/RB/WR/TE) </li>
-            </ul>
+            {query.sport.toString().toUpperCase() === 'FOOTBALL' ? (
+              <ul className="marker list-disc pl-5 space-y-3 ">
+                <li>1 Quarter Back (QB)</li>
+                <li>2 Running Back (RB) </li>
+                <li>2 Wide Receivers (WR) </li>
+                <li>1 Tight End (TE)</li>
+                <li>1 Flex (RB/WR/TE) </li>
+                <li>1 Super Flex (QB/RB/WR/TE) </li>
+              </ul>
+            ) : (
+              <ul className="marker list-disc pl-5 space-y-3 ">
+                <li>1 Point Guard (PG)</li>
+                <li>1 Shooting Guard (SG) </li>
+                <li>1 Small Forward (SF) </li>
+                <li>1 Power Forward (PF)</li>
+                <li>1 Center (C) </li>
+                <li>1 Utility (UTIL) </li>
+              </ul>
+            )}
           </div>
         </div>
       </div>
