@@ -43,6 +43,8 @@ function getImage(gameId: string): string {
       return '/images/holidayContest.jpg';
     case '25':
       return '/images/footballChampsionship.jpg';
+    case '30':
+      return '/images/4thdown.jpg';
     default:
       return '/images/game.png';
   }
@@ -79,6 +81,10 @@ function getPrizePool(gameId: string): string {
       return 'Playible Basketball Starter Pack';
     case '28':
       return 'Playible Football Athlete NFTs';
+    case '29':
+      return '$100';
+    case '30':
+      return 'Playible Athlete NFTs';
     default:
       return '$100 + 2 Championship Tickets';
   }

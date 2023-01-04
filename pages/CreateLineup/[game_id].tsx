@@ -72,8 +72,7 @@ export default function CreateLineup(props) {
                 <ModalPortfolioContainer title="CREATE TEAM" textcolor="text-indigo-black" />
 
                 <div className="md:w-2/5">
-                  Enter your team to compete for cash prizes and entry into the Football
-                  Championship with $35,000 USD up for grabs.
+                  Enter your chosen team, make sure you pick the right athletes to win the prize.
                 </div>
                 <Link
                   href={{
