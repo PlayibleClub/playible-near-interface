@@ -24,7 +24,7 @@ import {
   query_nft_tokens_for_owner,
 } from 'utils/near/helper';
 import Modal from 'components/modals/Modal';
-import { SPORT_TYPES } from 'data/constants/sportConstants';
+import { SPORT_TYPES, getSportType } from 'data/constants/sportConstants';
 export default function Packs() {
   const { selector, modal, accounts, accountId } = useWalletSelector();
 
@@ -66,6 +66,7 @@ export default function Packs() {
   const sportObj = SPORT_TYPES.map((x) => ({ ...x, isActive: false }));
   sportObj[0].isActive = true;
   const [sportList, setSportList] = useState([...sportObj]);
+  const [currentSport, setCurrentSport] = useState(sportObj[0].sport);
   const [remountComponent, setRemountComponent] = useState(0);
   const changecategoryList = (name) => {
     const tabList = [...categoryList];
@@ -100,14 +101,18 @@ export default function Packs() {
         item.isActive = false;
       }
     });
+    setSportList(sports);
+    setCurrentSport(name);
   };
   async function get_nft_pack_supply_for_owner(accountId) {
-    setTotalPacks(await query_nft_supply_for_owner(accountId, getContract(PACK_NFL)));
+    setTotalPacks(
+      await query_nft_supply_for_owner(accountId, getSportType(currentSport).packContract)
+    );
   }
 
   async function get_nft_sb_supply_for_owner(accountId) {
     setTotalSoulboundPacks(
-      await query_nft_supply_for_owner(accountId, getContract(PACK_PROMO_NFL))
+      await query_nft_supply_for_owner(accountId, getSportType(currentSport).packPromoContract)
     );
   }
 
@@ -131,13 +136,16 @@ export default function Packs() {
   async function get_nft_pack_tokens_for_owner(accountId, packOffset, packLimit) {
     //@ts-ignore:next-line
 
-    query_nft_tokens_for_owner(accountId, packOffset, packLimit, getContract(PACK_NFL)).then(
-      async (data) => {
-        //@ts-ignore:next-line
-        const result = JSON.parse(Buffer.from(data.result).toString());
-        setPacks(result);
-      }
-    );
+    query_nft_tokens_for_owner(
+      accountId,
+      packOffset,
+      packLimit,
+      getSportType(currentSport).packContract
+    ).then(async (data) => {
+      //@ts-ignore:next-line
+      const result = JSON.parse(Buffer.from(data.result).toString());
+      setPacks(result);
+    });
   }
 
   async function get_claim_status(accountId) {
@@ -145,13 +153,16 @@ export default function Packs() {
   }
 
   async function get_nft_sb_pack_tokens_for_owner(accountId, packOffset, soulboundPackLimit) {
-    query_nft_tokens_for_owner(accountId, packOffset, packLimit, getContract(PACK_PROMO_NFL)).then(
-      async (data) => {
-        //@ts-ignore:next-line
-        const result = JSON.parse(Buffer.from(data.result).toString());
-        setSoulboundPacks(result);
-      }
-    );
+    query_nft_tokens_for_owner(
+      accountId,
+      packOffset,
+      packLimit,
+      getSportType(currentSport).packPromoContract
+    ).then(async (data) => {
+      //@ts-ignore:next-line
+      const result = JSON.parse(Buffer.from(data.result).toString());
+      setSoulboundPacks(result);
+    });
   }
 
   async function get_soulbound_pack(selector) {
@@ -187,12 +198,12 @@ export default function Packs() {
     const endOffset = packOffset + packLimit;
     console.log(`Loading packs from ${packOffset} to ${endOffset}`);
     get_nft_pack_tokens_for_owner(accountId, packOffset, packLimit);
-  }, [totalPacks, packLimit, packOffset]);
+  }, [totalPacks, packLimit, packOffset, currentSport]);
 
   useEffect(() => {
     get_nft_sb_supply_for_owner(accountId);
     get_nft_sb_pack_tokens_for_owner(accountId, 0, 30);
-  }, []);
+  }, [currentSport]);
 
   useEffect(() => {
     if (remountComponent !== 0) {
@@ -321,6 +332,7 @@ export default function Packs() {
                           key={token_id}
                           image={metadata.media}
                           id={token_id}
+                          sport={currentSport}
                         ></PackComponent>
                       ))}
                 </div>
