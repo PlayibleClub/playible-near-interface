@@ -1,4 +1,6 @@
-import { ATHLETE_NFL, ATHLETE_PROMO_NFL, GAME_NFL } from 'data/constants/nearContracts';
+import { ATHLETE_NFL, ATHLETE_PROMO_NFL, GAME_NFL, MINTER_NFL, MINTER_BASKETBALL, PACK_NFL, PACK_PROMO_NFL, PACK_BASKETBALL, PACK_PROMO_BASKETBALL, ATHLETE_BASKETBALL, 
+  ATHLETE_PROMO_BASKETBALL, OPENPACK_NFL, OPENPACK_PROMO_NFL, OPENPACK_BASKETBALL, 
+  OPENPACK_PROMO_BASKETBALL, GAME_BASKETBALL} from 'data/constants/nearContracts';
 import { getContract } from 'utils/near';
 export const NFL_POSITIONS = [
   {
@@ -46,16 +48,27 @@ export const SPORT_TYPES = [
   {
     key: 'NFL',
     sport: 'FOOTBALL',
+    mintContract: getContract(MINTER_NFL),
+    packContract: getContract(PACK_NFL),
+    packPromoContract: getContract(PACK_PROMO_NFL),
     regContract: getContract(ATHLETE_NFL),
     promoContract: getContract(ATHLETE_PROMO_NFL),
+    openContract: getContract(OPENPACK_NFL),
+    openPromoContract: getContract(OPENPACK_PROMO_NFL),
     gameContract: getContract(GAME_NFL),
     positionList: NFL_POSITIONS,
   },
   {
     key: 'NBA',
     sport: 'BASKETBALL',
-    regContract: getContract(ATHLETE_NFL),
-    promoContract: getContract(ATHLETE_PROMO_NFL),
+    mintContract: getContract(MINTER_BASKETBALL),
+    packContract: getContract(PACK_BASKETBALL),
+    packPromoContract: getContract(PACK_PROMO_BASKETBALL),
+    regContract: getContract(ATHLETE_BASKETBALL),
+    promoContract: getContract(ATHLETE_PROMO_BASKETBALL),
+    openContract: getContract(OPENPACK_BASKETBALL),
+    openPromoContract: getContract(OPENPACK_PROMO_BASKETBALL),
+    gameContract: getContract(GAME_BASKETBALL),
     positionList: NBA_POSITIONS,
   }];
 
