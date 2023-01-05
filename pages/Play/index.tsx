@@ -362,13 +362,6 @@ const Play = (props) => {
     await setSortedList([]);
     fetchGames(activeCategory);
   };
-  const handleResize = () => {
-    if (window.innerWidth < 768) {
-      setIsMobile(true);
-    } else {
-      setIsMobile(false);
-    }
-  };
   const renderPlacements = (item, i, winning = false) => {
     return (
       <>
@@ -506,9 +499,6 @@ const Play = (props) => {
   useEffect(() => {
     console.log(sportList);
   }, [sportList]);
-  useEffect(() => {
-    window.addEventListener('resize', handleResize);
-  });
   return (
     <>
       {claimModal === true && (
@@ -722,40 +712,24 @@ const Play = (props) => {
                         <p className="py-10 ml-7">{err}</p>
                       ) : ( */}
                 <div className="flex flex-row first:md:ml-14">
-                  {isMobile ? (
-                    <form>
-                      <select
-                        onChange={(e) => {
-                          changeSportList(e.target.value);
+                  {sportList.map((x, index) => {
+                    return (
+                      <button
+                        className={`rounded-lg border mt-4 px-8 p-1 text-xs md:font-medium font-monument ${
+                          index === 0 ? `md:ml-14` : 'md:ml-4'
+                        } ${
+                          x.isActive
+                            ? 'bg-indigo-buttonblue text-indigo-white border-indigo-buttonblue'
+                            : ''
+                        }`}
+                        onClick={() => {
+                          changeSportList(x.name);
                         }}
-                        className="bg-filter-icon bg-no-repeat bg-right bg-indigo-white ring-2 ring-offset-4 ring-indigo-black ring-opacity-25 focus:ring-2 focus:ring-indigo-black 
-                        focus:outline-none cursor-pointer text-xs md:text-base ml-8 mt-5 w-28"
                       >
-                        {sportList.map((x) => {
-                          return <option value={x.name}>{x.name}</option>;
-                        })}
-                      </select>
-                    </form>
-                  ) : (
-                    sportList.map((x, index) => {
-                      return (
-                        <button
-                          className={`rounded-lg border mt-4 px-8 p-1 text-xs md:font-medium font-monument ${
-                            index === 0 ? `md:ml-14` : 'md:ml-4'
-                          } ${
-                            x.isActive
-                              ? 'bg-indigo-buttonblue text-indigo-white border-indigo-buttonblue'
-                              : ''
-                          }`}
-                          onClick={() => {
-                            changeSportList(x.name);
-                          }}
-                        >
-                          {x.name}
-                        </button>
-                      );
-                    })
-                  )}
+                        {x.name}
+                      </button>
+                    );
+                  })}
                 </div>
                 <>
                   {/* {sortedList.length > 0 ? ( */}
