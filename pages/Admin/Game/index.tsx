@@ -609,7 +609,7 @@ export default function Index(props) {
   }, [currentTotal]);
   return (
     <Container isAdmin>
-      <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
+      <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center">
         <Main color="indigo-white">
           <div className="flex flex-col w-full overflow-y-auto overflow-x-hidden h-screen self-center text-indigo-black">
             <div className="flex md:ml-4 font-bold font-monument mt-5">
