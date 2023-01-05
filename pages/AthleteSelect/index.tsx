@@ -7,7 +7,7 @@ import PortfolioContainer from 'components/containers/PortfolioContainer';
 import router, { useRouter } from 'next/router';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
 import { convertNftToAthlete, getAthleteInfoById } from 'utils/athlete/helper';
-import { ATHLETE, ATHLETE_PROMO } from 'data/constants/nearContracts';
+
 import AthleteSelectContainer from 'components/containers/AthleteSelectContainer';
 import Link from 'next/link';
 import SearchComponent from 'components/SearchComponent';
@@ -20,6 +20,7 @@ import {
   getIndex,
   getPosition,
   getTeamName,
+  getSport,
 } from 'redux/athlete/athleteSlice';
 import {
   setAthleteLineup,
@@ -33,6 +34,7 @@ import {
   query_filter_tokens_for_owner,
   query_mixed_tokens_pagination,
 } from 'utils/near/helper';
+import { getSportType } from 'data/constants/sportConstants';
 import NftTypeComponent from 'pages/Portfolio/components/NftTypeComponent';
 
 const AthleteSelect = (props) => {
@@ -49,6 +51,7 @@ const AthleteSelect = (props) => {
   const position = useSelector(getPosition);
   const index = useSelector(getIndex);
   const reduxLineup = useSelector(getAthleteLineup);
+  const currentSport = useSelector(getSport);
   let passedLineup = [...reduxLineup];
   const [athletes, setAthletes] = useState([]);
   const [selectedRegular, setSelectedRegular] = useState(false);
@@ -76,15 +79,27 @@ const AthleteSelect = (props) => {
     url: getRPCProvider(),
   });
 
-  async function get_filter_supply_for_owner(contract) {
+  async function get_filter_supply_for_owner() {
     setTotalRegularSupply(
-      await query_filter_supply_for_owner(accountId, position, team, name, contract)
+      await query_filter_supply_for_owner(
+        accountId,
+        position,
+        team,
+        name,
+        getSportType(currentSport).regContract
+      )
     );
   }
 
-  async function get_filter_soulbound_supply_for_owner(contract) {
+  async function get_filter_soulbound_supply_for_owner() {
     setTotalPromoSupply(
-      await query_filter_supply_for_owner(accountId, position, team, name, contract)
+      await query_filter_supply_for_owner(
+        accountId,
+        position,
+        team,
+        name,
+        getSportType(currentSport).promoContract
+      )
     );
   }
 
@@ -145,7 +160,8 @@ const AthleteSelect = (props) => {
       athleteLimit,
       position,
       team,
-      name
+      name,
+      currentSport
     ).then((result) => {
       setAthletes(result);
     });
@@ -272,8 +288,8 @@ const AthleteSelect = (props) => {
     dispatch(setGameId(game_id));
     dispatch(setAthleteLineup(lineup));
     router.push({
-      pathname: '/CreateTeam/[game_id]',
-      query: { game_id: game_id },
+      pathname: '/CreateTeam/[sport]/[game_id]',
+      query: { sport: currentSport, game_id: game_id },
     });
   };
 
@@ -293,9 +309,9 @@ const AthleteSelect = (props) => {
   useEffect(() => {
     //if regular and soulbound radio buttons are enabled
     if (selectedRegular !== false && selectedPromo === false) {
-      get_filter_tokens_for_owner(getContract(ATHLETE));
+      get_filter_tokens_for_owner(getSportType(currentSport).regContract);
     } else if (selectedRegular === false && selectedPromo !== false) {
-      get_filter_tokens_for_owner(getContract(ATHLETE_PROMO));
+      get_filter_tokens_for_owner(getSportType(currentSport).promoContract);
     } else if (selectedRegular !== false && selectedPromo !== false) {
       get_mixed_tokens_for_pagination();
     } else {
@@ -333,14 +349,14 @@ const AthleteSelect = (props) => {
   }, [athletes]);
   useEffect(() => {
     if (selectedRegular !== false && selectedPromo === false) {
-      get_filter_supply_for_owner(getContract(ATHLETE));
+      get_filter_supply_for_owner();
       setTotalPromoSupply(0);
     } else if (selectedRegular === false && selectedPromo !== false) {
-      get_filter_soulbound_supply_for_owner(getContract(ATHLETE_PROMO));
+      get_filter_soulbound_supply_for_owner();
       setTotalRegularSupply(0);
     } else if (selectedRegular !== false && selectedPromo !== false) {
-      get_filter_supply_for_owner(getContract(ATHLETE));
-      get_filter_soulbound_supply_for_owner(getContract(ATHLETE_PROMO));
+      get_filter_supply_for_owner();
+      get_filter_soulbound_supply_for_owner();
     } else {
       setTotalRegularSupply(0);
       setTotalPromoSupply(0);
@@ -357,7 +373,7 @@ const AthleteSelect = (props) => {
   return (
     <Container activeName="PLAY">
       <div className="mt-44 md:ml-6 md:mt-6 mb-2">
-        <BackFunction prev={`/CreateTeam/${gameId}`} />
+        <BackFunction prev={`/CreateTeam/${currentSport.toLowerCase()}/${gameId}`} />
         <PortfolioContainer
           title={'SELECT YOUR ' + getPositionDisplay(position)}
           textcolor="text-indigo-black"
