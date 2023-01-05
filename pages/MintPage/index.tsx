@@ -83,7 +83,7 @@ export default function Home(props) {
       .query({
         request_type: 'call_function',
         finality: 'optimistic',
-        account_id: getSportType(currentSport).mintContract,
+        account_id: getSportType('FOOTBALL').mintContract,
         method_name: 'get_config',
         args_base64: '',
       })
@@ -102,7 +102,7 @@ export default function Home(props) {
         const minting_of = await provider.query({
           request_type: 'call_function',
           finality: 'optimistic',
-          account_id: getSportType(currentSport).mintContract,
+          account_id: getSportType('FOOTBALL').mintContract,
           method_name: 'get_minting_of',
           args_base64: Buffer.from(query).toString('base64'),
         });
@@ -125,7 +125,7 @@ export default function Home(props) {
         const storage_balance = await provider.query({
           request_type: 'call_function',
           finality: 'optimistic',
-          account_id: getSportType(currentSport).mintContract,
+          account_id: getSportType('FOOTBALL').mintContract,
           method_name: 'get_storage_balance_of',
           args_base64: Buffer.from(query).toString('base64'),
         });
@@ -192,7 +192,7 @@ export default function Home(props) {
 
     const data_two = Buffer.from(
       JSON.stringify({
-        receiver_id: getSportType(currentSport).mintContract,
+        receiver_id: getSportType('FOOTBALL').mintContract,
         amount: Math.floor(mint_cost).toString(),
         msg: JSON.stringify({ mint_amount: selectedMintAmount }),
       })
@@ -214,7 +214,7 @@ export default function Home(props) {
     const tx = wallet.signAndSendTransactions({
       transactions: [
         {
-          receiverId: getSportType(currentSport).mintContract,
+          receiverId: getSportType('FOOTBALL').mintContract,
           // @ts-ignore:next-line
           actions: [action_deposit_storage_near_token],
         },
@@ -298,7 +298,7 @@ export default function Home(props) {
     const tx = wallet
       .signAndSendTransaction({
         signerId: accountId,
-        receiverId: getSportType(currentSport).mintContract,
+        receiverId: getSportType('FOOTBALL').mintContract,
         actions: [
           // @ts-ignore:next-line
           action_deposit_storage_near_token,
