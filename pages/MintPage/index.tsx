@@ -28,6 +28,7 @@ import { MINT_STORAGE_COST, DEFAULT_MAX_FEES } from 'data/constants/gasFees';
 import { execute_claim_soulbound_pack, query_claim_status } from 'utils/near/helper';
 import Link from 'next/link';
 import { SPORT_TYPES, getSportType } from 'data/constants/sportConstants';
+import ModalPortfolioContainer from 'components/containers/ModalPortfolioContainer';
 
 const DECIMALS_NEAR = 1000000000000000000000000;
 const RESERVED_AMOUNT = 200;
@@ -41,14 +42,16 @@ export default function Home(props) {
     url: getRPCProvider(),
   });
   const { contract } = selector.store.getState();
-  const sportObj = SPORT_TYPES.map((x) => ({ ...x, isActive: false }));
-  const [sportList, setSportList] = useState([...sportObj]);
+  const [positionList, setPositionList] = useState(SPORT_TYPES[0].positionList);
+  const sportObj = SPORT_TYPES.map((x) => ({ name: x.sport, isActive: false }));
+  sportObj[0].isActive = true;
+  const [categoryList, setCategoryList] = useState([...sportObj]);
+  const [currentSport, setCurrentSport] = useState(sportObj[0].name);
   const options = [
     { value: 'national', label: 'National Football League' },
     { value: 'local', label: 'Local Football League' },
     { value: 'international', label: 'International Football League' },
   ];
-  const [currentSport, setCurrentSport] = useState(sportObj[0].sport);
   // Re-use this data to display the state
   const [minterConfig, setMinterConfig] = useState({
     minting_price_decimals_6: '',
@@ -279,6 +282,19 @@ export default function Home(props) {
       });
   }
 
+  const changeCategoryList = (name) => {
+    const tabList = [...categoryList];
+    tabList.forEach((item) => {
+      if (item.name === name) {
+        item.isActive = true;
+      } else {
+        item.isActive = false;
+      }
+    });
+    setCategoryList([...tabList]);
+    setCurrentSport(name);
+  };
+
   async function execute_storage_deposit() {
     // Calculate amount to deposit for minting process
     const amount_to_deposit_near = BigInt(selectedMintAmount * MINT_STORAGE_COST).toString();
@@ -407,31 +423,32 @@ export default function Home(props) {
                       className="bg-filter-icon bg-no-repeat bg-right bg-indigo-white ring-2 ring-offset-4 ring-indigo-black ring-opacity-25 focus:ring-2 focus:ring-indigo-black 
                         focus:outline-none cursor-pointer text-xs iphone5:ml-8 iphone5:w-4/6 md:text-base md:ml-8 md:mt-5 md:w-36"
                     >
-                      {sportList.map((x) => {
-                        return <option value={x.sport}>{x.sport}</option>;
+                      {categoryList.map((x) => {
+                        return <option value={x.name}>{x.name}</option>;
                       })}
                     </select>
                   </form>
                 </div>
-                {isClaimed ? (
-                  <button
-                    className={`bg-indigo-gray bg-opacity-40 text-indigo-white w-5/6 md:w-80 h-10 pointer-events-none 
-            text-center font-bold text-xs self-center justify-center float-right md:mt-7 iphone5:mr-9 iphone5:mt-6`}
-                    onClick={(e) => handleButtonClick(e)}
-                  >
-                    CLAIM SOULBOUND PACK
-                  </button>
-                ) : (
-                  <button
-                    className={`bg-indigo-buttonblue text-indigo-white w-5/6 md:w-80 h-10 
-            text-center font-bold text-xs self-center justify-center float-right md:mt-7 iphone5:mr-9 iphone5:mt-6`}
-                    onClick={(e) => handleButtonClick(e)}
-                  >
-                    CLAIM SOULBOUND PACK
-                  </button>
-                )}
               </div>
-              <PortfolioContainer title="MINT PACKS" textcolor="text-indigo-black" />
+              <div className='ml-8'>
+              <ModalPortfolioContainer title="MINT PACKS" textcolor="text-indigo-black" />
+              </div>
+              {/* <div className="flex font-bold max-w-full ml-5 md:ml-6 font-monument overflow-y-auto no-scrollbar">
+                {categoryList.map(({ name, isActive }) => (
+                  <div
+                    className={`cursor-pointer mr-6 ${
+                      isActive ? 'border-b-8 border-indigo-buttonblue' : ''
+                    }`}
+                    onClick={() => {
+                      changeCategoryList(name);
+                    }}
+                  >
+                    {name}
+                  </div>
+                ))}
+                
+              </div>
+              <hr className="opacity-10 iphone5:w-screen md:w-auto" /> */}
             </div>
             <div className="flex flex-col md:flex-row md:ml-12">
               <div className="md:w-full overflow-x-hidden">
@@ -464,9 +481,11 @@ export default function Home(props) {
                     </div>
                   )}
                   <div className="md:w-1/2 w-full md:mt-0 mt-5 ml-8  ">
-                    <div className="text-xl font-bold font-monument ">
-                      STARTER PACK MINT
-                      <hr className="w-10 border-4"></hr>
+                    <div className="text-xl font-bold font-monument ml-0">
+                      <ModalPortfolioContainer
+                        title="STARTER PACK MINT"
+                        textcolor="text-indigo-black"
+                      />
                     </div>
                     <div className="flex justify-between w-4/5 md:w-1/2 mt-5">
                       <div>
@@ -591,6 +610,21 @@ export default function Home(props) {
                             N
                           </button>
                           <p className="text-xs text-red-700">{balanceErrorMsg}</p>
+                          {isClaimed ? (
+                            <button
+                              className={`bg-indigo-gray bg-opacity-40 text-indigo-white w-9/12 flex text-center justify-center items-center font-montserrat p-4 text-xs mt-8`}
+                              onClick={(e) => handleButtonClick(e)}
+                            >
+                              CLAIM SOULBOUND PACK
+                            </button>
+                          ) : (
+                            <button
+                              className="w-9/12 flex text-center justify-center items-center bg-indigo-buttonblue font-montserrat text-indigo-white p-4 text-xs mt-8 "
+                              onClick={(e) => handleButtonClick(e)}
+                            >
+                              CLAIM SOULBOUND PACK
+                            </button>
+                          )}
                         </>
                       ) : (
                         <button
@@ -620,9 +654,8 @@ export default function Home(props) {
                   </div>
                 </div>
                 <div className="iphone5:mt-5 md:mt-0 ml-8 md:ml-2">
-                  <div className="text-xl font-bold font-monument ">
-                    PACK DETAILS
-                    <hr className="w-10 border-4"></hr>
+                  <div className="text-xl font-bold font-monument ml-0 md:-mt-28">
+                    <ModalPortfolioContainer title="PACK DETAILS" textcolor="text-indigo-black" />
                   </div>
                   {currentSport === 'FOOTBALL' ? (
                     <div className="mt-10">
