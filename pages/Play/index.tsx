@@ -64,7 +64,6 @@ const Play = (props) => {
   const [search, setSearch] = useState('');
   const [err, setErr] = useState(error);
   const [currentTotal, setCurrentTotal] = useState(0);
-  const [isMobile, setIsMobile] = useState(false);
   const [categoryList, setcategoryList] = useState([
     {
       name: 'NEW',

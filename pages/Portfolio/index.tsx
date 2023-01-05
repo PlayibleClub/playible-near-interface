@@ -255,20 +255,16 @@ const Portfolio = () => {
     setPosition(['allPos']);
   }, [currentSport]);
   useEffect(() => {
-    console.log(athletes);
     setRemountAthlete(Math.random() + 1);
   }, [athletes]);
   useEffect(() => {
     if (selectedRegular !== false && selectedPromo === false) {
-      console.log('reg');
       get_filter_supply_for_owner();
       setTotalPromoSupply(0);
     } else if (selectedRegular === false && selectedPromo !== false) {
-      console.log('soul');
       get_filter_soulbound_supply_for_owner();
       setTotalRegularSupply(0);
     } else if (selectedRegular !== false && selectedPromo !== false) {
-      console.log('mixed');
       get_filter_supply_for_owner();
       get_filter_soulbound_supply_for_owner();
     } else {

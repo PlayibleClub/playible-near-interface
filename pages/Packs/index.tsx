@@ -52,7 +52,6 @@ export default function Packs() {
   const [totalSoulboundPacks, setTotalSoulboundPacks] = useState(0);
   const [activeCategory, setCategory] = useState('NEW');
   const [currentTotal, setCurrentTotal] = useState(0);
-  const [isMobile, setIsMobile] = useState(false);
   const [categoryList, setcategoryList] = useState([
     {
       name: 'STARTER',
@@ -184,13 +183,7 @@ export default function Packs() {
     e.preventDefault();
     get_soulbound_pack(selector);
   };
-  const handleResize = () => {
-    if (window.innerWidth < 768) {
-      setIsMobile(true);
-    } else {
-      setIsMobile(false);
-    }
-  };
+
   useEffect(() => {
     get_nft_pack_supply_for_owner(accountId);
     getPackLimit();
@@ -221,9 +214,6 @@ export default function Packs() {
     get_claim_status(accountId);
   }, []);
 
-  useEffect(() => {
-    window.addEventListener('resize', handleResize);
-  });
   // useEffect(() => {
   //     // set initial value
   //     const mediaWatcher = window.matchMedia("(max-width: 500px)")
@@ -288,40 +278,24 @@ export default function Packs() {
               <div className="flex flex-col">
                 <hr className="opacity-10 -ml-6" />
                 <div className="flex flex-row first:md:ml-10">
-                  {isMobile ? (
-                    <form>
-                      <select
-                        onChange={(e) => {
-                          changeSportList(e.target.value);
+                  {sportList.map((x, index) => {
+                    return (
+                      <button
+                        className={`rounded-lg border mt-4 px-8 p-1 text-xs md:font-medium font-monument ${
+                          index === 0 ? `md:ml-7` : 'md:ml-4'
+                        } ${
+                          x.isActive
+                            ? 'bg-indigo-buttonblue text-indigo-white border-indigo-buttonblue'
+                            : ''
+                        }`}
+                        onClick={() => {
+                          changeSportList(x.sport);
                         }}
-                        className="bg-filter-icon bg-no-repeat bg-right bg-indigo-white ring-2 ring-offset-4 ring-indigo-black ring-opacity-25 focus:ring-2 focus:ring-indigo-black 
-                        focus:outline-none cursor-pointer text-xs md:text-base ml-8 mt-5 w-28"
                       >
-                        {sportList.map((x) => {
-                          return <option value={x.sport}>{x.sport}</option>;
-                        })}
-                      </select>
-                    </form>
-                  ) : (
-                    sportList.map((x, index) => {
-                      return (
-                        <button
-                          className={`rounded-lg border mt-4 px-8 p-1 text-xs md:font-medium font-monument ${
-                            index === 0 ? `md:ml-7` : 'md:ml-4'
-                          } ${
-                            x.isActive
-                              ? 'bg-indigo-buttonblue text-indigo-white border-indigo-buttonblue'
-                              : ''
-                          }`}
-                          onClick={() => {
-                            changeSportList(x.sport);
-                          }}
-                        >
-                          {x.sport}
-                        </button>
-                      );
-                    })
-                  )}
+                        {x.sport}
+                      </button>
+                    );
+                  })}
                 </div>
                 <div className="grid grid-cols-4 gap-y-8 mt-4 md:grid-cols-4 iphone5:mt-8 iphone5:ml-2 md:ml-7 md:mt-9 ">
                   {(categoryList[0].isActive ? packs : soulboundPacks).length > 0 &&
