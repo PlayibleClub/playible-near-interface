@@ -786,7 +786,12 @@ const Play = (props) => {
                                             />
                                           </div>
                                         </a> */}
-                                    <Link href={`/PlayDetails/${data.game_id}`} passHref>
+                                    <Link
+                                      href={`/PlayDetails/${currentSport.toLowerCase()}/${
+                                        data.game_id
+                                      }`}
+                                      passHref
+                                    >
                                       <div className="mt-4 mr-6">
                                         <PlayComponent
                                           type={activeCategory}

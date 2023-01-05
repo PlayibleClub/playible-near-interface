@@ -19,7 +19,7 @@ import { providers } from 'near-api-js';
 import { getContract, getRPCProvider } from 'utils/near';
 import { getImage, getDescription, getPrizePool } from 'utils/game/helper';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
-import { GAME } from 'data/constants/nearContracts';
+import { GAME_NFL } from 'data/constants/nearContracts';
 import Router from 'next/router';
 import BaseModal from 'components/modals/BaseModal';
 import { query_game_data } from 'utils/near/helper';
@@ -66,7 +66,7 @@ export default function PlayDetails(props) {
   }
 
   async function get_game_data(game_id) {
-    setGameData(await query_game_data(game_id));
+    setGameData(await query_game_data(game_id, GAME_NFL));
   }
 
   function query_player_team() {
@@ -81,7 +81,7 @@ export default function PlayDetails(props) {
       .query({
         request_type: 'call_function',
         finality: 'optimistic',
-        account_id: getContract(GAME),
+        account_id: getContract(GAME_NFL),
         method_name: 'get_players_team',
         args_base64: Buffer.from(query).toString('base64'),
       })
