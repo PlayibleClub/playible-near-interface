@@ -19,12 +19,14 @@ import { Provider, useSelector, useDispatch } from 'react-redux';
 import { store, persistor } from 'redux/athlete/store';
 import { query_game_data } from 'utils/near/helper';
 import { getSportType } from 'data/constants/sportConstants';
+import { setTeamName, setAccountId, setGameId, setSport2 } from 'redux/athlete/teamSlice';
 export default function CreateLineup(props) {
   const { query } = props;
   const gameId = query.game_id;
   const currentSport = query.sport.toString().toUpperCase();
   const teamName = 'Team 1';
-
+  const router = useRouter();
+  const dispatch = useDispatch();
   const { accountId } = useWalletSelector();
   const [gameData, setGameData] = useState(null);
   const [teamModal, setTeamModal] = useState(false);
@@ -44,13 +46,22 @@ export default function CreateLineup(props) {
   }, [startDate]);
 
   async function get_player_teams(account, game_id) {
-    setPlayerTeams(await query_player_teams(account, game_id));
+    setPlayerTeams(
+      await query_player_teams(account, game_id, getSportType(currentSport).gameContract)
+    );
   }
 
   async function get_game_data(game_id) {
     setGameData(await query_game_data(game_id, getSportType(currentSport).gameContract));
   }
 
+  const handleButtonClick = (teamName, accountId, gameId) => {
+    dispatch(setTeamName(teamName));
+    dispatch(setAccountId(accountId));
+    dispatch(setGameId(gameId));
+    dispatch(setSport2(currentSport));
+    router.push('/EntrySummary');
+  };
   useEffect(() => {
     setTimeout(() => persistor.purge(), 200);
     console.log('loading');
@@ -109,7 +120,16 @@ export default function CreateLineup(props) {
                   <div>
                     {/* @ts-expect-error */}
                     {playerTeams.team_names.map((data) => {
-                      return <ViewTeamsContainer teamNames={data} gameId={gameId} />;
+                      return (
+                        <ViewTeamsContainer
+                          teamNames={data}
+                          gameId={gameId}
+                          accountId={accountId}
+                          onClickFn={(data, accountId, gameId) =>
+                            handleButtonClick(data, accountId, gameId)
+                          }
+                        />
+                      );
                     })}
                   </div>
                 )

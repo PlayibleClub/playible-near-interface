@@ -48,7 +48,7 @@ const Games = (props) => {
   }
 
   async function get_player_teams(account, game_id) {
-    setPlayerTeams(await query_player_teams(account, game_id));
+    setPlayerTeams(await query_player_teams(account, game_id, getContract(GAME_NFL)));
   }
   const handleButtonClick = (teamName, accountId, gameId) => {
     dispatch(setTeamName(teamName));

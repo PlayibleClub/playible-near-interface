@@ -195,17 +195,16 @@ async function query_filter_tokens_for_owner(
     });
 }
 
-async function query_player_teams(account, game_id) {
+async function query_player_teams(account, game_id, contract) {
   const query = JSON.stringify({
     account: account,
     game_id: game_id,
   });
-
   return await provider
     .query({
       request_type: 'call_function',
       finality: 'optimistic',
-      account_id: getSportType('FOOTBALL').gameContract,
+      account_id: contract,
       method_name: 'get_player_team',
       args_base64: Buffer.from(query).toString('base64'),
     })
