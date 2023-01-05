@@ -244,7 +244,7 @@ export default function Packs() {
 
   return (
     <Container activeName="SQUAD">
-      <div className="flex flex-col w-full overflow-y-auto h-screen pb-12 mb-12">
+      <div className="flex flex-col w-full overflow-y-auto h-screen">
         <Main color="indigo-white">
           <div className="iphone5:mt-20 md:ml-6 md:mt-8">
             <PortfolioContainer textcolor="indigo-black" title="PACKS">

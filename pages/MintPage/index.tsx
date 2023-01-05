@@ -394,7 +394,7 @@ export default function Home(props) {
   return (
     <>
       <Container activeName="MINT">
-        <div className="flex flex-col w-screen md:w-full overflow-y-auto h-screen justify-center self-center md:pb-12 text-indigo-black">
+        <div className="flex flex-col w-screen md:w-full overflow-y-auto h-screen justify-center self-center text-indigo-black">
           <Main color="indigo-white">
             <div className="flex-initial iphone5:mt-20 md:ml-6 md:mt-8">
               <div className="flex md:flex-row md:float-right iphone5:flex-col md:mt-0">
@@ -444,9 +444,25 @@ export default function Home(props) {
                   </div>
                 </div>
                 <div className="flex md:flex-row flex-col mt-12">
-                  <div className="md:w-1/2 w-full ">
-                    <Image src={'/images/mintpage.png'} width={400} height={400} alt="pack-image" />
-                  </div>
+                  {currentSport === 'FOOTBALL' ? (
+                    <div className="md:w-1/2 w-full ">
+                      <Image
+                        src={'/images/mintpage.png'}
+                        width={400}
+                        height={400}
+                        alt="pack-image"
+                      />
+                    </div>
+                  ) : (
+                    <div className="md:w-1/2 w-full ">
+                      <Image
+                        src={'/images/mintpagebasketball.png'}
+                        width={400}
+                        height={400}
+                        alt="pack-image"
+                      />
+                    </div>
+                  )}
                   <div className="md:w-1/2 w-full md:mt-0 mt-5 ml-8  ">
                     <div className="text-xl font-bold font-monument ">
                       STARTER PACK MINT
@@ -608,20 +624,40 @@ export default function Home(props) {
                     PACK DETAILS
                     <hr className="w-10 border-4"></hr>
                   </div>
-                  <div className="mt-10">
-                    This pack will contain 8 randomly generated <br></br>
-                    American Football players.
-                  </div>
+                  {currentSport === 'FOOTBALL' ? (
+                    <div className="mt-10">
+                      This pack will contain 8 randomly generated <br></br>
+                      American Football players.
+                    </div>
+                  ) : (
+                    <div className="mt-10">
+                      This pack will contain 8 randomly generated <br></br>
+                      American Basketball players.
+                    </div>
+                  )}
                   <div className="mt-5 mb-12">
                     <div className="mb-5">1 for each of the positions below:</div>
-                    <ul className="marker list-disc pl-5 space-y-3 ">
-                      <li> 1 Quarter Back (QB)</li>
-                      <li>2 Running Back (RB) </li>
-                      <li> 2 Wide Receivers (WR) </li>
-                      <li>1 Tight End (TE)</li>
-                      <li>1 Flex (RB/WR/TE) </li>
-                      <li>1 Super Flex (QB/RB/WR/TE) </li>
-                    </ul>
+                    {currentSport === 'FOOTBALL' ? (
+                      <ul className="marker list-disc pl-5 space-y-3 ">
+                        <li>1 Quarter Back (QB)</li>
+                        <li>2 Running Back (RB) </li>
+                        <li>2 Wide Receivers (WR) </li>
+                        <li>1 Tight End (TE)</li>
+                        <li>1 Flex (RB/WR/TE) </li>
+                        <li>1 Super Flex (QB/RB/WR/TE) </li>
+                      </ul>
+                    ) : (
+                      <ul className="marker list-disc pl-5 space-y-3 ">
+                        <li>1 Point Guard (PG)</li>
+                        <li>1 Shooting Guard (SG) </li>
+                        <li>1 Small Forward (SF) </li>
+                        <li>1 Power Forward (PF)</li>
+                        <li>1 Center (C) </li>
+                        <li>1 Guard (PG/SG) </li>
+                        <li>1 Forward (SF/PF) </li>
+                        <li>1 Any (ANY) </li>
+                      </ul>
+                    )}
                   </div>
                 </div>
               </div>
