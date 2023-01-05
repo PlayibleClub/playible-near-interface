@@ -1160,12 +1160,12 @@ export default function Index(props) {
         {prizeDescription}
         <p className="font-bold">Positions:</p>
         {currentSport === 'FOOTBALL'
-          ? positionsInfo.map((position) => (
+          ? positionsDisplay.map((position) => (
               <li>
                 {position.positions} {position.amount}x
               </li>
             ))
-          : positionsInfoBasketball.map((position) => (
+          : positionsDisplayBasketball.map((position) => (
               <li>
                 {position.positions} {position.amount}x
               </li>
