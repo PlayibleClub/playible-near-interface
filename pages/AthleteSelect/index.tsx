@@ -36,7 +36,7 @@ import {
 } from 'utils/near/helper';
 import { getSportType } from 'data/constants/sportConstants';
 import NftTypeComponent from 'pages/Portfolio/components/NftTypeComponent';
-
+import { getPositionDisplay } from 'utils/athlete/helper';
 const AthleteSelect = (props) => {
   const { query } = props;
 
@@ -49,6 +49,7 @@ const AthleteSelect = (props) => {
   //Get the data from redux store
   const gameId = useSelector(getGameId);
   const position = useSelector(getPosition);
+  console.log(position);
   const index = useSelector(getIndex);
   const reduxLineup = useSelector(getAthleteLineup);
   const currentSport = useSelector(getSport);
@@ -113,20 +114,7 @@ const AthleteSelect = (props) => {
     });
     setLineup(passedLineup);
   }
-  function getPositionDisplay(position) {
-    if (position.length === 3) return 'FLEX';
-    if (position.length === 4) return 'SUPERFLEX';
-    switch (position[0]) {
-      case 'QB':
-        return 'QUARTER BACK';
-      case 'RB':
-        return 'RUNNING BACK';
-      case 'WR':
-        return 'WIDE RECEIVER';
-      case 'TE':
-        return 'TIGHT END';
-    }
-  }
+
   function checkIfAthleteExists(athlete_id) {
     for (let i = 0; i < passedLineup.length; i++) {
       if (passedLineup[i].isAthlete === true) {
@@ -375,7 +363,7 @@ const AthleteSelect = (props) => {
       <div className="mt-44 md:ml-6 md:mt-6 mb-2">
         <BackFunction prev={`/CreateTeam/${currentSport.toLowerCase()}/${gameId}`} />
         <PortfolioContainer
-          title={'SELECT YOUR ' + getPositionDisplay(position)}
+          title={'SELECT YOUR ' + getPositionDisplay(position, currentSport)}
           textcolor="text-indigo-black"
         />
         <NftTypeComponent

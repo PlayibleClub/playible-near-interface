@@ -20,6 +20,16 @@ export const NFL_POSITIONS = [
     key: 'TE',
   },
 ]
+export const EXTRA_NFL = [
+  {
+    name: 'FLEX',
+    key: ['RB', 'WR', 'TE'],
+  },
+  {
+    name: 'SUPERFLEX',
+    key: ['QR', 'RB', 'WR', 'TE'], 
+  }
+]
 export const NBA_POSITIONS = [
   {
     name: 'POINT GUARD',
@@ -41,6 +51,20 @@ export const NBA_POSITIONS = [
     name: 'CENTER',
     key: 'C',
   }
+]
+export const EXTRA_NBA = [
+  {
+    name: 'GUARD',
+    key: ['PG', 'SG'],
+  },
+  {
+    name: 'FORWARD',
+    key: ['SF', 'PF'],
+  },
+  {
+    name: 'ANY',
+    key: ['PG', 'SG', 'SF', 'PF', 'C'],
+  }
 
 ]
 
@@ -57,6 +81,7 @@ export const SPORT_TYPES = [
     openPromoContract: getContract(OPENPACK_PROMO_NFL),
     gameContract: getContract(GAME_NFL),
     positionList: NFL_POSITIONS,
+    extra: EXTRA_NFL,
   },
   {
     key: 'NBA',
@@ -70,6 +95,7 @@ export const SPORT_TYPES = [
     openPromoContract: getContract(OPENPACK_PROMO_BASKETBALL),
     gameContract: getContract(GAME_BASKETBALL),
     positionList: NBA_POSITIONS,
+    extra: EXTRA_NBA
   }];
 
   function getSportType(sport){

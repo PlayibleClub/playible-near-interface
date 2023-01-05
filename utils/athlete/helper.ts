@@ -2,6 +2,7 @@ import client from 'apollo-client';
 import { objectTraps } from 'immer/dist/internal';
 import { GET_ATHLETE_BY_ID } from '../queries';
 import { getUTCTimestampFromLocal } from 'utils/date/helper';
+import { getSportType } from 'data/constants/sportConstants';
 // pull from graphQL and append the nft animation
 // return assembled Athlete
 async function getAthleteInfoById(item) {
@@ -57,4 +58,26 @@ function convertNftToAthlete(item) {
   };
 }
 
-export { convertNftToAthlete, getAthleteInfoById };
+function getPositionDisplay(position, currentSport){
+  let flex = false;
+  let found;
+  getSportType(currentSport).extra.forEach((x) => {
+    console.log(x.key.toString() + ' = ' + position.toString());
+    if (x.key.toString() === position.toString()) {
+      found = x.name;
+      flex = true;
+    }
+  });
+
+  // }
+  // if(position.length === 3) return 'FLEX';
+  // if(position.length === 4) return 'SUPERFLEX';
+  if (flex) {
+    return found;
+  } else {
+    found = getSportType(currentSport).positionList.find((x) => x.key === position[0]);
+    return found.name;
+  }
+}
+
+export { convertNftToAthlete, getAthleteInfoById, getPositionDisplay};

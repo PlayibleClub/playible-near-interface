@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import Image from 'next/image';
 import router from 'next/router';
 import Link from 'next/link';
-
+import { getSportType } from 'data/constants/sportConstants';
+import { getPositionDisplay } from 'utils/athlete/helper';
 const Lineup = (props) => {
   const {
     position,
@@ -19,22 +20,8 @@ const Lineup = (props) => {
     index,
     test,
     isAthlete,
+    currentSport,
   } = props;
-
-  function getPositionDisplay(position) {
-    if(position.length === 3) return 'FLEX';
-    if(position.length === 4) return 'SUPERFLEX';
-    switch (position[0]) {
-      case 'QB':
-        return 'QUARTER BACK';
-      case 'RB':
-        return 'RUNNING BACK';
-      case 'WR':
-        return 'WIDE RECEIVER';
-      case 'TE':
-        return 'TIGHT END';
-    }
-  }
   //const { position, player = '', img = null, id, score, nextposition, onClick = null } = props;
   const lineupPosition = '/images/tokensMLB/' + position + '.png';
   return (
@@ -51,7 +38,7 @@ const Lineup = (props) => {
               height={190}
             />
             <div className="w-24 ml-1 text-center font-montserrat absolute z-50 text-sm top-1/3 left-4 text-indigo-white">
-              {isAthlete ? '' : getPositionDisplay(position)}
+              {isAthlete ? '' : getPositionDisplay(position, currentSport)}
             </div>
           </div>
         ) : (
