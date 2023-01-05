@@ -671,6 +671,7 @@ export default function Index(props) {
                                 type="upcoming"
                                 isCompleted={data.isCompleted}
                                 status={data.status}
+                                img={data.game_image}
                               />
                             </div>
                           );
