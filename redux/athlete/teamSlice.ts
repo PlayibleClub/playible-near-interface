@@ -5,6 +5,7 @@ const initialState = {
   teamName: '',
   accountId: '',
   gameId: 0,
+  sport: '',
 }
 
 export const teamSlice = createSlice({
@@ -20,16 +21,19 @@ export const teamSlice = createSlice({
     setGameId(state, action){
       state.gameId = action.payload;
     },
+    setSport2(state, action){
+      state.sport = action.payload;
+    }
   },
   extraReducers: (builder) => {
     builder.addCase(PURGE, () => initialState);
   }
 });
 
-export const { setTeamName, setAccountId, setGameId} = teamSlice.actions;
+export const { setTeamName, setAccountId, setGameId, setSport2} = teamSlice.actions;
 
 export const selectTeamName = (state) => state.teamDetails.teamName;
 export const selectAccountId = (state) => state.teamDetails.accountId;
 export const selectGameId = (state) => state.teamDetails.gameId;
-
+export const getSport2 = (state) => state.teamDetails.sport;
 export default teamSlice.reducer;

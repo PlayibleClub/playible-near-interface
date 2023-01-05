@@ -15,9 +15,12 @@ import LoadingPageDark from 'components/loading/LoadingPageDark';
 import { setTeamName, setAccountId, setGameId } from 'redux/athlete/teamSlice';
 import { useDispatch } from 'react-redux';
 import { persistor } from 'redux/athlete/store';
+import { GAME_NFL } from 'data/constants/nearContracts';
+import { getContract } from 'utils/near';
 const Games = (props) => {
   const { query } = props;
   const gameId = query.game_id;
+  const currentSport = query.sport;
   const router = useRouter();
   const dispatch = useDispatch();
   const [playerLineups, setPlayerLineups] = useState([]);
@@ -29,8 +32,8 @@ const Games = (props) => {
   const [gameData, setGameData] = useState(null);
   const playGameImage = '/images/game.png';
   async function get_game_data(game_id) {
-    setGameInfo(await query_game_data(game_id));
-    setGameData(await query_game_data(game_id));
+    setGameInfo(await query_game_data(game_id, getContract(GAME_NFL)));
+    setGameData(await query_game_data(game_id, getContract(GAME_NFL)));
   }
 
   const gameStart = Object.values(gameInfo)[0] / 1000;

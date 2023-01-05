@@ -839,7 +839,10 @@ const Play = (props) => {
                               return (
                                 <div key={i} className="flex">
                                   <div className="mr-6 cursor-pointer ">
-                                    <Link href={`/Games/${data.game_id}`} passHref>
+                                    <Link
+                                      href={`/Games/${currentSport.toLowerCase()}/${data.game_id}`}
+                                      passHref
+                                    >
                                       <div className="mr-6">
                                         <PlayComponent
                                           type={activeCategory}
