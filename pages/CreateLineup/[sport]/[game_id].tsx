@@ -91,16 +91,7 @@ export default function CreateLineup(props) {
                     ? gameData?.game_description
                     : ' Enter your team to compete for cash prizes and entry into the Football Championship with $35,000 USD up for grabs.'}
                 </div>
-                <Link
-                  href={{
-                    pathname: '/CreateTeam/[game_id]',
-                    query: {
-                      game_id: gameId,
-                      teamName: teamName,
-                    },
-                  }}
-                  as={`/CreateTeam/${gameId}`}
-                >
+                <Link href={`/CreateTeam/${currentSport.toLowerCase()}/${gameId}`}>
                   <button className="bg-indigo-buttonblue text-indigo-white whitespace-nowrap h-14 px-10 mt-16 text-center font-bold">
                     CREATE YOUR LINEUP +
                   </button>

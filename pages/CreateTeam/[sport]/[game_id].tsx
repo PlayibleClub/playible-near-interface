@@ -1,26 +1,24 @@
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
-import Main from '../../components/Main';
-import PortfolioContainer from '../../components/containers/PortfolioContainer';
+import Main from 'components/Main';
+import PortfolioContainer from 'components/containers/PortfolioContainer';
 import Link from 'next/link';
-import Container from '../../components/containers/Container';
-import BackFunction from '../../components/buttons/BackFunction';
+import Container from 'components/containers/Container';
+import BackFunction from 'components/buttons/BackFunction';
 import 'regenerator-runtime/runtime';
 import { useRouter } from 'next/router';
 import { getContract, getRPCProvider } from 'utils/near';
-import Lineup from '../../components/Lineup';
+import Lineup from 'components/Lineup';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
 import { Provider, useDispatch, useSelector } from 'react-redux';
-import { getAccountAssets } from '../../redux/reducers/external/playible/assets';
-import PerformerContainer from '../../components/containers/PerformerContainer';
-import PerformerContainerSelectable from '../../components/containers/PerformerContainerSelectable';
-import BaseModal from '../../components/modals/BaseModal';
-import { position } from '../../utils/athlete/position';
-import Modal from '../../components/modals/Modal';
-import { axiosInstance } from '../../utils/playible';
-import LoadingPageDark from '../../components/loading/LoadingPageDark';
+import PerformerContainerSelectable from 'components/containers/PerformerContainerSelectable';
+import BaseModal from 'components/modals/BaseModal';
+import { position } from 'utils/athlete/position';
+import Modal from 'components/modals/Modal';
+import { axiosInstance } from 'utils/playible';
+import LoadingPageDark from 'components/loading/LoadingPageDark';
+import { getSportType } from 'data/constants/sportConstants';
 import { DEFAULT_MAX_FEES } from 'data/constants/gasFees';
-import { GAME } from 'data/constants/nearContracts';
 import {
   getAthleteLineup,
   getGameId,
@@ -34,12 +32,14 @@ import {
   setIndex,
   setPosition,
   setTeamNameRedux,
+  setSport,
 } from 'redux/athlete/athleteSlice';
 import { query_game_data } from 'utils/near/helper';
 
 export default function CreateLineup(props) {
   const { query } = props;
   const gameId = query.game_id;
+  const currentSport = query.sport.toString().toUpperCase();
   const newTeamName = useSelector(getTeamName);
   const dispatch = useDispatch();
   const router = useRouter();
@@ -217,7 +217,7 @@ export default function CreateLineup(props) {
     setLineup(array2);
   }
   async function get_game_data(game_id) {
-    setGameData(await query_game_data(game_id));
+    setGameData(await query_game_data(game_id, getSportType(currentSport).gameContract));
   }
 
   /* Function that checks whether a string parses into valid JSON. Used to check if data from router
@@ -249,7 +249,7 @@ export default function CreateLineup(props) {
     const tx = wallet.signAndSendTransactions({
       transactions: [
         {
-          receiverId: getContract(GAME),
+          receiverId: getSportType(currentSport).gameContract,
           //@ts-ignore:next-line
           actions: [action_submit_lineup],
         },
@@ -315,6 +315,7 @@ export default function CreateLineup(props) {
     dispatch(setAthleteLineup(athleteLineup));
     dispatch(setIndex(index));
     dispatch(setTeamNameRedux(teamName));
+    dispatch(setSport(currentSport));
     router.push('/AthleteSelect');
   };
   useEffect(() => {
