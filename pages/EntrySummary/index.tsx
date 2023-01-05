@@ -15,12 +15,11 @@ import 'regenerator-runtime/runtime';
 import LoadingPageDark from '../../components/loading/LoadingPageDark';
 import { providers } from 'near-api-js';
 import { getContract, getRPCProvider } from 'utils/near';
-import { GAME, ATHLETE, ATHLETE_PROMO } from 'data/constants/nearContracts';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
 import { convertNftToAthlete, getAthleteInfoById } from 'utils/athlete/helper';
 import { getUTCDateFromLocal } from 'utils/date/helper';
 import { useSelector } from 'react-redux';
-import { selectTeamName, selectAccountId, selectGameId } from 'redux/athlete/teamSlice';
+import { selectTeamName, selectAccountId, selectGameId, getSport2 } from 'redux/athlete/teamSlice';
 import {
   query_game_data,
   query_nft_tokens_by_id,
@@ -28,7 +27,7 @@ import {
 } from 'utils/near/helper';
 import { cutAddress } from 'utils/address/helper';
 import EntrySummaryBack from 'components/buttons/EntrySummaryBack';
-
+import { getSportType } from 'data/constants/sportConstants';
 export default function EntrySummary(props) {
   const { query } = props;
   const provider = new providers.JsonRpcProvider({
@@ -37,6 +36,7 @@ export default function EntrySummary(props) {
   const router = useRouter();
   const accountId = useSelector(selectAccountId);
   const playerTeamName = useSelector(selectTeamName);
+  const currentSport = useSelector(getSport2);
   const [name, setName] = useState('');
   const [gameData, setGameData] = useState(null);
   const [teamModal, setTeamModal] = useState(false);
@@ -116,7 +116,7 @@ export default function EntrySummary(props) {
       .query({
         request_type: 'call_function',
         finality: 'optimistic',
-        account_id: getContract(GAME),
+        account_id: getSportType(currentSport).gameContract,
         method_name: 'get_player_lineup',
         args_base64: Buffer.from(query).toString('base64'),
       })
@@ -131,7 +131,9 @@ export default function EntrySummary(props) {
   function get_nft_tokens_for_owner() {
     playerLineup.forEach((token_id) => {
       //check if token_id contains sb, then query with soulbound contract
-      let contract = token_id.includes('SB') ? getContract(ATHLETE_PROMO) : getContract(ATHLETE);
+      let contract = token_id.includes('SB')
+        ? getSportType(currentSport).promoContract
+        : getSportType(currentSport).regContract;
       query_nft_tokens_by_id(token_id, contract).then(async (data) => {
         // @ts-ignore:next-line
         const result = JSON.parse(Buffer.from(data.result).toString());
@@ -142,12 +144,12 @@ export default function EntrySummary(props) {
     //setAthletes(testAthlete);
   }
 
-  async function get_game_data(game_id) {
-    setGameData(await query_game_data(game_id));
+  async function get_game_data() {
+    setGameData(await query_game_data(gameId, getSportType(currentSport).gameContract));
   }
 
   useEffect(() => {
-    get_game_data(gameId);
+    get_game_data();
   }, []);
 
   useEffect(() => {
