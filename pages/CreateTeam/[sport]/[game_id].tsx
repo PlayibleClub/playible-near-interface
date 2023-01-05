@@ -746,7 +746,7 @@ export async function getServerSideProps(ctx) {
     if (query.transactionHashes) {
       return {
         redirect: {
-          destination: query.origin || `/CreateLineup/${query.game_id}`,
+          destination: query.origin || `/CreateLineup/${query.sport.toString()}/${query.game_id}`,
           permanent: false,
         },
       };
