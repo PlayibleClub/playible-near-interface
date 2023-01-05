@@ -27,7 +27,7 @@ import {
 import { MINT_STORAGE_COST, DEFAULT_MAX_FEES } from 'data/constants/gasFees';
 import { execute_claim_soulbound_pack, query_claim_status } from 'utils/near/helper';
 import Link from 'next/link';
-import { SPORT_TYPES } from 'data/constants/sportConstants';
+import { SPORT_TYPES, getSportType } from 'data/constants/sportConstants';
 
 const DECIMALS_NEAR = 1000000000000000000000000;
 const RESERVED_AMOUNT = 200;
@@ -83,7 +83,7 @@ export default function Home(props) {
       .query({
         request_type: 'call_function',
         finality: 'optimistic',
-        account_id: getContract(MINTER_NFL),
+        account_id: getSportType(currentSport).mintContract,
         method_name: 'get_config',
         args_base64: '',
       })
@@ -102,7 +102,7 @@ export default function Home(props) {
         const minting_of = await provider.query({
           request_type: 'call_function',
           finality: 'optimistic',
-          account_id: contract.contractId,
+          account_id: getSportType(currentSport).mintContract,
           method_name: 'get_minting_of',
           args_base64: Buffer.from(query).toString('base64'),
         });
@@ -125,7 +125,7 @@ export default function Home(props) {
         const storage_balance = await provider.query({
           request_type: 'call_function',
           finality: 'optimistic',
-          account_id: contract.contractId,
+          account_id: getSportType(currentSport).mintContract,
           method_name: 'get_storage_balance_of',
           args_base64: Buffer.from(query).toString('base64'),
         });
@@ -298,7 +298,7 @@ export default function Home(props) {
     const tx = wallet
       .signAndSendTransaction({
         signerId: accountId,
-        receiverId: selector.store.getState().contract.contractId,
+        receiverId: getSportType(currentSport).mintContract,
         actions: [
           // @ts-ignore:next-line
           action_deposit_storage_near_token,
