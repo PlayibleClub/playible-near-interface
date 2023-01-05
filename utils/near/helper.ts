@@ -12,7 +12,7 @@ const provider = new providers.JsonRpcProvider({
 });
 
 
-async function query_game_data(game_id) {
+async function query_game_data(game_id, contract) {
   const query = JSON.stringify({
     game_id: game_id,
   });
@@ -21,7 +21,7 @@ async function query_game_data(game_id) {
     .query({
       request_type: 'call_function',
       finality: 'optimistic',
-      account_id: getContract(GAME_NFL),
+      account_id: contract,
       method_name: 'get_game',
       args_base64: Buffer.from(query).toString('base64'),
     })
