@@ -683,7 +683,7 @@ const Play = (props) => {
         </>
       )}
       <Container activeName="PLAY">
-        <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
+        <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center">
           <Main color="indigo-white">
             <div className="flex flex-col mb-10">
               <div className="flex">
