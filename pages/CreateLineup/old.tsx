@@ -85,7 +85,7 @@ export default function CreateLineup(props) {
                 <div className="md:w-2/5">
                   {gameData?.game_description
                     ? gameData?.game_description
-                    : ' Enter your team to compete for cash prizes and entry into the Football Championship with $35,000 USD up for grabs.'}
+                    : 'Enter your team to compete for weekly prizes up for grabs.'}
                 </div>
                 <Link
                   href={{
