@@ -9,6 +9,7 @@ import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en.json';
 import ReactTimeAgo from 'react-time-ago';
 import { GAME_NFL, ORACLE } from '../../../data/constants/nearContracts';
+import { SPORT_TYPES, getSportType } from 'data/constants/sportConstants';
 import 'regenerator-runtime/runtime';
 import { format } from 'prettier';
 import { ADMIN } from '../../../data/constants/address';
@@ -30,6 +31,8 @@ import { position } from 'utils/athlete/position';
 import ReactS3Client from 'react-aws-s3-typescript';
 import { s3Config } from 's3config';
 import { ErrorResponse } from '@remix-run/router';
+import { current } from '@reduxjs/toolkit';
+import { getSport } from 'redux/athlete/athleteSlice';
 TimeAgo.addDefaultLocale(en);
 
 export default function Index(props) {
@@ -152,6 +155,27 @@ export default function Index(props) {
     { positions: ['SUPERFLEX'], amount: 1 },
   ]);
 
+  const [positionsInfoBasketball, setPositionsInfoBasketball] = useState([
+    { positions: ['PG'], amount: 1 },
+    { positions: ['SG'], amount: 1 },
+    { positions: ['SF'], amount: 1 },
+    { positions: ['PF'], amount: 1 },
+    { positions: ['C'], amount: 1 },
+    { positions: ['G'], amount: 1 },
+    { positions: ['F'], amount: 1 },
+    { positions: ['ANY'], amount: 1 },
+  ]);
+  const [positionsDisplayBasketball, setPositionsDisplayBasketball] = useState([
+    { positions: ['PG'], amount: 1 },
+    { positions: ['SG'], amount: 1 },
+    { positions: ['SF'], amount: 1 },
+    { positions: ['PF'], amount: 1 },
+    { positions: ['C'], amount: 1 },
+    { positions: ['G'], amount: 1 },
+    { positions: ['F'], amount: 1 },
+    { positions: ['ANY'], amount: 1 },
+  ]);
+
   const defaultGameDescription =
     'Enter a team into the The Blitz tournament to compete for cash prizes. Create a lineup by selecting 8 Playible Football Athlete Tokens now.';
   const defaultPrizeDescription = '$100 + 2 Championship Tickets';
@@ -166,6 +190,27 @@ export default function Index(props) {
   const [percentTotal, setPercentTotal] = useState(0);
   const [remountComponent, setRemountComponent] = useState(0);
   const [remountPositionArea, setRemountPositionArea] = useState(0);
+  const [remountDropdown, setRemountDropdown] = useState(0);
+  const [positionList, setPositionList] = useState(SPORT_TYPES[0].positionList);
+  const sportObj = SPORT_TYPES.map((x) => ({ name: x.sport, isActive: false }));
+  sportObj[0].isActive = true;
+  const [sportList, setSportList] = useState([...sportObj]);
+  const [currentSport, setCurrentSport] = useState(sportObj[0].name);
+  const changeSportList = (name) => {
+    const sports = [...sportList];
+
+    sports.forEach((item) => {
+      if (item.name === name) {
+        item.isActive = true;
+      } else {
+        item.isActive = false;
+      }
+    });
+
+    setSportList([...sports]);
+    setCurrentSport(name);
+    setDetails({ ...details, position: getSportType(name).positionList[0].key });
+  };
   const changeTab = (name) => {
     setGamesOffset(0);
     setGamesLimit(10);
@@ -439,55 +484,117 @@ export default function Index(props) {
     }
   };
 
-  const handleButtonClick = (e) => {
+  const handleButtonClick = (e, currentSport) => {
     e.preventDefault();
-    //get current position and amount from details
-    let position = [details['position']];
-    let display = position;
-    let amount = details['positionAmount'];
-    switch (position[0]) {
-      case 'FLEX':
-        position = ['RB', 'WR', 'TE'];
-        break;
-      case 'SUPERFLEX':
-        position = ['QB', 'RB', 'WR', 'TE'];
-        break;
-    }
-    let found = positionsInfo.findIndex((e) => e.positions.join() === position.join());
+    if (currentSport === 'FOOTBALL') {
+      //get current position and amount from details
+      let position = [details['position']];
+      let display = position;
+      let amount = details['positionAmount'];
+      switch (position[0]) {
+        case 'FLEX':
+          position = ['RB', 'WR', 'TE'];
+          break;
+        case 'SUPERFLEX':
+          position = ['QB', 'RB', 'WR', 'TE'];
+          break;
+      }
+      let found = positionsInfo.findIndex((e) => e.positions.join() === position.join());
 
-    if (positionsInfo.length === 0) {
-      let object = { positions: position, amount: amount };
-      let object2 = { positions: display, amount: amount };
-      setPositionsInfo([object]);
-      setPositionsDisplay([object2]);
-    }
-    //could not find
-    else if (found === -1) {
-      let object = { positions: position, amount: amount };
-      let object2 = { positions: display, amount: amount };
-      setPositionsInfo((current) => [...current, object]);
-      setPositionsDisplay((current) => [...current, object2]);
+      if (positionsInfo.length === 0) {
+        let object = { positions: position, amount: amount };
+        let object2 = { positions: display, amount: amount };
+        setPositionsInfo([object]);
+        setPositionsDisplay([object2]);
+      }
+      //could not find
+      else if (found === -1) {
+        let object = { positions: position, amount: amount };
+        let object2 = { positions: display, amount: amount };
+        setPositionsInfo((current) => [...current, object]);
+        setPositionsDisplay((current) => [...current, object2]);
+      } else {
+        //found has index of same position
+        let current = positionsInfo;
+        let current2 = positionsDisplay;
+        //@ts-ignore:next-line
+        current[found].amount += amount;
+        current2[found].amount += amount;
+        setPositionsInfo(current);
+        setPositionsDisplay(current2);
+        setRemountPositionArea(Math.random());
+      }
     } else {
-      //found has index of same position
-      let current = positionsInfo;
-      let current2 = positionsDisplay;
-      //@ts-ignore:next-line
-      current[found].amount += amount;
-      current2[found].amount += amount;
-      setPositionsInfo(current);
-      setPositionsDisplay(current2);
-      setRemountPositionArea(Math.random());
+      let position = [details['position']];
+      let display = position;
+      let amount = details['positionAmount'];
+      switch (position[0]) {
+        case 'G':
+          position = ['PG', 'SG'];
+          break;
+        case 'F':
+          position = ['SF', 'PF'];
+          break;
+        case 'ANY':
+          position = ['PG', 'SG', 'SF', 'PF', 'C'];
+          break;
+      }
+      let found = positionsInfoBasketball.findIndex((e) => e.positions.join() === position.join());
+
+      if (positionsInfoBasketball.length === 0) {
+        let object = { positions: position, amount: amount };
+        let object2 = { positions: display, amount: amount };
+        setPositionsInfoBasketball([object]);
+        setPositionsDisplayBasketball([object2]);
+      }
+      //could not find
+      else if (found === -1) {
+        let object = { positions: position, amount: amount };
+        let object2 = { positions: display, amount: amount };
+        setPositionsInfoBasketball((current) => [...current, object]);
+        setPositionsDisplayBasketball((current) => [...current, object2]);
+      } else {
+        //found has index of same position
+        let current = positionsInfoBasketball;
+        let current2 = positionsDisplayBasketball;
+        //@ts-ignore:next-line
+        current[found].amount += amount;
+        current2[found].amount += amount;
+        setPositionsInfoBasketball(current);
+        setPositionsDisplayBasketball(current2);
+        setRemountPositionArea(Math.random());
+      }
     }
   };
-
-  const handleRemove = (e) => {
+  const getExtraPos = (currentSport) => {
+    switch (currentSport) {
+      case 'FOOTBALL':
+        return [
+          { name: 'FLEX', key: 'FLEX' },
+          { name: 'SUPERFLEX', key: 'SUPERFLEX' },
+        ];
+      case 'BASKETBALL':
+        return [
+          { name: 'GUARD', key: 'G' },
+          { name: 'FORWARD', key: 'F' },
+          { name: 'ANY', key: 'ANY' },
+        ];
+    }
+  };
+  const handleRemove = (e, currentSport) => {
     e.preventDefault();
-    positionsInfo.pop();
-    positionsDisplay.pop();
+    if (currentSport === 'FOOTBALL') {
+      positionsInfo.pop();
+      positionsDisplay.pop();
+    } else {
+      positionsInfoBasketball.pop();
+      positionsDisplayBasketball.pop();
+    }
     setRemountPositionArea(Math.random());
   };
 
   const NFL_POSITIONS = ['QB', 'RB', 'WR', 'TE', 'FLEX', 'SUPERFLEX'];
+  const BASKETBALL_POSITIONS = ['PG', 'SG', 'SF', 'PF', 'C', 'G', 'F', 'ANY'];
 
   const [details, setDetails] = useState({
     // name: '',
@@ -497,7 +604,7 @@ export default function Index(props) {
     usage: 0,
     description: '',
     whitelist: whitelistInfo,
-    position: NFL_POSITIONS[0],
+    position: getSportType(currentSport).positionList[0].key,
     positionAmount: 1,
     game_description: gameDescription,
     prize_description: prizeDescription,
@@ -513,11 +620,11 @@ export default function Index(props) {
   const endFormattedTimestamp = moment(dateEndFormatted).toLocaleString();
 
   async function get_game_supply() {
-    setTotalGames(await query_game_supply(getContract(GAME_NFL)));
+    setTotalGames(await query_game_supply(getSportType(currentSport).gameContract));
   }
 
   function get_games_list(totalGames) {
-    query_games_list(totalGames, getContract(GAME_NFL)).then(async (data) => {
+    query_games_list(totalGames, getSportType(currentSport).gameContract).then(async (data) => {
       //@ts-ignore:next-line
       const result = JSON.parse(Buffer.from(data.result).toString());
 
@@ -549,10 +656,11 @@ export default function Index(props) {
     });
   }
 
-  function getLineupLength() {
+  function getLineupLength(currentSport) {
     let counter = 0;
-    for (let i = 0; i < positionsInfo.length; i++) {
-      counter = counter + positionsInfo[i]?.amount;
+    let sportInfo = currentSport === 'FOOTBALL' ? positionsInfo : positionsInfoBasketball;
+    for (let i = 0; i < sportInfo.length; i++) {
+      counter = counter + sportInfo[i]?.amount;
     }
     return counter;
   }
@@ -564,8 +672,8 @@ export default function Index(props) {
         game_time_start: dateStart,
         game_time_end: dateEnd,
         whitelist: whitelistInfo,
-        positions: positionsInfo,
-        lineup_len: getLineupLength(),
+        positions: currentSport === 'FOOTBALL' ? positionsInfo : positionsInfoBasketball,
+        lineup_len: getLineupLength(currentSport),
         game_description: gameDescription,
         prize_description: prizeDescription,
         game_image: gameImage,
@@ -586,7 +694,7 @@ export default function Index(props) {
     const tx = wallet.signAndSendTransactions({
       transactions: [
         {
-          receiverId: getContract(GAME_NFL),
+          receiverId: getSportType(currentSport).gameContract,
           // @ts-ignore:next-line
           actions: [action_add_game],
         },
@@ -599,11 +707,16 @@ export default function Index(props) {
   }, [distribution]);
   useEffect(() => {
     setRemountPositionArea(Math.random());
-  }, [positionsInfo, positionsDisplay]);
+  }, [positionsInfo, positionsDisplay, positionsInfoBasketball, positionsDisplayBasketball]);
   useEffect(() => {
     get_games_list(totalGames);
     get_game_supply();
-  }, [totalGames]);
+
+    const list = SPORT_TYPES.find((x) => x.sport === currentSport);
+
+    setPositionList(list.positionList);
+    setRemountDropdown(Math.random());
+  }, [totalGames, currentSport]);
   useEffect(() => {
     currentTotal !== 0 ? setPageCount(Math.ceil(currentTotal / gamesLimit)) : setPageCount(1);
   }, [currentTotal]);
@@ -625,6 +738,26 @@ export default function Index(props) {
               ))}
             </div>
             <hr className="opacity-50" />
+            <div>
+              {sportList.map((x, index) => {
+                return (
+                  <button
+                    className={`rounded-lg border mt-4 px-8 p-1 text-xs md:font-medium font-monument ${
+                      index === 0 ? `md:ml-14` : 'md:ml-4'
+                    } ${
+                      x.isActive
+                        ? 'bg-indigo-buttonblue text-indigo-white border-indigo-buttonblue'
+                        : ''
+                    }`}
+                    onClick={() => {
+                      changeSportList(x.name);
+                    }}
+                  >
+                    {x.name}
+                  </button>
+                );
+              })}
+            </div>
             <div className="p-8 px-32">
               {loading ? (
                 <LoadingPageDark />
@@ -889,15 +1022,18 @@ export default function Index(props) {
                       <label className="font-monument" htmlFor="positions">
                         POSITIONS
                       </label>
-                      <form>
+                      <form key={remountDropdown}>
                         <select
                           className="bg-filter-icon bg-no-repeat bg-origin-content bg-right bg-indigo-white iphone5:w-28 w-36 md:w-42 lg:w-60
                           ring-indigo-black focus:outline-none cursor-pointer rounded-lg text-xs md:text-base mr-4 border outline-none px-3 p-2"
                           name="position"
                           onChange={(e) => onChange(e)}
                         >
-                          {NFL_POSITIONS.map((x) => {
-                            return <option value={x}>{x}</option>;
+                          {positionList.map((x) => {
+                            return <option value={x.key}>{x.name}</option>;
+                          })}
+                          {getExtraPos(currentSport).map((x) => {
+                            return <option value={x.key}>{x.name}</option>;
                           })}
                         </select>
                         <input
@@ -912,13 +1048,13 @@ export default function Index(props) {
                         />
                         <button
                           className="border outline-none rounded-lg px-3 p-2 mr-4"
-                          onClick={(e) => handleButtonClick(e)}
+                          onClick={(e) => handleButtonClick(e, currentSport)}
                         >
                           +
                         </button>
                         <button
                           className="border outline-none rounded-lg px-3 p-2"
-                          onClick={(e) => handleRemove(e)}
+                          onClick={(e) => handleRemove(e, currentSport)}
                         >
                           -
                         </button>
@@ -927,18 +1063,27 @@ export default function Index(props) {
                   </div>
                   <div className="flex mt-8">
                     <div className="flex flex-col w-2/5">
-                      <div
-                        key={remountPositionArea}
-                        className="border outline-none rounded-lg px-3 p-2"
-                      >
-                        {positionsDisplay.map((x) => {
-                          return (
-                            <label className="flex w-full whitespace-pre-line">
-                              Position: {x.positions} Amount: {x.amount}
-                            </label>
-                          );
-                        })}
-                      </div>
+                      {currentSport === 'FOOTBALL' ? (
+                        <div className="border outline-none rounded-lg px-3 p-2">
+                          {positionsDisplay.map((x) => {
+                            return (
+                              <label className="flex w-full whitespace-pre-line">
+                                Position: {x.positions} Amount: {x.amount}
+                              </label>
+                            );
+                          })}
+                        </div>
+                      ) : (
+                        <div className="border outline-none rounded-lg px-3 p-2">
+                          {positionsDisplayBasketball.map((x) => {
+                            return (
+                              <label className="flex w-full whitespace-pre-line">
+                                Position: {x.positions} Amount: {x.amount}
+                              </label>
+                            );
+                          })}
+                        </div>
+                      )}
                     </div>
                   </div>
 
@@ -1014,11 +1159,17 @@ export default function Index(props) {
         <p className="font-bold">Prize Description: </p>
         {prizeDescription}
         <p className="font-bold">Positions:</p>
-        {positionsInfo.map((position) => (
-          <li>
-            {position.positions} {position.amount}x
-          </li>
-        ))}
+        {currentSport === 'FOOTBALL'
+          ? positionsInfo.map((position) => (
+              <li>
+                {position.positions} {position.amount}x
+              </li>
+            ))
+          : positionsInfoBasketball.map((position) => (
+              <li>
+                {position.positions} {position.amount}x
+              </li>
+            ))}
         <p className="font-bold">Image: </p>
         <img src={details.game_image} />
         <button
