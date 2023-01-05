@@ -22,6 +22,7 @@ const PerformerContainer = (props) => {
     isInGame,
     isSelected,
     fromPortfolio,
+    currentSport,
   } = props;
   return (
     <div
@@ -50,7 +51,7 @@ const PerformerContainer = (props) => {
         {uri ? (
           <div className="relative" style={{ width: '120px', height: '160px' }}>
             {fromPortfolio === true ? (
-              <Link href={`/AssetDetails/${id}`} passHref>
+              <Link href={`/AssetDetails/${currentSport?.toLowerCase()}/${id}`} passHref>
                 <div className="absolute z-50" style={{ width: '120px', height: '160px' }}></div>
               </Link>
             ) : (
@@ -96,6 +97,7 @@ PerformerContainer.propTypes = {
   athletePosition: PropTypes.string,
   isInGame: PropTypes.bool,
   isSelected: PropTypes.bool,
+  currentSport: PropTypes.string,
   fromPortfolio: PropTypes.bool,
 };
 

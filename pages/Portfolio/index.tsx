@@ -465,6 +465,7 @@ const Portfolio = () => {
                           index={accountAthleteIndex}
                           athletePosition={item.position}
                           isInGame={item.isInGame}
+                          currentSport={currentSport}
                           fromPortfolio={true}
                         ></PerformerContainer>
                       );
