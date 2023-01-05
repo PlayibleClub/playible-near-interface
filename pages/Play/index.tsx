@@ -418,7 +418,7 @@ const Play = (props) => {
   console.log(totalGames);
 
   function get_games_list(totalGames) {
-    query_games_list(totalGames).then(async (data) => {
+    query_games_list(totalGames, getSportType(currentSport).gameContract).then(async (data) => {
       //@ts-ignore:next-line
       const result = JSON.parse(Buffer.from(data.result).toString());
 

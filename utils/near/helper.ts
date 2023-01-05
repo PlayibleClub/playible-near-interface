@@ -290,7 +290,7 @@ async function query_game_supply(contract) {
     });
 }
 
-async function query_games_list(totalGames) {
+async function query_games_list(totalGames, contract) {
   const query = JSON.stringify({
     from_index: 0,
     limit: totalGames,
@@ -298,7 +298,7 @@ async function query_games_list(totalGames) {
   return provider.query({
     request_type: 'call_function',
     finality: 'optimistic',
-    account_id: getContract(GAME_NFL),
+    account_id: contract,
     method_name: 'get_games',
     args_base64: Buffer.from(query).toString('base64'),
   });
