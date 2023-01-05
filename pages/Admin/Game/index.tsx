@@ -143,8 +143,8 @@ export default function Index(props) {
     { positions: ['RB'], amount: 2 },
     { positions: ['WR'], amount: 2 },
     { positions: ['TE'], amount: 1 },
-    { positions: ['FLEX'], amount: 1 },
-    { positions: ['SUPERFLEX'], amount: 1 },
+    { positions: ['RB', 'WR', 'TE'], amount: 1 },
+    { positions: ['QB', 'RB', 'WR', 'TE'], amount: 1 },
   ]);
   const [positionsDisplay, setPositionsDisplay] = useState([
     { positions: ['QB'], amount: 1 },
@@ -161,9 +161,9 @@ export default function Index(props) {
     { positions: ['SF'], amount: 1 },
     { positions: ['PF'], amount: 1 },
     { positions: ['C'], amount: 1 },
-    { positions: ['G'], amount: 1 },
-    { positions: ['F'], amount: 1 },
-    { positions: ['ANY'], amount: 1 },
+    { positions: ['PG', 'SG'], amount: 1 },
+    { positions: ['SF', 'PF'], amount: 1 },
+    { positions: ['PG', 'SG', 'SF', 'PF', 'C'], amount: 1 },
   ]);
   const [positionsDisplayBasketball, setPositionsDisplayBasketball] = useState([
     { positions: ['PG'], amount: 1 },
@@ -688,7 +688,6 @@ export default function Index(props) {
         gas: DEFAULT_MAX_FEES,
       },
     };
-
     const wallet = await selector.wallet();
     // @ts-ignore:next-line
     const tx = wallet.signAndSendTransactions({
