@@ -79,6 +79,7 @@ const Portfolio = () => {
   const [team, setTeam] = useState(['allTeams']);
   const [name, setName] = useState(['allNames']);
   const [remountComponent, setRemountComponent] = useState(0);
+  const [remountDropdown, setRemountDropdown] = useState(0);
   const [remountAthlete, setRemountAthlete] = useState(0);
   const { accountId } = useWalletSelector();
   const provider = new providers.JsonRpcProvider({
@@ -212,11 +213,6 @@ const Portfolio = () => {
   };
 
   useEffect(() => {
-    setAthleteOffset(0);
-    setRemountComponent(Math.random());
-  }, [selectedRegular, selectedPromo]);
-
-  useEffect(() => {
     //if regular and soulbound radio buttons are enabled
     if (selectedRegular !== false && selectedPromo === false) {
       get_filter_tokens_for_owner(getSportType(currentSport).regContract);
@@ -249,19 +245,30 @@ const Portfolio = () => {
   // }
   useEffect(() => {
     setAthleteOffset(0);
+    //setCurrentPage(0);
     setRemountComponent(Math.random());
-  }, [selectedRegular, selectedPromo]);
+  }, [selectedRegular, selectedPromo, currentSport]);
+
   useEffect(() => {
+    setIsPromoPage(false);
+    setRemountDropdown(Math.random());
+    setPosition(['allPos']);
+  }, [currentSport]);
+  useEffect(() => {
+    console.log(athletes);
     setRemountAthlete(Math.random() + 1);
   }, [athletes]);
   useEffect(() => {
     if (selectedRegular !== false && selectedPromo === false) {
+      console.log('reg');
       get_filter_supply_for_owner();
       setTotalPromoSupply(0);
     } else if (selectedRegular === false && selectedPromo !== false) {
+      console.log('soul');
       get_filter_soulbound_supply_for_owner();
       setTotalRegularSupply(0);
     } else if (selectedRegular !== false && selectedPromo !== false) {
+      console.log('mixed');
       get_filter_supply_for_owner();
       get_filter_soulbound_supply_for_owner();
     } else {
@@ -402,7 +409,7 @@ const Portfolio = () => {
               <hr className="opacity-10 iphone5:w-screen md:w-auto" />
               <div className="md:mt-4 font-normal">
                 <div className="float-left h-8 ml-7 md:ml-10 lg:ml-12 flex justify-between mt-3">
-                  <form>
+                  <form key={remountDropdown}>
                     <select
                       onChange={(e) => {
                         handleDropdownChange();
