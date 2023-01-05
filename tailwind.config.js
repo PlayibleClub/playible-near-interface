@@ -1,3 +1,4 @@
+ const plugin = require('tailwindcss/plugin');
 module.exports = {
     purge: [],
     darkMode: false, // or 'media' or 'class'
@@ -108,5 +109,18 @@ module.exports = {
         extend: {},
         scrollSnapType: ['responsive'],
     },
-    plugins: [require('tailwindcss-scroll-snap')],
+    plugins: [
+        [require('tailwindcss-scroll-snap')],
+        plugin(function({ addUtilities }){
+            addUtilities({
+                '.no-scrollbar::-webkit-scrollbar' : {
+                    'display' : 'none',
+                },
+                '.no-scrollbar' : {
+                    '-ms-overflow-style' : 'none',
+                    'scrollbar-width': 'none',
+                },
+            })
+        })
+    ]
 };

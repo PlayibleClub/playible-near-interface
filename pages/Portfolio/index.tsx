@@ -388,7 +388,7 @@ const Portfolio = () => {
                   />
                 </div>
               </div> */}
-              <div className="flex font-bold max-w-full ml-5 md:ml-6 font-monument ">
+              <div className="flex font-bold max-w-full ml-5 md:ml-6 font-monument overflow-y-auto no-scrollbar">
                 {categoryList.map(({ name, isActive }) => (
                   <div
                     className={`cursor-pointer mr-6 ${
