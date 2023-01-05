@@ -86,10 +86,10 @@ const Portfolio = () => {
   });
 
   const [positionList, setPositionList] = useState(SPORT_TYPES[0].positionList);
-  const sportObj = SPORT_TYPES.map((x) => ({ ...x, isActive: false }));
+  const sportObj = SPORT_TYPES.map((x) => ({ name: x.sport, isActive: false }));
   sportObj[0].isActive = true;
   const [categoryList, setCategoryList] = useState([...sportObj]);
-  const [currentSport, setCurrentSport] = useState(sportObj[0].sport);
+  const [currentSport, setCurrentSport] = useState(sportObj[0].name);
   // const [contractList, setContractList] = useState([
   //   {
   //     name: 'FOOTBALL',
@@ -106,7 +106,7 @@ const Portfolio = () => {
   const changeCategoryList = (name) => {
     const tabList = [...categoryList];
     tabList.forEach((item) => {
-      if (item.sport === name) {
+      if (item.name === name) {
         item.isActive = true;
       } else {
         item.isActive = false;
@@ -386,16 +386,16 @@ const Portfolio = () => {
                 </div>
               </div> */}
               <div className="flex font-bold max-w-full ml-5 md:ml-6 font-monument ">
-                {categoryList.map(({ sport, isActive }) => (
+                {categoryList.map(({ name, isActive }) => (
                   <div
                     className={`cursor-pointer mr-6 ${
                       isActive ? 'border-b-8 border-indigo-buttonblue' : ''
                     }`}
                     onClick={() => {
-                      changeCategoryList(sport);
+                      changeCategoryList(name);
                     }}
                   >
-                    {sport}
+                    {name}
                   </div>
                 ))}
               </div>
