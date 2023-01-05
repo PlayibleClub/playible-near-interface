@@ -45,6 +45,8 @@ function getImage(gameId: string): string {
       return '/images/footballChampsionship.jpg';
     case '30':
       return '/images/4thdown.jpg';
+    case '31':
+      return '/images/footballChampsionship.jpg';
     default:
       return '/images/game.png';
   }
@@ -85,6 +87,8 @@ function getPrizePool(gameId: string): string {
       return '$100';
     case '30':
       return 'Playible Athlete NFTs';
+    case '31':
+      return '$500';
     default:
       return '$100 + 2 Championship Tickets';
   }
