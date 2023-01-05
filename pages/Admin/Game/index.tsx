@@ -8,7 +8,7 @@ import BaseModal from '../../../components/modals/BaseModal';
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en.json';
 import ReactTimeAgo from 'react-time-ago';
-import { GAME, ORACLE } from '../../../data/constants/nearContracts';
+import { GAME_NFL, ORACLE } from '../../../data/constants/nearContracts';
 import 'regenerator-runtime/runtime';
 import { format } from 'prettier';
 import { ADMIN } from '../../../data/constants/address';
@@ -513,11 +513,11 @@ export default function Index(props) {
   const endFormattedTimestamp = moment(dateEndFormatted).toLocaleString();
 
   async function get_game_supply() {
-    setTotalGames(await query_game_supply());
+    setTotalGames(await query_game_supply(getContract(GAME_NFL)));
   }
 
   function get_games_list(totalGames) {
-    query_games_list(totalGames).then(async (data) => {
+    query_games_list(totalGames, getContract(GAME_NFL)).then(async (data) => {
       //@ts-ignore:next-line
       const result = JSON.parse(Buffer.from(data.result).toString());
 
@@ -586,7 +586,7 @@ export default function Index(props) {
     const tx = wallet.signAndSendTransactions({
       transactions: [
         {
-          receiverId: getContract(GAME),
+          receiverId: getContract(GAME_NFL),
           // @ts-ignore:next-line
           actions: [action_add_game],
         },
