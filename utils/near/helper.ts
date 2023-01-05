@@ -271,14 +271,14 @@ async function query_mixed_tokens_pagination(
     }
   });
 }
-async function query_game_supply() {
+async function query_game_supply(contract) {
   const query = JSON.stringify({});
 
   return provider
     .query({
       request_type: 'call_function',
       finality: 'optimistic',
-      account_id: getContract(GAME_NFL),
+      account_id: contract,
       method_name: 'get_total_games',
       args_base64: Buffer.from(query).toString('base64'),
     })

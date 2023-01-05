@@ -22,7 +22,7 @@ import ReactPaginate from 'react-paginate';
 const bars = '/images/bars.png';
 const coin = 'images/coin.png';
 const claimreward = 'images/claimreward.png';
-import { SPORT_TYPES } from 'data/constants/sportConstants';
+import { SPORT_TYPES, getSportType } from 'data/constants/sportConstants';
 import { query_games_list, query_game_supply } from 'utils/near/helper';
 
 const Play = (props) => {
@@ -83,6 +83,7 @@ const Play = (props) => {
   const sportObj = SPORT_TYPES.map((x) => ({ name: x.sport, isActive: false }));
   sportObj[0].isActive = true;
   const [sportList, setSportList] = useState([...sportObj]);
+  const [currentSport, setCurrentSport] = useState(sportObj[0].name);
   const [remountComponent, setRemountComponent] = useState(0);
   const changecategoryList = (name) => {
     const tabList = [...categoryList];
@@ -123,6 +124,7 @@ const Play = (props) => {
     });
 
     setSportList([...sports]);
+    setCurrentSport(name);
   };
 
   const Test = [1, 2, 3, 4, 5];
@@ -410,7 +412,7 @@ const Play = (props) => {
   };
 
   async function get_game_supply() {
-    setTotalGames(await query_game_supply());
+    setTotalGames(await query_game_supply(getSportType(currentSport).gameContract));
   }
 
   console.log(totalGames);
@@ -486,7 +488,7 @@ const Play = (props) => {
     console.log(sportList);
     get_game_supply();
     get_games_list(totalGames);
-  }, [totalGames]);
+  }, [totalGames, currentSport]);
 
   useEffect(() => {
     currentTotal !== 0 ? setPageCount(Math.ceil(currentTotal / gamesLimit)) : setPageCount(1);
