@@ -367,7 +367,7 @@ export default function Home(props) {
     query_config_contract();
     query_storage_deposit_account_id();
     query_minting_of();
-  }, []);
+  }, [currentSport]);
 
   useEffect(() => {
     const timer = setInterval(() => {
