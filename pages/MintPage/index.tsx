@@ -192,7 +192,7 @@ export default function Home(props) {
 
     const data_two = Buffer.from(
       JSON.stringify({
-        receiver_id: selector.store.getState().contract.contractId,
+        receiver_id: getSportType(currentSport).mintContract,
         amount: Math.floor(mint_cost).toString(),
         msg: JSON.stringify({ mint_amount: selectedMintAmount }),
       })
@@ -214,7 +214,7 @@ export default function Home(props) {
     const tx = wallet.signAndSendTransactions({
       transactions: [
         {
-          receiverId: selector.store.getState().contract.contractId,
+          receiverId: getSportType(currentSport).mintContract,
           // @ts-ignore:next-line
           actions: [action_deposit_storage_near_token],
         },
