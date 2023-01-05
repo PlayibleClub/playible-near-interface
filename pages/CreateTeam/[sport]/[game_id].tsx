@@ -420,7 +420,7 @@ export default function CreateLineup(props) {
           <div className="flex flex-col w-full hide-scroll max-h-screen justify-center self-center">
             <Main color="indigo-white">
               <div className="md:ml-6 md:mt-8">
-                <BackFunction prev={`/CreateLineup/${gameId}`} />
+                <BackFunction prev={`/CreateLineup/${currentSport.toLowerCase()}/${gameId}`} />
               </div>
               <div className="flex flex-col w-full hide-scroll overflow-x-hidden h-full md:h-min self-center text-indigo-black relative">
                 {selectModal ? (
