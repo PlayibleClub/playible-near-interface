@@ -132,7 +132,9 @@ export default function PackDetails(props) {
                 <li>1 Small Forward (SF) </li>
                 <li>1 Power Forward (PF)</li>
                 <li>1 Center (C) </li>
-                <li>1 Utility (UTIL) </li>
+                <li>1 Guard (PG/SG) </li>
+                <li>1 Forward (SF/PF) </li>
+                <li>1 Any (ANY) </li>
               </ul>
             )}
           </div>
