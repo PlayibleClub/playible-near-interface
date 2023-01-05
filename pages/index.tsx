@@ -120,7 +120,7 @@ export default function Home(props) {
   return (
     <Provider store={store}>
       <Container activeName="HOME">
-        <div className="flex flex-col w-screen md:w-full overflow-y-auto h-screen justify-center self-center md:pb-12 text-indigo-black">
+        <div className="flex flex-col w-screen md:w-full overflow-y-auto h-screen justify-center self-center text-indigo-black">
           <Main color="indigo-white">
             <div className="flex flex-col md:flex-row md:ml-12">
               <div className="md:w-2/3">
