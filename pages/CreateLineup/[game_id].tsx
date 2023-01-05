@@ -18,6 +18,7 @@ import { query_player_teams } from 'utils/near/helper';
 import { getImage } from 'utils/game/helper';
 import { Provider, useSelector, useDispatch } from 'react-redux';
 import { store, persistor } from 'redux/athlete/store';
+import { query_game_data } from 'utils/near/helper';
 
 export default function CreateLineup(props) {
   const { query } = props;
@@ -33,7 +34,7 @@ export default function CreateLineup(props) {
 
   const [loading, setLoading] = useState(true);
   // const [err, setErr] = useState(error);
-
+  const playGameImage = '/images/game.png';
   useEffect(() => {
     const id = setInterval(() => {
       const currentDate = new Date();
@@ -46,9 +47,14 @@ export default function CreateLineup(props) {
     setPlayerTeams(await query_player_teams(account, game_id));
   }
 
+  async function get_game_data(game_id) {
+    setGameData(await query_game_data(game_id));
+  }
+
   useEffect(() => {
     setTimeout(() => persistor.purge(), 200);
     console.log('loading');
+    get_game_data(gameId);
     get_player_teams(accountId, gameId);
     console.log(playerTeams);
   }, []);
@@ -65,15 +71,21 @@ export default function CreateLineup(props) {
             </div>
             <div className="md:ml-6 mt-11 flex w-auto">
               <div className="md:ml-7">
-                <Image src={getImage(gameId)} width={550} height={279} alt="game-image" />
+                <Image
+                  src={gameData?.game_image ? gameData?.game_image : playGameImage}
+                  width={550}
+                  height={279}
+                  alt="game-image"
+                />
               </div>
 
               <div className="md:ml-18 md:-mt-6 ml-14 -mt-6">
                 <ModalPortfolioContainer title="CREATE TEAM" textcolor="text-indigo-black" />
 
                 <div className="md:w-2/5">
-                  Enter your team to compete for cash prizes and entry into the Football
-                  Championship with $35,000 USD up for grabs.
+                  {gameData?.game_description
+                    ? gameData?.game_description
+                    : ' Enter your team to compete for cash prizes and entry into the Football Championship with $35,000 USD up for grabs.'}
                 </div>
                 <Link
                   href={{

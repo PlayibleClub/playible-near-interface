@@ -22,11 +22,14 @@ import { DEFAULT_MAX_FEES, MINT_STORAGE_COST } from 'data/constants/gasFees';
 import { transactions, utils, WalletConnection, providers } from 'near-api-js';
 import { getGameInfoById } from 'utils/game/helper';
 import AdminGameComponent from './components/AdminGameComponent';
-import moment from 'moment';
-import { getUTCTimestampFromLocal } from 'utils/date/helper';
+import moment, { utc } from 'moment';
+import { getUTCDateFromLocal, getUTCTimestampFromLocal } from 'utils/date/helper';
 import ReactPaginate from 'react-paginate';
 import { query_games_list, query_game_supply } from 'utils/near/helper';
-
+import { position } from 'utils/athlete/position';
+import ReactS3Client from 'react-aws-s3-typescript';
+import { s3Config } from 's3config';
+import { ErrorResponse } from '@remix-run/router';
 TimeAgo.addDefaultLocale(en);
 
 export default function Index(props) {
@@ -44,7 +47,10 @@ export default function Index(props) {
   //gameinfo
   const [gameInfo, setGameInfo] = useState({});
   const [whitelistInfo, setWhitelistInfo] = useState(null);
+  const [gameDescription, setGameDescription] = useState(null);
+  const [prizeDescription, setPrizeDescription] = useState(null);
   const [lineupLength, setLineupLength] = useState(0);
+  const [gameImage, setGameImage] = useState(null);
   const [tabs, setTabs] = useState([
     {
       name: 'GAMES',
@@ -129,8 +135,27 @@ export default function Index(props) {
     title: '',
     content: '',
   });
-  const [positionsInfo, setPositionsInfo] = useState([]);
-  const [positionsDisplay, setPositionsDisplay] = useState([]);
+  const [positionsInfo, setPositionsInfo] = useState([
+    { positions: ['QB'], amount: 1 },
+    { positions: ['RB'], amount: 2 },
+    { positions: ['WR'], amount: 2 },
+    { positions: ['TE'], amount: 1 },
+    { positions: ['FLEX'], amount: 1 },
+    { positions: ['SUPERFLEX'], amount: 1 },
+  ]);
+  const [positionsDisplay, setPositionsDisplay] = useState([
+    { positions: ['QB'], amount: 1 },
+    { positions: ['RB'], amount: 2 },
+    { positions: ['WR'], amount: 2 },
+    { positions: ['TE'], amount: 1 },
+    { positions: ['FLEX'], amount: 1 },
+    { positions: ['SUPERFLEX'], amount: 1 },
+  ]);
+
+  const defaultGameDescription =
+    'Enter a team into the The Blitz tournament to compete for cash prizes. Create a lineup by selecting 8 Playible Football Athlete Tokens now.';
+  const defaultPrizeDescription = '$100 + 2 Championship Tickets';
+  const defaultGameImage = 'https://playible-game-image.s3.ap-southeast-1.amazonaws.com/game.png';
   const provider = new providers.JsonRpcProvider({
     url: getRPCProvider(),
   });
@@ -156,6 +181,28 @@ export default function Index(props) {
     });
 
     setTabs([...tabList]);
+  };
+
+  const checkGameDescription = () => {
+    if (gameDescription === null || gameDescription.length === 0) {
+      setGameDescription(defaultGameDescription);
+    }
+  };
+
+  const checkPrizeDescription = () => {
+    if (prizeDescription === null || prizeDescription.length === 0) {
+      setPrizeDescription(defaultPrizeDescription);
+    }
+  };
+
+  const checkGameImage = () => {
+    if (gameImage === null || gameImage === undefined) {
+      setGameImage(defaultGameImage);
+      setDetails({
+        ...details,
+        game_image: defaultGameImage,
+      });
+    }
   };
 
   const changeGameTab = (name) => {
@@ -238,19 +285,86 @@ export default function Index(props) {
 
   const onChangeWhitelist = (e) => {
     if (e.target.name === 'description') {
-      if (e.target.value !== "") {
-        const whitelistArray = (e.target.value).split('\n').filter(n => n);
+      if (e.target.value !== '') {
+        const whitelistArray = e.target.value.split('\n').filter((n) => n);
         setWhitelistInfo(whitelistArray);
         setDetails({
           ...details,
           [e.target.name]: e.target.value,
         });
       } else if (e.target.value.length === 0) {
-        setWhitelistInfo(null)
+        setWhitelistInfo(null);
         setDetails({
           ...details,
           [e.target.name]: e.target.value,
-        })
+        });
+      }
+    }
+  };
+
+  const handleUpload = async () => {
+    const s3 = new ReactS3Client(s3Config);
+
+    try {
+      const res = await s3.uploadFile(gameImage);
+
+      setDetails({
+        ...details,
+        game_image: res.location,
+      });
+
+      setGameImage(res.location);
+
+      alert('✔️Successfully uploaded image!');
+
+      /*
+       * {
+       *   Response: {
+       *     bucket: "bucket-name",
+       *     key: "directory-name/filename-to-be-uploaded",
+       *     location: "https:/your-aws-s3-bucket-url/directory-name/filename-to-be-uploaded"
+       *   }
+       * }
+       */
+    } catch (exception) {
+      alert('❌Failed to upload image');
+    }
+  };
+
+  const onGameDescriptionChange = (e) => {
+    if (e.target.name === 'game_description') {
+      if (e.target.value !== '') {
+        const gameDesc = e.target.value;
+        setGameDescription(gameDesc);
+        setDetails({
+          ...details,
+          [e.target.name]: e.target.value,
+        });
+      } else if (e.target.value.length === 0) {
+        setGameDescription(defaultGameDescription);
+        setDetails({
+          ...details,
+          [e.target.name]: e.target.value,
+        });
+      }
+    }
+  };
+
+  const onPrizeDescriptionChange = (e) => {
+    if (e.target.name === 'prize_description') {
+      if (e.target.value !== '') {
+        const prizeDesc = e.target.value;
+        setPrizeDescription(prizeDesc);
+        setDetails({
+          ...details,
+          [e.target.name]: e.target.value,
+        });
+      } else if (e.target.value.length === 0) {
+        setPrizeDescription(defaultPrizeDescription);
+        setDetails({
+          ...details,
+          [e.target.name]: e.target.value,
+        });
       }
     }
   };
@@ -277,6 +391,26 @@ export default function Index(props) {
           distribution.length +
           ' was provided)'
       );
+    }
+
+    if (dateEnd < dateStart) {
+      errors.push('End Time can not be earlier than Start Time');
+    }
+
+    if (Number.isNaN(dateEnd)) {
+      errors.push('End date has no value');
+    }
+
+    if (Number.isNaN(dateStart)) {
+      errors.push('Start date has no value');
+    }
+
+    if (dateStart < Date.now()) {
+      errors.push('Start date is earlier than local time');
+    }
+
+    if (positionsInfo.length === 0) {
+      errors.push('Positions can not be empty');
     }
 
     if (distribution.filter((item) => item.percentage === 0 || item.percentage < 0).length > 0) {
@@ -365,6 +499,9 @@ export default function Index(props) {
     whitelist: whitelistInfo,
     position: NFL_POSITIONS[0],
     positionAmount: 1,
+    game_description: gameDescription,
+    prize_description: prizeDescription,
+    game_image: '',
   });
 
   const dateStartFormatted = moment(details.startTime).format('YYYY-MM-DD HH:mm:ss');
@@ -429,6 +566,9 @@ export default function Index(props) {
         whitelist: whitelistInfo,
         positions: positionsInfo,
         lineup_len: getLineupLength(),
+        game_description: gameDescription,
+        prize_description: prizeDescription,
+        game_image: gameImage,
       })
     );
 
@@ -467,7 +607,6 @@ export default function Index(props) {
   useEffect(() => {
     currentTotal !== 0 ? setPageCount(Math.ceil(currentTotal / gamesLimit)) : setPageCount(1);
   }, [currentTotal]);
-
   return (
     <Container isAdmin>
       <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
@@ -513,8 +652,8 @@ export default function Index(props) {
                       (gameTabs[0].isActive
                         ? newGames
                         : gameTabs[1].isActive
-                          ? ongoingGames
-                          : completedGames
+                        ? ongoingGames
+                        : completedGames
                       )
                         .filter((data, i) => i >= gamesOffset && i < gamesOffset + gamesLimit)
                         .map((data, i) => {
@@ -631,11 +770,7 @@ export default function Index(props) {
                         value={details.startTime}
                       />
                     </div>
-                  </div>
-
-                  <div className="flex mt-8">
-                    {/* DURATION */}
-                    <div className="flex flex-col lg:w-1/2 lg:mr-10">
+                    <div className="flex flex-col lg:w-1/2 ml-10">
                       <label className="font-monument" htmlFor="datetime">
                         END TIME
                       </label>
@@ -648,6 +783,10 @@ export default function Index(props) {
                         value={details.endTime}
                       />
                     </div>
+                  </div>
+
+                  <div className="flex">
+                    {/* DURATION */}
 
                     {/* PRIZE */}
                     {/* <div className="flex flex-col lg:w-1/2">
@@ -686,7 +825,64 @@ export default function Index(props) {
                         }}
                       />
                     </div>
+                    <div className="flex flex-col w-1/2 ml-10">
+                      <label className="font-monument" htmlFor="duration">
+                        GAME DESCRIPTION
+                      </label>
+                      <textarea
+                        maxLength={160}
+                        className="border outline-none rounded-lg px-3 p-2"
+                        id="game_description"
+                        name="game_description"
+                        // type="text"
+                        placeholder="Game Description Enter text up to 160 text."
+                        onChange={(e) => onGameDescriptionChange(e)}
+                        // value={details.description}
+                        style={{
+                          minHeight: '120px',
+                        }}
+                      />
+                    </div>
                   </div>
+
+                  <div className="flex mt-8">
+                    <div className="flex flex-col w-1/2">
+                      <label className="font-monument" htmlFor="duration">
+                        PRIZE DESCRIPTION
+                      </label>
+                      <textarea
+                        maxLength={50}
+                        className="border outline-none rounded-lg px-3 p-2"
+                        id="prize_description"
+                        name="prize_description"
+                        // type="text"
+                        placeholder="Prize Description Enter text up to 50 text."
+                        onChange={(e) => onPrizeDescriptionChange(e)}
+                        // value={details.description}
+                        style={{
+                          minHeight: '120px',
+                        }}
+                      />
+                    </div>
+                    <div className="flex flex-col w-1/2 ml-10">
+                      <label className="font-monument">GAME IMAGE</label>
+                      <input
+                        type="file"
+                        onChange={(e) => {
+                          setGameImage(e.target.files[0]);
+                        }}
+                      ></input>
+                      <button
+                        className="mt-5 bg-indigo-buttonblue h-10 text-indigo-white"
+                        id="image"
+                        name="image"
+                        onClick={handleUpload}
+                      >
+                        UPLOAD GAME IMAGE
+                      </button>
+                    </div>
+                  </div>
+
                   <div className="flex mt-8">
                     {/* POSITIONS */}
                     <div className="flex flex-col w-1/2">
@@ -730,7 +926,7 @@ export default function Index(props) {
                     </div>
                   </div>
                   <div className="flex mt-8">
-                    <div className="flex flex-col w-1/2">
+                    <div className="flex flex-col w-2/5">
                       <div
                         key={remountPositionArea}
                         className="border outline-none rounded-lg px-3 p-2"
@@ -776,7 +972,12 @@ export default function Index(props) {
                   <div className="flex mt-4 mb-10">
                     <button
                       className="bg-indigo-green font-monument tracking-widest text-indigo-white w-5/6 md:w-80 h-16 text-center text-sm mt-4"
-                      onClick={validateGame}
+                      onClick={() => {
+                        validateGame();
+                        checkGameDescription();
+                        checkPrizeDescription();
+                        checkGameImage();
+                      }}
                     >
                       CREATE GAME
                     </button>
@@ -805,8 +1006,21 @@ export default function Index(props) {
         <p className="mt-2">Are you sure?</p>
         <p className="font-bold">GAME DETAILS:</p>
         <p className="font-bold">Start Date:</p> {startFormattedTimestamp}
-        {/* <p className="font-bold">Whitelist: </p> {whitelistInfo} */}
         <p className="font-bold">End Date:</p> {endFormattedTimestamp}
+        <p className="font-bold">Whitelist: </p>{' '}
+        {whitelistInfo === null ? '' : whitelistInfo.join(', ')}
+        <p className="font-bold">Game Description: </p>
+        {gameDescription}
+        <p className="font-bold">Prize Description: </p>
+        {prizeDescription}
+        <p className="font-bold">Positions:</p>
+        {positionsInfo.map((position) => (
+          <li>
+            {position.positions} {position.amount}x
+          </li>
+        ))}
+        <p className="font-bold">Image: </p>
+        <img src={details.game_image} />
         <button
           className="bg-indigo-green font-monument tracking-widest text-indigo-white w-full h-16 text-center text-sm mt-4"
           onClick={() => {

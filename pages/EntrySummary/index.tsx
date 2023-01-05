@@ -19,12 +19,14 @@ import { GAME, ATHLETE, ATHLETE_PROMO } from 'data/constants/nearContracts';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
 import { convertNftToAthlete, getAthleteInfoById } from 'utils/athlete/helper';
 import { getUTCDateFromLocal } from 'utils/date/helper';
+import { useSelector } from 'react-redux';
+import { selectTeamName, selectAccountId, selectGameId } from 'redux/athlete/teamSlice';
 import {
   query_game_data,
   query_nft_tokens_by_id,
   query_nft_tokens_for_owner,
 } from 'utils/near/helper';
-import { getImage, getPrizePool } from 'utils/game/helper';
+import { cutAddress } from 'utils/address/helper';
 import EntrySummaryBack from 'components/buttons/EntrySummaryBack';
 
 export default function EntrySummary(props) {
@@ -33,15 +35,15 @@ export default function EntrySummary(props) {
     url: getRPCProvider(),
   });
   const router = useRouter();
-  const { accountId } = useWalletSelector();
-  const playerTeamName = query.team_id;
+  const accountId = useSelector(selectAccountId);
+  const playerTeamName = useSelector(selectTeamName);
   const [name, setName] = useState('');
   const [gameData, setGameData] = useState(null);
   const [teamModal, setTeamModal] = useState(false);
   const [team, setTeam] = useState([]);
   const [gameEnd, setGameEnd] = useState(false);
   const [remountComponent, setRemountComponent] = useState(0);
-  const gameId = query.game_id;
+  const gameId = useSelector(selectGameId);
   const [playerLineup, setPlayerLineup] = useState([]);
   const [athletes, setAthletes] = useState([]);
 
@@ -156,17 +158,9 @@ export default function EntrySummary(props) {
 
   useEffect(() => {
     if (playerLineup.length > 0 && athletes.length === 0) {
-      console.log(playerLineup);
       get_nft_tokens_for_owner();
     }
   }, [playerLineup]);
-  useEffect(() => {
-    console.log(athletes);
-  }, [athletes]);
-
-  useEffect(() => {
-    console.log(athletes);
-  }, [remountComponent]);
 
   return (
     <>
@@ -180,20 +174,20 @@ export default function EntrySummary(props) {
                 </div>
                 <div className="md:ml-7 flex flex-row md:flex-row">
                   <div className="md:mr-12">
-                    <div className="mt-11 flex justify-center md:self-left md:mr-8 md:ml-6">
-                      <div className="">
-                        <Image src={getImage(gameId)} width={550} height={279} alt="game-image" />
+                    <div className="mt-11 flex flex-col md:flex-row justify-center md:self-left md:mr-8 md:ml-6">
+                      <div className="w-auto mr-6 ml-6">
+                        <Image src="/images/game.png" width={550} height={279} alt="game-image" />
                       </div>
-                      <div className="-mt-7 ml-7">
+                      <div className="-mt-7 md:ml-7">
                         <PortfolioContainer textcolor="indigo-black" title="ENTRY SUMMARY" />
-                        <div className="flex space-x-14 mt-4">
-                          <div className="ml-7">
+                        <div className="flex md:space-x-14 mt-4 ">
+                          <div className="ml-6 md:ml-7">
                             <div>PRIZE POOL</div>
                             <div className=" font-monument text-lg">
-                              {(gameData && gameData.prize) || getPrizePool(gameId)}
+                              {(gameData && gameData.prize) || '$100 + 2 Championship Tickets'}
                             </div>
                           </div>
-                          <div>
+                          <div className="mr-4 md:mr-0">
                             <div>START DATE</div>
                             <div className=" font-monument text-lg">
                               {(gameData && moment(gameData.start_time).format('MM/DD/YYYY')) ||
@@ -242,15 +236,16 @@ export default function EntrySummary(props) {
                     </div>
                   </div>
                 </div>
-                <div className="flex items-center ml-14">
+                <div className="flex items-center ml-6 md:ml-14">
                   <ModalPortfolioContainer
                     title={playerTeamName}
+                    accountId={cutAddress(accountId)}
                     textcolor="text-indigo-black mb-5"
                   />
                 </div>
                 <div
                   key={remountComponent}
-                  className="grid grid-cols-4 gap-y-4 mt-4 md:grid-cols-4 md:ml-2 md:mt-17 w-3/4"
+                  className="grid grid-cols-2 gap-x-16 md:gap-x-0 md:gap-y-4 md:mt-4 md:grid-cols-4 ml-8 md:ml-2 md:mt-17 w-3/4"
                 >
                   {athletes.length === 0
                     ? 'Loading athletes...'

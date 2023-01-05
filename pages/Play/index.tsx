@@ -794,7 +794,8 @@ const Play = (props) => {
                                           icon="test"
                                           startDate={data.start_time}
                                           endDate={data.end_time}
-                                          img={data.image}
+                                          img={data.game_image}
+                                          prizePool={data.prize_description}
                                           fetchGames={fetchGamesLoading}
                                           index={() => changeIndex(1)}
                                         />
@@ -866,10 +867,10 @@ const Play = (props) => {
                                           type={activeCategory}
                                           game_id={data.game_id}
                                           icon="test"
-                                          prizePool="2,300"
+                                          prizePool={data.prize_description}
                                           startDate={data.start_time}
                                           endDate={data.end_time}
-                                          img={data.image}
+                                          img={data.game_image}
                                           fetchGames={fetchGamesLoading}
                                           index={() => changeIndex(1)}
                                         />
