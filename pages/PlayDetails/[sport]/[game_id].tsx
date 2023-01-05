@@ -362,7 +362,9 @@ export default function PlayDetails(props) {
                                                 ''
                                               ))}
                                             <div className="flex iphone5:justify-left md:justify-start iphone5:ml-0 md:ml-0">
-                                              <Link href={`/CreateLineup/${gameId}`}>
+                                              <Link
+                                                href={`/CreateLineup/${currentSport.toLowerCase()}/${gameId}`}
+                                              >
                                                 <button className="bg-indigo-buttonblue text-indigo-white iphone5:w-80 iphone5:h-12 md:max-w-full md:h-12 text-center font-bold text-md mt-8">
                                                   ENTER GAME
                                                 </button>

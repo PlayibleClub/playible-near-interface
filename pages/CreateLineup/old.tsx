@@ -11,7 +11,6 @@ import 'regenerator-runtime/runtime';
 import LoadingPageDark from '../../components/loading/LoadingPageDark';
 import { providers } from 'near-api-js';
 import { getContract, getRPCProvider } from 'utils/near';
-import { GAME } from 'data/constants/nearContracts';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
 import ViewTeamsContainer from 'components/containers/ViewTeamsContainer';
 import { query_player_teams } from 'utils/near/helper';
@@ -19,6 +18,7 @@ import { getImage } from 'utils/game/helper';
 import { Provider, useSelector, useDispatch } from 'react-redux';
 import { store, persistor } from 'redux/athlete/store';
 import { query_game_data } from 'utils/near/helper';
+import { GAME_NFL } from 'data/constants/nearContracts';
 
 export default function CreateLineup(props) {
   const { query } = props;
@@ -48,7 +48,7 @@ export default function CreateLineup(props) {
   }
 
   async function get_game_data(game_id) {
-    setGameData(await query_game_data(game_id));
+    setGameData(await query_game_data(game_id, GAME_NFL));
   }
 
   useEffect(() => {
