@@ -337,7 +337,7 @@ function query_nft_tokens_for_owner(accountId, packOffset, packLimit, contract) 
   });
 }
 
-function query_claim_status(accountId) {
+function query_claim_status(accountId, contract) {
   const query = JSON.stringify({
     account_id: accountId,
   });
@@ -346,7 +346,7 @@ function query_claim_status(accountId) {
     .query({
       request_type: 'call_function',
       finality: 'optimistic',
-      account_id: getContract(PACK_PROMO_NFL),
+      account_id: contract,
       method_name: 'check_claim_status',
       args_base64: Buffer.from(query).toString('base64'),
     })
@@ -357,10 +357,10 @@ function query_claim_status(accountId) {
     });
 }
 
-async function execute_claim_soulbound_pack(selector) {
+async function execute_claim_soulbound_pack(selector, contract) {
   const transferArgs = Buffer.from(
     JSON.stringify({
-      msg: 'Test',
+      msg: 'Claim promo pack',
     })
   );
 
@@ -381,7 +381,7 @@ async function execute_claim_soulbound_pack(selector) {
   const tx = wallet.signAndSendTransactions({
     transactions: [
       {
-        receiverId: getContract(PACK_PROMO_NFL),
+        receiverId: contract,
         //@ts-ignore:next-line
         actions: [action_transfer_call],
       },

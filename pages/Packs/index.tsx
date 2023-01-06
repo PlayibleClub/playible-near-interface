@@ -148,7 +148,7 @@ export default function Packs() {
   }
 
   async function get_claim_status(accountId) {
-    setIsClaimed(await query_claim_status(accountId));
+    setIsClaimed(await query_claim_status(accountId, getSportType(currentSport).packPromoContract));
   }
 
   async function get_nft_sb_pack_tokens_for_owner(accountId, packOffset, soulboundPackLimit) {
@@ -164,9 +164,9 @@ export default function Packs() {
     });
   }
 
-  async function get_soulbound_pack(selector) {
-    execute_claim_soulbound_pack(selector);
-  }
+  // async function get_soulbound_pack(selector) {
+  //   execute_claim_soulbound_pack(selector, getSport);
+  // }
 
   const onSubmit = (data) => {
     if (data.search) setResult(data.search);
@@ -181,7 +181,7 @@ export default function Packs() {
   const [isNarrowScreen, setIsNarrowScreen] = useState(false);
   const handleButtonClick = (e) => {
     e.preventDefault();
-    get_soulbound_pack(selector);
+    execute_claim_soulbound_pack(selector, getSportType(currentSport).packPromoContract);
   };
 
   useEffect(() => {

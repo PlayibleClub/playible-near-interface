@@ -78,7 +78,7 @@ export default function Home(props) {
   const [editModal, setEditModal] = useState(false);
 
   async function get_claim_status(accountId) {
-    setIsClaimed(await query_claim_status(accountId));
+    setIsClaimed(await query_claim_status(accountId, getSportType(currentSport).packPromoContract));
   }
 
   function query_config_contract() {
@@ -372,18 +372,16 @@ export default function Home(props) {
 
   const handleButtonClick = (e) => {
     e.preventDefault();
-    get_soulbound_pack(selector);
+    execute_claim_soulbound_pack(selector, getSportType(currentSport).packPromoContract);
   };
 
-  async function get_soulbound_pack(selector) {
-    execute_claim_soulbound_pack(selector);
-  }
+  async function get_soulbound_pack(selector) {}
 
   useEffect(() => {
     query_config_contract();
     query_storage_deposit_account_id();
     query_minting_of();
-  }, [currentSport]);
+  }, []);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -399,7 +397,7 @@ export default function Home(props) {
 
   useEffect(() => {
     get_claim_status(accountId);
-  }, []);
+  }, [currentSport]);
 
   useEffect(() => {
     if (router.asPath.indexOf('transactionHashes') > -1) {
@@ -421,7 +419,7 @@ export default function Home(props) {
                         setCurrentSport(e.target.value);
                       }}
                       className="bg-filter-icon bg-no-repeat bg-right bg-indigo-white ring-2 ring-offset-4 ring-indigo-black ring-opacity-25 focus:ring-2 focus:ring-indigo-black 
-                        focus:outline-none cursor-pointer text-xs iphone5:ml-8 iphone5:w-4/6 md:text-base md:ml-8 md:mt-5 md:w-36"
+                        focus:outline-none cursor-pointer text-xs iphone5:ml-8 iphone5:w-4/6 md:text-base md:ml-8 md:mt-5 md:w-96 md:py-4 md:px-6"
                     >
                       {categoryList.map((x) => {
                         return <option value={x.name}>{x.name}</option>;
@@ -430,8 +428,8 @@ export default function Home(props) {
                   </form>
                 </div>
               </div>
-              <div className='ml-8'>
-              <ModalPortfolioContainer title="MINT PACKS" textcolor="text-indigo-black" />
+              <div className="ml-8">
+                <ModalPortfolioContainer title="MINT PACKS" textcolor="text-indigo-black" />
               </div>
               {/* <div className="flex font-bold max-w-full ml-5 md:ml-6 font-monument overflow-y-auto no-scrollbar">
                 {categoryList.map(({ name, isActive }) => (
