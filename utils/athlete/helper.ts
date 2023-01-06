@@ -11,14 +11,14 @@ async function getAthleteInfoById(item) {
     query: GET_ATHLETE_BY_ID,
     variables: { getAthleteById: parseFloat(value[0]) },
   });
-  const diff = item.token_id.includes('SB') ? 1 : 0;
+  const basketball = item.token_id.includes('2000');
+  const diff = item.token_id.includes('SB') ? 1 : basketball ? 1 : 0;
   const isPromo = item.token_id.includes('SB');
-
   const returningData = {
     primary_id: value[0],
     athlete_id: item.token_id,
     rarity: value[1],
-    usage: isPromo ? 0 : value[2],
+    usage: isPromo ? 0 : basketball ? 0 : value[2],
     name: value[3 - diff],
     team: value[4 - diff],
     position: value[5 - diff],
