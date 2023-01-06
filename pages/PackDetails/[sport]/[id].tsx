@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Container from 'components/containers/Container';
 import 'regenerator-runtime/runtime';
 import BackFunction from 'components/buttons/BackFunction';
@@ -15,12 +15,16 @@ import BigNumber from 'bignumber.js';
 import { DEFAULT_MAX_FEES, MINT_STORAGE_COST } from 'data/constants/gasFees';
 import Image from 'next/image';
 import { getSportType } from 'data/constants/sportConstants';
+import {
+  query_nft_supply_for_owner,
+  query_nft_tokens_by_id,
+  query_nft_tokens_for_owner,
+} from 'utils/near/helper';
 const sampleImage = '/images/packimages/Starter.png';
 const sbImage = '/images/packimages/NFL-SB-Pack.png';
 export default function PackDetails(props) {
   const { query } = props;
-
-  const { selector } = useWalletSelector();
+  const { selector, accountId } = useWalletSelector();
   const id = query.id.toString();
   console.log(query.id);
   const myPack = {
@@ -28,7 +32,35 @@ export default function PackDetails(props) {
     id: id,
     sport: query.sport.toString().toUpperCase(),
   };
-  console.log(myPack.sport);
+  const contract =
+    myPack.id.length === 64 || myPack.id.includes('SB')
+      ? getSportType(myPack.sport).packPromoContract
+      : getSportType(myPack.sport).packContract;
+
+  const [packDetails, setPackDetails] = useState([]);
+  const [totalPacks, setTotalPacks] = useState(0);
+
+  async function get_pack_token_by_id() {
+    let contract =
+      myPack.id.length === 64 || myPack.id.includes('SB')
+        ? getSportType(myPack.sport).packPromoContract
+        : getSportType(myPack.sport).packContract;
+    await query_nft_tokens_for_owner(
+      accountId,
+      0,
+      //@ts-ignore:next-line
+      parseInt(totalPacks),
+      contract
+    ).then((data) => {
+      //@ts-ignore:next-line
+      const result = JSON.parse(Buffer.from(data.result).toString());
+      setPackDetails([result.find((x) => x.token_id === myPack.id)]);
+    });
+    // setPackDetails(await query_nft_tokens_for_owner(accountId, 0, parseInt(totalPacks), contract));
+  }
+  async function get_pack_supply_for_owner() {
+    setTotalPacks(await query_nft_supply_for_owner(accountId, contract));
+  }
   async function execute_open_pack() {
     const contract = getSportType(myPack.sport);
     const transferArgs = Buffer.from(
@@ -68,7 +100,17 @@ export default function PackDetails(props) {
     });
   }
   //can add to helper
-
+  useEffect(() => {
+    get_pack_supply_for_owner();
+  }, []);
+  useEffect(() => {
+    if (totalPacks !== 0) {
+      get_pack_token_by_id();
+    }
+  }, [totalPacks]);
+  useEffect(() => {
+    console.log(packDetails);
+  }, [packDetails]);
   return (
     <Container activeName="PACKS">
       <div className="md:ml-6 mt-12">
@@ -77,11 +119,9 @@ export default function PackDetails(props) {
       <div className="flex flex-col w-full overflow-y-auto h-screen pb-40">
         <div className="flex flex-row ml-24 mt-10">
           <div>
-            {myPack.packName === 'SOULBOUND PACK' ? (
-              <Image src={sbImage} height="200" width="200" alt="pack-image" />
-            ) : (
-              <Image src={sampleImage} height="200" width="200" alt="pack-image" />
-            )}
+            {packDetails.map((x) => {
+              return <Image src={x.metadata.media} height="200" width="200" alt="pack-image" />;
+            })}
           </div>
           <div className="grid grid-rows">
             <div className="text-2xl font-bold font-monument">

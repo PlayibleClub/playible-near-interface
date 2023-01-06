@@ -122,9 +122,9 @@ async function query_all_players_lineup(game_id, week, currentSport) {
     });
 }
 
-async function query_nft_tokens_by_id(athleteIndex, contract) {
+async function query_nft_tokens_by_id(token_id, contract) {
   const query = JSON.stringify({
-    token_id: athleteIndex,
+    token_id: token_id,
   });
 
   return provider.query({
@@ -135,6 +135,7 @@ async function query_nft_tokens_by_id(athleteIndex, contract) {
     args_base64: Buffer.from(query).toString('base64'),
   });
 }
+
 
 async function query_filter_supply_for_owner(accountId, position, team, name, contract) {
   const query = JSON.stringify({
