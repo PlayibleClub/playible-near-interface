@@ -212,7 +212,7 @@ export default function Packs() {
 
   useEffect(() => {
     get_claim_status(accountId);
-  }, []);
+  }, [currentSport]);
 
   // useEffect(() => {
   //     // set initial value
