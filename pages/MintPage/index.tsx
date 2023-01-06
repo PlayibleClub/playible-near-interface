@@ -419,7 +419,7 @@ export default function Home(props) {
                         setCurrentSport(e.target.value);
                       }}
                       className="bg-filter-icon bg-no-repeat bg-right bg-indigo-white ring-2 ring-offset-8 ring-indigo-black ring-opacity-25 focus:ring-2 focus:ring-indigo-black 
-                        focus:outline-none cursor-pointer text-xs iphone5:ml-8 iphone5:w-4/6 md:text-base md:ml-8 md:mt-0 md:w-72 md:p-2"
+                        focus:outline-none cursor-pointer text-xs iphone5:ml-8 iphone5:w-4/6 md:text-base md:ml-8 md:mt-0 md:w-72 md:p-2 iphone5:hidden md:block lg:block"
                     >
                       {categoryList.map((x) => {
                         return <option value={x.name}>{x.name}</option>;
@@ -430,6 +430,37 @@ export default function Home(props) {
               </div>
               <div className="ml-8">
                 <ModalPortfolioContainer title="MINT PACKS" textcolor="text-indigo-black" />
+              </div>
+              <div className='ml-12 mt-4 md:ml-8'>
+              {isClaimed ? (
+                <button
+                  className={`bg-indigo-gray bg-opacity-40 text-indigo-white w-12 text-center hidden justify-center items-center font-montserrat p-4 text-xs mt-8`}
+                >
+                  CLAIM SOULBOUND PACK
+                </button>
+              ) : (
+                <button
+                  className="w-60 flex text-center justify-center items-center iphone5:w-64 bg-indigo-buttonblue font-montserrat text-indigo-white p-3 text-xs "
+                  onClick={(e) => handleButtonClick(e)}
+                >
+                  CLAIM SOULBOUND PACK
+                </button>
+              )}
+              </div>
+              <div className="md:mr- md:mt-6 ml-6 mt-4">
+                <form>
+                  <select
+                    onChange={(e) => {
+                      setCurrentSport(e.target.value);
+                    }}
+                    className="bg-filter-icon bg-no-repeat bg-right bg-indigo-white ring-2 ring-offset-8 ring-indigo-black ring-opacity-25 focus:ring-2 focus:ring-indigo-black 
+                        focus:outline-none cursor-pointer text-xs iphone5:ml-8 iphone5:w-60 md:hidden lg:hidden md:text-base md:ml-8 md:mt-5 md:w-36"
+                  >
+                    {categoryList.map((x) => {
+                      return <option value={x.name}>{x.name}</option>;
+                    })}
+                  </select>
+                </form>
               </div>
               {/* <div className="flex font-bold max-w-full ml-5 md:ml-6 font-monument overflow-y-auto no-scrollbar">
                 {categoryList.map(({ name, isActive }) => (
@@ -608,21 +639,6 @@ export default function Home(props) {
                             N
                           </button>
                           <p className="text-xs text-red-700">{balanceErrorMsg}</p>
-                          {isClaimed ? (
-                            <button
-                              className={`bg-indigo-gray bg-opacity-40 text-indigo-white w-9/12 flex text-center justify-center items-center font-montserrat p-4 text-xs mt-8`}
-                              onClick={(e) => handleButtonClick(e)}
-                            >
-                              CLAIM SOULBOUND PACK
-                            </button>
-                          ) : (
-                            <button
-                              className="w-9/12 flex text-center justify-center items-center bg-indigo-buttonblue font-montserrat text-indigo-white p-4 text-xs mt-8 "
-                              onClick={(e) => handleButtonClick(e)}
-                            >
-                              CLAIM SOULBOUND PACK
-                            </button>
-                          )}
                         </>
                       ) : (
                         <button
@@ -652,7 +668,7 @@ export default function Home(props) {
                   </div>
                 </div>
                 <div className="iphone5:mt-5 md:mt-0 ml-8 md:ml-2">
-                  <div className="text-xl font-bold font-monument ml-0 md:-mt-28">
+                  <div className="text-xl font-bold font-monument ml-0 md:-mt-14">
                     <ModalPortfolioContainer title="PACK DETAILS" textcolor="text-indigo-black" />
                   </div>
                   {currentSport === 'FOOTBALL' ? (
