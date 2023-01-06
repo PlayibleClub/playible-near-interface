@@ -433,7 +433,7 @@ const Portfolio = () => {
                       }}
                       className="bg-filter-icon bg-no-repeat bg-right bg-indigo-white iphone5:w-28 w-36 md:w-42 lg:w-60
                       ring-2 ring-offset-4 ring-indigo-black ring-opacity-25 focus:ring-2 focus:ring-indigo-black 
-                      focus:outline-none cursor-pointer text-xs md:text-base ml-8"
+                      focus:outline-none cursor-pointer text-xs md:text-base ml-8 invisible"
                     >
                       <option value="allTeams">ALL TEAMS</option>
                       <option value="ARI">Arizona</option>
