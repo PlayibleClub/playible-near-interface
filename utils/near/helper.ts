@@ -33,7 +33,7 @@ async function query_game_data(game_id, contract) {
     });
 }
 
-async function query_nft_token_by_id(token_id) {
+async function query_nft_token_by_id(token_id, currentSport) {
   const query = JSON.stringify({
     token_id: token_id,
   });
@@ -41,7 +41,7 @@ async function query_nft_token_by_id(token_id) {
     .query({
       request_type: 'call_function',
       finality: 'optimistic',
-      account_id: token_id.includes('SB') ? getContract(ATHLETE_PROMO_NFL) : getContract(ATHLETE_NFL),
+      account_id: token_id.includes('SB') ? getSportType(currentSport).promoContract : getSportType(currentSport).regContract,
       method_name: 'nft_token_by_id',
       args_base64: Buffer.from(query).toString('base64'),
     })
@@ -59,7 +59,7 @@ function checkIncludedWeeks(stats) {
   }
 }
 
-async function query_all_players_lineup(game_id, week) {
+async function query_all_players_lineup(game_id, week, currentSport) {
   const query = JSON.stringify({
     game_id: game_id,
   });
@@ -68,7 +68,7 @@ async function query_all_players_lineup(game_id, week) {
     .query({
       request_type: 'call_function',
       finality: 'optimistic',
-      account_id: getContract(GAME_NFL),
+      account_id: getSportType(currentSport).gameContract,
       method_name: 'get_all_players_lineup',
       args_base64: Buffer.from(query).toString('base64'),
     })
@@ -87,7 +87,7 @@ async function query_all_players_lineup(game_id, week) {
 
           itemToReturn.lineup = await Promise.all(
             itemToReturn.lineup.map((item) => {
-              return query_nft_token_by_id(item);
+              return query_nft_token_by_id(item, currentSport);
             })
           );
 

@@ -43,7 +43,7 @@ const Games = (props) => {
   }
 
   async function get_all_players_lineup() {
-    setPlayerLineups(await query_all_players_lineup(gameId, week));
+    setPlayerLineups(await query_all_players_lineup(gameId, week, currentSport));
   }
 
   async function get_player_teams(account, game_id) {
@@ -73,7 +73,6 @@ const Games = (props) => {
   useEffect(() => {
     get_game_week();
   });
-
   return (
     <Container activeName="GAMES">
       <div className="flex flex-col w-full overflow-y-auto h-screen">
