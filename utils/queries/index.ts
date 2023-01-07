@@ -53,6 +53,7 @@ export const GET_ATHLETEDATA_QB = gql`
       position
       nftImage
       stats {
+        type
         completion
         passingYards
         passingTouchdowns
@@ -74,6 +75,7 @@ export const GET_ATHLETEDATA_RB = gql`
       position
       nftImage
       stats {
+        type
         carries
         rushingYards
         rushingTouchdowns
@@ -94,6 +96,7 @@ export const GET_ATHLETEDATA_WR = gql`
       position
       nftImage
       stats {
+        type
         targets
         receptions
         receivingYards
@@ -112,6 +115,7 @@ export const GET_ATHLETEDATA_TE = gql`
       position
       nftImage
       stats {
+        type
         targets
         receptions
         receivingYards
@@ -120,3 +124,4 @@ export const GET_ATHLETEDATA_TE = gql`
     }
   }
 `;
+

@@ -20,19 +20,20 @@ const StatsComponent = (props) => {
 
   function getAverage(position, athleteData) {
     let newState = athleteData;
+    console.log(newState);
     let avg;
     switch (position) {
       case 'RB':
         console.log('test');
-        avg = Math.round((newState[2] / newState[1]) * 10 + Number.EPSILON) / 10;
+        avg = Math.round((newState[3] / newState[2]) * 10 + Number.EPSILON) / 10;
         // newState.push(Number.isNaN(avg) ? 0 : avg);
-        newState.splice(3, 0, Number.isNaN(avg) ? 0 : avg);
+        newState.splice(4, 0, Number.isNaN(avg) ? 0 : avg);
         break;
       case 'WR':
       case 'TE':
-        avg = Math.round((newState[3] / newState[2]) * 10 + Number.EPSILON) / 10;
+        avg = Math.round((newState[4] / newState[3]) * 10 + Number.EPSILON) / 10;
         // newState.push(Number.isNaN(avg) ? 0 : avg);
-        newState.splice(3, 0, Number.isNaN(avg) ? 0 : avg);
+        newState.splice(4, 0, Number.isNaN(avg) ? 0 : avg);
         break;
     }
     return newState;
@@ -46,23 +47,36 @@ const StatsComponent = (props) => {
         query = await getAthleteQB({ variables: { getAthleteById: parseFloat(id.toString()) } });
         setStatNames(qbStatNames);
         console.log(query.data.getAthleteById);
-        setAthleteData(await Promise.all(Object.values(query.data.getAthleteById.stats[0])));
+        setAthleteData(
+          await Promise.all(
+            Object.values(query.data.getAthleteById.stats.find((x) => x.type === 'season'))
+          )
+        );
         break;
       case 'RB':
         query = await getAthleteRB({ variables: { getAthleteById: parseFloat(id.toString()) } });
-        state = getAverage(position, Object.values(query.data.getAthleteById.stats[0]));
+        state = getAverage(
+          position,
+          Object.values(query.data.getAthleteById.stats.find((x) => x.type === 'season'))
+        );
         setAthleteData(state);
         setStatNames(rbStatNames);
         break;
       case 'WR':
         query = await getAthleteWR({ variables: { getAthleteById: parseFloat(id.toString()) } });
-        state = getAverage(position, Object.values(query.data.getAthleteById.stats[0]));
+        state = getAverage(
+          position,
+          Object.values(query.data.getAthleteById.stats.find((x) => x.type === 'season'))
+        );
         setAthleteData(state);
         setStatNames(wrStatNames);
         break;
       case 'TE':
         query = await getAthleteTE({ variables: { getAthleteById: parseFloat(id.toString()) } });
-        state = getAverage(position, Object.values(query.data.getAthleteById.stats[0]));
+        state = getAverage(
+          position,
+          Object.values(query.data.getAthleteById.stats.find((x) => x.type === 'season'))
+        );
         setAthleteData(state);
         setStatNames(teStatNames);
         break;
@@ -74,7 +88,9 @@ const StatsComponent = (props) => {
       query_stats(position, id).catch(console.error);
     }
   }, [id, position, query_stats]);
-
+  useEffect(() => {
+    console.log(athleteData);
+  }, [athleteData]);
   return (
     <>
       <div
@@ -86,47 +102,47 @@ const StatsComponent = (props) => {
 
       <div className="mt-14 ml-24 w-1/2 text-sm grid grid-rows-4 grid-cols-4">
         <div>
-          <div className="font-monument text-5xl -mb-6">{athleteData[1]}</div>
+          <div className="font-monument text-5xl -mb-6">{athleteData[2]?.toFixed(2)}</div>
           <br></br>
           <div className="">{statNames[1]}</div>
         </div>
         <div>
-          <div className="font-monument text-5xl -mb-6">{athleteData[2]}</div>
+          <div className="font-monument text-5xl -mb-6">{athleteData[3]?.toFixed(2)}</div>
           <br></br>
           {statNames[2]}
         </div>
         <div>
-          <div className="font-monument text-5xl -mb-6">{athleteData[3]}</div>
+          <div className="font-monument text-5xl -mb-6">{athleteData[4]?.toFixed(2)}</div>
           <br></br>
           {/* PASSING TOUCHDOWNS */}
           {statNames[3]}
         </div>
         <div>
-          <div className="font-monument text-5xl -mb-6">{athleteData[4]}</div>
+          <div className="font-monument text-5xl -mb-6">{athleteData[5]?.toFixed(2)}</div>
           <br></br>
           {/* INTERCEPTIONS */}
           {statNames[4]}
         </div>
         <div>
-          <div className="font-monument text-5xl -mb-6 mt-2">{athleteData[5]}</div>
+          <div className="font-monument text-5xl -mb-6 mt-2">{athleteData[6]?.toFixed(2)}</div>
           <br></br>
           {/* RUSHING YARDS */}
           {statNames[5]}
         </div>
         <div>
-          <div className="font-monument text-5xl -mb-6 mt-2">{athleteData[6]}</div>
+          <div className="font-monument text-5xl -mb-6 mt-2">{athleteData[7]?.toFixed(2)}</div>
           <br></br>
           {/* RUSHING TOUCHDOWNS */}
           {statNames[6]}
         </div>
         <div>
-          <div className="font-monument text-5xl -mb-6 mt-2">{athleteData[7]}</div>
+          <div className="font-monument text-5xl -mb-6 mt-2">{athleteData[8]?.toFixed(2)}</div>
           <br></br>
           {/* CARRIES */}
           {statNames[7]}
         </div>
         <div>
-          <div className="font-monument text-5xl -mb-6 mt-2">{athleteData[8]}</div>
+          <div className="font-monument text-5xl -mb-6 mt-2">{athleteData[9]?.toFixed(2)}</div>
           <br></br>
           {/* FREE SPACE */}
           {statNames[8]}
