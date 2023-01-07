@@ -7,17 +7,16 @@ import {
 } from 'utils/queries';
 import { useLazyQuery } from '@apollo/client';
 import { qbStatNames, rbStatNames, wrStatNames, teStatNames } from 'data/constants/statNames';
-
+import { getSportType } from 'data/constants/sportConstants';
 const StatsComponent = (props) => {
-  const { id, position } = props;
-
+  const { id, position, sport } = props;
   const [statNames, setStatNames] = useState([]);
   const [getAthleteQB] = useLazyQuery(GET_ATHLETEDATA_QB);
   const [getAthleteRB] = useLazyQuery(GET_ATHLETEDATA_RB);
   const [getAthleteWR] = useLazyQuery(GET_ATHLETEDATA_WR);
   const [getAthleteTE] = useLazyQuery(GET_ATHLETEDATA_TE);
   const [athleteData, setAthleteData] = useState([]);
-
+  const [positionDisplay, setPositionDisplay] = useState('');
   function getAverage(position, athleteData) {
     let newState = athleteData;
     console.log(newState);
@@ -86,18 +85,18 @@ const StatsComponent = (props) => {
   useEffect(() => {
     if (id !== undefined && position !== undefined) {
       query_stats(position, id).catch(console.error);
+      setPositionDisplay(getSportType(sport).positionList.find((x) => x.key === position).name);
     }
   }, [id, position, query_stats]);
-  useEffect(() => {
-    console.log(athleteData);
-  }, [athleteData]);
+
+  useEffect(() => {}, []);
   return (
     <>
       <div
         className="flex h-1/8 w-1/3 ml-24 -mt-16 justify-center content-center select-none text-center text-4xl 
             bg-indigo-black font-monument text-indigo-white p-2 pl-5"
       >
-        <div className="">{statNames[0]}</div>
+        <div className="">{positionDisplay}</div>
       </div>
 
       <div className="mt-14 ml-24 w-1/2 text-sm grid grid-rows-4 grid-cols-4">

@@ -56,7 +56,6 @@ const AssetDetails = (props) => {
       setAthlete(result_two);
     });
   }
-
   useEffect(() => {
     get_nft_tokens_by_id(
       athleteIndex,
@@ -149,8 +148,11 @@ const AssetDetails = (props) => {
           </div>
         </div>
 
-        <StatsComponent id={athlete?.primary_id} position={athlete?.position} />
-
+        <StatsComponent
+          id={athlete?.primary_id}
+          position={athlete?.position}
+          sport={currentSport}
+        />
         <div className="text-2xl font-bold font-monument -mt-14 ml-24 mb-10 mr-8 align-baseline">
           GAME SCORES
           <hr className="w-10 border-4"></hr>
