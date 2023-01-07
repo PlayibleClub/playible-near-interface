@@ -4,9 +4,10 @@ import {
   GET_ATHLETEDATA_RB,
   GET_ATHLETEDATA_WR,
   GET_ATHLETEDATA_TE,
+  GET_ATHLETEDATA_NBA,
 } from 'utils/queries';
 import { useLazyQuery } from '@apollo/client';
-import { qbStatNames, rbStatNames, wrStatNames, teStatNames } from 'data/constants/statNames';
+import { qbStatNames, rbStatNames, wrStatNames, teStatNames, nbaStatNames } from 'data/constants/statNames';
 import { getSportType } from 'data/constants/sportConstants';
 const StatsComponent = (props) => {
   const { id, position, sport } = props;
@@ -15,8 +16,10 @@ const StatsComponent = (props) => {
   const [getAthleteRB] = useLazyQuery(GET_ATHLETEDATA_RB);
   const [getAthleteWR] = useLazyQuery(GET_ATHLETEDATA_WR);
   const [getAthleteTE] = useLazyQuery(GET_ATHLETEDATA_TE);
+  const [getAthleteNBA] = useLazyQuery(GET_ATHLETEDATA_NBA);
   const [athleteData, setAthleteData] = useState([]);
   const [positionDisplay, setPositionDisplay] = useState('');
+
   function getAverage(position, athleteData) {
     let newState = athleteData;
     console.log(newState);
@@ -34,6 +37,9 @@ const StatsComponent = (props) => {
         // newState.push(Number.isNaN(avg) ? 0 : avg);
         newState.splice(4, 0, Number.isNaN(avg) ? 0 : avg);
         break;
+      // default:
+      //   // nba shit??
+      //   break;
     }
     return newState;
   }
@@ -79,6 +85,16 @@ const StatsComponent = (props) => {
         setAthleteData(state);
         setStatNames(teStatNames);
         break;
+      default:
+        query = await getAthleteNBA({ variables: { getAthleteById: parseFloat(id.toString()) } });
+        state = getAverage(
+          position,
+          Object.values(query.data.getAthleteById.stats.find((x) => x.type === 'season'))
+          // Object.values(query.data.getAthleteById.stats[0])
+        )
+        setAthleteData(state);
+        setStatNames(nbaStatNames);
+        break;
     }
   }, []);
 
@@ -113,37 +129,31 @@ const StatsComponent = (props) => {
         <div>
           <div className="font-monument text-5xl -mb-6">{athleteData[4]?.toFixed(2)}</div>
           <br></br>
-          {/* PASSING TOUCHDOWNS */}
           {statNames[3]}
         </div>
         <div>
           <div className="font-monument text-5xl -mb-6">{athleteData[5]?.toFixed(2)}</div>
           <br></br>
-          {/* INTERCEPTIONS */}
           {statNames[4]}
         </div>
         <div>
           <div className="font-monument text-5xl -mb-6 mt-2">{athleteData[6]?.toFixed(2)}</div>
           <br></br>
-          {/* RUSHING YARDS */}
           {statNames[5]}
         </div>
         <div>
           <div className="font-monument text-5xl -mb-6 mt-2">{athleteData[7]?.toFixed(2)}</div>
           <br></br>
-          {/* RUSHING TOUCHDOWNS */}
           {statNames[6]}
         </div>
         <div>
           <div className="font-monument text-5xl -mb-6 mt-2">{athleteData[8]?.toFixed(2)}</div>
           <br></br>
-          {/* CARRIES */}
           {statNames[7]}
         </div>
         <div>
           <div className="font-monument text-5xl -mb-6 mt-2">{athleteData[9]?.toFixed(2)}</div>
           <br></br>
-          {/* FREE SPACE */}
           {statNames[8]}
         </div>
       </div>

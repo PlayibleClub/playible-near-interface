@@ -37,3 +37,13 @@ export const teStatNames = [
   'RECEIVING YARDS',
   'RECEIVING TOUCHDOWNS'
 ];
+
+export const nbaStatNames = [
+  'POSITION',
+  'ASSISTS',
+  'POINTS',
+  'REBOUNDS',
+  'BLOCKS',
+  'STEALS',
+  'TURNOVERS'
+]

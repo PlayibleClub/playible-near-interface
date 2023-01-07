@@ -125,3 +125,23 @@ export const GET_ATHLETEDATA_TE = gql`
   }
 `;
 
+export const GET_ATHLETEDATA_NBA = gql`
+  query GetAthleteData_NBA($getAthleteById: Float!) {
+    getAthleteById(id: $getAthleteById) {
+      id
+      firstName
+      lastName
+      position
+      nftImage
+      stats {
+        type
+        assists
+        points
+        rebounds
+        blockedShots
+        steals
+        turnovers
+      }
+    }
+  }
+`;

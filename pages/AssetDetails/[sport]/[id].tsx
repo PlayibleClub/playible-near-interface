@@ -71,9 +71,15 @@ const AssetDetails = (props) => {
       if (game.type === 'weekly' && game.played == 1) {
         totalGames++;
       }
+      else if (game.type === 'daily' && game.played == 1) {
+        totalGames++;
+      }
     });
     return totalGames;
   }
+
+  console.log(athlete?.primary_id);
+
   return (
     <Container activeName="ATHLETES">
       <div className="md:ml-6 mt-12">
@@ -96,28 +102,9 @@ const AssetDetails = (props) => {
               <hr className="w-10 border-4"></hr>
             </div>
             <div className="mt-10 text-m h-0 font-bold">{athlete?.name}</div>
-            <div className="mt-10 text-sm grid grid-rows-2 grid-cols-2">
+            <div className="mt-10 text-sm grid grid-rows-2">
               <div>FANTASY SCORE</div>
-              {/*}
-              <div>
-                PLAY BALANCE
-                <Popup
-                  trigger={
-                    <button className="ml-2 font-bold border rounded-full relative px-2">
-                      {' '}
-                      i{' '}
-                    </button>
-                  }
-                  position="right center"
-                >
-                  <div className="mt-2 mb-2 ml-2 mr-2">
-                    PLAY BALANCE: Amount of PLAY remaining to join weekly cash contests
-                  </div>
-                </Popup>
-              </div>
-                {*/}
-              <div>{athlete?.fantasy_score.toFixed(2)}</div>
-              {/*<div>{athlete?.usage}</div>*/}
+              <div className="font-bold">{athlete?.fantasy_score.toFixed(2)}</div>
             </div>
             <Link href="https://paras.id/collection/athlete.nfl.playible.near">
               <button
@@ -135,7 +122,8 @@ const AssetDetails = (props) => {
           SEASON STATS
           <hr className="w-10 border-4"></hr>
         </div>
-        <div className="grid grid-cols-2 ml-24 mt-10 mb-20 w-5/12">
+
+        <div className="grid grid-cols-2 ml-24 mt-10 mb-24 w-5/12">
           <div className="mr-2 p-4 border border-indigo-slate rounded-lg text-center">
             <div className="font-monument text-3xl">{athlete?.fantasy_score.toFixed(2)}</div>
             <div className="text-sm">AVG.FANTASY SCORE</div>
