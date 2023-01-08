@@ -158,7 +158,7 @@ const AssetDetails = (props) => {
             {athlete == undefined
               ? 'LOADING GAMES....'
               : athlete.stats_breakdown
-                  .filter((statType) => statType.type == 'weekly' && statType.played == 1)
+                  .filter((statType) => statType.type == 'weekly' || 'daily' && statType.played == 1)
                   .map((item, index) => {
                     return (
                       <tr key={index} className="border border-indigo-slate">
