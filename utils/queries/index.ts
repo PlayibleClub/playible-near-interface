@@ -141,6 +141,7 @@ export const GET_ATHLETEDATA_NBA = gql`
         blockedShots
         steals
         turnovers
+        gameDate
       }
     }
   }

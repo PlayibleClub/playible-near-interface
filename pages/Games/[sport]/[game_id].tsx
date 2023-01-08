@@ -16,6 +16,7 @@ import { setTeamName, setAccountId, setGameId, setSport2 } from 'redux/athlete/t
 import { useDispatch } from 'react-redux';
 import { persistor } from 'redux/athlete/store';
 import { getSportType } from 'data/constants/sportConstants';
+import moment, { Moment } from 'moment';
 const Games = (props) => {
   const { query } = props;
   const gameId = query.game_id;
@@ -43,7 +44,16 @@ const Games = (props) => {
   }
 
   async function get_all_players_lineup() {
-    setPlayerLineups(await query_all_players_lineup(gameId, week, currentSport));
+    console.log(gameData.start_time);
+    setPlayerLineups(
+      await query_all_players_lineup(
+        gameId,
+        week,
+        currentSport,
+        gameData.start_time - 3333000000,
+        gameData.end_time
+      )
+    );
   }
 
   async function get_player_teams(account, game_id) {
@@ -59,20 +69,26 @@ const Games = (props) => {
     router.push('/EntrySummary');
   };
   useEffect(() => {
-    console.log('loading');
-    get_player_teams(accountId, gameId);
-    console.log(playerTeams);
-    get_all_players_lineup();
-  }, [week]);
+    if (gameData !== undefined && gameData !== null) {
+      console.log('loading');
+      get_player_teams(accountId, gameId);
+      console.log(playerTeams);
+      get_all_players_lineup();
+    }
+  }, [gameData]);
 
   useEffect(() => {
     setTimeout(() => persistor.purge(), 200);
     get_game_data(gameId);
-  }, []);
+  }, [week]);
 
   useEffect(() => {
     get_game_week();
   });
+  useEffect(() => {
+    console.log(playerLineups);
+  }, [playerLineups]);
+
   return (
     <Container activeName="GAMES">
       <div className="flex flex-col w-full overflow-y-auto h-screen">

@@ -7,6 +7,7 @@ import React, { useEffect, useState } from 'react';
 import { DEFAULT_MAX_FEES, MINT_STORAGE_COST } from 'data/constants/gasFees';
 import BigNumber from 'bignumber.js';
 import { getSportType } from 'data/constants/sportConstants';
+import moment, {Moment} from 'moment';
 const provider = new providers.JsonRpcProvider({
   url: getRPCProvider(),
 });
@@ -59,7 +60,7 @@ function checkIncludedWeeks(stats) {
   }
 }
 
-async function query_all_players_lineup(game_id, week, currentSport) {
+async function query_all_players_lineup(game_id, week, currentSport, start_time, end_time) {
   const query = JSON.stringify({
     game_id: game_id,
   });
@@ -75,7 +76,6 @@ async function query_all_players_lineup(game_id, week, currentSport) {
     .then(async (data) => {
       // @ts-ignore:next-line
       const result = JSON.parse(Buffer.from(data.result).toString());
-      console.log(result);
       const arrayToReturn = await Promise.all(
         result.map(async (item) => {
           let itemToReturn = {
@@ -90,17 +90,19 @@ async function query_all_players_lineup(game_id, week, currentSport) {
               return query_nft_token_by_id(item, currentSport);
             })
           );
-
+          console.log(itemToReturn.lineup);
           itemToReturn.lineup = itemToReturn.lineup.map((lineupItem) => {
             return {
               ...lineupItem,
               stats_breakdown:
                 lineupItem.stats_breakdown
                   .filter(
-                    (statType) =>
-                      statType.type == 'weekly' && statType.played == 1 && statType.week == week
+                    (statType) => { console.log(currentSport);console.log(lineupItem.name); console.log(statType.type == 'daily' && statType.played == 1 && moment.utc(statType.gameDate).unix()*1000 > start_time && moment.utc(statType.gameDate).unix() * 1000 < end_time);
+                      currentSport === 'FOOTBALL' ? statType.type == 'weekly' && statType.played == 1 && statType.week == week
+                      : statType.type == 'daily' && statType.played == 1 && moment.utc(statType.gameDate).unix() > start_time && moment.utc(statType.gameDate).unix() < end_time}
                   )
                   .map((item) => {
+                    console.log("fs " + item.fantasyScore);
                     return item.fantasyScore;
                   })[0] || 0,
             };
