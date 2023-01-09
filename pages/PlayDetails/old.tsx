@@ -43,7 +43,7 @@ export default function PlayDetails(props) {
   const [gameEnd, setgameEnd] = useState(false);
   const [timesUp, setTimesUp] = useState(false);
   const [startDate, setStartDate] = useState();
-  const [gameFreeOrPaid, setgameFreeOrPaid] = useState('');
+  const [gameFreeOrWhitelisted, setGameFreeOrWhitelisted] = useState('');
   const [detailsFreeOrPaid, setdetailsFreeOrPaid] = useState('');
   const [redirectModal, setRedirectModal] = useState(false);
   const { error } = props;
@@ -92,14 +92,10 @@ export default function PlayDetails(props) {
   }
 
   function checkIfPaidGame(gameData) {
-    if (gameData.usage_cost > 0) {
-      setgameFreeOrPaid('PAID GAME');
-      setdetailsFreeOrPaid(
-        "*Participation in this game will reduce your player token's usage by 1."
-      );
+    if (gameData.whitelist) {
+      setGameFreeOrWhitelisted('RESTRICTED GAME');
     } else {
-      setgameFreeOrPaid('FREE GAME');
-      setdetailsFreeOrPaid("*Winning in t his game will reward your player's token usage by 1.");
+      setGameFreeOrWhitelisted('FREE GAME');
     }
   }
 
@@ -292,27 +288,25 @@ export default function PlayDetails(props) {
                                           src={
                                             gameData?.game_image
                                               ? gameData.game_image
-                                              : defaultGameImage
+                                              : getImage(gameId)
                                           }
                                           width={550}
                                           height={279}
                                           alt="game-image"
                                         />
                                       </div>
-                                      <div className="md:-mt-7 w-96">
-                                        <div className="iphone5:-ml-7 md:ml-0">
-                                          <PortfolioContainer
-                                            textcolor="indigo-black"
-                                            title={gameFreeOrPaid}
-                                          />
-                                        </div>
-                                        <div className="flex md:space-x-14 mt-4 iphone5:flex-col md:flex-row">
-                                          <div className="iphone5:ml-0 md:ml-7">
+                                      <div className="-mt-7 w-96">
+                                        <PortfolioContainer
+                                          textcolor="indigo-black"
+                                          title={gameFreeOrWhitelisted}
+                                        />
+                                        <div className="flex space-x-14 mt-4">
+                                          <div className="ml-7">
                                             <div>PRIZE POOL</div>
                                             <div className=" font-monument text-lg">
                                               {gameData?.prize_description
                                                 ? gameData.prize_description
-                                                : defaultPrizeDescription}
+                                                : getPrizePool(gameId)}
                                             </div>
                                           </div>
                                           <div>
