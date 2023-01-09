@@ -44,14 +44,15 @@ const Games = (props) => {
   }
 
   async function get_all_players_lineup() {
-    console.log(' date: ' + moment(gameData.start_time - 3333000000).format('YYYY-MM-DD'));
+    console.log('    TEST start date: ' + moment(gameData.start_time).format('YYYY-MM-DD-hh-mm-ss'));
+    console.log('    TEST end date: ' + moment(gameData.end_time).format('YYYY-MM-DD-hh-mm-ss'));
     setPlayerLineups(
       await query_all_players_lineup(
         gameId,
         week,
         currentSport,
-        moment(gameData.start_time + 864000).format('YYYY-MM-DD'),
-        moment(gameData.end_time + 864000).format('YYYY-MM-DD')
+        moment(gameData.start_time).format('YYYY-MM-DD'),
+        moment(gameData.end_time).format('YYYY-MM-DD')
       )
     );
   }

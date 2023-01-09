@@ -104,7 +104,7 @@ async function query_all_players_lineup(game_id, week, currentSport, start_time,
                       : currentSport === 'BASKETBALL' ? statType.type == 'daily' && statType.played == 1 : ''
                   )
                   .map((item) => {
-                    //console.log("fs " + item.fantasyScore + " from " + lineupItem.name + " w/ date " + item.gameDate);
+                    console.log("fs " + item.fantasyScore + " from " + lineupItem.name + " w/ date " + item.gameDate);
                     console.log("playible start: " + start_time)
                     return item.fantasyScore;
                   })[0] || 0,

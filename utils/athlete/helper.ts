@@ -56,7 +56,7 @@ async function getAthleteInfoByIdWithDate(item, from, to) {
     isOpen: false,
     animation: data.getAthleteById.nftAnimation,
     image: item.metadata.media,
-    fantasy_score: getAvgFantasyScore(data.getAthleteById.stats),
+    // fantasy_score: getAvgFantasyScore(data.getAthleteById.stats),
     stats_breakdown: data.getAthleteById.stats,
     isInGame: item.metadata['starts_at'] > getUTCTimestampFromLocal() ? true : false,
   };
