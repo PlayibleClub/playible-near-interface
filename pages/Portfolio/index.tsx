@@ -258,6 +258,7 @@ const Portfolio = () => {
     setRemountAthlete(Math.random() + 1);
   }, [athletes]);
   useEffect(() => {
+    setIsPromoPage(false);
     if (selectedRegular !== false && selectedPromo === false) {
       get_filter_supply_for_owner();
       setTotalPromoSupply(0);
