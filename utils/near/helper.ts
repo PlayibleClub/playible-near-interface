@@ -97,12 +97,12 @@ async function query_all_players_lineup(game_id, week, currentSport, start_time,
               stats_breakdown:
                 lineupItem.stats_breakdown
                   .filter(
-                    (statType) => { console.log(currentSport);console.log(lineupItem.name); console.log(statType.type == 'daily' && statType.played == 1 && moment.utc(statType.gameDate).unix()*1000 > start_time && moment.utc(statType.gameDate).unix() * 1000 < end_time);
+                    (statType) =>
                       currentSport === 'FOOTBALL' ? statType.type == 'weekly' && statType.played == 1 && statType.week == week
-                      : statType.type == 'daily' && statType.played == 1 && moment.utc(statType.gameDate).unix() > start_time && moment.utc(statType.gameDate).unix() < end_time}
+                      : statType.type == 'daily' && statType.played == 1 && moment.utc(statType.gameDate).unix() * 1000 > start_time && moment.utc(statType.gameDate).unix() * 1000 < end_time
                   )
                   .map((item) => {
-                    console.log("fs " + item.fantasyScore);
+                    console.log("fs " + item.fantasyScore + " from " + lineupItem.name);
                     return item.fantasyScore;
                   })[0] || 0,
             };

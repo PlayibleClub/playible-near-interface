@@ -70,9 +70,7 @@ const Games = (props) => {
   };
   useEffect(() => {
     if (gameData !== undefined && gameData !== null) {
-      console.log('loading');
       get_player_teams(accountId, gameId);
-      console.log(playerTeams);
       get_all_players_lineup();
     }
   }, [gameData]);
@@ -85,9 +83,6 @@ const Games = (props) => {
   useEffect(() => {
     get_game_week();
   });
-  useEffect(() => {
-    console.log(playerLineups);
-  }, [playerLineups]);
 
   return (
     <Container activeName="GAMES">
