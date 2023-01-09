@@ -49,7 +49,9 @@ async function query_nft_token_by_id(token_id, currentSport, start_time, end_tim
     .then(async (data) => {
       //@ts-ignore:next-line
       const result = JSON.parse(Buffer.from(data.result).toString());
-      const result_two = currentSport === 'FOOTBALL' ? await getAthleteInfoById(await convertNftToAthlete(result)) : await getAthleteInfoByIdWithDate(await convertNftToAthlete(result), start_time, end_time);
+      const result_two = 
+        currentSport === 'FOOTBALL' ? await getAthleteInfoById(await convertNftToAthlete(result)) 
+        : await getAthleteInfoByIdWithDate(await convertNftToAthlete(result), start_time, end_time);
       return result_two;
     });
 }
