@@ -1,6 +1,6 @@
 import client from 'apollo-client';
 import { objectTraps } from 'immer/dist/internal';
-import { GET_ATHLETE_BY_ID } from '../queries';
+import { GET_ATHLETE_BY_ID, GET_ATHLETE_BY_ID_DATE } from '../queries';
 import { getUTCTimestampFromLocal } from 'utils/date/helper';
 import { getSportType } from 'data/constants/sportConstants';
 // pull from graphQL and append the nft animation
@@ -34,11 +34,11 @@ async function getAthleteInfoById(item) {
   return returningData;
 }
 
-async function getAthleteInfoByIdWithDate(item) {
+async function getAthleteInfoByIdWithDate(item, from, to) {
   let value = item.extra.map((item) => item.value);
   const { data } = await client.query({
-    query: GET_ATHLETE_BY_ID,
-    variables: { getAthleteById: parseFloat(value[0]) },
+    query: GET_ATHLETE_BY_ID_DATE,
+    variables: { getAthleteById: parseFloat(value[0]), from : from, to : to},
   });
   const basketball = item.token_id.includes('2000');
   const diff = item.token_id.includes('SB') ? 1 : basketball ? 1 : 0;
