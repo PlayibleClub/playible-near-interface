@@ -2,7 +2,7 @@ import { providers } from 'near-api-js';
 import { getContract, getRPCProvider } from 'utils/near';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
 import { GAME_NFL, ATHLETE_NFL, PACK_PROMO_NFL, PACK_NFL, ATHLETE_PROMO_NFL } from 'data/constants/nearContracts';
-import { convertNftToAthlete, getAthleteInfoById } from 'utils/athlete/helper';
+import { convertNftToAthlete, getAthleteInfoById, getAthleteInfoByIdWithDate } from 'utils/athlete/helper';
 import React, { useEffect, useState } from 'react';
 import { DEFAULT_MAX_FEES, MINT_STORAGE_COST } from 'data/constants/gasFees';
 import BigNumber from 'bignumber.js';
@@ -49,7 +49,7 @@ async function query_nft_token_by_id(token_id, currentSport) {
     .then(async (data) => {
       //@ts-ignore:next-line
       const result = JSON.parse(Buffer.from(data.result).toString());
-      const result_two = await getAthleteInfoById(await convertNftToAthlete(result));
+      const result_two = currentSport === 'FOOTBALL' ? await getAthleteInfoById(await convertNftToAthlete(result)) : await getAthleteInfoByIdWithDate(await convertNftToAthlete(result));
       return result_two;
     });
 }
@@ -99,7 +99,7 @@ async function query_all_players_lineup(game_id, week, currentSport, start_time,
                   .filter(
                     (statType) =>
                       currentSport === 'FOOTBALL' ? statType.type == 'weekly' && statType.played == 1 && statType.week == week
-                      : statType.type == 'daily' && statType.played == 1 && moment.utc(statType.gameDate).unix() * 1000 > start_time && moment.utc(statType.gameDate).unix() * 1000 < end_time
+                      : currentSport === 'BASKETBALL' ? statType.type == 'daily' && statType.played == 1 : ''
                   )
                   .map((item) => {
                     console.log("fs " + item.fantasyScore + " from " + lineupItem.name);
