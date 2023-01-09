@@ -44,14 +44,14 @@ const Games = (props) => {
   }
 
   async function get_all_players_lineup() {
-    console.log(gameData.start_time);
+    console.log(' date: ' + moment(gameData.start_time - 3333000000).format('YYYY-MM-DD'));
     setPlayerLineups(
       await query_all_players_lineup(
         gameId,
         week,
         currentSport,
-        gameData.start_time - 3333000000,
-        gameData.end_time
+        moment(gameData.start_time + 864000).format('YYYY-MM-DD'),
+        moment(gameData.end_time + 864000).format('YYYY-MM-DD')
       )
     );
   }
@@ -80,6 +80,9 @@ const Games = (props) => {
     get_game_data(gameId);
   }, [week]);
 
+  useEffect(() => {
+    console.log(playerLineups);
+  }, [playerLineups]);
   useEffect(() => {
     get_game_week();
   });
