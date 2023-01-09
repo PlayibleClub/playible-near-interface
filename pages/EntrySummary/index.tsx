@@ -178,7 +178,16 @@ export default function EntrySummary(props) {
                   <div className="md:mr-12">
                     <div className="mt-11 flex flex-col md:flex-row justify-center md:self-left md:mr-8 md:ml-6">
                       <div className="w-auto mr-6 ml-6">
-                        <Image src={gameData.game_image} width={550} height={279} alt="game-image" />
+                        <Image
+                          src={
+                            gameData?.game_image
+                              ? gameData?.game_image
+                              : 'https://playible-game-image.s3.ap-southeast-1.amazonaws.com/game.png'
+                          }
+                          width={550}
+                          height={279}
+                          alt="game-image"
+                        />
                       </div>
                       <div className="-mt-7 md:ml-7">
                         <PortfolioContainer textcolor="indigo-black" title="ENTRY SUMMARY" />
@@ -186,7 +195,8 @@ export default function EntrySummary(props) {
                           <div className="ml-6 md:ml-7">
                             <div>PRIZE POOL</div>
                             <div className=" font-monument text-lg">
-                              {gameData.prize_description}
+                              {(gameData && gameData.prize_description) ||
+                                '$100 + 2 Championship Tickets'}
                             </div>
                           </div>
                           <div className="mr-4 md:mr-0">
