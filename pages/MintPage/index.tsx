@@ -413,7 +413,7 @@ export default function Home(props) {
             <div className="flex-initial iphone5:mt-20 md:ml-6 md:mt-8">
               <div className="flex md:flex-row md:float-right iphone5:flex-col md:mt-0">
                 <div className="md:mr-5 md:mt-4">
-                  <form>
+                  {/* <form>
                     <select
                       onChange={(e) => {
                         setCurrentSport(e.target.value);
@@ -425,7 +425,7 @@ export default function Home(props) {
                         return <option value={x.name}>{x.name}</option>;
                       })}
                     </select>
-                  </form>
+                  </form> */}
                 </div>
               </div>
               <div className="ml-8">
