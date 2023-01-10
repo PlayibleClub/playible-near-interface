@@ -46,8 +46,8 @@ const Games = (props) => {
   async function get_all_players_lineup() {
     const startTimeFormatted = moment(gameData.start_time).format('YYYY-MM-DD');
     const endTimeFormatted = moment(gameData.end_time).format('YYYY-MM-DD');
-    console.log("    TEST start date: " + startTimeFormatted);
-    console.log("    TEST end date: " + endTimeFormatted);
+    console.log('    TEST start date: ' + startTimeFormatted);
+    console.log('    TEST end date: ' + endTimeFormatted);
     setPlayerLineups(
       await query_all_players_lineup(
         gameId,
@@ -108,6 +108,12 @@ const Games = (props) => {
                 />
               </div>
               <div className="mt-7 ml-6 w-3/5 md:w-1/2 md:ml-7 md:mt-2">
+                <ModalPortfolioContainer title="PRIZE DESCRIPTION" textcolor="text-indigo-black" />
+                <div>
+                  {gameData?.prize_description
+                    ? gameData.prize_description
+                    : '$100 + 2 Championship Tickets'}
+                </div>
                 <ModalPortfolioContainer title="VIEW TEAMS" textcolor="text-indigo-black mb-5" />
                 {
                   /* @ts-expect-error */
