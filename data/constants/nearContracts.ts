@@ -14,6 +14,7 @@ export const MINTER_NFL = {
 }; // Near Minter contract
 
 export const MINTER_BASKETBALL = {
+  mainnet: 'pack_minter.basketball.playible.near',
   testnet: 'pack_minter.basketball.playible.testnet',
   interface: {
     viewMethods: [
@@ -80,6 +81,7 @@ export const PACK_PROMO_NFL = {
   },
 };
 export const PACK_BASKETBALL = {
+  mainnet: 'pack.pack_minter.basketball.playible.near',
   testnet: 'pack.pack_minter.basketball.playible.testnet',
   interface: {
     viewMethods: ['nft_tokens_for_owner', 'nft_total_supply', 'nft_tokens', 'nft_supply_for_owner'],
@@ -87,6 +89,7 @@ export const PACK_BASKETBALL = {
   },
 }
 export const PACK_PROMO_BASKETBALL = {
+  mainnet: 'pack.promotional.basketball.playible.near',
   testnet: 'pack.promotional.basketball.playible.testnet',
   interface: {
     viewMethods: ['nft_tokens_for_owner', 'nft_supply_for_owner'],
@@ -147,6 +150,7 @@ export const ATHLETE_PROMO_NFL = {
 };
 
 export const ATHLETE_BASKETBALL = {
+  mainnet: 'athlete.basketball.playible.near',
   testnet: 'athlete.basketball.playible.testnet',
   interface: {
     viewMethods: [
@@ -161,6 +165,7 @@ export const ATHLETE_BASKETBALL = {
   }
 }
 export const ATHLETE_PROMO_BASKETBALL = {
+  mainnet: 'athlete.promotional.basketball.playible.near',
   testnet: 'athlete.promotional.basketball.playible.testnet',
   interface: {
     viewMethods: [
@@ -191,6 +196,7 @@ export const OPENPACK_PROMO_NFL = {
   },
 };
 export const OPENPACK_BASKETBALL = {
+  mainnet: 'open_pack.basketball.playible.near',
   testnet: 'open_pack.basketball.playible.testnet',
   interface: {
     viewMethods: ['getMessages'],
@@ -198,6 +204,7 @@ export const OPENPACK_BASKETBALL = {
   },
 }
 export const OPENPACK_PROMO_BASKETBALL = {
+  mainnet: 'open_pack.promotional.basketball.playible.near',
   testnet: 'open_pack.promotional.basketball.playible.testnet',
   interface: {
     viewMethods: ['getMessages'],
@@ -229,6 +236,7 @@ export const GAME_NFL = {
   },
 }; //Game Contract
 export const GAME_BASKETBALL = {
+  mainnet: 'game.basketball.playible.near',
   testnet: 'game.basketball.playible.testnet',
   interface: {
     viewMethods: ['get_games, get_game, get_total_games, get_player_team, get_player_lineup'],
