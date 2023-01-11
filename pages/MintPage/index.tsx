@@ -474,7 +474,7 @@ export default function Home(props) {
                       setCurrentSport(e.target.value);
                     }}
                     className="bg-filter-icon bg-no-repeat bg-right bg-indigo-white ring-2 ring-offset-8 ring-indigo-black ring-opacity-25 focus:ring-2 focus:ring-indigo-black 
-                        focus:outline-none cursor-pointer text-xs iphone5:ml-8 iphone5:w-60 md:hidden lg:hidden md:text-base md:ml-8 md:mt-5 md:w-36"
+                        focus:outline-none cursor-pointer text-xs iphone5:ml-8 hidden iphone5:w-60 md:hidden lg:hidden md:text-base md:ml-8 md:mt-5 md:w-36"
                   >
                     {categoryList.map((x) => {
                       return <option value={x.name}>{x.name}</option>;
