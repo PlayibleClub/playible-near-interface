@@ -21,6 +21,6 @@ export const sportSlice = createSlice({
 });
 
 export const { setSportTypeRedux } = sportSlice.actions;
-export const getSportTypeRedux = (state) => state.sportType;
+export const getSportTypeRedux = (state) => state.sportType.sportType;
 
 export default sportSlice.reducer;
