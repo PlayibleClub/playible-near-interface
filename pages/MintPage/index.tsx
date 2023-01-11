@@ -77,7 +77,9 @@ export default function Home(props) {
   const [isClaimedBasketball, setIsClaimedBasketball] = useState(false);
   const router = useRouter();
   const [editModal, setEditModal] = useState(false);
-
+  const nflImage = '/images/packimages/NFL-SB-Pack.png';
+  const nbaImage = '/images/packimages/nbaStarterPackSoulbound.png';
+  const [testImage, setTestImage] = useState(nflImage);
   async function get_claim_status(accountId) {
     setIsClaimedFootball(
       await query_claim_status(accountId, getSportType('FOOTBALL').packPromoContract)
@@ -407,6 +409,7 @@ export default function Home(props) {
 
   useEffect(() => {
     if (router.asPath.indexOf('transactionHashes') > -1) {
+      {currentSport === 'FOOTBALL' ? setTestImage(nflImage) : setTestImage(nbaImage)}
       setEditModal(true);
     }
   }, []);
@@ -738,7 +741,7 @@ export default function Home(props) {
                 Your pack has been minted successfully!
                 <div className="flex flex-wrap flex-col mt-10 mb-5 bg-opacity-70 z-50 w-full">
                   <div className="ml-20 mb-12">
-                    <img width={240} height={340} src="/images/packimages/NFL-SB-Pack.png"></img>
+                    <img width={240} height={340} src={testImage}></img>
                   </div>
                   <Link href={'/Packs'}>
                     <button
