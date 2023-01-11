@@ -58,7 +58,14 @@ const Games = (props) => {
       )
     );
   }
+  function getAccountScore(accountId) {
+    const x = playerLineups.findIndex((x) => x.accountId === accountId);
+    return playerLineups[x]?.sumScore.toFixed(2);
+  }
 
+  function getAccountPlacement(accountId) {
+    return playerLineups.findIndex((x) => x.accountId === accountId) + 1;
+  }
   async function get_player_teams(account, game_id) {
     setPlayerTeams(
       await query_player_teams(account, game_id, getSportType(currentSport).gameContract)
@@ -107,7 +114,7 @@ const Games = (props) => {
                   alt="game-image"
                 />
               </div>
-              <div className="mt-7 ml-6 w-3/5 md:w-1/2 md:ml-7 md:mt-2">
+              <div className="mt-7 ml-6 w-3/5 md:w-full md:ml-7 md:mt-2">
                 <ModalPortfolioContainer title="PRIZE DESCRIPTION" textcolor="text-indigo-black" />
                 <div>
                   {gameData?.prize_description
@@ -128,6 +135,9 @@ const Games = (props) => {
                             teamNames={data}
                             gameId={gameId}
                             accountId={accountId}
+                            accountScore={getAccountScore(accountId)}
+                            accountPlacement={getAccountPlacement(accountId)}
+                            fromGames={true}
                             onClickFn={(data, accountId, gameId) =>
                               handleButtonClick(data, accountId, gameId)
                             }

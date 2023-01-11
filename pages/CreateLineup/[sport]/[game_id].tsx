@@ -125,6 +125,7 @@ export default function CreateLineup(props) {
                           teamNames={data}
                           gameId={gameId}
                           accountId={accountId}
+                          fromGames={false}
                           onClickFn={(data, accountId, gameId) =>
                             handleButtonClick(data, accountId, gameId)
                           }
