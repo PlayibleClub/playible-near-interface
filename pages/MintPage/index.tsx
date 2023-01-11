@@ -73,12 +73,18 @@ export default function Home(props) {
   const [useNEP141, setUseNEP141] = useState(NEP141USDT);
   const [intervalSale, setIntervalSale] = useState(0);
   const [balanceErrorMsg, setBalanceErrorMsg] = useState('');
-  const [isClaimed, setIsClaimed] = useState(false);
+  const [isClaimedFootball, setIsClaimedFootball] = useState(false);
+  const [isClaimedBasketball, setIsClaimedBasketball] = useState(false);
   const router = useRouter();
   const [editModal, setEditModal] = useState(false);
 
   async function get_claim_status(accountId) {
-    setIsClaimed(await query_claim_status(accountId, getSportType(currentSport).packPromoContract));
+    setIsClaimedFootball(
+      await query_claim_status(accountId, getSportType('FOOTBALL').packPromoContract)
+    );
+    setIsClaimedBasketball(
+      await query_claim_status(accountId, getSportType('BASKETBALL').packPromoContract)
+    );
   }
 
   function query_config_contract() {
@@ -370,9 +376,9 @@ export default function Home(props) {
     };
   }
 
-  const handleButtonClick = (e) => {
+  const handleButtonClick = (e, sport) => {
     e.preventDefault();
-    execute_claim_soulbound_pack(selector, getSportType(currentSport).packPromoContract);
+    execute_claim_soulbound_pack(selector, getSportType(sport).packPromoContract);
   };
 
   async function get_soulbound_pack(selector) {}
@@ -431,23 +437,37 @@ export default function Home(props) {
               <div className="ml-8">
                 <ModalPortfolioContainer title="MINT PACKS" textcolor="text-indigo-black" />
               </div>
-              <div className='ml-12 mt-4 md:ml-8'>
-              {isClaimed ? (
-                <button
-                  className={`bg-indigo-gray bg-opacity-40 text-indigo-white w-12 text-center hidden justify-center items-center font-montserrat p-4 text-xs mt-8`}
-                >
-                  CLAIM SOULBOUND PACK
-                </button>
-              ) : (
-                <button
-                  className="w-60 flex text-center justify-center items-center iphone5:w-64 bg-indigo-buttonblue font-montserrat text-indigo-white p-3 text-xs "
-                  onClick={(e) => handleButtonClick(e)}
-                >
-                  CLAIM SOULBOUND PACK
-                </button>
-              )}
+              <div className="ml-12 mt-4 md:flex md:flex-row md:ml-8">
+                {isClaimedFootball ? (
+                  <button
+                    className={`bg-indigo-gray bg-opacity-40 text-indigo-white w-12 text-center hidden justify-center items-center font-montserrat p-4 text-xs mt-8`}
+                  >
+                    CLAIM FOOTBALL PACK
+                  </button>
+                ) : (
+                  <button
+                    className="w-60 flex text-center justify-center items-center iphone5:w-64 bg-indigo-buttonblue font-montserrat text-indigo-white p-3 mb-4 md:mr-4 text-xs "
+                    onClick={(e) => handleButtonClick(e, 'FOOTBALL')}
+                  >
+                    CLAIM FOOTBALL PACK
+                  </button>
+                )}
+                {isClaimedBasketball ? (
+                  <button
+                    className={`bg-indigo-gray bg-opacity-40 text-indigo-white w-12 text-center hidden justify-center items-center font-montserrat p-4 text-xs mt-8`}
+                  >
+                    CLAIM BASKETBALL PACK
+                  </button>
+                ) : (
+                  <button
+                    className="w-60 flex text-center justify-center items-center iphone5:w-64 bg-indigo-buttonblue font-montserrat text-indigo-white p-3 mb-4 text-xs "
+                    onClick={(e) => handleButtonClick(e, 'BASKETBALL')}
+                  >
+                    CLAIM BASKETBALL PACK
+                  </button>
+                )}
               </div>
-              <div className="md:mr- md:mt-6 ml-6 mt-4">
+              <div className="md:mr- md:mt-0 ml-6 mt-4">
                 <form>
                   <select
                     onChange={(e) => {
@@ -489,7 +509,7 @@ export default function Home(props) {
                     </div>
                   </div>
                 </div>
-                <div className="flex md:flex-row flex-col mt-12">
+                <div className="flex md:flex-row flex-col md:ml-2 mt-12">
                   {currentSport === 'FOOTBALL' ? (
                     <div className="md:w-1/2 w-full ">
                       <Image
@@ -509,7 +529,7 @@ export default function Home(props) {
                       />
                     </div>
                   )}
-                  <div className="md:w-1/2 w-full md:mt-0 mt-5 ml-8  ">
+                  <div className="md:w-1/2 w-full md:mt-0 mt-5 ml-8 ">
                     <div className="text-xl font-bold font-monument ml-0">
                       <ModalPortfolioContainer
                         title="STARTER PACK MINT"
@@ -589,7 +609,7 @@ export default function Home(props) {
                       <div className="text-2xl font-black font-monument ">{minted}</div>
                       <div className="text-xs">YOU HAVE MINTED</div>
                     </div>
-                    <div className="mt-8 mb-0 p-0 w-4/5">
+                    <div className="mt-8 mb-0 p-0 w-9/12">
                       <ProgressBar
                         completed={parseInt(
                           (
