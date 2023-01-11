@@ -14,6 +14,7 @@ import { useWalletSelector } from '../../contexts/WalletSelectorContext';
 import BigNumber from 'bignumber.js';
 import { getConfig, getContract, getRPCProvider } from '../../utils/near';
 import { useRouter } from 'next/router';
+import { useDispatch, useSelector } from 'react-redux';
 import Modal from 'components/modals/Modal';
 import PortfolioContainer from '../../components/containers/PortfolioContainer';
 import {
@@ -29,7 +30,8 @@ import { execute_claim_soulbound_pack, query_claim_status } from 'utils/near/hel
 import Link from 'next/link';
 import { SPORT_TYPES, getSportType } from 'data/constants/sportConstants';
 import ModalPortfolioContainer from 'components/containers/ModalPortfolioContainer';
-
+import { getSportTypeRedux, setSportTypeRedux } from 'redux/athlete/sportSlice';
+import { persistor } from 'redux/athlete/store';
 const DECIMALS_NEAR = 1000000000000000000000000;
 const RESERVED_AMOUNT = 200;
 const NANO_TO_SECONDS_DENOMINATOR = 1000000;
@@ -42,9 +44,11 @@ export default function Home(props) {
     url: getRPCProvider(),
   });
   const { contract } = selector.store.getState();
+  const dispatch = useDispatch();
   const [positionList, setPositionList] = useState(SPORT_TYPES[0].positionList);
   const sportObj = SPORT_TYPES.map((x) => ({ name: x.sport, isActive: false }));
   sportObj[0].isActive = true;
+  const [sportFromRedux, setSportFromRedux] = useState(useSelector(getSportTypeRedux));
   const [categoryList, setCategoryList] = useState([...sportObj]);
   const [currentSport, setCurrentSport] = useState(sportObj[0].name);
   const options = [
@@ -380,6 +384,10 @@ export default function Home(props) {
 
   const handleButtonClick = (e, sport) => {
     e.preventDefault();
+    // new Promise(() => setTimeout(() => persistor.purge(), 200)).then(() => {
+    //   dispatch(setSportTypeRedux(sport));
+    // });
+    dispatch(setSportTypeRedux(sport));
     execute_claim_soulbound_pack(selector, getSportType(sport).packPromoContract);
   };
 
@@ -409,7 +417,10 @@ export default function Home(props) {
 
   useEffect(() => {
     if (router.asPath.indexOf('transactionHashes') > -1) {
-      {currentSport === 'FOOTBALL' ? setTestImage(nflImage) : setTestImage(nbaImage)}
+      {
+        sportFromRedux === 'FOOTBALL' ? setTestImage(nflImage) : setTestImage(nbaImage);
+      }
+      setTimeout(() => persistor.purge(), 200);
       setEditModal(true);
     }
   }, []);

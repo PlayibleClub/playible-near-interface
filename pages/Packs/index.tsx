@@ -9,6 +9,7 @@ import Main from '../../components/Main';
 import 'regenerator-runtime/runtime';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { useDispatch, useSelector } from 'react-redux';
 import PackComponent from './components/PackComponent';
 import PlayComponent from '../Play/components/PlayComponent';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
@@ -23,6 +24,8 @@ import {
   query_nft_supply_for_owner,
   query_nft_tokens_for_owner,
 } from 'utils/near/helper';
+import { getSportTypeRedux, setSportTypeRedux } from 'redux/athlete/sportSlice';
+import { persistor } from 'redux/athlete/store';
 import Modal from 'components/modals/Modal';
 import { SPORT_TYPES, getSportType } from 'data/constants/sportConstants';
 export default function Packs() {
@@ -32,6 +35,8 @@ export default function Packs() {
     url: getRPCProvider(),
   });
   const router = useRouter();
+  const dispatch = useDispatch();
+
   const [filterInfo, handleFilter] = useState(false);
   const { register, handleSubmit } = useForm();
   const [result, setResult] = useState('');
@@ -66,6 +71,8 @@ export default function Packs() {
   sportObj[0].isActive = true;
   const [sportList, setSportList] = useState([...sportObj]);
   const [currentSport, setCurrentSport] = useState(sportObj[0].sport);
+  //for soulbound claiming, redirecting, and displaying the corresponding pack image
+  const [sportFromRedux, setSportFromRedux] = useState(useSelector(getSportTypeRedux));
   const [remountComponent, setRemountComponent] = useState(0);
   const changecategoryList = (name) => {
     const tabList = [...categoryList];
@@ -181,6 +188,7 @@ export default function Packs() {
   const [isNarrowScreen, setIsNarrowScreen] = useState(false);
   const handleButtonClick = (e) => {
     e.preventDefault();
+    dispatch(setSportTypeRedux(currentSport));
     execute_claim_soulbound_pack(selector, getSportType(currentSport).packPromoContract);
   };
 
@@ -205,6 +213,10 @@ export default function Packs() {
 
   useEffect(() => {
     if (router.asPath.indexOf('transactionHashes') > -1) {
+      {
+        //add checking here, use sportFromRedux variable
+      }
+      setTimeout(() => persistor.purge(), 200);
       setEditModal(true);
     }
     // router.pathname === router.asPath ? setEditModal(false) : setEditModal(true);
@@ -299,7 +311,7 @@ export default function Packs() {
                     </button>
                   )}
                 </div>
-                <div className="grid md:grid-cols-4 iphone5:grid-cols-2 gap-y-8 mt-4 md:grid-cols-4 iphone5:mt-8 iphone5:ml-2 md:ml-7 md:mt-9 ">
+                <div className="grid iphone5:grid-cols-2 gap-y-8 mt-4 md:grid-cols-4 iphone5:mt-8 iphone5:ml-2 md:ml-7 md:mt-9 ">
                   {(categoryList[0].isActive ? packs : soulboundPacks).length > 0 &&
                     (categoryList[0].isActive ? packs : soulboundPacks)
                       .filter((data, i) => i >= packOffset && i < packOffset + packLimit)

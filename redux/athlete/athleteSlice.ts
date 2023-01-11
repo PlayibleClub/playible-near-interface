@@ -1,7 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { string } from 'prop-types';
 import { PURGE } from 'redux-persist';
-import { setSportType } from './sportSlice';
 
 const initialState = {
   athleteLineup: [],
