@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
-import { setSportType } from 'redux/athlete/sportSlice';
+import { setSportTypeRedux } from 'redux/athlete/sportSlice';
 const SportType = (props) => {
   const { sportTypes } = props;
   const dispatch = useDispatch();
@@ -12,7 +12,7 @@ const SportType = (props) => {
         <select
           onChange={(e) => {
             e.preventDefault();
-            dispatch(setSportType(e.target.value));
+            dispatch(setSportTypeRedux(e.target.value));
           }}
           className="ml-20 mr-20 bg-filter-icon bg-no-repeat bg-right bg-indigo-white
        cursor-pointer text-xs md:w-24 w-6 ring-2 ring-offset-4 ring-indigo-black ring-opacity-25"
