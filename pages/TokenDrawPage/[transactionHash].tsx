@@ -41,7 +41,7 @@ const TokenDrawPage = (props) => {
   const dispatch = useDispatch();
 
   const [videoPlaying, setVideoPlaying] = useState(true);
-
+  const [sport, setSport] = useState('');
   const [loading, setLoading] = useState(true);
 
   const [assets, setassets] = useState([]);
@@ -58,11 +58,16 @@ const TokenDrawPage = (props) => {
       'EXPERIMENTAL_tx_status',
       [query.transactionHash, accountId]
     );
-
-    console.log(queryFromNear);
-
+    //@ts-ignore:next-line
+    const receiver_id = queryFromNear.receipts[1].receiver_id;
+    setSport(
+      receiver_id.includes('.nfl.')
+        ? 'FOOTBALL'
+        : receiver_id.includes('.basketball.')
+        ? 'BASKETBALL'
+        : ''
+    );
     // See https://docs.near.org/api/rpc/transactions
-
     setAthletes(
       await Promise.all(
         // filter out all receipts, and find those that array of 8 actions (since 8 nft_mints)
@@ -132,6 +137,10 @@ const TokenDrawPage = (props) => {
       setVideoPlaying(false);
     }
   }, []);
+
+  useEffect(() => {
+    console.log(sport);
+  }, [sport]);
 
   const walletConnection = () => {
     return <p className="ml-12 mt-5">{'Waiting for wallet connection...'}</p>;
