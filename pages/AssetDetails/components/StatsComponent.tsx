@@ -155,15 +155,16 @@ const StatsComponent = (props) => {
       >
         <div className="">{positionDisplay}</div>
       </div>
-      <div className="mt-8 ml-24 ">
-        <div className="font-monument">
-          Last game stats vs{' '}
+      <div className="mt-10 ml-10 md:ml-24">
+        <div className="font-monument md:text-xl">
+          Most recent game stats &#40;against{' '}
           {athleteData[athleteData.length - 1] !== undefined
             ? athleteData[athleteData.length - 1].name
             : ''}
+          &#41;
         </div>
       </div>
-      <div className="mt-10 ml-10 md:ml-24 text-sm grid grid-rows-4 grid-cols-2 md:grid-cols-4 md:w-1/2 md:mt-14">
+      <div className="mt-4 ml-10 md:ml-24 text-sm grid grid-rows-4 grid-cols-2 md:grid-cols-4 md:w-1/2 md:mt-4">
         {athleteStat?.map((x, index) => {
           return (
             <div>
