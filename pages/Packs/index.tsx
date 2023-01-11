@@ -56,6 +56,9 @@ export default function Packs() {
   const [isClaimed, setIsClaimed] = useState(false);
   const [totalSoulboundPacks, setTotalSoulboundPacks] = useState(0);
   const [activeCategory, setCategory] = useState('NEW');
+  const nflImage = '/images/packimages/NFL-SB-Pack.png';
+  const nbaImage = '/images/packimages/nbaStarterPackSoulbound.png';
+  const [modalImage, setModalImage] = useState(nflImage);
   const [currentTotal, setCurrentTotal] = useState(0);
   const [categoryList, setcategoryList] = useState([
     {
@@ -215,11 +218,11 @@ export default function Packs() {
     if (router.asPath.indexOf('transactionHashes') > -1) {
       {
         //add checking here, use sportFromRedux variable
+        sportFromRedux === 'BASKETBALL' ? setModalImage(nbaImage) : setModalImage(nflImage);
       }
       setTimeout(() => persistor.purge(), 200);
       setEditModal(true);
     }
-    // router.pathname === router.asPath ? setEditModal(false) : setEditModal(true);
   }, []);
 
   useEffect(() => {
@@ -353,7 +356,7 @@ export default function Packs() {
               Your pack has been minted successfully!
               <div className="flex flex-wrap flex-col mt-10 mb-5 bg-opacity-70 z-50 w-full">
                 <div className="ml-20 mb-12">
-                  <img width={240} height={340} src="/images/packimages/NFL-SB-Pack.png"></img>
+                  <img width={240} height={340} src={modalImage}></img>
                 </div>
                 <Link href={router.pathname}>
                   <button
