@@ -24,6 +24,7 @@ import {
   SPORT_TYPES,
 } from 'data/constants/sportConstants';
 import { query_nft_tokens_for_owner } from 'utils/near/helper';
+import { query_nft_tokens_by_id } from 'utils/near/helper';
 interface responseExperimentalTxStatus {
   receipts: Array<receipt>;
 }
@@ -72,12 +73,19 @@ const TokenDrawPage = (props) => {
     url: getRPCProvider(),
   });
 
+  function findContract(contract) {
+    if (contract.includes(SPORT_CONTRACT_LOOKUP.football)) {
+      return fileList.find((x) => x.name === SPORT_NAME_LOOKUP.football);
+    } else if (contract.includes(SPORT_CONTRACT_LOOKUP.basketball)) {
+      return fileList.find((x) => x.name === SPORT_NAME_LOOKUP.basketball);
+    }
+  }
   const { selector, accountId } = useWalletSelector();
 
   const query_transaction = useCallback(async () => {
     const queryFromNear = await provider.sendJsonRpc<responseExperimentalTxStatus>(
       'EXPERIMENTAL_tx_status',
-      [query.transactionHash, 'kishidev.testnet']
+      [query.transactionHash, accountId]
     );
     console.log(queryFromNear);
     //@ts-ignore:next-line
@@ -98,21 +106,34 @@ const TokenDrawPage = (props) => {
       const contract = txObject.receiver_id;
       console.log(contract);
       const args = JSON.parse(decode(txObject.receipt.Action.actions[0].FunctionCall.args));
-
+      console.log(args);
       //for additional checking later for what file to use
       const isPromoContract = contract.toString().includes('promotional');
 
       if (isPromoContract) {
-        setVideoFile(fileList.find((x) => x.name === SPORT_NAME_LOOKUP.football).base);
-        setRemountComponent(Math.random());
+        await query_nft_tokens_by_id(args.token_id, contract).then((token) => {
+          //@ts-ignore:next-line
+          const pack = JSON.parse(Buffer.from(token.result));
+          const attribute = JSON.parse(pack.metadata.extra);
+          let isPromo = false;
+          console.log(attribute);
+          //soulbound token
+          switch (attribute.attributes[0].value) {
+            case '1':
+              isPromo = true;
+              break;
+            case '2':
+              isPromo = false;
+              break;
+          }
+          console.log(contract);
+          setVideoFile(isPromo ? findContract(contract).promo : findContract(contract).soulbound);
+        });
       } else {
-        if (contract.includes(SPORT_NAME_LOOKUP.football)) {
-          setVideoFile(fileList.find((x) => x.name === SPORT_NAME_LOOKUP.football).base);
-        } else if (contract.includes(SPORT_NAME_LOOKUP.basketball)) {
-          setVideoFile(fileList.find((x) => x.name === SPORT_NAME_LOOKUP.basketball).base);
-        }
+        setVideoFile(findContract(contract).base);
       }
       //await query_nft_tokens_for_owner(args.receiver_id, )
+      setRemountComponent(Math.random());
     }
 
     // See https://docs.near.org/api/rpc/transactions
