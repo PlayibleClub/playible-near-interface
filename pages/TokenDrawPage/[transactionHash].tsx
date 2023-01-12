@@ -89,6 +89,7 @@ const TokenDrawPage = (props) => {
     //@ts-ignore:next-line
     //get the last transaction to check if token was transferred successfully
     console.log(queryFromNear);
+    //@ts-ignore:next-line
     const success = queryFromNear.status.SuccessValue;
     console.log(success);
     if (success) {
