@@ -98,7 +98,7 @@ export default function Home(props) {
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const featuredImagesDesktop = [
-    '/images/basketball_starterpack_promotion_upcoming.png',
+    '/images/basketball_starterpack_publicmint.png',
     '/images/basketball_championship_ongoing.png',
   ];
 
