@@ -67,7 +67,14 @@ export const EXTRA_NBA = [
   }
 
 ]
-
+export const SPORT_CONTRACT_LOOKUP= {
+  basketball: '.basketball.',
+  football: '.nfl.',
+}
+export const SPORT_NAME_LOOKUP = {
+  basketball: 'BASKETBALL',
+  football: 'FOOTBALL',
+}
 export const SPORT_TYPES = [
   {
     key: 'NFL',
