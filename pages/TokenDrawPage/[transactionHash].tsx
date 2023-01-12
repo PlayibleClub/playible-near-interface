@@ -44,7 +44,6 @@ interface receipt {
 const TokenDrawPage = (props) => {
   const { query, result } = props;
 
-  console.log(result);
   const dispatch = useDispatch();
 
   const [videoPlaying, setVideoPlaying] = useState(true);
@@ -89,11 +88,12 @@ const TokenDrawPage = (props) => {
     );
     //@ts-ignore:next-line
     //get the last transaction to check if token was transferred successfully
-    const txResult = queryFromNear.receipts_outcome[queryFromNear.receipts_outcome.length - 1];
-    const success = JSON.parse(decode(txResult.outcome.status.SuccessValue));
+    console.log(queryFromNear);
+    const success = queryFromNear.status.SuccessValue;
+    console.log(success);
     if (success) {
       //get the last transaction that holds the token_id needed
-      const txObject = queryFromNear.receipts[queryFromNear.receipts.length - 1];
+      const txObject = queryFromNear.receipts[queryFromNear.receipts.length - 3];
       //@ts-ignore:next-line
       const contract = txObject.receiver_id;
       const args = JSON.parse(decode(txObject.receipt.Action.actions[0].FunctionCall.args));
