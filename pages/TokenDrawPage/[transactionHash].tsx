@@ -18,7 +18,12 @@ import { decode } from 'js-base64';
 import { useLazyQuery, useQuery } from '@apollo/client';
 import client from 'apollo-client';
 import { getAthleteInfoById, convertNftToAthlete } from 'utils/athlete/helper';
-
+import {
+  SPORT_NAME_LOOKUP,
+  SPORT_CONTRACT_LOOKUP,
+  SPORT_TYPES,
+} from 'data/constants/sportConstants';
+import { query_nft_tokens_for_owner } from 'utils/near/helper';
 interface responseExperimentalTxStatus {
   receipts: Array<receipt>;
 }
@@ -38,6 +43,7 @@ interface receipt {
 const TokenDrawPage = (props) => {
   const { query, result } = props;
 
+  console.log(result);
   const dispatch = useDispatch();
 
   const [videoPlaying, setVideoPlaying] = useState(true);
@@ -46,7 +52,21 @@ const TokenDrawPage = (props) => {
 
   const [assets, setassets] = useState([]);
   const [athletes, setAthletes] = useState([]);
-
+  const [fileList, setFileList] = useState([
+    {
+      name: SPORT_NAME_LOOKUP.football,
+      base: '/videos/NFL_BASE.mp4',
+      promo: '/videos/NFL_PROMO.mp4',
+      soulbound: 'videos/NFL_SB.mp4',
+    },
+    {
+      name: SPORT_NAME_LOOKUP.basketball,
+      base: '/videos/NBA_BASE.mp4',
+      promo: '/videos/NBA_PROMO.mp4',
+      soulbound: '/videos/NBA_SB.mp4',
+    },
+  ]);
+  const [videoFile, setVideoFile] = useState('');
   const provider = new providers.JsonRpcProvider({
     url: getRPCProvider(),
   });
@@ -56,17 +76,43 @@ const TokenDrawPage = (props) => {
   const query_transaction = useCallback(async () => {
     const queryFromNear = await provider.sendJsonRpc<responseExperimentalTxStatus>(
       'EXPERIMENTAL_tx_status',
-      [query.transactionHash, accountId]
+      [query.transactionHash, 'kishidev.testnet']
     );
+    console.log(queryFromNear);
     //@ts-ignore:next-line
-    const receiver_id = queryFromNear.receipts[1].receiver_id;
-    setSport(
-      receiver_id.includes('.nfl.')
-        ? 'FOOTBALL'
-        : receiver_id.includes('.basketball.')
-        ? 'BASKETBALL'
-        : ''
-    );
+    // const receiver_id = queryFromNear.receipts[1].receiver_id;
+    // setSport(
+    //   receiver_id.includes('.nfl.')
+    //     ? 'FOOTBALL'
+    //     : receiver_id.includes('.basketball.')
+    //     ? 'BASKETBALL'
+    //     : ''
+    // );
+    const txResult = queryFromNear.receipts_outcome[queryFromNear.receipts_outcome.length - 1];
+    const success = JSON.parse(decode(txResult.outcome.status.SuccessValue));
+    console.log(success);
+    if (success) {
+      const txObject = queryFromNear.receipts[queryFromNear.receipts.length - 1];
+      //@ts-ignore:next-line
+      const contract = txObject.receiver_id;
+      console.log(contract);
+      const args = JSON.parse(decode(txObject.receipt.Action.actions[0].FunctionCall.args));
+
+      //for additional checking later for what file to use
+      const isPromoContract = contract.toString().includes('promotional');
+
+      if (isPromoContract) {
+        setVideoFile(fileList.find((x) => x.name === SPORT_NAME_LOOKUP.football).base);
+      } else {
+        if (contract.includes(SPORT_NAME_LOOKUP.football)) {
+          setVideoFile(fileList.find((x) => x.name === SPORT_NAME_LOOKUP.football).base);
+        } else if (contract.includes(SPORT_NAME_LOOKUP.basketball)) {
+          setVideoFile(fileList.find((x) => x.name === SPORT_NAME_LOOKUP.basketball).base);
+        }
+      }
+      //await query_nft_tokens_for_owner(args.receiver_id, )
+    }
+
     // See https://docs.near.org/api/rpc/transactions
     setAthletes(
       await Promise.all(
@@ -194,7 +240,7 @@ const TokenDrawPage = (props) => {
       </>
     );
   };
-
+  //"/videos/starter-pack-white.mp4"
   return (
     <>
       <Container activeName="SQUAD">
@@ -202,8 +248,8 @@ const TokenDrawPage = (props) => {
           <Main color="indigo-white">
             {videoPlaying ? (
               <div className="player-wrapper">
-                <video className="open-pack-video" autoPlay muted onEnded={onVideoEnded}>
-                  <source src="/videos/starter-pack-white.mp4" type="video/mp4" />
+                <video className={videoFile} autoPlay muted onEnded={onVideoEnded}>
+                  <source src={videoFile} type="video/mp4" />
                   Your browser does not support HTML5 video.
                 </video>
               </div>
@@ -261,6 +307,24 @@ export async function getServerSideProps(ctx) {
     // true if successful
     // false if unsuccessful
     result = providers.getTransactionLastResult(transaction);
+    // const { accountId } = useWalletSelector();
+    // const txn = useCallback(async () => {
+    //   const fromNear = await provider.sendJsonRpc<responseExperimentalTxStatus>(
+    //     'EXPERIMENTAL_tx_status',
+    //     [query.transactionHash, accountId]
+    //   );
+    //   //@ts-ignore:next-line
+    //   const txResult = fromNear.receipts_outcome[fromNear.receipts_outcome.length - 1];
+    //   const success = JSON.parse(decode(txResult.outcome.status.SuccessValue));
+    //   if(success){
+    //     const txObject = fromNear.receipts[fromNear.receipts.length - 1];
+    //     const contractToQuery = txObject.receiver_id;
+    //     const args = JSON.parse(decode(txObject.receipt.Action.actions[0].FunctionCall.args));
+
+    //     const isPromoContract = contractToQuery.toString().includes('promotional');
+    //     const packInfo = await query_nft_tokens_for_owner()
+    //   }
+    // }, []);
   }
 
   return {
