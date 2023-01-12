@@ -81,11 +81,18 @@ export const EXTRA_NBA = [
     key: ['PG', 'SG', 'SF', 'PF', 'C'],
   },
 ];
-
+export const SPORT_CONTRACT_LOOKUP = {
+  basketball: '.basketball.',
+  football: '.nfl.',
+};
+export const SPORT_NAME_LOOKUP = {
+  basketball: 'BASKETBALL',
+  football: 'FOOTBALL',
+};
 export const SPORT_TYPES = [
   {
     key: 'NFL',
-    sport: 'FOOTBALL',
+    sport: SPORT_NAME_LOOKUP.football,
     mintContract: getContract(MINTER_NFL),
     packContract: getContract(PACK_NFL),
     packPromoContract: getContract(PACK_PROMO_NFL),
@@ -99,7 +106,7 @@ export const SPORT_TYPES = [
   },
   {
     key: 'NBA',
-    sport: 'BASKETBALL',
+    sport: SPORT_NAME_LOOKUP.basketball,
     mintContract: getContract(MINTER_BASKETBALL),
     packContract: getContract(PACK_BASKETBALL),
     packPromoContract: getContract(PACK_PROMO_BASKETBALL),
