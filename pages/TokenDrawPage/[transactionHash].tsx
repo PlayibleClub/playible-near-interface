@@ -250,7 +250,7 @@ const TokenDrawPage = (props) => {
           <Main color="indigo-white">
             {videoPlaying ? (
               <div key={remountComponent} className="player-wrapper">
-                <video className={videoFile} autoPlay muted onEnded={onVideoEnded}>
+                <video className="open-pack-video" autoPlay muted onEnded={onVideoEnded}>
                   <source src={videoFile} type="video/mp4" />
                   Your browser does not support HTML5 video.
                 </video>
