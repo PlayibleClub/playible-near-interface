@@ -87,26 +87,16 @@ const TokenDrawPage = (props) => {
       'EXPERIMENTAL_tx_status',
       [query.transactionHash, accountId]
     );
-    console.log(queryFromNear);
     //@ts-ignore:next-line
-    // const receiver_id = queryFromNear.receipts[1].receiver_id;
-    // setSport(
-    //   receiver_id.includes('.nfl.')
-    //     ? 'FOOTBALL'
-    //     : receiver_id.includes('.basketball.')
-    //     ? 'BASKETBALL'
-    //     : ''
-    // );
+    //get the last transaction to check if token was transferred successfully
     const txResult = queryFromNear.receipts_outcome[queryFromNear.receipts_outcome.length - 1];
     const success = JSON.parse(decode(txResult.outcome.status.SuccessValue));
-    console.log(success);
     if (success) {
+      //get the last transaction that holds the token_id needed
       const txObject = queryFromNear.receipts[queryFromNear.receipts.length - 1];
       //@ts-ignore:next-line
       const contract = txObject.receiver_id;
-      console.log(contract);
       const args = JSON.parse(decode(txObject.receipt.Action.actions[0].FunctionCall.args));
-      console.log(args);
       //for additional checking later for what file to use
       const isPromoContract = contract.toString().includes('promotional');
 
@@ -117,16 +107,15 @@ const TokenDrawPage = (props) => {
           const attribute = JSON.parse(pack.metadata.extra);
           let isPromo = false;
           console.log(attribute);
-          //soulbound token
+
           switch (attribute.attributes[0].value) {
-            case '1':
+            case '1': //promotional, one-time use token
               isPromo = true;
               break;
-            case '2':
+            case '2': //soulbound token
               isPromo = false;
               break;
           }
-          console.log(contract);
           setVideoFile(isPromo ? findContract(contract).promo : findContract(contract).soulbound);
         });
       } else {
