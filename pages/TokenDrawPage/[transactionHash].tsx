@@ -104,7 +104,7 @@ const TokenDrawPage = (props) => {
 
       if (isPromoContract) {
         setVideoFile(fileList.find((x) => x.name === SPORT_NAME_LOOKUP.football).base);
-        setRemountComponent(0);
+        setRemountComponent(Math.random());
       } else {
         if (contract.includes(SPORT_NAME_LOOKUP.football)) {
           setVideoFile(fileList.find((x) => x.name === SPORT_NAME_LOOKUP.football).base);
