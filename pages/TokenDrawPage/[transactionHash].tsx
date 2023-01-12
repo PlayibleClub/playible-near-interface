@@ -58,7 +58,7 @@ const TokenDrawPage = (props) => {
       name: SPORT_NAME_LOOKUP.football,
       base: '/videos/NFL_BASE.mp4',
       promo: '/videos/NFL_PROMO.mp4',
-      soulbound: 'videos/NFL_SB.mp4',
+      soulbound: '/videos/NFL_SB.mp4',
     },
     {
       name: SPORT_NAME_LOOKUP.basketball,
