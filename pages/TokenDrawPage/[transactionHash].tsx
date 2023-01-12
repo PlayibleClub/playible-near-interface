@@ -52,6 +52,7 @@ const TokenDrawPage = (props) => {
 
   const [assets, setassets] = useState([]);
   const [athletes, setAthletes] = useState([]);
+  const [remountComponent, setRemountComponent] = useState(0);
   const [fileList, setFileList] = useState([
     {
       name: SPORT_NAME_LOOKUP.football,
@@ -103,6 +104,7 @@ const TokenDrawPage = (props) => {
 
       if (isPromoContract) {
         setVideoFile(fileList.find((x) => x.name === SPORT_NAME_LOOKUP.football).base);
+        setRemountComponent(0);
       } else {
         if (contract.includes(SPORT_NAME_LOOKUP.football)) {
           setVideoFile(fileList.find((x) => x.name === SPORT_NAME_LOOKUP.football).base);
@@ -247,7 +249,7 @@ const TokenDrawPage = (props) => {
         <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
           <Main color="indigo-white">
             {videoPlaying ? (
-              <div className="player-wrapper">
+              <div key={remountComponent} className="player-wrapper">
                 <video className={videoFile} autoPlay muted onEnded={onVideoEnded}>
                   <source src={videoFile} type="video/mp4" />
                   Your browser does not support HTML5 video.
