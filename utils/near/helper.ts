@@ -1,17 +1,26 @@
 import { providers } from 'near-api-js';
 import { getContract, getRPCProvider } from 'utils/near';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
-import { GAME_NFL, ATHLETE_NFL, PACK_PROMO_NFL, PACK_NFL, ATHLETE_PROMO_NFL } from 'data/constants/nearContracts';
-import { convertNftToAthlete, getAthleteInfoById, getAthleteInfoByIdWithDate } from 'utils/athlete/helper';
+import {
+  GAME_NFL,
+  ATHLETE_NFL,
+  PACK_PROMO_NFL,
+  PACK_NFL,
+  ATHLETE_PROMO_NFL,
+} from 'data/constants/nearContracts';
+import {
+  convertNftToAthlete,
+  getAthleteInfoById,
+  getAthleteInfoByIdWithDate,
+} from 'utils/athlete/helper';
 import React, { useEffect, useState } from 'react';
 import { DEFAULT_MAX_FEES, MINT_STORAGE_COST } from 'data/constants/gasFees';
 import BigNumber from 'bignumber.js';
 import { getSportType } from 'data/constants/sportConstants';
-import moment, {Moment} from 'moment';
+import moment, { Moment } from 'moment';
 const provider = new providers.JsonRpcProvider({
   url: getRPCProvider(),
 });
-
 
 async function query_game_data(game_id, contract) {
   const query = JSON.stringify({
@@ -42,16 +51,23 @@ async function query_nft_token_by_id(token_id, currentSport, start_time, end_tim
     .query({
       request_type: 'call_function',
       finality: 'optimistic',
-      account_id: token_id.includes('SB') ? getSportType(currentSport).promoContract : getSportType(currentSport).regContract,
+      account_id: token_id.includes('SB')
+        ? getSportType(currentSport).promoContract
+        : getSportType(currentSport).regContract,
       method_name: 'nft_token_by_id',
       args_base64: Buffer.from(query).toString('base64'),
     })
     .then(async (data) => {
       //@ts-ignore:next-line
       const result = JSON.parse(Buffer.from(data.result).toString());
-      const result_two = 
-        currentSport === 'FOOTBALL' ? await getAthleteInfoById(await convertNftToAthlete(result)) 
-        : await getAthleteInfoByIdWithDate(await convertNftToAthlete(result), start_time, end_time);
+      const result_two =
+        currentSport === 'FOOTBALL'
+          ? await getAthleteInfoById(await convertNftToAthlete(result))
+          : await getAthleteInfoByIdWithDate(
+              await convertNftToAthlete(result),
+              start_time,
+              end_time
+            );
       return result_two;
     });
 }
@@ -98,14 +114,23 @@ async function query_all_players_lineup(game_id, week, currentSport, start_time,
               ...lineupItem,
               stats_breakdown:
                 lineupItem.stats_breakdown
-                  .filter(
-                    (statType) =>
-                      currentSport === 'FOOTBALL' ? statType.type == 'weekly' && statType.played == 1 && statType.week == week
-                      : currentSport === 'BASKETBALL' ? statType.type == 'daily' && statType.played == 1 : ''
+                  .filter((statType) =>
+                    currentSport === 'FOOTBALL'
+                      ? statType.type == 'weekly' && statType.played == 1 && statType.week == week
+                      : currentSport === 'BASKETBALL'
+                      ? statType.type == 'daily' && statType.played == 1
+                      : ''
                   )
                   .map((item) => {
-                    console.log("fs " + item.fantasyScore + " from " + lineupItem.name + " w/ date " + item.gameDate);
-                    console.log("playible start: " + start_time)
+                    console.log(
+                      'fs ' +
+                        item.fantasyScore +
+                        ' from ' +
+                        lineupItem.name +
+                        ' w/ date ' +
+                        item.gameDate
+                    );
+                    console.log('playible start: ' + start_time);
                     return item.fantasyScore;
                   })[0] || 0,
             };
@@ -140,7 +165,6 @@ async function query_nft_tokens_by_id(token_id, contract) {
     args_base64: Buffer.from(query).toString('base64'),
   });
 }
-
 
 async function query_filter_supply_for_owner(accountId, position, team, name, contract) {
   const query = JSON.stringify({
@@ -408,6 +432,6 @@ export {
   query_nft_supply_for_owner,
   query_nft_tokens_for_owner,
   query_claim_status,
+  query_nft_token_by_id,
   execute_claim_soulbound_pack,
-
 };

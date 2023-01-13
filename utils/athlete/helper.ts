@@ -38,7 +38,7 @@ async function getAthleteInfoByIdWithDate(item, from, to) {
   let value = item.extra.map((item) => item.value);
   const { data } = await client.query({
     query: GET_ATHLETE_BY_ID_DATE,
-    variables: { getAthleteById: parseFloat(value[0]), from : from, to : to},
+    variables: { getAthleteById: parseFloat(value[0]), from: from, to: to },
   });
   const basketball = item.token_id.includes('2000');
   const diff = item.token_id.includes('SB') ? 1 : basketball ? 1 : 0;
@@ -56,7 +56,7 @@ async function getAthleteInfoByIdWithDate(item, from, to) {
     isOpen: false,
     animation: data.getAthleteById.nftAnimation,
     image: item.metadata.media,
-    // fantasy_score: getAvgFantasyScore(data.getAthleteById.stats),
+    fantasy_score: getDailyFantasyScore(data.getAthleteById.stats),
     stats_breakdown: data.getAthleteById.stats,
     isInGame: item.metadata['starts_at'] > getUTCTimestampFromLocal() ? true : false,
   };
@@ -73,6 +73,15 @@ function getAvgFantasyScore(array) {
   }
 }
 
+function getDailyFantasyScore(array) {
+  if (Array.isArray(array) && array.length > 0) {
+    return array.filter((item) => {
+      return item.type == 'daily' || item.type == 'weekly';
+    })[0].fantasyScore;
+  } else {
+    return 0;
+  }
+}
 function convertNftToAthlete(item) {
   const token_metadata = item.token_metadata || item.metadata;
 
@@ -87,7 +96,7 @@ function convertNftToAthlete(item) {
   };
 }
 
-function getPositionDisplay(position, currentSport){
+function getPositionDisplay(position, currentSport) {
   let flex = false;
   let found;
   getSportType(currentSport).extra.forEach((x) => {
@@ -109,4 +118,4 @@ function getPositionDisplay(position, currentSport){
   }
 }
 
-export { convertNftToAthlete, getAthleteInfoById, getAthleteInfoByIdWithDate, getPositionDisplay};
+export { convertNftToAthlete, getAthleteInfoById, getAthleteInfoByIdWithDate, getPositionDisplay };
