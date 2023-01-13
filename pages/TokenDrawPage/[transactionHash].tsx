@@ -12,7 +12,7 @@ import Main from '../../components/Main';
 import 'regenerator-runtime/runtime';
 import { BrowserView, MobileView, isBrowser, isMobile } from 'react-device-detect';
 import { transactions, utils, WalletConnection, providers } from 'near-api-js';
-import { getRPCProvider, getContract } from 'utils/near';
+import { getRPCProvider, getContract, getConfig } from 'utils/near';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
 import { decode } from 'js-base64';
 import { useLazyQuery, useQuery } from '@apollo/client';
@@ -81,8 +81,71 @@ const TokenDrawPage = (props) => {
     }
   }
   const { selector, accountId } = useWalletSelector();
+  const query_transaction_testnet = useCallback(async () => {
+    const queryFromNear = await provider.sendJsonRpc<responseExperimentalTxStatus>(
+      'EXPERIMENTAL_tx_status',
+      [query.transactionHash, accountId]
+    );
+    //@ts-ignore:next-line
+    //get the last transaction to check if token was transferred successfully
+    console.log(queryFromNear);
+    //@ts-ignore:next-line
+    const success = JSON.parse(decode(txResult.outcome.status.SuccessValue));
+    console.log(success);
+    if (success) {
+      //get the last transaction that holds the token_id needed
+      const txObject = queryFromNear.receipts[queryFromNear.receipts.length - 1];
+      //@ts-ignore:next-line
+      const contract = txObject.receiver_id;
+      const args = JSON.parse(decode(txObject.receipt.Action.actions[0].FunctionCall.args));
+      //for additional checking later for what file to use
+      const isPromoContract = contract.toString().includes('promotional');
 
-  const query_transaction = useCallback(async () => {
+      if (isPromoContract) {
+        await query_nft_tokens_by_id(args.token_id, contract).then((token) => {
+          //@ts-ignore:next-line
+          const pack = JSON.parse(Buffer.from(token.result));
+          const attribute = JSON.parse(pack.metadata.extra);
+          let isPromo = false;
+          console.log(attribute);
+
+          switch (attribute.attributes[0].value) {
+            case '1': //promotional, one-time use token
+              isPromo = true;
+              break;
+            case '2': //soulbound token
+              isPromo = false;
+              break;
+          }
+          setVideoFile(isPromo ? findContract(contract).promo : findContract(contract).soulbound);
+        });
+      } else {
+        setVideoFile(findContract(contract).base);
+      }
+      //await query_nft_tokens_for_owner(args.receiver_id, )
+      setRemountComponent(Math.random());
+    }
+
+    // See https://docs.near.org/api/rpc/transactions
+    setAthletes(
+      await Promise.all(
+        // filter out all receipts, and find those that array of 8 actions (since 8 nft_mints)
+        queryFromNear.receipts
+          .filter((item) => {
+            return item.receipt.Action.actions.length == 8;
+          })[0]
+          // decode the arguments of nft_mint, and determine the json
+          .receipt.Action.actions.map((item) => {
+            return JSON.parse(decode(item.FunctionCall.args));
+          })
+          // get metadata
+          .map(convertNftToAthlete)
+          .map(getAthleteInfoById)
+      )
+    );
+    setLoading(false);
+  }, []);
+  const query_transaction_mainnet = useCallback(async () => {
     const queryFromNear = await provider.sendJsonRpc<responseExperimentalTxStatus>(
       'EXPERIMENTAL_tx_status',
       [query.transactionHash, accountId]
@@ -183,8 +246,15 @@ const TokenDrawPage = (props) => {
   };
 
   useEffect(() => {
-    query_transaction().catch(console.error);
-  }, [query_transaction]);
+    switch (getConfig()) {
+      case 'mainnet':
+        query_transaction_mainnet().catch(console.error);
+        break;
+      case 'testnet':
+        query_transaction_testnet().catch(console.error);
+        break;
+    }
+  }, [query_transaction_mainnet, query_transaction_testnet]);
 
   const onVideoEnded = () => {
     setVideoPlaying(false);
