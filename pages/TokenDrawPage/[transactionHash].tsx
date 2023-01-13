@@ -88,6 +88,7 @@ const TokenDrawPage = (props) => {
     );
     //@ts-ignore:next-line
     //get the last transaction to check if token was transferred successfully
+    const txResult = queryFromNear.receipts_outcome[queryFromNear.receipts_outcome.length - 1];
     console.log(queryFromNear);
     //@ts-ignore:next-line
     const success = JSON.parse(decode(txResult.outcome.status.SuccessValue));
