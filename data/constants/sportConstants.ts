@@ -42,7 +42,7 @@ export const EXTRA_NFL = [
   },
   {
     name: 'SUPERFLEX',
-    key: ['QR', 'RB', 'WR', 'TE'],
+    key: ['QB', 'RB', 'WR', 'TE'],
   },
 ];
 export const NBA_POSITIONS = [
