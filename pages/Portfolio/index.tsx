@@ -468,6 +468,8 @@ const Portfolio = () => {
                           isInGame={item.isInGame}
                           currentSport={currentSport}
                           fromPortfolio={true}
+                          isActive={item.isActive}
+                          isInjured={item.isInjured}
                         ></PerformerContainer>
                       );
                     })}

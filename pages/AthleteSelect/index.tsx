@@ -429,6 +429,8 @@ const AthleteSelect = (props) => {
                       isSelected={true}
                       isInGame={item.isInGame}
                       fromPortfolio={false}
+                      isActive={item.isActive}
+                      isInjured={item.isInjured}
                     />
                   </div>
                 ) : (
@@ -449,6 +451,8 @@ const AthleteSelect = (props) => {
                         uri={item.image}
                         index={accountAthleteIndex}
                         fromPortfolio={false}
+                        isActive={item.isActive}
+                        isInjured={item.isInjured}
                       />
                     </div>
                   </label>
