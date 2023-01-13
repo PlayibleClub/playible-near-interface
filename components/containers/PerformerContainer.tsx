@@ -15,10 +15,12 @@ const PerformerContainer = (props) => {
     AvgScore,
     id,
     rarity,
+    isActive,
     status,
     index,
     hoverable = true,
     athletePosition,
+    isInjured,
     isInGame,
     isSelected,
     fromPortfolio,
@@ -74,7 +76,19 @@ const PerformerContainer = (props) => {
       <div className="h-1/2 flex justify-center mb-6">
         <div className="flex flex-col mt-4">
           <div className="mt-2 text-xs font-bold uppercase">{AthleteName}</div>
-          <div className="mt-4 text-xs font-thin">FANTASY SCORE</div>
+          <div>
+            <div className="relative ml-28">
+              {isInjured ? (
+                <div className="rounded-full mt-4 bg-indigo-red w-3 h-3 absolute "></div>
+              ) : isActive ? (
+                <div className="mt-4 -ml-2 rounded-full bg-indigo-green w-3 h-3  absolute"></div>
+              ) : (
+                <div className="mt-4 -ml-2 rounded-full bg-indigo-red w-3 h-3  absolute"></div>
+              )}
+            </div>
+          </div>
+          <div className="mt-4 text-xs font-thin">FANTASY SCORE </div>
+
           <div className="text-xs font-bold">{AvgScore}</div>
         </div>
       </div>
@@ -99,6 +113,8 @@ PerformerContainer.propTypes = {
   isSelected: PropTypes.bool,
   currentSport: PropTypes.string,
   fromPortfolio: PropTypes.bool,
+  isInjured: PropTypes.bool,
+  isActive: PropTypes.bool,
 };
 
 export default PerformerContainer;
