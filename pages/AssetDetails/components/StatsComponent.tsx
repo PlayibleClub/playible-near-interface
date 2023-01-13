@@ -150,12 +150,12 @@ const StatsComponent = (props) => {
   return (
     <>
       <div
-        className="flex h-1/8 w-1/3 ml-24 -mt-16 justify-center content-center select-none text-center text-4xl 
+        className="flex h-1/8 w-3/4 ml-10 md:w-1/3 -mt-16 justify-center content-center select-none text-center text-4xl 
             bg-indigo-black font-monument text-indigo-white p-2 pl-5"
       >
         <div className="">{positionDisplay}</div>
       </div>
-      <div className="mt-10 ml-10 md:ml-24">
+      <div className="mt-10 ml-10 md:ml-10">
         <div className="font-monument md:text-xl">
           Most recent game stats &#40;against{' '}
           {athleteData[athleteData.length - 1] !== undefined
@@ -164,7 +164,7 @@ const StatsComponent = (props) => {
           &#41;
         </div>
       </div>
-      <div className="mt-4 ml-10 md:ml-24 text-sm grid grid-rows-4 grid-cols-2 md:grid-cols-4 md:w-1/2 md:mt-4">
+      <div className="mt-4 ml-10 md:ml-10 text-sm grid grid-rows-4 grid-cols-2 md:grid-cols-4 md:w-1/2 md:mt-4">
         {athleteStat?.map((x, index) => {
           return (
             <div>
