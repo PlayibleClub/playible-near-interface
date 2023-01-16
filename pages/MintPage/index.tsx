@@ -14,6 +14,7 @@ import { useWalletSelector } from '../../contexts/WalletSelectorContext';
 import BigNumber from 'bignumber.js';
 import { getConfig, getContract, getRPCProvider } from '../../utils/near';
 import { useRouter } from 'next/router';
+import { useDispatch, useSelector } from 'react-redux';
 import Modal from 'components/modals/Modal';
 import PortfolioContainer from '../../components/containers/PortfolioContainer';
 import {
@@ -29,7 +30,8 @@ import { execute_claim_soulbound_pack, query_claim_status } from 'utils/near/hel
 import Link from 'next/link';
 import { SPORT_TYPES, getSportType } from 'data/constants/sportConstants';
 import ModalPortfolioContainer from 'components/containers/ModalPortfolioContainer';
-
+import { getSportTypeRedux, setSportTypeRedux } from 'redux/athlete/sportSlice';
+import { persistor } from 'redux/athlete/store';
 const DECIMALS_NEAR = 1000000000000000000000000;
 const RESERVED_AMOUNT = 200;
 const NANO_TO_SECONDS_DENOMINATOR = 1000000;
@@ -42,9 +44,11 @@ export default function Home(props) {
     url: getRPCProvider(),
   });
   const { contract } = selector.store.getState();
+  const dispatch = useDispatch();
   const [positionList, setPositionList] = useState(SPORT_TYPES[0].positionList);
   const sportObj = SPORT_TYPES.map((x) => ({ name: x.sport, isActive: false }));
   sportObj[0].isActive = true;
+  const [sportFromRedux, setSportFromRedux] = useState(useSelector(getSportTypeRedux));
   const [categoryList, setCategoryList] = useState([...sportObj]);
   const [currentSport, setCurrentSport] = useState(sportObj[0].name);
   const options = [
@@ -73,12 +77,20 @@ export default function Home(props) {
   const [useNEP141, setUseNEP141] = useState(NEP141USDT);
   const [intervalSale, setIntervalSale] = useState(0);
   const [balanceErrorMsg, setBalanceErrorMsg] = useState('');
-  const [isClaimed, setIsClaimed] = useState(false);
+  const [isClaimedFootball, setIsClaimedFootball] = useState(false);
+  const [isClaimedBasketball, setIsClaimedBasketball] = useState(false);
   const router = useRouter();
   const [editModal, setEditModal] = useState(false);
-
+  const nflImage = '/images/packimages/NFL-SB-Pack.png';
+  const nbaImage = '/images/packimages/nbaStarterPackSoulbound.png';
+  const [modalImage, setModalImage] = useState(nflImage);
   async function get_claim_status(accountId) {
-    setIsClaimed(await query_claim_status(accountId, getSportType(currentSport).packPromoContract));
+    setIsClaimedFootball(
+      await query_claim_status(accountId, getSportType('FOOTBALL').packPromoContract)
+    );
+    setIsClaimedBasketball(
+      await query_claim_status(accountId, getSportType('BASKETBALL').packPromoContract)
+    );
   }
 
   function query_config_contract() {
@@ -370,9 +382,13 @@ export default function Home(props) {
     };
   }
 
-  const handleButtonClick = (e) => {
+  const handleButtonClick = (e, sport) => {
     e.preventDefault();
-    execute_claim_soulbound_pack(selector, getSportType(currentSport).packPromoContract);
+    // new Promise(() => setTimeout(() => persistor.purge(), 200)).then(() => {
+    //   dispatch(setSportTypeRedux(sport));
+    // });
+    dispatch(setSportTypeRedux(sport));
+    execute_claim_soulbound_pack(selector, getSportType(sport).packPromoContract);
   };
 
   async function get_soulbound_pack(selector) {}
@@ -401,10 +417,13 @@ export default function Home(props) {
 
   useEffect(() => {
     if (router.asPath.indexOf('transactionHashes') > -1) {
+      {
+        sportFromRedux === 'BASKETBALL' ? setModalImage(nbaImage) : setModalImage(nflImage);
+      }
+      setTimeout(() => persistor.purge(), 200);
       setEditModal(true);
     }
   }, []);
-
   return (
     <>
       <Container activeName="MINT">
@@ -431,30 +450,44 @@ export default function Home(props) {
               <div className="ml-8">
                 <ModalPortfolioContainer title="MINT PACKS" textcolor="text-indigo-black" />
               </div>
-              <div className='ml-12 mt-4 md:ml-8'>
-              {isClaimed ? (
-                <button
-                  className={`bg-indigo-gray bg-opacity-40 text-indigo-white w-12 text-center hidden justify-center items-center font-montserrat p-4 text-xs mt-8`}
-                >
-                  CLAIM SOULBOUND PACK
-                </button>
-              ) : (
-                <button
-                  className="w-60 flex text-center justify-center items-center iphone5:w-64 bg-indigo-buttonblue font-montserrat text-indigo-white p-3 text-xs "
-                  onClick={(e) => handleButtonClick(e)}
-                >
-                  CLAIM SOULBOUND PACK
-                </button>
-              )}
+              <div className="ml-12 mt-4 md:flex md:flex-row md:ml-8">
+                {isClaimedFootball ? (
+                  <button
+                    className={`bg-indigo-gray bg-opacity-40 text-indigo-white w-12 text-center hidden justify-center items-center font-montserrat p-4 text-xs mt-8`}
+                  >
+                    CLAIM FOOTBALL PACK
+                  </button>
+                ) : (
+                  <button
+                    className="w-60 flex text-center justify-center items-center iphone5:w-64 bg-indigo-buttonblue font-montserrat text-indigo-white p-3 mb-4 md:mr-4 text-xs "
+                    onClick={(e) => handleButtonClick(e, 'FOOTBALL')}
+                  >
+                    CLAIM FOOTBALL PACK
+                  </button>
+                )}
+                {isClaimedBasketball ? (
+                  <button
+                    className={`bg-indigo-gray bg-opacity-40 text-indigo-white w-12 text-center hidden justify-center items-center font-montserrat p-4 text-xs mt-8`}
+                  >
+                    CLAIM BASKETBALL PACK
+                  </button>
+                ) : (
+                  <button
+                    className="w-60 flex text-center justify-center items-center iphone5:w-64 bg-indigo-buttonblue font-montserrat text-indigo-white p-3 mb-4 text-xs "
+                    onClick={(e) => handleButtonClick(e, 'BASKETBALL')}
+                  >
+                    CLAIM BASKETBALL PACK
+                  </button>
+                )}
               </div>
-              <div className="md:mr- md:mt-6 ml-6 mt-4">
+              <div className="md:mr- md:mt-0 ml-6 mt-4">
                 <form>
                   <select
                     onChange={(e) => {
                       setCurrentSport(e.target.value);
                     }}
                     className="bg-filter-icon bg-no-repeat bg-right bg-indigo-white ring-2 ring-offset-8 ring-indigo-black ring-opacity-25 focus:ring-2 focus:ring-indigo-black 
-                        focus:outline-none cursor-pointer text-xs iphone5:ml-8 iphone5:w-60 md:hidden lg:hidden md:text-base md:ml-8 md:mt-5 md:w-36"
+                        focus:outline-none cursor-pointer text-xs iphone5:ml-8 hidden iphone5:w-60 md:hidden lg:hidden md:text-base md:ml-8 md:mt-5 md:w-36"
                   >
                     {categoryList.map((x) => {
                       return <option value={x.name}>{x.name}</option>;
@@ -489,7 +522,7 @@ export default function Home(props) {
                     </div>
                   </div>
                 </div>
-                <div className="flex md:flex-row flex-col mt-12">
+                <div className="flex md:flex-row flex-col md:ml-2 mt-12">
                   {currentSport === 'FOOTBALL' ? (
                     <div className="md:w-1/2 w-full ">
                       <Image
@@ -509,7 +542,7 @@ export default function Home(props) {
                       />
                     </div>
                   )}
-                  <div className="md:w-1/2 w-full md:mt-0 mt-5 ml-8  ">
+                  <div className="md:w-1/2 w-full md:mt-0 mt-5 ml-8 ">
                     <div className="text-xl font-bold font-monument ml-0">
                       <ModalPortfolioContainer
                         title="STARTER PACK MINT"
@@ -589,7 +622,7 @@ export default function Home(props) {
                       <div className="text-2xl font-black font-monument ">{minted}</div>
                       <div className="text-xs">YOU HAVE MINTED</div>
                     </div>
-                    <div className="mt-8 mb-0 p-0 w-4/5">
+                    <div className="mt-8 mb-0 p-0 w-9/12">
                       <ProgressBar
                         completed={parseInt(
                           (
@@ -718,7 +751,7 @@ export default function Home(props) {
                 Your pack has been minted successfully!
                 <div className="flex flex-wrap flex-col mt-10 mb-5 bg-opacity-70 z-50 w-full">
                   <div className="ml-20 mb-12">
-                    <img width={240} height={340} src="/images/packimages/NFL-SB-Pack.png"></img>
+                    <img width={240} height={340} src={modalImage}></img>
                   </div>
                   <Link href={'/Packs'}>
                     <button

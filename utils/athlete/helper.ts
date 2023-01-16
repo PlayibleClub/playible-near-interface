@@ -100,7 +100,6 @@ function getPositionDisplay(position, currentSport) {
   let flex = false;
   let found;
   getSportType(currentSport).extra.forEach((x) => {
-    console.log(x.key.toString() + ' = ' + position.toString());
     if (x.key.toString() === position.toString()) {
       found = x.name;
       flex = true;
@@ -111,6 +110,7 @@ function getPositionDisplay(position, currentSport) {
   // if(position.length === 3) return 'FLEX';
   // if(position.length === 4) return 'SUPERFLEX';
   if (flex) {
+    flex = false;
     return found;
   } else {
     found = getSportType(currentSport).positionList.find((x) => x.key === position[0]);
