@@ -16,8 +16,8 @@ import {
 import React, { useEffect, useState } from 'react';
 import { DEFAULT_MAX_FEES, MINT_STORAGE_COST } from 'data/constants/gasFees';
 import BigNumber from 'bignumber.js';
-import { getSportType } from 'data/constants/sportConstants';
-import moment, { Moment } from 'moment';
+import { getSportType, SPORT_NAME_LOOKUP } from 'data/constants/sportConstants';
+import moment, {Moment} from 'moment';
 const provider = new providers.JsonRpcProvider({
   url: getRPCProvider(),
 });
@@ -114,12 +114,10 @@ async function query_all_players_lineup(game_id, week, currentSport, start_time,
               ...lineupItem,
               stats_breakdown:
                 lineupItem.stats_breakdown
-                  .filter((statType) =>
-                    currentSport === 'FOOTBALL'
-                      ? statType.type == 'weekly' && statType.played == 1 && statType.week == week
-                      : currentSport === 'BASKETBALL'
-                      ? statType.type == 'daily' && statType.played == 1
-                      : ''
+                  .filter(
+                    (statType) =>
+                      currentSport ===  SPORT_NAME_LOOKUP.football ? statType.type == 'weekly' && statType.played == 1 && statType.week == week && statType.season == nflSeason
+                      : currentSport === SPORT_NAME_LOOKUP.basketball ? statType.type == 'daily' && statType.played == 1 : ''
                   )
                   .map((item) => {
                     console.log(
