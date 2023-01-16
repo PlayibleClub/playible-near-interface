@@ -77,6 +77,16 @@ const AssetDetails = (props) => {
     return totalGames;
   }
 
+  function getGamesPlayedNba() {
+    let totalGames = 0;
+    athlete?.stats_breakdown.forEach((game) => {
+      if (game.type === 'season') {
+        totalGames = game.played;
+      }
+    });
+    return totalGames;
+  }
+
   console.log(athlete?.primary_id);
 
   return (
@@ -138,7 +148,13 @@ const AssetDetails = (props) => {
           </div>
           <div className="ml-4 mr-5 p-4 border border-indigo-slate rounded-lg text-center">
             <div className="font-monument text-3xl">
-              {athlete === undefined ? '' : getGamesPlayed()}
+              {currentSport === 'FOOTBALL'
+                ? athlete === undefined
+                  ? ''
+                  : getGamesPlayed()
+                : athlete === undefined
+                ? ''
+                : getGamesPlayedNba()}
             </div>
             <div className="text-sm">GAMES PLAYED</div>
           </div>
