@@ -7,7 +7,13 @@ import {
   GET_ATHLETEDATA_NBA,
 } from 'utils/queries';
 import { useLazyQuery } from '@apollo/client';
-import { qbStatNames, rbStatNames, wrStatNames, teStatNames, nbaStatNames } from 'data/constants/statNames';
+import {
+  qbStatNames,
+  rbStatNames,
+  wrStatNames,
+  teStatNames,
+  nbaStatNames,
+} from 'data/constants/statNames';
 import { getSportType } from 'data/constants/sportConstants';
 const StatsComponent = (props) => {
   const { id, position, sport } = props;
@@ -18,6 +24,7 @@ const StatsComponent = (props) => {
   const [getAthleteTE] = useLazyQuery(GET_ATHLETEDATA_TE);
   const [getAthleteNBA] = useLazyQuery(GET_ATHLETEDATA_NBA);
   const [athleteData, setAthleteData] = useState([]);
+  const [athleteStat, setAthleteStat] = useState([]);
   const [positionDisplay, setPositionDisplay] = useState('');
 
   function getAverage(position, athleteData) {
@@ -26,7 +33,6 @@ const StatsComponent = (props) => {
     let avg;
     switch (position) {
       case 'RB':
-        console.log('test');
         avg = Math.round((newState[3] / newState[2]) * 10 + Number.EPSILON) / 10;
         // newState.push(Number.isNaN(avg) ? 0 : avg);
         newState.splice(4, 0, Number.isNaN(avg) ? 0 : avg);
@@ -52,47 +58,70 @@ const StatsComponent = (props) => {
         query = await getAthleteQB({ variables: { getAthleteById: parseFloat(id.toString()) } });
         setStatNames(qbStatNames);
         console.log(query.data.getAthleteById);
+        //get the game where athlete last played and get the stats
         setAthleteData(
           await Promise.all(
-            Object.values(query.data.getAthleteById.stats.find((x) => x.type === 'season'))
-          )
+            query.data.getAthleteById.stats.filter((x) => x.type === 'weekly' && x.played === 1)
+          ).then((x) => {
+            console.log(x);
+            return Object.values(x[x.length - 1]);
+          })
         );
         break;
       case 'RB':
         query = await getAthleteRB({ variables: { getAthleteById: parseFloat(id.toString()) } });
-        state = getAverage(
-          position,
-          Object.values(query.data.getAthleteById.stats.find((x) => x.type === 'season'))
+
+        setAthleteData(
+          getAverage(
+            position,
+            await Promise.all(
+              query.data.getAthleteById.stats.filter((x) => x.type === 'weekly' && x.played === 1)
+            ).then((x) => {
+              return Object.values(x[x.length - 1]);
+            })
+          )
         );
-        setAthleteData(state);
         setStatNames(rbStatNames);
         break;
       case 'WR':
         query = await getAthleteWR({ variables: { getAthleteById: parseFloat(id.toString()) } });
-        state = getAverage(
-          position,
-          Object.values(query.data.getAthleteById.stats.find((x) => x.type === 'season'))
+        console.log(query.data.getAthleteById);
+        setAthleteData(
+          getAverage(
+            position,
+            await Promise.all(
+              query.data.getAthleteById.stats.filter((x) => x.type === 'weekly' && x.played === 1)
+            ).then((x) => {
+              return Object.values(x[x.length - 1]);
+            })
+          )
         );
-        setAthleteData(state);
         setStatNames(wrStatNames);
         break;
       case 'TE':
         query = await getAthleteTE({ variables: { getAthleteById: parseFloat(id.toString()) } });
-        state = getAverage(
-          position,
-          Object.values(query.data.getAthleteById.stats.find((x) => x.type === 'season'))
+        setAthleteData(
+          getAverage(
+            position,
+            await Promise.all(
+              query.data.getAthleteById.stats.filter((x) => x.type === 'weekly' && x.played === 1)
+            ).then((x) => {
+              return Object.values(x[x.length - 1]);
+            })
+          )
         );
-        setAthleteData(state);
         setStatNames(teStatNames);
         break;
       default:
         query = await getAthleteNBA({ variables: { getAthleteById: parseFloat(id.toString()) } });
-        state = getAverage(
-          position,
-          Object.values(query.data.getAthleteById.stats.find((x) => x.type === 'season'))
-          // Object.values(query.data.getAthleteById.stats[0])
-        )
-        setAthleteData(state);
+        setAthleteData(
+          await Promise.all(
+            query.data.getAthleteById.stats.filter((x) => x.type === 'daily' && x.played === 1)
+          ).then((x) => {
+            console.log(x);
+            return Object.values(x[x.length - 1]);
+          })
+        );
         setStatNames(nbaStatNames);
         break;
     }
@@ -106,17 +135,46 @@ const StatsComponent = (props) => {
   }, [id, position, query_stats]);
 
   useEffect(() => {}, []);
+
+  useEffect(() => {
+    if (athleteData) {
+      console.log(athleteData);
+      /*
+      slice athleteData array, removing 'AthleteStat', 'weekly/daily', and 'played' and 'opponent' objects
+      for displaying purposes
+      */
+      const athlete = athleteData.slice(2, athleteData.length - 2);
+      setAthleteStat(athlete);
+    }
+  }, [athleteData]);
   return (
     <>
       <div
-        className="flex h-1/8 w-1/3 ml-24 -mt-16 justify-center content-center select-none text-center text-4xl 
+        className="flex h-1/8 w-3/4 ml-10 md:w-1/3 -mt-16 justify-center content-center select-none text-center text-4xl 
             bg-indigo-black font-monument text-indigo-white p-2 pl-5"
       >
         <div className="">{positionDisplay}</div>
       </div>
-
-      <div className="mt-14 ml-24 w-1/2 text-sm grid grid-rows-4 grid-cols-4">
-        <div>
+      <div className="mt-10 ml-10 md:ml-10">
+        <div className="font-monument md:text-xl">
+          Most recent game stats &#40;against{' '}
+          {athleteData[athleteData.length - 1] !== undefined
+            ? athleteData[athleteData.length - 1].name
+            : ''}
+          &#41;
+        </div>
+      </div>
+      <div className="mt-4 ml-10 md:ml-10 text-sm grid grid-rows-4 grid-cols-2 md:grid-cols-4 md:w-1/2 md:mt-4">
+        {athleteStat?.map((x, index) => {
+          return (
+            <div>
+              <div className="font-monument text-4xl -mb-6">{x.toFixed(2)}</div>
+              <br></br>
+              <div className="">{statNames[index]}</div>
+            </div>
+          );
+        })}
+        {/* <div>
           <div className="font-monument text-5xl -mb-6">{athleteData[2]?.toFixed(2)}</div>
           <br></br>
           <div className="">{statNames[1]}</div>
@@ -155,7 +213,7 @@ const StatsComponent = (props) => {
           <div className="font-monument text-5xl -mb-6 mt-2">{athleteData[9]?.toFixed(2)}</div>
           <br></br>
           {statNames[8]}
-        </div>
+        </div> */}
       </div>
     </>
   );
