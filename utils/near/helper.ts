@@ -62,7 +62,7 @@ function checkIncludedWeeks(stats) {
   }
 }
 
-async function query_all_players_lineup(game_id, week, currentSport, start_time, end_time) {
+async function query_all_players_lineup(game_id, week, currentSport, start_time, end_time, nflSeason) {
   const query = JSON.stringify({
     game_id: game_id,
   });
@@ -100,7 +100,7 @@ async function query_all_players_lineup(game_id, week, currentSport, start_time,
                 lineupItem.stats_breakdown
                   .filter(
                     (statType) =>
-                      currentSport === 'FOOTBALL' ? statType.type == 'weekly' && statType.played == 1 && statType.week == week
+                      currentSport === 'FOOTBALL' ? statType.type == 'weekly' && statType.played == 1 && statType.week == week && statType.season == nflSeason
                       : currentSport === 'BASKETBALL' ? statType.type == 'daily' && statType.played == 1 : ''
                   )
                   .map((item) => {
