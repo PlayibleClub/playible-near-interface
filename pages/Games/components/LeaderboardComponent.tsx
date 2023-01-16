@@ -8,7 +8,7 @@ const LeaderboardComponent = (props) => {
   return (
     <div className="flex flex-row mt-6" key={index}>
       <div
-        className={`w-10 flex items-center justify-center font-monument text-2xl ${
+        className={`w-10 ml-0.5 flex items-center justify-center font-monument text-2xl ${
           index + 1 > 3 ? 'text-indigo-white font-outline-1' : ''
         }`}
       >

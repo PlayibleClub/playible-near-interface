@@ -23,7 +23,15 @@ const ViewTeamsContainer = (props) => {
         </div>
       ) : (
         <div className="flex flex-row items-center">
-          <div className="w-10 font-monument text-2xl -mt-4">{'0' + accountPlacement}</div>
+          <div
+            className={`w-12 flex items-center justify-center font-monument text-2xl ${
+              accountPlacement > 3 ? 'text-indigo-white font-outline-1' : ''
+            }`}
+          >
+            <div className="w-10 font-monument text-2xl -mt-4 -ml-3">
+              {accountPlacement <= 9 ? '0' + accountPlacement : accountPlacement}
+            </div>
+          </div>
           <div className="p-5 px-6 ml-2 bg-black-dark text-indigo-white mb-5 flex justify-between flex-initial w-80">
             <p className="font-monument">{teamNames}</p>
             <button
@@ -35,7 +43,9 @@ const ViewTeamsContainer = (props) => {
               <img src={'/images/arrow-top-right.png'} />
             </button>
           </div>
-          <div className="font-monument ml-2 -mt-5">{accountScore}</div>
+          <div className="font-bold font-monument ml-2 -mt-5">
+            {accountScore}
+          </div>
         </div>
       )}
     </div>
