@@ -21,7 +21,7 @@ import {
   getAthleteInfoById,
   getAthleteInfoByIdWithDate,
 } from 'utils/athlete/helper';
-import { getNflWeek, getUTCDateFromLocal } from 'utils/date/helper';
+import { getNflSeason, getNflWeek, getUTCDateFromLocal } from 'utils/date/helper';
 import { useSelector } from 'react-redux';
 import { selectTeamName, selectAccountId, selectGameId, getSport2 } from 'redux/athlete/teamSlice';
 import {
@@ -32,7 +32,7 @@ import {
 } from 'utils/near/helper';
 import { cutAddress } from 'utils/address/helper';
 import EntrySummaryBack from 'components/buttons/EntrySummaryBack';
-import { getSportType } from 'data/constants/sportConstants';
+import { getSportType, SPORT_NAME_LOOKUP } from 'data/constants/sportConstants';
 export default function EntrySummary(props) {
   const { query } = props;
   const provider = new providers.JsonRpcProvider({
@@ -52,6 +52,7 @@ export default function EntrySummary(props) {
   const [playerLineup, setPlayerLineup] = useState([]);
   const [athletes, setAthletes] = useState([]);
   const [gameInfo, setGameInfo] = useState([]);
+  const [nflSeason, setNflSeason] = useState('');
   const [week, setWeek] = useState(0);
 
   // const { error } = props;
@@ -152,9 +153,12 @@ export default function EntrySummary(props) {
             stats_breakdown:
               lineupItem.stats_breakdown
                 .filter((statType) =>
-                  currentSport === 'FOOTBALL'
-                    ? statType.type == 'weekly' && statType.played == 1 && statType.week == week
-                    : currentSport === 'BASKETBALL'
+                  currentSport === SPORT_NAME_LOOKUP.football
+                    ? statType.type == 'weekly' &&
+                      statType.played == 1 &&
+                      statType.week == week &&
+                      statType.season == nflSeason
+                    : currentSport === SPORT_NAME_LOOKUP.basketball
                     ? statType.type == 'daily' && statType.played == 1
                     : ''
                 )
@@ -215,6 +219,7 @@ export default function EntrySummary(props) {
 
   async function get_game_week() {
     setWeek(await getNflWeek(gameStart));
+    setNflSeason(await getNflSeason(gameStart));
   }
 
   useEffect(() => {
