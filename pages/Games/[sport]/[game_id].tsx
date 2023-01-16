@@ -10,7 +10,7 @@ import Main from 'components/Main';
 import LeaderboardComponent from '../components/LeaderboardComponent';
 import ViewTeamsContainer from 'components/containers/ViewTeamsContainer';
 import { query_game_data, query_all_players_lineup, query_player_teams } from 'utils/near/helper';
-import { getNflWeek } from 'utils/date/helper';
+import { getNflWeek, getNflSeason } from 'utils/date/helper';
 import LoadingPageDark from 'components/loading/LoadingPageDark';
 import { setTeamName, setAccountId, setGameId, setSport2 } from 'redux/athlete/teamSlice';
 import { useDispatch } from 'react-redux';
@@ -29,6 +29,7 @@ const Games = (props) => {
   const [playerTeams, setPlayerTeams] = useState([]);
   const [gameInfo, setGameInfo] = useState([]);
   const [week, setWeek] = useState(0);
+  const [nflSeason, setNflSeason] = useState('');
   const [gameData, setGameData] = useState(null);
   const playGameImage = '/images/game.png';
   async function get_game_data(game_id) {
@@ -41,6 +42,7 @@ const Games = (props) => {
 
   async function get_game_week() {
     setWeek(await getNflWeek(gameStart));
+    setNflSeason(await getNflSeason(gameStart));
   }
 
   async function get_all_players_lineup() {
@@ -54,7 +56,8 @@ const Games = (props) => {
         week,
         currentSport,
         startTimeFormatted,
-        endTimeFormatted
+        endTimeFormatted,
+        nflSeason
       )
     );
   }

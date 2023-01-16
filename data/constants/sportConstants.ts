@@ -17,6 +17,10 @@ import {
   GAME_BASKETBALL,
 } from 'data/constants/nearContracts';
 import { getContract } from 'utils/near';
+export const NFL_SCHEDULE = {
+  nfl2022regstart: 1662566400,
+  nfl2022poststart: 1673481600,
+}
 export const NFL_POSITIONS = [
   {
     name: 'QUARTER BACK',
