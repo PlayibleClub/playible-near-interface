@@ -70,8 +70,7 @@ const AssetDetails = (props) => {
     athlete?.stats_breakdown.forEach((game) => {
       if (game.type === 'weekly' && game.played == 1) {
         totalGames++;
-      }
-      else if (game.type === 'daily' && game.played == 1) {
+      } else if (game.type === 'daily' && game.played == 1) {
         totalGames++;
       }
     });
@@ -158,7 +157,11 @@ const AssetDetails = (props) => {
             {athlete == undefined
               ? 'LOADING GAMES....'
               : athlete.stats_breakdown
-                  .filter((statType) => statType.type == 'weekly' || 'daily' && statType.played == 1)
+                  .filter(
+                    (statType) =>
+                      (statType.type == 'weekly' || statType.type == 'daily') &&
+                      statType.played == 1
+                  )
                   .map((item, index) => {
                     return (
                       <tr key={index} className="border border-indigo-slate">
