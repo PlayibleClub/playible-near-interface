@@ -17,6 +17,7 @@ import { useDispatch } from 'react-redux';
 import { persistor } from 'redux/athlete/store';
 import { getSportType } from 'data/constants/sportConstants';
 import moment, { Moment } from 'moment';
+import { x64 } from 'crypto-js';
 const Games = (props) => {
   const { query } = props;
   const gameId = query.game_id;
@@ -61,14 +62,15 @@ const Games = (props) => {
       )
     );
   }
-  function getAccountScore(accountId) {
-    const x = playerLineups.findIndex((x) => x.accountId === accountId);
+  function getAccountScore(accountId, teamName) {
+    const x = playerLineups.findIndex((x) => x.accountId === accountId && x.teamName === teamName);
     return playerLineups[x]?.sumScore.toFixed(2);
   }
 
-  function getAccountPlacement(accountId) {
-    return playerLineups.findIndex((x) => x.accountId === accountId) + 1;
+  function getAccountPlacement(accountId, teamName) {
+    return playerLineups.findIndex((x) => x.accountId === accountId && x.teamName === teamName) + 1;
   }
+
   async function get_player_teams(account, game_id) {
     setPlayerTeams(
       await query_player_teams(account, game_id, getSportType(currentSport).gameContract)
@@ -132,14 +134,14 @@ const Games = (props) => {
                   ) : (
                     <div>
                       {/* @ts-expect-error */}
-                      {playerTeams.team_names.map((data) => {
+                      {playerTeams.team_names.map((data, index) => {
                         return (
                           <ViewTeamsContainer
                             teamNames={data}
                             gameId={gameId}
                             accountId={accountId}
-                            accountScore={getAccountScore(accountId)}
-                            accountPlacement={getAccountPlacement(accountId)}
+                            accountScore={getAccountScore(accountId, data)}
+                            accountPlacement={getAccountPlacement(accountId, data)}
                             fromGames={true}
                             onClickFn={(data, accountId, gameId) =>
                               handleButtonClick(data, accountId, gameId)
