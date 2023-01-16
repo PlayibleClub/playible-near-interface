@@ -82,6 +82,10 @@ export const GET_ATHLETEDATA_QB = gql`
         rushingYards
         rushingTouchdowns
         carries
+        played
+        opponent{
+          name
+        }
       }
     }
   }
@@ -103,6 +107,10 @@ export const GET_ATHLETEDATA_RB = gql`
         receivingYards
         receivingTouchdowns
         receptions
+        played
+        opponent{
+          name
+        }
       }
     }
   }
@@ -122,6 +130,10 @@ export const GET_ATHLETEDATA_WR = gql`
         receptions
         receivingYards
         receivingTouchdowns
+        played
+        opponent{
+          name
+        }
       }
     }
   }
@@ -141,6 +153,10 @@ export const GET_ATHLETEDATA_TE = gql`
         receptions
         receivingYards
         receivingTouchdowns
+        played
+        opponent{
+          name
+        }
       }
     }
   }
@@ -162,7 +178,10 @@ export const GET_ATHLETEDATA_NBA = gql`
         blockedShots
         steals
         turnovers
-        gameDate
+        played
+        opponent{
+          name
+        }
       }
     }
   }
