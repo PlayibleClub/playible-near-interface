@@ -167,7 +167,9 @@ const AssetDetails = (props) => {
               ? 'LOADING GAMES....'
               : athlete.stats_breakdown
                   .filter(
-                    (statType) => statType.type == 'weekly' || ('daily' && statType.played == 1)
+                    (statType) =>
+                      (statType.type == 'weekly' || statType.type == 'daily') &&
+                      statType.played == 1
                   )
                   .map((item, index) => {
                     return (

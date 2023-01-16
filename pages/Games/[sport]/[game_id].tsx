@@ -10,13 +10,14 @@ import Main from 'components/Main';
 import LeaderboardComponent from '../components/LeaderboardComponent';
 import ViewTeamsContainer from 'components/containers/ViewTeamsContainer';
 import { query_game_data, query_all_players_lineup, query_player_teams } from 'utils/near/helper';
-import { getNflWeek } from 'utils/date/helper';
+import { getNflWeek, getNflSeason } from 'utils/date/helper';
 import LoadingPageDark from 'components/loading/LoadingPageDark';
 import { setTeamName, setAccountId, setGameId, setSport2 } from 'redux/athlete/teamSlice';
 import { useDispatch } from 'react-redux';
 import { persistor } from 'redux/athlete/store';
 import { getSportType } from 'data/constants/sportConstants';
 import moment, { Moment } from 'moment';
+import { x64 } from 'crypto-js';
 const Games = (props) => {
   const { query } = props;
   const gameId = query.game_id;
@@ -29,6 +30,7 @@ const Games = (props) => {
   const [playerTeams, setPlayerTeams] = useState([]);
   const [gameInfo, setGameInfo] = useState([]);
   const [week, setWeek] = useState(0);
+  const [nflSeason, setNflSeason] = useState('');
   const [gameData, setGameData] = useState(null);
   const playGameImage = '/images/game.png';
   async function get_game_data(game_id) {
@@ -41,22 +43,32 @@ const Games = (props) => {
 
   async function get_game_week() {
     setWeek(await getNflWeek(gameStart));
+    setNflSeason(await getNflSeason(gameStart));
   }
 
   async function get_all_players_lineup() {
     const startTimeFormatted = moment(gameData.start_time).format('YYYY-MM-DD');
     const endTimeFormatted = moment(gameData.end_time).format('YYYY-MM-DD');
-    console.log("    TEST start date: " + startTimeFormatted);
-    console.log("    TEST end date: " + endTimeFormatted);
+    console.log('    TEST start date: ' + startTimeFormatted);
+    console.log('    TEST end date: ' + endTimeFormatted);
     setPlayerLineups(
       await query_all_players_lineup(
         gameId,
         week,
         currentSport,
         startTimeFormatted,
-        endTimeFormatted
+        endTimeFormatted,
+        nflSeason
       )
     );
+  }
+  function getAccountScore(accountId, teamName) {
+    const x = playerLineups.findIndex((x) => x.accountId === accountId && x.teamName === teamName);
+    return playerLineups[x]?.sumScore.toFixed(2);
+  }
+
+  function getAccountPlacement(accountId, teamName) {
+    return playerLineups.findIndex((x) => x.accountId === accountId && x.teamName === teamName) + 1;
   }
 
   async function get_player_teams(account, game_id) {
@@ -107,7 +119,13 @@ const Games = (props) => {
                   alt="game-image"
                 />
               </div>
-              <div className="mt-7 ml-6 w-3/5 md:w-1/2 md:ml-7 md:mt-2">
+              <div className="mt-7 ml-6 w-3/5 md:w-full md:ml-7 md:mt-2">
+                <ModalPortfolioContainer title="PRIZE DESCRIPTION" textcolor="text-indigo-black" />
+                <div>
+                  {gameData?.prize_description
+                    ? gameData.prize_description
+                    : '$100 + 2 Championship Tickets'}
+                </div>
                 <ModalPortfolioContainer title="VIEW TEAMS" textcolor="text-indigo-black mb-5" />
                 {
                   /* @ts-expect-error */
@@ -116,12 +134,15 @@ const Games = (props) => {
                   ) : (
                     <div>
                       {/* @ts-expect-error */}
-                      {playerTeams.team_names.map((data) => {
+                      {playerTeams.team_names.map((data, index) => {
                         return (
                           <ViewTeamsContainer
                             teamNames={data}
                             gameId={gameId}
                             accountId={accountId}
+                            accountScore={getAccountScore(accountId, data)}
+                            accountPlacement={getAccountPlacement(accountId, data)}
+                            fromGames={true}
                             onClickFn={(data, accountId, gameId) =>
                               handleButtonClick(data, accountId, gameId)
                             }

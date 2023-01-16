@@ -29,6 +29,7 @@ export const GET_ATHLETE_BY_ID = gql`
       nftAnimation
       nftImage
       stats {
+        season
         fantasyScore
         week
         type
