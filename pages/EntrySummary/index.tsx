@@ -286,7 +286,8 @@ export default function EntrySummary(props) {
                           <div className="mr-4 md:mr-0">
                             <div>START DATE</div>
                             <div className=" font-monument text-lg">
-                              {(gameData && moment(gameData.start_time).format('MM/DD/YYYY')) ||
+                              {(gameData &&
+                                moment.utc(gameData.start_time).local().format('MM/DD/YYYY')) ||
                                 'N/A'}
                             </div>
                           </div>
@@ -294,8 +295,8 @@ export default function EntrySummary(props) {
                         <div className="ml-7">
                           <div className="mt-4">
                             {gameData &&
-                              (moment(gameData.start_time) <= moment() &&
-                              moment(gameData.end_time) > moment() ? (
+                              (moment.utc(gameData.start_time).local() <= moment() &&
+                              moment.utc(gameData.end_time).local() > moment() ? (
                                 <>
                                   <p>ENDS IN</p>
                                   {gameData ? (
@@ -309,7 +310,7 @@ export default function EntrySummary(props) {
                                     ''
                                   )}
                                 </>
-                              ) : moment(gameData.start_time) > moment() ? (
+                              ) : moment.utc(gameData.start_time).local() > moment() ? (
                                 <>
                                   <p>REGISTRATION ENDS IN</p>
                                   {gameData ? (
