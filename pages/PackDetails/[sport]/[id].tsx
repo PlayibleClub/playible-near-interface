@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
 import Container from 'components/containers/Container';
 import 'regenerator-runtime/runtime';
 import BackFunction from 'components/buttons/BackFunction';
@@ -25,6 +26,7 @@ const sbImage = '/images/packimages/NFL-SB-Pack.png';
 export default function PackDetails(props) {
   const { query } = props;
   const { selector, accountId } = useWalletSelector();
+  const router = useRouter();
   const id = query.id.toString();
   console.log(query.id);
   const myPack = {
@@ -45,16 +47,14 @@ export default function PackDetails(props) {
       myPack.id.length === 64 || myPack.id.includes('SB')
         ? getSportType(myPack.sport).packPromoContract
         : getSportType(myPack.sport).packContract;
-    await query_nft_tokens_for_owner(
-      accountId,
-      0,
-      //@ts-ignore:next-line
-      parseInt(totalPacks),
-      contract
-    ).then((data) => {
+    await query_nft_tokens_by_id(myPack.id, contract).then((data) => {
       //@ts-ignore:next-line
       const result = JSON.parse(Buffer.from(data.result).toString());
-      setPackDetails([result.find((x) => x.token_id === myPack.id)]);
+      console.log(result);
+      if (result.owner_id !== accountId) {
+        router.push('/Packs');
+      }
+      setPackDetails([result]);
     });
     // setPackDetails(await query_nft_tokens_for_owner(accountId, 0, parseInt(totalPacks), contract));
   }
@@ -100,17 +100,17 @@ export default function PackDetails(props) {
     });
   }
   //can add to helper
+  // useEffect(() => {
+  //   get_pack_supply_for_owner();
+  // }, []);
+  // useEffect(() => {
+  //   if (totalPacks !== 0) {
+  //     get_pack_token_by_id();
+  //   }
+  // }, [totalPacks]);
   useEffect(() => {
-    get_pack_supply_for_owner();
+    get_pack_token_by_id();
   }, []);
-  useEffect(() => {
-    if (totalPacks !== 0) {
-      get_pack_token_by_id();
-    }
-  }, [totalPacks]);
-  useEffect(() => {
-    console.log(packDetails);
-  }, [packDetails]);
   return (
     <Container activeName="PACKS">
       <div className="md:ml-6 mt-12">
