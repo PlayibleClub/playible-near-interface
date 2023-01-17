@@ -15,7 +15,7 @@ import LoadingPageDark from 'components/loading/LoadingPageDark';
 import { setTeamName, setAccountId, setGameId, setSport2 } from 'redux/athlete/teamSlice';
 import { useDispatch } from 'react-redux';
 import { persistor } from 'redux/athlete/store';
-import { getSportType } from 'data/constants/sportConstants';
+import { getSportType, SPORT_NAME_LOOKUP } from 'data/constants/sportConstants';
 import moment, { Moment } from 'moment';
 const Games = (props) => {
   const { query } = props;
@@ -98,7 +98,9 @@ const Games = (props) => {
     console.log(playerLineups);
   }, [playerLineups]);
   useEffect(() => {
-    get_game_week();
+    if (currentSport === SPORT_NAME_LOOKUP.football) {
+      get_game_week();
+    }
   });
 
   return (

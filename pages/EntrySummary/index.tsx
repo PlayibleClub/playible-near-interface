@@ -227,7 +227,10 @@ export default function EntrySummary(props) {
   }, []);
 
   useEffect(() => {
-    get_game_week();
+    if (currentSport === SPORT_NAME_LOOKUP.football) {
+      console.log('hello');
+      get_game_week();
+    }
   });
 
   useEffect(() => {
