@@ -21,7 +21,7 @@ import {
   getAthleteInfoById,
   getAthleteInfoByIdWithDate,
 } from 'utils/athlete/helper';
-import { getNflSeason, getNflWeek, getUTCDateFromLocal } from 'utils/date/helper';
+import { formatToUTCDate, getNflSeason, getNflWeek, getUTCDateFromLocal } from 'utils/date/helper';
 import { useSelector } from 'react-redux';
 import { selectTeamName, selectAccountId, selectGameId, getSport2 } from 'redux/athlete/teamSlice';
 import {
@@ -114,8 +114,8 @@ export default function EntrySummary(props) {
   }
 
   function query_player_team_lineup() {
-    const startTimeFormatted = moment(gameData?.start_time).format('YYYY-MM-DD');
-    const endTimeFormatted = moment(gameData?.end_time).format('YYYY-MM-DD');
+    const startTimeFormatted = formatToUTCDate(gameData?.start_time);
+    const endTimeFormatted = formatToUTCDate(gameData?.end_time);
     const query = JSON.stringify({
       account: accountId,
       game_id: gameId,
@@ -227,7 +227,10 @@ export default function EntrySummary(props) {
   }, []);
 
   useEffect(() => {
-    get_game_week();
+    if (currentSport === SPORT_NAME_LOOKUP.football) {
+      console.log('hello');
+      get_game_week();
+    }
   });
 
   useEffect(() => {
@@ -283,7 +286,8 @@ export default function EntrySummary(props) {
                           <div className="mr-4 md:mr-0">
                             <div>START DATE</div>
                             <div className=" font-monument text-lg">
-                              {(gameData && moment(gameData.start_time).format('MM/DD/YYYY')) ||
+                              {(gameData &&
+                                moment.utc(gameData.start_time).local().format('MM/DD/YYYY')) ||
                                 'N/A'}
                             </div>
                           </div>
@@ -291,8 +295,8 @@ export default function EntrySummary(props) {
                         <div className="ml-7">
                           <div className="mt-4">
                             {gameData &&
-                              (moment(gameData.start_time) <= moment() &&
-                              moment(gameData.end_time) > moment() ? (
+                              (moment.utc(gameData.start_time).local() <= moment() &&
+                              moment.utc(gameData.end_time).local() > moment() ? (
                                 <>
                                   <p>ENDS IN</p>
                                   {gameData ? (
@@ -306,7 +310,7 @@ export default function EntrySummary(props) {
                                     ''
                                   )}
                                 </>
-                              ) : moment(gameData.start_time) > moment() ? (
+                              ) : moment.utc(gameData.start_time).local() > moment() ? (
                                 <>
                                   <p>REGISTRATION ENDS IN</p>
                                   {gameData ? (
