@@ -10,14 +10,13 @@ import Main from 'components/Main';
 import LeaderboardComponent from '../components/LeaderboardComponent';
 import ViewTeamsContainer from 'components/containers/ViewTeamsContainer';
 import { query_game_data, query_all_players_lineup, query_player_teams } from 'utils/near/helper';
-import { getNflWeek, getNflSeason } from 'utils/date/helper';
+import { getNflWeek, getNflSeason, formatToUTCDate } from 'utils/date/helper';
 import LoadingPageDark from 'components/loading/LoadingPageDark';
 import { setTeamName, setAccountId, setGameId, setSport2 } from 'redux/athlete/teamSlice';
 import { useDispatch } from 'react-redux';
 import { persistor } from 'redux/athlete/store';
 import { getSportType } from 'data/constants/sportConstants';
 import moment, { Moment } from 'moment';
-import { x64 } from 'crypto-js';
 const Games = (props) => {
   const { query } = props;
   const gameId = query.game_id;
@@ -47,8 +46,8 @@ const Games = (props) => {
   }
 
   async function get_all_players_lineup() {
-    const startTimeFormatted = moment(gameData.start_time).format('YYYY-MM-DD');
-    const endTimeFormatted = moment(gameData.end_time).format('YYYY-MM-DD');
+    const startTimeFormatted = formatToUTCDate(gameData.start_time);
+    const endTimeFormatted = formatToUTCDate(gameData.end_time);
     console.log('    TEST start date: ' + startTimeFormatted);
     console.log('    TEST end date: ' + endTimeFormatted);
     setPlayerLineups(

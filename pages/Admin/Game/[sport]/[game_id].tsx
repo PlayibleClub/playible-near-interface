@@ -4,8 +4,8 @@ import { getContract, getRPCProvider } from 'utils/near';
 import { providers } from 'near-api-js';
 import { getAthleteInfoById, convertNftToAthlete } from 'utils/athlete/helper';
 import { query_all_players_lineup, query_game_data } from 'utils/near/helper';
-import { getNflWeek, getNflSeason } from 'utils/date/helper';
-import { getSportType, SPORT_TYPES } from 'data/constants/sportConstants';
+import { getNflWeek, getNflSeason, formatToUTCDate } from 'utils/date/helper';
+import { getSportType, SPORT_TYPES, SPORT_NAME_LOOKUP } from 'data/constants/sportConstants';
 import moment, { Moment } from 'moment';
 
 export default function AdminPlayerLineup(props) {
@@ -16,7 +16,7 @@ export default function AdminPlayerLineup(props) {
   const sportObj = SPORT_TYPES.map((x) => ({ name: x.sport, isActive: false }));
   sportObj[0].isActive = true;
   const currentSport = query.sport.toString().toUpperCase();
-  console.log(currentSport)
+  console.log(currentSport);
   const gameId = query.game_id;
 
   const [playerLineups, setPlayerLineups] = useState([]);
@@ -30,17 +30,18 @@ export default function AdminPlayerLineup(props) {
     setNflSeason(await getNflSeason(gameData.start_time / 1000));
     setWeek(await getNflWeek(gameData.start_time / 1000));
     console.log(nflSeason);
-    const startTimeFormatted = moment(gameData.start_time).format('YYYY-MM-DD');
-    const endTimeFormatted = moment(gameData.end_time).format('YYYY-MM-DD');
+    const startTimeFormatted = formatToUTCDate(gameData.start_time);
+    const endTimeFormatted = formatToUTCDate(gameData.end_time);
 
     setPlayerLineups(
-      await query_all_players_lineup(        
+      await query_all_players_lineup(
         gameId,
         week,
         currentSport,
         startTimeFormatted,
         endTimeFormatted,
-        nflSeason)
+        nflSeason
+      )
     );
   }
 
@@ -59,9 +60,7 @@ export default function AdminPlayerLineup(props) {
                 </div>
                 <div>Team Name: {item.teamName}</div>
                 <div>Overall Fantasy Score: {item.sumScore}</div>
-                {currentSport === 'FOOTBALL'?
-                <div>Week: {week}</div>
-                : null}
+                {currentSport === SPORT_NAME_LOOKUP.football ? <div>Week: {week}</div> : null}
                 <div>
                   Lineup:{' '}
                   {item.lineup.map((item, index) => {

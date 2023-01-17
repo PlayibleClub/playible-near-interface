@@ -21,7 +21,7 @@ import {
   getAthleteInfoById,
   getAthleteInfoByIdWithDate,
 } from 'utils/athlete/helper';
-import { getNflSeason, getNflWeek, getUTCDateFromLocal } from 'utils/date/helper';
+import { formatToUTCDate, getNflSeason, getNflWeek, getUTCDateFromLocal } from 'utils/date/helper';
 import { useSelector } from 'react-redux';
 import { selectTeamName, selectAccountId, selectGameId, getSport2 } from 'redux/athlete/teamSlice';
 import {
@@ -114,8 +114,8 @@ export default function EntrySummary(props) {
   }
 
   function query_player_team_lineup() {
-    const startTimeFormatted = moment(gameData?.start_time).format('YYYY-MM-DD');
-    const endTimeFormatted = moment(gameData?.end_time).format('YYYY-MM-DD');
+    const startTimeFormatted = formatToUTCDate(gameData?.start_time);
+    const endTimeFormatted = formatToUTCDate(gameData?.end_time);
     const query = JSON.stringify({
       account: accountId,
       game_id: gameId,
