@@ -28,6 +28,7 @@ const Games = (props) => {
 
   const { accountId } = useWalletSelector();
   const [playerTeams, setPlayerTeams] = useState([]);
+  const [playerTeamSorted, setPlayerTeamSorted] = useState([]);
   const [gameInfo, setGameInfo] = useState([]);
   const [week, setWeek] = useState(0);
   const [nflSeason, setNflSeason] = useState('');
@@ -71,12 +72,25 @@ const Games = (props) => {
     return playerLineups.findIndex((x) => x.accountId === accountId && x.teamName === teamName) + 1;
   }
 
+  function sortPlayerTeamScores(accountId) {
+    const x = playerLineups.filter((x) => x.accountId === accountId);
+    console.log(x);
+    if (x !== undefined) {
+      setPlayerTeamSorted(
+        x.sort(function (a, b) {
+          return b.sumScore - a.sumScore;
+        })
+      );
+    }
+  }
+
   async function get_player_teams(account, game_id) {
     setPlayerTeams(
       await query_player_teams(account, game_id, getSportType(currentSport).gameContract)
     );
   }
   const handleButtonClick = (teamName, accountId, gameId) => {
+    console.log(teamName);
     dispatch(setTeamName(teamName));
     dispatch(setAccountId(accountId));
     dispatch(setGameId(gameId));
@@ -96,8 +110,12 @@ const Games = (props) => {
   }, [week]);
 
   useEffect(() => {
-    console.log(playerLineups);
+    if (playerLineups !== undefined) {
+      sortPlayerTeamScores(accountId);
+      console.log(playerTeams);
+    }
   }, [playerLineups]);
+
   useEffect(() => {
     get_game_week();
   });
@@ -133,19 +151,16 @@ const Games = (props) => {
                     'No Teams Assigned'
                   ) : (
                     <div>
-                      {/* @ts-expect-error */}
-                      {playerTeams.team_names.map((data, index) => {
+                      {playerTeamSorted.map((data, index) => {
                         return (
                           <ViewTeamsContainer
-                            teamNames={data}
+                            teamNames={data.teamName}
                             gameId={gameId}
                             accountId={accountId}
-                            accountScore={getAccountScore(accountId, data)}
-                            accountPlacement={getAccountPlacement(accountId, data)}
+                            accountScore={getAccountScore(accountId, data.teamName)}
+                            accountPlacement={getAccountPlacement(accountId, data.teamName)}
                             fromGames={true}
-                            onClickFn={(data, accountId, gameId) =>
-                              handleButtonClick(data, accountId, gameId)
-                            }
+                            onClickFn={() => handleButtonClick(data.teamName, accountId, gameId)}
                           />
                         );
                       })}
