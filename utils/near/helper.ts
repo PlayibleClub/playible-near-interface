@@ -119,25 +119,41 @@ async function query_all_players_lineup(game_id, week, currentSport, start_time,
                       currentSport ===  SPORT_NAME_LOOKUP.football ? statType.type == 'weekly' && statType.played == 1 && statType.week == week && statType.season == nflSeason
                       : currentSport === SPORT_NAME_LOOKUP.basketball ? statType.type == 'daily' && statType.played == 1 : ''
                   )
-                  .map((item) => {
+                  .reduce((accumulator, item) => {
                     console.log(
-                      'fs ' +
-                        item.fantasyScore +
-                        ' from ' +
-                        lineupItem.name +
-                        ' w/ date ' +
-                        item.gameDate
-                    );
-                    console.log('playible start: ' + start_time);
-                    return item.fantasyScore;
-                  })[0] || 0,
+                          'fs ' +
+                            item.fantasyScore +
+                            ' from ' +
+                            lineupItem.name +
+                            ' w/ date ' +
+                            item.gameDate
+                        );
+                    return accumulator + item.fantasyScore;
+                  }, 0) || 0,
+                  // .map((item) => {
+                  //   console.log(
+                  //     'fs ' +
+                  //       item.fantasyScore +
+                  //       ' from ' +
+                  //       lineupItem.name +
+                  //       ' w/ date ' +
+                  //       item.gameDate
+                  //   );
+                  //   console.log('playible start: ' + start_time);
+                  //   return item.fantasyScore;
+                  // })[0] || 0,
             };
           });
 
+          console.log(itemToReturn);
           itemToReturn.sumScore = itemToReturn.lineup.reduce((accumulator, object) => {
             return accumulator + object.stats_breakdown;
           }, 0);
-
+          // itemToReturn.sumScore = itemToReturn.lineup.reduce((accumulator, object) => {
+          //   return accumulator + object.stats_breakdown.reduce((accumulator, object) => {
+          //     return accumulator + object;
+          //   }, 0)
+          // }, 0);
           return itemToReturn;
         })
       );
