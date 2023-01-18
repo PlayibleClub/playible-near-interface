@@ -125,12 +125,12 @@ const Games = (props) => {
     <Container activeName="GAMES">
       <div className="flex flex-col w-full overflow-y-auto h-screen">
         <Main color="indigo-white">
-          <div className="mt-8 ml-6">
+          <div className="iphone5:mt-28 md:mt-8 md:ml-6">
             <BackFunction prev="/Play" />
           </div>
-          <div className="flex flex-row">
+          <div className="flex md:flex-row iphone5:flex-col">
             <div className="md:ml-6 mt-11 flex flex-col w-auto">
-              <div className="md:ml-7 mr-12">
+              <div className="md:ml-7 md:mr-12 iphone5:mr-6 iphone5:ml-6">
                 <Image
                   src={gameData?.game_image ? gameData?.game_image : playGameImage}
                   width={550}
@@ -138,7 +138,7 @@ const Games = (props) => {
                   alt="game-image"
                 />
               </div>
-              <div className="mt-7 ml-6 w-3/5 md:w-full md:ml-7 md:mt-2">
+              <div className="mt-7 ml-6 iphone5:w-5/6 md:w-full md:ml-7 md:mt-2 ">
                 <ModalPortfolioContainer title="PRIZE DESCRIPTION" textcolor="text-indigo-black" />
                 <div>
                   {gameData?.prize_description
@@ -171,7 +171,7 @@ const Games = (props) => {
               </div>
             </div>
 
-            <div className="md:ml-18 ml-18 mt-4">
+            <div className="iphone5:ml-6 md:ml-18 ml-18 mt-4 md:mr-0 md:mb-0 iphone5:mr-6 iphone5:mb-10">
               <ModalPortfolioContainer textcolor="indigo-black" title={'LEADERBOARD'} />
               <div className="overflow-y-auto">
                 {playerLineups.length > 0 ? (

@@ -16,7 +16,7 @@ const LeaderboardComponent = (props) => {
       </div>
       <div
         className="flex items-center justify-center ml-2 md:ml-6 bg-indigo-black text-indigo-white
-        w-1/2 text-center p-1 text-base font-monument"
+        w-1/2 text-center p-1 iphone5:text-xs md:text-base font-monument"
       >
         {teamName} {cutAddress(accountId)}
       </div>
