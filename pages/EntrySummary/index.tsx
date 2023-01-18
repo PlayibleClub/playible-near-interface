@@ -162,7 +162,7 @@ export default function EntrySummary(props) {
                     ? statType.type == 'daily' && statType.played == 1
                     : ''
                 )
-                .map((item) => {
+                .reduce((accumulator, item) => {
                   console.log(
                     'fs ' +
                       item.fantasyScore +
@@ -171,9 +171,20 @@ export default function EntrySummary(props) {
                       ' w/ date ' +
                       item.gameDate
                   );
-                  console.log('playible start: ' + startTimeFormatted);
-                  return item.fantasyScore;
-                })[0] || 0,
+                  return accumulator + item.fantasyScore;
+                }, 0) || 0,
+            // .map((item) => {
+            //   console.log(
+            //     'fs ' +
+            //       item.fantasyScore +
+            //       ' from ' +
+            //       lineupItem.name +
+            //       ' w/ date ' +
+            //       item.gameDate
+            //   );
+            //   console.log('playible start: ' + startTimeFormatted);
+            //   return item.fantasyScore;
+            // })[0] || 0,
           };
         });
 
@@ -228,7 +239,6 @@ export default function EntrySummary(props) {
 
   useEffect(() => {
     if (currentSport === SPORT_NAME_LOOKUP.football) {
-      console.log('hello');
       get_game_week();
     }
   });
@@ -244,7 +254,6 @@ export default function EntrySummary(props) {
     if (gameData !== undefined && gameData !== null) {
       // get_nft_tokens_for_owner();
       query_player_team_lineup();
-      console.log('wahahaha');
     }
   }, [gameData]);
 
