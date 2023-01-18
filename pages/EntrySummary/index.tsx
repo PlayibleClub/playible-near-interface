@@ -354,6 +354,8 @@ export default function EntrySummary(props) {
                             id={item.primary_id}
                             uri={item.image}
                             hoverable={false}
+                            isActive={item.isActive}
+                            isInjured={item.isInjured}
                           />
                         );
                       })}
