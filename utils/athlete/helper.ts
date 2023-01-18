@@ -70,7 +70,7 @@ async function getAthleteInfoByIdWithDate(item, from, to) {
 function getAvgFantasyScore(array) {
   if (Array.isArray(array) && array.length > 0) {
     return array.filter((item) => {
-      return item.type == 'season';
+      return item.season != '2022' && item.type == 'season';
     })[0].fantasyScore;
   } else {
     return 0;
