@@ -433,8 +433,8 @@ export default function Index(props) {
     if (distribution.length < 10) {
       errors.push(
         'Exactly 10 rank distribution must be provided. (Only ' +
-          distribution.length +
-          ' was provided)'
+        distribution.length +
+        ' was provided)'
       );
     }
 
@@ -598,6 +598,7 @@ export default function Index(props) {
 
   const [details, setDetails] = useState({
     // name: '',
+    gameId: '',
     startTime: '',
     endTime: '',
     prize: 1,
@@ -668,7 +669,7 @@ export default function Index(props) {
   async function execute_add_game() {
     const addGameArgs = Buffer.from(
       JSON.stringify({
-        game_id: (totalGames + 1).toString(),
+        game_id: details.gameId.toString(),
         game_time_start: dateStart,
         game_time_end: dateEnd,
         whitelist: whitelistInfo,
@@ -727,9 +728,8 @@ export default function Index(props) {
             <div className="flex md:ml-4 font-bold font-monument mt-5">
               {tabs.map(({ name, isActive }) => (
                 <div
-                  className={`cursor-pointer mr-6 ${
-                    isActive ? 'border-b-8 border-indigo-buttonblue' : ''
-                  }`}
+                  className={`cursor-pointer mr-6 ${isActive ? 'border-b-8 border-indigo-buttonblue' : ''
+                    }`}
                   onClick={() => changeTab(name)}
                 >
                   {name}
@@ -741,13 +741,11 @@ export default function Index(props) {
               {sportList.map((x, index) => {
                 return (
                   <button
-                    className={`rounded-lg border mt-4 px-8 p-1 text-xs md:font-medium font-monument ${
-                      index === 0 ? `md:ml-14` : 'md:ml-4'
-                    } ${
-                      x.isActive
+                    className={`rounded-lg border mt-4 px-8 p-1 text-xs md:font-medium font-monument ${index === 0 ? `md:ml-14` : 'md:ml-4'
+                      } ${x.isActive
                         ? 'bg-indigo-buttonblue text-indigo-white border-indigo-buttonblue'
                         : ''
-                    }`}
+                      }`}
                     onClick={() => {
                       changeSportList(x.name);
                     }}
@@ -765,9 +763,8 @@ export default function Index(props) {
                   <div className="flex font-bold -ml-16 font-monument">
                     {gameTabs.map(({ name, isActive }) => (
                       <div
-                        className={`cursor-pointer mr-6 ${
-                          isActive ? 'border-b-8 border-indigo-buttonblue' : ''
-                        }`}
+                        className={`cursor-pointer mr-6 ${isActive ? 'border-b-8 border-indigo-buttonblue' : ''
+                          }`}
                         onClick={() => changeGameTab(name)}
                       >
                         {name}
@@ -778,14 +775,14 @@ export default function Index(props) {
                     {(gameTabs[0].isActive
                       ? newGames
                       : gameTabs[1].isActive
-                      ? ongoingGames
-                      : completedGames
+                        ? ongoingGames
+                        : completedGames
                     ).length > 0 &&
                       (gameTabs[0].isActive
                         ? newGames
                         : gameTabs[1].isActive
-                        ? ongoingGames
-                        : completedGames
+                          ? ongoingGames
+                          : completedGames
                       )
                         .filter((data, i) => i >= gamesOffset && i < gamesOffset + gamesLimit)
                         .map((data, i) => {
@@ -873,7 +870,25 @@ export default function Index(props) {
                 </div>
               ) : (
                 <>
-                  <div className="flex">
+                  <div>
+                    {/* GAME ID */}
+                    <div className="flex flex-col lg:w-1/2">
+                      <label className="font-monument" htmlFor="gameid">
+                        GAME ID (Suggested ID: {totalGames + 1})
+                      </label>
+                      <input
+                        className="border outline-none rounded-lg px-3 p-2 w-1/2"
+                        id="gameid"
+                        type="number"
+                        min="0"
+                        name="gameId"
+                        onChange={(e) => onChange(e)}
+                        value={details.gameId}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex mt-8">
                     {/* GAME TITLE */}
                     {/* <div className="flex flex-col lg:w-1/2 lg:mr-10">
                           <label className="font-monument" htmlFor="title">
@@ -888,6 +903,8 @@ export default function Index(props) {
                             value={details.name}
                           />
                         </div> */}
+
+
 
                     {/* DATE & TIME */}
                     <div className="flex flex-col lg:w-1/2">
@@ -1161,15 +1178,15 @@ export default function Index(props) {
         <p className="font-bold">Positions:</p>
         {currentSport === 'FOOTBALL'
           ? positionsDisplay.map((position) => (
-              <li>
-                {position.positions} {position.amount}x
-              </li>
-            ))
+            <li>
+              {position.positions} {position.amount}x
+            </li>
+          ))
           : positionsDisplayBasketball.map((position) => (
-              <li>
-                {position.positions} {position.amount}x
-              </li>
-            ))}
+            <li>
+              {position.positions} {position.amount}x
+            </li>
+          ))}
         <p className="font-bold">Image: </p>
         <img src={details.game_image} />
         <button
