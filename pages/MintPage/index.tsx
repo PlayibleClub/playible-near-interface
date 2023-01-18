@@ -47,10 +47,10 @@ export default function Home(props) {
   const dispatch = useDispatch();
   const [positionList, setPositionList] = useState(SPORT_TYPES[0].positionList);
   const sportObj = SPORT_TYPES.map((x) => ({ name: x.sport, isActive: false }));
-  sportObj[0].isActive = true;
+  sportObj[1].isActive = true;
   const [sportFromRedux, setSportFromRedux] = useState(useSelector(getSportTypeRedux));
   const [categoryList, setCategoryList] = useState([...sportObj]);
-  const [currentSport, setCurrentSport] = useState(sportObj[0].name);
+  const [currentSport, setCurrentSport] = useState(sportObj[1].name);
   const options = [
     { value: 'national', label: 'National Football League' },
     { value: 'local', label: 'Local Football League' },
@@ -98,7 +98,7 @@ export default function Home(props) {
       .query({
         request_type: 'call_function',
         finality: 'optimistic',
-        account_id: getSportType('FOOTBALL').mintContract,
+        account_id: getSportType(currentSport).mintContract,
         method_name: 'get_config',
         args_base64: '',
       })
@@ -117,7 +117,7 @@ export default function Home(props) {
         const minting_of = await provider.query({
           request_type: 'call_function',
           finality: 'optimistic',
-          account_id: getSportType('FOOTBALL').mintContract,
+          account_id: getSportType(currentSport).mintContract,
           method_name: 'get_minting_of',
           args_base64: Buffer.from(query).toString('base64'),
         });
@@ -140,7 +140,7 @@ export default function Home(props) {
         const storage_balance = await provider.query({
           request_type: 'call_function',
           finality: 'optimistic',
-          account_id: getSportType('FOOTBALL').mintContract,
+          account_id: getSportType(currentSport).mintContract,
           method_name: 'get_storage_balance_of',
           args_base64: Buffer.from(query).toString('base64'),
         });
@@ -207,7 +207,7 @@ export default function Home(props) {
 
     const data_two = Buffer.from(
       JSON.stringify({
-        receiver_id: getSportType('FOOTBALL').mintContract,
+        receiver_id: getSportType(currentSport).mintContract,
         amount: Math.floor(mint_cost).toString(),
         msg: JSON.stringify({ mint_amount: selectedMintAmount }),
       })
@@ -229,7 +229,7 @@ export default function Home(props) {
     const tx = wallet.signAndSendTransactions({
       transactions: [
         {
-          receiverId: getSportType('FOOTBALL').mintContract,
+          receiverId: getSportType(currentSport).mintContract,
           // @ts-ignore:next-line
           actions: [action_deposit_storage_near_token],
         },
@@ -326,7 +326,7 @@ export default function Home(props) {
     const tx = wallet
       .signAndSendTransaction({
         signerId: accountId,
-        receiverId: getSportType('FOOTBALL').mintContract,
+        receiverId: getSportType(currentSport).mintContract,
         actions: [
           // @ts-ignore:next-line
           action_deposit_storage_near_token,
@@ -340,7 +340,7 @@ export default function Home(props) {
 
   function selectMint() {
     let optionMint = [];
-    for (let x = 1; x < 16; x++) {
+    for (let x = 1; x < 11; x++) {
       optionMint.push({ value: x, label: `Get ${x} ${x > 1 ? 'packs' : 'pack'}` });
     }
     return (
@@ -397,7 +397,7 @@ export default function Home(props) {
     query_config_contract();
     query_storage_deposit_account_id();
     query_minting_of();
-  }, []);
+  }, [currentSport, useNEP141]);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -432,7 +432,7 @@ export default function Home(props) {
             <div className="flex-initial iphone5:mt-20 md:ml-6 md:mt-8">
               <div className="flex md:flex-row md:float-right iphone5:flex-col md:mt-0">
                 <div className="md:mr-5 md:mt-4">
-                  {/* <form>
+                  <form>
                     <select
                       onChange={(e) => {
                         setCurrentSport(e.target.value);
@@ -444,7 +444,7 @@ export default function Home(props) {
                         return <option value={x.name}>{x.name}</option>;
                       })}
                     </select>
-                  </form> */}
+                  </form>
                 </div>
               </div>
               <div className="ml-8">
