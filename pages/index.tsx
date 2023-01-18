@@ -198,7 +198,7 @@ export default function Home(props) {
                 ) : data?.getAthletes.length > 0 ? (
                   <div className="grid grid-cols-2 gap-x-4 -mt-4 md:mt-8">
                     {data.getAthletes.map(function (
-                      { firstName, lastName, id, nftImage, stats },
+                      { firstName, lastName, id, nftImage, stats, isInjured, isActive },
                       i
                     ) {
                       return (
@@ -213,6 +213,8 @@ export default function Home(props) {
                             id={id}
                             uri={nftImage || null}
                             hoverable={false}
+                            isActive={isActive}
+                            isInjured={isInjured}
                           />
                         </div>
                       );

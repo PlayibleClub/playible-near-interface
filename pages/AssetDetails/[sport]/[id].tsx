@@ -121,7 +121,18 @@ const AssetDetails = (props) => {
             </div>
             <div className="mt-10 text-m h-0 font-bold">{athlete?.name}</div>
             <div className="mt-10 text-sm grid grid-rows-2">
-              <div>FANTASY SCORE</div>
+              <div className="">
+                <div className="relative ml-32">
+                  {athlete?.isInjured ? (
+                    <div className="rounded-full mt-1 bg-indigo-red w-3 h-3 absolute "></div>
+                  ) : athlete?.isActive ? (
+                    <div className="mt-1 rounded-full bg-indigo-green w-3 h-3  absolute"></div>
+                  ) : (
+                    <div className="mt-1 rounded-full bg-indigo-green w-3 h-3  absolute"></div>
+                  )}
+                </div>
+                <div>FANTASY SCORE</div>
+              </div>
               <div className="font-bold">{athlete?.fantasy_score.toFixed(2)}</div>
             </div>
             <Link href="https://paras.id/collection/athlete.nfl.playible.near">

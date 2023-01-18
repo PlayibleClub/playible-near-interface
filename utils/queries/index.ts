@@ -28,6 +28,8 @@ export const GET_ATHLETE_BY_ID = gql`
     getAthleteById(id: $getAthleteById) {
       nftAnimation
       nftImage
+      isInjured
+      isActive
       stats {
         season
         fantasyScore
@@ -50,6 +52,8 @@ export const GET_ATHLETE_BY_ID_DATE = gql`
     getAthleteById(id: $getAthleteById, to: $to, from: $from){
       nftAnimation
       nftImage
+      isInjured
+      isActive
       stats {
         fantasyScore
         week
@@ -73,6 +77,8 @@ export const GET_ATHLETEDATA_QB = gql`
       firstName
       lastName
       position
+      isInjured
+      isActive
       nftImage
       stats {
         type
@@ -99,6 +105,8 @@ export const GET_ATHLETEDATA_RB = gql`
       firstName
       lastName
       position
+      isInjured
+      isActive
       nftImage
       stats {
         type
@@ -124,6 +132,8 @@ export const GET_ATHLETEDATA_WR = gql`
       firstName
       lastName
       position
+      isInjured
+      isActive
       nftImage
       stats {
         type
@@ -147,6 +157,8 @@ export const GET_ATHLETEDATA_TE = gql`
       firstName
       lastName
       position
+      isInjured
+      isActive
       nftImage
       stats {
         type
@@ -170,6 +182,8 @@ export const GET_ATHLETEDATA_NBA = gql`
       firstName
       lastName
       position
+      isInjured
+      isActive
       nftImage
       stats {
         type

@@ -30,6 +30,8 @@ async function getAthleteInfoById(item) {
     fantasy_score: getAvgFantasyScore(data.getAthleteById.stats),
     stats_breakdown: data.getAthleteById.stats,
     isInGame: item.metadata['starts_at'] > getUTCTimestampFromLocal() ? true : false,
+    isInjured: data.getAthleteById.isInjured,
+    isActive: data.getAthleteById.isActive,
   };
   return returningData;
 }
@@ -59,6 +61,8 @@ async function getAthleteInfoByIdWithDate(item, from, to) {
     fantasy_score: getDailyFantasyScore(data.getAthleteById.stats),
     stats_breakdown: data.getAthleteById.stats,
     isInGame: item.metadata['starts_at'] > getUTCTimestampFromLocal() ? true : false,
+    isInjured: data.getAthleteById.isInjured,
+    isActive: data.getAthleteById.isActive,
   };
   return returningData;
 }
