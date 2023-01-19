@@ -34,6 +34,7 @@ import { getSportTypeRedux, setSportTypeRedux } from 'redux/athlete/sportSlice';
 import { persistor } from 'redux/athlete/store';
 import { getUTCDateFromLocal } from 'utils/date/helper';
 import moment from 'moment';
+import Button from 'components/buttons/Button';
 const DECIMALS_NEAR = 1000000000000000000000000;
 const RESERVED_AMOUNT = 200;
 const NANO_TO_SECONDS_DENOMINATOR = 1000000;
@@ -458,7 +459,9 @@ export default function Home(props) {
   function formatTime(time) {
     return time < 10 ? '0' + time : time;
   }
-
+  const logIn = () => {
+    modal.show();
+  };
   useEffect(() => {
     setDay(0);
     setHour(0);
@@ -501,7 +504,7 @@ export default function Home(props) {
               <div className="ml-8">
                 <ModalPortfolioContainer title="MINT PACKS" textcolor="text-indigo-black" />
               </div>
-              <div className="ml-12 mt-4 md:flex md:flex-row md:ml-8">
+              {selector.isSignedIn() ? <div className="ml-12 mt-4 md:flex md:flex-row md:ml-8">
                 {isClaimedFootball ? (
                   <button
                     className={`bg-indigo-gray bg-opacity-40 text-indigo-white w-12 text-center hidden justify-center items-center font-montserrat p-4 text-xs mt-8`}
@@ -531,6 +534,39 @@ export default function Home(props) {
                   </button>
                 )}
               </div>
+              :
+              <div className="ml-12 mt-4 md:flex md:flex-row md:ml-8">
+                {isClaimedFootball ? (
+                  <button
+                    className={`bg-indigo-gray bg-opacity-40 text-indigo-white w-12 text-center hidden justify-center items-center font-montserrat p-4 text-xs mt-8`}
+                  >
+                    CLAIM FOOTBALL PACK
+                  </button>
+                ) : (
+                  <button
+                    className="w-60 flex text-center justify-center items-center iphone5:w-64 bg-indigo-buttonblue font-montserrat text-indigo-white p-3 mb-4 md:mr-4 text-xs "
+                    onClick={logIn}
+                    >
+                    CLAIM FOOTBALL PACK
+                  </button>
+                )}
+                {isClaimedBasketball ? (
+                  <button
+                    className={`bg-indigo-gray bg-opacity-40 text-indigo-white w-12 text-center hidden justify-center items-center font-montserrat p-4 text-xs mt-8`}
+                  >
+                    CLAIM BASKETBALL PACK
+                  </button>
+                ) : (
+                  <button
+                    className="w-60 flex text-center justify-center items-center iphone5:w-64 bg-indigo-buttonblue font-montserrat text-indigo-white p-3 mb-4 text-xs "
+                    onClick={logIn}
+                    >
+                    CLAIM BASKETBALL PACK
+                  </button>
+                )}
+              </div>
+              }
+              
               <div className="md:mr- md:mt-0 ml-6 mt-4">
                 <form>
                   <select
