@@ -366,6 +366,7 @@ const AthleteSelect = (props) => {
           title={'SELECT YOUR ' + getPositionDisplay(position, currentSport)}
           textcolor="text-indigo-black"
         />
+        <div className='grid grid-cols-2 md:grid-cols-none'>
         <NftTypeComponent
           onChangeFn={(selectedRegular, selectedPromo) => {
             setSelectedRegular(selectedRegular);
@@ -373,6 +374,7 @@ const AthleteSelect = (props) => {
             setRemountComponent(Math.random());
           }}
         />
+        </div>
       </div>
 
       <div className="h-8 flex absolute ml-3 top-32 mr-8 md:top-24 md:right-20 md:-mt-5 ">
@@ -410,8 +412,8 @@ const AthleteSelect = (props) => {
           </form> */}
       </div>
 
-      <div key={remountAthlete} className="flex flex-col overflow-y-scroll">
-        <div className="grid grid-cols-4 mt-1 md:grid-cols-4 md:ml-7 md:mt-2">
+      <div key={remountAthlete} className="flex flex-col overflow-y-none">
+        <div className="grid grid-cols-2 mt-1 ml-4 md:grid-cols-4 md:ml-7 md:mt-2">
           {athletes.map((item, i) => {
             const accountAthleteIndex = athletes.indexOf(item, 0) + athleteOffset;
             return (
