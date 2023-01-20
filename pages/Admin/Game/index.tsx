@@ -691,18 +691,30 @@ export default function Index(props) {
     };
     const wallet = await selector.wallet();
 
-    console.log(addGameArgs);
+    console.log(
+      JSON.stringify({
+        game_id: details.gameId.toString(),
+        game_time_start: dateStart,
+        game_time_end: dateEnd,
+        whitelist: whitelistInfo,
+        positions: currentSport === 'FOOTBALL' ? positionsInfo : positionsInfoBasketball,
+        lineup_len: getLineupLength(currentSport),
+        game_description: gameDescription,
+        prize_description: prizeDescription,
+        game_image: gameImage,
+      })
+    );
 
     // @ts-ignore:next-line
-    const tx = wallet.signAndSendTransactions({
-      transactions: [
-        {
-          receiverId: getSportType(currentSport).gameContract,
-          // @ts-ignore:next-line
-          actions: [action_add_game],
-        },
-      ],
-    });
+    // const tx = wallet.signAndSendTransactions({
+    //   transactions: [
+    //     {
+    //       receiverId: getSportType(currentSport).gameContract,
+    //       // @ts-ignore:next-line
+    //       actions: [action_add_game],
+    //     },
+    //   ],
+    // });
   }
 
   useEffect(() => {
