@@ -22,6 +22,7 @@ import {
   NEP141USDC,
   NEP141USDT,
   NEP141USN,
+  NEP141NEAR,
   PACK_PROMO_NFL,
 } from '../../data/constants/nearContracts';
 
@@ -61,6 +62,7 @@ export default function Home(props) {
   ];
   // Re-use this data to display the state
   const [minterConfig, setMinterConfig] = useState({
+    minting_price_in_near: '',
     minting_price_decimals_6: '',
     minting_price_decimals_18: '',
     admin: '',
@@ -189,7 +191,7 @@ export default function Home(props) {
       Number(
         useNEP141.decimals == 1000000
           ? minterConfig.minting_price_decimals_6
-          : minterConfig.minting_price_decimals_18
+          : minterConfig.minting_price_in_near
       );
 
     try {
@@ -265,7 +267,7 @@ export default function Home(props) {
       Number(
         useNEP141.decimals == 1000000
           ? minterConfig.minting_price_decimals_6
-          : minterConfig.minting_price_decimals_18
+          : minterConfig.minting_price_in_near
       );
 
     if (selectedMintAmount == 0) {
@@ -385,7 +387,7 @@ export default function Home(props) {
       Number(
         useNEP141.decimals === 1000000
           ? minterConfig.minting_price_decimals_6
-          : minterConfig.minting_price_decimals_18
+          : minterConfig.minting_price_in_near
       ) / useNEP141.decimals
     );
     return price;
@@ -504,69 +506,70 @@ export default function Home(props) {
               <div className="ml-8">
                 <ModalPortfolioContainer title="MINT PACKS" textcolor="text-indigo-black" />
               </div>
-              {selector.isSignedIn() ? <div className="ml-12 mt-4 md:flex md:flex-row md:ml-8">
-                {isClaimedFootball ? (
-                  <button
-                    className={`bg-indigo-gray bg-opacity-40 text-indigo-white w-12 text-center hidden justify-center items-center font-montserrat p-4 text-xs mt-8`}
-                  >
-                    CLAIM FOOTBALL PACK
-                  </button>
-                ) : (
-                  <button
-                    className="w-60 flex text-center justify-center items-center iphone5:w-64 bg-indigo-buttonblue font-montserrat text-indigo-white p-3 mb-4 md:mr-4 text-xs "
-                    onClick={(e) => handleButtonClick(e, 'FOOTBALL')}
-                  >
-                    CLAIM FOOTBALL PACK
-                  </button>
-                )}
-                {isClaimedBasketball ? (
-                  <button
-                    className={`bg-indigo-gray bg-opacity-40 text-indigo-white w-12 text-center hidden justify-center items-center font-montserrat p-4 text-xs mt-8`}
-                  >
-                    CLAIM BASKETBALL PACK
-                  </button>
-                ) : (
-                  <button
-                    className="w-60 flex text-center justify-center items-center iphone5:w-64 bg-indigo-buttonblue font-montserrat text-indigo-white p-3 mb-4 text-xs "
-                    onClick={(e) => handleButtonClick(e, 'BASKETBALL')}
-                  >
-                    CLAIM BASKETBALL PACK
-                  </button>
-                )}
-              </div>
-              :
-              <div className="ml-12 mt-4 md:flex md:flex-row md:ml-8">
-                {isClaimedFootball ? (
-                  <button
-                    className={`bg-indigo-gray bg-opacity-40 text-indigo-white w-12 text-center hidden justify-center items-center font-montserrat p-4 text-xs mt-8`}
-                  >
-                    CLAIM FOOTBALL PACK
-                  </button>
-                ) : (
-                  <button
-                    className="w-60 flex text-center justify-center items-center iphone5:w-64 bg-indigo-buttonblue font-montserrat text-indigo-white p-3 mb-4 md:mr-4 text-xs "
-                    onClick={logIn}
+              {selector.isSignedIn() ? (
+                <div className="ml-12 mt-4 md:flex md:flex-row md:ml-8">
+                  {isClaimedFootball ? (
+                    <button
+                      className={`bg-indigo-gray bg-opacity-40 text-indigo-white w-12 text-center hidden justify-center items-center font-montserrat p-4 text-xs mt-8`}
                     >
-                    CLAIM FOOTBALL PACK
-                  </button>
-                )}
-                {isClaimedBasketball ? (
-                  <button
-                    className={`bg-indigo-gray bg-opacity-40 text-indigo-white w-12 text-center hidden justify-center items-center font-montserrat p-4 text-xs mt-8`}
-                  >
-                    CLAIM BASKETBALL PACK
-                  </button>
-                ) : (
-                  <button
-                    className="w-60 flex text-center justify-center items-center iphone5:w-64 bg-indigo-buttonblue font-montserrat text-indigo-white p-3 mb-4 text-xs "
-                    onClick={logIn}
+                      CLAIM FOOTBALL PACK
+                    </button>
+                  ) : (
+                    <button
+                      className="w-60 flex text-center justify-center items-center iphone5:w-64 bg-indigo-buttonblue font-montserrat text-indigo-white p-3 mb-4 md:mr-4 text-xs "
+                      onClick={(e) => handleButtonClick(e, 'FOOTBALL')}
                     >
-                    CLAIM BASKETBALL PACK
-                  </button>
-                )}
-              </div>
-              }
-              
+                      CLAIM FOOTBALL PACK
+                    </button>
+                  )}
+                  {isClaimedBasketball ? (
+                    <button
+                      className={`bg-indigo-gray bg-opacity-40 text-indigo-white w-12 text-center hidden justify-center items-center font-montserrat p-4 text-xs mt-8`}
+                    >
+                      CLAIM BASKETBALL PACK
+                    </button>
+                  ) : (
+                    <button
+                      className="w-60 flex text-center justify-center items-center iphone5:w-64 bg-indigo-buttonblue font-montserrat text-indigo-white p-3 mb-4 text-xs "
+                      onClick={(e) => handleButtonClick(e, 'BASKETBALL')}
+                    >
+                      CLAIM BASKETBALL PACK
+                    </button>
+                  )}
+                </div>
+              ) : (
+                <div className="ml-12 mt-4 md:flex md:flex-row md:ml-8">
+                  {isClaimedFootball ? (
+                    <button
+                      className={`bg-indigo-gray bg-opacity-40 text-indigo-white w-12 text-center hidden justify-center items-center font-montserrat p-4 text-xs mt-8`}
+                    >
+                      CLAIM FOOTBALL PACK
+                    </button>
+                  ) : (
+                    <button
+                      className="w-60 flex text-center justify-center items-center iphone5:w-64 bg-indigo-buttonblue font-montserrat text-indigo-white p-3 mb-4 md:mr-4 text-xs "
+                      onClick={logIn}
+                    >
+                      CLAIM FOOTBALL PACK
+                    </button>
+                  )}
+                  {isClaimedBasketball ? (
+                    <button
+                      className={`bg-indigo-gray bg-opacity-40 text-indigo-white w-12 text-center hidden justify-center items-center font-montserrat p-4 text-xs mt-8`}
+                    >
+                      CLAIM BASKETBALL PACK
+                    </button>
+                  ) : (
+                    <button
+                      className="w-60 flex text-center justify-center items-center iphone5:w-64 bg-indigo-buttonblue font-montserrat text-indigo-white p-3 mb-4 text-xs "
+                      onClick={logIn}
+                    >
+                      CLAIM BASKETBALL PACK
+                    </button>
+                  )}
+                </div>
+              )}
+
               <div className="md:mr- md:mt-0 ml-6 mt-4">
                 <form>
                   <select
@@ -639,7 +642,15 @@ export default function Home(props) {
                     <div className="flex justify-between w-4/5 md:w-1/2 mt-5">
                       <div>
                         <div className="text-xs">PRICE</div>
-                        <div className="font-black"> ${format_price()}</div>
+                        {useNEP141 === NEP141NEAR ? (
+                          <div className="font-black">
+                            {' '}
+                            ${format_price()}
+                            <div className="line-through decoration-4 text-xs">($69)</div>
+                          </div>
+                        ) : (
+                          <div className="font-black"> ${format_price()}</div>
+                        )}
                       </div>
                       <div className="border">
                         <button
@@ -669,16 +680,16 @@ export default function Home(props) {
                           ></Usdc>
                         </button>
                         <button
-                          onClick={() => setUseNEP141(NEP141USN)}
+                          onClick={() => setUseNEP141(NEP141NEAR)}
                           className={
                             'p-3 ' +
-                            (useNEP141.title == NEP141USN.title
+                            (useNEP141.title == NEP141NEAR.title
                               ? 'bg-indigo-black'
                               : 'hover:bg-indigo-slate')
                           }
                         >
                           <USN
-                            hardCodeMode={useNEP141.title == NEP141USN.title ? '#fff' : '#000'}
+                            hardCodeMode={useNEP141.title == NEP141NEAR.title ? '#fff' : '#000'}
                           ></USN>
                         </button>
                       </div>
@@ -732,7 +743,7 @@ export default function Home(props) {
                       </div>
                     </div>
                     <div className="mt-8 mb-0 p-0 w-9/12">
-                      <ProgressBar
+                      {/* <ProgressBar
                         completed={parseInt(
                           (
                             ((minterConfig.nft_pack_max_sale_supply -
@@ -744,14 +755,14 @@ export default function Home(props) {
                         )}
                         maxCompleted={100}
                         bgColor={'#3B62F6'}
-                      />
+                      /> */}
                     </div>
                     <div className="text-xs ">
-                      {' '}
+                      {/* {' '}
                       {minterConfig.nft_pack_max_sale_supply -
                         minterConfig.nft_pack_mint_counter -
                         262}
-                      /{minterConfig.nft_pack_max_sale_supply + RESERVED_AMOUNT} packs remaining
+                      /{minterConfig.nft_pack_max_sale_supply + RESERVED_AMOUNT} packs remaining */}
                     </div>
                     <div>{currentSport === 'FOOTBALL' ? selectMint() : selectMintNba()}</div>
                     {currentSport === 'FOOTBALL' ? (
