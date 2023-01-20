@@ -26,6 +26,19 @@ const PerformerContainer = (props) => {
     fromPortfolio,
     currentSport,
   } = props;
+
+  function checkInjury(injury) {
+    switch (injury) {
+      case 'Probable':
+      case 'Questionable':
+      case 'Doubtful':
+        return 1;
+      case 'Out':
+        return 2;
+      case null:
+        return 3;
+    }
+  }
   return (
     <div
       data-test="PerformerContainer"
@@ -77,14 +90,30 @@ const PerformerContainer = (props) => {
         <div className="flex flex-col mt-4">
           <div className="mt-2 text-xs font-bold uppercase">{AthleteName}</div>
           <div>
-            <div className="relative ml-28">
-              {isInjured ? (
-                <div className="rounded-full mt-4 bg-indigo-red w-3 h-3 absolute "></div>
+            <div className="group relative ml-28">
+              {/* {isInjured && checkInjury(isInjured) === 1 ? (
+                <div className="rounded-full mt-4 bg-indigo-yellow w-3 h-3 absolute "></div>
+              ) : isInjured && checkInjury(isInjured) === 2 ? (
+                <div className="mt-4 -ml-2 rounded-full bg-indigo-red w-3 h-3  absolute"></div>
               ) : isActive ? (
                 <div className="mt-4 -ml-2 rounded-full bg-indigo-green w-3 h-3  absolute"></div>
               ) : (
-                <div className="mt-4 -ml-2 rounded-full bg-indigo-red w-3 h-3  absolute"></div>
-              )}
+                <></>
+              )} */}
+              <div
+                className={`rounded-full mt-4 -ml-2 w-3 h-3 absolute ${
+                  isInjured && checkInjury(isInjured) === 1
+                    ? 'bg-indigo-yellow'
+                    : isInjured && checkInjury(isInjured === 2)
+                    ? 'bg-indigo-red'
+                    : isActive
+                    ? 'bg-indigo-green'
+                    : ''
+                }`}
+              ></div>
+              <span className="pointer-events-none absolute top-2 left-3 w-max rounded px-2 py-1 bg-indigo-gray text-indigo-white text-sm font-medium text-gray-50 shadow opacity-0 transition-opacity group-hover:opacity-100">
+                {isInjured !== null ? isInjured : 'Active'}
+              </span>
             </div>
           </div>
           <div className="mt-4 text-xs font-thin">FANTASY SCORE </div>
@@ -113,7 +142,7 @@ PerformerContainer.propTypes = {
   isSelected: PropTypes.bool,
   currentSport: PropTypes.string,
   fromPortfolio: PropTypes.bool,
-  isInjured: PropTypes.bool,
+  isInjured: PropTypes.string,
   isActive: PropTypes.bool,
 };
 
