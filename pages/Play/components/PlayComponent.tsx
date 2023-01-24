@@ -113,11 +113,15 @@ const PlayComponent = (props) => {
                 <div className="font-thin text-sm">
                   {type === 'ON-GOING' || type === 'ACTIVE' ? 'END' : 'START'} DATE
                 </div>
-                <div className="text-base font-monument">
+                <div className="text-base font-monument flex">
                   {moment
                     .utc(type === 'ON-GOING' || type === 'ACTIVE' ? endDate : startDate)
                     .local()
                     .format('MM/DD/YYYY')}
+                </div>
+                <div className="font-thin text-sm">{type === 'NEW' ? 'END DATE' : ''}</div>
+                <div className="text-base font-monument">
+                  {type === 'NEW' ? moment.utc(endDate).local().format('MM/DD/YYYY') : ''}
                 </div>
               </div>
               <div>
