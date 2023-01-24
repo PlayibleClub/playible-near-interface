@@ -48,10 +48,6 @@ export default function PackDetails(props) {
   const [totalPacks, setTotalPacks] = useState(0);
 
   async function get_pack_token_by_id() {
-    let contract =
-      myPack.id.length === 64 || myPack.id.includes('SB')
-        ? getSportType(myPack.sport).packPromoContract
-        : getSportType(myPack.sport).packContract;
     await query_nft_tokens_by_id(myPack.id, contract).then((data) => {
       //@ts-ignore:next-lines
       const result = JSON.parse(Buffer.from(data.result).toString());
