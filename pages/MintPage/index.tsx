@@ -10,6 +10,7 @@ import ProgressBar from '@ramonak/react-progress-bar';
 import Usdt from '../../public/images/SVG/usdt';
 import Usdc from '../../public/images/SVG/usdc';
 import USN from '../../public/images/SVG/usn';
+import NEAR from '../../public/images/SVG/near';
 import { useWalletSelector } from '../../contexts/WalletSelectorContext';
 import BigNumber from 'bignumber.js';
 import { getConfig, getContract, getRPCProvider, get_near_connection } from '../../utils/near';
@@ -79,7 +80,7 @@ export default function Home(props) {
   const [storageDepositAccountBalance, setStorageDepositAccountBalance] = useState(0);
   const [selectedMintAmount, setSelectedMintAmount] = useState(0);
   const [minted, setMinted] = useState(0);
-  const [accountBalance, setAccountBalance] = useState(0);
+  const [accountBalance, setAccountBalance] = useState('');
   const [mintedNba, setMintedNba] = useState(0);
   const [useNEP141, setUseNEP141] = useState(NEP141USDT);
   const [intervalSale, setIntervalSale] = useState(0);
@@ -176,7 +177,9 @@ export default function Home(props) {
     const connection = await get_near_connection();
 
     const wallet = await (await connection.account(accountId)).getAccountBalance();
+    setAccountBalance(wallet.available)
     console.log('account', wallet);
+    console.log((Number(accountBalance) / DECIMALS_NEAR))
   }
 
   async function execute_batch_transaction_storage_deposit_and_mint_token() {
@@ -474,9 +477,6 @@ export default function Home(props) {
       setEditModal(true);
     }
   }, []);
-  // Set the date we're counting down to
-
-  // const countDownDate = new Date(1674144000000).getTime();
 
   function formatTime(time) {
     return time < 10 ? '0' + time : time;
@@ -484,6 +484,9 @@ export default function Home(props) {
   const logIn = () => {
     modal.show();
   };
+  const testTime = moment().unix() - 1675008000000 / 1000;
+  // const testTime = 1675008000000 / 1000 - 1675008000000 / 1000;
+
   useEffect(() => {
     setDay(0);
     setHour(0);
@@ -491,7 +494,8 @@ export default function Home(props) {
     setSecond(0);
     const id = setInterval(() => {
       const currentDate = getUTCDateFromLocal();
-      const end = moment.utc(1674144000000);
+      // const end = moment.utc(1674144000000);
+      const end = moment.utc(1675008000000);
       setDay(formatTime(Math.floor(end.diff(currentDate, 'second') / 3600 / 24)));
       setHour(formatTime(Math.floor((end.diff(currentDate, 'second') / 3600) % 24)));
       setMinute(formatTime(Math.floor((end.diff(currentDate, 'second') / 60) % 60)));
@@ -499,7 +503,6 @@ export default function Home(props) {
     }, 1000);
     return () => clearInterval(id);
   }, []);
-  console.log(moment.utc(1674144000000));
   return (
     <>
       <Container activeName="MINT">
@@ -708,9 +711,9 @@ export default function Home(props) {
                               : 'hover:bg-indigo-slate')
                           }
                         >
-                          <USN
+                          <NEAR
                             hardCodeMode={useNEP141.title == NEP141NEAR.title ? '#fff' : '#000'}
-                          ></USN>
+                          ></NEAR>
                         </button>
                       </div>
                     </div>
@@ -742,25 +745,51 @@ export default function Home(props) {
                         </div>
                         <div className="text-xs">YOU HAVE MINTED</div>
                       </div>
-                      <div className="flex flex-col mt-10">
-                        <div>Launching: 12am UTC Jan 20</div>
-                        <div>
-                          <div className="flex space-x-2 mt-2">
-                            <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
-                              {day || ''}
-                            </div>
-                            <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
-                              {hour || ''}
-                            </div>
-                            <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
-                              {minute || ''}
-                            </div>
-                            <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
-                              {second || ''}
+                      {testTime === 0 ? (
+                        <div className="flex flex-col mt-10">
+                          <div className="hidden">Launching: 12am UTC Jan 20</div>
+                          <div>
+                            <div className="space-x-2 mt-2 hidden">
+                              <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
+                                {day || ''}
+                              </div>
+                              <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
+                                {hour || ''}
+                              </div>
+                              <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
+                                {minute || ''}
+                              </div>
+                              <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
+                                {second || ''}
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </div>
+                      ) : (
+                        <div className="flex flex-col mt-10">
+                          <div>
+                            Launching: 12am UTC Jan {moment.utc(1675008000000).local().format('D')}
+                           
+
+                          </div>
+                          <div>
+                            <div className="flex space-x-2 mt-2">
+                              <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
+                                {day || ''}
+                              </div>
+                              <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
+                                {hour || ''}
+                              </div>
+                              <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
+                                {minute || ''}
+                              </div>
+                              <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
+                                {second || ''}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      )}
                     </div>
                     <div className="mt-8 mb-0 p-0 w-9/12">
                       {/* <ProgressBar
