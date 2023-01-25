@@ -1,7 +1,7 @@
-import { transactions, utils, WalletConnection, providers } from 'near-api-js';
+import { transactions, utils, WalletConnection, providers, connect, keyStores } from 'near-api-js';
 import Container from '../../components/containers/Container';
 import Main from '../../components/Main';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Image from 'next/image';
 import 'regenerator-runtime/runtime';
 import Head from 'next/head';
@@ -79,6 +79,7 @@ export default function Home(props) {
   const [storageDepositAccountBalance, setStorageDepositAccountBalance] = useState(0);
   const [selectedMintAmount, setSelectedMintAmount] = useState(0);
   const [minted, setMinted] = useState(0);
+  const [accountBalance, setAccountBalance] = useState(0);
   const [mintedNba, setMintedNba] = useState(0);
   const [useNEP141, setUseNEP141] = useState(NEP141USDT);
   const [intervalSale, setIntervalSale] = useState(0);
@@ -169,6 +170,26 @@ export default function Home(props) {
     }
   }
 
+  async function get_near_connection() {
+    const myKeyStore = new keyStores.BrowserLocalStorageKeyStore();
+    const connectionConfig = {
+      networkId: 'testnet',
+      keyStore: myKeyStore, // first create a key store
+      nodeUrl: 'https://rpc.testnet.near.org',
+      walletUrl: 'https://wallet.testnet.near.org',
+      helperUrl: 'https://helper.testnet.near.org',
+      explorerUrl: 'https://explorer.testnet.near.org',
+    };
+    const nearConnection = await connect({ headers: {}, ...connectionConfig });
+
+    return nearConnection;
+  }
+  async function get_near_account_balance(account_id) {
+    // gets account balance
+
+    const account = await get_near_connection().account(account_id);
+    setAccountBalance(account.getAccountBalance());
+  }
   async function execute_batch_transaction_storage_deposit_and_mint_token() {
     const amount_to_deposit_near = new BigNumber(selectedMintAmount)
       .multipliedBy(new BigNumber(MINT_STORAGE_COST))
@@ -207,7 +228,16 @@ export default function Home(props) {
 
       const balance = JSON.parse(Buffer.from(ft_balance_of.result).toString());
       if (balance < mint_cost) {
-        setBalanceErrorMsg('Error you need ' + selectedMintAmount * 200 + ' ' + useNEP141.title);
+        setBalanceErrorMsg(
+          'Error you need ' +
+            selectedMintAmount * 200 +
+            ' ' +
+            useNEP141.title +
+            ', You have ' +
+            balance +
+            ' ' +
+            useNEP141.title
+        );
         return;
       }
       setBalanceErrorMsg('');
@@ -443,7 +473,8 @@ export default function Home(props) {
 
   useEffect(() => {
     get_claim_status(accountId);
-  }, [currentSport]);
+    get_near_account_balance(accountId);
+  }, [currentSport, accountBalance]);
 
   useEffect(() => {
     if (router.asPath.indexOf('transactionHashes') > -1) {
@@ -768,7 +799,10 @@ export default function Home(props) {
                     {currentSport === 'FOOTBALL' ? (
                       <div className="ml-3"></div>
                     ) : (
-                      <div className="ml-3">Limit: {10 - mintedNba} packs left</div>
+                      <div>
+                        <div className="ml-3">Limit: {10 - mintedNba} packs left</div>
+                        <div>Balance: {accountBalance}</div>
+                      </div>
                     )}
                     {/*TODO: start styling */}
                     {/*<div>*/}
