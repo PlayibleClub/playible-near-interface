@@ -80,7 +80,7 @@ export default function Home(props) {
   const [storageDepositAccountBalance, setStorageDepositAccountBalance] = useState(0);
   const [selectedMintAmount, setSelectedMintAmount] = useState(0);
   const [minted, setMinted] = useState(0);
-  const [accountBalance, setAccountBalance] = useState('');
+  const [accountBalance, setAccountBalance] = useState(0);
   const [mintedNba, setMintedNba] = useState(0);
   const [useNEP141, setUseNEP141] = useState(NEP141USDT);
   const [intervalSale, setIntervalSale] = useState(0);
@@ -177,9 +177,40 @@ export default function Home(props) {
     const connection = await get_near_connection();
 
     const wallet = await (await connection.account(accountId)).getAccountBalance();
-    setAccountBalance(wallet.available)
+    setAccountBalance(Number(wallet.available) / DECIMALS_NEAR);
     console.log('account', wallet);
-    console.log((Number(accountBalance) / DECIMALS_NEAR))
+    console.log(Number(accountBalance) / DECIMALS_NEAR);
+  }
+
+  async function execute_near_storage_deposit_and_mint_token() {
+    const amount_to_deposit_near =
+      new BigNumber(selectedMintAmount).multipliedBy(new BigNumber(MINT_STORAGE_COST)).toFixed() +
+      new BigNumber(minterConfig.minting_price_in_near).multipliedBy(
+        new BigNumber(selectedMintAmount)
+      );
+
+    const data_one = Buffer.from(JSON.stringify({}));
+    const action_deposit_near_price = {
+      type: 'FunctionCall',
+      params: {
+        methodName: 'storage_deposit',
+        args: data_one,
+        gas: DEFAULT_MAX_FEES,
+        deposit: amount_to_deposit_near,
+      },
+    };
+
+    const wallet = await selector.wallet();
+    // @ts-ignore:next-line
+    const tx = wallet.signAndSendTransactions({
+      transactions: [
+        {
+          receiverId: getSportType(currentSport).mintContract,
+          // @ts-ignore:next-line
+          actions: [action_deposit_near_price],
+        },
+      ],
+    });
   }
 
   async function execute_batch_transaction_storage_deposit_and_mint_token() {
@@ -769,8 +800,6 @@ export default function Home(props) {
                         <div className="flex flex-col mt-10">
                           <div>
                             Launching: 12am UTC Jan {moment.utc(1675008000000).local().format('D')}
-                           
-
                           </div>
                           <div>
                             <div className="flex space-x-2 mt-2">
@@ -819,7 +848,7 @@ export default function Home(props) {
                     ) : (
                       <div>
                         <div className="ml-3">Limit: {10 - mintedNba} packs left</div>
-                        <div>Balance: {accountBalance}</div>
+                        <div>NEAR Balance: {accountBalance}</div>
                       </div>
                     )}
                     {/*TODO: start styling */}
