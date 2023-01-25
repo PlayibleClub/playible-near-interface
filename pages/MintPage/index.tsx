@@ -187,9 +187,12 @@ export default function Home(props) {
   async function get_near_account_balance(account_id) {
     // gets account balance
 
-    const account = await get_near_connection().account(account_id);
-    setAccountBalance(account.getAccountBalance());
+    const connection = await get_near_connection();
+
+    const wallet = await (await connection.account(accountId)).getAccountBalance();
+    console.log('account', wallet);
   }
+
   async function execute_batch_transaction_storage_deposit_and_mint_token() {
     const amount_to_deposit_near = new BigNumber(selectedMintAmount)
       .multipliedBy(new BigNumber(MINT_STORAGE_COST))
