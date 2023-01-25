@@ -67,7 +67,9 @@ export default function PackDetails(props) {
     const transferArgs = Buffer.from(
       JSON.stringify({
         receiver_id:
-          myPack.packName === 'SOULBOUND PACK' ? contract.openPromoContract : contract.openContract,
+          myPack.packName === 'SOULBOUND PACK' || myPack.packName === 'PROMO PACK'
+            ? contract.openPromoContract
+            : contract.openContract,
         token_id: myPack.id,
         msg: 'Pack ' + myPack.id.toString() + ' sent.',
       })
