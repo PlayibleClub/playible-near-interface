@@ -1,4 +1,4 @@
-import { transactions, utils, WalletConnection, providers, connect, keyStores } from 'near-api-js';
+import { utils, providers } from 'near-api-js';
 import Container from '../../components/containers/Container';
 import Main from '../../components/Main';
 import React, { useCallback, useEffect, useState } from 'react';
@@ -12,7 +12,7 @@ import Usdc from '../../public/images/SVG/usdc';
 import USN from '../../public/images/SVG/usn';
 import { useWalletSelector } from '../../contexts/WalletSelectorContext';
 import BigNumber from 'bignumber.js';
-import { getConfig, getContract, getRPCProvider } from '../../utils/near';
+import { getConfig, getContract, getRPCProvider, get_near_connection } from '../../utils/near';
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
 import Modal from 'components/modals/Modal';
@@ -170,20 +170,6 @@ export default function Home(props) {
     }
   }
 
-  async function get_near_connection() {
-    const myKeyStore = new keyStores.BrowserLocalStorageKeyStore();
-    const connectionConfig = {
-      networkId: 'testnet',
-      keyStore: myKeyStore, // first create a key store
-      nodeUrl: 'https://rpc.testnet.near.org',
-      walletUrl: 'https://wallet.testnet.near.org',
-      helperUrl: 'https://helper.testnet.near.org',
-      explorerUrl: 'https://explorer.testnet.near.org',
-    };
-    const nearConnection = await connect({ headers: {}, ...connectionConfig });
-
-    return nearConnection;
-  }
   async function get_near_account_balance(account_id) {
     // gets account balance
 
