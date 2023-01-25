@@ -91,7 +91,7 @@ export default function PackDetails(props) {
       transactions: [
         {
           receiverId:
-            myPack.packName === 'SOULBOUND PACK'
+            myPack.packName === 'SOULBOUND PACK' || myPack.packName === 'PROMO PACK'
               ? contract.packPromoContract
               : contract.packContract,
           // @ts-ignore:next-line
