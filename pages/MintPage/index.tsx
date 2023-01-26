@@ -178,8 +178,6 @@ export default function Home(props) {
 
     const wallet = await (await connection.account(accountId)).getAccountBalance();
     setAccountBalance(Number(wallet.available) / DECIMALS_NEAR);
-    console.log('account', wallet);
-    console.log(Number(accountBalance) / DECIMALS_NEAR);
   }
 
   async function execute_near_storage_deposit_and_mint_token() {
@@ -201,6 +199,30 @@ export default function Home(props) {
         deposit: amount_to_deposit_near,
       },
     };
+
+    try {
+      if (accountBalance < Number(amount_to_deposit_near)) {
+        setBalanceErrorMsg(
+          'Error you need ' +
+            selectedMintAmount * 45 +
+            ' ' +
+            useNEP141.title +
+            ', You have ' +
+            accountBalance.toFixed(2) +
+            ' ' +
+            useNEP141.title
+        );
+        return;
+      }
+      setBalanceErrorMsg('');
+    } catch (e) {
+      console.log(e);
+      return;
+    }
+
+    if (selectedMintAmount == 0) {
+      return;
+    }
 
     const amount_deposit_storage = new BigNumber(selectedMintAmount)
       .multipliedBy(new BigNumber(MINT_STORAGE_COST))
@@ -443,7 +465,7 @@ export default function Home(props) {
 
   function selectMintNba() {
     let optionMint = [];
-    let x = 1;
+    let x = 5;
     {
       optionMint.push({ value: x, label: `Get ${x} ${x > 1 ? 'packs' : 'pack'}` });
     }
