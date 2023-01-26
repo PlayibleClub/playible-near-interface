@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import Image from 'next/image';
 import React from 'react';
 import Link from 'next/link';
-
+import { checkInjury } from 'utils/athlete/helper';
 const PerformerContainer = (props) => {
   const {
     children,
@@ -27,18 +27,6 @@ const PerformerContainer = (props) => {
     currentSport,
   } = props;
 
-  function checkInjury(injury) {
-    switch (injury) {
-      case 'Probable':
-      case 'Questionable':
-      case 'Doubtful':
-        return 1;
-      case 'Out':
-        return 2;
-      case null:
-        return 3;
-    }
-  }
   return (
     <div
       data-test="PerformerContainer"
@@ -104,15 +92,13 @@ const PerformerContainer = (props) => {
                 className={`rounded-full mt-4 -ml-2 w-3 h-3 absolute ${
                   isInjured && checkInjury(isInjured) === 1
                     ? 'bg-indigo-yellow'
-                    : (isInjured && checkInjury(isInjured === 2)) || !isActive
+                    : isInjured && checkInjury(isInjured === 2)
                     ? 'bg-indigo-red'
-                    : isActive
-                    ? 'bg-indigo-green'
-                    : ''
+                    : 'bg-indigo-green'
                 }`}
               ></div>
               <span className="pointer-events-none absolute -top-5 -left-8 w-max rounded px-2 py-1 bg-indigo-gray text-indigo-white text-sm font-medium text-gray-50 shadow opacity-0 transition-opacity group-hover:opacity-100">
-                {isInjured !== null ? isInjured : !isActive ? 'Inactive' : 'Active'}
+                {isInjured !== null ? isInjured : 'Active'}
               </span>
             </div>
           </div>
