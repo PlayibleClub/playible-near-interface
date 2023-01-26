@@ -104,7 +104,7 @@ const PerformerContainer = (props) => {
                 className={`rounded-full mt-4 -ml-2 w-3 h-3 absolute ${
                   isInjured && checkInjury(isInjured) === 1
                     ? 'bg-indigo-yellow'
-                    : isInjured && checkInjury(isInjured === 2)
+                    : (isInjured && checkInjury(isInjured === 2)) || !isActive
                     ? 'bg-indigo-red'
                     : isActive
                     ? 'bg-indigo-green'
