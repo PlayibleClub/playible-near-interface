@@ -185,29 +185,14 @@ export default function Home(props) {
 
   async function execute_near_storage_deposit_and_mint_token() {
     const amount_to_deposit_near = new BigNumber(selectedMintAmount)
-      .multipliedBy(new BigNumber(MINT_STORAGE_COST))
-      .plus(
-        new BigNumber(selectedMintAmount).multipliedBy(
-          new BigNumber(minterConfig.minting_price_in_near)
-        )
-      )
+      .multipliedBy(new BigNumber(minterConfig.minting_price_in_near))
       .toFixed();
-
-    const mint_cost =
-      selectedMintAmount *
-      Number(
-        useNEP141.decimals == 1000000
-          ? minterConfig.minting_price_decimals_6
-          : minterConfig.minting_price_in_near
-      );
 
     const data_one = Buffer.from(
       JSON.stringify({
-        receiverId: accountId,
-        mint_amount: Math.floor(mint_cost).toString(),
+        mint_amount: selectedMintAmount,
       })
     );
-
     const action_deposit_near_price = {
       type: 'FunctionCall',
       params: {

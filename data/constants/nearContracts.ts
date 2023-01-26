@@ -63,7 +63,7 @@ export const NEP141NEAR = {
   title: 'NEAR',
   mainnet: '',
   testnet: '',
-  decimals: 1000000000000000000,
+  decimals: 1000000000000000000000000,
   interface: {
     viewMethods: ['ft_balance_of'],
     changeMethods: ['ft_transfer_call', 'storage_deposit'],
