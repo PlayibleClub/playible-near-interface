@@ -706,15 +706,15 @@ export default function Index(props) {
     );
 
     // @ts-ignore:next-line
-    // const tx = wallet.signAndSendTransactions({
-    //   transactions: [
-    //     {
-    //       receiverId: getSportType(currentSport).gameContract,
-    //       // @ts-ignore:next-line
-    //       actions: [action_add_game],
-    //     },
-    //   ],
-    // });
+    const tx = wallet.signAndSendTransactions({
+      transactions: [
+        {
+          receiverId: getSportType(currentSport).gameContract,
+          // @ts-ignore:next-line
+          actions: [action_add_game],
+        },
+      ],
+    });
   }
 
   useEffect(() => {
