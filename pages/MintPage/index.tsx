@@ -201,7 +201,10 @@ export default function Home(props) {
     };
 
     try {
-      if (accountBalance < Number(amount_to_deposit_near)) {
+      if (
+        accountBalance <
+        (Number(minterConfig.minting_price_in_near) * selectedMintAmount) / DECIMALS_NEAR
+      ) {
         setBalanceErrorMsg(
           'Error you need ' +
             selectedMintAmount * 45 +
@@ -212,6 +215,8 @@ export default function Home(props) {
             ' ' +
             useNEP141.title
         );
+        console.log(accountBalance);
+        console.log(Number(minterConfig.minting_price_in_near) * selectedMintAmount);
         return;
       }
       setBalanceErrorMsg('');
