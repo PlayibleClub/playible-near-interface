@@ -58,7 +58,6 @@ const StatsComponent = (props) => {
       case 'QB':
         query = await getAthleteQB({ variables: { getAthleteById: parseFloat(id.toString()) } });
         setStatNames(qbStatNames);
-        console.log(query.data.getAthleteById);
         //get the game where athlete last played and get the stats
         setAthleteData(
           await Promise.all(
@@ -92,7 +91,6 @@ const StatsComponent = (props) => {
         break;
       case 'WR':
         query = await getAthleteWR({ variables: { getAthleteById: parseFloat(id.toString()) } });
-        console.log(query.data.getAthleteById);
         setAthleteData(
           getAverage(
             position,
@@ -153,13 +151,13 @@ const StatsComponent = (props) => {
 
   useEffect(() => {
     if (athleteData) {
-      console.log(athleteData);
+      //console.log(athleteData);
       /*
       slice athleteData array, removing 'AthleteStat', 'weekly/daily', and 'played' and 'opponent' objects
       for displaying purposes
       */
       const athlete = athleteData.slice(2, athleteData.length - 3);
-      console.log(athlete);
+      //console.log(athlete);
       setAthleteStat(athlete);
       // setAthleteSorted(
       //   athleteData.sort((a, b) => {

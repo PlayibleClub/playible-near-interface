@@ -201,6 +201,7 @@ export const GET_ATHLETEDATA_NBA = gql`
         opponent{
           name
         }
+        gameDate
       }
     }
   }
