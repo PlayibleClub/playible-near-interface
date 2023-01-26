@@ -122,4 +122,17 @@ function getPositionDisplay(position, currentSport) {
   }
 }
 
-export { convertNftToAthlete, getAthleteInfoById, getAthleteInfoByIdWithDate, getPositionDisplay };
+function checkInjury(injury) {
+  switch (injury) {
+    case 'Probable':
+    case 'Questionable':
+    case 'Doubtful':
+      return 1;
+    case 'Out':
+      return 2;
+    case null:
+      return 3;
+  }
+}
+
+export { convertNftToAthlete, getAthleteInfoById, getAthleteInfoByIdWithDate, getPositionDisplay, checkInjury };
