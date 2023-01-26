@@ -52,11 +52,10 @@ export default function Home(props) {
   const { contract } = selector.store.getState();
   const dispatch = useDispatch();
   const [positionList, setPositionList] = useState(SPORT_TYPES[0].positionList);
-  const sportObj = SPORT_TYPES.map((x) => ({ name: x.sport, isActive: false }));
-  sportObj[1].isActive = true;
+  const sportObj = SPORT_TYPES.reverse().map((x) => ({ name: x.sport, isActive: false }));
   const [sportFromRedux, setSportFromRedux] = useState(useSelector(getSportTypeRedux));
   const [categoryList, setCategoryList] = useState([...sportObj]);
-  const [currentSport, setCurrentSport] = useState(sportObj[1].name);
+  const [currentSport, setCurrentSport] = useState(sportObj[0].name);
   const options = [
     { value: 'national', label: 'National Football League' },
     { value: 'local', label: 'Local Football League' },
@@ -556,6 +555,10 @@ export default function Home(props) {
     }, 1000);
     return () => clearInterval(id);
   }, []);
+
+  useEffect(() => {
+    console.log(currentSport);
+  }, [currentSport]);
   return (
     <>
       <Container activeName="MINT">
