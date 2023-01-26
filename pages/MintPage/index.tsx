@@ -701,7 +701,7 @@ export default function Home(props) {
                   </div>
                 </div>
                 <div className="iphone5:mt-5 md:mt-0 ml-8 md:ml-2">
-                  <div className="text-xl font-bold font-monument ml-0 md:-mt-14">
+                  <div className="text-xl font-bold font-monument ml-0 md:-mt-14 w-1/3">
                     <ModalPortfolioContainer title="PACK DETAILS" textcolor="text-indigo-black" />
                   </div>
                   {currentSport === 'FOOTBALL' ? (
