@@ -84,6 +84,22 @@ const Play = (props) => {
   const [sportList, setSportList] = useState([...sportObj]);
   const [currentSport, setCurrentSport] = useState(sportObj[0].name);
   const [remountComponent, setRemountComponent] = useState(0);
+
+  function getActiveTabGameTotal() {
+    const active = categoryList.find((x) => x.isActive);
+
+    switch (active.name) {
+      case 'NEW':
+        setCurrentTotal(newGames.length);
+        break;
+      case 'ON-GOING':
+        setCurrentTotal(ongoingGames.length);
+        break;
+      case 'COMPLETED':
+        setCurrentTotal(completedGames.length);
+        break;
+    }
+  }
   const changecategoryList = (name) => {
     const tabList = [...categoryList];
     setgamesOffset(0);
@@ -435,8 +451,7 @@ const Play = (props) => {
           )
           .map((item) => getGameInfoById(item))
       );
-      console.table(completedGames);
-      setCurrentTotal(upcomingGames.length);
+      //setCurrentTotal(upcomingGames.length);
       setNewGames(upcomingGames);
       setCompletedGames(completedGames);
       setOngoingGames(ongoingGames);
@@ -482,6 +497,9 @@ const Play = (props) => {
     get_games_list(totalGames);
   }, [totalGames, currentSport]);
 
+  useEffect(() => {
+    getActiveTabGameTotal();
+  }, [newGames, ongoingGames, completedGames]);
   useEffect(() => {
     currentTotal !== 0 ? setPageCount(Math.ceil(currentTotal / gamesLimit)) : setPageCount(1);
   }, [currentTotal]);
