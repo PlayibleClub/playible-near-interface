@@ -203,10 +203,29 @@ export default function Home(props) {
       },
     };
 
+    const amount_deposit_storage = new BigNumber(selectedMintAmount)
+      .multipliedBy(new BigNumber(MINT_STORAGE_COST))
+      .toFixed();
+
+    const data_two = Buffer.from(JSON.stringify({}));
+    const action_deposit_storage_near_token = {
+      type: 'FunctionCall',
+      params: {
+        methodName: 'storage_deposit',
+        args: data_two,
+        gas: DEFAULT_MAX_FEES,
+        deposit: amount_deposit_storage,
+      },
+    };
     const wallet = await selector.wallet();
     // @ts-ignore:next-line
     const tx = wallet.signAndSendTransactions({
       transactions: [
+        {
+          receiverId: getSportType(currentSport).mintContract,
+          // @ts-ignore:next-line
+          actions: [action_deposit_storage_near_token],
+        },
         {
           receiverId: getSportType(currentSport).mintContract,
           // @ts-ignore:next-line
