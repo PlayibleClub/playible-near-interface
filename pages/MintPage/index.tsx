@@ -584,7 +584,6 @@ export default function Home(props) {
     modal.show();
   };
 
-
   useEffect(() => {
     setDay(0);
     setHour(0);
@@ -769,8 +768,10 @@ export default function Home(props) {
                         <div className="text-xs">PRICE</div>
                         {useNEP141 === NEP141NEAR ? (
                           <div className="font-black"> {format_price()}N</div>
+                        ) : useNEP141 === NEP141USDT ? (
+                          <div className="font-black"> {format_price()}USDT</div>
                         ) : (
-                          <div className="font-black"> ${format_price()}</div>
+                          <div className="font-black"> {format_price()}USDC</div>
                         )}
                       </div>
                       <div className="border">
@@ -929,7 +930,11 @@ export default function Home(props) {
                               ) : (
                                 <button
                                   className="w-9/12 flex text-center justify-center items-center bg-indigo-buttonblue font-montserrat text-indigo-white p-4 text-xs mt-8 "
-                                  onClick={() => {useNEP141.title === 'NEAR' ? execute_near_storage_deposit_and_mint_token() : execute_batch_transaction_storage_deposit_and_mint_token()}}
+                                  onClick={() => {
+                                    useNEP141.title === 'NEAR'
+                                      ? execute_near_storage_deposit_and_mint_token()
+                                      : execute_batch_transaction_storage_deposit_and_mint_token();
+                                  }}
                                 >
                                   Mint ${Math.floor(selectedMintAmount * format_price())} + fee{' '}
                                   {utils.format.formatNearAmount(
