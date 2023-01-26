@@ -37,6 +37,7 @@ import { persistor } from 'redux/athlete/store';
 import { getUTCDateFromLocal } from 'utils/date/helper';
 import moment from 'moment';
 import Button from 'components/buttons/Button';
+import { number } from 'prop-types';
 const DECIMALS_NEAR = 1000000000000000000000000;
 const RESERVED_AMOUNT = 200;
 const NANO_TO_SECONDS_DENOMINATOR = 1000000;
@@ -183,17 +184,34 @@ export default function Home(props) {
   }
 
   async function execute_near_storage_deposit_and_mint_token() {
-    const amount_to_deposit_near =
-      new BigNumber(selectedMintAmount).multipliedBy(new BigNumber(MINT_STORAGE_COST)).toFixed() +
-      new BigNumber(minterConfig.minting_price_in_near).multipliedBy(
-        new BigNumber(selectedMintAmount)
+    const amount_to_deposit_near = new BigNumber(selectedMintAmount)
+      .multipliedBy(new BigNumber(MINT_STORAGE_COST))
+      .plus(
+        new BigNumber(selectedMintAmount).multipliedBy(
+          new BigNumber(minterConfig.minting_price_in_near)
+        )
+      )
+      .toFixed();
+
+    const mint_cost =
+      selectedMintAmount *
+      Number(
+        useNEP141.decimals == 1000000
+          ? minterConfig.minting_price_decimals_6
+          : minterConfig.minting_price_in_near
       );
 
-    const data_one = Buffer.from(JSON.stringify({}));
+    const data_one = Buffer.from(
+      JSON.stringify({
+        receiverId: accountId,
+        mint_amount: Math.floor(mint_cost).toString(),
+      })
+    );
+
     const action_deposit_near_price = {
       type: 'FunctionCall',
       params: {
-        methodName: 'storage_deposit',
+        methodName: 'mint',
         args: data_one,
         gas: DEFAULT_MAX_FEES,
         deposit: amount_to_deposit_near,
@@ -422,7 +440,7 @@ export default function Home(props) {
 
   function selectMintNba() {
     let optionMint = [];
-    let x = 5;
+    let x = 1;
     {
       optionMint.push({ value: x, label: `Get ${x} ${x > 1 ? 'packs' : 'pack'}` });
     }
@@ -699,8 +717,8 @@ export default function Home(props) {
                         {useNEP141 === NEP141NEAR ? (
                           <div className="font-black">
                             {' '}
-                            ${format_price()}
-                            <div className="line-through decoration-4 text-xs">($69)</div>
+                            {format_price()}N
+                            <div className="line-through decoration-4 text-xs">(69N)</div>
                           </div>
                         ) : (
                           <div className="font-black"> ${format_price()}</div>
@@ -898,9 +916,7 @@ export default function Home(props) {
                               ) : (
                                 <button
                                   className="w-9/12 flex text-center justify-center items-center bg-indigo-buttonblue font-montserrat text-indigo-white p-4 text-xs mt-8 "
-                                  onClick={() =>
-                                    execute_batch_transaction_storage_deposit_and_mint_token()
-                                  }
+                                  onClick={() => execute_near_storage_deposit_and_mint_token()}
                                 >
                                   Mint ${Math.floor(selectedMintAmount * format_price())} + fee{' '}
                                   {utils.format.formatNearAmount(

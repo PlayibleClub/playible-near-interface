@@ -9,7 +9,7 @@ export const MINTER_NFL = {
       'get_whitelist',
       'get_minting_of',
     ],
-    changeMethods: ['storage_deposit', 'storage_withdraw_all'],
+    changeMethods: ['storage_deposit', 'storage_withdraw_all', 'mint'],
   },
 }; // Near Minter contract
 
@@ -24,7 +24,7 @@ export const MINTER_BASKETBALL = {
       'get_whitelist',
       'get_minting_of',
     ],
-    changeMethods: ['storage_deposit', 'storage_withdraw_all'],
+    changeMethods: ['storage_deposit', 'storage_withdraw_all', 'mint'],
   },
 };
 export const NEP141USDC = {
