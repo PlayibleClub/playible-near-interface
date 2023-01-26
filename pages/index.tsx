@@ -164,7 +164,7 @@ export default function Home(props) {
                 </div>
               </div>
 
-              <div className="flex flex-col rounded-lg md:w-1/3 md:border md:border-indigo-slate md:p-6 md:mr-8 md:mt-0 mt-8 md:mb-4 pointer-events-none">
+              <div className="flex flex-col rounded-lg md:w-1/3 md:border md:border-indigo-slate md:p-6 md:mr-8 md:mt-0 mt-8 md:mb-4">
                 <div className="ml-8 md:ml-0">
                   <div className="text-xl font-bold font-monument">TOP PERFORMERS</div>
                   <div className="underlineBig" />
