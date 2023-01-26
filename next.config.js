@@ -6,6 +6,7 @@ nextConfig = {
       'playible-api-production.s3.ap-southeast-1.amazonaws.com',
       'playible-game-image.s3-ap-southeast-1.amazonaws.com',
       'playible-game-image.s3.ap-southeast-1.amazonaws.com',
+      'playible-api-dev.s3.ap-southeast-1.amazonaws.com'
     ],
   },
   env: {
