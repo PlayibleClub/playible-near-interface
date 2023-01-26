@@ -30,17 +30,12 @@ export default function PackDetails(props) {
   const id = query.id.toString();
   console.log(query.id);
   const myPack = {
-    packName:
-      id.length === 64 || id.includes('SB')
-        ? 'SOULBOUND PACK'
-        : id.includes('PR')
-        ? 'PROMO PACK'
-        : 'STARTER PACK',
+    packName: id.length === 64 || id.includes('SB') ? 'SOULBOUND PACK' : 'STARTER PACK',
     id: id,
     sport: query.sport.toString().toUpperCase(),
   };
   const contract =
-    myPack.id.length === 64 || myPack.id.includes('SB') || myPack.id.includes('PR')
+    myPack.id.length === 64 || myPack.id.includes('SB')
       ? getSportType(myPack.sport).packPromoContract
       : getSportType(myPack.sport).packContract;
 
@@ -48,8 +43,12 @@ export default function PackDetails(props) {
   const [totalPacks, setTotalPacks] = useState(0);
 
   async function get_pack_token_by_id() {
+    let contract =
+      myPack.id.length === 64 || myPack.id.includes('SB')
+        ? getSportType(myPack.sport).packPromoContract
+        : getSportType(myPack.sport).packContract;
     await query_nft_tokens_by_id(myPack.id, contract).then((data) => {
-      //@ts-ignore:next-lines
+      //@ts-ignore:next-line
       const result = JSON.parse(Buffer.from(data.result).toString());
       console.log(result);
       if (result.owner_id !== accountId) {
@@ -67,9 +66,7 @@ export default function PackDetails(props) {
     const transferArgs = Buffer.from(
       JSON.stringify({
         receiver_id:
-          myPack.packName === 'SOULBOUND PACK' || myPack.packName === 'PROMO PACK'
-            ? contract.openPromoContract
-            : contract.openContract,
+          myPack.packName === 'SOULBOUND PACK' ? contract.openPromoContract : contract.openContract,
         token_id: myPack.id,
         msg: 'Pack ' + myPack.id.toString() + ' sent.',
       })
@@ -93,7 +90,7 @@ export default function PackDetails(props) {
       transactions: [
         {
           receiverId:
-            myPack.packName === 'SOULBOUND PACK' || myPack.packName === 'PROMO PACK'
+            myPack.packName === 'SOULBOUND PACK'
               ? contract.packPromoContract
               : contract.packContract,
           // @ts-ignore:next-line
