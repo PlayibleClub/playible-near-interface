@@ -30,9 +30,14 @@ import {
 import { MINT_STORAGE_COST, DEFAULT_MAX_FEES } from 'data/constants/gasFees';
 import { execute_claim_soulbound_pack, query_claim_status } from 'utils/near/helper';
 import Link from 'next/link';
-import { SPORT_TYPES, getSportType } from 'data/constants/sportConstants';
+import { SPORT_TYPES, getSportType, SPORT_NAME_LOOKUP } from 'data/constants/sportConstants';
 import ModalPortfolioContainer from 'components/containers/ModalPortfolioContainer';
-import { getSportTypeRedux, setSportTypeRedux } from 'redux/athlete/sportSlice';
+import {
+  getIsPromoRedux,
+  getSportTypeRedux,
+  setSportTypeRedux,
+  setIsPromoRedux,
+} from 'redux/athlete/sportSlice';
 import { persistor } from 'redux/athlete/store';
 import { getUTCDateFromLocal } from 'utils/date/helper';
 import moment from 'moment';
@@ -52,8 +57,11 @@ export default function Home(props) {
   const { contract } = selector.store.getState();
   const dispatch = useDispatch();
   const [positionList, setPositionList] = useState(SPORT_TYPES[0].positionList);
-  const sportObj = SPORT_TYPES.reverse().map((x) => ({ name: x.sport, isActive: false }));
+  const sportObj = SPORT_TYPES.slice(0)
+    .reverse()
+    .map((x) => ({ name: x.sport, isActive: false }));
   const [sportFromRedux, setSportFromRedux] = useState(useSelector(getSportTypeRedux));
+  const [isPromoFromRedux, setIsPromoFromRedux] = useState(useSelector(getIsPromoRedux));
   const [categoryList, setCategoryList] = useState([...sportObj]);
   const [currentSport, setCurrentSport] = useState(sportObj[0].name);
   const options = [
@@ -93,9 +101,11 @@ export default function Home(props) {
   const [minute, setMinute] = useState(0);
   const [second, setSecond] = useState(0);
   const [editModal, setEditModal] = useState(false);
-  const nflImage = '/images/packimages/NFL-SB-Pack.png';
-  const nbaImage = '/images/packimages/nbaStarterPackSoulbound.png';
-  const [modalImage, setModalImage] = useState(nflImage);
+  const nflRegImage = '/images/packimages/nflStarterPack.png';
+  const nbaRegImage = '/images/packimages/nbaStarterPack.png';
+  const nflSbImage = '/images/packimages/NFL-SB-Pack.png';
+  const nbaSbImage = '/images/packimages/nbaStarterPackSoulbound.png';
+  const [modalImage, setModalImage] = useState(nflSbImage);
   async function get_claim_status(accountId) {
     setIsClaimedFootball(
       await query_claim_status(accountId, getSportType('FOOTBALL').packPromoContract)
@@ -229,6 +239,7 @@ export default function Home(props) {
       return;
     }
 
+    dispatch(setSportTypeRedux(currentSport));
     const amount_deposit_storage = new BigNumber(selectedMintAmount)
       .multipliedBy(new BigNumber(MINT_STORAGE_COST))
       .toFixed();
@@ -321,6 +332,7 @@ export default function Home(props) {
       return;
     }
 
+    dispatch(setSportTypeRedux(currentSport));
     const data_two = Buffer.from(
       JSON.stringify({
         receiver_id: getSportType(currentSport).mintContract,
@@ -470,7 +482,7 @@ export default function Home(props) {
 
   function selectMintNba() {
     let optionMint = [];
-    let x = 5;
+    let x = 1;
     {
       optionMint.push({ value: x, label: `Get ${x} ${x > 1 ? 'packs' : 'pack'}` });
     }
@@ -519,6 +531,7 @@ export default function Home(props) {
     //   dispatch(setSportTypeRedux(sport));
     // });
     dispatch(setSportTypeRedux(sport));
+    dispatch(setIsPromoRedux(true));
     execute_claim_soulbound_pack(selector, getSportType(sport).packPromoContract);
   };
 
@@ -548,9 +561,15 @@ export default function Home(props) {
   }, [currentSport, accountBalance]);
 
   useEffect(() => {
-    if (router.asPath.indexOf('transactionHashes') > -1) {
+    if (router.asPath.indexOf('transactionHashes') > -1 && isPromoFromRedux === false) {
+      sportFromRedux === SPORT_NAME_LOOKUP.basketball
+        ? setModalImage(nbaRegImage)
+        : setModalImage(nflRegImage);
+      setTimeout(() => persistor.purge(), 200);
+      setEditModal(true);
+    } else if (router.asPath.indexOf('transactionHashes') > -1) {
       {
-        sportFromRedux === 'BASKETBALL' ? setModalImage(nbaImage) : setModalImage(nflImage);
+        sportFromRedux === 'BASKETBALL' ? setModalImage(nbaSbImage) : setModalImage(nflSbImage);
       }
       setTimeout(() => persistor.purge(), 200);
       setEditModal(true);
