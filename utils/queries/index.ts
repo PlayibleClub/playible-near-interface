@@ -93,6 +93,7 @@ export const GET_ATHLETEDATA_QB = gql`
         opponent{
           name
         }
+        gameDate
       }
     }
   }
@@ -120,6 +121,7 @@ export const GET_ATHLETEDATA_RB = gql`
         opponent{
           name
         }
+        gameDate
       }
     }
   }
@@ -145,6 +147,7 @@ export const GET_ATHLETEDATA_WR = gql`
         opponent{
           name
         }
+        gameDate
       }
     }
   }
@@ -170,6 +173,7 @@ export const GET_ATHLETEDATA_TE = gql`
         opponent{
           name
         }
+        gameDate
       }
     }
   }

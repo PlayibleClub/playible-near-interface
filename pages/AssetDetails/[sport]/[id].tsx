@@ -14,6 +14,7 @@ import { useRouter } from 'next/router';
 import { query_nft_tokens_by_id } from 'utils/near/helper';
 import { getSportType, SPORT_TYPES } from 'data/constants/sportConstants';
 import { checkInjury } from 'utils/athlete/helper';
+import moment from 'moment';
 const AssetDetails = (props) => {
   const { query } = props;
 
@@ -27,6 +28,7 @@ const AssetDetails = (props) => {
   });
 
   const [athlete, setAthlete] = useState(null);
+  const [sortedGames, setSortedGames] = useState([]);
   const athleteImage = athlete?.image;
 
   function getDateOfGame(gameDate) {
@@ -54,7 +56,16 @@ const AssetDetails = (props) => {
       // @ts-ignore:next-line
       const result = JSON.parse(Buffer.from(data.result).toString());
       const result_two = await getAthleteInfoById(await convertNftToAthlete(result));
+      let games = result_two.stats_breakdown.slice();
+      console.log(result_two);
       setAthlete(result_two);
+      setSortedGames(
+        games
+          .filter((x) => x.type === 'weekly' || x.type === 'daily')
+          .sort((a, b) => {
+            return moment.utc(a.gameDate).unix() - moment.utc(b.gameDate).unix();
+          })
+      );
     });
   }
   useEffect(() => {
@@ -87,7 +98,9 @@ const AssetDetails = (props) => {
     });
     return totalGames;
   }
-
+  useEffect(() => {
+    console.log(sortedGames);
+  }, [sortedGames]);
   console.log(athlete?.primary_id);
 
   return (
@@ -203,9 +216,9 @@ const AssetDetails = (props) => {
             </tr>
           </thead>
           <tbody>
-            {athlete == undefined
+            {sortedGames == undefined
               ? 'LOADING GAMES....'
-              : athlete.stats_breakdown
+              : sortedGames
                   .filter(
                     (statType) =>
                       (statType.type == 'weekly' || statType.type == 'daily') &&

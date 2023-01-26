@@ -15,6 +15,7 @@ import {
   nbaStatNames,
 } from 'data/constants/statNames';
 import { getSportType } from 'data/constants/sportConstants';
+import moment from 'moment';
 const StatsComponent = (props) => {
   const { id, position, sport } = props;
   const [statNames, setStatNames] = useState([]);
@@ -64,7 +65,10 @@ const StatsComponent = (props) => {
             query.data.getAthleteById.stats.filter((x) => x.type === 'weekly' && x.played === 1)
           ).then((x) => {
             console.log(x);
-            return Object.values(x[x.length - 1]);
+            let sorted = x.sort((a, b) => {
+              return moment.utc(b.gameDate).unix() - moment.utc(a.gameDate).unix();
+            });
+            return Object.values(sorted[0]);
           })
         );
         break;
@@ -77,7 +81,10 @@ const StatsComponent = (props) => {
             await Promise.all(
               query.data.getAthleteById.stats.filter((x) => x.type === 'weekly' && x.played === 1)
             ).then((x) => {
-              return Object.values(x[x.length - 1]);
+              let sorted = x.sort((a, b) => {
+                return moment.utc(b.gameDate).unix() - moment.utc(a.gameDate).unix();
+              });
+              return Object.values(sorted[0]);
             })
           )
         );
@@ -92,7 +99,10 @@ const StatsComponent = (props) => {
             await Promise.all(
               query.data.getAthleteById.stats.filter((x) => x.type === 'weekly' && x.played === 1)
             ).then((x) => {
-              return Object.values(x[x.length - 1]);
+              let sorted = x.sort((a, b) => {
+                return moment.utc(b.gameDate).unix() - moment.utc(a.gameDate).unix();
+              });
+              return Object.values(sorted[0]);
             })
           )
         );
@@ -106,7 +116,10 @@ const StatsComponent = (props) => {
             await Promise.all(
               query.data.getAthleteById.stats.filter((x) => x.type === 'weekly' && x.played === 1)
             ).then((x) => {
-              return Object.values(x[x.length - 1]);
+              let sorted = x.sort((a, b) => {
+                return moment.utc(b.gameDate).unix() - moment.utc(a.gameDate).unix();
+              });
+              return Object.values(sorted[0]);
             })
           )
         );
@@ -118,8 +131,10 @@ const StatsComponent = (props) => {
           await Promise.all(
             query.data.getAthleteById.stats.filter((x) => x.type === 'daily' && x.played === 1)
           ).then((x) => {
-            console.log(x);
-            return Object.values(x[x.length - 1]);
+            let sorted = x.sort((a, b) => {
+              return moment.utc(b.gameDate).unix() - moment.utc(a.gameDate).unix();
+            });
+            return Object.values(sorted[0]);
           })
         );
         setStatNames(nbaStatNames);
@@ -143,10 +158,17 @@ const StatsComponent = (props) => {
       slice athleteData array, removing 'AthleteStat', 'weekly/daily', and 'played' and 'opponent' objects
       for displaying purposes
       */
-      const athlete = athleteData.slice(2, athleteData.length - 2);
+      const athlete = athleteData.slice(2, athleteData.length - 3);
+      console.log(athlete);
       setAthleteStat(athlete);
+      // setAthleteSorted(
+      //   athleteData.sort((a, b) => {
+      //     return moment.utc(b.gameDate).unix() - moment.utc(a.gameDate).unix();
+      //   })
+      // );
     }
   }, [athleteData]);
+
   return (
     <>
       <div
@@ -158,8 +180,8 @@ const StatsComponent = (props) => {
       <div className="mt-10 ml-10 md:ml-10">
         <div className="font-monument md:text-xl">
           Most recent game stats &#40;against{' '}
-          {athleteData[athleteData.length - 1] !== undefined
-            ? athleteData[athleteData.length - 1].name
+          {athleteData[athleteData.length - 2] !== undefined
+            ? athleteData[athleteData.length - 2].name
             : ''}
           &#41;
         </div>
