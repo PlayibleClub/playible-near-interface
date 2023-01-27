@@ -154,10 +154,7 @@ export default function EntrySummary(props) {
               lineupItem.stats_breakdown
                 .filter((statType) =>
                   currentSport === SPORT_NAME_LOOKUP.football
-                    ? statType.type == 'weekly' &&
-                      statType.played == 1 &&
-                      statType.week == week &&
-                      statType.season == nflSeason
+                    ? statType.type == 'weekly' && statType.played == 1
                     : currentSport === SPORT_NAME_LOOKUP.basketball
                     ? statType.type == 'daily' && statType.played == 1
                     : ''

@@ -91,7 +91,9 @@ export const SPORT_CONTRACT_LOOKUP = {
 };
 export const SPORT_NAME_LOOKUP = {
   basketball: 'BASKETBALL',
+  basketballKey: 'nba',
   football: 'FOOTBALL',
+  footballKey: 'nfl',
 };
 export const SPORT_TYPES = [
   {

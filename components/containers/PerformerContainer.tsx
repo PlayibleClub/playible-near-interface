@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import Image from 'next/image';
 import React from 'react';
 import Link from 'next/link';
-import { checkInjury } from 'utils/athlete/helper';
+import { checkInjury, cutAthleteName } from 'utils/athlete/helper';
 const PerformerContainer = (props) => {
   const {
     children,
@@ -75,8 +75,10 @@ const PerformerContainer = (props) => {
       </div>
       {children}
       <div className="h-1/2 flex justify-center mb-6">
-        <div className="flex flex-col mt-4">
-          <div className="mt-2 text-xs font-bold uppercase">{AthleteName}</div>
+        <div className="flex flex-col w-28 mt-4">
+          <div className="mt-2 text-xs font-bold uppercase">
+            {AthleteName.length >= 14 ? cutAthleteName(AthleteName) : AthleteName}
+          </div>
           <div>
             <div className="group relative ml-28">
               {/* {isInjured && checkInjury(isInjured) === 1 ? (
