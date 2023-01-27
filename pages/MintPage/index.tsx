@@ -46,8 +46,9 @@ import { number } from 'prop-types';
 const DECIMALS_NEAR = 1000000000000000000000000;
 const RESERVED_AMOUNT = 200;
 const NANO_TO_SECONDS_DENOMINATOR = 1000000;
-const launchTimer = 1675008000000;
-const launchDate = moment().unix() - 1675008000000 / 1000;
+const launchTimer = 1675036800000;
+const launchDate = moment().unix() - launchTimer / 1000;
+// const launchDate = 0;
 export default function Home(props) {
   const { selector, modal, accounts, accountId } = useWalletSelector();
 
@@ -604,7 +605,7 @@ export default function Home(props) {
     const id = setInterval(() => {
       const currentDate = getUTCDateFromLocal();
       // const end = moment.utc(1674144000000);
-      const end = moment.utc(1675008000000);
+      const end = moment.utc(launchTimer);
       setDay(formatTime(Math.floor(end.diff(currentDate, 'second') / 3600 / 24)));
       setHour(formatTime(Math.floor((end.diff(currentDate, 'second') / 3600) % 24)));
       setMinute(formatTime(Math.floor((end.diff(currentDate, 'second') / 60) % 60)));
@@ -906,7 +907,6 @@ export default function Home(props) {
                         /*parseInt(String(storageDepositAccountBalance)) >= selectedMintAmount * MINT_STORAGE_COST*/
                       } ? (
                         <>
-                          {' '}
                           {currentSport === 'FOOTBALL' ? (
                             <button
                               className="w-9/12 flex text-center justify-center items-center bg-indigo-buttonblue font-montserrat text-indigo-white p-4 text-xs mt-8 "
@@ -923,87 +923,110 @@ export default function Home(props) {
                               N
                             </button>
                           ) : (
-                            {
-                              ...(mintedNba >= 10 ? (
-                                <button
-                                  className="w-9/12 flex text-center justify-center items-center bg-indigo-gray opacity-40 font-montserrat pointer-events-none text-indigo-white p-4 text-xs mt-8 "
-                                  onClick={() =>
-                                    execute_batch_transaction_storage_deposit_and_mint_token()
-                                  }
-                                >
-                                  Mint ${Math.floor(selectedMintAmount * format_price())} + fee{' '}
-                                  {utils.format.formatNearAmount(
-                                    new BigNumber(selectedMintAmount)
-                                      .multipliedBy(new BigNumber(MINT_STORAGE_COST))
-                                      .toFixed()
-                                  )}
-                                  N
-                                </button>
-                              ) : (
-                                <button
-                                  className="w-9/12 flex text-center justify-center items-center bg-indigo-buttonblue font-montserrat text-indigo-white p-4 text-xs mt-8 "
-                                  onClick={() => {
-                                    useNEP141.title === 'NEAR'
-                                      ? execute_near_storage_deposit_and_mint_token()
-                                      : execute_batch_transaction_storage_deposit_and_mint_token();
-                                  }}
-                                >
-                                  Mint ${Math.floor(selectedMintAmount * format_price())} + fee{' '}
-                                  {utils.format.formatNearAmount(
-                                    new BigNumber(selectedMintAmount)
-                                      .multipliedBy(new BigNumber(MINT_STORAGE_COST))
-                                      .toFixed()
-                                  )}
-                                  N
-                                </button>
-                              )),
-                            }
+                            launchDate === 0 ?
+                            <button
+                              className="w-9/12 flex text-center justify-center items-center bg-indigo-buttonblue font-montserrat text-indigo-white p-4 text-xs mt-8 "
+                              onClick={() =>
+                                useNEP141.title === 'NEAR'
+                                  ? execute_near_storage_deposit_and_mint_token()
+                                  : execute_batch_transaction_storage_deposit_and_mint_token()
+                              }
+                            >
+                              Mint ${Math.floor(selectedMintAmount * format_price())} + fee{' '}
+                              {utils.format.formatNearAmount(
+                                new BigNumber(selectedMintAmount)
+                                  .multipliedBy(new BigNumber(MINT_STORAGE_COST))
+                                  .toFixed()
+                              )}
+                              N
+                            </button>
+                            :
+                            <button
+                              className="w-9/12 hidden text-center justify-center items-center bg-indigo-buttonblue font-montserrat text-indigo-white p-4 text-xs mt-8 "
+                              onClick={() =>
+                                useNEP141.title === 'NEAR'
+                                  ? execute_near_storage_deposit_and_mint_token()
+                                  : execute_batch_transaction_storage_deposit_and_mint_token()
+                              }
+                            >
+                              Mint ${Math.floor(selectedMintAmount * format_price())} + fee{' '}
+                              {utils.format.formatNearAmount(
+                                new BigNumber(selectedMintAmount)
+                                  .multipliedBy(new BigNumber(MINT_STORAGE_COST))
+                                  .toFixed()
+                              )}
+                              N
+                            </button>
                           )}
-                          <p className="text-xs text-red-700">{balanceErrorMsg}</p>
-                          {launchDate === 0 ? (
-                            <div className="flex flex-col mt-10">
-                              <div className="hidden">Launching: 12am UTC Jan 20</div>
-                              <div>
-                                <div className="space-x-2 mt-2 hidden">
-                                  <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
-                                    {day || ''}
-                                  </div>
-                                  <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
-                                    {hour || ''}
-                                  </div>
-                                  <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
-                                    {minute || ''}
-                                  </div>
-                                  <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
-                                    {second || ''}
-                                  </div>
+                          {currentSport === 'FOOTBALL' ? 
+                          <div className="flex-col mt-10 hidden">
+                            <div>
+                              Launching: 12am UTC {moment.utc(launchTimer).local().format('MMMM D')}
+                            </div>
+                            <div>
+                              <div className="flex space-x-2 mt-2">
+                                <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
+                                  {day || ''}
+                                </div>
+                                <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
+                                  {hour || ''}
+                                </div>
+                                <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
+                                  {minute || ''}
+                                </div>
+                                <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
+                                  {second || ''}
                                 </div>
                               </div>
                             </div>
-                          ) : (
-                            <div className="flex flex-col mt-10">
-                              <div>
-                                Launching: 12am UTC{' '}
-                                {moment.utc(launchTimer).local().format('MMMM D')}
-                              </div>
-                              <div>
-                                <div className="flex space-x-2 mt-2">
-                                  <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
-                                    {day || ''}
-                                  </div>
-                                  <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
-                                    {hour || ''}
-                                  </div>
-                                  <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
-                                    {minute || ''}
-                                  </div>
-                                  <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
-                                    {second || ''}
-                                  </div>
+                          </div>
+                          :
+                          launchDate === 0 ?
+                          <div className="flex-col mt-10 hidden">
+                            <div>
+                              Launching: 12am UTC {moment.utc(launchTimer).local().format('MMMM D')}
+                            </div>
+                            <div>
+                              <div className="flex space-x-2 mt-2">
+                                <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
+                                  {day || ''}
+                                </div>
+                                <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
+                                  {hour || ''}
+                                </div>
+                                <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
+                                  {minute || ''}
+                                </div>
+                                <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
+                                  {second || ''}
                                 </div>
                               </div>
                             </div>
-                          )}
+                          </div>
+                          :
+                          <div className="flex flex-col mt-10">
+                          <div>
+                            Launching: 12am UTC {moment.utc(launchTimer).local().format('MMMM D')}
+                          </div>
+                          <div>
+                            <div className="flex space-x-2 mt-2">
+                              <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
+                                {day || ''}
+                              </div>
+                              <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
+                                {hour || ''}
+                              </div>
+                              <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
+                                {minute || ''}
+                              </div>
+                              <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
+                                {second || ''}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                          }
+                          
                         </>
                       ) : (
                         // {minted > "10" }
