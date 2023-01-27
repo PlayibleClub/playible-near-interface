@@ -15,7 +15,7 @@ import { axiosInstance } from '../utils/playible';
 import 'regenerator-runtime/runtime';
 import Head from 'next/head';
 import { AiOutlineVerticalRight, AiOutlineVerticalLeft } from 'react-icons/ai';
-import { GET_ATHLETES_TOP, GET_NBA_CURRENT_SEASON } from '../utils/queries';
+import { GET_ATHLETES_TOP, GET_NBA_CURRENT_SEASON, GET_NFL_SEASON } from '../utils/queries';
 import { useLazyQuery, useQuery } from '@apollo/client';
 import Image from 'next/image';
 import { store } from 'redux/athlete/store';
@@ -23,6 +23,7 @@ import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { SPORT_NAME_LOOKUP, SPORT_TYPES } from 'data/constants/sportConstants';
 import { x64 } from 'crypto-js';
+import { formatToUTCDate, getUTCTimestampFromLocal } from 'utils/date/helper';
 let count = 0;
 
 export default function Home(props) {
@@ -32,7 +33,7 @@ export default function Home(props) {
   const [sportList, setSportList] = useState(
     SPORT_TYPES.slice(0)
       .reverse()
-      .map((x) => ({ name: x.sport }))
+      .map((x) => ({ name: x.sport, key: x.key }))
   );
   const [currentSport, setCurrentSport] = useState('NBA'.toLocaleLowerCase());
   // const { loading, error, data } = useQuery(GET_ATHLETES_TOP, {
@@ -40,9 +41,12 @@ export default function Home(props) {
   const [getAthletes, { loading, error, data }] = useLazyQuery(GET_ATHLETES_TOP);
   const [athletes, setAthletes] = useState([]);
   const [getNbaCurrentSeason] = useLazyQuery(GET_NBA_CURRENT_SEASON);
+  const [getNflCurrentSeason] = useLazyQuery(GET_NFL_SEASON);
   const [nbaSeason, setNbaSeason] = useState('');
+  const [nflSeason, setNflSeason] = useState('');
   const fetchTopAthletes = useCallback(
-    async (nbaSeason, currentSport) => {
+    async (nbaSeason, nflSeason, currentSport) => {
+      console.log(nflSeason);
       let query = await getAthletes({
         variables: {
           args: {
@@ -51,7 +55,7 @@ export default function Home(props) {
               statType: 'season',
             },
             pagination: {
-              limit: currentSport === SPORT_NAME_LOOKUP.basketballKey ? 5 : 4,
+              limit: 4,
               offset: 0,
             },
             sort: 'score',
@@ -79,7 +83,13 @@ export default function Home(props) {
         //   );
         // });
       } else {
-        setAthletes(query.data.getAthletes);
+        setAthletes(
+          await Promise.all(
+            query.data.getAthletes.map((element) => {
+              return { ...element, stats: element.stats.filter((x) => x.season === nflSeason) };
+            })
+          )
+        );
       }
       //
     },
@@ -87,19 +97,30 @@ export default function Home(props) {
   );
   const fetchNbaCurrentSeason = useCallback(async () => {
     setNbaSeason((await getNbaCurrentSeason()).data.getNbaCurrentSeason.apiSeason);
+    await getNflCurrentSeason({
+      variables: {
+        startDate: formatToUTCDate(getUTCTimestampFromLocal()),
+        endDate: formatToUTCDate(getUTCTimestampFromLocal() + 60 * 60 * 24 * 1000),
+      },
+    }).then((query) => {
+      console.log(query);
+      setNflSeason(query.data.getNflSeason[0].apiSeason);
+    });
   }, []);
   useEffect(() => {
     fetchNbaCurrentSeason();
   }, []);
   useEffect(() => {
     if (nbaSeason.length > 0) {
-      console.log(nbaSeason);
-      fetchTopAthletes(nbaSeason, currentSport);
+      console.log(nflSeason);
+      fetchTopAthletes(nbaSeason, nflSeason, currentSport);
     }
     //fetchNbaCurrentSeason();
-  }, [nbaSeason]);
+  }, [nbaSeason, nflSeason, currentSport]);
   useEffect(() => {
     console.log(athletes);
+    console.log(getUTCTimestampFromLocal());
+    console.log('24 hours from now: ' + (getUTCTimestampFromLocal() + 60 * 60 * 24 * 1000)); // add 24 hours
   }, [athletes]);
   function getAvgFantasyScore(array) {
     let totalFantasy = 0;
@@ -217,7 +238,21 @@ export default function Home(props) {
                   <div className="text-xl font-bold font-monument">TOP PERFORMERS</div>
                   <div className="underlineBig" />
                 </div>
-
+                <div>
+                  <form>
+                    <select
+                      onChange={(e) => {
+                        setCurrentSport(e.target.value);
+                      }}
+                      className="bg-filter-icon bg-no-repeat bg-right bg-indigo-white ring-2 ring-offset-8 ring-indigo-black ring-opacity-25 focus:ring-2 focus:ring-indigo-black 
+                        focus:outline-none cursor-pointer text-xs iphone5:ml-8 w-10/12 md:text-base mt-6 md:ml-10 md:mt-6 md:p-2 md:block lg:block"
+                    >
+                      {sportList.map((x) => {
+                        return <option value={x.key.toLocaleLowerCase()}>{x.name}</option>;
+                      })}
+                    </select>
+                  </form>
+                </div>
                 {/* <div className="bg-indigo-white h-11 flex justify-between self-center font-thin w-72 mt-6 border-2 border-indigo-lightgray border-opacity-50">
                 <div className="text-lg ml-4 mt-1.5 md:mb-1.5 text-indigo-black">
                   <form>

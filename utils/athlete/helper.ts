@@ -136,7 +136,7 @@ function checkInjury(injury) {
 }
 
 function cutAthleteName(name){
-  const slice = name.slice(0, 13);
+  const slice = name.slice(0, 12);
   const newName = slice + '...';
 
   return newName;

@@ -214,4 +214,17 @@ export const GET_NBA_CURRENT_SEASON = gql`
       apiSeason
     }
 }
+`;
+
+export const GET_NFL_SEASON = gql`
+  query GetNflSeason($startDate: DateTime!) {
+    getNflSeason(startDate: $startDate) {
+      apiName
+      apiSeason
+      apiWeek
+      endDate
+      startDate
+      
+    }
+  }
 `
