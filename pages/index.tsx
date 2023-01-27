@@ -15,44 +15,92 @@ import { axiosInstance } from '../utils/playible';
 import 'regenerator-runtime/runtime';
 import Head from 'next/head';
 import { AiOutlineVerticalRight, AiOutlineVerticalLeft } from 'react-icons/ai';
-import { GET_ATHLETES_TOP } from '../utils/queries';
+import { GET_ATHLETES_TOP, GET_NBA_CURRENT_SEASON } from '../utils/queries';
 import { useLazyQuery, useQuery } from '@apollo/client';
 import Image from 'next/image';
 import { store } from 'redux/athlete/store';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
+import { SPORT_NAME_LOOKUP, SPORT_TYPES } from 'data/constants/sportConstants';
+import { x64 } from 'crypto-js';
 let count = 0;
 
 export default function Home(props) {
   const [activeGames, setActiveGames] = useState([]);
   const [topAthletes, setTopAthletes] = useState([]);
   const [athletesLoading, setAthletesLoading] = useState(true);
+  const [sportList, setSportList] = useState(
+    SPORT_TYPES.slice(0)
+      .reverse()
+      .map((x) => ({ name: x.sport }))
+  );
+  const [currentSport, setCurrentSport] = useState('NBA'.toLocaleLowerCase());
   // const { loading, error, data } = useQuery(GET_ATHLETES_TOP, {
   // });
   const [getAthletes, { loading, error, data }] = useLazyQuery(GET_ATHLETES_TOP);
-
-  const fetchTopAthletes = useCallback(() => {
-    getAthletes({
-      variables: {
-        args: {
-          filter: {
-            sport: 'nfl',
-            statType: 'season',
+  const [athletes, setAthletes] = useState([]);
+  const [getNbaCurrentSeason] = useLazyQuery(GET_NBA_CURRENT_SEASON);
+  const [nbaSeason, setNbaSeason] = useState('');
+  const fetchTopAthletes = useCallback(
+    async (nbaSeason, currentSport) => {
+      let query = await getAthletes({
+        variables: {
+          args: {
+            filter: {
+              sport: currentSport,
+              statType: 'season',
+            },
+            pagination: {
+              limit: currentSport === SPORT_NAME_LOOKUP.basketballKey ? 5 : 4,
+              offset: 0,
+            },
+            sort: 'score',
           },
-          pagination: {
-            limit: 4,
-            offset: 0,
-          },
-          sort: 'score',
         },
-      },
-    });
-  }, [loading]);
-
-  useEffect(() => {
-    fetchTopAthletes();
+      });
+      if (currentSport === SPORT_NAME_LOOKUP.basketballKey) {
+        console.log(nbaSeason);
+        setAthletes(
+          await Promise.all(
+            query.data.getAthletes.map((element) => {
+              return { ...element, stats: element.stats.filter((x) => x.season === nbaSeason) };
+            })
+          )
+        );
+        // let newQuery = await getNbaCurrentSeason().then(async (x) => {
+        //   let nbaSeason = x.data.getNbaCurrentSeason.apiSeason;
+        //   console.log(nbaSeason);
+        //   setAthletes(
+        //     await Promise.all(
+        //       query.data.getAthletes.map((element) => {
+        //         return { ...element, stats: element.stats.filter((x) => x.season === nbaSeason) };
+        //       })
+        //     )
+        //   );
+        // });
+      } else {
+        setAthletes(query.data.getAthletes);
+      }
+      //
+    },
+    [loading]
+  );
+  const fetchNbaCurrentSeason = useCallback(async () => {
+    setNbaSeason((await getNbaCurrentSeason()).data.getNbaCurrentSeason.apiSeason);
   }, []);
-
+  useEffect(() => {
+    fetchNbaCurrentSeason();
+  }, []);
+  useEffect(() => {
+    if (nbaSeason.length > 0) {
+      console.log(nbaSeason);
+      fetchTopAthletes(nbaSeason, currentSport);
+    }
+    //fetchNbaCurrentSeason();
+  }, [nbaSeason]);
+  useEffect(() => {
+    console.log(athletes);
+  }, [athletes]);
   function getAvgFantasyScore(array) {
     let totalFantasy = 0;
     if (Array.isArray(array) && array.length > 0) {
@@ -188,16 +236,16 @@ export default function Home(props) {
                 </div>
                 <img src={filterIcon} className="object-none w-4 mr-4" />
               </div> */}
-
+                <div></div>
                 {loading ? (
                   <div className="flex justify-center w-full mt-10">
                     <div className="w-5 h-5 rounded-full bg-indigo-buttonblue animate-bounce mr-5"></div>
                     <div className="w-5 h-5 rounded-full bg-indigo-buttonblue animate-bounce mr-5"></div>
                     <div className="w-5 h-5 rounded-full bg-indigo-buttonblue animate-bounce"></div>
                   </div>
-                ) : data?.getAthletes.length > 0 ? (
+                ) : athletes.length > 0 ? (
                   <div className="grid grid-cols-2 gap-x-4 -mt-4 md:mt-8">
-                    {data.getAthletes.map(function (
+                    {athletes.map(function (
                       { firstName, lastName, id, nftImage, stats, isInjured, isActive },
                       i
                     ) {

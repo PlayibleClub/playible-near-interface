@@ -18,6 +18,7 @@ export const GET_ATHLETES_TOP = gql`
         fantasyScore
         week
         type
+        season
       }
     }
   }
@@ -206,3 +207,11 @@ export const GET_ATHLETEDATA_NBA = gql`
     }
   }
 `;
+
+export const GET_NBA_CURRENT_SEASON = gql`
+  query GetNbaCurrentSeason {
+    getNbaCurrentSeason {
+      apiSeason
+    }
+}
+`
