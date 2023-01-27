@@ -135,4 +135,11 @@ function checkInjury(injury) {
   }
 }
 
-export { convertNftToAthlete, getAthleteInfoById, getAthleteInfoByIdWithDate, getPositionDisplay, checkInjury };
+function cutAthleteName(name){
+  const slice = name.slice(0, 13);
+  const newName = slice + '...';
+
+  return newName;
+}
+
+export { convertNftToAthlete, getAthleteInfoById, getAthleteInfoByIdWithDate, getPositionDisplay, checkInjury, cutAthleteName};
