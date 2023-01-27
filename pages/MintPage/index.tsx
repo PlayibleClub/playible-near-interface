@@ -497,13 +497,13 @@ export default function Home(props) {
   function selectMintNba() {
     let optionMint = [];
     let limit = 11 - mintedNba;
-    for (let x = 1  ; x < limit; x++) {
+    for (let x = 1; x < limit; x++) {
       optionMint.push({ value: x, label: `Get ${x} ${x > 1 ? 'packs' : 'pack'}` });
     }
     return (
       <Select
         onChange={(event) => setSelectedMintAmount(event.value)}
-        options={optionMint.splice(0,5)}
+        options={optionMint.splice(0, 5)}
         className="md:w-1/3 w-4/5 mr-9 mt-5"
       />
     );
@@ -629,6 +629,7 @@ export default function Home(props) {
                     <select
                       onChange={(e) => {
                         setCurrentSport(e.target.value);
+                        setUseNEP141(NEP141USDT);
                       }}
                       className="bg-filter-icon bg-no-repeat bg-right bg-indigo-white ring-2 ring-offset-8 ring-indigo-black ring-opacity-25 focus:ring-2 focus:ring-indigo-black 
                         focus:outline-none cursor-pointer text-xs iphone5:ml-8 iphone5:w-4/6 md:text-base md:ml-8 md:mt-0 md:w-72 md:p-2 iphone5:hidden md:block lg:block"
@@ -814,19 +815,23 @@ export default function Home(props) {
                             hardCodeMode={useNEP141.title == NEP141USDC.title ? '#fff' : '#000'}
                           ></Usdc>
                         </button>
-                        <button
-                          onClick={() => setUseNEP141(NEP141NEAR)}
-                          className={
-                            'p-3 ' +
-                            (useNEP141.title == NEP141NEAR.title
-                              ? 'bg-indigo-black'
-                              : 'hover:bg-indigo-slate')
-                          }
-                        >
-                          <NEAR
-                            hardCodeMode={useNEP141.title == NEP141NEAR.title ? '#fff' : '#000'}
-                          ></NEAR>
-                        </button>
+                        {currentSport === 'BASKETBALL' ? (
+                          <button
+                            onClick={() => setUseNEP141(NEP141NEAR)}
+                            className={
+                              'p-3 ' +
+                              (useNEP141.title == NEP141NEAR.title
+                                ? 'bg-indigo-black'
+                                : 'hover:bg-indigo-slate')
+                            }
+                          >
+                            <NEAR
+                              hardCodeMode={useNEP141.title == NEP141NEAR.title ? '#fff' : '#000'}
+                            ></NEAR>
+                          </button>
+                        ) : (
+                          ''
+                        )}
                       </div>
                     </div>
                     {useNEP141.title === 'NEAR' ? (
@@ -922,8 +927,7 @@ export default function Home(props) {
                               )}
                               N
                             </button>
-                          ) : (
-                            launchDate === 0 ?
+                          ) : launchDate === 0 ? (
                             <button
                               className="w-9/12 flex text-center justify-center items-center bg-indigo-buttonblue font-montserrat text-indigo-white p-4 text-xs mt-8 "
                               onClick={() =>
@@ -940,7 +944,7 @@ export default function Home(props) {
                               )}
                               N
                             </button>
-                            :
+                          ) : (
                             <button
                               className="w-9/12 hidden text-center justify-center items-center bg-indigo-buttonblue font-montserrat text-indigo-white p-4 text-xs mt-8 "
                               onClick={() =>
@@ -958,75 +962,76 @@ export default function Home(props) {
                               N
                             </button>
                           )}
-                          {currentSport === 'FOOTBALL' ? 
-                          <div className="flex-col mt-10 hidden">
-                            <div>
-                              Launching: 12am UTC {moment.utc(launchTimer).local().format('MMMM D')}
-                            </div>
-                            <div>
-                              <div className="flex space-x-2 mt-2">
-                                <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
-                                  {day || ''}
-                                </div>
-                                <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
-                                  {hour || ''}
-                                </div>
-                                <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
-                                  {minute || ''}
-                                </div>
-                                <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
-                                  {second || ''}
+                          {currentSport === 'FOOTBALL' ? (
+                            <div className="flex-col mt-10 hidden">
+                              <div>
+                                Launching: 12am UTC{' '}
+                                {moment.utc(launchTimer).local().format('MMMM D')}
+                              </div>
+                              <div>
+                                <div className="flex space-x-2 mt-2">
+                                  <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
+                                    {day || ''}
+                                  </div>
+                                  <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
+                                    {hour || ''}
+                                  </div>
+                                  <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
+                                    {minute || ''}
+                                  </div>
+                                  <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
+                                    {second || ''}
+                                  </div>
                                 </div>
                               </div>
                             </div>
-                          </div>
-                          :
-                          launchDate === 0 ?
-                          <div className="flex-col mt-10 hidden">
-                            <div>
-                              Launching: 12am UTC {moment.utc(launchTimer).local().format('MMMM D')}
-                            </div>
-                            <div>
-                              <div className="flex space-x-2 mt-2">
-                                <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
-                                  {day || ''}
-                                </div>
-                                <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
-                                  {hour || ''}
-                                </div>
-                                <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
-                                  {minute || ''}
-                                </div>
-                                <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
-                                  {second || ''}
-                                </div>
+                          ) : launchDate === 0 ? (
+                            <div className="flex-col mt-10 hidden">
+                              <div>
+                                Launching: 12am UTC{' '}
+                                {moment.utc(launchTimer).local().format('MMMM D')}
                               </div>
-                            </div>
-                          </div>
-                          :
-                          <div className="flex flex-col mt-10">
-                          <div>
-                            Launching: 12am UTC {moment.utc(launchTimer).local().format('MMMM D')}
-                          </div>
-                          <div>
-                            <div className="flex space-x-2 mt-2">
-                              <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
-                                {day || ''}
-                              </div>
-                              <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
-                                {hour || ''}
-                              </div>
-                              <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
-                                {minute || ''}
-                              </div>
-                              <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
-                                {second || ''}
+                              <div>
+                                <div className="flex space-x-2 mt-2">
+                                  <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
+                                    {day || ''}
+                                  </div>
+                                  <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
+                                    {hour || ''}
+                                  </div>
+                                  <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
+                                    {minute || ''}
+                                  </div>
+                                  <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
+                                    {second || ''}
+                                  </div>
+                                </div>
                               </div>
                             </div>
-                          </div>
-                        </div>
-                          }
-                          
+                          ) : (
+                            <div className="flex flex-col mt-10">
+                              <div>
+                                Launching: 12am UTC{' '}
+                                {moment.utc(launchTimer).local().format('MMMM D')}
+                              </div>
+                              <div>
+                                <div className="flex space-x-2 mt-2">
+                                  <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
+                                    {day || ''}
+                                  </div>
+                                  <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
+                                    {hour || ''}
+                                  </div>
+                                  <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
+                                    {minute || ''}
+                                  </div>
+                                  <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
+                                    {second || ''}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          )}
                         </>
                       ) : (
                         // {minted > "10" }
