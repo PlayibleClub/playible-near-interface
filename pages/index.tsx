@@ -279,7 +279,7 @@ export default function Home(props) {
                     <div className="w-5 h-5 rounded-full bg-indigo-buttonblue animate-bounce"></div>
                   </div>
                 ) : athletes.length > 0 ? (
-                  <div className="grid grid-cols-2 gap-x-4 -mt-4 md:mt-8">
+                  <div className="grid grid-cols-2 gap-x-4 mt-4 md:mt-8">
                     {athletes.map(function (
                       { firstName, lastName, id, nftImage, stats, isInjured, isActive },
                       i
