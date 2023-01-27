@@ -495,14 +495,14 @@ export default function Home(props) {
 
   function selectMintNba() {
     let optionMint = [];
-    let x = 1;
-    {
+    let limit = 11 - mintedNba;
+    for (let x = 1  ; x < limit; x++) {
       optionMint.push({ value: x, label: `Get ${x} ${x > 1 ? 'packs' : 'pack'}` });
     }
     return (
       <Select
         onChange={(event) => setSelectedMintAmount(event.value)}
-        options={optionMint}
+        options={optionMint.splice(0,5)}
         className="md:w-1/3 w-4/5 mr-9 mt-5"
       />
     );
