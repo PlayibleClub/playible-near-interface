@@ -46,8 +46,8 @@ import { number } from 'prop-types';
 const DECIMALS_NEAR = 1000000000000000000000000;
 const RESERVED_AMOUNT = 200;
 const NANO_TO_SECONDS_DENOMINATOR = 1000000;
-const launchTimer = 1675036800000;
-const launchDate = moment().unix() - launchTimer / 1000;
+
+// const discountDate = 0;
 // const launchDate = 0;
 export default function Home(props) {
   const { selector, modal, accounts, accountId } = useWalletSelector();
@@ -102,6 +102,10 @@ export default function Home(props) {
   const [hour, setHour] = useState(0);
   const [minute, setMinute] = useState(0);
   const [second, setSecond] = useState(0);
+  const [discountDay, setDiscountDay] = useState(0);
+  const [discountHour, setDiscountHour] = useState(0);
+  const [discountMinute, setDiscountMinute] = useState(0);
+  const [discountSecond, setDiscountSecond] = useState(0);
   const [editModal, setEditModal] = useState(false);
   const nflRegImage = '/images/packimages/nflStarterPack.png';
   const nbaRegImage = '/images/packimages/nbaStarterPack.png';
@@ -116,7 +120,6 @@ export default function Home(props) {
       await query_claim_status(accountId, getSportType('BASKETBALL').packPromoContract)
     );
   }
-
   function query_config_contract() {
     provider
       .query({
@@ -519,6 +522,11 @@ export default function Home(props) {
     );
     return price;
   }
+  const launchTimer = 1675036800000;
+  const launchDate = moment().unix() - launchTimer / 1000;
+  // const launchDate = 1;
+  const discountTimer = 1677600000000;
+  const discountDate = moment().unix() - discountTimer / 1000;
 
   function counter() {
     const seconds = Math.floor((intervalSale / 1000) % 60);
@@ -615,8 +623,26 @@ export default function Home(props) {
   }, []);
 
   useEffect(() => {
+    setDay(0);
+    setHour(0);
+    setMinute(0);
+    setSecond(0);
+    const id = setInterval(() => {
+      const currentDate = getUTCDateFromLocal();
+      // const end = moment.utc(1674144000000);
+      const end = moment.utc(discountTimer);
+      setDiscountDay(formatTime(Math.floor(end.diff(currentDate, 'second') / 3600 / 24)));
+      setDiscountHour(formatTime(Math.floor((end.diff(currentDate, 'second') / 3600) % 24)));
+      setDiscountMinute(formatTime(Math.floor((end.diff(currentDate, 'second') / 60) % 60)));
+      setDiscountSecond(formatTime(Math.floor(end.diff(currentDate, 'second') % 60)));
+    }, 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  useEffect(() => {
     console.log(currentSport);
   }, [currentSport]);
+  console.log(launchDate);
   return (
     <>
       <Container activeName="MINT">
@@ -777,9 +803,12 @@ export default function Home(props) {
                         textcolor="text-indigo-black"
                       />
                     </div>
+                    {currentSport === 'BASKETBALL' ? '' : ''}
+
                     <div className="flex justify-between w-4/5 md:w-1/2 mt-5">
                       <div>
                         <div className="text-xs">PRICE</div>
+
                         {useNEP141 === NEP141NEAR ? (
                           <div className="font-black"> {format_price()}N</div>
                         ) : useNEP141 === NEP141USDT ? (
@@ -788,6 +817,7 @@ export default function Home(props) {
                           <div className="font-black"> {format_price()}USDC</div>
                         )}
                       </div>
+
                       <div className="border">
                         <button
                           onClick={() => setUseNEP141(NEP141USDT)}
@@ -835,9 +865,42 @@ export default function Home(props) {
                       </div>
                     </div>
                     {useNEP141.title === 'NEAR' ? (
-                      <div className="line-through decoration-4 text-xs font-black static">
-                        (69N)
-                      </div>
+                      discountDate > 0 ? (
+                        <div className="line-through hidden decoration-4 text-xs font-black static">
+                          (69N)
+                        </div>
+                      ) : currentSport === 'FOOTBALL' ? (
+                        ''
+                      ) : (
+                        <div className=" text-xs">
+                          <div className="line-through decoration-4 text-xs font-black static">
+                            (69N)
+                          </div>
+
+                          {launchDate > 0 ? (
+                           <div className="text-xs">
+                           Discounted Until: 12am UTC{' '}
+                           {moment.utc(discountTimer).local().format('MMMM D')}
+                           <div className="flex space-x-1 mt-2">
+                             <div className="bg-indigo-darkgray text-indigo-white w-6 h-6 rounded justify-center flex pt-1">
+                               {discountDay || ''}
+                             </div>
+                             <div className="bg-indigo-darkgray text-indigo-white w-6 h-6 rounded justify-center flex pt-1">
+                               {discountHour || ''}
+                             </div>
+                             <div className="bg-indigo-darkgray text-indigo-white w-6 h-6 rounded justify-center flex pt-1">
+                               {discountMinute || ''}
+                             </div>
+                             <div className="bg-indigo-darkgray text-indigo-white w-6 h-6 rounded justify-center flex pt-1">
+                               {discountSecond || ''}
+                             </div>
+                           </div>
+                         </div>
+                          ) : ''
+                            
+                          }
+                        </div>
+                      )
                     ) : (
                       ''
                     )}
@@ -927,7 +990,7 @@ export default function Home(props) {
                               )}
                               N
                             </button>
-                          ) : launchDate === 0 ? (
+                          ) : launchDate > 0 ? (
                             <button
                               className="w-9/12 flex text-center justify-center items-center bg-indigo-buttonblue font-montserrat text-indigo-white p-4 text-xs mt-8 "
                               onClick={() =>
@@ -985,7 +1048,7 @@ export default function Home(props) {
                                 </div>
                               </div>
                             </div>
-                          ) : launchDate === 0 ? (
+                          ) : launchDate > 0 ? (
                             <div className="flex-col mt-10 hidden">
                               <div>
                                 Launching: 12am UTC{' '}
