@@ -3,6 +3,7 @@ import { PURGE } from 'redux-persist';
 
 const initialState = {
   sportType: '',
+  isPromo: false,
 }
 
 export const sportSlice = createSlice({
@@ -11,6 +12,9 @@ export const sportSlice = createSlice({
   reducers: {
     setSportTypeRedux(state, action){
       state.sportType = action.payload;
+    },
+    setIsPromoRedux(state, action){
+      state.isPromo = action.payload;
     }
 
     
@@ -20,7 +24,7 @@ export const sportSlice = createSlice({
   }
 });
 
-export const { setSportTypeRedux } = sportSlice.actions;
+export const { setSportTypeRedux, setIsPromoRedux } = sportSlice.actions;
 export const getSportTypeRedux = (state) => state.sportType.sportType;
-
+export const getIsPromoRedux = (state) => state.sportType.isPromo;
 export default sportSlice.reducer;
