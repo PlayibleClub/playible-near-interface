@@ -310,10 +310,22 @@ export default function Home(props) {
       // @ts-ignore:next-line
 
       const balance = JSON.parse(Buffer.from(ft_balance_of.result).toString());
-      if (balance < mint_cost) {
+      if (balance < mint_cost && currentSport === 'FOOTBALL') {
         setBalanceErrorMsg(
           'Error you need ' +
             selectedMintAmount * 200 +
+            ' ' +
+            useNEP141.title +
+            ', You have ' +
+            balance +
+            ' ' +
+            useNEP141.title
+        );
+        return;
+      } else if (balance < mint_cost && currentSport === 'BASKETBALL') {
+        setBalanceErrorMsg(
+          'Error you need ' +
+            selectedMintAmount * 50 +
             ' ' +
             useNEP141.title +
             ', You have ' +
