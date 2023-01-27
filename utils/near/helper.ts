@@ -60,14 +60,16 @@ async function query_nft_token_by_id(token_id, currentSport, start_time, end_tim
     .then(async (data) => {
       //@ts-ignore:next-line
       const result = JSON.parse(Buffer.from(data.result).toString());
-      const result_two =
-        currentSport === SPORT_NAME_LOOKUP.football
-          ? await getAthleteInfoById(await convertNftToAthlete(result))
-          : await getAthleteInfoByIdWithDate(
-              await convertNftToAthlete(result),
-              start_time,
-              end_time
-            );
+      // const result_two =
+      //   currentSport === SPORT_NAME_LOOKUP.football
+      //     ? await getAthleteInfoById(await convertNftToAthlete(result))
+      //     : await getAthleteInfoByIdWithDate(
+      //         await convertNftToAthlete(result),
+      //         start_time,
+      //         end_time
+      //       );
+      const result_two = await getAthleteInfoByIdWithDate( await convertNftToAthlete(result), start_time, end_time)
+      console.log(result_two);
       return result_two;
     });
 }
@@ -116,7 +118,7 @@ async function query_all_players_lineup(game_id, week, currentSport, start_time,
                 lineupItem.stats_breakdown
                   .filter(
                     (statType) =>
-                      currentSport ===  SPORT_NAME_LOOKUP.football ? statType.type == 'weekly' && statType.played == 1 && statType.week == week && statType.season == nflSeason
+                      currentSport ===  SPORT_NAME_LOOKUP.football ? statType.type == 'weekly' && statType.played == 1 //&& statType.week == week && statType.season == nflSeason
                       : currentSport === SPORT_NAME_LOOKUP.basketball ? statType.type == 'daily' && statType.played == 1 : ''
                   )
                   .reduce((accumulator, item) => {
