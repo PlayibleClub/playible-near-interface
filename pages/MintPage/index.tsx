@@ -215,14 +215,15 @@ export default function Home(props) {
       },
     };
 
+    let mint_cost =
+      (Number(minterConfig.minting_price_in_near) * selectedMintAmount) / DECIMALS_NEAR;
+
+    console.log(mint_cost);
     try {
-      if (
-        accountBalance <
-        (Number(minterConfig.minting_price_in_near) * selectedMintAmount) / DECIMALS_NEAR
-      ) {
+      if (accountBalance < mint_cost) {
         setBalanceErrorMsg(
           'Error you need ' +
-            selectedMintAmount * 45 +
+            selectedMintAmount * 30 +
             ' ' +
             useNEP141.title +
             ', You have ' +
@@ -647,7 +648,7 @@ export default function Home(props) {
           <Main color="indigo-white">
             <div className="flex-initial iphone5:mt-20 md:ml-6 md:mt-8">
               <div className="flex md:flex-row md:float-right iphone5:flex-col md:mt-0">
-                <div className="md:mr-5 md:mt-4">
+                <div className="md:mr-5 md:mt-4 iphone5:mt-10">
                   <form>
                     <select
                       onChange={(e) => {
@@ -655,7 +656,7 @@ export default function Home(props) {
                         setUseNEP141(NEP141USDT);
                       }}
                       className="bg-filter-icon bg-no-repeat bg-right bg-indigo-white ring-2 ring-offset-8 ring-indigo-black ring-opacity-25 focus:ring-2 focus:ring-indigo-black 
-                        focus:outline-none cursor-pointer text-xs iphone5:ml-8 iphone5:w-4/6 md:text-base md:ml-8 md:mt-0 md:w-72 md:p-2 iphone5:hidden md:block lg:block"
+                        focus:outline-none cursor-pointer text-xs iphone5:ml-8 iphone5:w-4/6 md:text-base md:ml-8 md:mt-0 md:w-72 md:p-2 md:block lg:block"
                     >
                       {categoryList.map((x) => {
                         return <option value={x.name}>{x.name}</option>;
@@ -1129,7 +1130,7 @@ export default function Home(props) {
                         WALLET CONNECTION REQUIRED
                       </button>
                     )}
-
+                    <p className="text-xs text-indigo-red font-bold">{balanceErrorMsg}</p>
                     {/*TODO: end */}
                   </div>
                 </div>
