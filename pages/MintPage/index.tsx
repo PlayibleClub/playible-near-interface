@@ -230,8 +230,6 @@ export default function Home(props) {
             ' ' +
             useNEP141.title
         );
-        console.log(accountBalance);
-        console.log(Number(minterConfig.minting_price_in_near) * selectedMintAmount);
         return;
       }
       setBalanceErrorMsg('');
@@ -486,7 +484,7 @@ export default function Home(props) {
   function selectMint() {
     let optionMint = [];
     for (let x = 1; x < 11; x++) {
-      optionMint.push({ value: x, label: `Get ${x} ${x > 1 ? 'packs' : 'pack'}` });
+      optionMint.push({ value: x, label: `${x} ${x > 1 ? 'packs' : 'pack'}` });
     }
     return (
       <Select
@@ -501,7 +499,7 @@ export default function Home(props) {
     let optionMint = [];
     let limit = 11 - mintedNba;
     for (let x = 1; x < limit; x++) {
-      optionMint.push({ value: x, label: `Get ${x} ${x > 1 ? 'packs' : 'pack'}` });
+      optionMint.push({ value: x, label: `${x} ${x > 1 ? 'packs' : 'pack'}` });
     }
     return (
       <Select
@@ -563,6 +561,9 @@ export default function Home(props) {
     query_config_contract();
     query_storage_deposit_account_id();
     query_minting_of();
+    if (currentSport === 'BASKETBALL') {
+      setUseNEP141(NEP141NEAR);
+    }
   }, [currentSport, useNEP141]);
 
   useEffect(() => {
@@ -639,10 +640,6 @@ export default function Home(props) {
     return () => clearInterval(id);
   }, []);
 
-  useEffect(() => {
-    console.log(currentSport);
-  }, [currentSport]);
-  console.log(launchDate);
   return (
     <>
       <Container activeName="MINT">
@@ -768,14 +765,14 @@ export default function Home(props) {
             </div>
             <div className="flex flex-col md:flex-row md:ml-12">
               <div className="md:w-full overflow-x-hidden">
-                <div className="flex-col flex w-full mt-8 ">
+                {/* <div className="flex-col flex w-full mt-8">
                   <div className="align-center justify-center border-2 p-8 iphone5:ml-2 iphone5:mr-2 md:mr-8 rounded-lg">
                     <div className="text-m">
                       Early Bird Offer: The first 500 minted will receive an additional free
                       promotional pack.
                     </div>
                   </div>
-                </div>
+                </div> */}
                 <div className="flex md:flex-row flex-col md:ml-2 mt-12">
                   {currentSport === 'FOOTBALL' ? (
                     <div className="md:w-1/2 w-full ">
@@ -810,7 +807,7 @@ export default function Home(props) {
                         <div className="text-xs">PRICE</div>
 
                         {useNEP141 === NEP141NEAR ? (
-                          <div className="font-black"> {format_price()}N</div>
+                          <div className="font-black text-xl"> {format_price()}N</div>
                         ) : useNEP141 === NEP141USDT ? (
                           <div className="font-black"> {format_price()}USDT</div>
                         ) : (
@@ -819,32 +816,39 @@ export default function Home(props) {
                       </div>
 
                       <div className="border">
-                        <button
-                          onClick={() => setUseNEP141(NEP141USDT)}
-                          className={
-                            'p-3 ' +
-                            (useNEP141.title == NEP141USDT.title
-                              ? 'bg-indigo-black'
-                              : 'hover:bg-indigo-slate')
-                          }
-                        >
-                          <Usdt
-                            hardCodeMode={useNEP141.title == NEP141USDT.title ? '#fff' : '#000'}
-                          ></Usdt>
-                        </button>
-                        <button
-                          onClick={() => setUseNEP141(NEP141USDC)}
-                          className={
-                            'p-3 ' +
-                            (useNEP141.title == NEP141USDC.title
-                              ? 'bg-indigo-black'
-                              : 'hover:bg-indigo-slate')
-                          }
-                        >
-                          <Usdc
-                            hardCodeMode={useNEP141.title == NEP141USDC.title ? '#fff' : '#000'}
-                          ></Usdc>
-                        </button>
+                        {currentSport === 'BASKETBALL' ? (
+                          ''
+                        ) : (
+                          <div>
+                            <button
+                              onClick={() => setUseNEP141(NEP141USDT)}
+                              className={
+                                'p-3 ' +
+                                (useNEP141.title == NEP141USDT.title
+                                  ? 'bg-indigo-black'
+                                  : 'hover:bg-indigo-slate')
+                              }
+                            >
+                              <Usdt
+                                hardCodeMode={useNEP141.title == NEP141USDT.title ? '#fff' : '#000'}
+                              ></Usdt>
+                            </button>
+                            <button
+                              onClick={() => setUseNEP141(NEP141USDC)}
+                              className={
+                                'p-3 ' +
+                                (useNEP141.title == NEP141USDC.title
+                                  ? 'bg-indigo-black'
+                                  : 'hover:bg-indigo-slate')
+                              }
+                            >
+                              <Usdc
+                                hardCodeMode={useNEP141.title == NEP141USDC.title ? '#fff' : '#000'}
+                              ></Usdc>
+                            </button>
+                          </div>
+                        )}
+
                         {currentSport === 'BASKETBALL' ? (
                           <button
                             onClick={() => setUseNEP141(NEP141NEAR)}
@@ -867,38 +871,38 @@ export default function Home(props) {
                     {useNEP141.title === 'NEAR' ? (
                       discountDate > 0 ? (
                         <div className="line-through hidden decoration-4 text-xs font-black static">
-                          (69N)
+                          (45N)
                         </div>
                       ) : currentSport === 'FOOTBALL' ? (
                         ''
                       ) : (
                         <div className=" text-xs">
-                          <div className="line-through decoration-4 text-xs font-black static">
-                            (69N)
+                          <div className="line-through decoration-8 text-lg font-black static">
+                            (45N)
                           </div>
 
                           {launchDate > 0 ? (
-                           <div className="text-xs">
-                           Discounted Until: 12am UTC{' '}
-                           {moment.utc(discountTimer).local().format('MMMM D')}
-                           <div className="flex space-x-1 mt-2">
-                             <div className="bg-indigo-darkgray text-indigo-white w-6 h-6 rounded justify-center flex pt-1">
-                               {discountDay || ''}
-                             </div>
-                             <div className="bg-indigo-darkgray text-indigo-white w-6 h-6 rounded justify-center flex pt-1">
-                               {discountHour || ''}
-                             </div>
-                             <div className="bg-indigo-darkgray text-indigo-white w-6 h-6 rounded justify-center flex pt-1">
-                               {discountMinute || ''}
-                             </div>
-                             <div className="bg-indigo-darkgray text-indigo-white w-6 h-6 rounded justify-center flex pt-1">
-                               {discountSecond || ''}
-                             </div>
-                           </div>
-                         </div>
-                          ) : ''
-                            
-                          }
+                            <div className="text-xs">
+                              Discounted Until: 12am UTC{' '}
+                              {moment.utc(discountTimer).local().format('MMMM D')}
+                              <div className="flex space-x-1 mt-2">
+                                <div className="bg-indigo-darkgray text-indigo-white w-6 h-6 rounded justify-center flex pt-1">
+                                  {discountDay || ''}
+                                </div>
+                                <div className="bg-indigo-darkgray text-indigo-white w-6 h-6 rounded justify-center flex pt-1">
+                                  {discountHour || ''}
+                                </div>
+                                <div className="bg-indigo-darkgray text-indigo-white w-6 h-6 rounded justify-center flex pt-1">
+                                  {discountMinute || ''}
+                                </div>
+                                <div className="bg-indigo-darkgray text-indigo-white w-6 h-6 rounded justify-center flex pt-1">
+                                  {discountSecond || ''}
+                                </div>
+                              </div>
+                            </div>
+                          ) : (
+                            ''
+                          )}
                         </div>
                       )
                     ) : (
@@ -961,7 +965,9 @@ export default function Home(props) {
                       <div className="ml-3"></div>
                     ) : (
                       <div>
-                        <div className="ml-3">Limit: {10 - mintedNba} packs left</div>
+                        <div className="mt-4">
+                          Limit: 10 packs per wallet ({10 - mintedNba} packs left)
+                        </div>
                       </div>
                     )}
                     {/*TODO: start styling */}
