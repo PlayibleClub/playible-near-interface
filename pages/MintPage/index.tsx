@@ -215,14 +215,15 @@ export default function Home(props) {
       },
     };
 
+    let mint_cost =
+      (Number(minterConfig.minting_price_in_near) * selectedMintAmount) / DECIMALS_NEAR;
+
+    console.log(mint_cost);
     try {
-      if (
-        accountBalance <
-        (Number(minterConfig.minting_price_in_near) * selectedMintAmount) / DECIMALS_NEAR
-      ) {
+      if (accountBalance < mint_cost) {
         setBalanceErrorMsg(
           'Error you need ' +
-            selectedMintAmount * 45 +
+            selectedMintAmount * 30 +
             ' ' +
             useNEP141.title +
             ', You have ' +
@@ -1126,7 +1127,7 @@ export default function Home(props) {
                         WALLET CONNECTION REQUIRED
                       </div>
                     )}
-
+                    <p className="text-xs text-indigo-red font-bold">{balanceErrorMsg}</p>
                     {/*TODO: end */}
                   </div>
                 </div>
