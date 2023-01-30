@@ -720,7 +720,7 @@ const Play = (props) => {
                     </div>
                   ))}
                 </div>
-                <hr className="opacity-10 w-screen" />
+                <hr className="opacity-10" />
                 {/* {loading ? (
                     <LoadingPageDark />
                   ) : (
