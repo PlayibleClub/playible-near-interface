@@ -230,8 +230,6 @@ export default function Home(props) {
             ' ' +
             useNEP141.title
         );
-        console.log(accountBalance);
-        console.log(Number(minterConfig.minting_price_in_near) * selectedMintAmount);
         return;
       }
       setBalanceErrorMsg('');
@@ -642,10 +640,6 @@ export default function Home(props) {
     return () => clearInterval(id);
   }, []);
 
-  useEffect(() => {
-    console.log(currentSport);
-  }, [currentSport]);
-  console.log(launchDate);
   return (
     <>
       <Container activeName="MINT">
