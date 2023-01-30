@@ -80,7 +80,7 @@ function checkIncludedWeeks(stats) {
   }
 }
 
-async function query_all_players_lineup(game_id, week, currentSport, start_time, end_time, nflSeason) {
+async function query_all_players_lineup(game_id, currentSport, start_time, end_time,) {
   const query = JSON.stringify({
     game_id: game_id,
   });
