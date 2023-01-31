@@ -41,25 +41,13 @@ const Games = (props) => {
   const gameStart = Object.values(gameInfo)[0] / 1000;
   console.log('nfl week: ' + week);
 
-  async function get_game_week() {
-    setWeek(await getNflWeek(gameStart));
-    setNflSeason(await getNflSeason(gameStart));
-  }
-
   async function get_all_players_lineup() {
     const startTimeFormatted = formatToUTCDate(gameData.start_time);
     const endTimeFormatted = formatToUTCDate(gameData.end_time);
     console.log('    TEST start date: ' + startTimeFormatted);
     console.log('    TEST end date: ' + endTimeFormatted);
     setPlayerLineups(
-      await query_all_players_lineup(
-        gameId,
-        week,
-        currentSport,
-        startTimeFormatted,
-        endTimeFormatted,
-        nflSeason
-      )
+      await query_all_players_lineup(gameId, currentSport, startTimeFormatted, endTimeFormatted)
     );
   }
   function getAccountScore(accountId, teamName) {
@@ -114,12 +102,6 @@ const Games = (props) => {
       console.log(playerTeams);
     }
   }, [playerLineups]);
-
-  useEffect(() => {
-    if (currentSport === SPORT_NAME_LOOKUP.football) {
-      get_game_week();
-    }
-  });
 
   return (
     <Container activeName="GAMES">

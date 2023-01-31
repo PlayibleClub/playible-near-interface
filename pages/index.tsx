@@ -100,7 +100,7 @@ export default function Home(props) {
     await getNflCurrentSeason({
       variables: {
         startDate: formatToUTCDate(getUTCTimestampFromLocal()),
-        endDate: formatToUTCDate(getUTCTimestampFromLocal() + 60 * 60 * 24 * 1000),
+        endDate: formatToUTCDate(getUTCTimestampFromLocal() + 60 * 60 * 24 * 1000), // add 24 hours
       },
     }).then((query) => {
       console.log(query);
@@ -112,16 +112,11 @@ export default function Home(props) {
   }, []);
   useEffect(() => {
     if (nbaSeason.length > 0) {
-      console.log(nflSeason);
       fetchTopAthletes(nbaSeason, nflSeason, currentSport);
     }
     //fetchNbaCurrentSeason();
   }, [nbaSeason, nflSeason, currentSport]);
-  useEffect(() => {
-    console.log(athletes);
-    console.log(getUTCTimestampFromLocal());
-    console.log('24 hours from now: ' + (getUTCTimestampFromLocal() + 60 * 60 * 24 * 1000)); // add 24 hours
-  }, [athletes]);
+
   function getAvgFantasyScore(array) {
     let totalFantasy = 0;
     if (Array.isArray(array) && array.length > 0) {
