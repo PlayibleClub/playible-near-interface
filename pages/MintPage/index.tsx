@@ -59,9 +59,7 @@ export default function Home(props) {
   const { contract } = selector.store.getState();
   const dispatch = useDispatch();
   const [positionList, setPositionList] = useState(SPORT_TYPES[0].positionList);
-  const sportObj = SPORT_TYPES.slice(0)
-    .reverse()
-    .map((x) => ({ name: x.sport, isActive: false }));
+  const sportObj = SPORT_TYPES.map((x) => ({ name: x.sport, isActive: false }));
   const [sportFromRedux, setSportFromRedux] = useState(useSelector(getSportTypeRedux));
   const [isPromoFromRedux, setIsPromoFromRedux] = useState(useSelector(getIsPromoRedux));
   const [categoryList, setCategoryList] = useState([...sportObj]);
@@ -521,10 +519,11 @@ export default function Home(props) {
     );
     return price;
   }
-  const launchTimer = 1675036800000;
+  const launchTimer = 1675296000000;
+  // 1675296000000
   const launchDate = moment().unix() - launchTimer / 1000;
   // const launchDate = 1;
-  const discountTimer = 1677600000000;
+  const discountTimer = 1677715200000;
   const discountDate = moment().unix() - discountTimer / 1000;
 
   function counter() {
@@ -966,9 +965,7 @@ export default function Home(props) {
                       <div className="ml-3"></div>
                     ) : (
                       <div>
-                        <div className="mt-4">
-                          Limit: 10 packs per wallet ({10 - mintedNba} packs left)
-                        </div>
+                        <div className="mt-4">Limit: 10 packs per wallet</div>
                       </div>
                     )}
                     {/*TODO: start styling */}
@@ -989,7 +986,7 @@ export default function Home(props) {
                                 execute_batch_transaction_storage_deposit_and_mint_token()
                               }
                             >
-                              Mint ${Math.floor(selectedMintAmount * format_price())} + fee{' '}
+                              Mint {Math.floor(selectedMintAmount * format_price())}N + fee{' '}
                               {utils.format.formatNearAmount(
                                 new BigNumber(selectedMintAmount)
                                   .multipliedBy(new BigNumber(MINT_STORAGE_COST))
@@ -1006,7 +1003,7 @@ export default function Home(props) {
                                   : execute_batch_transaction_storage_deposit_and_mint_token()
                               }
                             >
-                              Mint ${Math.floor(selectedMintAmount * format_price())} + fee{' '}
+                              Mint {Math.floor(selectedMintAmount * format_price())}N + fee{' '}
                               {utils.format.formatNearAmount(
                                 new BigNumber(selectedMintAmount)
                                   .multipliedBy(new BigNumber(MINT_STORAGE_COST))
@@ -1023,7 +1020,7 @@ export default function Home(props) {
                                   : execute_batch_transaction_storage_deposit_and_mint_token()
                               }
                             >
-                              Mint ${Math.floor(selectedMintAmount * format_price())} + fee{' '}
+                              Mint {Math.floor(selectedMintAmount * format_price())}N + fee{' '}
                               {utils.format.formatNearAmount(
                                 new BigNumber(selectedMintAmount)
                                   .multipliedBy(new BigNumber(MINT_STORAGE_COST))

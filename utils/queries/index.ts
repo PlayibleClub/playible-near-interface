@@ -228,3 +228,11 @@ export const GET_NFL_SEASON = gql`
     }
   }
 `
+export const GET_TEAMS = gql`
+  query GetTeams($sport: String!) {
+    getTeams(sport: $sport) {
+      key
+      name
+    }
+}
+`
