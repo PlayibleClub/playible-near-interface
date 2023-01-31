@@ -70,7 +70,9 @@ export default function Packs() {
       isActive: false,
     },
   ]);
-  const sportObj = SPORT_TYPES.map((x) => ({ ...x, isActive: false }));
+  const sportObj = SPORT_TYPES.slice(0)
+    .reverse()
+    .map((x) => ({ ...x, isActive: false }));
   sportObj[0].isActive = true;
   const [sportList, setSportList] = useState([...sportObj]);
   const [currentSport, setCurrentSport] = useState(sportObj[0].sport);

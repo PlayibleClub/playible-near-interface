@@ -90,7 +90,9 @@ const Portfolio = () => {
   });
 
   const [positionList, setPositionList] = useState(SPORT_TYPES[0].positionList);
-  const sportObj = SPORT_TYPES.map((x) => ({ name: x.sport, isActive: false }));
+  const sportObj = SPORT_TYPES.slice(0)
+    .reverse()
+    .map((x) => ({ name: x.sport, isActive: false }));
   sportObj[0].isActive = true;
   const [categoryList, setCategoryList] = useState([...sportObj]);
   const [currentSport, setCurrentSport] = useState(sportObj[0].name);
