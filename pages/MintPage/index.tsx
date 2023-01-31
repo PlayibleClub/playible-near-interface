@@ -521,10 +521,11 @@ export default function Home(props) {
     );
     return price;
   }
-  const launchTimer = 1675036800000;
+  const launchTimer = 1675296000000;
+  // 1675296000000
   const launchDate = moment().unix() - launchTimer / 1000;
   // const launchDate = 1;
-  const discountTimer = 1677600000000;
+  const discountTimer = 1677715200000;
   const discountDate = moment().unix() - discountTimer / 1000;
 
   function counter() {
