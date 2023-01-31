@@ -59,9 +59,7 @@ export default function Home(props) {
   const { contract } = selector.store.getState();
   const dispatch = useDispatch();
   const [positionList, setPositionList] = useState(SPORT_TYPES[0].positionList);
-  const sportObj = SPORT_TYPES.slice(0)
-    .reverse()
-    .map((x) => ({ name: x.sport, isActive: false }));
+  const sportObj = SPORT_TYPES.map((x) => ({ name: x.sport, isActive: false }));
   const [sportFromRedux, setSportFromRedux] = useState(useSelector(getSportTypeRedux));
   const [isPromoFromRedux, setIsPromoFromRedux] = useState(useSelector(getIsPromoRedux));
   const [categoryList, setCategoryList] = useState([...sportObj]);
@@ -967,9 +965,7 @@ export default function Home(props) {
                       <div className="ml-3"></div>
                     ) : (
                       <div>
-                        <div className="mt-4">
-                          Limit: 10 packs per wallet ({10 - mintedNba} packs left)
-                        </div>
+                        <div className="mt-4">Limit: 10 packs per wallet</div>
                       </div>
                     )}
                     {/*TODO: start styling */}
