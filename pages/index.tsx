@@ -31,9 +31,7 @@ export default function Home(props) {
   const [topAthletes, setTopAthletes] = useState([]);
   const [athletesLoading, setAthletesLoading] = useState(true);
   const [sportList, setSportList] = useState(
-    SPORT_TYPES.slice(0)
-      .reverse()
-      .map((x) => ({ name: x.sport, key: x.key }))
+    SPORT_TYPES.map((x) => ({ name: x.sport, key: x.key }))
   );
   const [currentSport, setCurrentSport] = useState('NBA'.toLocaleLowerCase());
   // const { loading, error, data } = useQuery(GET_ATHLETES_TOP, {
