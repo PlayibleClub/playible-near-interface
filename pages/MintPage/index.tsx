@@ -990,7 +990,7 @@ export default function Home(props) {
                                 execute_batch_transaction_storage_deposit_and_mint_token()
                               }
                             >
-                              Mint ${Math.floor(selectedMintAmount * format_price())} + fee{' '}
+                              Mint {Math.floor(selectedMintAmount * format_price())}N + fee{' '}
                               {utils.format.formatNearAmount(
                                 new BigNumber(selectedMintAmount)
                                   .multipliedBy(new BigNumber(MINT_STORAGE_COST))
@@ -1007,7 +1007,7 @@ export default function Home(props) {
                                   : execute_batch_transaction_storage_deposit_and_mint_token()
                               }
                             >
-                              Mint ${Math.floor(selectedMintAmount * format_price())} + fee{' '}
+                              Mint {Math.floor(selectedMintAmount * format_price())}N + fee{' '}
                               {utils.format.formatNearAmount(
                                 new BigNumber(selectedMintAmount)
                                   .multipliedBy(new BigNumber(MINT_STORAGE_COST))
@@ -1024,7 +1024,7 @@ export default function Home(props) {
                                   : execute_batch_transaction_storage_deposit_and_mint_token()
                               }
                             >
-                              Mint ${Math.floor(selectedMintAmount * format_price())} + fee{' '}
+                              Mint {Math.floor(selectedMintAmount * format_price())}N + fee{' '}
                               {utils.format.formatNearAmount(
                                 new BigNumber(selectedMintAmount)
                                   .multipliedBy(new BigNumber(MINT_STORAGE_COST))
