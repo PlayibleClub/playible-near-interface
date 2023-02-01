@@ -27,21 +27,15 @@ export default function AdminPlayerLineup(props) {
 
   async function get_all_players_lineup() {
     let gameData = await query_game_data(gameId, getSportType(currentSport).gameContract);
-    setNflSeason(await getNflSeason(gameData.start_time / 1000));
-    setWeek(await getNflWeek(gameData.start_time / 1000));
-    console.log(nflSeason);
+    // setNflSeason(await getNflSeason(gameData.start_time / 1000));
+    // setWeek(await getNflWeek(gameData.start_time / 1000));
+    // console.log(nflSeason);
+
     const startTimeFormatted = formatToUTCDate(gameData.start_time);
     const endTimeFormatted = formatToUTCDate(gameData.end_time);
 
     setPlayerLineups(
-      await query_all_players_lineup(
-        gameId,
-        week,
-        currentSport,
-        startTimeFormatted,
-        endTimeFormatted,
-        nflSeason
-      )
+      await query_all_players_lineup(gameId, currentSport, startTimeFormatted, endTimeFormatted)
     );
   }
 

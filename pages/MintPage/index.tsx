@@ -1,7 +1,7 @@
-import { transactions, utils, WalletConnection, providers } from 'near-api-js';
+import { utils, providers } from 'near-api-js';
 import Container from '../../components/containers/Container';
 import Main from '../../components/Main';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Image from 'next/image';
 import 'regenerator-runtime/runtime';
 import Head from 'next/head';
@@ -10,9 +10,10 @@ import ProgressBar from '@ramonak/react-progress-bar';
 import Usdt from '../../public/images/SVG/usdt';
 import Usdc from '../../public/images/SVG/usdc';
 import USN from '../../public/images/SVG/usn';
+import NEAR from '../../public/images/SVG/near';
 import { useWalletSelector } from '../../contexts/WalletSelectorContext';
 import BigNumber from 'bignumber.js';
-import { getConfig, getContract, getRPCProvider } from '../../utils/near';
+import { getConfig, getContract, getRPCProvider, get_near_connection } from '../../utils/near';
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
 import Modal from 'components/modals/Modal';
@@ -22,20 +23,32 @@ import {
   NEP141USDC,
   NEP141USDT,
   NEP141USN,
+  NEP141NEAR,
   PACK_PROMO_NFL,
 } from '../../data/constants/nearContracts';
 
 import { MINT_STORAGE_COST, DEFAULT_MAX_FEES } from 'data/constants/gasFees';
 import { execute_claim_soulbound_pack, query_claim_status } from 'utils/near/helper';
 import Link from 'next/link';
-import { SPORT_TYPES, getSportType } from 'data/constants/sportConstants';
+import { SPORT_TYPES, getSportType, SPORT_NAME_LOOKUP } from 'data/constants/sportConstants';
 import ModalPortfolioContainer from 'components/containers/ModalPortfolioContainer';
-import { getSportTypeRedux, setSportTypeRedux } from 'redux/athlete/sportSlice';
+import {
+  getIsPromoRedux,
+  getSportTypeRedux,
+  setSportTypeRedux,
+  setIsPromoRedux,
+} from 'redux/athlete/sportSlice';
 import { persistor } from 'redux/athlete/store';
+import { getUTCDateFromLocal } from 'utils/date/helper';
+import moment from 'moment';
+import Button from 'components/buttons/Button';
+import { number } from 'prop-types';
 const DECIMALS_NEAR = 1000000000000000000000000;
 const RESERVED_AMOUNT = 200;
 const NANO_TO_SECONDS_DENOMINATOR = 1000000;
 
+// const discountDate = 0;
+// const launchDate = 0;
 export default function Home(props) {
   const { selector, modal, accounts, accountId } = useWalletSelector();
 
@@ -47,8 +60,8 @@ export default function Home(props) {
   const dispatch = useDispatch();
   const [positionList, setPositionList] = useState(SPORT_TYPES[0].positionList);
   const sportObj = SPORT_TYPES.map((x) => ({ name: x.sport, isActive: false }));
-  sportObj[0].isActive = true;
   const [sportFromRedux, setSportFromRedux] = useState(useSelector(getSportTypeRedux));
+  const [isPromoFromRedux, setIsPromoFromRedux] = useState(useSelector(getIsPromoRedux));
   const [categoryList, setCategoryList] = useState([...sportObj]);
   const [currentSport, setCurrentSport] = useState(sportObj[0].name);
   const options = [
@@ -58,6 +71,7 @@ export default function Home(props) {
   ];
   // Re-use this data to display the state
   const [minterConfig, setMinterConfig] = useState({
+    minting_price_in_near: '',
     minting_price_decimals_6: '',
     minting_price_decimals_18: '',
     admin: '',
@@ -74,16 +88,28 @@ export default function Home(props) {
   const [storageDepositAccountBalance, setStorageDepositAccountBalance] = useState(0);
   const [selectedMintAmount, setSelectedMintAmount] = useState(0);
   const [minted, setMinted] = useState(0);
+  const [accountBalance, setAccountBalance] = useState(0);
+  const [mintedNba, setMintedNba] = useState(0);
   const [useNEP141, setUseNEP141] = useState(NEP141USDT);
   const [intervalSale, setIntervalSale] = useState(0);
   const [balanceErrorMsg, setBalanceErrorMsg] = useState('');
   const [isClaimedFootball, setIsClaimedFootball] = useState(false);
   const [isClaimedBasketball, setIsClaimedBasketball] = useState(false);
   const router = useRouter();
+  const [day, setDay] = useState(0);
+  const [hour, setHour] = useState(0);
+  const [minute, setMinute] = useState(0);
+  const [second, setSecond] = useState(0);
+  const [discountDay, setDiscountDay] = useState(0);
+  const [discountHour, setDiscountHour] = useState(0);
+  const [discountMinute, setDiscountMinute] = useState(0);
+  const [discountSecond, setDiscountSecond] = useState(0);
   const [editModal, setEditModal] = useState(false);
-  const nflImage = '/images/packimages/NFL-SB-Pack.png';
-  const nbaImage = '/images/packimages/nbaStarterPackSoulbound.png';
-  const [modalImage, setModalImage] = useState(nflImage);
+  const nflRegImage = '/images/packimages/nflStarterPack.png';
+  const nbaRegImage = '/images/packimages/nbaStarterPack.png';
+  const nflSbImage = '/images/packimages/NFL-SB-Pack.png';
+  const nbaSbImage = '/images/packimages/nbaStarterPackSoulbound.png';
+  const [modalImage, setModalImage] = useState(nflSbImage);
   async function get_claim_status(accountId) {
     setIsClaimedFootball(
       await query_claim_status(accountId, getSportType('FOOTBALL').packPromoContract)
@@ -92,13 +118,12 @@ export default function Home(props) {
       await query_claim_status(accountId, getSportType('BASKETBALL').packPromoContract)
     );
   }
-
   function query_config_contract() {
     provider
       .query({
         request_type: 'call_function',
         finality: 'optimistic',
-        account_id: getSportType('FOOTBALL').mintContract,
+        account_id: getSportType(currentSport).mintContract,
         method_name: 'get_config',
         args_base64: '',
       })
@@ -117,17 +142,22 @@ export default function Home(props) {
         const minting_of = await provider.query({
           request_type: 'call_function',
           finality: 'optimistic',
-          account_id: getSportType('FOOTBALL').mintContract,
+          account_id: getSportType(currentSport).mintContract,
           method_name: 'get_minting_of',
           args_base64: Buffer.from(query).toString('base64'),
         });
         // @ts-ignore:next-line
         const _minted = JSON.parse(Buffer.from(minting_of.result).toString());
         setMinted(_minted);
+        {
+          currentSport === 'FOOTBALL' ? setMinted(_minted) : setMintedNba(_minted);
+        }
       }
     } catch (e) {
       // define default minted
-      setMinted(0);
+      {
+        currentSport === 'FOOTBALL' ? setMinted(0) : setMintedNba(0);
+      }
     }
   }
 
@@ -140,7 +170,7 @@ export default function Home(props) {
         const storage_balance = await provider.query({
           request_type: 'call_function',
           finality: 'optimistic',
-          account_id: getSportType('FOOTBALL').mintContract,
+          account_id: getSportType(currentSport).mintContract,
           method_name: 'get_storage_balance_of',
           args_base64: Buffer.from(query).toString('base64'),
         });
@@ -152,6 +182,96 @@ export default function Home(props) {
       // No account storage deposit found
       setStorageDepositAccountBalance(0);
     }
+  }
+
+  async function get_near_account_balance(account_id) {
+    // gets account balance
+
+    const connection = await get_near_connection();
+
+    const wallet = await (await connection.account(accountId)).getAccountBalance();
+    setAccountBalance(Number(wallet.available) / DECIMALS_NEAR);
+  }
+
+  async function execute_near_storage_deposit_and_mint_token() {
+    const amount_to_deposit_near = new BigNumber(selectedMintAmount)
+      .multipliedBy(new BigNumber(minterConfig.minting_price_in_near))
+      .toFixed();
+
+    const data_one = Buffer.from(
+      JSON.stringify({
+        mint_amount: selectedMintAmount,
+      })
+    );
+    const action_deposit_near_price = {
+      type: 'FunctionCall',
+      params: {
+        methodName: 'mint',
+        args: data_one,
+        gas: DEFAULT_MAX_FEES,
+        deposit: amount_to_deposit_near,
+      },
+    };
+
+    let mint_cost =
+      (Number(minterConfig.minting_price_in_near) * selectedMintAmount) / DECIMALS_NEAR;
+
+    console.log(mint_cost);
+    try {
+      if (accountBalance < mint_cost) {
+        setBalanceErrorMsg(
+          'Error you need ' +
+            selectedMintAmount * 30 +
+            ' ' +
+            useNEP141.title +
+            ', You have ' +
+            accountBalance.toFixed(2) +
+            ' ' +
+            useNEP141.title
+        );
+        return;
+      }
+      setBalanceErrorMsg('');
+    } catch (e) {
+      console.log(e);
+      return;
+    }
+
+    if (selectedMintAmount == 0) {
+      return;
+    }
+
+    dispatch(setSportTypeRedux(currentSport));
+    const amount_deposit_storage = new BigNumber(selectedMintAmount)
+      .multipliedBy(new BigNumber(MINT_STORAGE_COST))
+      .toFixed();
+
+    const data_two = Buffer.from(JSON.stringify({}));
+    const action_deposit_storage_near_token = {
+      type: 'FunctionCall',
+      params: {
+        methodName: 'storage_deposit',
+        args: data_two,
+        gas: DEFAULT_MAX_FEES,
+        deposit: amount_deposit_storage,
+      },
+    };
+    const wallet = await selector.wallet();
+    // @ts-ignore:next-line
+    const tx = wallet.signAndSendTransactions({
+      transactions: [
+        {
+          receiverId: getSportType(currentSport).mintContract,
+          // @ts-ignore:next-line
+          actions: [action_deposit_storage_near_token],
+        },
+        {
+          receiverId: getSportType(currentSport).mintContract,
+          // @ts-ignore:next-line
+          actions: [action_deposit_near_price],
+        },
+      ],
+    });
   }
 
   async function execute_batch_transaction_storage_deposit_and_mint_token() {
@@ -176,7 +296,7 @@ export default function Home(props) {
       Number(
         useNEP141.decimals == 1000000
           ? minterConfig.minting_price_decimals_6
-          : minterConfig.minting_price_decimals_18
+          : minterConfig.minting_price_in_near
       );
 
     try {
@@ -191,8 +311,29 @@ export default function Home(props) {
       // @ts-ignore:next-line
 
       const balance = JSON.parse(Buffer.from(ft_balance_of.result).toString());
-      if (balance < mint_cost) {
-        setBalanceErrorMsg('Error you need ' + selectedMintAmount * 200 + ' ' + useNEP141.title);
+      if (balance < mint_cost && currentSport === 'FOOTBALL') {
+        setBalanceErrorMsg(
+          'Error you need ' +
+            selectedMintAmount * 200 +
+            ' ' +
+            useNEP141.title +
+            ', You have ' +
+            balance +
+            ' ' +
+            useNEP141.title
+        );
+        return;
+      } else if (balance < mint_cost && currentSport === 'BASKETBALL') {
+        setBalanceErrorMsg(
+          'Error you need ' +
+            selectedMintAmount * 50 +
+            ' ' +
+            useNEP141.title +
+            ', You have ' +
+            balance +
+            ' ' +
+            useNEP141.title
+        );
         return;
       }
       setBalanceErrorMsg('');
@@ -205,9 +346,10 @@ export default function Home(props) {
       return;
     }
 
+    dispatch(setSportTypeRedux(currentSport));
     const data_two = Buffer.from(
       JSON.stringify({
-        receiver_id: getSportType('FOOTBALL').mintContract,
+        receiver_id: getSportType(currentSport).mintContract,
         amount: Math.floor(mint_cost).toString(),
         msg: JSON.stringify({ mint_amount: selectedMintAmount }),
       })
@@ -229,7 +371,7 @@ export default function Home(props) {
     const tx = wallet.signAndSendTransactions({
       transactions: [
         {
-          receiverId: getSportType('FOOTBALL').mintContract,
+          receiverId: getSportType(currentSport).mintContract,
           // @ts-ignore:next-line
           actions: [action_deposit_storage_near_token],
         },
@@ -252,7 +394,7 @@ export default function Home(props) {
       Number(
         useNEP141.decimals == 1000000
           ? minterConfig.minting_price_decimals_6
-          : minterConfig.minting_price_decimals_18
+          : minterConfig.minting_price_in_near
       );
 
     if (selectedMintAmount == 0) {
@@ -326,7 +468,7 @@ export default function Home(props) {
     const tx = wallet
       .signAndSendTransaction({
         signerId: accountId,
-        receiverId: getSportType('FOOTBALL').mintContract,
+        receiverId: getSportType(currentSport).mintContract,
         actions: [
           // @ts-ignore:next-line
           action_deposit_storage_near_token,
@@ -340,8 +482,8 @@ export default function Home(props) {
 
   function selectMint() {
     let optionMint = [];
-    for (let x = 1; x < 16; x++) {
-      optionMint.push({ value: x, label: `Get ${x} ${x > 1 ? 'packs' : 'pack'}` });
+    for (let x = 1; x < 11; x++) {
+      optionMint.push({ value: x, label: `${x} ${x > 1 ? 'packs' : 'pack'}` });
     }
     return (
       <Select
@@ -352,16 +494,37 @@ export default function Home(props) {
     );
   }
 
+  function selectMintNba() {
+    let optionMint = [];
+    let limit = 11 - mintedNba;
+    for (let x = 1; x < limit; x++) {
+      optionMint.push({ value: x, label: `${x} ${x > 1 ? 'packs' : 'pack'}` });
+    }
+    return (
+      <Select
+        onChange={(event) => setSelectedMintAmount(event.value)}
+        options={optionMint.splice(0, 5)}
+        className="md:w-1/3 w-4/5 mr-9 mt-5"
+      />
+    );
+  }
+
   function format_price() {
     let price = Math.floor(
       Number(
         useNEP141.decimals === 1000000
           ? minterConfig.minting_price_decimals_6
-          : minterConfig.minting_price_decimals_18
+          : minterConfig.minting_price_in_near
       ) / useNEP141.decimals
     );
     return price;
   }
+  const launchTimer = 1675296000000;
+  // 1675296000000
+  const launchDate = moment().unix() - launchTimer / 1000;
+  // const launchDate = 1;
+  const discountTimer = 1677715200000;
+  const discountDate = moment().unix() - discountTimer / 1000;
 
   function counter() {
     const seconds = Math.floor((intervalSale / 1000) % 60);
@@ -388,6 +551,7 @@ export default function Home(props) {
     //   dispatch(setSportTypeRedux(sport));
     // });
     dispatch(setSportTypeRedux(sport));
+    dispatch(setIsPromoRedux(true));
     execute_claim_soulbound_pack(selector, getSportType(sport).packPromoContract);
   };
 
@@ -397,7 +561,10 @@ export default function Home(props) {
     query_config_contract();
     query_storage_deposit_account_id();
     query_minting_of();
-  }, []);
+    if (currentSport === 'BASKETBALL') {
+      setUseNEP141(NEP141NEAR);
+    }
+  }, [currentSport, useNEP141]);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -413,17 +580,66 @@ export default function Home(props) {
 
   useEffect(() => {
     get_claim_status(accountId);
-  }, [currentSport]);
+    get_near_account_balance(accountId);
+  }, [currentSport, accountBalance]);
 
   useEffect(() => {
-    if (router.asPath.indexOf('transactionHashes') > -1) {
+    if (router.asPath.indexOf('transactionHashes') > -1 && isPromoFromRedux === false) {
+      sportFromRedux === SPORT_NAME_LOOKUP.basketball
+        ? setModalImage(nbaRegImage)
+        : setModalImage(nflRegImage);
+      setTimeout(() => persistor.purge(), 200);
+      setEditModal(true);
+    } else if (router.asPath.indexOf('transactionHashes') > -1) {
       {
-        sportFromRedux === 'BASKETBALL' ? setModalImage(nbaImage) : setModalImage(nflImage);
+        sportFromRedux === 'BASKETBALL' ? setModalImage(nbaSbImage) : setModalImage(nflSbImage);
       }
       setTimeout(() => persistor.purge(), 200);
       setEditModal(true);
     }
   }, []);
+
+  function formatTime(time) {
+    return time < 10 ? '0' + time : time;
+  }
+  const logIn = () => {
+    modal.show();
+  };
+
+  useEffect(() => {
+    setDay(0);
+    setHour(0);
+    setMinute(0);
+    setSecond(0);
+    const id = setInterval(() => {
+      const currentDate = getUTCDateFromLocal();
+      // const end = moment.utc(1674144000000);
+      const end = moment.utc(launchTimer);
+      setDay(formatTime(Math.floor(end.diff(currentDate, 'second') / 3600 / 24)));
+      setHour(formatTime(Math.floor((end.diff(currentDate, 'second') / 3600) % 24)));
+      setMinute(formatTime(Math.floor((end.diff(currentDate, 'second') / 60) % 60)));
+      setSecond(formatTime(Math.floor(end.diff(currentDate, 'second') % 60)));
+    }, 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  useEffect(() => {
+    setDay(0);
+    setHour(0);
+    setMinute(0);
+    setSecond(0);
+    const id = setInterval(() => {
+      const currentDate = getUTCDateFromLocal();
+      // const end = moment.utc(1674144000000);
+      const end = moment.utc(discountTimer);
+      setDiscountDay(formatTime(Math.floor(end.diff(currentDate, 'second') / 3600 / 24)));
+      setDiscountHour(formatTime(Math.floor((end.diff(currentDate, 'second') / 3600) % 24)));
+      setDiscountMinute(formatTime(Math.floor((end.diff(currentDate, 'second') / 60) % 60)));
+      setDiscountSecond(formatTime(Math.floor(end.diff(currentDate, 'second') % 60)));
+    }, 1000);
+    return () => clearInterval(id);
+  }, []);
+
   return (
     <>
       <Container activeName="MINT">
@@ -431,55 +647,90 @@ export default function Home(props) {
           <Main color="indigo-white">
             <div className="flex-initial iphone5:mt-20 md:ml-6 md:mt-8">
               <div className="flex md:flex-row md:float-right iphone5:flex-col md:mt-0">
-                <div className="md:mr-5 md:mt-4">
-                  {/* <form>
+                <div className="md:mr-5 md:mt-4 iphone5:mt-10">
+                  <form>
                     <select
                       onChange={(e) => {
                         setCurrentSport(e.target.value);
+                        setUseNEP141(NEP141USDT);
                       }}
                       className="bg-filter-icon bg-no-repeat bg-right bg-indigo-white ring-2 ring-offset-8 ring-indigo-black ring-opacity-25 focus:ring-2 focus:ring-indigo-black 
-                        focus:outline-none cursor-pointer text-xs iphone5:ml-8 iphone5:w-4/6 md:text-base md:ml-8 md:mt-0 md:w-72 md:p-2 iphone5:hidden md:block lg:block"
+                        focus:outline-none cursor-pointer text-xs iphone5:ml-8 iphone5:w-4/6 md:text-base md:ml-8 md:mt-0 md:w-72 md:p-2 md:block lg:block"
                     >
                       {categoryList.map((x) => {
                         return <option value={x.name}>{x.name}</option>;
                       })}
                     </select>
-                  </form> */}
+                  </form>
                 </div>
               </div>
               <div className="ml-8">
                 <ModalPortfolioContainer title="MINT PACKS" textcolor="text-indigo-black" />
               </div>
-              <div className="ml-12 mt-4 md:flex md:flex-row md:ml-8">
-                {isClaimedFootball ? (
-                  <button
-                    className={`bg-indigo-gray bg-opacity-40 text-indigo-white w-12 text-center hidden justify-center items-center font-montserrat p-4 text-xs mt-8`}
-                  >
-                    CLAIM FOOTBALL PACK
-                  </button>
-                ) : (
-                  <button
-                    className="w-60 flex text-center justify-center items-center iphone5:w-64 bg-indigo-buttonblue font-montserrat text-indigo-white p-3 mb-4 md:mr-4 text-xs "
-                    onClick={(e) => handleButtonClick(e, 'FOOTBALL')}
-                  >
-                    CLAIM FOOTBALL PACK
-                  </button>
-                )}
-                {isClaimedBasketball ? (
-                  <button
-                    className={`bg-indigo-gray bg-opacity-40 text-indigo-white w-12 text-center hidden justify-center items-center font-montserrat p-4 text-xs mt-8`}
-                  >
-                    CLAIM BASKETBALL PACK
-                  </button>
-                ) : (
-                  <button
-                    className="w-60 flex text-center justify-center items-center iphone5:w-64 bg-indigo-buttonblue font-montserrat text-indigo-white p-3 mb-4 text-xs "
-                    onClick={(e) => handleButtonClick(e, 'BASKETBALL')}
-                  >
-                    CLAIM BASKETBALL PACK
-                  </button>
-                )}
-              </div>
+              {selector.isSignedIn() ? (
+                <div className="ml-12 mt-4 md:flex md:flex-row md:ml-8">
+                  {isClaimedFootball ? (
+                    <button
+                      className={`bg-indigo-gray bg-opacity-40 text-indigo-white w-12 text-center hidden justify-center items-center font-montserrat p-4 text-xs mt-8`}
+                    >
+                      CLAIM FOOTBALL PACK
+                    </button>
+                  ) : (
+                    <button
+                      className="w-60 flex text-center justify-center items-center iphone5:w-64 bg-indigo-buttonblue font-montserrat text-indigo-white p-3 mb-4 md:mr-4 text-xs "
+                      onClick={(e) => handleButtonClick(e, 'FOOTBALL')}
+                    >
+                      CLAIM FOOTBALL PACK
+                    </button>
+                  )}
+                  {isClaimedBasketball ? (
+                    <button
+                      className={`bg-indigo-gray bg-opacity-40 text-indigo-white w-12 text-center hidden justify-center items-center font-montserrat p-4 text-xs mt-8`}
+                    >
+                      CLAIM BASKETBALL PACK
+                    </button>
+                  ) : (
+                    <button
+                      className="w-60 flex text-center justify-center items-center iphone5:w-64 bg-indigo-buttonblue font-montserrat text-indigo-white p-3 mb-4 text-xs "
+                      onClick={(e) => handleButtonClick(e, 'BASKETBALL')}
+                    >
+                      CLAIM BASKETBALL PACK
+                    </button>
+                  )}
+                </div>
+              ) : (
+                <div className="ml-12 mt-4 md:flex md:flex-row md:ml-8">
+                  {isClaimedFootball ? (
+                    <button
+                      className={`bg-indigo-gray bg-opacity-40 text-indigo-white w-12 text-center hidden justify-center items-center font-montserrat p-4 text-xs mt-8`}
+                    >
+                      CLAIM FOOTBALL PACK
+                    </button>
+                  ) : (
+                    <button
+                      className="w-60 flex text-center justify-center items-center iphone5:w-64 bg-indigo-buttonblue font-montserrat text-indigo-white p-3 mb-4 md:mr-4 text-xs "
+                      onClick={logIn}
+                    >
+                      CLAIM FOOTBALL PACK
+                    </button>
+                  )}
+                  {isClaimedBasketball ? (
+                    <button
+                      className={`bg-indigo-gray bg-opacity-40 text-indigo-white w-12 text-center hidden justify-center items-center font-montserrat p-4 text-xs mt-8`}
+                    >
+                      CLAIM BASKETBALL PACK
+                    </button>
+                  ) : (
+                    <button
+                      className="w-60 flex text-center justify-center items-center iphone5:w-64 bg-indigo-buttonblue font-montserrat text-indigo-white p-3 mb-4 text-xs "
+                      onClick={logIn}
+                    >
+                      CLAIM BASKETBALL PACK
+                    </button>
+                  )}
+                </div>
+              )}
+
               <div className="md:mr- md:mt-0 ml-6 mt-4">
                 <form>
                   <select
@@ -514,14 +765,14 @@ export default function Home(props) {
             </div>
             <div className="flex flex-col md:flex-row md:ml-12">
               <div className="md:w-full overflow-x-hidden">
-                <div className="flex-col flex w-full mt-8 ">
+                {/* <div className="flex-col flex w-full mt-8">
                   <div className="align-center justify-center border-2 p-8 iphone5:ml-2 iphone5:mr-2 md:mr-8 rounded-lg">
                     <div className="text-m">
                       Early Bird Offer: The first 500 minted will receive an additional free
                       promotional pack.
                     </div>
                   </div>
-                </div>
+                </div> */}
                 <div className="flex md:flex-row flex-col md:ml-2 mt-12">
                   {currentSport === 'FOOTBALL' ? (
                     <div className="md:w-1/2 w-full ">
@@ -549,53 +800,115 @@ export default function Home(props) {
                         textcolor="text-indigo-black"
                       />
                     </div>
+                    {currentSport === 'BASKETBALL' ? '' : ''}
+
                     <div className="flex justify-between w-4/5 md:w-1/2 mt-5">
                       <div>
                         <div className="text-xs">PRICE</div>
-                        <div className="font-black"> ${format_price()}</div>
+
+                        {useNEP141 === NEP141NEAR ? (
+                          <div className="font-black text-xl"> {format_price()}N</div>
+                        ) : useNEP141 === NEP141USDT ? (
+                          <div className="font-black"> {format_price()}USDT</div>
+                        ) : (
+                          <div className="font-black"> {format_price()}USDC</div>
+                        )}
                       </div>
+
                       <div className="border">
-                        <button
-                          onClick={() => setUseNEP141(NEP141USDT)}
-                          className={
-                            'p-3 ' +
-                            (useNEP141.title == NEP141USDT.title
-                              ? 'bg-indigo-black'
-                              : 'hover:bg-indigo-slate')
-                          }
-                        >
-                          <Usdt
-                            hardCodeMode={useNEP141.title == NEP141USDT.title ? '#fff' : '#000'}
-                          ></Usdt>
-                        </button>
-                        <button
-                          onClick={() => setUseNEP141(NEP141USDC)}
-                          className={
-                            'p-3 ' +
-                            (useNEP141.title == NEP141USDC.title
-                              ? 'bg-indigo-black'
-                              : 'hover:bg-indigo-slate')
-                          }
-                        >
-                          <Usdc
-                            hardCodeMode={useNEP141.title == NEP141USDC.title ? '#fff' : '#000'}
-                          ></Usdc>
-                        </button>
-                        <button
-                          onClick={() => setUseNEP141(NEP141USN)}
-                          className={
-                            'p-3 ' +
-                            (useNEP141.title == NEP141USN.title
-                              ? 'bg-indigo-black'
-                              : 'hover:bg-indigo-slate')
-                          }
-                        >
-                          <USN
-                            hardCodeMode={useNEP141.title == NEP141USN.title ? '#fff' : '#000'}
-                          ></USN>
-                        </button>
+                        {currentSport === 'BASKETBALL' ? (
+                          ''
+                        ) : (
+                          <div>
+                            <button
+                              onClick={() => setUseNEP141(NEP141USDT)}
+                              className={
+                                'p-3 ' +
+                                (useNEP141.title == NEP141USDT.title
+                                  ? 'bg-indigo-black'
+                                  : 'hover:bg-indigo-slate')
+                              }
+                            >
+                              <Usdt
+                                hardCodeMode={useNEP141.title == NEP141USDT.title ? '#fff' : '#000'}
+                              ></Usdt>
+                            </button>
+                            <button
+                              onClick={() => setUseNEP141(NEP141USDC)}
+                              className={
+                                'p-3 ' +
+                                (useNEP141.title == NEP141USDC.title
+                                  ? 'bg-indigo-black'
+                                  : 'hover:bg-indigo-slate')
+                              }
+                            >
+                              <Usdc
+                                hardCodeMode={useNEP141.title == NEP141USDC.title ? '#fff' : '#000'}
+                              ></Usdc>
+                            </button>
+                          </div>
+                        )}
+
+                        {currentSport === 'BASKETBALL' ? (
+                          <button
+                            onClick={() => setUseNEP141(NEP141NEAR)}
+                            className={
+                              'p-3 ' +
+                              (useNEP141.title == NEP141NEAR.title
+                                ? 'bg-indigo-black'
+                                : 'hover:bg-indigo-slate')
+                            }
+                          >
+                            <NEAR
+                              hardCodeMode={useNEP141.title == NEP141NEAR.title ? '#fff' : '#000'}
+                            ></NEAR>
+                          </button>
+                        ) : (
+                          ''
+                        )}
                       </div>
                     </div>
+                    {useNEP141.title === 'NEAR' ? (
+                      discountDate > 0 ? (
+                        <div className="line-through hidden decoration-4 text-xs font-black static">
+                          (45N)
+                        </div>
+                      ) : currentSport === 'FOOTBALL' ? (
+                        ''
+                      ) : (
+                        <div className=" text-xs">
+                          <div className="line-through decoration-8 text-lg font-black static">
+                            (45N)
+                          </div>
+
+                          {launchDate > 0 ? (
+                            <div className="text-xs">
+                              Discounted Until: 12am UTC{' '}
+                              {moment.utc(discountTimer).local().format('MMMM D')}
+                              <div className="flex space-x-1 mt-2">
+                                <div className="bg-indigo-darkgray text-indigo-white w-6 h-6 rounded justify-center flex pt-1">
+                                  {discountDay || ''}
+                                </div>
+                                <div className="bg-indigo-darkgray text-indigo-white w-6 h-6 rounded justify-center flex pt-1">
+                                  {discountHour || ''}
+                                </div>
+                                <div className="bg-indigo-darkgray text-indigo-white w-6 h-6 rounded justify-center flex pt-1">
+                                  {discountMinute || ''}
+                                </div>
+                                <div className="bg-indigo-darkgray text-indigo-white w-6 h-6 rounded justify-center flex pt-1">
+                                  {discountSecond || ''}
+                                </div>
+                              </div>
+                            </div>
+                          ) : (
+                            ''
+                          )}
+                        </div>
+                      )
+                    ) : (
+                      ''
+                    )}
+
                     {(counter().days > 0 ||
                       counter().hours > 0 ||
                       counter().minute > 0 ||
@@ -617,13 +930,16 @@ export default function Home(props) {
                         </div>
                       </>
                     )}
-
-                    <div className="border border-indigo-lightgray rounded-2xl text-center p-4 w-40 flex flex-col justify-center  mt-8">
-                      <div className="text-2xl font-black font-monument ">{minted}</div>
-                      <div className="text-xs">YOU HAVE MINTED</div>
+                    <div className="flex gap-16">
+                      <div className="border border-indigo-lightgray rounded-2xl text-center p-4 w-40 flex flex-col justify-center  mt-8">
+                        <div className="text-2xl font-black font-monument ">
+                          {currentSport === 'FOOTBALL' ? minted : mintedNba}
+                        </div>
+                        <div className="text-xs">YOU HAVE MINTED</div>
+                      </div>
                     </div>
                     <div className="mt-8 mb-0 p-0 w-9/12">
-                      <ProgressBar
+                      {/* <ProgressBar
                         completed={parseInt(
                           (
                             ((minterConfig.nft_pack_max_sale_supply -
@@ -635,16 +951,23 @@ export default function Home(props) {
                         )}
                         maxCompleted={100}
                         bgColor={'#3B62F6'}
-                      />
+                      /> */}
                     </div>
                     <div className="text-xs ">
-                      {' '}
+                      {/* {' '}
                       {minterConfig.nft_pack_max_sale_supply -
                         minterConfig.nft_pack_mint_counter -
                         262}
-                      /{minterConfig.nft_pack_max_sale_supply + RESERVED_AMOUNT} packs remaining
+                      /{minterConfig.nft_pack_max_sale_supply + RESERVED_AMOUNT} packs remaining */}
                     </div>
-                    <div>{selectMint()}</div>
+                    <div>{currentSport === 'FOOTBALL' ? selectMint() : selectMintNba()}</div>
+                    {currentSport === 'FOOTBALL' ? (
+                      <div className="ml-3"></div>
+                    ) : (
+                      <div>
+                        <div className="mt-4">Limit: 10 packs per wallet</div>
+                      </div>
+                    )}
                     {/*TODO: start styling */}
                     {/*<div>*/}
                     {/*  <p>Receipt total price ${Math.floor((selectedMintAmount * parseInt(minterConfig.minting_price)) / STABLE_DECIMAL)}</p>*/}
@@ -656,24 +979,129 @@ export default function Home(props) {
                         /*parseInt(String(storageDepositAccountBalance)) >= selectedMintAmount * MINT_STORAGE_COST*/
                       } ? (
                         <>
-                          {' '}
-                          <button
-                            className="w-9/12 flex text-center justify-center items-center bg-indigo-buttonblue font-montserrat text-indigo-white p-4 text-xs mt-8 "
-                            onClick={() =>
-                              execute_batch_transaction_storage_deposit_and_mint_token()
-                            }
-                          >
-                            Mint ${Math.floor(selectedMintAmount * format_price())} + fee{' '}
-                            {utils.format.formatNearAmount(
-                              new BigNumber(selectedMintAmount)
-                                .multipliedBy(new BigNumber(MINT_STORAGE_COST))
-                                .toFixed()
-                            )}
-                            N
-                          </button>
-                          <p className="text-xs text-red-700">{balanceErrorMsg}</p>
+                          {currentSport === 'FOOTBALL' ? (
+                            <button
+                              className="w-9/12 flex text-center justify-center items-center bg-indigo-buttonblue font-montserrat text-indigo-white p-4 text-xs mt-8 "
+                              onClick={() =>
+                                execute_batch_transaction_storage_deposit_and_mint_token()
+                              }
+                            >
+                              Mint {Math.floor(selectedMintAmount * format_price())}N + fee{' '}
+                              {utils.format.formatNearAmount(
+                                new BigNumber(selectedMintAmount)
+                                  .multipliedBy(new BigNumber(MINT_STORAGE_COST))
+                                  .toFixed()
+                              )}
+                              N
+                            </button>
+                          ) : launchDate > 0 ? (
+                            <button
+                              className="w-9/12 flex text-center justify-center items-center bg-indigo-buttonblue font-montserrat text-indigo-white p-4 text-xs mt-8 "
+                              onClick={() =>
+                                useNEP141.title === 'NEAR'
+                                  ? execute_near_storage_deposit_and_mint_token()
+                                  : execute_batch_transaction_storage_deposit_and_mint_token()
+                              }
+                            >
+                              Mint {Math.floor(selectedMintAmount * format_price())}N + fee{' '}
+                              {utils.format.formatNearAmount(
+                                new BigNumber(selectedMintAmount)
+                                  .multipliedBy(new BigNumber(MINT_STORAGE_COST))
+                                  .toFixed()
+                              )}
+                              N
+                            </button>
+                          ) : (
+                            <button
+                              className="w-9/12 hidden text-center justify-center items-center bg-indigo-buttonblue font-montserrat text-indigo-white p-4 text-xs mt-8 "
+                              onClick={() =>
+                                useNEP141.title === 'NEAR'
+                                  ? execute_near_storage_deposit_and_mint_token()
+                                  : execute_batch_transaction_storage_deposit_and_mint_token()
+                              }
+                            >
+                              Mint {Math.floor(selectedMintAmount * format_price())}N + fee{' '}
+                              {utils.format.formatNearAmount(
+                                new BigNumber(selectedMintAmount)
+                                  .multipliedBy(new BigNumber(MINT_STORAGE_COST))
+                                  .toFixed()
+                              )}
+                              N
+                            </button>
+                          )}
+                          {currentSport === 'FOOTBALL' ? (
+                            <div className="flex-col mt-10 hidden">
+                              <div>
+                                Launching: 12am UTC{' '}
+                                {moment.utc(launchTimer).local().format('MMMM D')}
+                              </div>
+                              <div>
+                                <div className="flex space-x-2 mt-2">
+                                  <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
+                                    {day || ''}
+                                  </div>
+                                  <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
+                                    {hour || ''}
+                                  </div>
+                                  <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
+                                    {minute || ''}
+                                  </div>
+                                  <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
+                                    {second || ''}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          ) : launchDate > 0 ? (
+                            <div className="flex-col mt-10 hidden">
+                              <div>
+                                Launching: 12am UTC{' '}
+                                {moment.utc(launchTimer).local().format('MMMM D')}
+                              </div>
+                              <div>
+                                <div className="flex space-x-2 mt-2">
+                                  <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
+                                    {day || ''}
+                                  </div>
+                                  <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
+                                    {hour || ''}
+                                  </div>
+                                  <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
+                                    {minute || ''}
+                                  </div>
+                                  <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
+                                    {second || ''}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="flex flex-col mt-10">
+                              <div>
+                                Launching: 12am UTC{' '}
+                                {moment.utc(launchTimer).local().format('MMMM D')}
+                              </div>
+                              <div>
+                                <div className="flex space-x-2 mt-2">
+                                  <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
+                                    {day || ''}
+                                  </div>
+                                  <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
+                                    {hour || ''}
+                                  </div>
+                                  <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
+                                    {minute || ''}
+                                  </div>
+                                  <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
+                                    {second || ''}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          )}
                         </>
                       ) : (
+                        // {minted > "10" }
                         <button
                           className="w-9/12 flex text-center justify-center items-center bg-indigo-buttonblue font-montserrat text-indigo-white p-4 text-xs mt-8 "
                           onClick={() => execute_storage_deposit()}
@@ -696,7 +1124,7 @@ export default function Home(props) {
                         WALLET CONNECTION REQUIRED
                       </div>
                     )}
-
+                    <p className="text-xs text-indigo-red font-bold">{balanceErrorMsg}</p>
                     {/*TODO: end */}
                   </div>
                 </div>

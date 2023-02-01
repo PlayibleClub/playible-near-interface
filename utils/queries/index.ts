@@ -18,6 +18,7 @@ export const GET_ATHLETES_TOP = gql`
         fantasyScore
         week
         type
+        season
       }
     }
   }
@@ -206,3 +207,32 @@ export const GET_ATHLETEDATA_NBA = gql`
     }
   }
 `;
+
+export const GET_NBA_CURRENT_SEASON = gql`
+  query GetNbaCurrentSeason {
+    getNbaCurrentSeason {
+      apiSeason
+    }
+}
+`;
+
+export const GET_NFL_SEASON = gql`
+  query GetNflSeason($startDate: DateTime!) {
+    getNflSeason(startDate: $startDate) {
+      apiName
+      apiSeason
+      apiWeek
+      endDate
+      startDate
+      
+    }
+  }
+`
+export const GET_TEAMS = gql`
+  query GetTeams($sport: String!) {
+    getTeams(sport: $sport) {
+      key
+      name
+    }
+}
+`

@@ -9,7 +9,7 @@ export const MINTER_NFL = {
       'get_whitelist',
       'get_minting_of',
     ],
-    changeMethods: ['storage_deposit', 'storage_withdraw_all'],
+    changeMethods: ['storage_deposit', 'storage_withdraw_all', 'mint'],
   },
 }; // Near Minter contract
 
@@ -24,9 +24,9 @@ export const MINTER_BASKETBALL = {
       'get_whitelist',
       'get_minting_of',
     ],
-    changeMethods: ['storage_deposit', 'storage_withdraw_all'],
-  }
-}
+    changeMethods: ['storage_deposit', 'storage_withdraw_all', 'mint'],
+  },
+};
 export const NEP141USDC = {
   title: 'USDC',
   mainnet: 'a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.factory.bridge.near',
@@ -53,6 +53,17 @@ export const NEP141USN = {
   mainnet: 'usn',
   testnet: 'usdn.testnet',
   decimals: 1000000000000000000,
+  interface: {
+    viewMethods: ['ft_balance_of'],
+    changeMethods: ['ft_transfer_call', 'storage_deposit'],
+  },
+}; //Near NEP-141 equivalent CW-20 or ERC-20
+
+export const NEP141NEAR = {
+  title: 'NEAR',
+  mainnet: '',
+  testnet: '',
+  decimals: 1000000000000000000000000,
   interface: {
     viewMethods: ['ft_balance_of'],
     changeMethods: ['ft_transfer_call', 'storage_deposit'],
@@ -87,7 +98,7 @@ export const PACK_BASKETBALL = {
     viewMethods: ['nft_tokens_for_owner', 'nft_total_supply', 'nft_tokens', 'nft_supply_for_owner'],
     changeMethods: ['nft_transfer', 'nft_transfer_call', 'nft_resolve_transfer'],
   },
-}
+};
 export const PACK_PROMO_BASKETBALL = {
   mainnet: 'pack.promotional.basketball.playible.near',
   testnet: 'pack.promotional.basketball.playible.testnet',
@@ -100,7 +111,7 @@ export const PACK_PROMO_BASKETBALL = {
       'claim_promo_pack',
     ],
   },
-}
+};
 export const PLAYIBLE = {
   mainnet: 'guest-book.testnet',
   testnet: 'guest-book.mainnet',
@@ -162,8 +173,8 @@ export const ATHLETE_BASKETBALL = {
       'filtered_nft_supply_for_owner',
     ],
     changeMethods: ['addMessage'],
-  }
-}
+  },
+};
 export const ATHLETE_PROMO_BASKETBALL = {
   mainnet: 'athlete.promotional.basketball.playible.near',
   testnet: 'athlete.promotional.basketball.playible.testnet',
@@ -178,7 +189,7 @@ export const ATHLETE_PROMO_BASKETBALL = {
     ],
     changeMethods: ['addMessage'],
   },
-}
+};
 export const OPENPACK_NFL = {
   mainnet: 'open_pack.nfl.playible.near',
   testnet: 'open_pack.nfl.playible.testnet',
@@ -202,7 +213,7 @@ export const OPENPACK_BASKETBALL = {
     viewMethods: ['getMessages'],
     changeMethods: ['execute_add_athletes', 'execute_open_pack'],
   },
-}
+};
 export const OPENPACK_PROMO_BASKETBALL = {
   mainnet: 'open_pack.promotional.basketball.playible.near',
   testnet: 'open_pack.promotional.basketball.playible.testnet',
@@ -210,7 +221,7 @@ export const OPENPACK_PROMO_BASKETBALL = {
     viewMethods: ['getMessages'],
     changeMethods: ['execute_add_athletes', 'execute_open_pack'],
   },
-}
+};
 export const ORACLE = {
   mainnet: 'guest-book.testnet',
   testnet: 'guest-book.mainnet',
@@ -242,4 +253,4 @@ export const GAME_BASKETBALL = {
     viewMethods: ['get_games, get_game, get_total_games, get_player_team, get_player_lineup'],
     changeMethods: ['add_game'],
   },
-}
+};

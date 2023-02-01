@@ -12,8 +12,8 @@ async function getAthleteInfoById(item) {
     variables: { getAthleteById: parseFloat(value[0]) },
   });
   const basketball = item.token_id.includes('2000');
-  const diff = item.token_id.includes('SB') ? 1 : basketball ? 1 : 0;
-  const isPromo = item.token_id.includes('SB');
+  const diff = item.token_id.includes('SB') || item.token_id.includes('PR') ? 1 : basketball ? 1 : 0;
+  const isPromo = item.token_id.includes('SB') || item.token_id.includes('PR');
   const returningData = {
     primary_id: value[0],
     athlete_id: item.token_id,
@@ -43,8 +43,8 @@ async function getAthleteInfoByIdWithDate(item, from, to) {
     variables: { getAthleteById: parseFloat(value[0]), from: from, to: to },
   });
   const basketball = item.token_id.includes('2000');
-  const diff = item.token_id.includes('SB') ? 1 : basketball ? 1 : 0;
-  const isPromo = item.token_id.includes('SB');
+  const diff = item.token_id.includes('SB') || item.token_id.includes('PR') ? 1 : basketball ? 1 : 0;
+  const isPromo = item.token_id.includes('SB') || item.token_id.includes('PR');
   const returningData = {
     primary_id: value[0],
     athlete_id: item.token_id,
@@ -135,4 +135,11 @@ function checkInjury(injury) {
   }
 }
 
-export { convertNftToAthlete, getAthleteInfoById, getAthleteInfoByIdWithDate, getPositionDisplay, checkInjury };
+function cutAthleteName(name){
+  const slice = name.slice(0, 12);
+  const newName = slice + '...';
+
+  return newName;
+}
+
+export { convertNftToAthlete, getAthleteInfoById, getAthleteInfoByIdWithDate, getPositionDisplay, checkInjury, cutAthleteName};
