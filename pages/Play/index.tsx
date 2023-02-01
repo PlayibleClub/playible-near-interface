@@ -791,6 +791,7 @@ const Play = (props) => {
                                           startDate={data.start_time}
                                           endDate={data.end_time}
                                           img={data.game_image}
+                                          lineupLength={data.lineup_len}
                                           prizePool={data.prize_description}
                                           fetchGames={fetchGamesLoading}
                                           index={() => changeIndex(1)}

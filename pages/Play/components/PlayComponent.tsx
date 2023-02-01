@@ -22,6 +22,7 @@ const PlayComponent = (props) => {
     img,
     fetchGames,
     index,
+    lineupLength,
   } = props;
   const playicon = getImage(game_id);
   const ranking = '/images/icons/Ranking.svg';
@@ -127,6 +128,10 @@ const PlayComponent = (props) => {
               <div>
                 <div className="font-thin text-sm">GAME ID</div>
                 <div className="text-base font-monument">{game_id}</div>
+                <div className={`${type === 'NEW' ? ' ' : 'hidden'}`}>
+                  <div className="font-thin text-sm">LINEUP COUNT:</div>
+                  <div className="text-base font-monument">{lineupLength}</div>
+                </div>
               </div>
             </div>
 
@@ -174,6 +179,7 @@ PlayComponent.propTypes = {
   timeLeft: PropTypes.string.isRequired,
   type: PropTypes.string,
   startDate: PropTypes.string,
+  lineupLength: PropTypes.number.isRequired,
   endDate: PropTypes.string,
   month: PropTypes.string,
   date: PropTypes.string,
