@@ -157,7 +157,7 @@ const Games = (props) => {
 
             <div className="iphone5:ml-6 md:ml-18 ml-18 mt-4 md:mr-0 md:mb-0 iphone5:mr-6 iphone5:mb-10">
               <ModalPortfolioContainer textcolor="indigo-black" title={'LEADERBOARD'} />
-              <div className="flex justify-end md:mr-40">
+              <div className={`flex justify-end mr-13 ${playerLineups.length > 0 ? '' : 'hidden'}`}>
                 <button
                   onClick={() => {
                     setViewModal(true);
@@ -221,7 +221,7 @@ const Games = (props) => {
                     : ''}
                 </div>
                 <button
-                  className="bg-indigo-buttonblue text-indigo-white md:mt-10 w-full h-14 text-center tracking-widest text-md font-monument"
+                  className="bg-indigo-buttonblue text-indigo-white mt-4 md:mt-10 w-full h-14 text-center tracking-widest text-md font-monument"
                   onClick={() => {
                     setViewModal(false);
                   }}

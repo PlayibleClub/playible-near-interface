@@ -23,7 +23,8 @@ module.exports = {
                 '128': '32rem',
             },
             margin: {
-                '15': '60px'
+                '15': '60px',
+                '13': '54px'
             }
         },
         colors: {
