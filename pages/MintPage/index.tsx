@@ -647,7 +647,7 @@ export default function Home(props) {
           <Main color="indigo-white">
             <div className="flex-initial iphone5:mt-20 md:ml-6 md:mt-8">
               <div className="flex md:flex-row md:float-right iphone5:flex-col md:mt-0">
-                <div className="md:mr-5 md:mt-4 iphone5:mt-10">
+                {/* <div className="md:mr-5 md:mt-4 iphone5:mt-10">
                   <form>
                     <select
                       onChange={(e) => {
@@ -662,7 +662,7 @@ export default function Home(props) {
                       })}
                     </select>
                   </form>
-                </div>
+                </div> */}
               </div>
               <div className="ml-8">
                 <ModalPortfolioContainer title="MINT PACKS" textcolor="text-indigo-black" />
