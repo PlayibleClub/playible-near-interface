@@ -1121,9 +1121,12 @@ export default function Home(props) {
                         MINT BASKETBALL STARTER PACK SOON
                       </div>
                     ) : (
-                      <div className="w-9/12 flex text-center justify-center items-center bg-indigo-buttonblue font-montserrat text-indigo-white p-4 text-xs mt-8 ">
+                      <button
+                        onClick={logIn}
+                        className="w-9/12 flex text-center justify-center items-center bg-indigo-buttonblue font-montserrat text-indigo-white p-4 text-xs mt-8 "
+                      >
                         WALLET CONNECTION REQUIRED
-                      </div>
+                      </button>
                     )}
                     <p className="text-xs text-indigo-red font-bold">{balanceErrorMsg}</p>
                     {/*TODO: end */}
