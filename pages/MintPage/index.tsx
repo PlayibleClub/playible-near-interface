@@ -647,7 +647,7 @@ export default function Home(props) {
           <Main color="indigo-white">
             <div className="flex-initial iphone5:mt-20 md:ml-6 md:mt-8">
               <div className="flex md:flex-row md:float-right iphone5:flex-col md:mt-0">
-                <div className="md:mr-5 md:mt-4 iphone5:mt-10">
+                {/* <div className="md:mr-5 md:mt-4 iphone5:mt-10">
                   <form>
                     <select
                       onChange={(e) => {
@@ -662,7 +662,7 @@ export default function Home(props) {
                       })}
                     </select>
                   </form>
-                </div>
+                </div> */}
               </div>
               <div className="ml-8">
                 <ModalPortfolioContainer title="MINT PACKS" textcolor="text-indigo-black" />
@@ -1116,8 +1116,9 @@ export default function Home(props) {
                         </button>
                       )
                     ) : selector.isSignedIn() ? (
+                      //Change "MINT BASKETBALL STARTER PACK SOON" based on new sport that will be added
                       <div className="w-9/12 flex text-center justify-center items-center bg-indigo-buttonblue font-montserrat text-indigo-white p-4 text-xs mt-8 ">
-                        MINT AMERICAN FOOTBALL STARTER PACK SOON
+                        MINT BASKETBALL STARTER PACK SOON
                       </div>
                     ) : (
                       <button
