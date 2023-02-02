@@ -525,11 +525,11 @@ export default function CreateLineup(props) {
                   ''
                 )}
                 <div className={`${selectModal ? 'hidden h-0' : ''}`}>
-                  <div className="md:ml-6">
+                  <div className="md:ml-6 mt-10">
                     <PortfolioContainer title="CREATE LINEUP" textcolor="text-indigo-black" />
                   </div>
                   <div className="flex flex-col -mt-8 -mb-5">
-                    <div className="flex items-end pt-10 pb-3 ml-7">
+                    <div className="flex items-end pt-10 pb-3 ml-7 -mt-8">
                       <div className="font-monument text-xl ml-6 truncate w-40 md:w-min md:max-w-xs">
                         {teamName}
                       </div>
@@ -540,7 +540,7 @@ export default function CreateLineup(props) {
                         EDIT TEAM NAME
                       </p>
                     </div>
-                    <div className="grid grid-cols-2 gap-y-4 mt-2 mb-2 md:mb-10 md:grid-cols-4 md:ml-7 md:mt-12">
+                    <div className="grid grid-cols-4  md:gap-y-4 -mt-12 mb-2 md:mb-10 md:grid-cols-4 md:ml-7 md:mt-12 -ml-6 mr-6 md:mr-0 ">
                       {lineup.map((data, i) => {
                         console.log(lineup);
                         return (
@@ -591,7 +591,7 @@ export default function CreateLineup(props) {
                       })}
                     </div>
                   </div>
-                  <div className="flex bg-indigo-black bg-opacity-5 w-full justify-end">
+                  <div className="flex bg-indigo-black bg-opacity-5 w-full justify-end fixed bottom-0">
                     <button
                       className="bg-indigo-buttonblue text-indigo-white w-full md:w-80 h-14 text-center font-bold text-md"
                       onClick={() => setSubmitModal(true)}
