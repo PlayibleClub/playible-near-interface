@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { transactions, utils, WalletConnection, providers } from 'near-api-js';
 import { getRPCProvider, getContract } from 'utils/near';
 import BackFunction from 'components/buttons/BackFunction';
@@ -37,6 +37,8 @@ import {
 import { getSportType } from 'data/constants/sportConstants';
 import NftTypeComponent from 'pages/Portfolio/components/NftTypeComponent';
 import { getPositionDisplay } from 'utils/athlete/helper';
+import { useLazyQuery } from '@apollo/client';
+import { GET_TEAMS } from 'utils/queries';
 const AthleteSelect = (props) => {
   const { query } = props;
 
@@ -76,6 +78,8 @@ const AthleteSelect = (props) => {
   const [currPosition, setCurrPosition] = useState('');
   const [loading, setLoading] = useState(true);
   const [remountAthlete, setRemountAthlete] = useState(0);
+  const [getTeams] = useLazyQuery(GET_TEAMS);
+  const [teams, setTeams] = useState([]);
   const provider = new providers.JsonRpcProvider({
     url: getRPCProvider(),
   });
@@ -217,7 +221,12 @@ const AthleteSelect = (props) => {
     setAthleteLimit(7);
     setRemountComponent(Math.random());
   }
-
+  const query_teams = useCallback(async (currentSport) => {
+    let query = await getTeams({
+      variables: { sport: getSportType(currentSport).key.toLocaleLowerCase() },
+    });
+    setTeams(await Promise.all(query.data.getTeams));
+  }, []);
   // const handlePageClick = (e) => {
   //   let newOffset;
   //   console.log(e.selected);
@@ -356,7 +365,9 @@ const AthleteSelect = (props) => {
   //   console.log(totalAthletes);
   //   console.log(totalSoulbound);
   // }, [totalAthletes, totalSoulbound]);
-  useEffect(() => {}, [search]);
+  useEffect(() => {
+    query_teams(currentSport);
+  }, []);
 
   return (
     <Container activeName="PLAY">
@@ -366,18 +377,36 @@ const AthleteSelect = (props) => {
           title={'SELECT YOUR ' + getPositionDisplay(position, currentSport)}
           textcolor="text-indigo-black"
         />
-        <div className='grid grid-cols-2 md:grid-cols-none'>
-        <NftTypeComponent
-          onChangeFn={(selectedRegular, selectedPromo) => {
-            setSelectedRegular(selectedRegular);
-            setSelectedPromo(selectedPromo);
-            setRemountComponent(Math.random());
-          }}
-        />
+        <div className="flex flex-row-reverse mr-6 md:flex-row justify-between">
+          <form className="md:ml-7 md:mt-8">
+            <select
+              onChange={(e) => {
+                handleDropdownChange();
+                setTeam([e.target.value]);
+              }}
+              className="bg-filter-icon bg-no-repeat bg-right bg-indigo-white iphone5:w-28 w-36 md:w-42 lg:w-60
+                      ring-2 ring-offset-4 ring-indigo-black ring-opacity-25 focus:ring-2 focus:ring-indigo-black 
+                      focus:outline-none cursor-pointer text-xs md:text-base"
+            >
+              <option value="allTeams">ALL TEAMS</option>
+              {teams.map((x) => {
+                return <option value={x.key}>{x.key}</option>;
+              })}
+            </select>
+          </form>
+          <div className="">
+            <NftTypeComponent
+              onChangeFn={(selectedRegular, selectedPromo) => {
+                setSelectedRegular(selectedRegular);
+                setSelectedPromo(selectedPromo);
+                setRemountComponent(Math.random());
+              }}
+            />
+          </div>
         </div>
       </div>
 
-      <div className="h-8 flex absolute ml-3 top-32 mr-8 md:top-24 md:right-20 md:-mt-5 ">
+      <div className="h-8 flex absolute ml-6 top-32 mr-8 md:top-24 md:right-20 md:-mt-5 ">
         <SearchComponent
           onChangeFn={(search) => setName(search)}
           onSubmitFn={(search) => setName(search)}
