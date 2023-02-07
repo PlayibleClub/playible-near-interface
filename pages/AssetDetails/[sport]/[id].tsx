@@ -13,6 +13,8 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { query_nft_tokens_by_id } from 'utils/near/helper';
 import { getSportType, SPORT_TYPES } from 'data/constants/sportConstants';
+import { checkInjury } from 'utils/athlete/helper';
+import moment from 'moment';
 const AssetDetails = (props) => {
   const { query } = props;
 
@@ -26,6 +28,7 @@ const AssetDetails = (props) => {
   });
 
   const [athlete, setAthlete] = useState(null);
+  const [sortedGames, setSortedGames] = useState([]);
   const athleteImage = athlete?.image;
 
   function getDateOfGame(gameDate) {
@@ -53,7 +56,16 @@ const AssetDetails = (props) => {
       // @ts-ignore:next-line
       const result = JSON.parse(Buffer.from(data.result).toString());
       const result_two = await getAthleteInfoById(await convertNftToAthlete(result));
+      let games = result_two.stats_breakdown.slice();
+      console.log(result_two);
       setAthlete(result_two);
+      setSortedGames(
+        games
+          .filter((x) => x.type === 'weekly' || x.type === 'daily')
+          .sort((a, b) => {
+            return moment.utc(a.gameDate).unix() - moment.utc(b.gameDate).unix();
+          })
+      );
     });
   }
   useEffect(() => {
@@ -86,7 +98,9 @@ const AssetDetails = (props) => {
     });
     return totalGames;
   }
-
+  useEffect(() => {
+    console.log(sortedGames);
+  }, [sortedGames]);
   console.log(athlete?.primary_id);
 
   return (
@@ -122,14 +136,26 @@ const AssetDetails = (props) => {
             <div className="mt-10 text-m h-0 font-bold">{athlete?.name}</div>
             <div className="mt-10 text-sm grid grid-rows-2">
               <div className="">
-                <div className="relative ml-32">
-                  {athlete?.isInjured ? (
+                <div className="group relative ml-32">
+                  {/* {athlete?.isInjured ? (
                     <div className="rounded-full mt-1 bg-indigo-red w-3 h-3 absolute "></div>
                   ) : athlete?.isActive ? (
                     <div className="mt-1 rounded-full bg-indigo-green w-3 h-3  absolute"></div>
                   ) : (
                     <div className="mt-1 rounded-full bg-indigo-green w-3 h-3  absolute"></div>
-                  )}
+                  )} */}
+                  <div
+                    className={`rounded-full mt-1 w-3 h-3 absolute ${
+                      athlete?.isInjured && checkInjury(athlete?.isInjured) === 1
+                        ? 'bg-indigo-yellow'
+                        : athlete?.isInjured && checkInjury(athlete?.isInjured === 2)
+                        ? 'bg-indigo-red'
+                        : 'bg-indigo-green'
+                    }`}
+                  ></div>
+                  <span className="pointer-events-none absolute -top-7 -left-8 w-max rounded px-2 py-1 bg-indigo-gray text-indigo-white text-sm font-medium text-gray-50 shadow opacity-0 transition-opacity group-hover:opacity-100">
+                    {athlete?.isInjured !== null ? athlete?.isInjured : 'Active'}
+                  </span>
                 </div>
                 <div>FANTASY SCORE</div>
               </div>
@@ -190,9 +216,9 @@ const AssetDetails = (props) => {
             </tr>
           </thead>
           <tbody>
-            {athlete == undefined
+            {sortedGames == undefined
               ? 'LOADING GAMES....'
-              : athlete.stats_breakdown
+              : sortedGames
                   .filter(
                     (statType) =>
                       (statType.type == 'weekly' || statType.type == 'daily') &&

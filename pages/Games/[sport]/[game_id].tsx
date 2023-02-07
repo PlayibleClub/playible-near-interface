@@ -17,6 +17,7 @@ import { useDispatch } from 'react-redux';
 import { persistor } from 'redux/athlete/store';
 import { getSportType, SPORT_NAME_LOOKUP } from 'data/constants/sportConstants';
 import moment, { Moment } from 'moment';
+import Modal from 'components/modals/Modal';
 const Games = (props) => {
   const { query } = props;
   const gameId = query.game_id;
@@ -32,6 +33,7 @@ const Games = (props) => {
   const [week, setWeek] = useState(0);
   const [nflSeason, setNflSeason] = useState('');
   const [gameData, setGameData] = useState(null);
+  const [viewModal, setViewModal] = useState(false);
   const playGameImage = '/images/game.png';
   async function get_game_data(game_id) {
     setGameInfo(await query_game_data(game_id, getSportType(currentSport).gameContract));
@@ -41,25 +43,13 @@ const Games = (props) => {
   const gameStart = Object.values(gameInfo)[0] / 1000;
   console.log('nfl week: ' + week);
 
-  async function get_game_week() {
-    setWeek(await getNflWeek(gameStart));
-    setNflSeason(await getNflSeason(gameStart));
-  }
-
   async function get_all_players_lineup() {
     const startTimeFormatted = formatToUTCDate(gameData.start_time);
     const endTimeFormatted = formatToUTCDate(gameData.end_time);
     console.log('    TEST start date: ' + startTimeFormatted);
     console.log('    TEST end date: ' + endTimeFormatted);
     setPlayerLineups(
-      await query_all_players_lineup(
-        gameId,
-        week,
-        currentSport,
-        startTimeFormatted,
-        endTimeFormatted,
-        nflSeason
-      )
+      await query_all_players_lineup(gameId, currentSport, startTimeFormatted, endTimeFormatted)
     );
   }
   function getAccountScore(accountId, teamName) {
@@ -115,12 +105,6 @@ const Games = (props) => {
     }
   }, [playerLineups]);
 
-  useEffect(() => {
-    if (currentSport === SPORT_NAME_LOOKUP.football) {
-      get_game_week();
-    }
-  });
-
   return (
     <Container activeName="GAMES">
       <div className="flex flex-col w-full overflow-y-auto h-screen">
@@ -173,7 +157,25 @@ const Games = (props) => {
 
             <div className="iphone5:ml-6 md:ml-18 ml-18 mt-4 md:mr-0 md:mb-0 iphone5:mr-6 iphone5:mb-10">
               <ModalPortfolioContainer textcolor="indigo-black" title={'LEADERBOARD'} />
-              <div className="overflow-y-auto">
+              <div
+                className={`flex justify-end md:mr-13 ${playerLineups.length > 0 ? '' : 'hidden'}`}
+              >
+                <button
+                  onClick={() => {
+                    setViewModal(true);
+                  }}
+                  className="bg-indigo-black text-indigo-white text-sm font-bold py-2 px-2 relative bottom-12 "
+                >
+                  <Image
+                    className="filter invert"
+                    alt="Image of bars for leaderboard"
+                    src="/images/bars.png"
+                    width={10}
+                    height={10}
+                  />
+                </button>
+              </div>
+              <div className="relative bottom-5 overflow-y-auto">
                 {playerLineups.length > 0 ? (
                   playerLineups.slice(0, 10).map((item, index) => {
                     return (
@@ -195,6 +197,40 @@ const Games = (props) => {
                   </div>
                 )}
               </div>
+              <Modal
+                title={'EXTENDED LEADERBOARD'}
+                visible={viewModal}
+                onClose={() => {
+                  setViewModal(false);
+                }}
+              >
+                <div className="md:h-128 h-80 overflow-y-auto">
+                  {playerLineups.length > 0
+                    ? playerLineups.map((item, index) => {
+                        return (
+                          <LeaderboardComponent
+                            accountId={item.accountId}
+                            teamName={item.teamName}
+                            teamScore={item.sumScore}
+                            index={index}
+                            gameId={gameId}
+                            onClickFn={(teamName, accountId, gameId) =>
+                              handleButtonClick(teamName, accountId, gameId)
+                            }
+                          />
+                        );
+                      })
+                    : ''}
+                </div>
+                <button
+                  className="bg-indigo-buttonblue text-indigo-white mt-4 md:mt-10 w-full h-14 text-center tracking-widest text-md font-monument"
+                  onClick={() => {
+                    setViewModal(false);
+                  }}
+                >
+                  CONFIRM
+                </button>
+              </Modal>
             </div>
           </div>
         </Main>

@@ -38,7 +38,6 @@ async function query_game_data(game_id, contract) {
     .then(async (data) => {
       // @ts-ignore:next-line
       const result = JSON.parse(Buffer.from(data.result).toString());
-      console.log(result);
       return result;
     });
 }
@@ -60,14 +59,15 @@ async function query_nft_token_by_id(token_id, currentSport, start_time, end_tim
     .then(async (data) => {
       //@ts-ignore:next-line
       const result = JSON.parse(Buffer.from(data.result).toString());
-      const result_two =
-        currentSport === SPORT_NAME_LOOKUP.football
-          ? await getAthleteInfoById(await convertNftToAthlete(result))
-          : await getAthleteInfoByIdWithDate(
-              await convertNftToAthlete(result),
-              start_time,
-              end_time
-            );
+      // const result_two =
+      //   currentSport === SPORT_NAME_LOOKUP.football
+      //     ? await getAthleteInfoById(await convertNftToAthlete(result))
+      //     : await getAthleteInfoByIdWithDate(
+      //         await convertNftToAthlete(result),
+      //         start_time,
+      //         end_time
+      //       );
+      const result_two = await getAthleteInfoByIdWithDate( await convertNftToAthlete(result), start_time, end_time)
       return result_two;
     });
 }
@@ -78,7 +78,7 @@ function checkIncludedWeeks(stats) {
   }
 }
 
-async function query_all_players_lineup(game_id, week, currentSport, start_time, end_time, nflSeason) {
+async function query_all_players_lineup(game_id, currentSport, start_time, end_time,) {
   const query = JSON.stringify({
     game_id: game_id,
   });
@@ -108,7 +108,6 @@ async function query_all_players_lineup(game_id, week, currentSport, start_time,
               return query_nft_token_by_id(item, currentSport, start_time, end_time);
             })
           );
-          console.log(itemToReturn.lineup);
           itemToReturn.lineup = itemToReturn.lineup.map((lineupItem) => {
             return {
               ...lineupItem,
@@ -116,7 +115,7 @@ async function query_all_players_lineup(game_id, week, currentSport, start_time,
                 lineupItem.stats_breakdown
                   .filter(
                     (statType) =>
-                      currentSport ===  SPORT_NAME_LOOKUP.football ? statType.type == 'weekly' && statType.played == 1 && statType.week == week && statType.season == nflSeason
+                      currentSport ===  SPORT_NAME_LOOKUP.football ? statType.type == 'weekly' && statType.played == 1 //&& statType.week == week && statType.season == nflSeason
                       : currentSport === SPORT_NAME_LOOKUP.basketball ? statType.type == 'daily' && statType.played == 1 : ''
                   )
                   .reduce((accumulator, item) => {
@@ -145,7 +144,6 @@ async function query_all_players_lineup(game_id, week, currentSport, start_time,
             };
           });
 
-          console.log(itemToReturn);
           itemToReturn.sumScore = itemToReturn.lineup.reduce((accumulator, object) => {
             return accumulator + object.stats_breakdown;
           }, 0);

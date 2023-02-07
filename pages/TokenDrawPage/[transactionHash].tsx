@@ -90,11 +90,11 @@ const TokenDrawPage = (props) => {
     const txResult = queryFromNear.receipts_outcome[queryFromNear.receipts_outcome.length - 1];
     console.log(queryFromNear);
     //@ts-ignore:next-line
-    const success = JSON.parse(decode(txResult.outcome.status.SuccessValue));
+    const success = JSON.parse(decode(queryFromNear.status.SuccessValue));
     console.log(success);
     if (success) {
       //get the last transaction that holds the token_id needed
-      const txObject = queryFromNear.receipts[queryFromNear.receipts.length - 1];
+      const txObject = queryFromNear.receipts[queryFromNear.receipts.length - 3];
       //@ts-ignore:next-line
       const contract = txObject.receiver_id;
       const args = JSON.parse(decode(txObject.receipt.Action.actions[0].FunctionCall.args));

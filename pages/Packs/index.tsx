@@ -310,7 +310,9 @@ export default function Packs() {
            text-center font-bold text-xs`}
                       onClick={(e) => handleButtonClick(e)}
                     >
-                      CLAIM SOULBOUND PACK
+                      {currentSport === 'BASKETBALL'
+                        ? 'CLAIM BASKETBALL PACK'
+                        : 'CLAIM FOOTBALL PACK'}
                     </button>
                   )}
                 </div>
