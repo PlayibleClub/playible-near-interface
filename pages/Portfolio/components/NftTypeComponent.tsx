@@ -34,7 +34,7 @@ const NftTypeComponent = (props) => {
               checked={selectedPromo}
               onChange={handlePromoChange}
             />
-            Soulbound
+            Promotional
           </div>
           <div>
             <input
