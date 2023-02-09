@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@apollo/client": "^3.7.1",
+    "@aws-sdk/client-secrets-manager": "^3.266.1",
     "@babel/core": "^7.20.2",
     "@headlessui/react": "^1.7.4",
     "@heroicons/react": "^2.0.13",
