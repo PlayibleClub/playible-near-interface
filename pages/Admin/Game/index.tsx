@@ -29,7 +29,7 @@ import ReactPaginate from 'react-paginate';
 import { query_games_list, query_game_supply } from 'utils/near/helper';
 import { position } from 'utils/athlete/position';
 import ReactS3Client from 'react-aws-s3-typescript';
-import { s3Config } from 's3config';
+import secretKeys from 's3config';
 import { ErrorResponse } from '@remix-run/router';
 import { current } from '@reduxjs/toolkit';
 import { getSport } from 'redux/athlete/athleteSlice';
@@ -54,6 +54,13 @@ export default function Index(props) {
   const [prizeDescription, setPrizeDescription] = useState(null);
   const [lineupLength, setLineupLength] = useState(0);
   const [gameImage, setGameImage] = useState(null);
+  const [imageList, setImageList] = useState({});
+  const [s3config, setS3Config] = useState({
+    bucketName: '',
+    region: '',
+    accessKeyId: '',
+    secretAccessKey: '',
+  });
   const [tabs, setTabs] = useState([
     {
       name: 'GAMES',
@@ -346,9 +353,35 @@ export default function Index(props) {
       }
     }
   };
+  const listS3Image = async () => {
+    setS3Config(await secretKeys());
+    const s3 = new ReactS3Client(s3config);
+
+    try {
+      const imageS3list = await s3.listFiles();
+
+      console.log(imageS3list);
+
+      setImageList(imageS3list);
+      /*
+       * {
+       *   Response: {
+       *     message: "Objects listed succesfully",
+       *     data: {                   // List of Objects
+       *       ...                     // Meta data
+       *       Contents: []            // Array of objects in the bucket
+       *     }
+       *   }
+       * }
+       */
+    } catch (exception) {
+      alert('❌Failed to list images');
+    }
+  };
 
   const handleUpload = async () => {
-    const s3 = new ReactS3Client(s3Config);
+    setS3Config(await secretKeys());
+    const s3 = new ReactS3Client(s3config);
 
     try {
       const res = await s3.uploadFile(gameImage);
@@ -731,6 +764,7 @@ export default function Index(props) {
 
     setPositionList(list.positionList);
     setRemountDropdown(Math.random());
+    console.log('test2', secretKeys());
   }, [totalGames, currentSport]);
   useEffect(() => {
     currentTotal !== 0 ? setPageCount(Math.ceil(currentTotal / gamesLimit)) : setPageCount(1);
