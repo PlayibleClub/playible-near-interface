@@ -7,8 +7,14 @@ import { SecretsManagerClient, GetSecretValueCommand } from '@aws-sdk/client-sec
 async function secretKeys() {
   const secret_name = 'playible-game-image/key';
 
+  const credentials = {};
+
   const client = new SecretsManagerClient({
     region: 'ap-southeast-1',
+    credentials: {
+      accessKeyId: process.env.AWS_ACCESS_KEY,
+      secretAccessKey: process.env.AWS_SECRET_KEY,
+    },
   });
 
   let response;
@@ -23,9 +29,10 @@ async function secretKeys() {
   } catch (error) {
     // For a list of exceptions thrown, see
     // https://docs.aws.amazon.com/secretsmanager/latest/apireference/API_GetSecretValue.html
+    console.log(error);
     throw error;
   }
-  const secret = response.SecretString;
+  const secret = JSON.parse(response.SecretString);
 
   const s3Config = {
     bucketName: 'playible-game-image',
@@ -34,7 +41,7 @@ async function secretKeys() {
     secretAccessKey: secret.SECRET_S3_KEY,
   };
 
-  return await s3Config;
+  return s3Config;
 }
 // Your code goes here
 

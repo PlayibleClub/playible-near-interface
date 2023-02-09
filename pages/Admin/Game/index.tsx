@@ -405,6 +405,7 @@ export default function Index(props) {
        * }
        */
     } catch (exception) {
+      console.log(exception);
       alert('❌Failed to upload image');
     }
   };
@@ -764,8 +765,20 @@ export default function Index(props) {
 
     setPositionList(list.positionList);
     setRemountDropdown(Math.random());
-    console.log('test2', secretKeys());
   }, [totalGames, currentSport]);
+
+  useEffect(() => {
+    const getSecretKeys = async () => {
+      return await secretKeys();
+    };
+
+    getSecretKeys()
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => console.log(error));
+  });
+
   useEffect(() => {
     currentTotal !== 0 ? setPageCount(Math.ceil(currentTotal / gamesLimit)) : setPageCount(1);
   }, [currentTotal]);
