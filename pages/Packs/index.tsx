@@ -66,7 +66,7 @@ export default function Packs() {
       isActive: true,
     },
     {
-      name: 'SOULBOUND',
+      name: 'PROMOTIONAL',
       isActive: false,
     },
   ]);

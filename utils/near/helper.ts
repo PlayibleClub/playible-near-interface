@@ -46,11 +46,12 @@ async function query_nft_token_by_id(token_id, currentSport, start_time, end_tim
   const query = JSON.stringify({
     token_id: token_id,
   });
+  console.log(token_id);
   return provider
     .query({
       request_type: 'call_function',
       finality: 'optimistic',
-      account_id: token_id.includes('SB')
+      account_id: token_id.includes('SB') || token_id.includes('PR')
         ? getSportType(currentSport).promoContract
         : getSportType(currentSport).regContract,
       method_name: 'nft_token_by_id',
@@ -58,6 +59,7 @@ async function query_nft_token_by_id(token_id, currentSport, start_time, end_tim
     })
     .then(async (data) => {
       //@ts-ignore:next-line
+      
       const result = JSON.parse(Buffer.from(data.result).toString());
       // const result_two =
       //   currentSport === SPORT_NAME_LOOKUP.football

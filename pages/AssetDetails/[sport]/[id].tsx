@@ -20,7 +20,7 @@ const AssetDetails = (props) => {
 
   const athleteIndex = query.id;
   const currentSport = query.sport.toString().toUpperCase();
-  const isSoulbound = athleteIndex.includes('SB') ? true : false;
+  const isSoulbound = athleteIndex.includes('SB') || athleteIndex.includes('PR') ? true : false;
   const { accountId } = useWalletSelector();
 
   const provider = new providers.JsonRpcProvider({

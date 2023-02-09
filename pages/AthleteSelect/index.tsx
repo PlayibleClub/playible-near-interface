@@ -113,7 +113,11 @@ const AthleteSelect = (props) => {
     passedLineup.splice(index, 1, {
       position: position,
       isAthlete: true,
-      isPromo: athletes[radioIndex].athlete_id.includes('SB') ? true : false,
+      isPromo:
+        athletes[radioIndex].athlete_id.includes('SB') ||
+        athletes[radioIndex].athlete_id.includes('PR')
+          ? true
+          : false,
       athlete: athletes[radioIndex],
     });
     setLineup(passedLineup);
