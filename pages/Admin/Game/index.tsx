@@ -354,7 +354,6 @@ export default function Index(props) {
     }
   };
   const listS3Image = async () => {
-    setS3Config(await secretKeys());
     const s3 = new ReactS3Client(s3config);
 
     try {
@@ -380,7 +379,6 @@ export default function Index(props) {
   };
 
   const handleUpload = async () => {
-    setS3Config(await secretKeys());
     const s3 = new ReactS3Client(s3config);
 
     try {
@@ -774,10 +772,10 @@ export default function Index(props) {
 
     getSecretKeys()
       .then((data) => {
-        console.log(data);
+        setS3Config(data);
       })
       .catch((error) => console.log(error));
-  });
+  }, [totalGames, currentSport]);
 
   useEffect(() => {
     currentTotal !== 0 ? setPageCount(Math.ceil(currentTotal / gamesLimit)) : setPageCount(1);
