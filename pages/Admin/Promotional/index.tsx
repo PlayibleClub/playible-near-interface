@@ -18,12 +18,11 @@ export default function Promotional(props) {
   const [detailsNBA, setDetailsNBA] = useState({
     description: '',
   });
-
-  async function execute_send_type_1_pack(selector, contract) {
+  async function execute_send_type_1_pack(selector) {
     const transferArgs = Buffer.from(
       JSON.stringify({
         msg: 'Promotional pack',
-        receiver_id:whitelistInfoNFL,
+        receiver_id:currentSport === 'FOOTBALL' ? whitelistInfoNFL?.toString() : whitelistInfoNBA?.toString(),
       })
     );
   
@@ -44,7 +43,7 @@ export default function Promotional(props) {
     const tx = wallet.signAndSendTransactions({
       transactions: [
         {
-          receiverId: contract,
+          receiverId: getSportType(currentSport).packPromoContract,
           //@ts-ignore:next-line
           actions: [action_transfer_call],
         },
@@ -92,13 +91,11 @@ export default function Promotional(props) {
 
   const handleButtonClick = (e) => {
     e.preventDefault();
-    execute_send_type_1_pack(selector, getSportType(currentSport).packPromoContract);
+    execute_send_type_1_pack(selector);
   };
 
   console.log(whitelistInfoNFL);
   console.log(whitelistInfoNBA);
-
-  console.log(currentSport)
 
   return (
     <Container>
@@ -112,7 +109,7 @@ export default function Promotional(props) {
           name="description"
           // type="text"
           placeholder="Enter accounts to whitelist. One account per line. Leave empty for no whitelist."
-          onChange={(e) => onChangeWhitelistNFL(e)}
+          onChange={(e) => {setCurrentSport('FOOTBALL'), onChangeWhitelistNFL(e)}}
           value={detailsNFL.description}
           style={{
             minHeight: '120px',
@@ -121,7 +118,7 @@ export default function Promotional(props) {
         <div className="  mt-6">
           <button
             className=" flex text-center justify-center items-center iphone5:w-64 bg-indigo-buttonblue font-montserrat text-indigo-white p-3 mb-4 md:mr-4 text-xs "
-            onClick={(e) => {handleButtonClick(e), setCurrentSport('FOOTBALL')}}
+            onClick={(e) => handleButtonClick(e)}
             >
             Send
           </button>
@@ -137,7 +134,7 @@ export default function Promotional(props) {
           name="description"
           // type="text"
           placeholder="Enter accounts to whitelist. One account per line. Leave empty for no whitelist."
-          onChange={(e) => onChangeWhitelistNBA(e)}
+          onChange={(e) => {setCurrentSport('BASKETBALL'), onChangeWhitelistNBA(e)}}
           value={detailsNBA.description}
           style={{
             minHeight: '120px',
@@ -146,7 +143,7 @@ export default function Promotional(props) {
         <div className="  mt-6">
           <button
             className=" flex text-center justify-center items-center iphone5:w-64 bg-indigo-buttonblue font-montserrat text-indigo-white p-3 mb-4 md:mr-4 text-xs "
-              onClick={(e) => {handleButtonClick(e), setCurrentSport('BASKETBALL')}}
+              onClick={(e) => handleButtonClick(e)}
           >
             Send
           </button>
