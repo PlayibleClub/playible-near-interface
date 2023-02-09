@@ -228,7 +228,7 @@ const Games = (props) => {
                     setViewModal(false);
                   }}
                 >
-                  CONFIRM
+                  CLOSE
                 </button>
               </Modal>
             </div>
