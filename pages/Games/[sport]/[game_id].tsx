@@ -9,7 +9,12 @@ import { useRouter } from 'next/router';
 import Main from 'components/Main';
 import LeaderboardComponent from '../components/LeaderboardComponent';
 import ViewTeamsContainer from 'components/containers/ViewTeamsContainer';
-import { query_game_data, query_all_players_lineup, query_player_teams } from 'utils/near/helper';
+import {
+  query_game_data,
+  query_all_players_lineup,
+  query_all_players_lineup_chunk,
+  query_player_teams,
+} from 'utils/near/helper';
 import { getNflWeek, getNflSeason, formatToUTCDate } from 'utils/date/helper';
 import LoadingPageDark from 'components/loading/LoadingPageDark';
 import { setTeamName, setAccountId, setGameId, setSport2 } from 'redux/athlete/teamSlice';
@@ -43,14 +48,34 @@ const Games = (props) => {
   const gameStart = Object.values(gameInfo)[0] / 1000;
   console.log('nfl week: ' + week);
 
-  async function get_all_players_lineup() {
+  async function get_all_players_lineup(joined_team_counter) {
     const startTimeFormatted = formatToUTCDate(gameData.start_time);
     const endTimeFormatted = formatToUTCDate(gameData.end_time);
     console.log('    TEST start date: ' + startTimeFormatted);
     console.log('    TEST end date: ' + endTimeFormatted);
-    setPlayerLineups(
-      await query_all_players_lineup(gameId, currentSport, startTimeFormatted, endTimeFormatted)
-    );
+    let loopCount = Math.ceil(joined_team_counter / 50);
+    console.log('Loop count: ' + loopCount);
+    let playerLineup = [];
+    for (let i = 0; i < loopCount; i++) {
+      await query_all_players_lineup_chunk(
+        gameId,
+        currentSport,
+        startTimeFormatted,
+        endTimeFormatted,
+        i * 50,
+        50
+      ).then(async (result) => {
+        if (playerLineup.length === 0) {
+          playerLineup = result;
+        } else {
+          playerLineup.concat(result);
+        }
+      });
+    }
+    setPlayerLineups(playerLineup);
+    // setPlayerLineups(
+    //   await query_all_players_lineup(gameId, currentSport, startTimeFormatted, endTimeFormatted)
+    // );
   }
   function getAccountScore(accountId, teamName) {
     const x = playerLineups.findIndex((x) => x.accountId === accountId && x.teamName === teamName);
@@ -72,7 +97,7 @@ const Games = (props) => {
       );
     }
   }
-
+  async function get_total_joined(game_id) {}
   async function get_player_teams(account, game_id) {
     setPlayerTeams(
       await query_player_teams(account, game_id, getSportType(currentSport).gameContract)
@@ -88,8 +113,10 @@ const Games = (props) => {
   };
   useEffect(() => {
     if (gameData !== undefined && gameData !== null) {
+      console.log('Joined team counter: ' + gameData.joined_team_counter);
       get_player_teams(accountId, gameId);
-      get_all_players_lineup();
+
+      get_all_players_lineup(gameData.joined_team_counter);
     }
   }, [gameData]);
 
