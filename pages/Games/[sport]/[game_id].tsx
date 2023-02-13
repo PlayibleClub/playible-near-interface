@@ -53,18 +53,18 @@ const Games = (props) => {
     const endTimeFormatted = formatToUTCDate(gameData.end_time);
     console.log('    TEST start date: ' + startTimeFormatted);
     console.log('    TEST end date: ' + endTimeFormatted);
-    let loopCount = Math.ceil(joined_team_counter / 10);
+    let loopCount = Math.ceil(joined_team_counter / 1);
     console.log('Loop count: ' + loopCount);
     let playerLineup = [];
-    for (let i = 0; i < loopCount; i++) {
+    for (let i = 0; i < joined_team_counter; i++) {
       console.log(playerLineup);
       await query_all_players_lineup_chunk(
         gameId,
         currentSport,
         startTimeFormatted,
         endTimeFormatted,
-        i * 10,
-        10
+        i,
+        1
       ).then(async (result) => {
         if (playerLineup.length === 0) {
           playerLineup = result;
