@@ -46,7 +46,7 @@ async function query_nft_token_by_id(token_id, currentSport, start_time, end_tim
   const query = JSON.stringify({
     token_id: token_id,
   });
-  console.log(token_id);
+  // console.log(token_id);
   return provider
     .query({
       request_type: 'call_function',
@@ -121,14 +121,14 @@ async function query_all_players_lineup(game_id, currentSport, start_time, end_t
                       : currentSport === SPORT_NAME_LOOKUP.basketball ? statType.type == 'daily' && statType.played == 1 : ''
                   )
                   .reduce((accumulator, item) => {
-                    console.log(
-                          'fs ' +
-                            item.fantasyScore +
-                            ' from ' +
-                            lineupItem.name +
-                            ' w/ date ' +
-                            item.gameDate
-                        );
+                    // console.log(
+                    //       'fs ' +
+                    //         item.fantasyScore +
+                    //         ' from ' +
+                    //         lineupItem.name +
+                    //         ' w/ date ' +
+                    //         item.gameDate
+                    //     );
                     return accumulator + item.fantasyScore;
                   }, 0) || 0,
                   // .map((item) => {
@@ -171,7 +171,8 @@ async function query_all_players_lineup_chunk(game_id, currentSport, start_time,
     from_index: offset,
     limit: limit,
   })
-
+  // console.log("Offset: " + offset);
+  // console.log("Limit: " + limit);
   return await provider.query({
     request_type: 'call_function',
     finality: 'optimistic',
@@ -243,10 +244,9 @@ async function query_all_players_lineup_chunk(game_id, currentSport, start_time,
       })
     );
 
-    arrayToReturn.sort(function (a, b) {
-      return b.sumScore - a.sumScore;
-    });
-    console.log(arrayToReturn);
+    // arrayToReturn.sort(function (a, b) {
+    //   return b.sumScore - a.sumScore;
+    // });
     return arrayToReturn;
   })
 }
