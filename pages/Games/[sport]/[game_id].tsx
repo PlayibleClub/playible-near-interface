@@ -141,7 +141,7 @@ const Games = (props) => {
       .then(async (data) => {
         //@ts-ignore:next-line
         const result = JSON.parse(Buffer.from(data.result).toString());
-        console.log(result);
+        //console.log(result);
         return result;
       });
   }
