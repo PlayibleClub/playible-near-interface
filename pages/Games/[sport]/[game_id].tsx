@@ -90,7 +90,7 @@ const Games = (props) => {
   //   //   await query_all_players_lineup(gameId, currentSport, startTimeFormatted, endTimeFormatted)
   //   // );
   // }
-  async function get_all_players_lineup_with_index(joined_team_counter) {
+  async function get_all_players_lineup_with_index() {
     const startTimeFormatted = formatToUTCDate(gameData.start_time);
     const endTimeFormatted = formatToUTCDate(gameData.end_time);
     console.log('    TEST start date: ' + startTimeFormatted);
@@ -98,18 +98,9 @@ const Games = (props) => {
 
     await get_all_player_keys().then(async (result) => {
       let filteredResult = result.filter((data) => data[1] === gameId);
-      console.log(filteredResult);
+      //console.log(filteredResult);
       let lineups = [];
-      // filteredResult.forEach(async (entry) => {
-      //   await query_player_lineup(currentSport, entry[0], entry[1], entry[2]).then((lineup) => {
-      //     //console.log(lineup);
-      //     if (lineups.length === 0) {
-      //       lineups = lineup;
-      //     } else {
-      //       lineups = lineups.concat(lineup);
-      //     }
-      //   });
-      // });
+
       for (const entry of filteredResult) {
         await query_player_lineup(currentSport, entry[0], entry[1], entry[2]).then((lineup) => {
           if (lineups.length === 0) {
@@ -119,16 +110,12 @@ const Games = (props) => {
           }
         });
       }
-      console.log(lineups);
       let computedLineup = await compute_scores(
         lineups,
         currentSport,
         startTimeFormatted,
         endTimeFormatted
       );
-      computedLineup.sort(function (a, b) {
-        return b.sumScore - a.sumScore;
-      });
       setPlayerLineups(computedLineup);
     });
   }
@@ -187,7 +174,7 @@ const Games = (props) => {
     if (gameData !== undefined && gameData !== null) {
       console.log('Joined team counter: ' + gameData.joined_team_counter);
       get_player_teams(accountId, gameId);
-      get_all_players_lineup_with_index(gameData.joined_team_counter);
+      get_all_players_lineup_with_index();
       //get_all_players_lineup_rposition(gameData.joined_team_counter);
     }
   }, [gameData]);
