@@ -54,7 +54,7 @@ export default function Index(props) {
   const [prizeDescription, setPrizeDescription] = useState(null);
   const [lineupLength, setLineupLength] = useState(0);
   const [gameImage, setGameImage] = useState(null);
-  const [imageList, setImageList] = useState({});
+  const [imageList, setImageList] = useState([]);
   const [s3config, setS3Config] = useState({
     bucketName: '',
     region: '',
@@ -141,6 +141,7 @@ export default function Index(props) {
   const [endLoading, setEndLoading] = useState(false);
   const [confirmModal, setConfirmModal] = useState(false);
   const [endModal, setEndModal] = useState(false);
+  const [imageModal, setImageModal] = useState(false);
   const [msg, setMsg] = useState({
     title: '',
     content: '',
@@ -353,15 +354,24 @@ export default function Index(props) {
       }
     }
   };
+
+  const displayImageModal = async () => {
+    setImageList(await listS3Image());
+    if (imageList !== undefined || imageList !== null) {
+      setImageModal(true);
+    } else {
+      alert('❌Task Failed Successfully');
+    }
+  };
   const listS3Image = async () => {
     const s3 = new ReactS3Client(s3config);
 
     try {
       const imageS3list = await s3.listFiles();
 
-      console.log(imageS3list);
+      console.log(imageS3list.data.Contents);
 
-      setImageList(imageS3list);
+      return imageS3list.data.Contents;
       /*
        * {
        *   Response: {
@@ -1092,6 +1102,15 @@ export default function Index(props) {
                       >
                         UPLOAD GAME IMAGE
                       </button>
+
+                      <button
+                        className="mt-5 bg-indigo-buttonblue h-10 text-indigo-white"
+                        id="image"
+                        name="image"
+                        onClick={displayImageModal}
+                      >
+                        SELECT IMAGE FROM BUCKET
+                      </button>
                     </div>
                   </div>
 
@@ -1280,6 +1299,25 @@ export default function Index(props) {
         <button
           className="bg-red-pastel font-monument tracking-widest text-indigo-white w-full h-16 text-center text-sm mt-4"
           onClick={() => setEndModal(false)}
+        >
+          CANCEL
+        </button>
+      </BaseModal>
+      <BaseModal title={'SELECT IMAGE'} visible={imageModal} onClose={() => setImageModal(false)}>
+        <div className="mt-4 gap-x-6 gap-y-12 grid grid-cols-0 md:grid-cols-2 md:h-128 h-80 overflow-y-auto">
+          {imageList !== undefined || imageList !== null
+            ? imageList?.map((data, i) => {
+                return (
+                  <div className="mt-4">
+                    <img src={data.publicUrl}></img>
+                  </div>
+                );
+              })
+            : ''}
+        </div>
+        <button
+          className="bg-red-pastel font-monument tracking-widest text-indigo-white w-full h-16 text-center text-sm mt-4"
+          onClick={() => setImageModal(false)}
         >
           CANCEL
         </button>
