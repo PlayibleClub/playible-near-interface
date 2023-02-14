@@ -228,6 +228,9 @@ async function compute_scores(result, currentSport, start_time, end_time){
       return itemToReturn;
     })
   );
+  arrayToReturn.sort(function (a, b) {
+    return b.sumScore - a.sumScore;
+  });
   return arrayToReturn;
 }
 
