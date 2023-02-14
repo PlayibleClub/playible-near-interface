@@ -48,9 +48,6 @@ const Games = (props) => {
     setGameData(await query_game_data(game_id, getSportType(currentSport).gameContract));
   }
 
-  const gameStart = Object.values(gameInfo)[0] / 1000;
-  console.log('nfl week: ' + week);
-
   // async function get_all_players_lineup_chunks(joined_team_counter) {
   //   const startTimeFormatted = formatToUTCDate(gameData.start_time);
   //   const endTimeFormatted = formatToUTCDate(gameData.end_time);
@@ -93,8 +90,8 @@ const Games = (props) => {
   async function get_all_players_lineup_with_index() {
     const startTimeFormatted = formatToUTCDate(gameData.start_time);
     const endTimeFormatted = formatToUTCDate(gameData.end_time);
-    console.log('    TEST start date: ' + startTimeFormatted);
-    console.log('    TEST end date: ' + endTimeFormatted);
+    // console.log('    TEST start date: ' + startTimeFormatted);
+    // console.log('    TEST end date: ' + endTimeFormatted);
 
     await get_all_player_keys().then(async (result) => {
       let filteredResult = result.filter((data) => data[1] === gameId);
@@ -147,7 +144,7 @@ const Games = (props) => {
   }
   function sortPlayerTeamScores(accountId) {
     const x = playerLineups.filter((x) => x.accountId === accountId);
-    console.log(x);
+    // console.log(x);
     if (x !== undefined) {
       setPlayerTeamSorted(
         x.sort(function (a, b) {
@@ -172,7 +169,7 @@ const Games = (props) => {
   };
   useEffect(() => {
     if (gameData !== undefined && gameData !== null) {
-      console.log('Joined team counter: ' + gameData.joined_team_counter);
+      // console.log('Joined team counter: ' + gameData.joined_team_counter);
       get_player_teams(accountId, gameId);
       get_all_players_lineup_with_index();
       //get_all_players_lineup_rposition(gameData.joined_team_counter);

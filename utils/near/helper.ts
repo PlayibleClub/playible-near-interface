@@ -192,14 +192,14 @@ async function compute_scores(result, currentSport, start_time, end_time){
                   : currentSport === SPORT_NAME_LOOKUP.basketball ? statType.type == 'daily' && statType.played == 1 : ''
               )
               .reduce((accumulator, item) => {
-                console.log(
-                      'fs ' +
-                        item.fantasyScore +
-                        ' from ' +
-                        lineupItem.name +
-                        ' w/ date ' +
-                        item.gameDate
-                    );
+                // console.log(
+                //       'fs ' +
+                //         item.fantasyScore +
+                //         ' from ' +
+                //         lineupItem.name +
+                //         ' w/ date ' +
+                //         item.gameDate
+                //     );
                 return accumulator + item.fantasyScore;
               }, 0) || 0,
               // .map((item) => {
