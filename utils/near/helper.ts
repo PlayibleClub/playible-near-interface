@@ -230,93 +230,29 @@ async function compute_scores(result, currentSport, start_time, end_time){
   );
   return arrayToReturn;
 }
-async function query_all_players_lineup_chunk(game_id, currentSport, start_time, end_time, offset, limit){
+
+async function query_player_lineup(currentSport, account_id, game_id, team_id){
   const query = JSON.stringify({
+    account: account_id,
     game_id: game_id,
-    from_index: offset,
-    limit: limit,
-  })
-  // console.log("Offset: " + offset);
-  // console.log("Limit: " + limit);
+    team_id: team_id,
+  });
   return await provider.query({
     request_type: 'call_function',
     finality: 'optimistic',
     account_id: getSportType(currentSport).gameContract,
-    method_name: 'get_all_players_lineup_chunk',
-    args_base64: Buffer.from(query).toString('base64'),
-  }).then(async (data) => {
-    // @ts-ignore:next-line
+    method_name: 'get_player_lineup',
+    args_base64: Buffer.from(query).toString('base64')
+  }).then( async (data) => {
+    //@ts-ignore:next-line
     const result = JSON.parse(Buffer.from(data.result).toString());
-    return result;
-    // const arrayToReturn = await Promise.all(
-    //   result.map(async (item) => {
-    //     let itemToReturn = {
-    //       accountId: item[0][0],
-    //       teamName: item[0][2],
-    //       lineup: item[1].lineup,
-    //       sumScore: 0,
-    //     };
-
-    //     itemToReturn.lineup = await Promise.all(
-    //       itemToReturn.lineup.map((item) => {
-    //         return query_nft_token_by_id(item, currentSport, start_time, end_time);
-    //       })
-    //     );
-    //     itemToReturn.lineup = itemToReturn.lineup.map((lineupItem) => {
-    //       return {
-    //         ...lineupItem,
-    //         stats_breakdown:
-    //           lineupItem.stats_breakdown
-    //             .filter(
-    //               (statType) =>
-    //                 currentSport ===  SPORT_NAME_LOOKUP.football ? statType.type == 'weekly' && statType.played == 1 //&& statType.week == week && statType.season == nflSeason
-    //                 : currentSport === SPORT_NAME_LOOKUP.basketball ? statType.type == 'daily' && statType.played == 1 : ''
-    //             )
-    //             .reduce((accumulator, item) => {
-    //               console.log(
-    //                     'fs ' +
-    //                       item.fantasyScore +
-    //                       ' from ' +
-    //                       lineupItem.name +
-    //                       ' w/ date ' +
-    //                       item.gameDate
-    //                   );
-    //               return accumulator + item.fantasyScore;
-    //             }, 0) || 0,
-    //             // .map((item) => {
-    //             //   console.log(
-    //             //     'fs ' +
-    //             //       item.fantasyScore +
-    //             //       ' from ' +
-    //             //       lineupItem.name +
-    //             //       ' w/ date ' +
-    //             //       item.gameDate
-    //             //   );
-    //             //   console.log('playible start: ' + start_time);
-    //             //   return item.fantasyScore;
-    //             // })[0] || 0,
-    //       };
-    //     });
-
-    //     itemToReturn.sumScore = itemToReturn.lineup.reduce((accumulator, object) => {
-    //       return accumulator + object.stats_breakdown;
-    //     }, 0);
-    //     // itemToReturn.sumScore = itemToReturn.lineup.reduce((accumulator, object) => {
-    //     //   return accumulator + object.stats_breakdown.reduce((accumulator, object) => {
-    //     //     return accumulator + object;
-    //     //   }, 0)
-    //     // }, 0);
-    //     return itemToReturn;
-    //   })
-    // );
-
-    // // arrayToReturn.sort(function (a, b) {
-    // //   return b.sumScore - a.sumScore;
-    // // });
-    // return arrayToReturn;
+    //console.log(result);
+    const arrayToReturn = [[account_id, game_id, team_id], {...result}]
+    //console.log(arrayToReturn);
+    return arrayToReturn;
   })
-}
 
+}
 async function query_all_players_lineup_rposition(game_id, currentSport, start_time, end_time, joined_team_counter){
   const query = JSON.stringify({ game_id: game_id});
   //console.log(getSportType(currentSport).gameContract);
@@ -344,7 +280,7 @@ async function query_all_players_lineup_rposition(game_id, currentSport, start_t
       }).then((x) => {
         //@ts-ignore:next-line
         const lineup = JSON.parse(Buffer.from(x.result));
-        //console.log(lineup);
+        console.log(lineup);
         return lineup;
       })
     }
@@ -622,7 +558,7 @@ async function execute_claim_soulbound_pack(selector, contract) {
 export {
   query_game_data,
   query_all_players_lineup,
-  query_all_players_lineup_chunk,
+  query_player_lineup,
   query_all_players_lineup_rposition,
   query_nft_tokens_by_id,
   query_filter_supply_for_owner,

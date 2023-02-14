@@ -12,10 +12,9 @@ import LeaderboardComponent from '../components/LeaderboardComponent';
 import ViewTeamsContainer from 'components/containers/ViewTeamsContainer';
 import {
   query_game_data,
-  query_all_players_lineup,
-  query_all_players_lineup_chunk,
   query_all_players_lineup_rposition,
   query_player_teams,
+  query_player_lineup,
   compute_scores,
 } from 'utils/near/helper';
 import { getNflWeek, getNflSeason, formatToUTCDate } from 'utils/date/helper';
@@ -52,73 +51,86 @@ const Games = (props) => {
   const gameStart = Object.values(gameInfo)[0] / 1000;
   console.log('nfl week: ' + week);
 
-  async function get_all_players_lineup_chunks(joined_team_counter) {
+  // async function get_all_players_lineup_chunks(joined_team_counter) {
+  //   const startTimeFormatted = formatToUTCDate(gameData.start_time);
+  //   const endTimeFormatted = formatToUTCDate(gameData.end_time);
+  //   console.log('    TEST start date: ' + startTimeFormatted);
+  //   console.log('    TEST end date: ' + endTimeFormatted);
+  //   let loopCount = Math.ceil(joined_team_counter / 1);
+  //   console.log('Loop count: ' + loopCount);
+  //   let playerLineup = [];
+  //   for (let i = 0; i < joined_team_counter; i++) {
+  //     console.log(playerLineup);
+  //     await query_all_players_lineup_chunk(
+  //       gameId,
+  //       currentSport,
+  //       startTimeFormatted,
+  //       endTimeFormatted,
+  //       i,
+  //       1
+  //     ).then(async (result) => {
+  //       if (playerLineup.length === 0) {
+  //         playerLineup = result;
+  //       } else {
+  //         playerLineup = playerLineup.concat(result);
+  //       }
+  //     });
+  //   }
+  //   let computedLineup = await compute_scores(
+  //     playerLineup,
+  //     currentSport,
+  //     startTimeFormatted,
+  //     endTimeFormatted
+  //   );
+  //   computedLineup.sort(function (a, b) {
+  //     return b.sumScore - a.sumScore;
+  //   });
+  //   setPlayerLineups(computedLineup);
+  //   // setPlayerLineups(
+  //   //   await query_all_players_lineup(gameId, currentSport, startTimeFormatted, endTimeFormatted)
+  //   // );
+  // }
+  async function get_all_players_lineup_with_index(joined_team_counter) {
     const startTimeFormatted = formatToUTCDate(gameData.start_time);
     const endTimeFormatted = formatToUTCDate(gameData.end_time);
     console.log('    TEST start date: ' + startTimeFormatted);
     console.log('    TEST end date: ' + endTimeFormatted);
-    let loopCount = Math.ceil(joined_team_counter / 1);
-    console.log('Loop count: ' + loopCount);
-    let playerLineup = [];
-    for (let i = 0; i < joined_team_counter; i++) {
-      console.log(playerLineup);
-      await query_all_players_lineup_chunk(
-        gameId,
-        currentSport,
-        startTimeFormatted,
-        endTimeFormatted,
-        i,
-        1
-      ).then(async (result) => {
-        if (playerLineup.length === 0) {
-          playerLineup = result;
-        } else {
-          playerLineup = playerLineup.concat(result);
-        }
-      });
-    }
-    let computedLineup = await compute_scores(
-      playerLineup,
-      currentSport,
-      startTimeFormatted,
-      endTimeFormatted
-    );
-    computedLineup.sort(function (a, b) {
-      return b.sumScore - a.sumScore;
-    });
-    setPlayerLineups(computedLineup);
-    // setPlayerLineups(
-    //   await query_all_players_lineup(gameId, currentSport, startTimeFormatted, endTimeFormatted)
-    // );
-  }
 
-  async function get_all_players_lineup_rposition(joined_team_counter) {
-    const startTimeFormatted = formatToUTCDate(gameData.start_time);
-    const endTimeFormatted = formatToUTCDate(gameData.end_time);
-    console.log('    TEST start date: ' + startTimeFormatted);
-    console.log('    TEST end date: ' + endTimeFormatted);
-    if (joined_team_counter !== 0) {
-      await query_all_players_lineup_rposition(
-        gameId,
-        currentSport,
-        startTimeFormatted,
-        endTimeFormatted,
-        joined_team_counter
-      ).then(async (result) => {
-        console.log(result);
-        let lineup = await compute_scores(
-          result,
-          currentSport,
-          startTimeFormatted,
-          endTimeFormatted
-        );
-
-        lineup.sort(function (a, b) {
-          return b.sumScore - a.sumScore;
+    await get_all_player_keys().then(async (result) => {
+      let filteredResult = result.filter((data) => data[1] === gameId);
+      console.log(filteredResult);
+      let lineups = [];
+      // filteredResult.forEach(async (entry) => {
+      //   await query_player_lineup(currentSport, entry[0], entry[1], entry[2]).then((lineup) => {
+      //     //console.log(lineup);
+      //     if (lineups.length === 0) {
+      //       lineups = lineup;
+      //     } else {
+      //       lineups = lineups.concat(lineup);
+      //     }
+      //   });
+      // });
+      for (const entry of filteredResult) {
+        await query_player_lineup(currentSport, entry[0], entry[1], entry[2]).then((lineup) => {
+          if (lineups.length === 0) {
+            lineups = [lineup];
+          } else {
+            lineups = lineups.concat([lineup]);
+          }
         });
-        setPlayerLineups(lineup);
+      }
+      console.log(lineups);
+      let computedLineup = await compute_scores(
+        lineups,
+        currentSport,
+        startTimeFormatted,
+        endTimeFormatted
+      );
+      computedLineup.sort(function (a, b) {
+        return b.sumScore - a.sumScore;
       });
-    }
+      setPlayerLineups(computedLineup);
+    });
   }
 
   function getAccountScore(accountId, teamName) {
@@ -129,9 +141,9 @@ const Games = (props) => {
   function getAccountPlacement(accountId, teamName) {
     return playerLineups.findIndex((x) => x.accountId === accountId && x.teamName === teamName) + 1;
   }
-  async function getAllPlayerKeys() {
+  async function get_all_player_keys() {
     const query = JSON.stringify({});
-    await provider
+    return await provider
       .query({
         request_type: 'call_function',
         finality: 'optimistic',
@@ -143,6 +155,7 @@ const Games = (props) => {
         //@ts-ignore:next-line
         const result = JSON.parse(Buffer.from(data.result).toString());
         console.log(result);
+        return result;
       });
   }
   function sortPlayerTeamScores(accountId) {
@@ -174,8 +187,8 @@ const Games = (props) => {
     if (gameData !== undefined && gameData !== null) {
       console.log('Joined team counter: ' + gameData.joined_team_counter);
       get_player_teams(accountId, gameId);
-      //getAllPlayerKeys();
-      get_all_players_lineup_rposition(gameData.joined_team_counter);
+      get_all_players_lineup_with_index(gameData.joined_team_counter);
+      //get_all_players_lineup_rposition(gameData.joined_team_counter);
     }
   }, [gameData]);
 
