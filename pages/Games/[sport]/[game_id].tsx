@@ -7,13 +7,16 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import Main from 'components/Main';
+import { getRPCProvider } from 'utils/near';
 import LeaderboardComponent from '../components/LeaderboardComponent';
 import ViewTeamsContainer from 'components/containers/ViewTeamsContainer';
 import {
   query_game_data,
   query_all_players_lineup,
   query_all_players_lineup_chunk,
+  query_all_players_lineup_rposition,
   query_player_teams,
+  compute_scores,
 } from 'utils/near/helper';
 import { getNflWeek, getNflSeason, formatToUTCDate } from 'utils/date/helper';
 import LoadingPageDark from 'components/loading/LoadingPageDark';
@@ -23,6 +26,7 @@ import { persistor } from 'redux/athlete/store';
 import { getSportType, SPORT_NAME_LOOKUP } from 'data/constants/sportConstants';
 import moment, { Moment } from 'moment';
 import Modal from 'components/modals/Modal';
+import { providers } from 'near-api-js';
 const Games = (props) => {
   const { query } = props;
   const gameId = query.game_id;
@@ -30,7 +34,7 @@ const Games = (props) => {
   const router = useRouter();
   const dispatch = useDispatch();
   const [playerLineups, setPlayerLineups] = useState([]);
-
+  const provider = new providers.JsonRpcProvider({ url: getRPCProvider() });
   const { accountId } = useWalletSelector();
   const [playerTeams, setPlayerTeams] = useState([]);
   const [playerTeamSorted, setPlayerTeamSorted] = useState([]);
@@ -48,7 +52,7 @@ const Games = (props) => {
   const gameStart = Object.values(gameInfo)[0] / 1000;
   console.log('nfl week: ' + week);
 
-  async function get_all_players_lineup(joined_team_counter) {
+  async function get_all_players_lineup_chunks(joined_team_counter) {
     const startTimeFormatted = formatToUTCDate(gameData.start_time);
     const endTimeFormatted = formatToUTCDate(gameData.end_time);
     console.log('    TEST start date: ' + startTimeFormatted);
@@ -73,15 +77,50 @@ const Games = (props) => {
         }
       });
     }
-    console.table(playerLineup);
-    playerLineup.sort(function (a, b) {
+    let computedLineup = await compute_scores(
+      playerLineup,
+      currentSport,
+      startTimeFormatted,
+      endTimeFormatted
+    );
+    computedLineup.sort(function (a, b) {
       return b.sumScore - a.sumScore;
     });
-    setPlayerLineups(playerLineup);
+    setPlayerLineups(computedLineup);
     // setPlayerLineups(
     //   await query_all_players_lineup(gameId, currentSport, startTimeFormatted, endTimeFormatted)
     // );
   }
+
+  async function get_all_players_lineup_rposition(joined_team_counter) {
+    const startTimeFormatted = formatToUTCDate(gameData.start_time);
+    const endTimeFormatted = formatToUTCDate(gameData.end_time);
+    console.log('    TEST start date: ' + startTimeFormatted);
+    console.log('    TEST end date: ' + endTimeFormatted);
+    if (joined_team_counter !== 0) {
+      await query_all_players_lineup_rposition(
+        gameId,
+        currentSport,
+        startTimeFormatted,
+        endTimeFormatted,
+        joined_team_counter
+      ).then(async (result) => {
+        console.log(result);
+        let lineup = await compute_scores(
+          result,
+          currentSport,
+          startTimeFormatted,
+          endTimeFormatted
+        );
+
+        lineup.sort(function (a, b) {
+          return b.sumScore - a.sumScore;
+        });
+        setPlayerLineups(lineup);
+      });
+    }
+  }
+
   function getAccountScore(accountId, teamName) {
     const x = playerLineups.findIndex((x) => x.accountId === accountId && x.teamName === teamName);
     return playerLineups[x]?.sumScore.toFixed(2);
@@ -90,7 +129,22 @@ const Games = (props) => {
   function getAccountPlacement(accountId, teamName) {
     return playerLineups.findIndex((x) => x.accountId === accountId && x.teamName === teamName) + 1;
   }
-
+  async function getAllPlayerKeys() {
+    const query = JSON.stringify({});
+    await provider
+      .query({
+        request_type: 'call_function',
+        finality: 'optimistic',
+        account_id: getSportType(currentSport).gameContract,
+        method_name: 'get_player_lineup_keys',
+        args_base64: Buffer.from(query).toString('base64'),
+      })
+      .then(async (data) => {
+        //@ts-ignore:next-line
+        const result = JSON.parse(Buffer.from(data.result).toString());
+        console.log(result);
+      });
+  }
   function sortPlayerTeamScores(accountId) {
     const x = playerLineups.filter((x) => x.accountId === accountId);
     console.log(x);
@@ -120,8 +174,8 @@ const Games = (props) => {
     if (gameData !== undefined && gameData !== null) {
       console.log('Joined team counter: ' + gameData.joined_team_counter);
       get_player_teams(accountId, gameId);
-
-      get_all_players_lineup(gameData.joined_team_counter);
+      //getAllPlayerKeys();
+      get_all_players_lineup_rposition(gameData.joined_team_counter);
     }
   }, [gameData]);
 
