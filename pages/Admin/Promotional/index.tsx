@@ -11,10 +11,10 @@ export default function Promotional(props) {
   const [whitelistInfoNBA, setWhitelistInfoNBA] = useState(null);
   const [currentSport, setCurrentSport] = useState(null);
   const [detailsNFL, setDetailsNFL] = useState({
-    description: '',
+    receiverAccount: '',
   });
   const [detailsNBA, setDetailsNBA] = useState({
-    description: '',
+    receiverAccount: '',
   });
 
   async function execute_send_type_1_pack(selector) {
@@ -54,7 +54,7 @@ export default function Promotional(props) {
   }
 
   const onChangeWhitelistNFL = (e) => {
-    if (e.target.name === 'description') {
+    if (e.target.name === 'receiverAccount') {
       if (e.target.value !== '') {
         const whitelistArray = e.target.value.split('\n').filter((n) => n);
         setWhitelistInfoNFL(whitelistArray);
@@ -73,7 +73,7 @@ export default function Promotional(props) {
   };
 
   const onChangeWhitelistNBA = (e) => {
-    if (e.target.name === 'description') {
+    if (e.target.name === 'receiverAccount') {
       if (e.target.value !== '') {
         const whitelistArray = e.target.value.split('\n').filter((n) => n);
         setWhitelistInfoNBA(whitelistArray);
@@ -100,21 +100,18 @@ export default function Promotional(props) {
     <Container>
       <div className="flex flex-col w-1/2 ml-24 mt-24">
         <label className="font-monument" htmlFor="duration">
-          WHITELIST FOOTBALL
+          SEND TYPE 1 FOOTBALL PACK
         </label>
-        <textarea
+        <input
           className="border outline-none rounded-lg px-3 p-2"
-          id="description"
-          name="description"
-          // type="text"
-          placeholder="Enter accounts to whitelist. One account per line. Leave empty for no whitelist."
+          id="receiverAccount"
+          name="receiverAccount"
+          type="text"
+          placeholder="Enter account to send type 1 pack to."
           onChange={(e) => {
             setCurrentSport('FOOTBALL'), onChangeWhitelistNFL(e);
           }}
-          value={detailsNFL.description}
-          style={{
-            minHeight: '120px',
-          }}
+          value={detailsNFL.receiverAccount}
         />
         <div className="  mt-6">
           <button
@@ -127,21 +124,18 @@ export default function Promotional(props) {
       </div>
       <div className="flex flex-col w-1/2 ml-24 mt-24">
         <label className="font-monument" htmlFor="duration">
-          WHITELIST BASKETBALL
+          SEND TYPE 1 BASKETBALL PACK
         </label>
-        <textarea
+        <input
           className="border outline-none rounded-lg px-3 p-2"
-          id="description"
-          name="description"
-          // type="text"
-          placeholder="Enter accounts to whitelist. One account per line. Leave empty for no whitelist."
+          id="receiverAccount"
+          name="receiverAccount"
+          type="text"
+          placeholder="Enter account to send type 1 pack to."
           onChange={(e) => {
             setCurrentSport('BASKETBALL'), onChangeWhitelistNBA(e);
           }}
-          value={detailsNBA.description}
-          style={{
-            minHeight: '120px',
-          }}
+          value={detailsNBA.receiverAccount}
         />
         <div className="  mt-6">
           <button
