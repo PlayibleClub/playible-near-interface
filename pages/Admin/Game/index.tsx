@@ -359,7 +359,7 @@ export default function Index(props) {
 
   const handleRadioClick = (value) => {
     setRadioSelected(value);
-    console.log('Game Image:', imageList[value]);
+    // console.log('Game Image:', imageList[value]);
     setDetails({
       ...details,
       game_image: imageList[value].publicUrl,
@@ -1325,7 +1325,6 @@ export default function Index(props) {
                     <input
                       className="justify-self-end"
                       type="radio"
-                      name="image"
                       checked={radioSelected == i}
                       value={i}
                       onChange={(e) => handleRadioClick(e.target.value)}
