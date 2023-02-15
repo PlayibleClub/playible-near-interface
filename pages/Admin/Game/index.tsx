@@ -55,6 +55,7 @@ export default function Index(props) {
   const [lineupLength, setLineupLength] = useState(0);
   const [gameImage, setGameImage] = useState(null);
   const [imageList, setImageList] = useState([]);
+  const [radioSelected, setRadioSelected] = useState(null);
   const [s3config, setS3Config] = useState({
     bucketName: '',
     region: '',
@@ -142,6 +143,7 @@ export default function Index(props) {
   const [confirmModal, setConfirmModal] = useState(false);
   const [endModal, setEndModal] = useState(false);
   const [imageModal, setImageModal] = useState(false);
+  const [radioValue, setRadioValue] = useState('');
   const [msg, setMsg] = useState({
     title: '',
     content: '',
@@ -353,6 +355,17 @@ export default function Index(props) {
         });
       }
     }
+  };
+
+  const handleRadioClick = (value) => {
+    setRadioSelected(value);
+    console.log('Game Image:', imageList[value]);
+    setDetails({
+      ...details,
+      game_image: imageList[value].publicUrl,
+    });
+
+    setRadioValue(imageList[value].publicUrl);
   };
 
   const displayImageModal = async () => {
@@ -1309,6 +1322,14 @@ export default function Index(props) {
             ? imageList?.map((data, i) => {
                 return (
                   <div className="mt-4">
+                    <input
+                      className="justify-self-end"
+                      type="radio"
+                      name="image"
+                      checked={radioSelected == i}
+                      value={i}
+                      onChange={(e) => handleRadioClick(e.target.value)}
+                    ></input>
                     <img src={data.publicUrl}></img>
                   </div>
                 );
@@ -1320,6 +1341,15 @@ export default function Index(props) {
           onClick={() => setImageModal(false)}
         >
           CANCEL
+        </button>
+        <button
+          className="bg-green-pastel font-monument tracking-widest text-indigo-white w-full h-16 text-center text-sm mt-4"
+          onClick={(e) => {
+            setGameImage(radioValue);
+            setImageModal(false);
+          }}
+        >
+          CONFIRM
         </button>
       </BaseModal>
     </Container>
