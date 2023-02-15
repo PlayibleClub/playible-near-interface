@@ -7,9 +7,16 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import Main from 'components/Main';
+import { getRPCProvider } from 'utils/near';
 import LeaderboardComponent from '../components/LeaderboardComponent';
 import ViewTeamsContainer from 'components/containers/ViewTeamsContainer';
-import { query_game_data, query_all_players_lineup, query_player_teams } from 'utils/near/helper';
+import {
+  query_game_data,
+  query_all_players_lineup_rposition,
+  query_player_teams,
+  query_player_lineup,
+  compute_scores,
+} from 'utils/near/helper';
 import { getNflWeek, getNflSeason, formatToUTCDate } from 'utils/date/helper';
 import LoadingPageDark from 'components/loading/LoadingPageDark';
 import { setTeamName, setAccountId, setGameId, setSport2 } from 'redux/athlete/teamSlice';
@@ -18,6 +25,7 @@ import { persistor } from 'redux/athlete/store';
 import { getSportType, SPORT_NAME_LOOKUP } from 'data/constants/sportConstants';
 import moment, { Moment } from 'moment';
 import Modal from 'components/modals/Modal';
+import { providers } from 'near-api-js';
 const Games = (props) => {
   const { query } = props;
   const gameId = query.game_id;
@@ -25,7 +33,7 @@ const Games = (props) => {
   const router = useRouter();
   const dispatch = useDispatch();
   const [playerLineups, setPlayerLineups] = useState([]);
-
+  const provider = new providers.JsonRpcProvider({ url: getRPCProvider() });
   const { accountId } = useWalletSelector();
   const [playerTeams, setPlayerTeams] = useState([]);
   const [playerTeamSorted, setPlayerTeamSorted] = useState([]);
@@ -40,18 +48,75 @@ const Games = (props) => {
     setGameData(await query_game_data(game_id, getSportType(currentSport).gameContract));
   }
 
-  const gameStart = Object.values(gameInfo)[0] / 1000;
-  console.log('nfl week: ' + week);
-
-  async function get_all_players_lineup() {
+  // async function get_all_players_lineup_chunks(joined_team_counter) {
+  //   const startTimeFormatted = formatToUTCDate(gameData.start_time);
+  //   const endTimeFormatted = formatToUTCDate(gameData.end_time);
+  //   console.log('    TEST start date: ' + startTimeFormatted);
+  //   console.log('    TEST end date: ' + endTimeFormatted);
+  //   let loopCount = Math.ceil(joined_team_counter / 1);
+  //   console.log('Loop count: ' + loopCount);
+  //   let playerLineup = [];
+  //   for (let i = 0; i < joined_team_counter; i++) {
+  //     console.log(playerLineup);
+  //     await query_all_players_lineup_chunk(
+  //       gameId,
+  //       currentSport,
+  //       startTimeFormatted,
+  //       endTimeFormatted,
+  //       i,
+  //       1
+  //     ).then(async (result) => {
+  //       if (playerLineup.length === 0) {
+  //         playerLineup = result;
+  //       } else {
+  //         playerLineup = playerLineup.concat(result);
+  //       }
+  //     });
+  //   }
+  //   let computedLineup = await compute_scores(
+  //     playerLineup,
+  //     currentSport,
+  //     startTimeFormatted,
+  //     endTimeFormatted
+  //   );
+  //   computedLineup.sort(function (a, b) {
+  //     return b.sumScore - a.sumScore;
+  //   });
+  //   setPlayerLineups(computedLineup);
+  //   // setPlayerLineups(
+  //   //   await query_all_players_lineup(gameId, currentSport, startTimeFormatted, endTimeFormatted)
+  //   // );
+  // }
+  async function get_all_players_lineup_with_index() {
     const startTimeFormatted = formatToUTCDate(gameData.start_time);
     const endTimeFormatted = formatToUTCDate(gameData.end_time);
-    console.log('    TEST start date: ' + startTimeFormatted);
-    console.log('    TEST end date: ' + endTimeFormatted);
-    setPlayerLineups(
-      await query_all_players_lineup(gameId, currentSport, startTimeFormatted, endTimeFormatted)
-    );
+    // console.log('    TEST start date: ' + startTimeFormatted);
+    // console.log('    TEST end date: ' + endTimeFormatted);
+
+    await get_all_player_keys().then(async (result) => {
+      let filteredResult = result.filter((data) => data[1] === gameId);
+      //console.log(filteredResult);
+      let lineups = [];
+
+      for (const entry of filteredResult) {
+        await query_player_lineup(currentSport, entry[0], entry[1], entry[2]).then((lineup) => {
+          if (lineups.length === 0) {
+            lineups = [lineup];
+          } else {
+            lineups = lineups.concat([lineup]);
+          }
+        });
+      }
+      let computedLineup = await compute_scores(
+        lineups,
+        currentSport,
+        startTimeFormatted,
+        endTimeFormatted
+      );
+      setPlayerLineups(computedLineup);
+    });
   }
+
   function getAccountScore(accountId, teamName) {
     const x = playerLineups.findIndex((x) => x.accountId === accountId && x.teamName === teamName);
     return playerLineups[x]?.sumScore.toFixed(2);
@@ -60,10 +125,26 @@ const Games = (props) => {
   function getAccountPlacement(accountId, teamName) {
     return playerLineups.findIndex((x) => x.accountId === accountId && x.teamName === teamName) + 1;
   }
-
+  async function get_all_player_keys() {
+    const query = JSON.stringify({});
+    return await provider
+      .query({
+        request_type: 'call_function',
+        finality: 'optimistic',
+        account_id: getSportType(currentSport).gameContract,
+        method_name: 'get_player_lineup_keys',
+        args_base64: Buffer.from(query).toString('base64'),
+      })
+      .then(async (data) => {
+        //@ts-ignore:next-line
+        const result = JSON.parse(Buffer.from(data.result).toString());
+        //console.log(result);
+        return result;
+      });
+  }
   function sortPlayerTeamScores(accountId) {
     const x = playerLineups.filter((x) => x.accountId === accountId);
-    console.log(x);
+    // console.log(x);
     if (x !== undefined) {
       setPlayerTeamSorted(
         x.sort(function (a, b) {
@@ -72,7 +153,7 @@ const Games = (props) => {
       );
     }
   }
-
+  async function get_total_joined(game_id) {}
   async function get_player_teams(account, game_id) {
     setPlayerTeams(
       await query_player_teams(account, game_id, getSportType(currentSport).gameContract)
@@ -88,8 +169,10 @@ const Games = (props) => {
   };
   useEffect(() => {
     if (gameData !== undefined && gameData !== null) {
+      // console.log('Joined team counter: ' + gameData.joined_team_counter);
       get_player_teams(accountId, gameId);
-      get_all_players_lineup();
+      get_all_players_lineup_with_index();
+      //get_all_players_lineup_rposition(gameData.joined_team_counter);
     }
   }, [gameData]);
 
@@ -228,7 +311,7 @@ const Games = (props) => {
                     setViewModal(false);
                   }}
                 >
-                  CONFIRM
+                  CLOSE
                 </button>
               </Modal>
             </div>
