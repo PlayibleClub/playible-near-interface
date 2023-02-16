@@ -7,7 +7,7 @@ import LoadingModal from '../loading/LoadingModal';
 // TODO: Modal Design for dark mode and light mode
 
 const Modal = (props) => {
-  const { title, children, visible, onClose = undefined } = props;
+  const { title, children, visible, onClose = undefined, AdminGame } = props;
 
   // TODO: Make the modal more presentable
   return (
@@ -44,7 +44,11 @@ const Modal = (props) => {
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <div className="bg-indigo-white inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl">
+              <div
+                className={`bg-indigo-white inline-block p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl ${
+                  AdminGame === true ? 'w-full' : 'w-full max-w-md'
+                }`}
+              >
                 <Dialog.Title
                   as="h3"
                   className="text-lg font-medium leading-6 text-gray-900 pb-4 font-monument uppercase"

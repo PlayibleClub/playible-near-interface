@@ -33,6 +33,7 @@ import secretKeys from 's3config';
 import { ErrorResponse } from '@remix-run/router';
 import { current } from '@reduxjs/toolkit';
 import { getSport } from 'redux/athlete/athleteSlice';
+import Modal from 'components/modals/Modal';
 TimeAgo.addDefaultLocale(en);
 
 export default function Index(props) {
@@ -1316,41 +1317,50 @@ export default function Index(props) {
           CANCEL
         </button>
       </BaseModal>
-      <BaseModal title={'SELECT IMAGE'} visible={imageModal} onClose={() => setImageModal(false)}>
-        <div className="mt-4 gap-x-6 gap-y-12 grid grid-cols-0 md:grid-cols-2 md:h-128 h-80 overflow-y-auto">
-          {imageList !== undefined || imageList !== null
-            ? imageList?.map((data, i) => {
-                return (
-                  <div className="mt-4">
-                    <input
-                      className="justify-self-end"
-                      type="radio"
-                      checked={radioSelected == i}
-                      value={i}
-                      onChange={(e) => handleRadioClick(e.target.value)}
-                    ></input>
-                    <img src={data.publicUrl}></img>
-                  </div>
-                );
-              })
-            : ''}
+      <Modal
+        title={'SELECT IMAGE'}
+        visible={imageModal}
+        onClose={() => setImageModal(false)}
+        AdminGame={true}
+      >
+        <div className="w-full">
+          <div className="mt-4 gap-x-6 gap-y-12 grid grid-cols-0 md:grid-cols-4 md:h-108 h-80 overflow-y-auto">
+            {imageList !== undefined || imageList !== null
+              ? imageList?.map((data, i) => {
+                  return (
+                    <div className="mr-4 mb-2">
+                      <input
+                        className="justify-self-end"
+                        type="radio"
+                        checked={radioSelected == i}
+                        value={i}
+                        onChange={(e) => handleRadioClick(e.target.value)}
+                      ></input>
+                      <img src={data.publicUrl}></img>
+                    </div>
+                  );
+                })
+              : ''}
+          </div>
+          <div className="flex flex-row mt-4">
+            <button
+              className="bg-red-pastel font-monument tracking-widest text-indigo-white w-full h-8 tracking-widest text-center text-sm"
+              onClick={() => setImageModal(false)}
+            >
+              CANCEL
+            </button>
+            <button
+              className="bg-green-pastel font-monument tracking-widest text-indigo-white w-full h-8 tracking-widest text-center text-sm"
+              onClick={(e) => {
+                setGameImage(radioValue);
+                setImageModal(false);
+              }}
+            >
+              CONFIRM
+            </button>
+          </div>
         </div>
-        <button
-          className="bg-red-pastel font-monument tracking-widest text-indigo-white w-full h-16 text-center text-sm mt-4"
-          onClick={() => setImageModal(false)}
-        >
-          CANCEL
-        </button>
-        <button
-          className="bg-green-pastel font-monument tracking-widest text-indigo-white w-full h-16 text-center text-sm mt-4"
-          onClick={(e) => {
-            setGameImage(radioValue);
-            setImageModal(false);
-          }}
-        >
-          CONFIRM
-        </button>
-      </BaseModal>
+      </Modal>
     </Container>
   );
 }
