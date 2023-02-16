@@ -48,9 +48,14 @@ const adminOpenPack = {
   img: '/images/icons/Play.svg',
 };
 
+const adminSendPack = {
+  name: 'SEND PACK',
+  path: '/Admin/Promotional',
+  img: '/images/icons/Play.svg',
+};
 export const getNavigation = (admin = false, loggedIn = false) => {
   if (admin) {
-    return [adminGame, adminOpenPack, home, mySquad, myPacks, play];
+    return [adminGame, adminOpenPack, adminSendPack, home, mySquad, myPacks, play];
   } else if (loggedIn) {
     return [home, mint, mySquad, myPacks, play, learn];
   } else {
