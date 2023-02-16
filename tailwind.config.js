@@ -20,6 +20,7 @@ module.exports = {
             height: {
                 '135px': '135px',
                 '14px' : '14px',
+                '108' : '28rem',
                 '128': '32rem',
             },
             margin: {

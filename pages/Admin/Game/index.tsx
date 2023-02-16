@@ -33,6 +33,7 @@ import secretKeys from 's3config';
 import { ErrorResponse } from '@remix-run/router';
 import { current } from '@reduxjs/toolkit';
 import { getSport } from 'redux/athlete/athleteSlice';
+import Modal from 'components/modals/Modal';
 TimeAgo.addDefaultLocale(en);
 
 export default function Index(props) {
@@ -54,7 +55,8 @@ export default function Index(props) {
   const [prizeDescription, setPrizeDescription] = useState(null);
   const [lineupLength, setLineupLength] = useState(0);
   const [gameImage, setGameImage] = useState(null);
-  const [imageList, setImageList] = useState({});
+  const [imageList, setImageList] = useState([]);
+  const [radioSelected, setRadioSelected] = useState(null);
   const [s3config, setS3Config] = useState({
     bucketName: '',
     region: '',
@@ -141,6 +143,8 @@ export default function Index(props) {
   const [endLoading, setEndLoading] = useState(false);
   const [confirmModal, setConfirmModal] = useState(false);
   const [endModal, setEndModal] = useState(false);
+  const [imageModal, setImageModal] = useState(false);
+  const [radioValue, setRadioValue] = useState('');
   const [msg, setMsg] = useState({
     title: '',
     content: '',
@@ -353,15 +357,35 @@ export default function Index(props) {
       }
     }
   };
+
+  const handleRadioClick = (value) => {
+    setRadioSelected(value);
+    // console.log('Game Image:', imageList[value]);
+    setDetails({
+      ...details,
+      game_image: imageList[value].publicUrl,
+    });
+
+    setRadioValue(imageList[value].publicUrl);
+  };
+
+  const displayImageModal = async () => {
+    setImageList(await listS3Image());
+    if (imageList !== undefined || imageList !== null) {
+      setImageModal(true);
+    } else {
+      alert('❌Task Failed Successfully');
+    }
+  };
   const listS3Image = async () => {
     const s3 = new ReactS3Client(s3config);
 
     try {
       const imageS3list = await s3.listFiles();
 
-      console.log(imageS3list);
+      console.log(imageS3list.data.Contents);
 
-      setImageList(imageS3list);
+      return imageS3list.data.Contents;
       /*
        * {
        *   Response: {
@@ -1092,6 +1116,15 @@ export default function Index(props) {
                       >
                         UPLOAD GAME IMAGE
                       </button>
+
+                      <button
+                        className="mt-5 bg-indigo-buttonblue h-10 text-indigo-white"
+                        id="image"
+                        name="image"
+                        onClick={displayImageModal}
+                      >
+                        SELECT IMAGE FROM BUCKET
+                      </button>
                     </div>
                   </div>
 
@@ -1284,6 +1317,50 @@ export default function Index(props) {
           CANCEL
         </button>
       </BaseModal>
+      <Modal
+        title={'SELECT IMAGE'}
+        visible={imageModal}
+        onClose={() => setImageModal(false)}
+        AdminGame={true}
+      >
+        <div className="w-full">
+          <div className="mt-4 gap-x-6 gap-y-12 grid grid-cols-0 md:grid-cols-4 md:h-108 h-80 overflow-y-auto">
+            {imageList !== undefined || imageList !== null
+              ? imageList?.map((data, i) => {
+                  return (
+                    <div className="mr-4 mb-2">
+                      <input
+                        className="justify-self-end"
+                        type="radio"
+                        checked={radioSelected == i}
+                        value={i}
+                        onChange={(e) => handleRadioClick(e.target.value)}
+                      ></input>
+                      <img src={data.publicUrl}></img>
+                    </div>
+                  );
+                })
+              : ''}
+          </div>
+          <div className="flex flex-row mt-4">
+            <button
+              className="bg-red-pastel font-monument tracking-widest text-indigo-white w-full h-8 tracking-widest text-center text-sm"
+              onClick={() => setImageModal(false)}
+            >
+              CANCEL
+            </button>
+            <button
+              className="bg-green-pastel font-monument tracking-widest text-indigo-white w-full h-8 tracking-widest text-center text-sm"
+              onClick={(e) => {
+                setGameImage(radioValue);
+                setImageModal(false);
+              }}
+            >
+              CONFIRM
+            </button>
+          </div>
+        </div>
+      </Modal>
     </Container>
   );
 }
