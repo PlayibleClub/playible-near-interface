@@ -1102,6 +1102,22 @@ export default function Index(props) {
                     </div>
                     <div className="flex flex-col w-1/2 ml-10">
                       <label className="font-monument">GAME IMAGE</label>
+                      <div className="flex flex-col mb-4">
+                        {/* <div>
+                          <label className="font-monument">GAME IMAGE PREVIEW</label>
+                        </div> */}
+                        <div className="border outline-none rounded-lg px-3 p-2 self-center">
+                          <img
+                            src={
+                              gameImage === null || gameImage === undefined
+                                ? defaultGameImage
+                                : gameImage
+                            }
+                            height={300}
+                            width={300}
+                          />
+                        </div>
+                      </div>
                       <input
                         type="file"
                         onChange={(e) => {
@@ -1173,6 +1189,7 @@ export default function Index(props) {
                       </form>
                     </div>
                   </div>
+
                   <div className="flex mt-8">
                     <div className="flex flex-col w-2/5">
                       {currentSport === 'FOOTBALL' ? (
