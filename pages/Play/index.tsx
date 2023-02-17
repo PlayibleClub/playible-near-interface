@@ -140,6 +140,7 @@ const Play = (props) => {
 
     setSportList([...sports]);
     setCurrentSport(name);
+    setgamesOffset(0);
   };
 
   const Test = [1, 2, 3, 4, 5];
@@ -495,6 +496,7 @@ const Play = (props) => {
     console.log(sportList);
     get_game_supply();
     get_games_list(totalGames);
+    setRemountComponent(Math.random());
   }, [totalGames, currentSport]);
 
   useEffect(() => {

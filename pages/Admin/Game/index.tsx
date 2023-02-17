@@ -6,6 +6,7 @@ import Distribution from './components/distribution';
 import { axiosInstance } from '../../../utils/playible';
 import BaseModal from '../../../components/modals/BaseModal';
 import TimeAgo from 'javascript-time-ago';
+import Link from 'next/link';
 import en from 'javascript-time-ago/locale/en.json';
 import ReactTimeAgo from 'react-time-ago';
 import { GAME_NFL, ORACLE } from '../../../data/constants/nearContracts';
@@ -221,6 +222,7 @@ export default function Index(props) {
     setSportList([...sports]);
     setCurrentSport(name);
     setDetails({ ...details, position: getSportType(name).positionList[0].key });
+    setGamesOffset(0);
   };
   const changeTab = (name) => {
     setGamesOffset(0);
@@ -773,6 +775,26 @@ export default function Index(props) {
     });
   }
 
+  function getActiveTabGameTotal() {
+    const active = gameTabs.find((x) => x.isActive);
+
+    switch (active.name) {
+      case 'NEW':
+        setCurrentTotal(newGames.length);
+        break;
+      case 'ON-GOING':
+        setCurrentTotal(ongoingGames.length);
+        break;
+      case 'COMPLETED':
+        setCurrentTotal(completedGames.length);
+        break;
+    }
+  }
+
+  useEffect(() => {
+    getActiveTabGameTotal();
+  }, [newGames, ongoingGames, completedGames]);
+
   useEffect(() => {
     getTotalPercent();
   }, [distribution]);
@@ -787,6 +809,7 @@ export default function Index(props) {
 
     setPositionList(list.positionList);
     setRemountDropdown(Math.random());
+    setRemountComponent(Math.random());
   }, [totalGames, currentSport]);
 
   useEffect(() => {
@@ -875,22 +898,27 @@ export default function Index(props) {
                         .filter((data, i) => i >= gamesOffset && i < gamesOffset + gamesLimit)
                         .map((data, i) => {
                           return (
-                            <div key={i}>
-                              <AdminGameComponent
-                                game_id={data.game_id}
-                                start_time={data.start_time}
-                                end_time={data.end_time}
-                                whitelist={data.whitelist}
-                                positions={data.positions}
-                                lineup_len={data.lineup_len}
-                                joined_player_counter={data.joined_player_counter}
-                                joined_team-counter={data.joined_team_counter}
-                                type="upcoming"
-                                isCompleted={data.isCompleted}
-                                status={data.status}
-                                img={data.game_image}
-                              />
-                            </div>
+                            <Link
+                              href={`/Admin/Game/${currentSport.toLowerCase()}/${data.game_id}`}
+                              passHref
+                            >
+                              <div key={i}>
+                                <AdminGameComponent
+                                  game_id={data.game_id}
+                                  start_time={data.start_time}
+                                  end_time={data.end_time}
+                                  whitelist={data.whitelist}
+                                  positions={data.positions}
+                                  lineup_len={data.lineup_len}
+                                  joined_player_counter={data.joined_player_counter}
+                                  joined_team-counter={data.joined_team_counter}
+                                  type="upcoming"
+                                  isCompleted={data.isCompleted}
+                                  status={data.status}
+                                  img={data.game_image}
+                                />
+                              </div>
+                            </Link>
                           );
                         })}
                     {/* {(gameTabs[0].isActive ? upcomingGames: completedGames).length > 0 &&
