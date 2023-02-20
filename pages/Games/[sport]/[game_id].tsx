@@ -26,8 +26,12 @@ import { getSportType, SPORT_NAME_LOOKUP } from 'data/constants/sportConstants';
 import moment, { Moment } from 'moment';
 import Modal from 'components/modals/Modal';
 import { providers } from 'near-api-js';
+import EntrySummaryPopup from '../components/EntrySummaryPopup';
+import EntrySummaryModal from 'components/modals/EntrySummaryModal';
+import PerformerContainer from 'components/containers/PerformerContainer';
 const Games = (props) => {
   const { query } = props;
+  const [currentIndex, setCurrentIndex] = useState(null);
   const gameId = query.game_id;
   const currentSport = query.sport.toString().toUpperCase();
   const router = useRouter();
@@ -42,12 +46,12 @@ const Games = (props) => {
   const [nflSeason, setNflSeason] = useState('');
   const [gameData, setGameData] = useState(null);
   const [viewModal, setViewModal] = useState(false);
+  const [entryModal, setEntryModal] = useState(false);
   const playGameImage = '/images/game.png';
   async function get_game_data(game_id) {
     setGameInfo(await query_game_data(game_id, getSportType(currentSport).gameContract));
     setGameData(await query_game_data(game_id, getSportType(currentSport).gameContract));
   }
-
   // async function get_all_players_lineup_chunks(joined_team_counter) {
   //   const startTimeFormatted = formatToUTCDate(gameData.start_time);
   //   const endTimeFormatted = formatToUTCDate(gameData.end_time);
@@ -87,6 +91,13 @@ const Games = (props) => {
   //   //   await query_all_players_lineup(gameId, currentSport, startTimeFormatted, endTimeFormatted)
   //   // );
   // }
+  const togglePopup = (item) => {
+    console.log(item)
+    setViewModal(false);
+    setEntryModal(true);
+    setCurrentIndex(item.index);
+  };
+
   async function get_all_players_lineup_with_index() {
     const startTimeFormatted = formatToUTCDate(gameData.start_time);
     const endTimeFormatted = formatToUTCDate(gameData.end_time);
@@ -160,7 +171,6 @@ const Games = (props) => {
     );
   }
   const handleButtonClick = (teamName, accountId, gameId) => {
-    console.log(teamName);
     dispatch(setTeamName(teamName));
     dispatch(setAccountId(accountId));
     dispatch(setGameId(gameId));
@@ -283,13 +293,10 @@ const Games = (props) => {
               <Modal
                 title={'EXTENDED LEADERBOARD'}
                 visible={viewModal}
-                onClose={() => {
-                  setViewModal(false);
-                }}
               >
-                <div className="md:h-128 h-80 overflow-y-auto">
+                <div className=" overflow-y-auto">
                   {playerLineups.length > 0
-                    ? playerLineups.map((item, index) => {
+                    ? playerLineups.map((item, index) => {  
                         return (
                           <LeaderboardComponent
                             accountId={item.accountId}
@@ -297,9 +304,7 @@ const Games = (props) => {
                             teamScore={item.sumScore}
                             index={index}
                             gameId={gameId}
-                            onClickFn={(teamName, accountId, gameId) =>
-                              handleButtonClick(teamName, accountId, gameId)
-                            }
+                            onClickFn={() => togglePopup({accountId: item.accountId, index: index})}
                           />
                         );
                       })
@@ -314,6 +319,48 @@ const Games = (props) => {
                   CLOSE
                 </button>
               </Modal>
+              <EntrySummaryModal
+                title={'ENTRY SUMMARY'}
+                visible={entryModal}    
+              >
+                <div>
+                    <div className="flex flex-col w-full overflow-y-auto justify-center self-center md:pb-12 ml-24">
+                      <div className="flex items-center">
+                        <ModalPortfolioContainer
+                          title={playerLineups[currentIndex]?.teamName}
+                          accountId={playerLineups[currentIndex]?.accountId}
+                          textcolor="text-indigo-black mb-5"
+                        />
+                      </div>
+                      <div className="grid grid-cols-2 gap-x-16 md:gap-x-0 md:gap-y-4 md:grid-cols-4 ml-8 md:ml-2 w-3/4 -mt-12">
+                        {playerLineups.length === 0
+                          ? 'Loading athletes...'
+                          : playerLineups[currentIndex]?.lineup.map((item, i) => {
+                              return (
+                                <EntrySummaryPopup
+                                  AthleteName={`${item.name}`}
+                                  AvgScore={item.stats_breakdown?.toFixed(2)}
+                                  id={item.primary_id}
+                                  uri={item.image}
+                                  hoverable={false}
+                                  isActive={item.isActive}
+                                  isInjured={item.isInjured}
+                                />
+                              );
+                            })}
+                      </div>
+                    </div>
+                </div>
+                <button
+                  className="bg-indigo-buttonblue text-indigo-white  md:mt-10 w-2/6 fixed bottom-6 right-96 h-14 text-center text-md font-monument"
+                  onClick={() => {
+                    setEntryModal(false);
+                    setViewModal(true);
+                  }}
+                >
+                  CLOSE
+                </button>
+              </EntrySummaryModal>
             </div>
           </div>
         </Main>
