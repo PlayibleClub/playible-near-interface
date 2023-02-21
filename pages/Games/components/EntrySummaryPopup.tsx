@@ -76,7 +76,7 @@ const PerformerContainer = (props) => {
       </div>
       {children}
       <div className="h-1/2 flex justify-center mb-6 ml-12 md:ml-0">
-        <div className="flex flex-col w-28 mt-4 transform scale-65">
+        <div className="flex flex-col mt-4 transform scale-65">
           <div className="mt-2 text-xs font-bold uppercase gap-5">
             {AthleteName.length >= 14 ? cutAthleteName(AthleteName) : AthleteName}
           </div>

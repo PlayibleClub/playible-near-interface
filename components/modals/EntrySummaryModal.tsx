@@ -15,7 +15,7 @@ const EntrySummaryModal = (props) => {
       <Transition appear show={visible} as={Fragment}>
         <Dialog
           as="div"
-          className="fixed inset-0 z-50 overflow-y-auto sm:p-0 sm:block"
+          className="fixed inset-0 z-50 overflow-y-auto sm:p-0 sm:block mb-2"
           onClose={() => onClose || console.log()}
           style={{ overflowY: 'hidden' }} // add this line
         >
@@ -45,7 +45,7 @@ const EntrySummaryModal = (props) => {
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <div className="bg-indigo-white inline-block w-full md:w-3/5 md:h-full h-screen p-6 my-8 text-left align-middle transition-all transform shadow-xl overflow-auto md:overflow-hidden">
+              <div className="bg-indigo-white inline-block md:w-3/5 md:h-full h-screen p-6 my-8 text-left align-middle transition-all transform shadow-xl overflow-auto md:overflow-hidden">
                 <Dialog.Title
                   as="h3"
                   className="text-lg font-medium leading-6 text-gray-900 pb-4 font-monument uppercase"

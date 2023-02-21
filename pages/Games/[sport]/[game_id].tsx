@@ -351,29 +351,31 @@ const Games = (props) => {
                     </div>
                   </div>
                 </div>
-                {test === 1 ? (
-                  <button
-                    className="bg-indigo-buttonblue text-indigo-white md:mt-10 md:w-2/6 w-4/6 fixed center -mt-6 md:bottom-6 md:right-96 md:h-14 h-8 text-center text-md font-monument"
-                    onClick={() => {
-                      setEntryModal(false);
-                      setViewModal(false);
-                      setTest(0);
-                    }}
-                  >
-                    CLOSE
-                  </button>
-                ) : (
-                  <button
-                    className="bg-indigo-buttonblue text-indigo-white md:mt-10 md:w-2/6 w-4/6 fixed center -mt-6 md:bottom-6 md:right-96 md:h-14 h-8 text-center text-md font-monument"
-                    onClick={() => {
-                      setEntryModal(false);
-                      setViewModal(true);
-                      setTest(0);
-                    }}
-                  >
-                    CLOSE
-                  </button>
-                )}
+                <div className="flex justify-center items-end">
+                  {test === 1 ? (
+                    <button
+                      className="bg-indigo-buttonblue text-indigo-white md:mt-10 md:w-2/6 w-4/6 fixed center -mt-6 md:bottom-20 lg:bottom-6 md:h-14 h-8 text-center text-md font-monument"
+                      onClick={() => {
+                        setEntryModal(false);
+                        setViewModal(false);
+                        setTest(0);
+                      }}
+                    >
+                      CLOSE
+                    </button>
+                  ) : (
+                    <button
+                      className="bg-indigo-buttonblue text-indigo-white md:mt-10 md:w-2/6 w-4/6 fixed center -mt-6 md:bottom-6 md:right-96 md:h-14 h-8 text-center text-md font-monument"
+                      onClick={() => {
+                        setEntryModal(false);
+                        setViewModal(true);
+                        setTest(0);
+                      }}
+                    >
+                      CLOSE
+                    </button>
+                  )}
+                </div>
               </EntrySummaryModal>
             </div>
           </div>
