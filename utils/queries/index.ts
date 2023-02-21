@@ -236,3 +236,13 @@ export const GET_TEAMS = gql`
     }
 }
 `
+
+export const GET_NBA_PLAYER_SCHEDULE = gql`
+  query GetNbaPlayerSchedule($team: String!, $startDate: DateTime!, $endDate: DateTime!){
+    getNbaPlayerSchedule(team: $team, startDate: $startDate, endDate: $endDate){
+      homeTeam
+      awayTeam
+      dateTime
+    }
+  }
+`
