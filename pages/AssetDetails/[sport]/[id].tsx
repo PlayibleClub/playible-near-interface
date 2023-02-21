@@ -148,7 +148,7 @@ const AssetDetails = (props) => {
                     className={`rounded-full mt-1 w-3 h-3 absolute ${
                       athlete?.isInjured && checkInjury(athlete?.isInjured) === 1
                         ? 'bg-indigo-yellow'
-                        : athlete?.isInjured && checkInjury(athlete?.isInjured === 2)
+                        : athlete?.isInjured && checkInjury(athlete?.isInjured) === 2
                         ? 'bg-indigo-red'
                         : 'bg-indigo-green'
                     }`}
