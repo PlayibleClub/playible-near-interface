@@ -31,7 +31,7 @@ const PerformerContainer = (props) => {
   return (
     <div
       data-test="PerformerContainer"
-      className={`justify-center flex flex-col w-full h-full md:pb-12`}
+      className={`justify-center flex flex-col md:flex-col w-full h-full md:pb-12 transform scale-85 -ml-24 md:scale-100`}
     >
       <div className="self-center mr-10">
         <div
@@ -75,7 +75,7 @@ const PerformerContainer = (props) => {
         )}
       </div>
       {children}
-      <div className="h-1/2 flex justify-center mb-6">
+      <div className="h-1/2 flex justify-center mb-6 ml-12 md:ml-0">
         <div className="flex flex-col w-28 mt-4 transform scale-65">
           <div className="mt-2 text-xs font-bold uppercase gap-5">
             {AthleteName.length >= 14 ? cutAthleteName(AthleteName) : AthleteName}
@@ -95,7 +95,7 @@ const PerformerContainer = (props) => {
                 <></>
               )} */}
               <div
-                className={`rounded-full mt-4 -ml-2 w-3 h-3 absolute ${
+                className={`rounded-full md:-mt-8 md:-ml-4 -ml-4 -mt-8 w-3 h-3 absolute ${
                   isInjured && checkInjury(isInjured) === 1
                     ? 'bg-indigo-yellow'
                     : isInjured && checkInjury(isInjured === 2)
