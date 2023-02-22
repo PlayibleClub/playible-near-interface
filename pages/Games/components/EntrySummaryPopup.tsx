@@ -47,36 +47,26 @@ const PerformerContainer = (props) => {
           </div>
         )} */}
       </div>
-      <div
-        className={`flex justify-center h-2/3 -${
-          hoverable ? 'cursor-pointer hover:-translate-y-1 transform transition-all' : ''
-        } ${isInGame || isSelected ? 'opacity-50' : ''}`}
-      >
+      <div className="flex justify-center">
         {uri ? (
-          <div className="relative" style={{ width: '120px', height: '160px' }}>
-            {fromPortfolio === true ? (
-              <Link href={`/AssetDetails/${currentSport?.toLowerCase()}/${id}`} passHref>
-                <div className="absolute z-50" style={{ width: '120px', height: '160px' }}></div>
-              </Link>
-            ) : (
-              <div className="absolute z-50" style={{ width: '120px', height: '160px' }}></div>
-            )}
-
+          <div className="justify-center relative transform scale-85 md:scale-0 -mt-20" style={{ width: '120px', height: '162px' }}>
+            <div className="absolute z-40" style={{ width: '120px', height: '160px' }}></div>
             <object
-              className="absolute z-10"
+              className="absolute z-10 transform scale-70 md:scale-100"
               type="image/svg+xml"
               data={uri}
-              width={120}
-              height={160}
+              width={143}
+              height={190}
             />
           </div>
         ) : (
           <Image src={'/images/tokensMLB/SP.png'} width={120} height={160} alt="token-bare" />
         )}
+        {/* </Link> */}
       </div>
       {children}
       <div className="h-1/2 flex justify-center mb-6 ml-12 md:ml-0">
-        <div className="flex flex-col mt-4 transform scale-65">
+        <div className="flex flex-col transform scale-70 md:mt-4 md:scale-100">
           <div className="mt-2 text-xs font-bold uppercase gap-5">
             {AthleteName.length >= 14 ? cutAthleteName(AthleteName) : AthleteName}
           </div>

@@ -325,14 +325,15 @@ const Games = (props) => {
               <EntrySummaryModal title={'ENTRY SUMMARY'} visible={entryModal}>
                 <div>
                   <div className="flex flex-col w-full md:overflow-y-auto justify-center self-center md:pb-12 ml-24">
-                    <div className="flex items-center -ml-36 md:ml-0 transform scale-85 md:scale-100">
+                    <div className="flex items-center -ml-36 md:ml-0 transform scale-70 md:scale-100">
                       <ModalPortfolioContainer
                         title={playerLineups[currentIndex]?.teamName}
                         accountId={playerLineups[currentIndex]?.accountId}
-                        textcolor="text-indigo-black mb-5"
+                        textcolor="text-indigo-black"
                       />
+                      <div className="w-2/3 text-2xl pb-3 pt-20 md:pt-14 justify-between align-center"></div>
                     </div>
-                    <div className="grid grid-cols-2 gap-x-16 md:gap-x-0 md:gap-y-4 md:grid-cols-4 ml-8 md:ml-24 w-3/4 -mt-12">
+                    <div className="grid grid-cols-4 md:gap-y-4 md:mt-14 mb-2 md:mb-10 md:grid-cols-4 md:ml-7 -mt-10 -ml-6 mr-6 md:mr-0">
                       {playerLineups.length === 0
                         ? 'Loading athletes...'
                         : playerLineups[currentIndex]?.lineup.map((item, i) => {
@@ -351,7 +352,7 @@ const Games = (props) => {
                     </div>
                   </div>
                 </div>
-                <div className="flex justify-center items-end">
+                <div className="flex justify-center items-end fixed bottom-8 left-1/2">
                   {test === 1 ? (
                     <button
                       className="bg-indigo-buttonblue text-indigo-white md:mt-10 md:w-2/6 w-4/6 fixed center -mt-6 md:bottom-20 lg:bottom-6 md:h-14 h-8 text-center text-md font-monument"
