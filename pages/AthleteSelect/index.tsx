@@ -6,7 +6,11 @@ import Container from 'components/containers/Container';
 import PortfolioContainer from 'components/containers/PortfolioContainer';
 import router, { useRouter } from 'next/router';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
-import { convertNftToAthlete, getAthleteInfoById } from 'utils/athlete/helper';
+import {
+  convertNftToAthlete,
+  getAthleteBasketballSchedule,
+  getAthleteInfoById,
+} from 'utils/athlete/helper';
 
 import AthleteSelectContainer from 'components/containers/AthleteSelectContainer';
 import Link from 'next/link';
@@ -34,6 +38,7 @@ import {
   query_filter_tokens_for_owner,
   query_mixed_tokens_pagination,
 } from 'utils/near/helper';
+import { getGameStartDate, getGameEndDate } from 'redux/athlete/athleteSlice';
 import { getSportType } from 'data/constants/sportConstants';
 import NftTypeComponent from 'pages/Portfolio/components/NftTypeComponent';
 import { getPositionDisplay } from 'utils/athlete/helper';
@@ -50,6 +55,8 @@ const AthleteSelect = (props) => {
   const dispatch = useDispatch();
   //Get the data from redux store
   const gameId = useSelector(getGameId);
+  const startDate = useSelector(getGameStartDate);
+  const endDate = useSelector(getGameEndDate);
   const position = useSelector(getPosition);
   console.log(position);
   const index = useSelector(getIndex);
@@ -60,7 +67,6 @@ const AthleteSelect = (props) => {
   const [selectedRegular, setSelectedRegular] = useState(false);
   const [selectedPromo, setSelectedPromo] = useState(false);
   const [athleteOffset, setAthleteOffset] = useState(0);
-  const [regularOffset, setRegularOffset] = useState(0);
   const [promoOffset, setPromoOffset] = useState(0);
   const [isPromoPage, setIsPromoPage] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
@@ -74,15 +80,9 @@ const AthleteSelect = (props) => {
   const { accountId } = useWalletSelector();
   const [pageCount, setPageCount] = useState(0);
   const [remountComponent, setRemountComponent] = useState(0);
-  const [search, setSearch] = useState('');
-  const [currPosition, setCurrPosition] = useState('');
-  const [loading, setLoading] = useState(true);
   const [remountAthlete, setRemountAthlete] = useState(0);
   const [getTeams] = useLazyQuery(GET_TEAMS);
   const [teams, setTeams] = useState([]);
-  const provider = new providers.JsonRpcProvider({
-    url: getRPCProvider(),
-  });
 
   async function get_filter_supply_for_owner() {
     setTotalRegularSupply(
@@ -134,17 +134,31 @@ const AthleteSelect = (props) => {
     return false;
   }
   async function get_filter_tokens_for_owner(contract) {
-    setAthletes(
-      await query_filter_tokens_for_owner(
-        accountId,
-        athleteOffset,
-        athleteLimit,
-        position,
-        team,
-        name,
-        contract
-      )
-    );
+    await query_filter_tokens_for_owner(
+      accountId,
+      athleteOffset,
+      athleteLimit,
+      position,
+      team,
+      name,
+      contract
+    ).then(async (result) => {
+      const athletes = await Promise.all(
+        result.map((x) => getAthleteBasketballSchedule(x, startDate, endDate))
+      );
+      setAthletes(athletes);
+    });
+    //   setAthletes(
+    //     await query_filter_tokens_for_owner(
+    //       accountId,
+    //       athleteOffset,
+    //       athleteLimit,
+    //       position,
+    //       team,
+    //       name,
+    //       contract
+    //     )
+    //   );
   }
   async function get_mixed_tokens_for_pagination() {
     await query_mixed_tokens_pagination(
@@ -347,6 +361,7 @@ const AthleteSelect = (props) => {
 
   useEffect(() => {
     setRemountAthlete(Math.random() + 1);
+    console.log(athletes);
   }, [athletes]);
   useEffect(() => {
     if (selectedRegular !== false && selectedPromo === false) {
