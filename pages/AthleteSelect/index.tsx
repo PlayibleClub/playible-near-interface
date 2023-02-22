@@ -39,7 +39,7 @@ import {
   query_mixed_tokens_pagination,
 } from 'utils/near/helper';
 import { getGameStartDate, getGameEndDate } from 'redux/athlete/athleteSlice';
-import { getSportType } from 'data/constants/sportConstants';
+import { getSportType, SPORT_NAME_LOOKUP } from 'data/constants/sportConstants';
 import NftTypeComponent from 'pages/Portfolio/components/NftTypeComponent';
 import { getPositionDisplay } from 'utils/athlete/helper';
 import { useLazyQuery } from '@apollo/client';
@@ -143,9 +143,12 @@ const AthleteSelect = (props) => {
       name,
       contract
     ).then(async (result) => {
-      const athletes = await Promise.all(
-        result.map((x) => getAthleteBasketballSchedule(x, startDate, endDate))
-      );
+      let athletes = result;
+      if (currentSport === SPORT_NAME_LOOKUP.basketball) {
+        athletes = await Promise.all(
+          result.map((x) => getAthleteBasketballSchedule(x, startDate, endDate))
+        );
+      }
       setAthletes(athletes);
     });
     //   setAthletes(
@@ -172,8 +175,14 @@ const AthleteSelect = (props) => {
       team,
       name,
       currentSport
-    ).then((result) => {
-      setAthletes(result);
+    ).then(async (result) => {
+      let athletes = result;
+      if (currentSport === SPORT_NAME_LOOKUP.basketball) {
+        athletes = await Promise.all(
+          result.map((x) => getAthleteBasketballSchedule(x, startDate, endDate))
+        );
+      }
+      setAthletes(athletes);
     });
     //setRemountAthlete(Math.random() + 1);
     // query_filter_tokens_for_owner(
@@ -481,6 +490,7 @@ const AthleteSelect = (props) => {
                       fromPortfolio={false}
                       isActive={item.isActive}
                       isInjured={item.isInjured}
+                      gameCount={item.schedule.length}
                     />
                   </div>
                 ) : (
@@ -503,6 +513,7 @@ const AthleteSelect = (props) => {
                         fromPortfolio={false}
                         isActive={item.isActive}
                         isInjured={item.isInjured}
+                        gameCount={item.schedule.length}
                       />
                     </div>
                   </label>

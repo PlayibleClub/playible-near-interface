@@ -25,6 +25,7 @@ const PerformerContainer = (props) => {
     isSelected,
     fromPortfolio,
     currentSport,
+    gameCount,
   } = props;
 
   return (
@@ -100,7 +101,7 @@ const PerformerContainer = (props) => {
                 }`}
               ></div>
               <span className="pointer-events-none absolute -top-5 -left-8 w-max rounded px-2 py-1 bg-indigo-gray text-indigo-white text-sm font-medium text-gray-50 shadow opacity-0 transition-opacity group-hover:opacity-100">
-                {isInjured !== null ? isInjured : 'Active'}
+                {isInjured !== null ? isInjured : `ACTIVE ${gameCount}`}
               </span>
             </div>
           </div>
@@ -132,6 +133,7 @@ PerformerContainer.propTypes = {
   fromPortfolio: PropTypes.bool,
   isInjured: PropTypes.string,
   isActive: PropTypes.bool,
+  gameCount: PropTypes.number,
 };
 
 export default PerformerContainer;
