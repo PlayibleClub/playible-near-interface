@@ -20,6 +20,7 @@ import { store, persistor } from 'redux/athlete/store';
 import { query_game_data } from 'utils/near/helper';
 import { getSportType } from 'data/constants/sportConstants';
 import { setTeamName, setAccountId, setGameId, setSport2 } from 'redux/athlete/teamSlice';
+import { setGameStartDate, setGameEndDate } from 'redux/athlete/athleteSlice';
 export default function CreateLineup(props) {
   const { query } = props;
   const gameId = query.game_id;
@@ -62,6 +63,12 @@ export default function CreateLineup(props) {
     dispatch(setSport2(currentSport));
     router.push('/EntrySummary');
   };
+
+  const handleCreateLineupClick = () => {
+    dispatch(setGameStartDate(gameData.start_time));
+    dispatch(setGameEndDate(gameData.end_time));
+    router.push(`/CreateTeam/${currentSport.toLowerCase()}/${gameId}`);
+  };
   useEffect(() => {
     setTimeout(() => persistor.purge(), 200);
     console.log('loading');
@@ -102,11 +109,13 @@ export default function CreateLineup(props) {
                     ? gameData?.game_description
                     : ' Enter your team to compete for cash prizes and entry into the Football Championship with $35,000 USD up for grabs.'}
                 </div>
-                <Link href={`/CreateTeam/${currentSport.toLowerCase()}/${gameId}`}>
-                  <button className="bg-indigo-buttonblue text-indigo-white whitespace-nowrap h-14 px-10 md:mt-16 iphone5:mt-8 text-center font-bold">
-                    CREATE YOUR LINEUP +
-                  </button>
-                </Link>
+
+                <button
+                  onClick={handleCreateLineupClick}
+                  className="bg-indigo-buttonblue text-indigo-white whitespace-nowrap h-14 px-10 md:mt-16 iphone5:mt-8 text-center font-bold"
+                >
+                  CREATE YOUR LINEUP +
+                </button>
               </div>
             </div>
             <div className="mt-7 ml-6 w-3/5 md:w-1/3 md:ml-12 md:mt-2">
