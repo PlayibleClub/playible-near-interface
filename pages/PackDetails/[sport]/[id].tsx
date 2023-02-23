@@ -32,6 +32,7 @@ export default function PackDetails(props) {
 
   const [storageDepositAccountBalance, setStorageDepositAccountBalance] = useState(0);
   const [deposit, setDeposit] = useState('');
+  const [existingDeposit, setExistingDeposit] = useState(null);
   const { query } = props;
   const { selector, accountId } = useWalletSelector();
   const router = useRouter();
@@ -92,10 +93,12 @@ export default function PackDetails(props) {
         // @ts-ignore:next-line
         const storageDeposit = JSON.parse(Buffer.from(storage_balance.result).toString());
         setStorageDepositAccountBalance(storageDeposit);
+        setExistingDeposit(true);
       }
     } catch (e) {
       // No account storage deposit found
       setStorageDepositAccountBalance(0);
+      setExistingDeposit(true);
     }
   }
   function check_existing_deposit() {
@@ -120,7 +123,6 @@ export default function PackDetails(props) {
             : contract.openContract,
         token_id: myPack.id,
         msg: 'Pack ' + myPack.id.toString() + ' sent.',
-        deposit: deposit,
       })
     );
 
@@ -159,9 +161,12 @@ export default function PackDetails(props) {
   //   }
   // }, [totalPacks]);
   useEffect(() => {
-    if (packDetails !== null) {
-      get_pack_token_by_id();
-      query_storage_deposit_account_id();
+    get_pack_token_by_id();
+    query_storage_deposit_account_id();
+  }, []);
+
+  useEffect(() => {
+    if (existingDeposit === true) {
       setDeposit(check_existing_deposit());
     }
   }, [storageDepositAccountBalance]);
