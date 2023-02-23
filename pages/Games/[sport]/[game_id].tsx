@@ -294,7 +294,7 @@ const Games = (props) => {
                 )}
               </div>
               <Modal title={'EXTENDED LEADERBOARD'} visible={viewModal}>
-                <div className=" overflow-y-auto">
+                <div className="md:h-128 h-80 overflow-y-auto">
                   {playerLineups.length > 0
                     ? playerLineups.map((item, index) => {
                         return (
@@ -322,7 +322,7 @@ const Games = (props) => {
                   CLOSE
                 </button>
               </Modal>
-              <EntrySummaryModal title={'ENTRY SUMMARY'} visible={entryModal}>
+              <EntrySummaryModal title={'ENTRY SUMMARY'} visible={entryModal}>  
                 <div>
                   <div className="flex flex-col w-full md:overflow-y-auto justify-center self-center md:pb-12 ml-24">
                     <div className="flex items-center -ml-36 md:ml-0 transform scale-70 md:scale-100">
@@ -333,7 +333,7 @@ const Games = (props) => {
                       />
                       <div className="w-2/3 text-2xl pb-3 pt-20 md:pt-14 justify-between align-center"></div>
                     </div>
-                    <div className="grid grid-cols-4 md:gap-y-4 md:mt-14 mb-2 md:mb-10 md:grid-cols-4 md:ml-7 -mt-10 -ml-6 mr-6 md:mr-0">
+                    <div className="grid grid-cols-4 gap-6 md:gap-y-4 md:mt-14 mb-2 md:mb-10 md:grid-cols-4 md:ml-7 -mt-9 -ml-9 mr-6 md:mr-0">
                       {playerLineups.length === 0
                         ? 'Loading athletes...'
                         : playerLineups[currentIndex]?.lineup.map((item, i) => {
