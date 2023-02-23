@@ -100,8 +100,15 @@ const PerformerContainer = (props) => {
                     : 'bg-indigo-green'
                 }`}
               ></div>
-              <span className="pointer-events-none absolute -top-5 -left-8 w-max rounded px-2 py-1 bg-indigo-gray text-indigo-white text-sm font-medium text-gray-50 shadow opacity-0 transition-opacity group-hover:opacity-100">
-                {isInjured !== null ? isInjured : `ACTIVE ${gameCount}`}
+              <span
+                className={`whitespace-pre-line pointer-events-none absolute ${
+                  isInjured === null ? '-top-9' : '-top-5'
+                } -left-8 w-max rounded px-2 py-1 bg-indigo-gray text-indigo-white text-sm font-medium text-gray-50 shadow opacity-0 transition-opacity group-hover:opacity-100`}
+              >
+                {isInjured !== null
+                  ? isInjured
+                  : `ACTIVE 
+                 Games: ${gameCount}`}
               </span>
             </div>
           </div>
