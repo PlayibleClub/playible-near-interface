@@ -98,16 +98,19 @@ export default function PackDetails(props) {
       setStorageDepositAccountBalance(0);
     }
   }
+  function check_existing_deposit() {
+    let storageDeposit;
+    console.log('Storage Deposit Account Balance:', storageDepositAccountBalance);
+    if (storageDepositAccountBalance / DECIMALS_NEAR > 480000000000000000000000 / DECIMALS_NEAR) {
+      storageDeposit = (storageDepositAccountBalance / DECIMALS_NEAR).toFixed();
+    } else {
+      storageDeposit = new BigNumber(8).multipliedBy(new BigNumber(MINT_STORAGE_COST)).toFixed();
+    }
+    return storageDeposit;
+  }
+
   async function execute_open_pack() {
     const contract = getSportType(myPack.sport);
-
-    if (storageDepositAccountBalance / DECIMALS_NEAR > 480000000000000000000000 / DECIMALS_NEAR) {
-      const deposit = storageDepositAccountBalance.toFixed();
-      setDeposit(deposit);
-    } else {
-      const deposit = new BigNumber(8).multipliedBy(new BigNumber(MINT_STORAGE_COST)).toFixed();
-      setDeposit(deposit);
-    }
 
     const transferArgs = Buffer.from(
       JSON.stringify({
@@ -156,13 +159,12 @@ export default function PackDetails(props) {
   //   }
   // }, [totalPacks]);
   useEffect(() => {
-    get_pack_token_by_id();
-    query_storage_deposit_account_id();
-    console.log(
-      'Is storage greater than .48N?',
-      storageDepositAccountBalance > 480000000000000000000000
-    );
-  }, []);
+    if (packDetails !== null) {
+      get_pack_token_by_id();
+      query_storage_deposit_account_id();
+      setDeposit(check_existing_deposit());
+    }
+  }, [storageDepositAccountBalance]);
   return (
     <Container activeName="PACKS">
       <div className="md:ml-6 mt-12">
