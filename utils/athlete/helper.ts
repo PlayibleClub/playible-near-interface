@@ -25,7 +25,7 @@ async function getAthleteInfoById(item) {
     primary_id: value[0],
     athlete_id: item.token_id,
     rarity: value[1],
-    usage: isPromo ? 0 : basketball ? 0 : value[2],
+    usage: isPromo ? 0 : basketball ? 0 : value[2].length > 2 ? 0 : value[2] ,
     name: value[3 - diff],
     team: value[4 - diff],
     position: value[5 - diff],
