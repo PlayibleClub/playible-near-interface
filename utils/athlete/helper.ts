@@ -12,7 +12,14 @@ async function getAthleteInfoById(item) {
     variables: { getAthleteById: parseFloat(value[0]) },
   });
   const basketball = item.token_id.includes('2000');
-  const diff = item.token_id.includes('SB') || item.token_id.includes('PR') ? 1 : basketball ? 1 : 0;
+  let diff;
+
+  if(value[6] == null) {
+    diff = item.token_id.includes('SB') || item.token_id.includes('PR') ? 1 : basketball ? 1 : 1;
+  } else {
+    diff = item.token_id.includes('SB') || item.token_id.includes('PR') ? 1 : basketball ? 1 : 0;
+  }
+
   const isPromo = item.token_id.includes('SB') || item.token_id.includes('PR');
   const returningData = {
     primary_id: value[0],
