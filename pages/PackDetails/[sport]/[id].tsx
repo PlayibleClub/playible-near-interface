@@ -82,7 +82,6 @@ export default function PackDetails(props) {
       if (selector.isSignedIn()) {
         // Get storage deposit on minter contract
         const query = JSON.stringify({ account: accountId });
-
         const storage_balance = await provider.query({
           request_type: 'call_function',
           finality: 'optimistic',
@@ -169,7 +168,7 @@ export default function PackDetails(props) {
     if (existingDeposit === true) {
       setDeposit(check_existing_deposit());
     }
-  }, [storageDepositAccountBalance]);
+  }, [storageDepositAccountBalance, existingDeposit]);
   return (
     <Container activeName="PACKS">
       <div className="md:ml-6 mt-12">
