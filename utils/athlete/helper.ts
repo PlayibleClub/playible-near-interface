@@ -24,10 +24,9 @@ async function getAthleteInfoById(item) {
   for (const key of item.extra) {
     value[key.trait_type] = key.value;
   }
-
   const { data } = await client.query({
     query: GET_ATHLETE_BY_ID,
-    variables: { getAthleteById: parseFloat(value[0]) },
+    variables: { getAthleteById: parseFloat(value['athlete_id']) },
   });
   const basketball = item.token_id.includes('2000');
   let diff;
