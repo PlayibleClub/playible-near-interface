@@ -324,8 +324,8 @@ const Games = (props) => {
               </Modal>
               <EntrySummaryModal title={'ENTRY SUMMARY'} visible={entryModal}>  
                 <div>
-                  <div className="flex flex-col w-full md:overflow-y-auto justify-center self-center md:pb-12 ml-24">
-                    <div className="flex items-center -ml-36 md:ml-0 transform scale-70 md:scale-100">
+                  <div className="flex flex-col w-full md:pb-12 ml-24  iphoneX:ml-24 md:ml-20">
+                    <div className="flex items-center -ml-36 -mt-4 md:ml-0 transform scale-70 md:scale-100">
                       <ModalPortfolioContainer
                         title={playerLineups[currentIndex]?.teamName}
                         accountId={playerLineups[currentIndex]?.accountId}
@@ -355,7 +355,7 @@ const Games = (props) => {
                 <div className="flex justify-center items-end fixed bottom-8 left-1/2">
                   {test === 1 ? (
                     <button
-                      className="bg-indigo-buttonblue text-indigo-white md:mt-10 md:w-2/6 w-4/6 fixed center -mt-6 md:bottom-20 lg:bottom-6 md:h-14 h-8 text-center text-md font-monument"
+                      className="bg-indigo-buttonblue text-indigo-white md:mt-10 md:w-2/6 w-4/6 fixed center -mt-6 bottom-4 md:bottom-20 lg:bottom-6 md:h-14 h-8 text-center text-md font-monument"
                       onClick={() => {
                         setEntryModal(false);
                         setViewModal(false);
@@ -366,8 +366,8 @@ const Games = (props) => {
                     </button>
                   ) : (
                     <button
-                      className="bg-indigo-buttonblue text-indigo-white md:mt-10 md:w-2/6 w-4/6 fixed center -mt-6 md:bottom-6 md:right-96 md:h-14 h-8 text-center text-md font-monument"
-                      onClick={() => {
+                    className="bg-indigo-buttonblue text-indigo-white md:mt-10 md:w-2/6 w-4/6 fixed center -mt-6 bottom-4 md:bottom-20 lg:bottom-6 md:h-14 h-8 text-center text-md font-monument"
+                    onClick={() => {
                         setEntryModal(false);
                         setViewModal(true);
                         setTest(0);
