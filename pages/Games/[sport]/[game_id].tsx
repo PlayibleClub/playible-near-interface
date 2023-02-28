@@ -26,8 +26,12 @@ import { getSportType, SPORT_NAME_LOOKUP } from 'data/constants/sportConstants';
 import moment, { Moment } from 'moment';
 import Modal from 'components/modals/Modal';
 import { providers } from 'near-api-js';
+import EntrySummaryPopup from '../components/EntrySummaryPopup';
+import EntrySummaryModal from 'components/modals/EntrySummaryModal';
+import PerformerContainer from 'components/containers/PerformerContainer';
 const Games = (props) => {
   const { query } = props;
+  const [currentIndex, setCurrentIndex] = useState(null);
   const gameId = query.game_id;
   const currentSport = query.sport.toString().toUpperCase();
   const router = useRouter();
@@ -42,12 +46,13 @@ const Games = (props) => {
   const [nflSeason, setNflSeason] = useState('');
   const [gameData, setGameData] = useState(null);
   const [viewModal, setViewModal] = useState(false);
+  const [entryModal, setEntryModal] = useState(false);
+  const [test, setTest] = useState(0);
   const playGameImage = '/images/game.png';
   async function get_game_data(game_id) {
     setGameInfo(await query_game_data(game_id, getSportType(currentSport).gameContract));
     setGameData(await query_game_data(game_id, getSportType(currentSport).gameContract));
   }
-
   // async function get_all_players_lineup_chunks(joined_team_counter) {
   //   const startTimeFormatted = formatToUTCDate(gameData.start_time);
   //   const endTimeFormatted = formatToUTCDate(gameData.end_time);
@@ -87,6 +92,13 @@ const Games = (props) => {
   //   //   await query_all_players_lineup(gameId, currentSport, startTimeFormatted, endTimeFormatted)
   //   // );
   // }
+  const togglePopup = (item) => {
+    console.log(item);
+    setViewModal(false);
+    setEntryModal(true);
+    setCurrentIndex(item.index);
+  };
+
   async function get_all_players_lineup_with_index() {
     const startTimeFormatted = formatToUTCDate(gameData.start_time);
     const endTimeFormatted = formatToUTCDate(gameData.end_time);
@@ -159,13 +171,10 @@ const Games = (props) => {
       await query_player_teams(account, game_id, getSportType(currentSport).gameContract)
     );
   }
-  const handleButtonClick = (teamName, accountId, gameId) => {
-    console.log(teamName);
-    dispatch(setTeamName(teamName));
-    dispatch(setAccountId(accountId));
-    dispatch(setGameId(gameId));
-    dispatch(setSport2(currentSport));
-    router.push('/EntrySummary');
+  const handleButtonClick = (item) => {
+    setTest(test + 1);
+    setEntryModal(true);
+    setCurrentIndex(item.index);
   };
   useEffect(() => {
     if (gameData !== undefined && gameData !== null) {
@@ -228,7 +237,10 @@ const Games = (props) => {
                             accountScore={getAccountScore(accountId, data.teamName)}
                             accountPlacement={getAccountPlacement(accountId, data.teamName)}
                             fromGames={true}
-                            onClickFn={() => handleButtonClick(data.teamName, accountId, gameId)}
+                            onClickFn={() => {
+                              togglePopup({ accountId: data.accountId, index: index });
+                              setTest(1);
+                            }}
                           />
                         );
                       })}
@@ -268,9 +280,10 @@ const Games = (props) => {
                         teamScore={item.sumScore}
                         index={index}
                         gameId={gameId}
-                        onClickFn={(teamName, accountId, gameId) =>
-                          handleButtonClick(teamName, accountId, gameId)
-                        }
+                        onClickFn={() => {
+                          togglePopup({ accountId: item.accountId, index: index });
+                          setTest(1);
+                        }}
                       />
                     );
                   })
@@ -280,13 +293,7 @@ const Games = (props) => {
                   </div>
                 )}
               </div>
-              <Modal
-                title={'EXTENDED LEADERBOARD'}
-                visible={viewModal}
-                onClose={() => {
-                  setViewModal(false);
-                }}
-              >
+              <Modal title={'EXTENDED LEADERBOARD'} visible={viewModal}>
                 <div className="md:h-128 h-80 overflow-y-auto">
                   {playerLineups.length > 0
                     ? playerLineups.map((item, index) => {
@@ -297,9 +304,10 @@ const Games = (props) => {
                             teamScore={item.sumScore}
                             index={index}
                             gameId={gameId}
-                            onClickFn={(teamName, accountId, gameId) =>
-                              handleButtonClick(teamName, accountId, gameId)
-                            }
+                            onClickFn={() => {
+                              togglePopup({ accountId: item.accountId, index: index });
+                              setTest(0);
+                            }}
                           />
                         );
                       })
@@ -314,6 +322,62 @@ const Games = (props) => {
                   CLOSE
                 </button>
               </Modal>
+              <EntrySummaryModal title={'ENTRY SUMMARY'} visible={entryModal}>  
+                <div>
+                  <div className="flex flex-col w-full md:pb-12 ml-24  iphoneX:ml-24 md:ml-20">
+                    <div className="flex items-center -ml-36 -mt-4 md:ml-0 transform scale-70 md:scale-100">
+                      <ModalPortfolioContainer
+                        title={playerLineups[currentIndex]?.teamName}
+                        accountId={playerLineups[currentIndex]?.accountId}
+                        textcolor="text-indigo-black"
+                      />
+                      <div className="w-2/3 text-2xl pb-3 pt-20 md:pt-14 justify-between align-center"></div>
+                    </div>
+                    <div className="grid grid-cols-4 gap-6 md:gap-y-4 md:mt-14 mb-2 md:mb-10 md:grid-cols-4 md:ml-7 -mt-9 -ml-9 mr-6 md:mr-0">
+                      {playerLineups.length === 0
+                        ? 'Loading athletes...'
+                        : playerLineups[currentIndex]?.lineup.map((item, i) => {
+                            return (
+                              <EntrySummaryPopup
+                                AthleteName={`${item.name}`}
+                                AvgScore={item.stats_breakdown?.toFixed(2)}
+                                id={item.primary_id}
+                                uri={item.image}
+                                hoverable={false}
+                                isActive={item.isActive}
+                                isInjured={item.isInjured}
+                              />
+                            );
+                          })}
+                    </div>
+                  </div>
+                </div>
+                <div className="flex justify-center items-end fixed bottom-8 left-1/2">
+                  {test === 1 ? (
+                    <button
+                      className="bg-indigo-buttonblue text-indigo-white md:mt-10 md:w-2/6 w-4/6 fixed center -mt-6 bottom-4 md:bottom-20 lg:bottom-6 md:h-14 h-8 text-center text-md font-monument"
+                      onClick={() => {
+                        setEntryModal(false);
+                        setViewModal(false);
+                        setTest(0);
+                      }}
+                    >
+                      CLOSE
+                    </button>
+                  ) : (
+                    <button
+                    className="bg-indigo-buttonblue text-indigo-white md:mt-10 md:w-2/6 w-4/6 fixed center -mt-6 bottom-4 md:bottom-20 lg:bottom-6 md:h-14 h-8 text-center text-md font-monument"
+                    onClick={() => {
+                        setEntryModal(false);
+                        setViewModal(true);
+                        setTest(0);
+                      }}
+                    >
+                      CLOSE
+                    </button>
+                  )}
+                </div>
+              </EntrySummaryModal>
             </div>
           </div>
         </Main>
