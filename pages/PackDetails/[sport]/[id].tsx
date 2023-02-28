@@ -104,7 +104,7 @@ export default function PackDetails(props) {
     let storageDeposit;
     console.log('Storage Deposit Account Balance:', storageDepositAccountBalance);
     if (storageDepositAccountBalance / DECIMALS_NEAR >= 480000000000000000000000 / DECIMALS_NEAR) {
-      storageDeposit = (10000000000000000000000000000000000 / DECIMALS_NEAR).toFixed();
+      storageDeposit = 1;
     } else {
       storageDeposit = new BigNumber(8).multipliedBy(new BigNumber(MINT_STORAGE_COST)).toFixed();
     }
