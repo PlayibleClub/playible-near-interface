@@ -4,7 +4,6 @@ import BackFunction from 'components/buttons/BackFunction';
 import ModalPortfolioContainer from 'components/containers/ModalPortfolioContainer';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
 import { useEffect, useState } from 'react';
-import { cutAddress } from 'utils/address/helper';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import Main from 'components/Main';
@@ -239,7 +238,7 @@ const Games = (props) => {
                             accountPlacement={getAccountPlacement(accountId, data.teamName)}
                             fromGames={true}
                             onClickFn={() => {
-                              togglePopup({ accountId: cutAddress(data.accountId), index: index });
+                              togglePopup({ accountId: data.accountId, index: index });
                               setTest(1);
                             }}
                           />
@@ -329,7 +328,7 @@ const Games = (props) => {
                     <div className="flex items-center -ml-36 -mt-4 md:ml-0 transform scale-70 md:scale-100">
                       <ModalPortfolioContainer
                         title={playerLineups[currentIndex]?.teamName}
-                        accountId={cutAddress(playerLineups[currentIndex]?.accountId)}
+                        accountId={playerLineups[currentIndex]?.accountId}
                         textcolor="text-indigo-black"
                       />
                       <div className="w-2/3 text-2xl pb-3 pt-20 md:pt-14 justify-between align-center"></div>
