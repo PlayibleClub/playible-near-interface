@@ -24,9 +24,32 @@ export const GET_ATHLETES_TOP = gql`
   }
 `;
 
+// export const GET_ATHLETE_BY_ID = gql`
+//   query GetAthleteData($getAthleteById: Float!) {
+//     getAthleteById(id: $getAthleteById) {
+//       nftAnimation
+//       nftImage
+//       isInjured
+//       isActive
+//       stats {
+//         season
+//         fantasyScore
+//         week
+//         type
+//         played
+//         opponent {
+//           name
+//           key
+//         }
+//         gameDate
+//         played
+//       }
+//     }
+//   }
+// `;
 export const GET_ATHLETE_BY_ID = gql`
-  query GetAthleteData($getAthleteById: Float!) {
-    getAthleteById(id: $getAthleteById) {
+  query GetAthleteById($getAthleteById: Float!, $to: DateTime, $from: DateTime) {
+    getAthleteById(id: $getAthleteById, to: $to, from: $from) {
       nftAnimation
       nftImage
       isInjured
@@ -36,7 +59,6 @@ export const GET_ATHLETE_BY_ID = gql`
         fantasyScore
         week
         type
-        played
         opponent {
           name
           key
@@ -46,8 +68,7 @@ export const GET_ATHLETE_BY_ID = gql`
       }
     }
   }
-`;
-
+`
 export const GET_ATHLETE_BY_ID_DATE = gql`
   query GetAthleteByIdDate($getAthleteById: Float!, $to: DateTime, $from: DateTime){
     getAthleteById(id: $getAthleteById, to: $to, from: $from){

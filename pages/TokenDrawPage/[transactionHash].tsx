@@ -147,7 +147,7 @@ const TokenDrawPage = (props) => {
           })
           // get metadata
           .map(convertNftToAthlete)
-          .map(getAthleteInfoById)
+          .map((item) => getAthleteInfoById(item, null, null))
       )
     );
     setLoading(false);

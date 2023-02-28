@@ -55,7 +55,7 @@ const AssetDetails = (props) => {
     query_nft_tokens_by_id(athleteIndex, contract).then(async (data) => {
       // @ts-ignore:next-line
       const result = JSON.parse(Buffer.from(data.result).toString());
-      const result_two = await getAthleteInfoById(await convertNftToAthlete(result));
+      const result_two = await getAthleteInfoById(await convertNftToAthlete(result), null, null);
       let games = result_two.stats_breakdown.slice();
       console.log(result_two);
       setAthlete(result_two);
