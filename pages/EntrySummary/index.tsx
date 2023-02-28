@@ -7,29 +7,15 @@ import Container from '../../components/containers/Container';
 import BackFunction from '../../components/buttons/BackFunction';
 import { useRouter } from 'next/router';
 import PlayDetailsComponent from '../PlayDetails/components/PlayDetailsComponent';
-import { axiosInstance } from '../../utils/playible';
 import moment from 'moment';
-import Link from 'next/link';
 import PerformerContainer from '../../components/containers/PerformerContainer';
 import 'regenerator-runtime/runtime';
-import LoadingPageDark from '../../components/loading/LoadingPageDark';
 import { providers } from 'near-api-js';
 import { getContract, getRPCProvider } from 'utils/near';
-import { useWalletSelector } from 'contexts/WalletSelectorContext';
-import {
-  convertNftToAthlete,
-  getAthleteInfoById,
-  getAthleteInfoByIdWithDate,
-} from 'utils/athlete/helper';
 import { formatToUTCDate, getNflSeason, getNflWeek, getUTCDateFromLocal } from 'utils/date/helper';
 import { useSelector } from 'react-redux';
 import { selectTeamName, selectAccountId, selectGameId, getSport2 } from 'redux/athlete/teamSlice';
-import {
-  query_game_data,
-  query_nft_tokens_by_id,
-  query_nft_tokens_for_owner,
-  query_nft_token_by_id,
-} from 'utils/near/helper';
+import { query_game_data, query_nft_token_by_id } from 'utils/near/helper';
 import { cutAddress } from 'utils/address/helper';
 import EntrySummaryBack from 'components/buttons/EntrySummaryBack';
 import { getSportType, SPORT_NAME_LOOKUP } from 'data/constants/sportConstants';

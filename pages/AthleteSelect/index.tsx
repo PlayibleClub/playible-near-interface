@@ -6,10 +6,6 @@ import Container from 'components/containers/Container';
 import PortfolioContainer from 'components/containers/PortfolioContainer';
 import router, { useRouter } from 'next/router';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
-import { convertNftToAthlete, getAthleteInfoById } from 'utils/athlete/helper';
-
-import AthleteSelectContainer from 'components/containers/AthleteSelectContainer';
-import Link from 'next/link';
 import SearchComponent from 'components/SearchComponent';
 import ReactPaginate from 'react-paginate';
 import PerformerContainer from 'components/containers/PerformerContainer';

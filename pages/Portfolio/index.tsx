@@ -4,21 +4,13 @@ import PortfolioContainer from '../../components/containers/PortfolioContainer';
 import PerformerContainer from '../../components/containers/PerformerContainer';
 import { useDispatch, useSelector } from 'react-redux';
 import LoadingPageDark from '../../components/loading/LoadingPageDark';
-import Link from 'next/link';
-import SquadPackComponent from '../../components/SquadPackComponent';
 import Container from '../../components/containers/Container';
-import Sorter from './components/Sorter';
 import SearchComponent from 'components/SearchComponent';
 import { transactions, utils, WalletConnection, providers } from 'near-api-js';
 import { getRPCProvider, getContract } from 'utils/near';
-import { PACK_NFL } from '../../data/constants/nearContracts';
-import { axiosInstance } from '../../utils/playible';
 import 'regenerator-runtime/runtime';
-import { ProvidedRequiredArgumentsOnDirectivesRule } from 'graphql/validation/rules/ProvidedRequiredArgumentsRule';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
-import { ATHLETE_NFL, ATHLETE_PROMO_NFL } from 'data/constants/nearContracts';
-import PackComponent from 'pages/Packs/components/PackComponent';
-import { convertNftToAthlete, getAthleteInfoById } from 'utils/athlete/helper';
+
 import {
   query_filter_supply_for_owner,
   query_filter_tokens_for_owner,
@@ -26,13 +18,8 @@ import {
 } from 'utils/near/helper';
 import { getSportType } from 'data/constants/sportConstants';
 import ReactPaginate from 'react-paginate';
-import Select from 'react-select';
-import { isCompositeType } from 'graphql';
-import { useRef } from 'react';
-import { current } from '@reduxjs/toolkit';
 import NftTypeComponent from './components/NftTypeComponent';
 import { getAthleteLineup, getIndex } from 'redux/athlete/athleteSlice';
-import { GET_ATHLETE_BY_ID } from 'utils/queries';
 import { SPORT_TYPES } from 'data/constants/sportConstants';
 import { useLazyQuery } from '@apollo/client';
 import { GET_TEAMS } from 'utils/queries';
@@ -311,8 +298,6 @@ const Portfolio = () => {
     console.log(teams);
   }, [teams]);
   useEffect(() => {}, [limit, offset, filter, search, selectedRegular, selectedPromo]);
-
-  console.table(athletes)
 
   return (
     <Container activeName="SQUAD">

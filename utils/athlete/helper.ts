@@ -1,6 +1,6 @@
 import client from 'apollo-client';
 import { objectTraps } from 'immer/dist/internal';
-import { GET_ATHLETE_BY_ID, GET_ATHLETE_BY_ID_DATE } from '../queries';
+import { GET_ATHLETE_BY_ID } from '../queries';
 import { getUTCTimestampFromLocal } from 'utils/date/helper';
 import { getSportType } from 'data/constants/sportConstants';
 
