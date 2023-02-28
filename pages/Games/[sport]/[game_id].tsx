@@ -322,7 +322,7 @@ const Games = (props) => {
                   CLOSE
                 </button>
               </Modal>
-              <EntrySummaryModal title={'ENTRY SUMMARY'} visible={entryModal}>  
+              <EntrySummaryModal title={'ENTRY SUMMARY'} visible={entryModal}>
                 <div>
                   <div className="flex flex-col w-full md:pb-12 ml-24  iphoneX:ml-24 md:ml-20">
                     <div className="flex items-center -ml-36 -mt-4 md:ml-0 transform scale-70 md:scale-100">
@@ -366,8 +366,8 @@ const Games = (props) => {
                     </button>
                   ) : (
                     <button
-                    className="bg-indigo-buttonblue text-indigo-white md:mt-10 md:w-2/6 w-4/6 fixed center -mt-6 bottom-4 md:bottom-20 lg:bottom-6 md:h-14 h-8 text-center text-md font-monument"
-                    onClick={() => {
+                      className="bg-indigo-buttonblue text-indigo-white md:mt-10 md:w-2/6 w-4/6 fixed center -mt-6 bottom-4 md:bottom-20 lg:bottom-6 md:h-14 h-8 text-center text-md font-monument"
+                      onClick={() => {
                         setEntryModal(false);
                         setViewModal(true);
                         setTest(0);
