@@ -73,13 +73,18 @@ const TokenDrawPage = (props) => {
   });
 
   function findContract(contract) {
-    if (contract.includes(SPORT_CONTRACT_LOOKUP.football)) {
+    if (
+      contract.includes(SPORT_CONTRACT_LOOKUP.football) ||
+      !contract.includes(SPORT_CONTRACT_LOOKUP.basketball)
+    ) {
       return fileList.find((x) => x.name === SPORT_NAME_LOOKUP.football);
     } else if (contract.includes(SPORT_CONTRACT_LOOKUP.basketball)) {
       return fileList.find((x) => x.name === SPORT_NAME_LOOKUP.basketball);
     }
   }
+
   const { selector, accountId } = useWalletSelector();
+
   const query_transaction_testnet = useCallback(async () => {
     const queryFromNear = await provider.sendJsonRpc<responseExperimentalTxStatus>(
       'EXPERIMENTAL_tx_status',
@@ -92,6 +97,7 @@ const TokenDrawPage = (props) => {
     //@ts-ignore:next-line
     const success = JSON.parse(decode(queryFromNear.status.SuccessValue));
     console.log(success);
+
     if (success) {
       //get the last transaction that holds the token_id needed
       const txObject = queryFromNear.receipts[queryFromNear.receipts.length - 3];
@@ -122,6 +128,7 @@ const TokenDrawPage = (props) => {
       } else {
         setVideoFile(findContract(contract).base);
       }
+
       //await query_nft_tokens_for_owner(args.receiver_id, )
       setRemountComponent(Math.random());
     }
@@ -145,6 +152,7 @@ const TokenDrawPage = (props) => {
     );
     setLoading(false);
   }, []);
+
   const query_transaction_mainnet = useCallback(async () => {
     const queryFromNear = await provider.sendJsonRpc<responseExperimentalTxStatus>(
       'EXPERIMENTAL_tx_status',

@@ -312,6 +312,8 @@ const Portfolio = () => {
   }, [teams]);
   useEffect(() => {}, [limit, offset, filter, search, selectedRegular, selectedPromo]);
 
+  console.table(athletes)
+
   return (
     <Container activeName="SQUAD">
       <div className="flex flex-col w-full overflow-y-auto h-screen">
