@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
+import { cutAddress } from 'utils/address/helper';
 
 const ModalPortfolioContainer = (props) => {
   const { color, textcolor, size, title, children, align, stats, accountId } = props;
@@ -15,7 +16,7 @@ const ModalPortfolioContainer = (props) => {
           {stats ? (
             <div className="flex w-full">
               <div className="w-2/3 text-2xl pb-3 pt-20 md:pt-14 justify-between align-center">
-                {title} | {accountId}
+                {title} | {cutAddress(accountId)}
                 <div className="underlineBig" />
               </div>
               <div
