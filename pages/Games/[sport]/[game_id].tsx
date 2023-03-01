@@ -99,11 +99,13 @@ const Games = (props) => {
     setCurrentIndex(item.index);
   };
 
-  const viewPopup = (item) => {
-    const currentUserIndex = playerLineups.findIndex(item => item.accountId === accountId);
+  const viewPopup = (accountId, teamName) => {
+    const currentIndex = playerLineups.findIndex(
+      (item) => item.accountId === accountId && item.teamName === teamName
+    );
     setViewModal(false);
     setEntryModal(true);
-    setCurrentIndex(currentUserIndex);
+    setCurrentIndex(currentIndex);
   };
 
   async function get_all_players_lineup_with_index() {
@@ -245,7 +247,7 @@ const Games = (props) => {
                             accountPlacement={getAccountPlacement(accountId, data.teamName)}
                             fromGames={true}
                             onClickFn={() => {
-                              viewPopup({ accountId: data.accountId, index: index });
+                              viewPopup(accountId, data.teamName);
                               setTest(1);
                             }}
                           />
