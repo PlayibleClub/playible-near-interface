@@ -361,28 +361,25 @@ const Games = (props) => {
                     </div>
                   </div>
                 </div>
-                <div className="flex justify-center items-end fixed bottom-8 left-1/2">
-                  {isExtendedLeaderboard === 1 ? (
+                <div className="fixed top-4 right-4 transform scale-100">
+                {isExtendedLeaderboard === 1 ? (
                     <button
-                      className="bg-indigo-buttonblue text-indigo-white md:mt-10 md:w-2/6 w-4/6 fixed center -mt-6 bottom-4 md:bottom-20 lg:bottom-6 md:h-14 h-8 text-center text-md font-monument"
                       onClick={() => {
                         setEntryModal(false);
                         setViewModal(false);
                         setIsExtendedLeaderboard(0);
                       }}
-                    >
-                      CLOSE
+                    ><img src="/images/x.png"/>
+                      
                     </button>
                   ) : (
                     <button
-                      className="bg-indigo-buttonblue text-indigo-white md:mt-10 md:w-2/6 w-4/6 fixed center -mt-6 bottom-4 md:bottom-20 lg:bottom-6 md:h-14 h-8 text-center text-md font-monument"
                       onClick={() => {
                         setEntryModal(false);
                         setViewModal(true);
                         setIsExtendedLeaderboard(0);
                       }}
-                    >
-                      CLOSE
+                    ><img src="/images/x.png"/>
                     </button>
                   )}
                 </div>
