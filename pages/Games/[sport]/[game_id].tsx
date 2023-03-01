@@ -99,6 +99,13 @@ const Games = (props) => {
     setCurrentIndex(item.index);
   };
 
+  const viewPopup = (item) => {
+    const currentUserIndex = playerLineups.findIndex(item => item.accountId === accountId);
+    setViewModal(false);
+    setEntryModal(true);
+    setCurrentIndex(currentUserIndex);
+  };
+
   async function get_all_players_lineup_with_index() {
     const startTimeFormatted = formatToUTCDate(gameData.start_time);
     const endTimeFormatted = formatToUTCDate(gameData.end_time);
@@ -238,7 +245,7 @@ const Games = (props) => {
                             accountPlacement={getAccountPlacement(accountId, data.teamName)}
                             fromGames={true}
                             onClickFn={() => {
-                              togglePopup({ accountId: data.accountId, index: index });
+                              viewPopup({ accountId: data.accountId, index: index });
                               setTest(1);
                             }}
                           />
