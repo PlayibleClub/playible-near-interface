@@ -47,7 +47,7 @@ const Games = (props) => {
   const [gameData, setGameData] = useState(null);
   const [viewModal, setViewModal] = useState(false);
   const [entryModal, setEntryModal] = useState(false);
-  const [test, setTest] = useState(0);
+  const [isExtendedLeaderboard, setIsExtendedLeaderboard] = useState(0);
   const playGameImage = '/images/game.png';
   async function get_game_data(game_id) {
     setGameInfo(await query_game_data(game_id, getSportType(currentSport).gameContract));
@@ -181,7 +181,7 @@ const Games = (props) => {
     );
   }
   const handleButtonClick = (item) => {
-    setTest(test + 1);
+    setIsExtendedLeaderboard(isExtendedLeaderboard + 1);
     setEntryModal(true);
     setCurrentIndex(item.index);
   };
@@ -248,7 +248,7 @@ const Games = (props) => {
                             fromGames={true}
                             onClickFn={() => {
                               viewPopup(accountId, data.teamName);
-                              setTest(1);
+                              setIsExtendedLeaderboard(1);
                             }}
                           />
                         );
@@ -291,7 +291,7 @@ const Games = (props) => {
                         gameId={gameId}
                         onClickFn={() => {
                           togglePopup({ accountId: item.accountId, index: index });
-                          setTest(1);
+                          setIsExtendedLeaderboard(1);
                         }}
                       />
                     );
@@ -315,7 +315,7 @@ const Games = (props) => {
                             gameId={gameId}
                             onClickFn={() => {
                               togglePopup({ accountId: item.accountId, index: index });
-                              setTest(0);
+                              setIsExtendedLeaderboard(0);
                             }}
                           />
                         );
@@ -333,7 +333,7 @@ const Games = (props) => {
               </Modal>
               <EntrySummaryModal title={'ENTRY SUMMARY'} visible={entryModal}>
                 <div>
-                  <div className="flex flex-col w-full md:pb-12 ml-24  iphoneX:ml-24 md:ml-20">
+                  <div className="flex flex-col w-full md:pb-12 ml-24 iphoneX:ml-24 md:ml-20">
                     <div className="flex items-center -ml-36 -mt-4 md:ml-0 transform scale-70 md:scale-100">
                       <ModalPortfolioContainer
                         title={playerLineups[currentIndex]?.teamName}
@@ -362,13 +362,13 @@ const Games = (props) => {
                   </div>
                 </div>
                 <div className="flex justify-center items-end fixed bottom-8 left-1/2">
-                  {test === 1 ? (
+                  {isExtendedLeaderboard === 1 ? (
                     <button
                       className="bg-indigo-buttonblue text-indigo-white md:mt-10 md:w-2/6 w-4/6 fixed center -mt-6 bottom-4 md:bottom-20 lg:bottom-6 md:h-14 h-8 text-center text-md font-monument"
                       onClick={() => {
                         setEntryModal(false);
                         setViewModal(false);
-                        setTest(0);
+                        setIsExtendedLeaderboard(0);
                       }}
                     >
                       CLOSE
@@ -379,7 +379,7 @@ const Games = (props) => {
                       onClick={() => {
                         setEntryModal(false);
                         setViewModal(true);
-                        setTest(0);
+                        setIsExtendedLeaderboard(0);
                       }}
                     >
                       CLOSE
