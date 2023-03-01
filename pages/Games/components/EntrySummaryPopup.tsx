@@ -49,7 +49,10 @@ const PerformerContainer = (props) => {
       </div>
       <div className="flex justify-center">
         {uri ? (
-          <div className="justify-center relative transform scale-85 md:scale-0 -mt-20" style={{ width: '120px', height: '162px' }}>
+          <div
+            className="justify-center relative transform scale-85 md:scale-0 -mt-20"
+            style={{ width: '120px', height: '162px' }}
+          >
             <div className="absolute z-40" style={{ width: '120px', height: '160px' }}></div>
             <object
               className="absolute z-10 transform scale-70 md:scale-100"
@@ -88,7 +91,7 @@ const PerformerContainer = (props) => {
                 className={`rounded-full md:-mt-8 md:-ml-4 -ml-4 -mt-8 w-3 h-3 absolute ${
                   isInjured && checkInjury(isInjured) === 1
                     ? 'bg-indigo-yellow'
-                    : isInjured && checkInjury(isInjured === 2)
+                    : isInjured && checkInjury(isInjured) === 2
                     ? 'bg-indigo-red'
                     : 'bg-indigo-green'
                 }`}
