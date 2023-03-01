@@ -29,10 +29,7 @@ export default function PackDetails(props) {
   const provider = new providers.JsonRpcProvider({
     url: getRPCProvider(),
   });
-
-  const [storageDepositAccountBalance, setStorageDepositAccountBalance] = useState(0);
   const [deposit, setDeposit] = useState('');
-  const [existingDeposit, setExistingDeposit] = useState(null);
   const { query } = props;
   const { selector, accountId } = useWalletSelector();
   const router = useRouter();
@@ -59,7 +56,6 @@ export default function PackDetails(props) {
       : getSportType(myPack.sport).openContract;
 
   const [packDetails, setPackDetails] = useState([]);
-  const [totalPacks, setTotalPacks] = useState(0);
 
   async function get_pack_token_by_id() {
     await query_nft_tokens_by_id(myPack.id, contract).then((data) => {
@@ -71,44 +67,44 @@ export default function PackDetails(props) {
       }
       setPackDetails([result]);
     });
-    // setPackDetails(await query_nft_tokens_for_owner(accountId, 0, parseInt(totalPacks), contract));
-  }
-  async function get_pack_supply_for_owner() {
-    setTotalPacks(await query_nft_supply_for_owner(accountId, contract));
   }
 
   async function query_storage_deposit_account_id() {
+    console.log(openContract);
     try {
       if (selector.isSignedIn()) {
         // Get storage deposit on minter contract
         const query = JSON.stringify({ account: accountId });
-        const storage_balance = await provider.query({
-          request_type: 'call_function',
-          finality: 'optimistic',
-          account_id: openContract,
-          method_name: 'get_storage_balance_of',
-          args_base64: Buffer.from(query).toString('base64'),
-        });
+        console.log(query);
+        await provider
+          .query({
+            request_type: 'call_function',
+            finality: 'optimistic',
+            account_id: openContract,
+            method_name: 'get_storage_balance_of',
+            args_base64: Buffer.from(query).toString('base64'),
+          })
+          .then((data) => {
+            //@ts-ignore:next-line
+            const storageDeposit = JSON.parse(Buffer.from(data.result).toString());
+            console.log(storageDeposit);
+            setDeposit(computeDeposit(storageDeposit));
+          });
         // @ts-ignore:next-line
-        const storageDeposit = JSON.parse(Buffer.from(storage_balance.result).toString());
-        setStorageDepositAccountBalance(storageDeposit);
-        setExistingDeposit(true);
       }
     } catch (e) {
+      console.log(e);
       // No account storage deposit found
-      setStorageDepositAccountBalance(0);
-      setExistingDeposit(true);
+      setDeposit(computeDeposit(0));
     }
   }
-  function check_existing_deposit() {
-    let storageDeposit;
-    console.log('Storage Deposit Account Balance:', storageDepositAccountBalance);
-    if (storageDepositAccountBalance / DECIMALS_NEAR >= 480000000000000000000000 / DECIMALS_NEAR) {
-      storageDeposit = 1;
+  function computeDeposit(deposit) {
+    console.log('Storage Deposit Account Balance:', deposit);
+    if (deposit / DECIMALS_NEAR >= 480000000000000000000000 / DECIMALS_NEAR) {
+      return '1';
     } else {
-      storageDeposit = new BigNumber(8).multipliedBy(new BigNumber(MINT_STORAGE_COST)).toFixed();
+      return new BigNumber(8).multipliedBy(new BigNumber(MINT_STORAGE_COST)).toFixed();
     }
-    return storageDeposit;
   }
 
   async function execute_open_pack() {
@@ -150,25 +146,12 @@ export default function PackDetails(props) {
       ],
     });
   }
-  //can add to helper
-  // useEffect(() => {
-  //   get_pack_supply_for_owner();
-  // }, []);
-  // useEffect(() => {
-  //   if (totalPacks !== 0) {
-  //     get_pack_token_by_id();
-  //   }
-  // }, [totalPacks]);
+
   useEffect(() => {
     get_pack_token_by_id();
     query_storage_deposit_account_id();
   }, []);
 
-  useEffect(() => {
-    if (existingDeposit === true) {
-      setDeposit(check_existing_deposit());
-    }
-  }, [storageDepositAccountBalance, existingDeposit]);
   return (
     <Container activeName="PACKS">
       <div className="md:ml-6 mt-12">
