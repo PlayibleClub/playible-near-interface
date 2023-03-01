@@ -34,7 +34,6 @@ export default function PackDetails(props) {
   const { selector, accountId } = useWalletSelector();
   const router = useRouter();
   const id = query.id.toString();
-  console.log(query.id);
   const myPack = {
     packName:
       id.length === 64 || id.includes('SB')
@@ -61,7 +60,6 @@ export default function PackDetails(props) {
     await query_nft_tokens_by_id(myPack.id, contract).then((data) => {
       //@ts-ignore:next-lines
       const result = JSON.parse(Buffer.from(data.result).toString());
-      console.log(result);
       if (result.owner_id !== accountId) {
         router.push('/Packs');
       }
@@ -70,12 +68,10 @@ export default function PackDetails(props) {
   }
 
   async function query_storage_deposit_account_id() {
-    console.log(openContract);
     try {
       if (selector.isSignedIn()) {
         // Get storage deposit on minter contract
         const query = JSON.stringify({ account: accountId });
-        console.log(query);
         await provider
           .query({
             request_type: 'call_function',
@@ -87,7 +83,6 @@ export default function PackDetails(props) {
           .then((data) => {
             //@ts-ignore:next-line
             const storageDeposit = JSON.parse(Buffer.from(data.result).toString());
-            console.log(storageDeposit);
             setDeposit(computeDeposit(storageDeposit));
           });
         // @ts-ignore:next-line
@@ -99,7 +94,6 @@ export default function PackDetails(props) {
     }
   }
   function computeDeposit(deposit) {
-    console.log('Storage Deposit Account Balance:', deposit);
     if (deposit / DECIMALS_NEAR >= 480000000000000000000000 / DECIMALS_NEAR) {
       return '1';
     } else {
