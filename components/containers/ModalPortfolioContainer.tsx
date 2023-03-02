@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { cutAddress } from 'utils/address/helper';
-
 const ModalPortfolioContainer = (props) => {
   const { color, textcolor, size, title, children, align, stats, accountId } = props;
   const avgicon = '/../../public/images/avgscore.png';
@@ -33,7 +32,13 @@ const ModalPortfolioContainer = (props) => {
             </div>
           ) : (
             <div className="pb-3 pt-6 justify-start align-center text-2xl font-monument">
-              {accountId ? <div>{title} | {accountId}</div> : title}
+              {accountId ? (
+                <div>
+                  {title} | {cutAddress(accountId)}
+                </div>
+              ) : (
+                title
+              )}
               <div className="underlineBig" />
             </div>
           )}

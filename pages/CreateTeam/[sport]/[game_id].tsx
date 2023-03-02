@@ -151,7 +151,7 @@ export default function CreateLineup(props) {
     <>
       <>
         <Container activeName="PLAY">
-          <div className="flex flex-col w-full hide-scroll max-h-screen justify-center self-center">
+          <div className="flex flex-col w-full hide-scroll max-h-screen overflow-y-auto justify-center self-center">
             <Main color="indigo-white">
               <div className="md:ml-6 md:mt-8">
                 <BackFunction prev={`/CreateLineup/${currentSport.toLowerCase()}/${gameId}`} />

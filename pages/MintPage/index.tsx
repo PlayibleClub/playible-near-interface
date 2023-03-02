@@ -868,46 +868,6 @@ export default function Home(props) {
                         )}
                       </div>
                     </div>
-                    {useNEP141.title === 'NEAR' ? (
-                      discountDate > 0 ? (
-                        <div className="line-through hidden decoration-4 text-xs font-black static">
-                          (45N)
-                        </div>
-                      ) : currentSport === 'FOOTBALL' ? (
-                        ''
-                      ) : (
-                        <div className=" text-xs">
-                          <div className="line-through decoration-8 text-lg font-black static">
-                            (45N)
-                          </div>
-
-                          {launchDate > 0 ? (
-                            <div className="text-xs">
-                              Discounted Until: 12am UTC{' '}
-                              {moment.utc(discountTimer).local().format('MMMM D')}
-                              <div className="flex space-x-1 mt-2">
-                                <div className="bg-indigo-darkgray text-indigo-white w-6 h-6 rounded justify-center flex pt-1">
-                                  {discountDay || ''}
-                                </div>
-                                <div className="bg-indigo-darkgray text-indigo-white w-6 h-6 rounded justify-center flex pt-1">
-                                  {discountHour || ''}
-                                </div>
-                                <div className="bg-indigo-darkgray text-indigo-white w-6 h-6 rounded justify-center flex pt-1">
-                                  {discountMinute || ''}
-                                </div>
-                                <div className="bg-indigo-darkgray text-indigo-white w-6 h-6 rounded justify-center flex pt-1">
-                                  {discountSecond || ''}
-                                </div>
-                              </div>
-                            </div>
-                          ) : (
-                            ''
-                          )}
-                        </div>
-                      )
-                    ) : (
-                      ''
-                    )}
 
                     {(counter().days > 0 ||
                       counter().hours > 0 ||
