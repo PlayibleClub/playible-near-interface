@@ -144,67 +144,11 @@ export default function CreateLineup(props) {
     }
   };
 
-  const prepareSlots = () => {
-    const slots = positions.map((item) => {
-      return {
-        ...athlete,
-        position: {
-          value: item,
-        },
-      };
-    });
-
-    setTeam(slots);
-  };
   function setArray(position, lineup, index) {
     const array = [{ position }, { lineup }, { index }];
     return array;
   }
-  const filterAthletes = (list, pos) => {
-    const tempList = [...list];
 
-    if (tempList.length > 0 && pos) {
-      const token_ids = team
-        .map(({ athlete_id, token_id, contract_addr }) => {
-          if (token_id) {
-            return token_id;
-          }
-        })
-        .filter((item) => item);
-      let filteredList = tempList
-        .filter((item) => {
-          if (pos === 'P') {
-            return item.position === 'RP' || item.position === 'SP';
-          } else if (pos === 'OF' || pos === 'LF' || pos === 'CF' || pos === 'RF') {
-            return (
-              item.position === 'LF' ||
-              item.position === 'CF' ||
-              item.position === 'OF' ||
-              item.position === 'RF'
-            );
-          } else {
-            return item.position === pos;
-          }
-        })
-        .map((item) => {
-          return {
-            ...item,
-            selected: false,
-          };
-        });
-      if (token_ids.length > 0) {
-        filteredList = filteredList.filter((item) => {
-          return token_ids.indexOf(item.token_id) === -1;
-        });
-      }
-
-      filteredList = filteredList.filter((item) => !item.is_locked);
-
-      return filteredList;
-    } else {
-      return [];
-    }
-  };
   function populateLineup(array) {
     //const array = Array(8).fill({position: "QB", isAthlete: false});
 
@@ -219,11 +163,6 @@ export default function CreateLineup(props) {
   async function get_game_data(game_id) {
     setGameData(await query_game_data(game_id, getSportType(currentSport).gameContract));
   }
-
-  /* Function that checks whether a string parses into valid JSON. Used to check if data from router
-     query parses into a JSON that holds the athlete data coming from AthleteSelect. Returns false
-     otherwise if the user is coming from CreateLineup
-  */
 
   async function execute_submit_lineup(game_id, team_name, token_ids, promo_ids) {
     const submitLineupArgs = Buffer.from(
@@ -423,107 +362,6 @@ export default function CreateLineup(props) {
                 <BackFunction prev={`/CreateLineup/${currentSport.toLowerCase()}/${gameId}`} />
               </div>
               <div className="flex flex-col w-full hide-scroll overflow-x-hidden h-full md:h-min self-center text-indigo-black relative">
-                {selectModal ? (
-                  <div className="absolute top-0 left-0 bottom-0 right-0 bg-indigo-white z-50">
-                    <PortfolioContainer
-                      title={`SELECT YOUR ${
-                        position('baseball', filterPos).toUpperCase() || 'No filtered'
-                      }`}
-                      textcolor="text-indigo-black"
-                    >
-                      <div className="grid grid-cols-2 gap-y-4 mt-4 p-2 md:p-0 md:grid-cols-4 md:mx-7 md:mt-12">
-                        {athleteList.map((player, i) => {
-                          const path = player.token_info.info.extension;
-
-                          return (
-                            <div className="mb-4" key={i}>
-                              <PerformerContainerSelectable
-                                AthleteName={
-                                  path.attributes.filter((item) => item.trait_type === 'name')[0]
-                                    .value
-                                }
-                                AvgScore={player.fantasy_score}
-                                id={path.athlete_id}
-                                uri={player.token_info.info.token_uri || player.nft_image}
-                                rarity={
-                                  path.attributes.filter((item) => item.trait_type === 'rarity')[0]
-                                    .value
-                                }
-                                status="ingame"
-                                index={i}
-                                token_id={player.token_id}
-                                selected={chosenAthlete}
-                                selectorFunction={() => setChosenAthlete(player)}
-                              />
-                            </div>
-                          );
-                        })}
-                      </div>
-                      <div className="flex md:flex-row flex-col justify-between md:mt-5 md:mr-6 p-5">
-                        <div className="bg-indigo-white md:mr-1 h-11 flex justify-center md:justify-start items-center font-thin border-indigo-lightgray border-opacity-40 p-2">
-                          {pageCount > 1 && (
-                            <button
-                              className="px-2 border mr-2"
-                              onClick={() => changeIndex('first')}
-                            >
-                              First
-                            </button>
-                          )}
-                          {pageCount !== 0 && canPrevious() && (
-                            <button
-                              className="px-2 border mr-2"
-                              onClick={() => changeIndex('previous')}
-                            >
-                              Previous
-                            </button>
-                          )}
-                          <p className="mr-2">
-                            Page {offset + 1} of {pageCount}
-                          </p>
-                          {pageCount !== 0 && canNext() && (
-                            <button
-                              className="px-2 border mr-2"
-                              onClick={() => changeIndex('next')}
-                            >
-                              Next
-                            </button>
-                          )}
-                          {pageCount > 1 && (
-                            <button
-                              className="px-2 border mr-2"
-                              onClick={() => changeIndex('last')}
-                            >
-                              Last
-                            </button>
-                          )}
-                        </div>
-                        <div className="bg-indigo-white mr-1 h-11 md:w-64 flex font-thin border-2 border-indigo-lightgray border-opacity-40 p-2">
-                          <select
-                            value={limit}
-                            className="bg-indigo-white text-lg w-full outline-none"
-                            onChange={(e) => {
-                              setOffset(0);
-                            }}
-                          >
-                            {limitOptions.map((option) => (
-                              <option value={option}>{option}</option>
-                            ))}
-                          </select>
-                        </div>
-                      </div>
-                      <div className="flex mt-10 bg-indigo-black bg-opacity-5 w-full justify-end">
-                        <button
-                          className="bg-indigo-buttonblue text-indigo-white w-full md:w-80 h-14 text-center font-bold text-md"
-                          onClick={proceedChanges}
-                        >
-                          PROCEED
-                        </button>
-                      </div>
-                    </PortfolioContainer>
-                  </div>
-                ) : (
-                  ''
-                )}
                 <div className={`${selectModal ? 'hidden h-0' : ''}`}>
                   <div className="md:ml-6 md:-mt-0 mt-14">
                     <PortfolioContainer title="CREATE LINEUP" textcolor="text-indigo-black" />
