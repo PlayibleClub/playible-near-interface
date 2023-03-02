@@ -1,30 +1,23 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { transactions, utils, WalletConnection, providers } from 'near-api-js';
-import { getRPCProvider, getContract } from 'utils/near';
+import { providers } from 'near-api-js';
+import { getRPCProvider } from 'utils/near';
 import BackFunction from 'components/buttons/BackFunction';
 import Container from 'components/containers/Container';
 import PortfolioContainer from 'components/containers/PortfolioContainer';
-import router, { useRouter } from 'next/router';
+import { useRouter } from 'next/router';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
 import SearchComponent from 'components/SearchComponent';
 import ReactPaginate from 'react-paginate';
 import PerformerContainer from 'components/containers/PerformerContainer';
-import { Provider, useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   getAthleteLineup,
   getGameId,
   getIndex,
   getPosition,
-  getTeamName,
   getSport,
 } from 'redux/athlete/athleteSlice';
-import {
-  setAthleteLineup,
-  setGameId,
-  setIndex,
-  setPosition,
-  setTeamNameRedux,
-} from 'redux/athlete/athleteSlice';
+import { setAthleteLineup, setGameId } from 'redux/athlete/athleteSlice';
 import {
   query_filter_supply_for_owner,
   query_filter_tokens_for_owner,
@@ -36,13 +29,7 @@ import { getPositionDisplay } from 'utils/athlete/helper';
 import { useLazyQuery } from '@apollo/client';
 import { GET_TEAMS } from 'utils/queries';
 const AthleteSelect = (props) => {
-  const { query } = props;
-
-  //const teamName = query.teamName;
-
-  //const position = query.position;
   const router = useRouter();
-  const data = router.query;
   const dispatch = useDispatch();
   //Get the data from redux store
   const gameId = useSelector(getGameId);
@@ -56,7 +43,6 @@ const AthleteSelect = (props) => {
   const [selectedRegular, setSelectedRegular] = useState(false);
   const [selectedPromo, setSelectedPromo] = useState(false);
   const [athleteOffset, setAthleteOffset] = useState(0);
-  const [regularOffset, setRegularOffset] = useState(0);
   const [promoOffset, setPromoOffset] = useState(0);
   const [isPromoPage, setIsPromoPage] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
@@ -70,15 +56,9 @@ const AthleteSelect = (props) => {
   const { accountId } = useWalletSelector();
   const [pageCount, setPageCount] = useState(0);
   const [remountComponent, setRemountComponent] = useState(0);
-  const [search, setSearch] = useState('');
-  const [currPosition, setCurrPosition] = useState('');
-  const [loading, setLoading] = useState(true);
   const [remountAthlete, setRemountAthlete] = useState(0);
   const [getTeams] = useLazyQuery(GET_TEAMS);
   const [teams, setTeams] = useState([]);
-  const provider = new providers.JsonRpcProvider({
-    url: getRPCProvider(),
-  });
 
   async function get_filter_supply_for_owner() {
     setTotalRegularSupply(
@@ -157,35 +137,6 @@ const AthleteSelect = (props) => {
     ).then((result) => {
       setAthletes(result);
     });
-    //setRemountAthlete(Math.random() + 1);
-    // query_filter_tokens_for_owner(
-    //   accountId,
-    //   isPromoPage ? athleteOffset + promoOffset : athleteOffset,
-    //   athleteLimit,
-    //   position,
-    //   team,
-    //   name,
-    //   isPromoPage ? getContract(ATHLETE_PROMO) : getContract(ATHLETE)
-    // ).then((result) => {
-    //   console.log(result);
-    //   if (result.length < athleteLimit && !isPromoPage && totalPromo !== 0) {
-    //     let sbLimit = athleteLimit - result.length;
-    //     query_filter_tokens_for_owner(
-    //       accountId,
-    //       0,
-    //       sbLimit,
-    //       position,
-    //       team,
-    //       name,
-    //       getContract(ATHLETE_PROMO)
-    //     ).then((result2) => {
-    //       result2.map((obj) => result.push(obj));
-    //       setAthletes(result);
-    //     });
-    //   } else {
-    //     setAthletes(result);
-    //   }
-    // });
   }
   const mixedPaginationHandling = (e) => {
     let newOffset;
@@ -227,54 +178,6 @@ const AthleteSelect = (props) => {
     });
     setTeams(await Promise.all(query.data.getTeams));
   }, []);
-  // const handlePageClick = (e) => {
-  //   let newOffset;
-  //   console.log(e.selected);
-  //   //soulbound athlete not needed yet
-  //   if (soulPage === false) {
-  //     //skipping to last page that has soulbound athletes
-  //     if (e.selected * athleteLimit >= totalAthletes) {
-  //       setSoulPage(true);
-  //       //newOffset = (athleteLimit * Math.floor(totalSoulbound / athleteLimit) - )
-  //       //newOffset = (athleteLimit * Math.ceil(totalSoulbound / athleteLimit) - (totalAthletes % athleteLimit));
-  //       if (totalAthletes % athleteLimit === 0) {
-  //         newOffset =
-  //           (Math.floor(totalSoulbound / athleteLimit) - Math.abs(e.selected - pageCount)) *
-  //             athleteLimit -
-  //           athleteLimit;
-  //       } else {
-  //         //prettier-ignore
-  //         newOffset = athleteLimit - (totalAthletes % athleteLimit) + (Math.floor(totalSoulbound / athleteLimit) - Math.abs(e.selected - pageCount)) * athleteLimit - athleteLimit;
-  //       }
-  //     } else {
-  //       newOffset = ((e.selected * athleteLimit) % totalAthletes) + soulOffset;
-  //     }
-  //   } else if (soulPage > true) {
-  //     let newPage = e.selected;
-  //     let compute = newPage - currentPage;
-  //     console.log(compute);
-  //     //getting page offset for soulbound
-  //     // if (soulPage - compute <= -1) {
-  //     //   console.log(soulPage + ' + ' + compute);
-  //     //   newOffset = (soulPage + (compute - 1)) * athleteLimit + soulOffset;
-  //     // } else {
-  //     //   console.log('test');
-  //     //   newOffset = (e.selected * athleteLimit) % totalAthletes;
-  //     //   setSoulPage(-1);
-  //     //   setSoulOffset(0);
-  //     // }
-  //   }
-  //   // const newOffset = (e.selected * athleteLimit) % totalAthletes;
-  //   //add reset of lineup
-  //   passedLineup.splice(index, 1, {
-  //     position: position,
-  //     isAthlete: false,
-  //     isPromo: false,
-  //   });
-  //   setRadioSelected(null);
-  //   setAthleteOffset(newOffset);
-  //   setCurrentPage(e.selected);
-  // };
 
   const handleRadioClick = (value) => {
     setRadioSelected(value);
@@ -314,26 +217,6 @@ const AthleteSelect = (props) => {
     } else {
       setAthletes([]);
     }
-
-    //else
-    // if (!isNaN(athleteOffset)) {
-    //   //if normal radio button is selected
-    //   get_filter_supply_for_owner(accountId, position, team, name, getContract(ATHLETE));
-    //   //if sb radio button is selected
-    //   //get_filter_supply_for_owner(accountId, position, team, name, getContract(ATHLETE_SOULBOUND));
-    //   setPageCount(Math.ceil(totalAthletes / athleteLimit));
-    //   const endOffset = athleteOffset + athleteLimit;
-    //   console.log(`Loading athletes from ${athleteOffset} to ${endOffset}`);
-    //   get_filter_tokens_for_owner(
-    //     accountId,
-    //     athleteOffset,
-    //     athleteLimit,
-    //     position,
-    //     team,
-    //     name,
-    //     getContract(ATHLETE)
-    //   );
-    // }
   }, [totalRegularSupply, totalPromoSupply, athleteOffset, currentPage]);
 
   useEffect(() => {
@@ -361,10 +244,6 @@ const AthleteSelect = (props) => {
     setPageCount(Math.ceil((totalRegularSupply + totalPromoSupply) / athleteLimit));
     //setup regular_offset, soulbound_offset
   }, [team, name, totalRegularSupply, totalPromoSupply, selectedRegular, selectedPromo]);
-  // useEffect(() => {
-  //   console.log(totalAthletes);
-  //   console.log(totalSoulbound);
-  // }, [totalAthletes, totalSoulbound]);
   useEffect(() => {
     query_teams(currentSport);
   }, []);
@@ -411,34 +290,6 @@ const AthleteSelect = (props) => {
           onChangeFn={(search) => setName(search)}
           onSubmitFn={(search) => setName(search)}
         />
-        {/* <form
-            onSubmit={(e) => {
-              handleDropdownChange();
-              search == '' ? setName(['allNames']) : setName([search]);
-              e.preventDefault();
-            }}
-          >
-            <label className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-gray-300">
-              Search
-            </label>
-            <div className="relative lg:ml-80">
-              <input
-                type="search"
-                id="default-search"
-                onChange={(e) => setSearch(e.target.value)}
-                className=" bg-indigo-white w-72 pl-2
-                            ring-2 ring-offset-4 ring-indigo-black ring-opacity-25 focus:ring-2 focus:ring-indigo-black 
-                            focus:outline-none"
-                placeholder="Search Athlete"
-              />
-              <button
-                type="submit"
-                className="bg-search-icon bg-no-repeat bg-center absolute -right-12 bottom-0 h-full
-                            pl-8 md:pl-6 py-2 ring-2 ring-offset-4 ring-indigo-black ring-opacity-25
-                            focus:ring-2 focus:ring-indigo-black"
-              ></button>
-            </div>
-          </form> */}
       </div>
 
       <div key={remountAthlete} className="flex flex-col overflow-y-auto">
