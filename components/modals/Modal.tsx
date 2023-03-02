@@ -46,7 +46,7 @@ const Modal = (props) => {
             >
               <div
                 className={`bg-indigo-white inline-block p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl  ${
-                  AdminGame === true ? 'w-full' : isEntrySummary ? 'w-3/5' : 'max-w-md'
+                  AdminGame === true ? 'w-full' : isEntrySummary ? 'w-3/5' : 'w-full max-w-md'
                 }`}
               >{console.log(isEntrySummary, 'test')}
                 <Dialog.Title
