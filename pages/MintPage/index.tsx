@@ -1141,6 +1141,14 @@ export default function Home(props) {
                 }}
               >
                 Your pack has been minted successfully!
+                <button
+                  className="fixed top-4 right-4"
+                  onClick={() => {
+                    setEditModal(false);
+                  }}
+                >
+                  <img src="/images/x.png" />
+                </button>
                 <div className="flex flex-wrap flex-col mt-10 mb-5 bg-opacity-70 z-50 w-full">
                   <div className="ml-20 mb-12">
                     <img width={240} height={340} src={modalImage}></img>

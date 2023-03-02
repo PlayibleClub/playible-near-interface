@@ -50,7 +50,7 @@ const PerformerContainer = (props) => {
       <div className="flex justify-center">
         {uri ? (
           <div
-            className="justify-center relative transform scale-85 md:scale-0 -mt-20"
+            className="justify-center relative transform scale-85 md:scale-0 -mt-20 md:-ml-8"
             style={{ width: '120px', height: '162px' }}
           >
             <div className="absolute z-40" style={{ width: '120px', height: '160px' }}></div>
