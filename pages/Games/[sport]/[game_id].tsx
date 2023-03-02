@@ -341,7 +341,7 @@ const Games = (props) => {
                 </button>
               </Modal>
 
-              <Modal title={'ENTRY SUMMARY'} visible={entryModal} isEntrySummary={true}>
+              <EntrySummaryModal title={'ENTRY SUMMARY'} visible={entryModal} isEntrySummary={true}>
                 <div className=' transform iphone5:scale-55 md:scale-85 md:-mt-6 iphoneX:fixed iphoneX:-mt-6 iphone5:-ml-12 md:static'>
                   <ModalPortfolioContainer
                     title={playerLineups[currentIndex]?.teamName}
@@ -393,7 +393,7 @@ const Games = (props) => {
                     </button>
                   )}
                 </div>
-              </Modal>
+              </EntrySummaryModal>
             </div>
           </div>
         </Main>
