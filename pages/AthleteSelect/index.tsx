@@ -172,12 +172,13 @@ const AthleteSelect = (props) => {
     setAthleteLimit(7);
     setRemountComponent(Math.random());
   }
-  const query_teams = useCallback(async (currentSport) => {
+
+  async function query_teams_graphql(currentSport) {
     let query = await getTeams({
       variables: { sport: getSportType(currentSport).key.toLocaleLowerCase() },
     });
     setTeams(await Promise.all(query.data.getTeams));
-  }, []);
+  }
 
   const handleRadioClick = (value) => {
     setRadioSelected(value);
@@ -245,7 +246,7 @@ const AthleteSelect = (props) => {
     //setup regular_offset, soulbound_offset
   }, [team, name, totalRegularSupply, totalPromoSupply, selectedRegular, selectedPromo]);
   useEffect(() => {
-    query_teams(currentSport);
+    query_teams_graphql(currentSport);
   }, []);
 
   return (
