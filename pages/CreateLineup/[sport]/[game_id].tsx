@@ -94,7 +94,7 @@ export default function CreateLineup(props) {
 
               {
                 /* @ts-expect-error */
-                playerTeams.team_names.length === 0 ? (
+                playerTeams.team_names === undefined || playerTeams.team_names.length === 0 ? (
                   <p>No teams assigned</p>
                 ) : (
                   <div>
