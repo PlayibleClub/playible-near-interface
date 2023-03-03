@@ -41,21 +41,16 @@ const PerformerContainer = (props) => {
         >
           {isInGame ? 'IN GAME' : ''}
         </div>
-        {/* {isInGame && (
-          <div className="bg-indigo-lightgreen text-indigo-white text-center text-xs font-bold py-1 px-3 mb-2">
-            IN GAME
-          </div>
-        )} */}
       </div>
-      <div className="flex justify-center">
+      <div className="flex justify-center iphone5:ml-24 mt-20">
         {uri ? (
           <div
-            className="justify-center relative transform scale-85 md:scale-0 -mt-20 md:-ml-8"
+            className="justify-center transform scale-85 md:scale-0 -mt-20 ml-12 "
             style={{ width: '120px', height: '162px' }}
           >
             <div className="absolute z-40" style={{ width: '120px', height: '160px' }}></div>
             <object
-              className="absolute z-10 transform scale-70 md:scale-100"
+              className="absolute z-10 transform scale-75 md:scale-100"
               type="image/svg+xml"
               data={uri}
               width={143}
@@ -65,12 +60,8 @@ const PerformerContainer = (props) => {
         ) : (
           <Image src={'/images/tokensMLB/SP.png'} width={120} height={160} alt="token-bare" />
         )}
-        {/* </Link> */}
-      </div>
-      {children}
-      <div className="h-1/2 flex justify-center mb-6 ml-16 md:ml-0">
-        <div className="flex flex-col transform scale-70 md:mt-4 md:scale-100">
-          <div className="mt-2 text-xs font-bold uppercase gap-5">
+        <div className="flex flex-col transform scale-75 md:mt-4 md:scale-100">
+          <div className="mt-24 text-xs font-bold uppercase gap-5">
             {AthleteName.length >= 14 ? cutAthleteName(AthleteName) : AthleteName}
           </div>
           <div className="mt-4 text-xs font-thin">FANTASY SCORE </div>
@@ -78,15 +69,6 @@ const PerformerContainer = (props) => {
           <div className="text-xs font-bold">{AvgScore}</div>
           <div>
             <div className="group relative ml-28">
-              {/* {isInjured && checkInjury(isInjured) === 1 ? (
-                <div className="rounded-full mt-4 bg-indigo-yellow w-3 h-3 absolute "></div>
-              ) : isInjured && checkInjury(isInjured) === 2 ? (
-                <div className="mt-4 -ml-2 rounded-full bg-indigo-red w-3 h-3  absolute"></div>
-              ) : isActive ? (
-                <div className="mt-4 -ml-2 rounded-full bg-indigo-green w-3 h-3  absolute"></div>
-              ) : (
-                <></>
-              )} */}
               <div
                 className={`rounded-full md:-mt-8 md:-ml-4 -ml-4 -mt-8 w-3 h-3 absolute ${
                   isInjured && checkInjury(isInjured) === 1
