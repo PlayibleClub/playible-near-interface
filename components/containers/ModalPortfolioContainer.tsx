@@ -1,10 +1,8 @@
 import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { cutAddress } from 'utils/address/helper';
 const ModalPortfolioContainer = (props) => {
   const { color, textcolor, size, title, children, align, stats, accountId } = props;
-  const avgicon = '/../../public/images/avgscore.png';
-
   return (
     <>
       <div

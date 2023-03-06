@@ -10,7 +10,6 @@ import LoadingPageDark from '../../components/loading/LoadingPageDark';
 import Container from '../../components/containers/Container';
 import HeaderBase from '../../components/headers/HeaderBase';
 import Navbar from '../../components/navbars/Navbar';
-import HorizontalScrollContainer from '../../components/containers/HorizontalScrollContainer';
 import Main from '../../components/Main';
 import 'regenerator-runtime/runtime';
 
