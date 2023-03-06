@@ -223,4 +223,5 @@ export {
   getPositionDisplay,
   checkInjury,
   cutAthleteName,
+  getAthleteBasketballSchedule
 };
