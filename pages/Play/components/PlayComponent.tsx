@@ -48,8 +48,6 @@ const PlayComponent = (props) => {
       const currentDate = getUTCDateFromLocal();
       const end = moment.utc(type === 'ON-GOING' || type === 'ACTIVE' ? endDate : startDate);
 
-      console.log(endDate);
-
       setDay(formatTime(Math.floor(end.diff(currentDate, 'second') / 3600 / 24)));
       setHour(formatTime(Math.floor((end.diff(currentDate, 'second') / 3600) % 24)));
       setMinute(formatTime(Math.floor((end.diff(currentDate, 'second') / 60) % 60)));

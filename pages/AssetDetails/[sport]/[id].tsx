@@ -145,13 +145,12 @@ const AssetDetails = (props) => {
                     <div className="mt-1 rounded-full bg-indigo-green w-3 h-3  absolute"></div>
                   )} */}
                   <div
-                    className={`rounded-full mt-1 w-3 h-3 absolute ${
-                      athlete?.isInjured && checkInjury(athlete?.isInjured) === 1
+                    className={`rounded-full mt-1 w-3 h-3 absolute ${athlete?.isInjured && checkInjury(athlete?.isInjured) === 1
                         ? 'bg-indigo-yellow'
                         : athlete?.isInjured && checkInjury(athlete?.isInjured) === 2
-                        ? 'bg-indigo-red'
-                        : 'bg-indigo-green'
-                    }`}
+                          ? 'bg-indigo-red'
+                          : 'bg-indigo-green'
+                      }`}
                   ></div>
                   <span className="pointer-events-none absolute -top-7 -left-8 w-max rounded px-2 py-1 bg-indigo-gray text-indigo-white text-sm font-medium text-gray-50 shadow opacity-0 transition-opacity group-hover:opacity-100">
                     {athlete?.isInjured !== null ? athlete?.isInjured : 'Active'}
@@ -161,18 +160,26 @@ const AssetDetails = (props) => {
               </div>
               <div className="font-bold">{athlete?.fantasy_score.toFixed(2)}</div>
             </div>
-            <Link href="https://paras.id/collection/athlete.nfl.playible.near">
-              <button
-                className="bg-indigo-lightblue text-indigo-buttonblue w-full md:w-80 h-10 
-                  text-center font-bold text-md mt-12 self-center justify-center"
-              >
-                PLACE FOR SALE
-              </button>
-            </Link>
+            {currentSport === 'FOOTBALL'
+              ? <Link href="https://paras.id/collection/athlete.nfl.playible.near">
+                <button
+                  className="bg-indigo-lightblue text-indigo-buttonblue w-full md:w-80 h-10 
+                text-center font-bold text-md mt-12 self-center justify-center"
+                >
+                  PLACE FOR SALE
+                </button>
+              </Link>
+              : <Link href="https://paras.id/collection/athlete.basketball.playible.near">
+                <button
+                  className="bg-indigo-lightblue text-indigo-buttonblue w-full md:w-80 h-10 
+              text-center font-bold text-md mt-12 self-center justify-center"
+                >
+                  PLACE FOR SALE
+                </button>
+              </Link>}
             <div></div>
           </div>
         </div>
-
         <div className="text-2xl font-bold font-monument ml-10 mt-16 mr-8 align-baseline">
           SEASON STATS
           <hr className="w-10 border-4"></hr>
@@ -190,8 +197,8 @@ const AssetDetails = (props) => {
                   ? ''
                   : getGamesPlayed()
                 : athlete === undefined
-                ? ''
-                : getGamesPlayedNba()}
+                  ? ''
+                  : getGamesPlayedNba()}
             </div>
             <div className="text-sm">GAMES PLAYED</div>
           </div>
@@ -219,25 +226,25 @@ const AssetDetails = (props) => {
             {sortedGames == undefined
               ? 'LOADING GAMES....'
               : sortedGames
-                  .filter(
-                    (statType) =>
-                      (statType.type == 'weekly' || statType.type == 'daily') &&
-                      statType.played == 1
-                  )
-                  .map((item, index) => {
-                    return (
-                      <tr key={index} className="border border-indigo-slate">
-                        <td className="text-sm text-center w-6 pl-4 pr-4">
-                          {getDateOfGame(item.gameDate)}
-                        </td>
-                        <td className="text-sm w-px">vs.</td>
-                        <td className="text-sm pl-2 font-black w-96">{item.opponent.name}</td>
-                        <td className="text-sm text-right font-black p-3 pr-24 w-12">
-                          {item.fantasyScore.toFixed(2)}
-                        </td>
-                      </tr>
-                    );
-                  })}
+                .filter(
+                  (statType) =>
+                    (statType.type == 'weekly' || statType.type == 'daily') &&
+                    statType.played == 1
+                )
+                .map((item, index) => {
+                  return (
+                    <tr key={index} className="border border-indigo-slate">
+                      <td className="text-sm text-center w-6 pl-4 pr-4">
+                        {getDateOfGame(item.gameDate)}
+                      </td>
+                      <td className="text-sm w-px">vs.</td>
+                      <td className="text-sm pl-2 font-black w-96">{item.opponent.name}</td>
+                      <td className="text-sm text-right font-black p-3 pr-24 w-12">
+                        {item.fantasyScore.toFixed(2)}
+                      </td>
+                    </tr>
+                  );
+                })}
           </tbody>
         </table>
       </div>

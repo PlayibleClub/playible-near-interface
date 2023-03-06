@@ -452,6 +452,10 @@ const Play = (props) => {
           .map((item) => getGameInfoById(item))
       );
       //setCurrentTotal(upcomingGames.length);
+      upcomingGames.sort(function (a, b) {
+        return a.start_time - b.start_time;
+      });
+
       setNewGames(upcomingGames);
       setCompletedGames(completedGames);
       setOngoingGames(ongoingGames);

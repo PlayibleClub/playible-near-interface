@@ -3,29 +3,45 @@ import { objectTraps } from 'immer/dist/internal';
 import { GET_ATHLETE_BY_ID, GET_ATHLETE_BY_ID_DATE, GET_NBA_PLAYER_SCHEDULE } from '../queries';
 import { formatToUTCDate, getUTCTimestampFromLocal } from 'utils/date/helper';
 import { getSportType } from 'data/constants/sportConstants';
-import { useSelector } from 'react-redux';
+
+interface trait_type {
+  athlete_id: string;
+  rarity: string;
+  name: string;
+  team: string;
+  position: string;
+  release: string;
+  usage?: string;
+  type?: number;
+}
 
 // pull from graphQL and append the nft animation
 // return assembled Athlete
 async function getAthleteInfoById(item) {
-  let value = item.extra.map((item) => item.value);
+  console.log(item.extra);
+  let value = {} as trait_type;
+
+  for (const key of item.extra) {
+    value[key.trait_type] = key.value;
+  }
   const { data } = await client.query({
     query: GET_ATHLETE_BY_ID,
-    variables: { getAthleteById: parseFloat(value[0]) },
+    variables: { getAthleteById: parseFloat(value['athlete_id']) },
   });
   const basketball = item.token_id.includes('2000');
-  const diff = item.token_id.includes('SB') || item.token_id.includes('PR') ? 1 : basketball ? 1 : 0;
+  let diff;
+
   const isPromo = item.token_id.includes('SB') || item.token_id.includes('PR');
   const returningData = {
-    primary_id: value[0],
+    primary_id: value['athlete_id'],
     athlete_id: item.token_id,
-    rarity: value[1],
-    usage: isPromo ? 0 : basketball ? 0 : value[2],
-    name: value[3 - diff],
-    team: value[4 - diff],
-    position: value[5 - diff],
-    release: value[6 - diff],
-    ...(isPromo && { type: value[7 - diff] }),
+    rarity: value['rarity'],
+    usage: value['usage'],
+    name: value['name'],
+    team: value['team'],
+    position: value['position'],
+    release: value['release'],
+    ...(isPromo && { type: value['type'] }),
     isOpen: false,
     animation: data.getAthleteById.nftAnimation,
     image: item.metadata.media,
@@ -100,7 +116,8 @@ async function getAthleteInfoByIdWithDate(item, from, to) {
     variables: { getAthleteById: parseFloat(value[0]), from: from, to: to },
   });
   const basketball = item.token_id.includes('2000');
-  const diff = item.token_id.includes('SB') || item.token_id.includes('PR') ? 1 : basketball ? 1 : 0;
+  const diff =
+    item.token_id.includes('SB') || item.token_id.includes('PR') ? 1 : basketball ? 1 : 0;
   const isPromo = item.token_id.includes('SB') || item.token_id.includes('PR');
   const returningData = {
     primary_id: value[0],
@@ -192,11 +209,18 @@ function checkInjury(injury) {
   }
 }
 
-function cutAthleteName(name){
+function cutAthleteName(name) {
   const slice = name.slice(0, 12);
   const newName = slice + '...';
 
   return newName;
 }
 
-export { convertNftToAthlete, getAthleteInfoById, getAthleteBasketballSchedule, getAthleteInfoByIdWithDate, getPositionDisplay, checkInjury, cutAthleteName};
+export {
+  convertNftToAthlete,
+  getAthleteInfoById,
+  getAthleteInfoByIdWithDate,
+  getPositionDisplay,
+  checkInjury,
+  cutAthleteName,
+};

@@ -469,7 +469,7 @@ const AthleteSelect = (props) => {
           </form> */}
       </div>
 
-      <div key={remountAthlete} className="flex flex-col overflow-y-none">
+      <div key={remountAthlete} className="flex flex-col overflow-y-auto">
         <div className="grid grid-cols-2 mt-1 ml-4 md:grid-cols-4 md:ml-7 md:mt-2">
           {athletes.map((item, i) => {
             const accountAthleteIndex = athletes.indexOf(item, 0) + athleteOffset;
