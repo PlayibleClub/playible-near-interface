@@ -242,7 +242,7 @@ export const GET_NBA_PLAYER_SCHEDULE = gql`
     getNbaPlayerSchedule(team: $team, startDate: $startDate, endDate: $endDate){
       homeTeam
       awayTeam
-      dateTime
+      dateTimeUTC
     }
   }
 `
