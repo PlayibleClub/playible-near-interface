@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
-
+import { cutAddress } from 'utils/address/helper';
 const ModalPortfolioContainer = (props) => {
-  const { color, textcolor, size, title, children, align, stats } = props;
+  const { color, textcolor, size, title, children, align, stats, accountId } = props;
   const avgicon = '/../../public/images/avgscore.png';
 
   return (
@@ -15,7 +15,7 @@ const ModalPortfolioContainer = (props) => {
           {stats ? (
             <div className="flex w-full">
               <div className="w-2/3 text-2xl pb-3 pt-20 md:pt-14 justify-between align-center">
-                {title}
+                {title} | {cutAddress(accountId)}
                 <div className="underlineBig" />
               </div>
               <div
@@ -32,7 +32,13 @@ const ModalPortfolioContainer = (props) => {
             </div>
           ) : (
             <div className="pb-3 pt-6 justify-start align-center text-2xl font-monument">
-              {title}
+              {accountId ? (
+                <div>
+                  {title} | {cutAddress(accountId)}
+                </div>
+              ) : (
+                title
+              )}
               <div className="underlineBig" />
             </div>
           )}
@@ -52,6 +58,7 @@ ModalPortfolioContainer.propTypes = {
   align: PropTypes.string,
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
   stats: PropTypes.number,
+  accountId: PropTypes.string,
 };
 
 ModalPortfolioContainer.defaultProps = {

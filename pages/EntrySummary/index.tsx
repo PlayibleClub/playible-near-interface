@@ -15,35 +15,45 @@ import 'regenerator-runtime/runtime';
 import LoadingPageDark from '../../components/loading/LoadingPageDark';
 import { providers } from 'near-api-js';
 import { getContract, getRPCProvider } from 'utils/near';
-import { GAME, ATHLETE, ATHLETE_PROMO } from 'data/constants/nearContracts';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
-import { convertNftToAthlete, getAthleteInfoById } from 'utils/athlete/helper';
-import { getUTCDateFromLocal } from 'utils/date/helper';
+import {
+  convertNftToAthlete,
+  getAthleteInfoById,
+  getAthleteInfoByIdWithDate,
+} from 'utils/athlete/helper';
+import { formatToUTCDate, getNflSeason, getNflWeek, getUTCDateFromLocal } from 'utils/date/helper';
+import { useSelector } from 'react-redux';
+import { selectTeamName, selectAccountId, selectGameId, getSport2 } from 'redux/athlete/teamSlice';
 import {
   query_game_data,
   query_nft_tokens_by_id,
   query_nft_tokens_for_owner,
+  query_nft_token_by_id,
 } from 'utils/near/helper';
-import { getImage, getPrizePool } from 'utils/game/helper';
+import { cutAddress } from 'utils/address/helper';
 import EntrySummaryBack from 'components/buttons/EntrySummaryBack';
-
+import { getSportType, SPORT_NAME_LOOKUP } from 'data/constants/sportConstants';
 export default function EntrySummary(props) {
   const { query } = props;
   const provider = new providers.JsonRpcProvider({
     url: getRPCProvider(),
   });
   const router = useRouter();
-  const { accountId } = useWalletSelector();
-  const playerTeamName = query.team_id;
+  const accountId = useSelector(selectAccountId);
+  const playerTeamName = useSelector(selectTeamName);
+  const currentSport = useSelector(getSport2);
   const [name, setName] = useState('');
   const [gameData, setGameData] = useState(null);
   const [teamModal, setTeamModal] = useState(false);
   const [team, setTeam] = useState([]);
   const [gameEnd, setGameEnd] = useState(false);
   const [remountComponent, setRemountComponent] = useState(0);
-  const gameId = query.game_id;
+  const gameId = useSelector(selectGameId);
   const [playerLineup, setPlayerLineup] = useState([]);
   const [athletes, setAthletes] = useState([]);
+  const [gameInfo, setGameInfo] = useState([]);
+  const [nflSeason, setNflSeason] = useState('');
+  const [week, setWeek] = useState(0);
 
   // const { error } = props;
   const [loading, setLoading] = useState(true);
@@ -104,6 +114,8 @@ export default function EntrySummary(props) {
   }
 
   function query_player_team_lineup() {
+    const startTimeFormatted = formatToUTCDate(gameData?.start_time);
+    const endTimeFormatted = formatToUTCDate(gameData?.end_time);
     const query = JSON.stringify({
       account: accountId,
       game_id: gameId,
@@ -114,34 +126,108 @@ export default function EntrySummary(props) {
       .query({
         request_type: 'call_function',
         finality: 'optimistic',
-        account_id: getContract(GAME),
+        account_id: getSportType(currentSport).gameContract,
         method_name: 'get_player_lineup',
         args_base64: Buffer.from(query).toString('base64'),
       })
-      .then((data) => {
+      .then(async (data) => {
         // @ts-ignore:next-line
-        const playerTeamLineup = JSON.parse(Buffer.from(data.result));
+        const playerTeamLineup = JSON.parse(Buffer.from(data.result).toString());
 
-        setPlayerLineup(playerTeamLineup.lineup);
+        let itemToReturn = {
+          accountId: accountId,
+          teamName: playerTeamName,
+          lineup: playerTeamLineup.lineup,
+          sumScore: 0,
+        };
+
+        itemToReturn.lineup = await Promise.all(
+          itemToReturn.lineup.map((item) => {
+            return query_nft_token_by_id(item, currentSport, startTimeFormatted, endTimeFormatted);
+          })
+        );
+        console.log(itemToReturn.lineup);
+        itemToReturn.lineup = itemToReturn.lineup.map((lineupItem) => {
+          return {
+            ...lineupItem,
+            stats_breakdown:
+              lineupItem.stats_breakdown
+                .filter((statType) =>
+                  currentSport === SPORT_NAME_LOOKUP.football
+                    ? statType.type == 'weekly' && statType.played == 1
+                    : currentSport === SPORT_NAME_LOOKUP.basketball
+                    ? statType.type == 'daily' && statType.played == 1
+                    : ''
+                )
+                .reduce((accumulator, item) => {
+                  console.log(
+                    'fs ' +
+                      item.fantasyScore +
+                      ' from ' +
+                      lineupItem.name +
+                      ' w/ date ' +
+                      item.gameDate
+                  );
+                  return accumulator + item.fantasyScore;
+                }, 0) || 0,
+            // .map((item) => {
+            //   console.log(
+            //     'fs ' +
+            //       item.fantasyScore +
+            //       ' from ' +
+            //       lineupItem.name +
+            //       ' w/ date ' +
+            //       item.gameDate
+            //   );
+            //   console.log('playible start: ' + startTimeFormatted);
+            //   return item.fantasyScore;
+            // })[0] || 0,
+          };
+        });
+
+        itemToReturn.sumScore = itemToReturn.lineup.reduce((accumulator, object) => {
+          return accumulator + object.stats_breakdown;
+        }, 0);
+
+        setPlayerLineup((playerLineup) => [...playerLineup, itemToReturn]);
       });
   }
 
-  function get_nft_tokens_for_owner() {
-    playerLineup.forEach((token_id) => {
-      //check if token_id contains sb, then query with soulbound contract
-      let contract = token_id.includes('SB') ? getContract(ATHLETE_PROMO) : getContract(ATHLETE);
-      query_nft_tokens_by_id(token_id, contract).then(async (data) => {
-        // @ts-ignore:next-line
-        const result = JSON.parse(Buffer.from(data.result).toString());
-        const result_two = await getAthleteInfoById(await convertNftToAthlete(result));
-        setAthletes((athletes) => [...athletes, result_two]);
-      });
-    });
-    //setAthletes(testAthlete);
+  // async function get_nft_tokens_for_owner() {
+  //   const startTimeFormatted = moment(gameData?.start_time).format('YYYY-MM-DD');
+  //   const endTimeFormatted = moment(gameData?.end_time).format('YYYY-MM-DD');
+  //   playerLineup.forEach((token_id) => {
+  //     //check if token_id contains sb, then query with soulbound contract
+  //     let contract = token_id.includes('SB')
+  //       ? getSportType(currentSport).promoContract
+  //       : getSportType(currentSport).regContract;
+  //     query_nft_tokens_by_id(token_id, contract).then(async (data) => {
+  //       // @ts-ignore:next-line
+  //       const result = JSON.parse(Buffer.from(data.result).toString());
+  //       const result_two =
+  //         // currentSport === 'FOOTBALL'
+  //         //   ? await getAthleteInfoById(await convertNftToAthlete(result)) :
+  //         await getAthleteInfoByIdWithDate(
+  //           await convertNftToAthlete(result),
+  //           startTimeFormatted,
+  //           endTimeFormatted
+  //         );
+  //       await setAthletes((athletes) => [...athletes, result_two]);
+  //     });
+  //   });
+  // }
+
+  async function get_game_data(gameId) {
+    setGameInfo(await query_game_data(gameId, getSportType(currentSport).gameContract));
+    setGameData(await query_game_data(gameId, getSportType(currentSport).gameContract));
   }
 
-  async function get_game_data(game_id) {
-    setGameData(await query_game_data(game_id));
+  const gameStart = Object.values(gameInfo)[0] / 1000;
+  console.log('nfl week: ' + week);
+
+  async function get_game_week() {
+    setWeek(await getNflWeek(gameStart));
+    setNflSeason(await getNflSeason(gameStart));
   }
 
   useEffect(() => {
@@ -149,24 +235,24 @@ export default function EntrySummary(props) {
   }, []);
 
   useEffect(() => {
-    console.log('loading lineup...');
-    query_player_team_lineup();
-    console.log('loading athletes...');
-  }, []);
-
-  useEffect(() => {
-    if (playerLineup.length > 0 && athletes.length === 0) {
-      console.log(playerLineup);
-      get_nft_tokens_for_owner();
+    if (currentSport === SPORT_NAME_LOOKUP.football) {
+      get_game_week();
     }
-  }, [playerLineup]);
-  useEffect(() => {
-    console.log(athletes);
-  }, [athletes]);
+  });
 
   useEffect(() => {
-    console.log(athletes);
-  }, [remountComponent]);
+    console.log('loading lineup...');
+    // query_player_team_lineup();
+    console.log('loading athletes...');
+  }, [playerLineup]);
+
+  useEffect(() => {
+    // if (playerLineup.length > 0 && athletes.length === 0) {
+    if (gameData !== undefined && gameData !== null) {
+      // get_nft_tokens_for_owner();
+      query_player_team_lineup();
+    }
+  }, [gameData]);
 
   return (
     <>
@@ -180,23 +266,34 @@ export default function EntrySummary(props) {
                 </div>
                 <div className="md:ml-7 flex flex-row md:flex-row">
                   <div className="md:mr-12">
-                    <div className="mt-11 flex justify-center md:self-left md:mr-8 md:ml-6">
-                      <div className="">
-                        <Image src={getImage(gameId)} width={550} height={279} alt="game-image" />
+                    <div className="mt-11 flex flex-col md:flex-row justify-center md:self-left md:mr-8 md:ml-6">
+                      <div className="w-auto mr-6 ml-6">
+                        <Image
+                          src={
+                            gameData?.game_image
+                              ? gameData?.game_image
+                              : 'https://playible-game-image.s3.ap-southeast-1.amazonaws.com/game.png'
+                          }
+                          width={550}
+                          height={279}
+                          alt="game-image"
+                        />
                       </div>
-                      <div className="-mt-7 ml-7">
+                      <div className="-mt-7 md:ml-7">
                         <PortfolioContainer textcolor="indigo-black" title="ENTRY SUMMARY" />
-                        <div className="flex space-x-14 mt-4">
-                          <div className="ml-7">
+                        <div className="flex md:space-x-14 mt-4 ">
+                          <div className="ml-6 md:ml-7">
                             <div>PRIZE POOL</div>
                             <div className=" font-monument text-lg">
-                              {(gameData && gameData.prize) || getPrizePool(gameId)}
+                              {(gameData && gameData.prize_description) ||
+                                '$100 + 2 Championship Tickets'}
                             </div>
                           </div>
-                          <div>
+                          <div className="mr-4 md:mr-0">
                             <div>START DATE</div>
                             <div className=" font-monument text-lg">
-                              {(gameData && moment(gameData.start_time).format('MM/DD/YYYY')) ||
+                              {(gameData &&
+                                moment.utc(gameData.start_time).local().format('MM/DD/YYYY')) ||
                                 'N/A'}
                             </div>
                           </div>
@@ -204,8 +301,8 @@ export default function EntrySummary(props) {
                         <div className="ml-7">
                           <div className="mt-4">
                             {gameData &&
-                              (moment(gameData.start_time) <= moment() &&
-                              moment(gameData.end_time) > moment() ? (
+                              (moment.utc(gameData.start_time).local() <= moment() &&
+                              moment.utc(gameData.end_time).local() > moment() ? (
                                 <>
                                   <p>ENDS IN</p>
                                   {gameData ? (
@@ -219,7 +316,7 @@ export default function EntrySummary(props) {
                                     ''
                                   )}
                                 </>
-                              ) : moment(gameData.start_time) > moment() ? (
+                              ) : moment.utc(gameData.start_time).local() > moment() ? (
                                 <>
                                   <p>REGISTRATION ENDS IN</p>
                                   {gameData ? (
@@ -242,26 +339,29 @@ export default function EntrySummary(props) {
                     </div>
                   </div>
                 </div>
-                <div className="flex items-center ml-14">
+                <div className="flex items-center ml-6 md:ml-14">
                   <ModalPortfolioContainer
                     title={playerTeamName}
+                    accountId={cutAddress(accountId)}
                     textcolor="text-indigo-black mb-5"
                   />
                 </div>
                 <div
                   key={remountComponent}
-                  className="grid grid-cols-4 gap-y-4 mt-4 md:grid-cols-4 md:ml-2 md:mt-17 w-3/4"
+                  className="grid grid-cols-2 gap-x-16 md:gap-x-0 md:gap-y-4 md:mt-4 md:grid-cols-4 ml-8 md:ml-2 md:mt-17 w-3/4"
                 >
-                  {athletes.length === 0
+                  {playerLineup.length === 0
                     ? 'Loading athletes...'
-                    : athletes.map((item, i) => {
+                    : playerLineup[0].lineup.map((item, i) => {
                         return (
                           <PerformerContainer
                             AthleteName={`${item.name}`}
-                            AvgScore={item.fantasy_score.toFixed(2)}
+                            AvgScore={item.stats_breakdown?.toFixed(2)}
                             id={item.primary_id}
                             uri={item.image}
                             hoverable={false}
+                            isActive={item.isActive}
+                            isInjured={item.isInjured}
                           />
                         );
                       })}

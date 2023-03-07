@@ -9,11 +9,12 @@ import Main from '../../components/Main';
 import 'regenerator-runtime/runtime';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { useDispatch, useSelector } from 'react-redux';
 import PackComponent from './components/PackComponent';
 import PlayComponent from '../Play/components/PlayComponent';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
 import { getRPCProvider, getContract } from 'utils/near';
-import { OPENPACK_PROMO, PACK, PACK_PROMO } from '../../data/constants/nearContracts';
+import { OPENPACK_PROMO_NFL, PACK_NFL, PACK_PROMO_NFL } from '../../data/constants/nearContracts';
 import ReactPaginate from 'react-paginate';
 import BigNumber from 'bignumber.js';
 import { DEFAULT_MAX_FEES, MINT_STORAGE_COST } from 'data/constants/gasFees';
@@ -23,8 +24,10 @@ import {
   query_nft_supply_for_owner,
   query_nft_tokens_for_owner,
 } from 'utils/near/helper';
+import { getSportTypeRedux, setSportTypeRedux } from 'redux/athlete/sportSlice';
+import { persistor } from 'redux/athlete/store';
 import Modal from 'components/modals/Modal';
-
+import { SPORT_TYPES, getSportType } from 'data/constants/sportConstants';
 export default function Packs() {
   const { selector, modal, accounts, accountId } = useWalletSelector();
 
@@ -32,6 +35,8 @@ export default function Packs() {
     url: getRPCProvider(),
   });
   const router = useRouter();
+  const dispatch = useDispatch();
+
   const [filterInfo, handleFilter] = useState(false);
   const { register, handleSubmit } = useForm();
   const [result, setResult] = useState('');
@@ -51,19 +56,26 @@ export default function Packs() {
   const [isClaimed, setIsClaimed] = useState(false);
   const [totalSoulboundPacks, setTotalSoulboundPacks] = useState(0);
   const [activeCategory, setCategory] = useState('NEW');
+  const nflImage = '/images/packimages/NFL-SB-Pack.png';
+  const nbaImage = '/images/packimages/nbaStarterPackSoulbound.png';
+  const [modalImage, setModalImage] = useState(nflImage);
   const [currentTotal, setCurrentTotal] = useState(0);
-
   const [categoryList, setcategoryList] = useState([
     {
       name: 'STARTER',
       isActive: true,
     },
     {
-      name: 'SOULBOUND',
+      name: 'PROMOTIONAL',
       isActive: false,
     },
   ]);
-
+  const sportObj = SPORT_TYPES.map((x) => ({ ...x, isActive: false }));
+  sportObj[0].isActive = true;
+  const [sportList, setSportList] = useState([...sportObj]);
+  const [currentSport, setCurrentSport] = useState(sportObj[0].sport);
+  //for soulbound claiming, redirecting, and displaying the corresponding pack image
+  const [sportFromRedux, setSportFromRedux] = useState(useSelector(getSportTypeRedux));
   const [remountComponent, setRemountComponent] = useState(0);
   const changecategoryList = (name) => {
     const tabList = [...categoryList];
@@ -89,13 +101,28 @@ export default function Packs() {
 
     setcategoryList([...tabList]);
   };
-
+  const changeSportList = (name) => {
+    const sports = [...sportList];
+    sports.forEach((item) => {
+      if (item.sport === name) {
+        item.isActive = true;
+      } else {
+        item.isActive = false;
+      }
+    });
+    setSportList(sports);
+    setCurrentSport(name);
+  };
   async function get_nft_pack_supply_for_owner(accountId) {
-    setTotalPacks(await query_nft_supply_for_owner(accountId, getContract(PACK)));
+    setTotalPacks(
+      await query_nft_supply_for_owner(accountId, getSportType(currentSport).packContract)
+    );
   }
 
   async function get_nft_sb_supply_for_owner(accountId) {
-    setTotalSoulboundPacks(await query_nft_supply_for_owner(accountId, getContract(PACK_PROMO)));
+    setTotalSoulboundPacks(
+      await query_nft_supply_for_owner(accountId, getSportType(currentSport).packPromoContract)
+    );
   }
 
   function getPackLimit() {
@@ -118,32 +145,38 @@ export default function Packs() {
   async function get_nft_pack_tokens_for_owner(accountId, packOffset, packLimit) {
     //@ts-ignore:next-line
 
-    query_nft_tokens_for_owner(accountId, packOffset, packLimit, getContract(PACK)).then(
-      async (data) => {
-        //@ts-ignore:next-line
-        const result = JSON.parse(Buffer.from(data.result).toString());
-        setPacks(result);
-      }
-    );
+    query_nft_tokens_for_owner(
+      accountId,
+      packOffset,
+      packLimit,
+      getSportType(currentSport).packContract
+    ).then(async (data) => {
+      //@ts-ignore:next-line
+      const result = JSON.parse(Buffer.from(data.result).toString());
+      setPacks(result);
+    });
   }
 
   async function get_claim_status(accountId) {
-    setIsClaimed(await query_claim_status(accountId));
+    setIsClaimed(await query_claim_status(accountId, getSportType(currentSport).packPromoContract));
   }
 
   async function get_nft_sb_pack_tokens_for_owner(accountId, packOffset, soulboundPackLimit) {
-    query_nft_tokens_for_owner(accountId, packOffset, packLimit, getContract(PACK_PROMO)).then(
-      async (data) => {
-        //@ts-ignore:next-line
-        const result = JSON.parse(Buffer.from(data.result).toString());
-        setSoulboundPacks(result);
-      }
-    );
+    query_nft_tokens_for_owner(
+      accountId,
+      packOffset,
+      packLimit,
+      getSportType(currentSport).packPromoContract
+    ).then(async (data) => {
+      //@ts-ignore:next-line
+      const result = JSON.parse(Buffer.from(data.result).toString());
+      setSoulboundPacks(result);
+    });
   }
 
-  async function get_soulbound_pack(selector) {
-    execute_claim_soulbound_pack(selector);
-  }
+  // async function get_soulbound_pack(selector) {
+  //   execute_claim_soulbound_pack(selector, getSport);
+  // }
 
   const onSubmit = (data) => {
     if (data.search) setResult(data.search);
@@ -158,7 +191,8 @@ export default function Packs() {
   const [isNarrowScreen, setIsNarrowScreen] = useState(false);
   const handleButtonClick = (e) => {
     e.preventDefault();
-    get_soulbound_pack(selector);
+    dispatch(setSportTypeRedux(currentSport));
+    execute_claim_soulbound_pack(selector, getSportType(currentSport).packPromoContract);
   };
 
   useEffect(() => {
@@ -168,12 +202,12 @@ export default function Packs() {
     const endOffset = packOffset + packLimit;
     console.log(`Loading packs from ${packOffset} to ${endOffset}`);
     get_nft_pack_tokens_for_owner(accountId, packOffset, packLimit);
-  }, [totalPacks, packLimit, packOffset]);
+  }, [totalPacks, packLimit, packOffset, currentSport]);
 
   useEffect(() => {
     get_nft_sb_supply_for_owner(accountId);
     get_nft_sb_pack_tokens_for_owner(accountId, 0, 30);
-  }, []);
+  }, [currentSport]);
 
   useEffect(() => {
     if (remountComponent !== 0) {
@@ -182,14 +216,18 @@ export default function Packs() {
 
   useEffect(() => {
     if (router.asPath.indexOf('transactionHashes') > -1) {
+      {
+        //add checking here, use sportFromRedux variable
+        sportFromRedux === 'BASKETBALL' ? setModalImage(nbaImage) : setModalImage(nflImage);
+      }
+      setTimeout(() => persistor.purge(), 200);
       setEditModal(true);
     }
-    // router.pathname === router.asPath ? setEditModal(false) : setEditModal(true);
   }, []);
 
   useEffect(() => {
     get_claim_status(accountId);
-  }, []);
+  }, [currentSport]);
 
   // useEffect(() => {
   //     // set initial value
@@ -211,30 +249,13 @@ export default function Packs() {
 
   return (
     <Container activeName="SQUAD">
-      <div className="flex flex-col w-full overflow-y-auto h-screen pb-12 mb-12">
+      <div className="flex flex-col w-full overflow-y-auto h-screen">
         <Main color="indigo-white">
           <div className="iphone5:mt-20 md:ml-6 md:mt-8">
             <PortfolioContainer textcolor="indigo-black" title="PACKS">
               <div className="">
-                {isClaimed ? (
-                  <button
-                    className={`bg-indigo-gray bg-opacity-40 text-indigo-white w-5/6 md:w-80 h-10 pointer-events-none 
-            text-center font-bold text-xs self-center justify-center float-right md:-mt-12 iphone5:mr-9 iphone5:mt-4`}
-                    onClick={(e) => handleButtonClick(e)}
-                  >
-                    CLAIM SOULBOUND PACK
-                  </button>
-                ) : (
-                  <button
-                    className={`bg-indigo-buttonblue text-indigo-white w-5/6 md:w-80 h-10 
-           text-center font-bold text-xs self-center justify-center float-right md:-mt-12 iphone5:mr-9 iphone5:mt-4`}
-                    onClick={(e) => handleButtonClick(e)}
-                  >
-                    CLAIM SOULBOUND PACK
-                  </button>
-                )}
                 <div className="flex flex-col mt-6">
-                  <div className="flex font-bold md:ml-7 iphone5:mt-14 iphone5:ml-7 md:mt-0 font-monument">
+                  <div className="flex font-bold md:ml-7 iphone5:-mt-6 iphone5:ml-7 md:mt-0 font-monument">
                     {categoryList.map(({ name, isActive }) => (
                       <div
                         className={`cursor-pointer mr-6 ${
@@ -254,7 +275,48 @@ export default function Packs() {
 
               <div className="flex flex-col">
                 <hr className="opacity-10 -ml-6" />
-                <div className="grid grid-cols-4 gap-y-8 mt-4 md:grid-cols-4 iphone5:mt-8 iphone5:ml-2 md:ml-7 md:mt-9 ">
+                <div className="flex flex-row first:md:ml-10 iphone5:ml-2">
+                  {sportList.map((x, index) => {
+                    return (
+                      <button
+                        className={`rounded-lg border mt-4 px-8 p-1 iphone5:ml-2 text-xs md:font-medium font-monument ${
+                          index === 0 ? `md:ml-7` : 'md:ml-4'
+                        } ${
+                          x.isActive
+                            ? 'bg-indigo-buttonblue text-indigo-white border-indigo-buttonblue'
+                            : ''
+                        }`}
+                        onClick={() => {
+                          changeSportList(x.sport);
+                        }}
+                      >
+                        {x.sport}
+                      </button>
+                    );
+                  })}
+                </div>
+                <div className="iphone5:ml-6 md:ml-9 iphone5:mr-0 md:mr-4 iphone5:mt-4">
+                  {isClaimed ? (
+                    <button
+                      className={`hidden bg-indigo-gray bg-opacity-40 text-indigo-white w-5/6 md:w-80 h-10 pointer-events-none 
+            text-center font-bold text-xs `}
+                      onClick={(e) => handleButtonClick(e)}
+                    >
+                      CLAIM SOULBOUND PACK
+                    </button>
+                  ) : (
+                    <button
+                      className={`bg-indigo-buttonblue text-indigo-white iphone5:w-full md:w-80 h-10 
+           text-center font-bold text-xs`}
+                      onClick={(e) => handleButtonClick(e)}
+                    >
+                      {currentSport === 'BASKETBALL'
+                        ? 'CLAIM BASKETBALL PACK'
+                        : 'CLAIM FOOTBALL PACK'}
+                    </button>
+                  )}
+                </div>
+                <div className="grid iphone5:grid-cols-2 gap-y-8 mt-4 md:grid-cols-4 iphone5:mt-8 iphone5:ml-2 md:ml-7 md:mt-9 ">
                   {(categoryList[0].isActive ? packs : soulboundPacks).length > 0 &&
                     (categoryList[0].isActive ? packs : soulboundPacks)
                       .filter((data, i) => i >= packOffset && i < packOffset + packLimit)
@@ -263,6 +325,7 @@ export default function Packs() {
                           key={token_id}
                           image={metadata.media}
                           id={token_id}
+                          sport={currentSport}
                         ></PackComponent>
                       ))}
                 </div>
@@ -293,9 +356,17 @@ export default function Packs() {
               }}
             >
               Your pack has been minted successfully!
+              <button
+                  className="fixed top-4 right-4"
+                  onClick={() => {
+                    setEditModal(false);
+                  }}
+                >
+                  <img src="/images/x.png" />
+                </button>
               <div className="flex flex-wrap flex-col mt-10 mb-5 bg-opacity-70 z-50 w-full">
                 <div className="ml-20 mb-12">
-                  <img width={240} height={340} src="/images/packimages/NFL-SB-Pack.png"></img>
+                  <img width={240} height={340} src={modalImage}></img>
                 </div>
                 <Link href={router.pathname}>
                   <button

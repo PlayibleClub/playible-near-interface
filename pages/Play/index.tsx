@@ -4,7 +4,7 @@ import Main from '../../components/Main';
 import PortfolioContainer from '../../components/containers/PortfolioContainer';
 import { useDispatch } from 'react-redux';
 // import { getPortfolio } from '../../redux/reducers/contract/portfolio';
-import { GAME, ORACLE } from 'data/constants/nearContracts';
+import { GAME_NFL, ORACLE } from 'data/constants/nearContracts';
 import Link from 'next/link';
 import PlayComponent from './components/PlayComponent';
 import Container from '../../components/containers/Container';
@@ -22,7 +22,7 @@ import ReactPaginate from 'react-paginate';
 const bars = '/images/bars.png';
 const coin = 'images/coin.png';
 const claimreward = 'images/claimreward.png';
-
+import { SPORT_TYPES, getSportType } from 'data/constants/sportConstants';
 import { query_games_list, query_game_supply } from 'utils/near/helper';
 
 const Play = (props) => {
@@ -78,7 +78,28 @@ const Play = (props) => {
       isActive: false,
     },
   ]);
+
+  const sportObj = SPORT_TYPES.map((x) => ({ name: x.sport, isActive: false }));
+  sportObj[0].isActive = true;
+  const [sportList, setSportList] = useState([...sportObj]);
+  const [currentSport, setCurrentSport] = useState(sportObj[0].name);
   const [remountComponent, setRemountComponent] = useState(0);
+
+  function getActiveTabGameTotal() {
+    const active = categoryList.find((x) => x.isActive);
+
+    switch (active.name) {
+      case 'NEW':
+        setCurrentTotal(newGames.length);
+        break;
+      case 'ON-GOING':
+        setCurrentTotal(ongoingGames.length);
+        break;
+      case 'COMPLETED':
+        setCurrentTotal(completedGames.length);
+        break;
+    }
+  }
   const changecategoryList = (name) => {
     const tabList = [...categoryList];
     setgamesOffset(0);
@@ -105,6 +126,20 @@ const Play = (props) => {
     });
 
     setcategoryList([...tabList]);
+  };
+  const changeSportList = (name) => {
+    const sports = [...sportList];
+
+    sports.forEach((item) => {
+      if (item.name === name) {
+        item.isActive = true;
+      } else {
+        item.isActive = false;
+      }
+    });
+
+    setSportList([...sports]);
+    setCurrentSport(name);
   };
 
   const Test = [1, 2, 3, 4, 5];
@@ -342,7 +377,6 @@ const Play = (props) => {
     await setSortedList([]);
     fetchGames(activeCategory);
   };
-
   const renderPlacements = (item, i, winning = false) => {
     return (
       <>
@@ -386,13 +420,13 @@ const Play = (props) => {
   };
 
   async function get_game_supply() {
-    setTotalGames(await query_game_supply());
+    setTotalGames(await query_game_supply(getSportType(currentSport).gameContract));
   }
 
   console.log(totalGames);
 
   function get_games_list(totalGames) {
-    query_games_list(totalGames).then(async (data) => {
+    query_games_list(totalGames, getSportType(currentSport).gameContract).then(async (data) => {
       //@ts-ignore:next-line
       const result = JSON.parse(Buffer.from(data.result).toString());
 
@@ -417,8 +451,11 @@ const Play = (props) => {
           )
           .map((item) => getGameInfoById(item))
       );
-      console.table(completedGames);
-      setCurrentTotal(upcomingGames.length);
+      //setCurrentTotal(upcomingGames.length);
+      upcomingGames.sort(function (a, b) {
+        return a.start_time - b.start_time;
+      });
+
       setNewGames(upcomingGames);
       setCompletedGames(completedGames);
       setOngoingGames(ongoingGames);
@@ -459,10 +496,14 @@ const Play = (props) => {
   // }, [games, gamesLimit, gamesOffset]);
 
   useEffect(() => {
+    console.log(sportList);
     get_game_supply();
     get_games_list(totalGames);
-  }, [totalGames]);
+  }, [totalGames, currentSport]);
 
+  useEffect(() => {
+    getActiveTabGameTotal();
+  }, [newGames, ongoingGames, completedGames]);
   useEffect(() => {
     currentTotal !== 0 ? setPageCount(Math.ceil(currentTotal / gamesLimit)) : setPageCount(1);
   }, [currentTotal]);
@@ -476,7 +517,9 @@ const Play = (props) => {
       setClaimData(null);
     }
   }, [claimModal]);
-
+  useEffect(() => {
+    console.log(sportList);
+  }, [sportList]);
   return (
     <>
       {claimModal === true && (
@@ -651,7 +694,7 @@ const Play = (props) => {
         </>
       )}
       <Container activeName="PLAY">
-        <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
+        <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center">
           <Main color="indigo-white">
             <div className="flex flex-col mb-10">
               <div className="flex">
@@ -666,7 +709,7 @@ const Play = (props) => {
               </div>
 
               <div className="flex flex-col mt-6">
-                <div className="flex font-bold font-monument iphone5:ml-7 md:ml-14 ">
+                <div className="flex font-bold md:ml-14 font-monument iphone5:ml-7">
                   {categoryList.map(({ name, isActive }) => (
                     <div
                       className={`cursor-pointer iphone5:mr-8 iphone5:text-xs md:text-base md:mr-6 ${
@@ -689,6 +732,26 @@ const Play = (props) => {
                       {err ? (
                         <p className="py-10 ml-7">{err}</p>
                       ) : ( */}
+                <div className="flex iphone5:ml-7 flex-row first:md:ml-14">
+                  {sportList.map((x, index) => {
+                    return (
+                      <button
+                        className={`rounded-lg border mt-4 px-8 p-1 text-xs md:font-medium font-monument ${
+                          index === 0 ? `md:ml-14` : 'md:ml-4'
+                        } ${
+                          x.isActive
+                            ? 'bg-indigo-buttonblue text-indigo-white border-indigo-buttonblue'
+                            : ''
+                        }`}
+                        onClick={() => {
+                          changeSportList(x.name);
+                        }}
+                      >
+                        {x.name}
+                      </button>
+                    );
+                  })}
+                </div>
                 <>
                   {/* {sortedList.length > 0 ? ( */}
                   {1 > 0 ? (
@@ -718,7 +781,12 @@ const Play = (props) => {
                                             />
                                           </div>
                                         </a> */}
-                                    <Link href={`/PlayDetails/${data.game_id}`} passHref>
+                                    <Link
+                                      href={`/PlayDetails/${currentSport.toLowerCase()}/${
+                                        data.game_id
+                                      }`}
+                                      passHref
+                                    >
                                       <div className="iphone5:mr-0 md:mr-6">
                                         <PlayComponent
                                           type={activeCategory}
@@ -726,7 +794,9 @@ const Play = (props) => {
                                           icon="test"
                                           startDate={data.start_time}
                                           endDate={data.end_time}
-                                          img={data.image}
+                                          img={data.game_image}
+                                          lineupLength={data.lineup_len}
+                                          prizePool={data.prize_description}
                                           fetchGames={fetchGamesLoading}
                                           index={() => changeIndex(1)}
                                         />
@@ -792,16 +862,19 @@ const Play = (props) => {
                               return (
                                 <div key={i} className="flex">
                                   <div className="iphone5:mr-0 md:mr-6 cursor-pointer ">
-                                    <Link href={`/Games/${data.game_id}`} passHref>
+                                    <Link
+                                      href={`/Games/${currentSport.toLowerCase()}/${data.game_id}`}
+                                      passHref
+                                    >
                                       <div className="iphone5:mr-0 md:mr-6">
                                         <PlayComponent
                                           type={activeCategory}
                                           game_id={data.game_id}
                                           icon="test"
-                                          prizePool="2,300"
+                                          prizePool={data.prize_description}
                                           startDate={data.start_time}
                                           endDate={data.end_time}
-                                          img={data.image}
+                                          img={data.game_image}
                                           fetchGames={fetchGamesLoading}
                                           index={() => changeIndex(1)}
                                         />

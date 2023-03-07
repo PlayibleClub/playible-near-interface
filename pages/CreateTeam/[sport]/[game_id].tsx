@@ -1,32 +1,30 @@
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
-import Main from '../../components/Main';
-import PortfolioContainer from '../../components/containers/PortfolioContainer';
+import Main from 'components/Main';
+import PortfolioContainer from 'components/containers/PortfolioContainer';
 import Link from 'next/link';
-import Container from '../../components/containers/Container';
-import BackFunction from '../../components/buttons/BackFunction';
+import Container from 'components/containers/Container';
+import BackFunction from 'components/buttons/BackFunction';
 import 'regenerator-runtime/runtime';
 import { useRouter } from 'next/router';
 import { getContract, getRPCProvider } from 'utils/near';
-import Lineup from '../../components/Lineup';
+import Lineup from 'components/Lineup';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
 import { Provider, useDispatch, useSelector } from 'react-redux';
-import { getAccountAssets } from '../../redux/reducers/external/playible/assets';
-import PerformerContainer from '../../components/containers/PerformerContainer';
-import PerformerContainerSelectable from '../../components/containers/PerformerContainerSelectable';
-import BaseModal from '../../components/modals/BaseModal';
-import { position } from '../../utils/athlete/position';
-import Modal from '../../components/modals/Modal';
-import { axiosInstance } from '../../utils/playible';
-import LoadingPageDark from '../../components/loading/LoadingPageDark';
+import PerformerContainerSelectable from 'components/containers/PerformerContainerSelectable';
+import BaseModal from 'components/modals/BaseModal';
+import { position } from 'utils/athlete/position';
+import Modal from 'components/modals/Modal';
+import { axiosInstance } from 'utils/playible';
+import LoadingPageDark from 'components/loading/LoadingPageDark';
+import { getSportType } from 'data/constants/sportConstants';
 import { DEFAULT_MAX_FEES } from 'data/constants/gasFees';
-import { GAME } from 'data/constants/nearContracts';
 import {
-  selectAthleteLineup,
-  selectGameId,
-  selectIndex,
-  selectPosition,
-  selectTeamName,
+  getAthleteLineup,
+  getGameId,
+  getIndex,
+  getPosition,
+  getTeamName,
 } from 'redux/athlete/athleteSlice';
 import {
   setAthleteLineup,
@@ -34,16 +32,18 @@ import {
   setIndex,
   setPosition,
   setTeamNameRedux,
+  setSport,
 } from 'redux/athlete/athleteSlice';
 import { query_game_data } from 'utils/near/helper';
 
 export default function CreateLineup(props) {
   const { query } = props;
   const gameId = query.game_id;
-  const newTeamName = useSelector(selectTeamName);
+  const currentSport = query.sport.toString().toUpperCase();
+  const newTeamName = useSelector(getTeamName);
   const dispatch = useDispatch();
   const router = useRouter();
-  const reduxLineup = useSelector(selectAthleteLineup);
+  const reduxLineup = useSelector(getAthleteLineup);
   const connectedWallet = {};
   const athlete = {
     athlete_id: null,
@@ -89,7 +89,7 @@ export default function CreateLineup(props) {
     content: '',
   });
 
-  function getTeamName() {
+  function getTeamNamePage() {
     if (newTeamName != '') {
       setTeamName(newTeamName);
     }
@@ -217,7 +217,7 @@ export default function CreateLineup(props) {
     setLineup(array2);
   }
   async function get_game_data(game_id) {
-    setGameData(await query_game_data(game_id));
+    setGameData(await query_game_data(game_id, getSportType(currentSport).gameContract));
   }
 
   /* Function that checks whether a string parses into valid JSON. Used to check if data from router
@@ -249,7 +249,7 @@ export default function CreateLineup(props) {
     const tx = wallet.signAndSendTransactions({
       transactions: [
         {
-          receiverId: getContract(GAME),
+          receiverId: getSportType(currentSport).gameContract,
           //@ts-ignore:next-line
           actions: [action_submit_lineup],
         },
@@ -315,10 +315,11 @@ export default function CreateLineup(props) {
     dispatch(setAthleteLineup(athleteLineup));
     dispatch(setIndex(index));
     dispatch(setTeamNameRedux(teamName));
+    dispatch(setSport(currentSport));
     router.push('/AthleteSelect');
   };
   useEffect(() => {
-    getTeamName();
+    getTeamNamePage();
     if (lineup.length === 0) {
       get_game_data(gameId);
     }
@@ -416,12 +417,12 @@ export default function CreateLineup(props) {
     <>
       <>
         <Container activeName="PLAY">
-          <div className="flex flex-col w-full hide-scroll max-h-screen justify-center self-center">
+          <div className="flex flex-col w-full hide-scroll max-h-screen overflow-y-auto justify-center self-center">
             <Main color="indigo-white">
               <div className="md:ml-6 md:mt-8">
-                <BackFunction prev={`/CreateLineup/${gameId}`} />
+                <BackFunction prev={`/CreateLineup/${currentSport.toLowerCase()}/${gameId}`} />
               </div>
-              <div className="flex flex-col w-full hide-scroll overflow-x-hidden h-full md:h-min self-center text-indigo-black relative">
+              <div className="flex flex-col w-full hide-scroll overflow-x-hidden  h-full md:h-min self-center text-indigo-black relative">
                 {selectModal ? (
                   <div className="absolute top-0 left-0 bottom-0 right-0 bg-indigo-white z-50">
                     <PortfolioContainer
@@ -524,11 +525,11 @@ export default function CreateLineup(props) {
                   ''
                 )}
                 <div className={`${selectModal ? 'hidden h-0' : ''}`}>
-                  <div className="md:ml-6">
+                  <div className="md:ml-6 md:-mt-0 mt-14">
                     <PortfolioContainer title="CREATE LINEUP" textcolor="text-indigo-black" />
                   </div>
-                  <div className="flex flex-col -mt-8 -mb-5">
-                    <div className="flex items-end pt-10 pb-3 ml-7">
+                  <div className="flex flex-col md:-mt-8 md:-mb-5">
+                    <div className="flex items-end pt-10 pb-3 ml-7 -mt-12 md:mt-0">
                       <div className="font-monument text-xl ml-6 truncate w-40 md:w-min md:max-w-xs">
                         {teamName}
                       </div>
@@ -539,7 +540,7 @@ export default function CreateLineup(props) {
                         EDIT TEAM NAME
                       </p>
                     </div>
-                    <div className="grid grid-cols-2 gap-y-4 mt-2 mb-2 md:mb-10 md:grid-cols-4 md:ml-7 md:mt-12">
+                    <div className="grid grid-cols-4  md:gap-y-4 md:mt-14 mb-2 md:mb-10 md:grid-cols-4 md:ml-7 -mt-10 -ml-6 mr-6 md:mr-0">
                       {lineup.map((data, i) => {
                         console.log(lineup);
                         return (
@@ -561,6 +562,7 @@ export default function CreateLineup(props) {
                                   game_id={gameId}
                                   teamName={teamName}
                                   isAthlete={data.isAthlete}
+                                  currentSport={currentSport}
                                 />
                               </div>
                             ) : (
@@ -580,6 +582,7 @@ export default function CreateLineup(props) {
                                   score={data.athlete.fantasy_score.toFixed(2)}
                                   game_id={gameId}
                                   isAthlete={data.isAthlete}
+                                  currentSport={currentSport}
                                 />
                               </div>
                             )}
@@ -588,9 +591,9 @@ export default function CreateLineup(props) {
                       })}
                     </div>
                   </div>
-                  <div className="flex bg-indigo-black bg-opacity-5 w-full justify-end">
+                  <div className="flex bg-indigo-black bg-opacity-5 w-full justify-end fixed bottom-0 md:relative">
                     <button
-                      className="bg-indigo-buttonblue text-indigo-white w-full md:w-80 h-14 text-center font-bold text-md"
+                      className="bg-indigo-buttonblue text-indigo-white w-full md:w-80 h-12 md:h-14 text-center font-bold text-md"
                       onClick={() => setSubmitModal(true)}
                     >
                       CONFIRM TEAM
@@ -687,6 +690,14 @@ export default function CreateLineup(props) {
             setEditInput(teamName);
           }}
         >
+          <button
+            className="fixed top-4 right-4 "
+            onClick={() => {
+              setEditModal(false);
+            }}
+          >
+            <img src="/images/x.png" />
+          </button>
           <div className="mt-2 px-5">
             <p className="text-xs uppercase font-thin mb-2" style={{ fontFamily: 'Montserrat' }}>
               EDIT TEAM NAME
@@ -743,7 +754,9 @@ export async function getServerSideProps(ctx) {
     if (query.transactionHashes) {
       return {
         redirect: {
-          destination: query.origin || `/CreateLineup/${query.game_id}`,
+          destination:
+            query.origin ||
+            `/CreateLineup/${query.sport.toString().toLowerCase()}/${query.game_id}`,
           permanent: false,
         },
       };

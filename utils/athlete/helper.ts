@@ -1,23 +1,87 @@
 import client from 'apollo-client';
 import { objectTraps } from 'immer/dist/internal';
-import { GET_ATHLETE_BY_ID } from '../queries';
-import { getUTCTimestampFromLocal } from 'utils/date/helper';
+import { GET_ATHLETE_BY_ID, GET_ATHLETE_BY_ID_DATE, GET_NBA_PLAYER_SCHEDULE } from '../queries';
+import { formatToUTCDate, getUTCTimestampFromLocal } from 'utils/date/helper';
+import { getSportType } from 'data/constants/sportConstants';
+
+interface trait_type {
+  athlete_id: string;
+  rarity: string;
+  name: string;
+  team: string;
+  position: string;
+  release: string;
+  usage?: string;
+  type?: number;
+}
+
 // pull from graphQL and append the nft animation
 // return assembled Athlete
 async function getAthleteInfoById(item) {
-  let value = item.extra.map((item) => item.value);
+  console.log(item.extra);
+  let value = {} as trait_type;
+
+  for (const key of item.extra) {
+    value[key.trait_type] = key.value;
+  }
   const { data } = await client.query({
     query: GET_ATHLETE_BY_ID,
-    variables: { getAthleteById: parseFloat(value[0]) },
+    variables: { getAthleteById: parseFloat(value['athlete_id']) },
   });
-  const diff = item.token_id.includes('SB') ? 1 : 0;
-  const isPromo = item.token_id.includes('SB');
+  const basketball = item.token_id.includes('2000');
+  let diff;
 
+  const isPromo = item.token_id.includes('SB') || item.token_id.includes('PR');
+  const returningData = {
+    primary_id: value['athlete_id'],
+    athlete_id: item.token_id,
+    rarity: value['rarity'],
+    usage: value['usage'],
+    name: value['name'],
+    team: value['team'],
+    position: value['position'],
+    release: value['release'],
+    ...(isPromo && { type: value['type'] }),
+    isOpen: false,
+    animation: data.getAthleteById.nftAnimation,
+    image: item.metadata.media,
+    fantasy_score: getAvgFantasyScore(data.getAthleteById.stats),
+    stats_breakdown: data.getAthleteById.stats,
+    isInGame: item.metadata['starts_at'] > getUTCTimestampFromLocal() ? true : false,
+    isInjured: data.getAthleteById.isInjured,
+    isActive: data.getAthleteById.isActive,
+  };
+  return returningData;
+}
+async function getAthleteBasketballSchedule(athlete, startDate, endDate){
+  
+
+  const { data }  = await client.query({
+    query: GET_NBA_PLAYER_SCHEDULE,
+    variables: {
+      team: athlete.team,
+      startDate: formatToUTCDate(startDate),//formatToUTCDate(1676418043000),
+      endDate: formatToUTCDate(endDate),//formatToUTCDate(1677282043000),
+    }
+  });
+
+  return {...athlete, schedule: data.getNbaPlayerSchedule};
+}
+async function getAthleteInfoByIdWithDate(item, from, to) {
+  let value = item.extra.map((item) => item.value);
+  const { data } = await client.query({
+    query: GET_ATHLETE_BY_ID_DATE,
+    variables: { getAthleteById: parseFloat(value[0]), from: from, to: to },
+  });
+  const basketball = item.token_id.includes('2000');
+  const diff =
+    item.token_id.includes('SB') || item.token_id.includes('PR') ? 1 : basketball ? 1 : 0;
+  const isPromo = item.token_id.includes('SB') || item.token_id.includes('PR');
   const returningData = {
     primary_id: value[0],
     athlete_id: item.token_id,
     rarity: value[1],
-    usage: isPromo ? 0 : value[2],
+    usage: isPromo ? 0 : basketball ? 0 : value[2],
     name: value[3 - diff],
     team: value[4 - diff],
     position: value[5 - diff],
@@ -26,9 +90,11 @@ async function getAthleteInfoById(item) {
     isOpen: false,
     animation: data.getAthleteById.nftAnimation,
     image: item.metadata.media,
-    fantasy_score: getAvgFantasyScore(data.getAthleteById.stats),
+    fantasy_score: getDailyFantasyScore(data.getAthleteById.stats),
     stats_breakdown: data.getAthleteById.stats,
     isInGame: item.metadata['starts_at'] > getUTCTimestampFromLocal() ? true : false,
+    isInjured: data.getAthleteById.isInjured,
+    isActive: data.getAthleteById.isActive,
   };
   return returningData;
 }
@@ -36,13 +102,22 @@ async function getAthleteInfoById(item) {
 function getAvgFantasyScore(array) {
   if (Array.isArray(array) && array.length > 0) {
     return array.filter((item) => {
-      return item.type == 'season';
+      return item.season != '2022' && item.type == 'season';
     })[0].fantasyScore;
   } else {
     return 0;
   }
 }
 
+function getDailyFantasyScore(array) {
+  if (Array.isArray(array) && array.length > 0) {
+    return array.filter((item) => {
+      return item.type == 'daily' || item.type == 'weekly';
+    })[0].fantasyScore;
+  } else {
+    return 0;
+  }
+}
 function convertNftToAthlete(item) {
   const token_metadata = item.token_metadata || item.metadata;
 
@@ -57,4 +132,54 @@ function convertNftToAthlete(item) {
   };
 }
 
-export { convertNftToAthlete, getAthleteInfoById };
+function getPositionDisplay(position, currentSport) {
+  let flex = false;
+  let found;
+  getSportType(currentSport).extra.forEach((x) => {
+    if (x.key.toString() === position.toString()) {
+      found = x.name;
+      flex = true;
+    }
+  });
+
+  // }
+  // if(position.length === 3) return 'FLEX';
+  // if(position.length === 4) return 'SUPERFLEX';
+  if (flex) {
+    flex = false;
+    return found;
+  } else {
+    found = getSportType(currentSport).positionList.find((x) => x.key === position[0]);
+    return found.name;
+  }
+}
+
+function checkInjury(injury) {
+  switch (injury) {
+    case 'Probable':
+    case 'Questionable':
+    case 'Doubtful':
+      return 1;
+    case 'Out':
+      return 2;
+    case null:
+      return 3;
+  }
+}
+
+function cutAthleteName(name) {
+  const slice = name.slice(0, 12);
+  const newName = slice + '...';
+
+  return newName;
+}
+
+export {
+  convertNftToAthlete,
+  getAthleteInfoById,
+  getAthleteInfoByIdWithDate,
+  getPositionDisplay,
+  checkInjury,
+  cutAthleteName,
+  getAthleteBasketballSchedule
+};
