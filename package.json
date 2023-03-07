@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "@apollo/client": "^3.7.1",
-    "@aws-sdk/client-secrets-manager": "^3.266.1",
     "@babel/core": "^7.20.2",
     "@headlessui/react": "^1.7.4",
     "@heroicons/react": "^2.0.13",
@@ -37,7 +36,6 @@
     "next-redux-wrapper": "^8.0.0",
     "prop-types": "^15.8.1",
     "react": "18.2.0",
-    "react-aws-s3-typescript": "^1.1.5",
     "react-burger-menu": "^3.0.8",
     "react-device-detect": "^2.2.2",
     "react-dom": "18.2.0",

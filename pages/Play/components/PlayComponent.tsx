@@ -19,10 +19,9 @@ const PlayComponent = (props) => {
     month,
     date,
     year,
-    img,
+    img = null,
     fetchGames,
     index,
-    lineupLength,
   } = props;
   const playicon = getImage(game_id);
   const ranking = '/images/icons/Ranking.svg';
@@ -47,6 +46,8 @@ const PlayComponent = (props) => {
     const id = setInterval(() => {
       const currentDate = getUTCDateFromLocal();
       const end = moment.utc(type === 'ON-GOING' || type === 'ACTIVE' ? endDate : startDate);
+
+      console.log(endDate);
 
       setDay(formatTime(Math.floor(end.diff(currentDate, 'second') / 3600 / 24)));
       setHour(formatTime(Math.floor((end.diff(currentDate, 'second') / 3600) % 24)));
@@ -76,18 +77,18 @@ const PlayComponent = (props) => {
                 <div className="text-base font-monument">${prizePool}</div>
               </div> */}
               <div className="">
-                <div className="font-normal text-sm">STATUS</div>
+                <div className="font-thin text-sm">STATUS</div>
                 <div className="text-base font-monument">COMPLETE</div>
               </div>
               <div>
-                <div className="font-normal text-sm">GAME ID</div>
+                <div className="font-thin text-sm">GAME ID</div>
                 <div className="text-base font-monument">{game_id}</div>
               </div>
             </div>
 
             <div className="mt-4 flex justify-between">
               <div className="">
-                <div className="font-normal text-sm">RANKING</div>
+                <div className="font-thin text-sm">RANKING</div>
                 <div className="text-base font-monument">
                   <img src={ranking} className="w-3 h-3" />
                   {/*  */}
@@ -100,7 +101,7 @@ const PlayComponent = (props) => {
         <div className="w-84 h-96 mb-12">
           <div className="w-full p-3">
             <div className="w-full">
-              <Image src={img ? img : playicon} width={300} height={263} alt="play-icon" />
+              <Image src={playicon} width="300" height="263" alt="play-icon" />
             </div>
 
             <div className="mt-4 flex justify-between">
@@ -112,24 +113,16 @@ const PlayComponent = (props) => {
                 <div className="font-thin text-sm">
                   {type === 'ON-GOING' || type === 'ACTIVE' ? 'END' : 'START'} DATE
                 </div>
-                <div className="text-base font-monument flex">
+                <div className="text-base font-monument">
                   {moment
                     .utc(type === 'ON-GOING' || type === 'ACTIVE' ? endDate : startDate)
                     .local()
                     .format('MM/DD/YYYY')}
                 </div>
-                <div className="font-thin text-sm">{type === 'NEW' ? 'END DATE' : ''}</div>
-                <div className="text-base font-monument">
-                  {type === 'NEW' ? moment.utc(endDate).local().format('MM/DD/YYYY') : ''}
-                </div>
               </div>
               <div>
                 <div className="font-thin text-sm">GAME ID</div>
                 <div className="text-base font-monument">{game_id}</div>
-                <div className={`${type === 'NEW' ? ' ' : 'hidden'}`}>
-                  <div className="font-thin text-sm">LINEUP COUNT:</div>
-                  <div className="text-base font-monument">{lineupLength}</div>
-                </div>
               </div>
             </div>
 
@@ -177,7 +170,6 @@ PlayComponent.propTypes = {
   timeLeft: PropTypes.string.isRequired,
   type: PropTypes.string,
   startDate: PropTypes.string,
-  lineupLength: PropTypes.number.isRequired,
   endDate: PropTypes.string,
   month: PropTypes.string,
   date: PropTypes.string,

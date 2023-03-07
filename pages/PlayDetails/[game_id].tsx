@@ -1,43 +1,40 @@
 import React, { useState, useEffect } from 'react';
-import Container from 'components/containers/Container';
+import Container from '../../components/containers/Container';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
-import Main from 'components/Main';
-import PortfolioContainer from 'components/containers/PortfolioContainer';
-import ModalPortfolioContainer from 'components/containers/ModalPortfolioContainer';
-import BackFunction from 'components/buttons/BackFunction';
-import PlayDetailsComponent from '../components/PlayDetailsComponent';
-
-import { axiosInstance } from 'utils/playible';
+import Main from '../../components/Main';
+import PortfolioContainer from '../../components/containers/PortfolioContainer';
+import ModalPortfolioContainer from '../../components/containers/ModalPortfolioContainer';
+import BackFunction from '../../components/buttons/BackFunction';
+import PlayDetailsComponent from './components/PlayDetailsComponent';
+import { axiosInstance } from '../../utils/playible';
 import moment from 'moment';
 import { getUTCDateFromLocal, getUTCTimestampFromLocal } from 'utils/date/helper';
-import { truncate } from 'utils/wallet/index';
-import { ADMIN } from 'data/constants/address';
+import { truncate } from '../../utils/wallet/index';
+import { ADMIN } from '../../data/constants/address';
 import Link from 'next/link';
 import 'regenerator-runtime/runtime';
-import LoadingPageDark from 'components/loading/LoadingPageDark';
+import LoadingPageDark from '../../components/loading/LoadingPageDark';
 import { providers } from 'near-api-js';
 import { getContract, getRPCProvider } from 'utils/near';
 import { getImage, getDescription, getPrizePool } from 'utils/game/helper';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
-
+import { GAME } from 'data/constants/nearContracts';
 import Router from 'next/router';
 import BaseModal from 'components/modals/BaseModal';
 import { query_game_data } from 'utils/near/helper';
-import { getSportType } from 'data/constants/sportConstants';
+
 export default function PlayDetails(props) {
   const { query } = props;
 
   const gameId = query.game_id;
-  const currentSport = query.sport.toString().toUpperCase();
-  console.log(currentSport);
+
   const provider = new providers.JsonRpcProvider({
     url: getRPCProvider(),
   });
 
   const { accountId } = useWalletSelector();
-  const defaultGameImage = '/images/game.png';
-  const defaultPrizeDescription = '$100 + 2 Championship Tickets';
+
   const [gameData, setGameData] = useState(null);
   const [leaderboard, setLeaderboard] = useState([]);
   const [registeredTeams, setRegisteredTeams] = useState([]);
@@ -68,7 +65,7 @@ export default function PlayDetails(props) {
   }
 
   async function get_game_data(game_id) {
-    setGameData(await query_game_data(game_id, getSportType(currentSport).gameContract));
+    setGameData(await query_game_data(game_id));
   }
 
   function query_player_team() {
@@ -83,7 +80,7 @@ export default function PlayDetails(props) {
       .query({
         request_type: 'call_function',
         finality: 'optimistic',
-        account_id: getSportType(currentSport).gameContract,
+        account_id: getContract(GAME),
         method_name: 'get_players_team',
         args_base64: Buffer.from(query).toString('base64'),
       })
@@ -248,7 +245,7 @@ export default function PlayDetails(props) {
       <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
         <Main color="indigo-white">
           <div className="md:ml-6">
-            <div className="iphone5:mt-24 md:mt-8">
+            <div className="mt-8">
               <BackFunction prev="/Play" />
             </div>
             {/* {loading ? (
@@ -288,53 +285,41 @@ export default function PlayDetails(props) {
                               <>
                                 <div className="md:ml-7 flex flex-row md:flex-row">
                                   <div className="md:-mr-20">
-                                    <div className="iphone5:mt-4 md:mt-7 flex justify-center md:self-left md:mr-8 iphone5:flex-col md:flex-row">
+                                    <div className="mt-7 flex justify-center md:self-left md:mr-8">
                                       <div className="-ml-7 mr-7">
                                         <Image
-                                          src={
-                                            gameData?.game_image
-                                              ? gameData.game_image
-                                              : defaultGameImage
-                                          }
+                                          src={getImage(gameId)}
                                           width={550}
                                           height={279}
                                           alt="game-image"
                                         />
                                       </div>
-                                      <div className="md:-mt-7 w-96">
-                                        <div className="iphone5:-ml-7 md:ml-0">
-                                          <PortfolioContainer
-                                            textcolor="indigo-black"
-                                            title={gameFreeOrPaid}
-                                          />
-                                        </div>
-                                        <div className="flex md:space-x-14 mt-4 iphone5:flex-col md:flex-row">
-                                          <div className="iphone5:ml-0 md:ml-7">
+                                      <div className="-mt-7 w-96">
+                                        <PortfolioContainer
+                                          textcolor="indigo-black"
+                                          title={gameFreeOrPaid}
+                                        />
+                                        <div className="flex space-x-14 mt-4">
+                                          <div className="ml-7">
                                             <div>PRIZE POOL</div>
                                             <div className=" font-monument text-lg">
-                                              {gameData?.prize_description
-                                                ? gameData.prize_description
-                                                : defaultPrizeDescription}
+                                              {(gameData && gameData.prize) || getPrizePool(gameId)}
                                             </div>
                                           </div>
                                           <div>
-                                            <div className="iphone5:mt-4 md:mt-0">START DATE</div>
+                                            <div>START DATE</div>
                                             <div className=" font-monument text-lg">
                                               {(gameData &&
-                                                moment
-                                                  .utc(gameData.start_time)
-                                                  .local()
-                                                  .format('MM/DD/YYYY')) ||
+                                                moment(gameData.start_time).format('MM/DD/YYYY')) ||
                                                 'N/A'}
                                             </div>
                                           </div>
                                         </div>
-                                        <div className="md:ml-7">
+                                        <div className="ml-7">
                                           <div className="mt-4">
                                             {gameData &&
-                                              (moment.utc(gameData.start_time).local() <=
-                                                moment() &&
-                                              moment.utc(gameData.end_time).local() > moment() ? (
+                                              (moment(gameData.start_time) <= moment() &&
+                                              moment(gameData.end_time) > moment() ? (
                                                 <>
                                                   <p>ENDS IN</p>
                                                   {gameData ? (
@@ -348,8 +333,7 @@ export default function PlayDetails(props) {
                                                     ''
                                                   )}
                                                 </>
-                                              ) : moment.utc(gameData.start_time).local() >
-                                                moment() ? (
+                                              ) : moment(gameData.start_time) > moment() ? (
                                                 <>
                                                   <p>REGISTRATION ENDS IN</p>
                                                   {gameData ? (
@@ -366,11 +350,9 @@ export default function PlayDetails(props) {
                                               ) : (
                                                 ''
                                               ))}
-                                            <div className="flex iphone5:justify-left md:justify-start iphone5:ml-0 md:ml-0">
-                                              <Link
-                                                href={`/CreateLineup/${currentSport.toLowerCase()}/${gameId}`}
-                                              >
-                                                <button className="bg-indigo-buttonblue text-indigo-white iphone5:w-80 iphone5:h-12 md:max-w-full md:h-12 text-center font-bold text-md mt-8">
+                                            <div className="flex justify-center md:justify-start">
+                                              <Link href={`/CreateLineup/${gameId}`}>
+                                                <button className="bg-indigo-buttonblue text-indigo-white w-full h-12 text-center font-bold text-md mt-8">
                                                   ENTER GAME
                                                 </button>
                                               </Link>
@@ -523,7 +505,9 @@ export default function PlayDetails(props) {
               {/* if paid game
               <div className="ml-7 mt-5 font-bold text-indigo-red">{detailsFreeOrPaid}</div>
               */}
-              <div className="ml-7 mt-3 font-normal mr-24">{gameData?.game_description}</div>
+              <div className="ml-7 mt-3">
+                <pre className="font-monument font-normal">{getDescription(gameId)}</pre>
+              </div>
             </>
           </div>
         </Main>

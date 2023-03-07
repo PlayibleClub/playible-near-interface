@@ -11,7 +11,7 @@ import { setupNightly } from '@near-wallet-selector/nightly';
 import { setupMyNearWallet } from '@near-wallet-selector/my-near-wallet';
 import { setupMeteorWallet } from '@near-wallet-selector/meteor-wallet';
 import { getConfig, getContract } from '../utils/near';
-import { MINTER_NFL } from '../data/constants/nearContracts';
+import { MINTER } from '../data/constants/nearContracts';
 
 declare global {
   interface Window {
@@ -48,8 +48,8 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
       ],
     });
     const _modal = setupModal(_selector, {
-      contractId: getContract(MINTER_NFL),
-      methodNames: [...MINTER_NFL.interface.viewMethods, ...MINTER_NFL.interface.changeMethods],
+      contractId: getContract(MINTER),
+      methodNames: [...MINTER.interface.viewMethods, ...MINTER.interface.changeMethods],
     });
     const state = _selector.store.getState();
 

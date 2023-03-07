@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 const PortfolioContainer = (props) => {
-  const { color, textcolor, size, title, children, align, stats, searchbar } = props;
+  const { color, textcolor, size, title, children, align, stats } = props;
   const avgicon = '/../../public/images/avgscore.png';
 
   return (
@@ -58,14 +58,9 @@ const PortfolioContainer = (props) => {
               </div>
             </div>
           ) : (
-            <div className="pb-3 w-full pt-6 ml-6 flex flex-col justify-between md:flex-row align-center text-2xl font-monument">
-              <div className="-ml-1 md:-ml-0">
-                {title}
-                <img src={'/images/blackunderline.png'} className="object-none" />
-              </div>
-              <div className="text-sm mt-4 md:mt-0 md:ml-80 md:mr-20 font-montserrat">
-                {searchbar ? searchbar : ''}
-              </div>
+            <div className="pb-3 pt-6 ml-7 justify-start align-center text-2xl font-monument">
+              {title}
+              <img src={'/images/blackunderline.png'} className="object-none" />
             </div>
           )}
         </div>
@@ -84,7 +79,6 @@ PortfolioContainer.propTypes = {
   align: PropTypes.string,
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
   stats: PropTypes.number,
-  searchbar: PropTypes.any,
 };
 
 PortfolioContainer.defaultProps = {

@@ -1,4 +1,3 @@
- const plugin = require('tailwindcss/plugin');
 module.exports = {
     purge: [],
     darkMode: false, // or 'media' or 'class'
@@ -20,12 +19,9 @@ module.exports = {
             height: {
                 '135px': '135px',
                 '14px' : '14px',
-                '108' : '28rem',
-                '128': '32rem',
             },
             margin: {
-                '15': '60px',
-                '13': '54px'
+                '15': '60px'
             }
         },
         colors: {
@@ -106,30 +102,11 @@ module.exports = {
         },
         scale: {
             '200':'2',
-            '100':'1',
-            '85':'.85',
-            '70':'.70',
-            '65':'.65',
-            '60':'.60',
-            '55':'.55',
         }
     },
     variants: {
         extend: {},
         scrollSnapType: ['responsive'],
     },
-    plugins: [
-        [require('tailwindcss-scroll-snap')],
-        plugin(function({ addUtilities }){
-            addUtilities({
-                '.no-scrollbar::-webkit-scrollbar' : {
-                    'display' : 'none',
-                },
-                '.no-scrollbar' : {
-                    '-ms-overflow-style' : 'none',
-                    'scrollbar-width': 'none',
-                },
-            })
-        })
-    ]
+    plugins: [require('tailwindcss-scroll-snap')],
 };

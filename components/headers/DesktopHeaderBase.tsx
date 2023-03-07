@@ -59,6 +59,7 @@ const DesktopHeaderBase = () => {
       setLoading(false);
     });
   }, [accountId, getAccount]);
+
   const renderWallet = () => {
     {
       if (accountId) {

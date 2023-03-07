@@ -1,5 +1,11 @@
 import Play from 'pages/Play';
 
+const clubhouse = {
+  name: 'CLUBHOUSE',
+  path: 'http://playible.club',
+  img: '/images/icons/Clubhouse.svg',
+};
+
 const home = {
   name: 'HOME',
   path: '/',
@@ -30,12 +36,6 @@ const play = {
   img: '/images/icons/Play.svg',
 };
 
-const learn = {
-  name: 'LEARN',
-  path: 'http://playible.club',
-  img: '/images/icons/Clubhouse.svg',
-};
-
 const adminGame = {
   name: 'GAME',
   path: '/Admin/Game',
@@ -48,17 +48,12 @@ const adminOpenPack = {
   img: '/images/icons/Play.svg',
 };
 
-const adminSendPack = {
-  name: 'SEND PACK',
-  path: '/Admin/Promotional',
-  img: '/images/icons/Play.svg',
-};
 export const getNavigation = (admin = false, loggedIn = false) => {
   if (admin) {
-    return [adminGame, adminOpenPack, adminSendPack, home, mySquad, myPacks, play];
+    return [adminGame, adminOpenPack, home, mySquad, myPacks, play];
   } else if (loggedIn) {
-    return [home, mint, mySquad, myPacks, play, learn];
+    return [clubhouse, home, mint, mySquad, myPacks, play];
   } else {
-    return [home, mint, learn];
+    return [clubhouse, home, mint];
   }
 };
