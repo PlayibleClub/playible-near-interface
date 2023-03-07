@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Main from '../../components/Main';
 import PortfolioContainer from '../../components/containers/PortfolioContainer';
 import PerformerContainer from '../../components/containers/PerformerContainer';
@@ -11,12 +11,12 @@ import Sorter from './components/Sorter';
 import SearchComponent from 'components/SearchComponent';
 import { transactions, utils, WalletConnection, providers } from 'near-api-js';
 import { getRPCProvider, getContract } from 'utils/near';
-import { PACK } from '../../data/constants/nearContracts';
+import { PACK_NFL } from '../../data/constants/nearContracts';
 import { axiosInstance } from '../../utils/playible';
 import 'regenerator-runtime/runtime';
 import { ProvidedRequiredArgumentsOnDirectivesRule } from 'graphql/validation/rules/ProvidedRequiredArgumentsRule';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
-import { ATHLETE, ATHLETE_PROMO } from 'data/constants/nearContracts';
+import { ATHLETE_NFL, ATHLETE_PROMO_NFL } from 'data/constants/nearContracts';
 import PackComponent from 'pages/Packs/components/PackComponent';
 import { convertNftToAthlete, getAthleteInfoById } from 'utils/athlete/helper';
 import {
@@ -24,15 +24,18 @@ import {
   query_filter_tokens_for_owner,
   query_mixed_tokens_pagination,
 } from 'utils/near/helper';
+import { getSportType } from 'data/constants/sportConstants';
 import ReactPaginate from 'react-paginate';
 import Select from 'react-select';
 import { isCompositeType } from 'graphql';
 import { useRef } from 'react';
 import { current } from '@reduxjs/toolkit';
 import NftTypeComponent from './components/NftTypeComponent';
-import { selectAthleteLineup, selectIndex } from 'redux/athlete/athleteSlice';
+import { getAthleteLineup, getIndex } from 'redux/athlete/athleteSlice';
 import { GET_ATHLETE_BY_ID } from 'utils/queries';
-
+import { SPORT_TYPES } from 'data/constants/sportConstants';
+import { useLazyQuery } from '@apollo/client';
+import { GET_TEAMS } from 'utils/queries';
 const Portfolio = () => {
   const [searchText, setSearchText] = useState('');
   const [displayMode, setDisplay] = useState(true);
@@ -65,28 +68,64 @@ const Portfolio = () => {
   const [promoOffset, setPromoOffset] = useState(0);
   const [isPromoPage, setIsPromoPage] = useState(false);
   const [totalPromoSupply, setTotalPromoSupply] = useState(0);
-  const reduxLineup = useSelector(selectAthleteLineup);
-  let passedLineup = [...reduxLineup];
-  const index = useSelector(selectIndex);
+  const index = useSelector(getIndex);
   const [currentPage, setCurrentPage] = useState(0);
 
   const [filteredTotal, setFilteredTotal] = useState(30);
   const [isFiltered, setIsFiltered] = useState(false);
   const [filterOption, setFilterOption] = useState('');
   const [athleteList, setAthleteList] = useState([]);
-
   const [currPosition, setCurrPosition] = useState('');
   const [position, setPosition] = useState(['allPos']);
   const [team, setTeam] = useState(['allTeams']);
   const [name, setName] = useState(['allNames']);
+  const [getTeams] = useLazyQuery(GET_TEAMS);
+  const [teams, setTeams] = useState([]);
   const [remountComponent, setRemountComponent] = useState(0);
+  const [remountDropdown, setRemountDropdown] = useState(0);
   const [remountAthlete, setRemountAthlete] = useState(0);
   const { accountId } = useWalletSelector();
-
   const provider = new providers.JsonRpcProvider({
     url: getRPCProvider(),
   });
 
+  const [positionList, setPositionList] = useState(SPORT_TYPES[0].positionList);
+  const sportObj = SPORT_TYPES.map((x) => ({ name: x.sport, isActive: false }));
+  sportObj[0].isActive = true;
+  const [categoryList, setCategoryList] = useState([...sportObj]);
+  const [currentSport, setCurrentSport] = useState(sportObj[0].name);
+  // const [contractList, setContractList] = useState([
+  //   {
+  //     name: 'FOOTBALL',
+  //     regContract: getContract(ATHLETE),
+  //     promoContract: getContract(ATHLETE_PROMO),
+  //   },
+  //   {
+  //     name: 'BASKETBALL',
+  //     regContract: getContract(ATHLETE),
+  //     promoContract: getContract(ATHLETE_PROMO),
+  //   },
+  // ]);
+
+  const changeCategoryList = (name) => {
+    const tabList = [...categoryList];
+    tabList.forEach((item) => {
+      if (item.name === name) {
+        item.isActive = true;
+      } else {
+        item.isActive = false;
+      }
+    });
+    setCategoryList([...tabList]);
+    setCurrentSport(name);
+  };
+
+  const query_teams = useCallback(async (currentSport) => {
+    let query = await getTeams({
+      variables: { sport: getSportType(currentSport).key.toLocaleLowerCase() },
+    });
+    setTeams(await Promise.all(query.data.getTeams));
+  }, []);
   function getAthleteLimit() {
     try {
       if (totalRegularSupply > 30) {
@@ -99,15 +138,27 @@ const Portfolio = () => {
     }
   }
 
-  async function get_filter_soulbound_supply_for_owner(contract) {
+  async function get_filter_soulbound_supply_for_owner() {
     setTotalPromoSupply(
-      await query_filter_supply_for_owner(accountId, position, team, name, contract)
+      await query_filter_supply_for_owner(
+        accountId,
+        position,
+        team,
+        name,
+        getSportType(currentSport).promoContract
+      )
     );
   }
 
-  async function get_filter_supply_for_owner(contract) {
+  async function get_filter_supply_for_owner() {
     setTotalRegularSupply(
-      await query_filter_supply_for_owner(accountId, position, team, name, contract)
+      await query_filter_supply_for_owner(
+        accountId,
+        position,
+        team,
+        name,
+        getSportType(currentSport).regContract
+      )
     );
   }
 
@@ -127,7 +178,8 @@ const Portfolio = () => {
       athleteLimit,
       position,
       team,
-      name
+      name,
+      currentSport
     ).then((result) => {
       setAthletes(result);
     });
@@ -166,32 +218,22 @@ const Portfolio = () => {
       setIsPromoPage(false);
       newOffset = (e.selected * athleteLimit) % totalRegularSupply;
     }
-    passedLineup.splice(index, 1, {
-      position: position,
-      isAthlete: false,
-      isPromo: false,
-    });
     setAthleteOffset(newOffset);
     setCurrentPage(e.selected);
   };
 
   useEffect(() => {
-    setAthleteOffset(0);
-    setRemountComponent(Math.random());
-  }, [selectedRegular, selectedPromo]);
-
-  useEffect(() => {
     //if regular and soulbound radio buttons are enabled
     if (selectedRegular !== false && selectedPromo === false) {
-      get_filter_tokens_for_owner(getContract(ATHLETE));
+      get_filter_tokens_for_owner(getSportType(currentSport).regContract);
     } else if (selectedRegular === false && selectedPromo !== false) {
-      get_filter_tokens_for_owner(getContract(ATHLETE_PROMO));
+      get_filter_tokens_for_owner(getSportType(currentSport).promoContract);
     } else if (selectedRegular !== false && selectedPromo !== false) {
       get_mixed_tokens_for_pagination();
     } else {
       setAthletes([]);
     }
-  }, [totalRegularSupply, totalPromoSupply, athleteOffset, currentPage]);
+  }, [totalRegularSupply, totalPromoSupply, athleteOffset, currentPage, position]);
 
   const handleSearchDynamic = (value) => {
     setName(value);
@@ -213,28 +255,45 @@ const Portfolio = () => {
   // }
   useEffect(() => {
     setAthleteOffset(0);
+    //setCurrentPage(0);
     setRemountComponent(Math.random());
-  }, [selectedRegular, selectedPromo]);
+  }, [selectedRegular, selectedPromo, currentSport]);
+
+  useEffect(() => {
+    setIsPromoPage(false);
+    setRemountDropdown(Math.random());
+    setPosition(['allPos']);
+  }, [currentSport]);
   useEffect(() => {
     setRemountAthlete(Math.random() + 1);
   }, [athletes]);
   useEffect(() => {
+    setIsPromoPage(false);
     if (selectedRegular !== false && selectedPromo === false) {
-      get_filter_supply_for_owner(getContract(ATHLETE));
+      get_filter_supply_for_owner();
       setTotalPromoSupply(0);
     } else if (selectedRegular === false && selectedPromo !== false) {
-      get_filter_soulbound_supply_for_owner(getContract(ATHLETE_PROMO));
+      get_filter_soulbound_supply_for_owner();
       setTotalRegularSupply(0);
     } else if (selectedRegular !== false && selectedPromo !== false) {
-      get_filter_supply_for_owner(getContract(ATHLETE));
-      get_filter_soulbound_supply_for_owner(getContract(ATHLETE_PROMO));
+      get_filter_supply_for_owner();
+      get_filter_soulbound_supply_for_owner();
     } else {
       setTotalRegularSupply(0);
       setTotalPromoSupply(0);
     }
     setPageCount(Math.ceil((totalRegularSupply + totalPromoSupply) / athleteLimit));
     //setup regular_offset, soulbound_offset
-  }, [position, team, name, totalRegularSupply, totalPromoSupply, selectedRegular, selectedPromo]);
+  }, [
+    position,
+    team,
+    name,
+    totalRegularSupply,
+    totalPromoSupply,
+    selectedRegular,
+    selectedPromo,
+    currentSport,
+  ]);
 
   useEffect(() => {
     const delay = setTimeout(() => {
@@ -242,34 +301,25 @@ const Portfolio = () => {
     }, 1000);
     return () => clearTimeout(delay);
   }, [search]);
-
+  useEffect(() => {
+    //getting positionList value from sportConstants
+    const list = SPORT_TYPES.find((x) => x.sport === currentSport);
+    query_teams(currentSport);
+    setPositionList(list.positionList);
+  }, [currentSport]);
+  useEffect(() => {
+    console.log(teams);
+  }, [teams]);
   useEffect(() => {}, [limit, offset, filter, search, selectedRegular, selectedPromo]);
+
+  console.table(athletes)
 
   return (
     <Container activeName="SQUAD">
-      <div className="flex flex-col w-full overflow-y-auto h-screen pb-12 mb-12">
+      <div className="flex flex-col w-full overflow-y-auto h-screen">
         <Main color="indigo-white">
-          <div className="flex flex-row h-8 mt-24 md:mt-0">
-            <div className="h-8 md:ml-10 lg:ml-12 flex justify-between mt-3">
-              <form>
-                <select
-                  onChange={(e) => {
-                    handleDropdownChange();
-                    setPosition([e.target.value]);
-                  }}
-                  className="bg-filter-icon bg-no-repeat bg-right bg-indigo-white iphone5:w-28 w-36 md:w-42 lg:w-60
-                      ring-2 ring-offset-4 ring-indigo-black ring-opacity-25 focus:ring-2 focus:ring-indigo-black 
-                      focus:outline-none cursor-pointer text-xs md:text-base"
-                >
-                  <option value="allPos">ALL POSITIONS</option>
-                  <option value="QB">QUARTER BACK</option>
-                  <option value="RB">RUNNING BACK</option>
-                  <option value="WR">WIDE RECEIVER</option>
-                  <option value="TE">TIGHT END</option>
-                </select>
-              </form>
-            </div>
-            <div className="h-8 flex justify-between mt-3 ml-4 md:ml-12">
+          <div className="flex flex-row h-8 mt-24 justify-end md:mt-0">
+            {/* <div className="h-8 flex justify-between mt-3 ml-4 md:ml-12">
               <form>
                 <select
                   onChange={(e) => {
@@ -278,19 +328,24 @@ const Portfolio = () => {
                   }}
                   className="bg-filter-icon bg-no-repeat bg-right bg-indigo-white iphone5:w-28 w-36 md:w-42 lg:w-60
                       ring-2 ring-offset-4 ring-indigo-black ring-opacity-25 focus:ring-2 focus:ring-indigo-black 
-                      focus:outline-none cursor-pointer text-xs md:text-base invisible"
+                      focus:outline-none cursor-pointer text-xs md:text-base"
                 >
                   <option value="allTeams">ALL TEAMS</option>
-                  <option value="ARI">Arizona</option>
+                  {teams.map((x) => {
+                    return <option value={x.key}>{x.key}</option>;
+                  })}
                 </select>
               </form>
-            </div>
-            <div className="h-8 flex justify-between mt-3 md:ml-24 lg:ml-80">
+            </div> */}
+            {/* <div className="h-8 flex mt-3">
+              <SportType sportTypes={SPORT_TYPES} />
+            </div> */}
+            {/* <div className="flex mt-15 md:mr-20">
               <SearchComponent
                 onChangeFn={(search) => handleSearchDynamic(search)}
                 onSubmitFn={(search) => handleSearchSubmit(search)}
               />
-            </div>
+            </div> */}
 
             {/* <div className="h-8 flex justify-between mt-3 md:ml-24 lg:ml-80">
               <form
@@ -323,23 +378,101 @@ const Portfolio = () => {
               </form>
             </div> */}
           </div>
-
-          <div className="md:mt-20 md:mb-10 z-0">
-            <NftTypeComponent
-              onChangeFn={(selectedRegular, selectedPromo) => {
-                setSelectedRegular(selectedRegular);
-                setSelectedPromo(selectedPromo);
-                setRemountComponent(Math.random());
-              }}
-            />
-          </div>
-          <div className="md:ml-6 md:-mt-48">
-            <PortfolioContainer textcolor="indigo-black" title="SQUAD">
+          {/* <div className="md:pt-20 z-0">
+                <NftTypeComponent
+                  onChangeFn={(selectedRegular, selectedPromo) => {
+                    setSelectedRegular(selectedRegular);
+                    setSelectedPromo(selectedPromo);
+                    setRemountComponent(Math.random());
+                  }}
+                />
+          </div> */}
+          <div className="md:ml-6 overflow-x-hidden">
+            <PortfolioContainer
+              textcolor="indigo-black"
+              title="SQUAD"
+              searchbar={
+                <SearchComponent
+                  onChangeFn={(search) => handleSearchDynamic(search)}
+                  onSubmitFn={(search) => handleSearchSubmit(search)}
+                />
+              }
+            >
+              {/* <div className="flex justify-end">
+                <div className="flex md:mr-20">
+                  <SearchComponent
+                    onChangeFn={(search) => handleSearchDynamic(search)}
+                    onSubmitFn={(search) => handleSearchSubmit(search)}
+                  />
+                </div>
+              </div> */}
+              <div className="flex font-bold max-w-full ml-5 md:ml-6 font-monument overflow-y-auto no-scrollbar">
+                {categoryList.map(({ name, isActive }) => (
+                  <div
+                    className={`cursor-pointer mr-6 ${
+                      isActive ? 'border-b-8 border-indigo-buttonblue' : ''
+                    }`}
+                    onClick={() => {
+                      changeCategoryList(name);
+                    }}
+                  >
+                    {name}
+                  </div>
+                ))}
+              </div>
+              <hr className="opacity-10 iphone5:w-screen md:w-auto" />
+              <div className="md:mt-4 font-normal">
+                <div className="float-left h-8 ml-7 md:ml-10 lg:ml-12 flex justify-between mt-3">
+                  <form key={remountDropdown}>
+                    <select
+                      onChange={(e) => {
+                        handleDropdownChange();
+                        setPosition([e.target.value]);
+                      }}
+                      className="bg-filter-icon bg-no-repeat bg-right bg-indigo-white iphone5:w-36 w-36 md:w-42 lg:w-60
+                      ring-2 ring-offset-4 ring-indigo-black ring-opacity-25 focus:ring-2 focus:ring-indigo-black 
+                      focus:outline-none cursor-pointer text-xs md:text-base"
+                    >
+                      <option value="allPos">ALL POSITIONS</option>
+                      {/* <option value="QB">QUARTER BACK</option>
+                      <option value="RB">RUNNING BACK</option>
+                      <option value="WR">WIDE RECEIVER</option>
+                      <option value="TE">TIGHT END</option> */}
+                      {positionList.map((x) => {
+                        return <option value={x.key}>{x.name}</option>;
+                      })}
+                    </select>
+                  </form>
+                  <form className="pl-8">
+                    <select
+                      onChange={(e) => {
+                        handleDropdownChange();
+                        setTeam([e.target.value]);
+                      }}
+                      className="bg-filter-icon bg-no-repeat bg-right bg-indigo-white iphone5:w-28 w-36 md:w-42 lg:w-60
+                      ring-2 ring-offset-4 ring-indigo-black ring-opacity-25 focus:ring-2 focus:ring-indigo-black 
+                      focus:outline-none cursor-pointer text-xs md:text-base"
+                    >
+                      <option value="allTeams">ALL TEAMS</option>
+                      {teams.map((x) => {
+                        return <option value={x.key}>{x.key}</option>;
+                      })}
+                    </select>
+                  </form>
+                </div>
+                <NftTypeComponent
+                  onChangeFn={(selectedRegular, selectedPromo) => {
+                    setSelectedRegular(selectedRegular);
+                    setSelectedPromo(selectedPromo);
+                    setRemountComponent(Math.random());
+                  }}
+                />
+              </div>
               <div key={remountAthlete} className="flex flex-col">
                 {loading ? (
                   <LoadingPageDark />
                 ) : (
-                  <div className="grid grid-cols-4 gap-y-8 mt-4 md:grid-cols-4 md:mt-16 md:mr-12">
+                  <div className="grid grid-cols-2 gap-x-12 md:gap-x-0 gap-y-8 iphone5:mt-0 md:grid-cols-4 md:mt-4 md:mr-12">
                     {athletes.map((item) => {
                       const accountAthleteIndex = athletes.indexOf(item, 0) + athleteOffset;
                       return (
@@ -352,7 +485,10 @@ const Portfolio = () => {
                           index={accountAthleteIndex}
                           athletePosition={item.position}
                           isInGame={item.isInGame}
+                          currentSport={currentSport}
                           fromPortfolio={true}
+                          isActive={item.isActive}
+                          isInjured={item.isInjured}
                         ></PerformerContainer>
                       );
                     })}

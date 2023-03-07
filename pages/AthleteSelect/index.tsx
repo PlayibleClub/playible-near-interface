@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { transactions, utils, WalletConnection, providers } from 'near-api-js';
 import { getRPCProvider, getContract } from 'utils/near';
 import BackFunction from 'components/buttons/BackFunction';
@@ -6,8 +6,12 @@ import Container from 'components/containers/Container';
 import PortfolioContainer from 'components/containers/PortfolioContainer';
 import router, { useRouter } from 'next/router';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
-import { convertNftToAthlete, getAthleteInfoById } from 'utils/athlete/helper';
-import { ATHLETE, ATHLETE_PROMO } from 'data/constants/nearContracts';
+import {
+  convertNftToAthlete,
+  getAthleteBasketballSchedule,
+  getAthleteInfoById,
+} from 'utils/athlete/helper';
+
 import AthleteSelectContainer from 'components/containers/AthleteSelectContainer';
 import Link from 'next/link';
 import SearchComponent from 'components/SearchComponent';
@@ -15,11 +19,12 @@ import ReactPaginate from 'react-paginate';
 import PerformerContainer from 'components/containers/PerformerContainer';
 import { Provider, useDispatch, useSelector } from 'react-redux';
 import {
-  selectAthleteLineup,
-  selectGameId,
-  selectIndex,
-  selectPosition,
-  selectTeamName,
+  getAthleteLineup,
+  getGameId,
+  getIndex,
+  getPosition,
+  getTeamName,
+  getSport,
 } from 'redux/athlete/athleteSlice';
 import {
   setAthleteLineup,
@@ -33,8 +38,12 @@ import {
   query_filter_tokens_for_owner,
   query_mixed_tokens_pagination,
 } from 'utils/near/helper';
+import { getGameStartDate, getGameEndDate } from 'redux/athlete/athleteSlice';
+import { getSportType, SPORT_NAME_LOOKUP } from 'data/constants/sportConstants';
 import NftTypeComponent from 'pages/Portfolio/components/NftTypeComponent';
-
+import { getPositionDisplay } from 'utils/athlete/helper';
+import { useLazyQuery } from '@apollo/client';
+import { GET_TEAMS } from 'utils/queries';
 const AthleteSelect = (props) => {
   const { query } = props;
 
@@ -45,16 +54,19 @@ const AthleteSelect = (props) => {
   const data = router.query;
   const dispatch = useDispatch();
   //Get the data from redux store
-  const gameId = useSelector(selectGameId);
-  const position = useSelector(selectPosition);
-  const index = useSelector(selectIndex);
-  const reduxLineup = useSelector(selectAthleteLineup);
+  const gameId = useSelector(getGameId);
+  const startDate = useSelector(getGameStartDate);
+  const endDate = useSelector(getGameEndDate);
+  const position = useSelector(getPosition);
+  console.log(position);
+  const index = useSelector(getIndex);
+  const reduxLineup = useSelector(getAthleteLineup);
+  const currentSport = useSelector(getSport);
   let passedLineup = [...reduxLineup];
   const [athletes, setAthletes] = useState([]);
   const [selectedRegular, setSelectedRegular] = useState(false);
   const [selectedPromo, setSelectedPromo] = useState(false);
   const [athleteOffset, setAthleteOffset] = useState(0);
-  const [regularOffset, setRegularOffset] = useState(0);
   const [promoOffset, setPromoOffset] = useState(0);
   const [isPromoPage, setIsPromoPage] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
@@ -68,23 +80,31 @@ const AthleteSelect = (props) => {
   const { accountId } = useWalletSelector();
   const [pageCount, setPageCount] = useState(0);
   const [remountComponent, setRemountComponent] = useState(0);
-  const [search, setSearch] = useState('');
-  const [currPosition, setCurrPosition] = useState('');
-  const [loading, setLoading] = useState(true);
   const [remountAthlete, setRemountAthlete] = useState(0);
-  const provider = new providers.JsonRpcProvider({
-    url: getRPCProvider(),
-  });
+  const [getTeams] = useLazyQuery(GET_TEAMS);
+  const [teams, setTeams] = useState([]);
 
-  async function get_filter_supply_for_owner(contract) {
+  async function get_filter_supply_for_owner() {
     setTotalRegularSupply(
-      await query_filter_supply_for_owner(accountId, position, team, name, contract)
+      await query_filter_supply_for_owner(
+        accountId,
+        position,
+        team,
+        name,
+        getSportType(currentSport).regContract
+      )
     );
   }
 
-  async function get_filter_soulbound_supply_for_owner(contract) {
+  async function get_filter_soulbound_supply_for_owner() {
     setTotalPromoSupply(
-      await query_filter_supply_for_owner(accountId, position, team, name, contract)
+      await query_filter_supply_for_owner(
+        accountId,
+        position,
+        team,
+        name,
+        getSportType(currentSport).promoContract
+      )
     );
   }
 
@@ -93,25 +113,16 @@ const AthleteSelect = (props) => {
     passedLineup.splice(index, 1, {
       position: position,
       isAthlete: true,
-      isPromo: athletes[radioIndex].athlete_id.includes('SB') ? true : false,
+      isPromo:
+        athletes[radioIndex].athlete_id.includes('SB') ||
+        athletes[radioIndex].athlete_id.includes('PR')
+          ? true
+          : false,
       athlete: athletes[radioIndex],
     });
     setLineup(passedLineup);
   }
-  function getPositionDisplay(position) {
-    if (position.length === 3) return 'FLEX';
-    if (position.length === 4) return 'SUPERFLEX';
-    switch (position[0]) {
-      case 'QB':
-        return 'QUARTER BACK';
-      case 'RB':
-        return 'RUNNING BACK';
-      case 'WR':
-        return 'WIDE RECEIVER';
-      case 'TE':
-        return 'TIGHT END';
-    }
-  }
+
   function checkIfAthleteExists(athlete_id) {
     for (let i = 0; i < passedLineup.length; i++) {
       if (passedLineup[i].isAthlete === true) {
@@ -123,17 +134,34 @@ const AthleteSelect = (props) => {
     return false;
   }
   async function get_filter_tokens_for_owner(contract) {
-    setAthletes(
-      await query_filter_tokens_for_owner(
-        accountId,
-        athleteOffset,
-        athleteLimit,
-        position,
-        team,
-        name,
-        contract
-      )
-    );
+    await query_filter_tokens_for_owner(
+      accountId,
+      athleteOffset,
+      athleteLimit,
+      position,
+      team,
+      name,
+      contract
+    ).then(async (result) => {
+      let athletes = result;
+      if (currentSport === SPORT_NAME_LOOKUP.basketball) {
+        athletes = await Promise.all(
+          result.map((x) => getAthleteBasketballSchedule(x, startDate, endDate))
+        );
+      }
+      setAthletes(athletes);
+    });
+    //   setAthletes(
+    //     await query_filter_tokens_for_owner(
+    //       accountId,
+    //       athleteOffset,
+    //       athleteLimit,
+    //       position,
+    //       team,
+    //       name,
+    //       contract
+    //     )
+    //   );
   }
   async function get_mixed_tokens_for_pagination() {
     await query_mixed_tokens_pagination(
@@ -145,9 +173,16 @@ const AthleteSelect = (props) => {
       athleteLimit,
       position,
       team,
-      name
-    ).then((result) => {
-      setAthletes(result);
+      name,
+      currentSport
+    ).then(async (result) => {
+      let athletes = result;
+      if (currentSport === SPORT_NAME_LOOKUP.basketball) {
+        athletes = await Promise.all(
+          result.map((x) => getAthleteBasketballSchedule(x, startDate, endDate))
+        );
+      }
+      setAthletes(athletes);
     });
     //setRemountAthlete(Math.random() + 1);
     // query_filter_tokens_for_owner(
@@ -213,7 +248,12 @@ const AthleteSelect = (props) => {
     setAthleteLimit(7);
     setRemountComponent(Math.random());
   }
-
+  const query_teams = useCallback(async (currentSport) => {
+    let query = await getTeams({
+      variables: { sport: getSportType(currentSport).key.toLocaleLowerCase() },
+    });
+    setTeams(await Promise.all(query.data.getTeams));
+  }, []);
   // const handlePageClick = (e) => {
   //   let newOffset;
   //   console.log(e.selected);
@@ -272,8 +312,8 @@ const AthleteSelect = (props) => {
     dispatch(setGameId(game_id));
     dispatch(setAthleteLineup(lineup));
     router.push({
-      pathname: '/CreateTeam/[game_id]',
-      query: { game_id: game_id },
+      pathname: '/CreateTeam/[sport]/[game_id]',
+      query: { sport: currentSport, game_id: game_id },
     });
   };
 
@@ -293,9 +333,9 @@ const AthleteSelect = (props) => {
   useEffect(() => {
     //if regular and soulbound radio buttons are enabled
     if (selectedRegular !== false && selectedPromo === false) {
-      get_filter_tokens_for_owner(getContract(ATHLETE));
+      get_filter_tokens_for_owner(getSportType(currentSport).regContract);
     } else if (selectedRegular === false && selectedPromo !== false) {
-      get_filter_tokens_for_owner(getContract(ATHLETE_PROMO));
+      get_filter_tokens_for_owner(getSportType(currentSport).promoContract);
     } else if (selectedRegular !== false && selectedPromo !== false) {
       get_mixed_tokens_for_pagination();
     } else {
@@ -330,17 +370,18 @@ const AthleteSelect = (props) => {
 
   useEffect(() => {
     setRemountAthlete(Math.random() + 1);
+    console.log(athletes);
   }, [athletes]);
   useEffect(() => {
     if (selectedRegular !== false && selectedPromo === false) {
-      get_filter_supply_for_owner(getContract(ATHLETE));
+      get_filter_supply_for_owner();
       setTotalPromoSupply(0);
     } else if (selectedRegular === false && selectedPromo !== false) {
-      get_filter_soulbound_supply_for_owner(getContract(ATHLETE_PROMO));
+      get_filter_soulbound_supply_for_owner();
       setTotalRegularSupply(0);
     } else if (selectedRegular !== false && selectedPromo !== false) {
-      get_filter_supply_for_owner(getContract(ATHLETE));
-      get_filter_soulbound_supply_for_owner(getContract(ATHLETE_PROMO));
+      get_filter_supply_for_owner();
+      get_filter_soulbound_supply_for_owner();
     } else {
       setTotalRegularSupply(0);
       setTotalPromoSupply(0);
@@ -352,26 +393,48 @@ const AthleteSelect = (props) => {
   //   console.log(totalAthletes);
   //   console.log(totalSoulbound);
   // }, [totalAthletes, totalSoulbound]);
-  useEffect(() => {}, [search]);
+  useEffect(() => {
+    query_teams(currentSport);
+  }, []);
 
   return (
     <Container activeName="PLAY">
       <div className="mt-44 md:ml-6 md:mt-6 mb-2">
-        <BackFunction prev={`/CreateTeam/${gameId}`} />
+        <BackFunction prev={`/CreateTeam/${currentSport.toLowerCase()}/${gameId}`} />
         <PortfolioContainer
-          title={'SELECT YOUR ' + getPositionDisplay(position)}
+          title={'SELECT YOUR ' + getPositionDisplay(position, currentSport)}
           textcolor="text-indigo-black"
         />
-        <NftTypeComponent
-          onChangeFn={(selectedRegular, selectedPromo) => {
-            setSelectedRegular(selectedRegular);
-            setSelectedPromo(selectedPromo);
-            setRemountComponent(Math.random());
-          }}
-        />
+        <div className="flex flex-row-reverse mr-6 md:flex-row justify-between">
+          <form className="md:ml-7 md:mt-8">
+            <select
+              onChange={(e) => {
+                handleDropdownChange();
+                setTeam([e.target.value]);
+              }}
+              className="bg-filter-icon bg-no-repeat bg-right bg-indigo-white iphone5:w-28 w-36 md:w-42 lg:w-60
+                      ring-2 ring-offset-4 ring-indigo-black ring-opacity-25 focus:ring-2 focus:ring-indigo-black 
+                      focus:outline-none cursor-pointer text-xs md:text-base"
+            >
+              <option value="allTeams">ALL TEAMS</option>
+              {teams.map((x) => {
+                return <option value={x.key}>{x.key}</option>;
+              })}
+            </select>
+          </form>
+          <div className="">
+            <NftTypeComponent
+              onChangeFn={(selectedRegular, selectedPromo) => {
+                setSelectedRegular(selectedRegular);
+                setSelectedPromo(selectedPromo);
+                setRemountComponent(Math.random());
+              }}
+            />
+          </div>
+        </div>
       </div>
 
-      <div className="h-8 flex absolute ml-3 top-32 mr-8 md:top-24 md:right-20 md:-mt-5 ">
+      <div className="h-8 flex absolute ml-6 top-32 mr-8 md:top-24 md:right-20 md:-mt-5 ">
         <SearchComponent
           onChangeFn={(search) => setName(search)}
           onSubmitFn={(search) => setName(search)}
@@ -406,8 +469,8 @@ const AthleteSelect = (props) => {
           </form> */}
       </div>
 
-      <div key={remountAthlete} className="flex flex-col overflow-y-scroll">
-        <div className="grid grid-cols-4 mt-1 md:grid-cols-4 md:ml-7 md:mt-2">
+      <div key={remountAthlete} className="flex flex-col overflow-y-auto">
+        <div className="grid grid-cols-2 mt-1 ml-4 md:grid-cols-4 md:ml-7 md:mt-2">
           {athletes.map((item, i) => {
             const accountAthleteIndex = athletes.indexOf(item, 0) + athleteOffset;
             return (
@@ -425,6 +488,9 @@ const AthleteSelect = (props) => {
                       isSelected={true}
                       isInGame={item.isInGame}
                       fromPortfolio={false}
+                      isActive={item.isActive}
+                      isInjured={item.isInjured}
+                      gameCount={item.schedule.length}
                     />
                   </div>
                 ) : (
@@ -445,6 +511,9 @@ const AthleteSelect = (props) => {
                         uri={item.image}
                         index={accountAthleteIndex}
                         fromPortfolio={false}
+                        isActive={item.isActive}
+                        isInjured={item.isInjured}
+                        gameCount={item.schedule.length}
                       />
                     </div>
                   </label>

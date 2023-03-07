@@ -1,5 +1,4 @@
 export const qbStatNames = [
-  'QUARTER BACK',
   'COMPLETION',
   'PASSING YARDS',
   'PASSING TOUCHDOWNS',
@@ -10,7 +9,6 @@ export const qbStatNames = [
 ];
 
 export const rbStatNames = [
-  'RUNNING BACK',
   'CARRIES',
   'RUSHING YARDS',
   'AVERAGE YARDS/CARRY',
@@ -21,7 +19,6 @@ export const rbStatNames = [
 ];
 
 export const wrStatNames = [
-  'WIDE RECEIVER',
   'TARGETS',
   'RECEPTIONS',
   'AVERAGE YARDS/RECEPTION',
@@ -30,10 +27,18 @@ export const wrStatNames = [
 ];
 
 export const teStatNames = [
-  'TIGHT END',
   'TARGETS',
   'RECEPTIONS',
   'AVERAGE YARDS/RECEPTION',
   'RECEIVING YARDS',
   'RECEIVING TOUCHDOWNS'
 ];
+
+export const nbaStatNames = [
+  'ASSISTS',
+  'POINTS',
+  'REBOUNDS',
+  'BLOCKS',
+  'STEALS',
+  'TURNOVERS'
+]

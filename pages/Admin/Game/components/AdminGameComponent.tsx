@@ -16,7 +16,8 @@ const AdminGameComponent = (props) => {
     joined_team_counter,
     type,
     isCompleted,
-    status, //checking if upcoming or completed game
+    status,
+    img, //checking if upcoming or completed game
   } = props;
 
   const formatString = 'MM/DD/YYYY HH:mm:ss Z';
@@ -29,7 +30,7 @@ const AdminGameComponent = (props) => {
         <div className="w-84 h-96 mb-12">
           <div className="w-full p-3">
             <div className="w-full">
-              <Image src={playicon} width="300" height="263" alt="play-icon" />
+              <Image src={img ? img : playicon} width="300" height="263" alt="play-icon" />
             </div>
             <div className="mt-4 flex justify-between">
               <div className="">
@@ -52,7 +53,7 @@ const AdminGameComponent = (props) => {
         <div className="w-84 h-96 mb-12">
           <div className="w-full p-3">
             <div className="w-full">
-              <Image src={playicon} width="300" height="263" alt="play-icon" />
+              <Image src={img ? img : playicon} width="300" height="263" alt="play-icon" />
             </div>
             <div className="mt-4 flex justify-between">
               <div className="">
@@ -75,7 +76,7 @@ const AdminGameComponent = (props) => {
         <div className="w-84 h-96 mb-12">
           <div className="w-full p-3">
             <div className="w-full">
-              <Image src={playicon} width="300" height="263" alt="play-icon" />
+              <Image src={img ? img : playicon} width="300" height="263" alt="play-icon" />
             </div>
             <div className="mt-4 flex justify-between">
               <div className="">
@@ -112,6 +113,7 @@ AdminGameComponent.propTypes = {
   type: PropTypes.string,
   isCompleted: PropTypes.bool,
   status: PropTypes.string,
+  img: PropTypes.string,
 };
 
 export default AdminGameComponent;

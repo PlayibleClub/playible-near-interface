@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import Image from 'next/image';
 import React from 'react';
 import Link from 'next/link';
-
+import { checkInjury, cutAthleteName } from 'utils/athlete/helper';
 const PerformerContainer = (props) => {
   const {
     children,
@@ -15,18 +15,23 @@ const PerformerContainer = (props) => {
     AvgScore,
     id,
     rarity,
+    isActive,
     status,
     index,
     hoverable = true,
     athletePosition,
+    isInjured,
     isInGame,
     isSelected,
     fromPortfolio,
+    currentSport,
+    gameCount,
   } = props;
+
   return (
     <div
       data-test="PerformerContainer"
-      className={`justify-center flex flex-col w-full h-full pb-12`}
+      className={`justify-center flex flex-col w-full h-full md:pb-12`}
     >
       <div className="self-center mr-10">
         <div
@@ -50,7 +55,7 @@ const PerformerContainer = (props) => {
         {uri ? (
           <div className="relative" style={{ width: '120px', height: '160px' }}>
             {fromPortfolio === true ? (
-              <Link href={`/AssetDetails/${id}`} passHref>
+              <Link href={`/AssetDetails/${currentSport?.toLowerCase()}/${id}`} passHref>
                 <div className="absolute z-50" style={{ width: '120px', height: '160px' }}></div>
               </Link>
             ) : (
@@ -71,9 +76,46 @@ const PerformerContainer = (props) => {
       </div>
       {children}
       <div className="h-1/2 flex justify-center mb-6">
-        <div className="flex flex-col mt-4">
-          <div className="mt-2 text-xs font-bold uppercase">{AthleteName}</div>
-          <div className="mt-4 text-xs font-thin">FANTASY SCORE</div>
+        <div className="flex flex-col w-28 mt-4">
+          <div className="mt-2 text-xs font-bold uppercase">
+            {AthleteName.length >= 14 ? cutAthleteName(AthleteName) : AthleteName}
+          </div>
+          <div>
+            <div className="group relative ml-28">
+              {/* {isInjured && checkInjury(isInjured) === 1 ? (
+                <div className="rounded-full mt-4 bg-indigo-yellow w-3 h-3 absolute "></div>
+              ) : isInjured && checkInjury(isInjured) === 2 ? (
+                <div className="mt-4 -ml-2 rounded-full bg-indigo-red w-3 h-3  absolute"></div>
+              ) : isActive ? (
+                <div className="mt-4 -ml-2 rounded-full bg-indigo-green w-3 h-3  absolute"></div>
+              ) : (
+                <></>
+              )} */}
+              <div
+                className={`rounded-full mt-4 -ml-2 w-3 h-3 absolute ${
+                  isInjured && checkInjury(isInjured) === 1
+                    ? 'bg-indigo-yellow'
+                    : isInjured && checkInjury(isInjured) === 2
+                    ? 'bg-indigo-red'
+                    : 'bg-indigo-green'
+                }`}
+              ></div>
+              <span
+                className={`whitespace-pre-line pointer-events-none absolute ${
+                  isInjured === null && fromPortfolio !== true ? '-top-9' : '-top-5'
+                } -left-8 w-max rounded px-2 py-1 bg-indigo-gray text-indigo-white text-sm font-medium text-gray-50 shadow opacity-0 transition-opacity group-hover:opacity-100`}
+              >
+                {isInjured !== null && fromPortfolio !== true
+                  ? isInjured
+                  : fromPortfolio !== true
+                  ? `ACTIVE
+                 Games scheduled: ${gameCount}`
+                  : `ACTIVE`}
+              </span>
+            </div>
+          </div>
+          <div className="mt-4 text-xs font-thin">FANTASY SCORE </div>
+
           <div className="text-xs font-bold">{AvgScore}</div>
         </div>
       </div>
@@ -96,7 +138,11 @@ PerformerContainer.propTypes = {
   athletePosition: PropTypes.string,
   isInGame: PropTypes.bool,
   isSelected: PropTypes.bool,
+  currentSport: PropTypes.string,
   fromPortfolio: PropTypes.bool,
+  isInjured: PropTypes.string,
+  isActive: PropTypes.bool,
+  gameCount: PropTypes.number,
 };
 
 export default PerformerContainer;
