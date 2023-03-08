@@ -23,7 +23,7 @@ const PerformerContainer = (props) => {
     isInjured,
     isInGame,
     isSelected,
-    fromPortfolio,
+    fromPortfolio = true,
     currentSport,
     gameCount,
   } = props;
