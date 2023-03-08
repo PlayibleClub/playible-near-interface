@@ -9,11 +9,12 @@ import Header from '../headers/Header';
 import { useWalletSelector } from '../../contexts/WalletSelectorContext';
 import { AccountView } from 'near-api-js/lib/providers/provider';
 import { getRPCProvider } from 'utils/near';
-import { cutAddress } from 'utils/address/helper';
+import useViewport  from 'utils/address/helper';
 
 const HeaderBase = () => {
   const { selector, modal, accounts, accountId } = useWalletSelector();
   const [account, setAccount] = useState<Account | null>(null);
+  const { entryCut } = useViewport();
 
   const getAccount = useCallback(async () => {
     if (!accountId) {
@@ -59,7 +60,7 @@ const HeaderBase = () => {
             size="h-full py-1 px-1"
             onClick={logOut}
           >
-            {cutAddress(accountId)}
+            {entryCut(accountId)}
           </Button>
         );
       } else {

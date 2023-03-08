@@ -289,6 +289,7 @@ const Games = (props) => {
                         teamScore={item.sumScore}
                         index={index}
                         gameId={gameId}
+                        isExtendedLeaderboard={false}
                         onClickFn={() => {
                           togglePopup({ accountId: item.accountId, index: index });
                           setIsExtendedLeaderboard(1);
@@ -316,12 +317,13 @@ const Games = (props) => {
                   {playerLineups.length > 0
                     ? playerLineups.map((item, index) => {
                         return (
-                          <LeaderboardComponent
+                          <LeaderboardComponent 
                             accountId={item.accountId}
                             teamName={item.teamName}
                             teamScore={item.sumScore}
                             index={index}
                             gameId={gameId}
+                            isExtendedLeaderboard={true}
                             onClickFn={() => {
                               togglePopup({ accountId: item.accountId, index: index });
                               setIsExtendedLeaderboard(0);
@@ -341,7 +343,7 @@ const Games = (props) => {
                 </button>
               </Modal>
 
-              <EntrySummaryModal title={'ENTRY SUMMARY'} visible={entryModal} isEntrySummary={true}>
+              <EntrySummaryModal title={'ENTRY SUMMARY'} visible={entryModal}>
                 <div className=' transform iphone5:scale-55 md:scale-85 md:-mt-6 iphoneX:fixed iphoneX:-mt-6 iphone5:-ml-12 md:static'>
                   <ModalPortfolioContainer
                     title={playerLineups[currentIndex]?.teamName}
