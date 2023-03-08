@@ -69,7 +69,19 @@ function useViewport() {
       return accountId;
     }
   }
-  return { cutAddress, cutTeam, entryCut };
+
+  function entryCutTeam(teamName){
+    const first = teamName.slice(0, 6);
+    const last = teamName.slice(-6);
+    const newAddress = first + "..." + last;
+    if (teamName.length > 15) {
+      return newAddress;
+    } else {
+      return teamName;
+    }
+  }
+  return { cutAddress, cutTeam, entryCut, entryCutTeam };
 }
+
 
 export default useViewport;
