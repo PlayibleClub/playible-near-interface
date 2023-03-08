@@ -23,7 +23,7 @@ const PerformerContainer = (props) => {
     isInjured,
     isInGame,
     isSelected,
-    fromPortfolio,
+    fromPortfolio = true,
     currentSport,
     gameCount,
   } = props;
@@ -109,7 +109,7 @@ const PerformerContainer = (props) => {
                   ? isInjured
                   : fromPortfolio !== true
                   ? `ACTIVE
-                 Games scheduled: ${gameCount}`
+                 Games: ${gameCount}`
                   : `ACTIVE`}
               </span>
             </div>
