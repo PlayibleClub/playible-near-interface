@@ -30,7 +30,7 @@ import {
   query_nft_tokens_for_owner,
   query_nft_token_by_id,
 } from 'utils/near/helper';
-import { cutAddress } from 'utils/address/helper';
+import useViewport  from 'utils/address/helper';
 import EntrySummaryBack from 'components/buttons/EntrySummaryBack';
 import { getSportType, SPORT_NAME_LOOKUP } from 'data/constants/sportConstants';
 export default function EntrySummary(props) {
@@ -54,6 +54,7 @@ export default function EntrySummary(props) {
   const [gameInfo, setGameInfo] = useState([]);
   const [nflSeason, setNflSeason] = useState('');
   const [week, setWeek] = useState(0);
+  const { cutAddress } = useViewport();
 
   // const { error } = props;
   const [loading, setLoading] = useState(true);
