@@ -1,9 +1,10 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
-import { cutAddress } from 'utils/address/helper';
+import useViewport  from 'utils/address/helper';
 const ModalPortfolioContainer = (props) => {
-  const { color, textcolor, size, title, children, align, stats, accountId } = props;
+  const { color, textcolor, size, title, children, align, stats, accountId, isGame } = props;
   const avgicon = '/../../public/images/avgscore.png';
+  const { cutTeam, cutAddress, entryCut } = useViewport();
 
   return (
     <>
@@ -31,10 +32,12 @@ const ModalPortfolioContainer = (props) => {
               </div>
             </div>
           ) : (
-            <div className="pb-3 pt-6 justify-start align-center text-2xl font-monument">
+            <div className={`pb-3 justify-start align-center text-2xl font-monument ${
+              isGame ? 'pt-0' : 'pt-6'
+            } `}>
               {accountId ? (
                 <div>
-                  {title} | {cutAddress(accountId)}
+                  {title} | {entryCut(accountId)}
                 </div>
               ) : (
                 title
@@ -59,6 +62,7 @@ ModalPortfolioContainer.propTypes = {
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
   stats: PropTypes.number,
   accountId: PropTypes.string,
+  isGame:PropTypes.bool,
 };
 
 ModalPortfolioContainer.defaultProps = {
