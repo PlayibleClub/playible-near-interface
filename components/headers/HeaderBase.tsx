@@ -9,6 +9,7 @@ import Header from '../headers/Header';
 import { useWalletSelector } from '../../contexts/WalletSelectorContext';
 import { AccountView } from 'near-api-js/lib/providers/provider';
 import { getRPCProvider } from 'utils/near';
+import { cutAddress } from 'utils/address/helper';
 
 const HeaderBase = () => {
   const { selector, modal, accounts, accountId } = useWalletSelector();
@@ -58,7 +59,7 @@ const HeaderBase = () => {
             size="h-full py-1 px-1"
             onClick={logOut}
           >
-            {accountId}
+            {cutAddress(accountId)}
           </Button>
         );
       } else {
