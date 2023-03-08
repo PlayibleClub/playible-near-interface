@@ -109,7 +109,7 @@ const PerformerContainer = (props) => {
                   ? isInjured
                   : fromPortfolio !== true
                   ? `ACTIVE
-                 Games scheduled: ${gameCount}`
+                 Games: ${gameCount}`
                   : `ACTIVE`}
               </span>
             </div>
