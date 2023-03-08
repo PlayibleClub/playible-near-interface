@@ -1,9 +1,11 @@
 import PropTypes from 'prop-types';
 import Link from 'next/link';
+import useViewport  from 'utils/address/helper';
 
 const ViewTeamsContainer = (props) => {
   const { teamNames, gameId, accountId, accountScore, accountPlacement, onClickFn, fromGames } =
     props;
+    const { cutTeam } = useViewport();
 
   return (
     <div>
@@ -33,7 +35,7 @@ const ViewTeamsContainer = (props) => {
             </div>
           </div>
           <div className="p-5 px-6 ml-2 bg-black-dark text-indigo-white mb-5 flex justify-between flex-initial w-80">
-            <p className="font-monument">{teamNames}</p>
+            <p className="font-monument">{cutTeam(teamNames)}</p>
             <button
               onClick={(e) => {
                 e.preventDefault();
