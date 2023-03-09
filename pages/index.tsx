@@ -172,7 +172,7 @@ export default function Home(props) {
   const startSlider = () => {
     setInterval(() => {
       handleOnNextClick();
-    }, 3000);
+    }, 4000);
   };
 
   useEffect(() => {
