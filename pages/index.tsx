@@ -198,7 +198,7 @@ export default function Home(props) {
               </div> */}
 
                 <div className="md:mr-8">
-                  <div className="w-full relative select-none mx-2 mt-24 md:mt-0">
+                  <div className="w-12/13 relative select-none mx-2 mt-24 md:mt-0">
                     <img
                       className="object-fill h-48 w-full visible md:hidden rounded-lg"
                       src={featuredImagesMobile[currentIndex]}
@@ -291,6 +291,7 @@ export default function Home(props) {
                             hoverable={false}
                             isActive={isActive}
                             isInjured={isInjured}
+                            fromHome={true}
                           />
                         </div>
                       );
