@@ -52,8 +52,8 @@ const Lineup = (props) => {
         )}
         {/* </Link> */}
       </div>
-      <div className="flex">
-        <div className="flex flex-col iphone5:-mt-6 md:ml-14 md:mt-4">
+      <div className="flex justify-center">
+        <div className="flex flex-col iphone5:-mt-6 md:mr-14 md:mt-4">
           <div className="mb-3 text-sm uppercase font-bold transform scale-65 md:scale-100 -mt-2 md:mt-0">
             {player === '' ? '-' : player}
           </div>
