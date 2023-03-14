@@ -478,6 +478,10 @@ export default function Index(props) {
     let errors = [];
     let sortPercentage = [...distribution].sort((a, b) => b.percentage - a.percentage);
 
+    if (details.gameId == "") {
+      errors.push('Game ID cannot be empty');
+    }
+
     if (distribution.length === 1 && percentTotal === 0) {
       errors.push('Invalid Distribution values');
     }
