@@ -23,8 +23,10 @@ const PerformerContainer = (props) => {
     isInjured,
     isInGame,
     isSelected,
-    fromPortfolio,
+    fromPortfolio = true,
+    fromHome = false,
     currentSport,
+    gameCount,
   } = props;
 
   return (
@@ -53,7 +55,7 @@ const PerformerContainer = (props) => {
       >
         {uri ? (
           <div className="relative" style={{ width: '120px', height: '160px' }}>
-            {fromPortfolio === true ? (
+            {fromHome === false && fromPortfolio === true ? (
               <Link href={`/AssetDetails/${currentSport?.toLowerCase()}/${id}`} passHref>
                 <div className="absolute z-50" style={{ width: '120px', height: '160px' }}></div>
               </Link>
@@ -99,8 +101,29 @@ const PerformerContainer = (props) => {
                     : 'bg-indigo-green'
                 }`}
               ></div>
-              <span className="pointer-events-none absolute -top-5 -left-8 w-max rounded px-2 py-1 bg-indigo-gray text-indigo-white text-sm font-medium text-gray-50 shadow opacity-0 transition-opacity group-hover:opacity-100">
-                {isInjured !== null ? isInjured : 'Active'}
+              <span
+                className={`whitespace-pre-line pointer-events-none absolute ${
+                  (isInjured === null || checkInjury(isInjured) === 1) && fromPortfolio !== true
+                    ? '-top-9'
+                    : '-top-5'
+                } -left-8 w-max rounded px-2 py-1 bg-indigo-gray text-indigo-white text-sm font-medium text-gray-50 shadow opacity-0 transition-opacity group-hover:opacity-100`}
+              >
+                {/* {isInjured !== null && fromPortfolio !== true
+                  ? isInjured
+                  : fromPortfolio !== true
+                  ? `ACTIVE
+                 Games: ${gameCount}`
+                  : `ACTIVE`} */}
+                {isInjured !== null && checkInjury(isInjured) === 1 && fromPortfolio !== true // questionable/probable and is in AthleteSelect
+                  ? `${isInjured}
+                  Games: ${gameCount}`
+                  : isInjured !== null &&
+                    (checkInjury(isInjured) === 1 || checkInjury(isInjured) === 2) //questionable/probably or out, and is in Portfolio or rest of the pages
+                  ? isInjured
+                  : fromPortfolio !== true //Active, display game count for AthleteSelect
+                  ? `ACTIVE
+                  Games: ${gameCount}`
+                  : 'ACTIVE'}
               </span>
             </div>
           </div>
@@ -130,8 +153,10 @@ PerformerContainer.propTypes = {
   isSelected: PropTypes.bool,
   currentSport: PropTypes.string,
   fromPortfolio: PropTypes.bool,
+  fromHome: PropTypes.bool,
   isInjured: PropTypes.string,
   isActive: PropTypes.bool,
+  gameCount: PropTypes.number,
 };
 
 export default PerformerContainer;

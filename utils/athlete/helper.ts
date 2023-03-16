@@ -1,7 +1,7 @@
 import client from 'apollo-client';
 import { objectTraps } from 'immer/dist/internal';
-import { GET_ATHLETE_BY_ID } from '../queries';
-import { getUTCTimestampFromLocal } from 'utils/date/helper';
+import { GET_ATHLETE_BY_ID, GET_NBA_PLAYER_SCHEDULE } from '../queries';
+import { formatToUTCDate, getUTCTimestampFromLocal } from 'utils/date/helper';
 import { getSportType } from 'data/constants/sportConstants';
 
 interface trait_type {
@@ -25,8 +25,8 @@ async function getAthleteInfoById(item, from, to) {
   }
   const { data } = await client.query({
     query: GET_ATHLETE_BY_ID,
-    variables: { getAthleteById: parseFloat(value['athlete_id']), from: from, to: to}
-  })
+    variables: { getAthleteById: parseFloat(value['athlete_id']), from: from, to: to },
+  });
   // let queryData;
   // if (from === undefined && to === undefined){
   //   const { data } = await client.query({
@@ -55,13 +55,29 @@ async function getAthleteInfoById(item, from, to) {
     isOpen: false,
     animation: data.getAthleteById.nftAnimation,
     image: item.metadata.media,
-    fantasy_score: from === null && to === null ? getAvgSeasonFantasyScore(data.getAthleteById.stats) : getDailyFantasyScore(data.getAthleteById.stats),
+    fantasy_score:
+      from === null && to === null
+        ? getAvgSeasonFantasyScore(data.getAthleteById.stats)
+        : getDailyFantasyScore(data.getAthleteById.stats),
     stats_breakdown: data.getAthleteById.stats,
     isInGame: item.metadata['starts_at'] > getUTCTimestampFromLocal() ? true : false,
     isInjured: data.getAthleteById.isInjured,
     isActive: data.getAthleteById.isActive,
   };
   return returningData;
+}
+
+async function getAthleteBasketballSchedule(athlete, startDate, endDate) {
+  const { data } = await client.query({
+    query: GET_NBA_PLAYER_SCHEDULE,
+    variables: {
+      team: athlete.team,
+      startDate: formatToUTCDate(startDate), //formatToUTCDate(1676418043000),
+      endDate: formatToUTCDate(endDate), //formatToUTCDate(1677282043000),
+    },
+  });
+
+  return { ...athlete, schedule: data.getNbaPlayerSchedule };
 }
 
 function getAvgSeasonFantasyScore(array) {
@@ -145,4 +161,5 @@ export {
   getPositionDisplay,
   checkInjury,
   cutAthleteName,
+  getAthleteBasketballSchedule,
 };

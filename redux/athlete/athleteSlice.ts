@@ -5,6 +5,8 @@ import { PURGE } from 'redux-persist';
 const initialState = {
   athleteLineup: [],
   game_id: 0,
+  gameStartDate: 0,
+  gameEndDate: 0,
   index: 0,
   teamName: "",
   position: "",
@@ -22,6 +24,12 @@ export const athleteSlice = createSlice({
     },
     setGameId(state, action) {
       state.game_id = action.payload;
+    },
+    setGameStartDate(state, action){
+      state.gameStartDate = action.payload;
+    },
+    setGameEndDate(state, action){
+      state.gameEndDate = action.payload
     },
     setIndex(state, action) {
       state.index = action.payload;
@@ -41,10 +49,12 @@ export const athleteSlice = createSlice({
   }
 });
 
-export const { setAthleteLineup, setGameId, setIndex, setTeamNameRedux, setPosition, setSport } = athleteSlice.actions;
+export const { setAthleteLineup, setGameId, setGameStartDate, setGameEndDate, setIndex, setTeamNameRedux, setPosition, setSport } = athleteSlice.actions;
 
 export const getAthleteLineup = (state) => state.athlete.athleteLineup;
 export const getGameId = (state) => state.athlete.game_id;
+export const getGameStartDate = (state) => state.athlete.gameStartDate;
+export const getGameEndDate = (state) => state.athlete.gameEndDate;
 export const getIndex = (state) => state.athlete.index;
 export const getTeamName = (state) => state.athlete.teamName;
 export const getPosition = (state) => state.athlete.position;

@@ -23,9 +23,10 @@ import {
   query_filter_tokens_for_owner,
   query_mixed_tokens_pagination,
 } from 'utils/near/helper';
-import { getSportType } from 'data/constants/sportConstants';
+import { getGameStartDate, getGameEndDate } from 'redux/athlete/athleteSlice';
+import { getSportType, SPORT_NAME_LOOKUP } from 'data/constants/sportConstants';
 import NftTypeComponent from 'pages/Portfolio/components/NftTypeComponent';
-import { getPositionDisplay } from 'utils/athlete/helper';
+import { getAthleteBasketballSchedule, getPositionDisplay } from 'utils/athlete/helper';
 import { useLazyQuery } from '@apollo/client';
 import { GET_TEAMS } from 'utils/queries';
 const AthleteSelect = (props) => {
@@ -33,6 +34,8 @@ const AthleteSelect = (props) => {
   const dispatch = useDispatch();
   //Get the data from redux store
   const gameId = useSelector(getGameId);
+  const startDate = useSelector(getGameStartDate);
+  const endDate = useSelector(getGameEndDate);
   const position = useSelector(getPosition);
   console.log(position);
   const index = useSelector(getIndex);
@@ -110,17 +113,34 @@ const AthleteSelect = (props) => {
     return false;
   }
   async function get_filter_tokens_for_owner(contract) {
-    setAthletes(
-      await query_filter_tokens_for_owner(
-        accountId,
-        athleteOffset,
-        athleteLimit,
-        position,
-        team,
-        name,
-        contract
-      )
-    );
+    await query_filter_tokens_for_owner(
+      accountId,
+      athleteOffset,
+      athleteLimit,
+      position,
+      team,
+      name,
+      contract
+    ).then(async (result) => {
+      let athletes = result;
+      if (currentSport === SPORT_NAME_LOOKUP.basketball) {
+        athletes = await Promise.all(
+          result.map((x) => getAthleteBasketballSchedule(x, startDate, endDate))
+        );
+      }
+      setAthletes(athletes);
+    });
+    //   setAthletes(
+    //     await query_filter_tokens_for_owner(
+    //       accountId,
+    //       athleteOffset,
+    //       athleteLimit,
+    //       position,
+    //       team,
+    //       name,
+    //       contract
+    //     )
+    //   );
   }
   async function get_mixed_tokens_for_pagination() {
     await query_mixed_tokens_pagination(
@@ -134,8 +154,14 @@ const AthleteSelect = (props) => {
       team,
       name,
       currentSport
-    ).then((result) => {
-      setAthletes(result);
+    ).then(async (result) => {
+      let athletes = result;
+      if (currentSport === SPORT_NAME_LOOKUP.basketball) {
+        athletes = await Promise.all(
+          result.map((x) => getAthleteBasketballSchedule(x, startDate, endDate))
+        );
+      }
+      setAthletes(athletes);
     });
   }
   const mixedPaginationHandling = (e) => {
@@ -227,6 +253,7 @@ const AthleteSelect = (props) => {
 
   useEffect(() => {
     setRemountAthlete(Math.random() + 1);
+    console.log(athletes);
   }, [athletes]);
   useEffect(() => {
     if (selectedRegular !== false && selectedPromo === false) {
@@ -314,6 +341,7 @@ const AthleteSelect = (props) => {
                       fromPortfolio={false}
                       isActive={item.isActive}
                       isInjured={item.isInjured}
+                      gameCount={item.schedule.length}
                     />
                   </div>
                 ) : (
@@ -336,6 +364,7 @@ const AthleteSelect = (props) => {
                         fromPortfolio={false}
                         isActive={item.isActive}
                         isInjured={item.isInjured}
+                        gameCount={item.schedule.length}
                       />
                     </div>
                   </label>

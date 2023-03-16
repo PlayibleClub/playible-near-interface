@@ -28,8 +28,14 @@ const Lineup = (props) => {
     <>
       <div className="flex justify-center">
         {img ? (
-          <div className="justify-center relative mb-7" style={{ width: '120px', height: '162px' }}>
-            <div className="absolute z-40" style={{ width: '120px', height: '160px' }}></div>
+          <div
+            className="justify-center relative mb-7 iphone5:-mt-6 md:mt-0 iphone5:right-6"
+            style={{ width: '120px', height: '162px' }}
+          >
+            <div
+              className="absolute z-40 iphone5:top-8 md:top-0 iphone5:left-6 md:left-0"
+              style={{ width: '120px', height: '160px' }}
+            ></div>
             <object
               className="absolute z-10 transform scale-55 md:scale-100"
               type="image/svg+xml"
@@ -47,11 +53,16 @@ const Lineup = (props) => {
         {/* </Link> */}
       </div>
       <div className="flex justify-center">
-        <div className="flex flex-col ml-6 -mt-8 md:mt-0">
-          <div className="mb-3 text-sm uppercase font-bold transform scale-65 md:scale-100 -mt-2 md:mt-0">{player === '' ? '-' : player}</div>
-          <div className="text-xs font-thin transform scale-65 md:scale-100 -mt-4 md:mt-0">FANTASY SCORE</div>
-          <div className="text-xs font-bold transform scale-65 md:scale-100 -mt-1 md:mt-0">{player === '' ? '0.00' : score}</div>
-        
+        <div className="flex flex-col iphone5:-mt-6 md:mr-14 md:mt-4">
+          <div className="mb-3 text-sm uppercase font-bold transform scale-65 md:scale-100 -mt-2 md:mt-0">
+            {player === '' ? '-' : player}
+          </div>
+          <div className="text-xs font-thin transform scale-65 md:scale-100 -mt-4 md:mt-0">
+            FANTASY SCORE
+          </div>
+          <div className="text-xs font-bold transform scale-65 md:scale-100 -mt-1 md:mt-0">
+            {player === '' ? '0.00' : score}
+          </div>
         </div>
       </div>
     </>

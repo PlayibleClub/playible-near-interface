@@ -1,7 +1,7 @@
 import React, { Component, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Image from 'next/image';
-import moment from 'moment';
+import moment from 'moment-timezone';
 import { getImage } from 'utils/game/helper';
 import { getUTCDateFromLocal } from 'utils/date/helper';
 
@@ -12,7 +12,7 @@ const PlayComponent = (props) => {
     prizePool,
     timeLeft,
     startDate,
-    endDate = null,
+    endDate,
     endsin,
     type,
     children,
@@ -47,8 +47,6 @@ const PlayComponent = (props) => {
     const id = setInterval(() => {
       const currentDate = getUTCDateFromLocal();
       const end = moment.utc(type === 'ON-GOING' || type === 'ACTIVE' ? endDate : startDate);
-
-      console.log(endDate);
 
       setDay(formatTime(Math.floor(end.diff(currentDate, 'second') / 3600 / 24)));
       setHour(formatTime(Math.floor((end.diff(currentDate, 'second') / 3600) % 24)));
@@ -114,15 +112,19 @@ const PlayComponent = (props) => {
                 <div className="font-thin text-sm">
                   {type === 'ON-GOING' || type === 'ACTIVE' ? 'END' : 'START'} DATE
                 </div>
-                <div className="text-base font-monument flex">
+                <div className="text-xs font-monument w-32">
                   {moment
-                    .utc(type === 'ON-GOING' || type === 'ACTIVE' ? endDate : startDate)
-                    .local()
-                    .format('MM/DD/YYYY')}
+                    .tz(
+                      type === 'ON-GOING' || type === 'ACTIVE' ? endDate : startDate,
+                      moment.tz.guess()
+                    )
+                    .format('Do MMMM, hA z')}
                 </div>
                 <div className="font-thin text-sm">{type === 'NEW' ? 'END DATE' : ''}</div>
-                <div className="text-base font-monument">
-                  {type === 'NEW' ? moment.utc(endDate).local().format('MM/DD/YYYY') : ''}
+                <div className="text-xs font-monument w-32">
+                  {type === 'NEW'
+                    ? moment.tz(endDate, moment.tz.guess()).format('Do MMMM, hA zz')
+                    : ''}
                 </div>
               </div>
               <div>

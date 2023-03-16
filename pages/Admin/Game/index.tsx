@@ -478,6 +478,10 @@ export default function Index(props) {
     let errors = [];
     let sortPercentage = [...distribution].sort((a, b) => b.percentage - a.percentage);
 
+    if (details.gameId == "") {
+      errors.push('Game ID cannot be empty');
+    }
+
     if (distribution.length === 1 && percentTotal === 0) {
       errors.push('Invalid Distribution values');
     }
@@ -1300,6 +1304,13 @@ export default function Index(props) {
               </li>
             ))}
         <p className="font-bold">Image: </p>
+        <button className='fixed top-4 right-4 '
+                      onClick={() => {
+                        setConfirmModal(false);
+                      }}
+                    >
+                      <img src="/images/x.png" />
+                    </button>
         <img src={details.game_image} />
         <button
           className="bg-indigo-green font-monument tracking-widest text-indigo-white w-full h-16 text-center text-sm mt-4"
@@ -1340,6 +1351,14 @@ export default function Index(props) {
         onClose={() => setImageModal(false)}
         AdminGame={true}
       >
+        <button
+          className="fixed top-4 right-4 "
+          onClick={() => {
+            setImageModal(false);
+          }}
+        >
+          <img src="/images/x.png" />
+        </button>
         <div className="w-full">
           <div className="mt-4 gap-x-6 gap-y-12 grid grid-cols-0 md:grid-cols-4 md:h-108 h-80 overflow-y-auto">
             {imageList !== undefined || imageList !== null

@@ -289,6 +289,7 @@ const Games = (props) => {
                         teamScore={item.sumScore}
                         index={index}
                         gameId={gameId}
+                        isExtendedLeaderboard={false}
                         onClickFn={() => {
                           togglePopup({ accountId: item.accountId, index: index });
                           setIsExtendedLeaderboard(1);
@@ -304,15 +305,25 @@ const Games = (props) => {
               </div>
               <Modal title={'EXTENDED LEADERBOARD'} visible={viewModal}>
                 <div className="md:h-128 h-80 overflow-y-auto">
+               <button className='fixed top-4 right-4 '
+                      onClick={() => {
+                        setEntryModal(false);
+                        setViewModal(false);
+                        setIsExtendedLeaderboard(0);
+                      }}
+                    >
+                      <img src="/images/x.png" />
+                    </button>
                   {playerLineups.length > 0
                     ? playerLineups.map((item, index) => {
                         return (
-                          <LeaderboardComponent
+                          <LeaderboardComponent 
                             accountId={item.accountId}
                             teamName={item.teamName}
                             teamScore={item.sumScore}
                             index={index}
                             gameId={gameId}
+                            isExtendedLeaderboard={true}
                             onClickFn={() => {
                               togglePopup({ accountId: item.accountId, index: index });
                               setIsExtendedLeaderboard(0);
@@ -331,18 +342,18 @@ const Games = (props) => {
                   CLOSE
                 </button>
               </Modal>
+
               <EntrySummaryModal title={'ENTRY SUMMARY'} visible={entryModal}>
-                <div>
+                <div className=' transform iphone5:scale-55 md:scale-85 md:-mt-6 iphoneX:fixed iphoneX:-mt-6 iphone5:-ml-12 md:static'>
+                  <ModalPortfolioContainer
+                    title={playerLineups[currentIndex]?.teamName}
+                    accountId={playerLineups[currentIndex]?.accountId}
+                    textcolor="text-indigo-black"
+                  />
+                  </div>
+                <div className="h-128">
                   <div className="flex flex-col w-full md:pb-12 ml-24 iphoneX:ml-24 md:ml-20">
-                    <div className="flex items-center -ml-36 -mt-4 md:ml-0 transform scale-70 md:scale-100">
-                      <ModalPortfolioContainer
-                        title={playerLineups[currentIndex]?.teamName}
-                        accountId={playerLineups[currentIndex]?.accountId}
-                        textcolor="text-indigo-black"
-                      />
-                      <div className="w-2/3 text-2xl pb-3 pt-20 md:pt-14 justify-between align-center"></div>
-                    </div>
-                    <div className="grid grid-cols-4 gap-6 md:gap-y-4 md:mt-14 mb-2 md:mb-10 md:grid-cols-4 md:ml-7 -mt-9 -ml-9 mr-6 md:mr-0">
+                    <div className="grid grid-cols-4 gap-6 md:gap-y-4 mb-2 md:mb-10 md:grid-cols-4 md:ml-7 mt-8 -ml-9 mr-6 md:mr-0  ">
                       {playerLineups.length === 0
                         ? 'Loading athletes...'
                         : playerLineups[currentIndex]?.lineup.map((item, i) => {
@@ -362,15 +373,15 @@ const Games = (props) => {
                   </div>
                 </div>
                 <div className="fixed top-4 right-4 transform scale-100">
-                {isExtendedLeaderboard === 1 ? (
+                  {isExtendedLeaderboard === 1 ? (
                     <button
                       onClick={() => {
                         setEntryModal(false);
                         setViewModal(false);
                         setIsExtendedLeaderboard(0);
                       }}
-                    ><img src="/images/x.png"/>
-                      
+                    >
+                      <img src="/images/x.png" />
                     </button>
                   ) : (
                     <button
@@ -379,7 +390,8 @@ const Games = (props) => {
                         setViewModal(true);
                         setIsExtendedLeaderboard(0);
                       }}
-                    ><img src="/images/x.png"/>
+                    >
+                      <img src="/images/x.png" />
                     </button>
                   )}
                 </div>

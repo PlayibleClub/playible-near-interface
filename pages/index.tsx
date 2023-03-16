@@ -111,7 +111,7 @@ export default function Home(props) {
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const featuredImagesDesktop = [
-    '/images/basketball_starterpack_promotion_desktop.png',
+    '/images/basketball_starterpack_publicmint_desktop.png',
     '/images/basketball_championship_ongoing.png',
   ];
 
@@ -123,7 +123,7 @@ export default function Home(props) {
   const startSlider = () => {
     setInterval(() => {
       handleOnNextClick();
-    }, 3000);
+    }, 4000);
   };
 
   useEffect(() => {
@@ -138,7 +138,7 @@ export default function Home(props) {
             <div className="flex flex-col md:flex-row md:ml-12">
               <div className="md:w-2/3">
                 <div className="md:mr-8">
-                  <div className="w-full relative select-none mx-2 mt-24 md:mt-0">
+                  <div className="w-12/13 relative select-none mx-2 mt-24 md:mt-0">
                     <img
                       className="object-fill h-48 w-full visible md:hidden rounded-lg"
                       src={featuredImagesMobile[currentIndex]}
@@ -213,6 +213,7 @@ export default function Home(props) {
                             hoverable={false}
                             isActive={isActive}
                             isInjured={isInjured}
+                            fromHome={true}
                           />
                         </div>
                       );

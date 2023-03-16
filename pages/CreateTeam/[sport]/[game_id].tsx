@@ -260,6 +260,14 @@ export default function CreateLineup(props) {
             setEditInput(teamName);
           }}
         >
+          <button
+            className="fixed top-4 right-4 "
+            onClick={() => {
+              setEditModal(false);
+            }}
+          >
+            <img src="/images/x.png" />
+          </button>
           <div className="mt-2 px-5">
             <p className="text-xs uppercase font-thin mb-2" style={{ fontFamily: 'Montserrat' }}>
               EDIT TEAM NAME
