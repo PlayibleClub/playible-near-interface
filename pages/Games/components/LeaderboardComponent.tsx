@@ -19,21 +19,23 @@ const LeaderboardComponent = (props) => {
         className="flex items-center justify-center ml-2 md:ml-6 bg-indigo-black text-indigo-white
         w-1/2 text-center p-1 iphone5:text-xs md:text-base font-monument"
       >
-        {isExtendedLeaderboard ? entryCutTeam(teamName) : cutTeam(teamName)} <br/>   
-        {isExtendedLeaderboard ? entryCut(accountId) : cutAddress(accountId)} 
+        {cutTeam(teamName)} <br/>   
+        {cutAddress(accountId)} 
       </div>
       <div className="flex items-center justify-center ml-6 w-12 text-center content-center font-black">
         {teamScore?.toFixed(2)}
       </div>
-      <div className="flex items-center justify-center ml-6">
-        <button
-          onClick={(e) => {
-            e.preventDefault();
-            onClickFn(teamName, accountId, gameId);
-          }}
-        >
-          <img className="filter invert" src={'/images/arrow-top-right.png'}></img>
-        </button>
+      <div className="flex items-center justify-center ml-6 relative">
+        <div style={{ width: '32px', overflow: 'hidden' }}>
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              onClickFn(teamName, accountId, gameId);
+            }}
+          >
+            <img className="filter invert" src={'/images/arrow-top-right.png'}></img>
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -46,7 +48,7 @@ LeaderboardComponent.propTypes = {
   accountId: PropTypes.string,
   gameId: PropTypes.number,
   onClickFn: PropTypes.func,
-  isExtendedLeaderboard: PropTypes.bool, // new prop added
+  isExtendedLeaderboard: PropTypes.bool,
 };
 
 export default LeaderboardComponent;

@@ -21,11 +21,15 @@ function useViewport() {
           setSliceLimit(3);
           setAccountLimit(3); 
           setCutLimit(3);
-        } else if (width < 767) {
+        } else if (width < 767  && width >= 371) {
           setSliceLimit(6);
           setAccountLimit(6); 
           setCutLimit(4);
-        } else {
+        }  else if (width < 370) {
+          setSliceLimit(1);
+          setAccountLimit(1); 
+          setCutLimit(1);
+        }else {
           setSliceLimit(15);
           setAccountLimit(15);
           setCutLimit(6);
