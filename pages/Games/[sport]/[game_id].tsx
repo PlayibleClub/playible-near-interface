@@ -202,7 +202,6 @@ const Games = (props) => {
   useEffect(() => {
     if (playerLineups !== undefined) {
       sortPlayerTeamScores(accountId);
-      console.log(playerTeams);
     }
   }, [playerLineups]);
 
@@ -305,19 +304,20 @@ const Games = (props) => {
               </div>
               <Modal title={'EXTENDED LEADERBOARD'} visible={viewModal}>
                 <div className="md:h-128 h-80 overflow-y-auto">
-               <button className='fixed top-4 right-4 '
-                      onClick={() => {
-                        setEntryModal(false);
-                        setViewModal(false);
-                        setIsExtendedLeaderboard(0);
-                      }}
-                    >
-                      <img src="/images/x.png" />
-                    </button>
+                  <button
+                    className="fixed top-4 right-4 "
+                    onClick={() => {
+                      setEntryModal(false);
+                      setViewModal(false);
+                      setIsExtendedLeaderboard(0);
+                    }}
+                  >
+                    <img src="/images/x.png" />
+                  </button>
                   {playerLineups.length > 0
                     ? playerLineups.map((item, index) => {
                         return (
-                          <LeaderboardComponent 
+                          <LeaderboardComponent
                             accountId={item.accountId}
                             teamName={item.teamName}
                             teamScore={item.sumScore}
@@ -344,13 +344,13 @@ const Games = (props) => {
               </Modal>
 
               <EntrySummaryModal title={'ENTRY SUMMARY'} visible={entryModal}>
-                <div className=' transform iphone5:scale-55 md:scale-85 md:-mt-6 iphoneX:fixed iphoneX:-mt-6 iphone5:-ml-12 md:static'>
+                <div className=" transform iphone5:scale-55 md:scale-85 md:-mt-6 iphoneX:fixed iphoneX:-mt-6 iphone5:-ml-12 md:static">
                   <ModalPortfolioContainer
                     title={playerLineups[currentIndex]?.teamName}
                     accountId={playerLineups[currentIndex]?.accountId}
                     textcolor="text-indigo-black"
                   />
-                  </div>
+                </div>
                 <div className="h-128">
                   <div className="flex flex-col w-full md:pb-12 ml-24 iphoneX:ml-24 md:ml-20">
                     <div className="grid grid-cols-4 gap-6 md:gap-y-4 mb-2 md:mb-10 md:grid-cols-4 md:ml-7 mt-8 -ml-9 mr-6 md:mr-0  ">

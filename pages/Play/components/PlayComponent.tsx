@@ -23,6 +23,7 @@ const PlayComponent = (props) => {
     fetchGames,
     index,
     lineupLength,
+    hasEntered,
   } = props;
   const playicon = getImage(game_id);
   const ranking = '/images/icons/Ranking.svg';
@@ -148,17 +149,27 @@ const PlayComponent = (props) => {
                 )}
                 {(type === 'NEW' || type === 'ON-GOING' || type === 'ACTIVE') && (
                   <div className="text-sm font-montserrat font-normal flex mt-2 space-x-3">
-                    <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
+                    <div className="bg-indigo-darkgray text-indigo-white w-9 h-10 rounded justify-center flex pt-2">
                       {day}
                     </div>
-                    <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
+                    <div className="bg-indigo-darkgray text-indigo-white w-9 h-10 rounded justify-center flex pt-2">
                       {hour}
                     </div>
-                    <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
+                    <div className="bg-indigo-darkgray text-indigo-white w-9 h-10 rounded justify-center flex pt-2">
                       {minute}
                     </div>
-                    <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
+                    <div className="bg-indigo-darkgray text-indigo-white w-9 h-10 rounded justify-center flex pt-2">
                       {second}
+                    </div>
+                    <div
+                      className={`${
+                        type === 'ON-GOING' && hasEntered > 0
+                          ? 'flex flex-row space-x-1 text-xs align-text-baseline text-center bg-indigo-lightgreen font-bold px-2 py-2'
+                          : 'hidden'
+                      }`}
+                    >
+                      <div className="text-indigo-white tracking-tight mt-1">ENTERED</div>
+                      <div className="bg-indigo-white rounded-full px-2.5 py-1">{hasEntered}</div>
                     </div>
                   </div>
                 )}
@@ -190,6 +201,7 @@ PlayComponent.propTypes = {
   index: PropTypes.func,
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
   img: PropTypes.string,
+  hasEntered: PropTypes.string,
 };
 
 export default PlayComponent;

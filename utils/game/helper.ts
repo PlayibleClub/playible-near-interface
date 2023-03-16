@@ -1,7 +1,9 @@
 import client from 'apollo-client';
+import { getSportType } from 'data/constants/sportConstants';
 import { getUTCTimestampFromLocal } from 'utils/date/helper';
+import { query_player_teams } from 'utils/near/helper';
 
-async function getGameInfoById(item) {
+async function getGameInfoById(accountId, item, status, currentSport) {
   // let game_id = item[0];
   // let end_time = item[1].end_time;s
   // let whitelist = item[1].whitelist;
@@ -22,15 +24,11 @@ async function getGameInfoById(item) {
     joined_player_counter: item[1].joined_player_counter,
     jointed_team_counter: item[1].joined_team_counter,
     isCompleted: getUTCTimestampFromLocal() >= item[1].end_time ? true : false,
-    status:
-      getUTCTimestampFromLocal() >= item[1].end_time
-        ? 'completed'
-        : getUTCTimestampFromLocal() < item[1].start_time
-        ? 'new'
-        : getUTCTimestampFromLocal() > item[1].start_time &&
-          getUTCTimestampFromLocal() < item[1].end_time
-        ? 'ongoing'
-        : 'invalid',
+    status: status,
+    user_team_count:
+      status === 'on-going'
+        ? await query_player_teams(accountId, item[0], getSportType(currentSport).gameContract)
+        : '',
   };
 
   return returningData;

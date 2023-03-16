@@ -24,6 +24,7 @@ const coin = 'images/coin.png';
 const claimreward = 'images/claimreward.png';
 import { SPORT_TYPES, getSportType } from 'data/constants/sportConstants';
 import { query_games_list, query_game_supply } from 'utils/near/helper';
+import { useWalletSelector } from 'contexts/WalletSelectorContext';
 
 const Play = (props) => {
   const { error } = props;
@@ -49,7 +50,7 @@ const Play = (props) => {
   const connectedWallet = {};
   const [games, setGames] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  const { accountId } = useWalletSelector();
   const [limit, setLimit] = useState(10);
   const [offset, setOffset] = useState(0);
   const [pageCount, setPageCount] = useState(0);
@@ -433,13 +434,13 @@ const Play = (props) => {
       const upcomingGames = await Promise.all(
         result
           .filter((x) => x[1].start_time > getUTCTimestampFromLocal())
-          .map((item) => getGameInfoById(item))
+          .map((item) => getGameInfoById(accountId, item, 'new', currentSport))
       );
 
       const completedGames = await Promise.all(
         result
           .filter((x) => x[1].end_time < getUTCTimestampFromLocal())
-          .map((item) => getGameInfoById(item))
+          .map((item) => getGameInfoById(accountId, item, 'completed', currentSport))
       );
 
       const ongoingGames = await Promise.all(
@@ -449,7 +450,7 @@ const Play = (props) => {
               x[1].start_time < getUTCTimestampFromLocal() &&
               x[1].end_time > getUTCTimestampFromLocal()
           )
-          .map((item) => getGameInfoById(item))
+          .map((item) => getGameInfoById(accountId, item, 'on-going', currentSport))
       );
       //setCurrentTotal(upcomingGames.length);
       upcomingGames.sort(function (a, b) {
@@ -459,8 +460,10 @@ const Play = (props) => {
       setNewGames(upcomingGames);
       setCompletedGames(completedGames);
       setOngoingGames(ongoingGames);
+      console.log(ongoingGames);
     });
   }
+
   const claimRewards = async (gameId) => {
     setClaimLoading(true);
     let totalPrize = 0;
@@ -875,6 +878,7 @@ const Play = (props) => {
                                           startDate={data.start_time}
                                           endDate={data.end_time}
                                           img={data.game_image}
+                                          hasEntered={data.user_team_count.team_names.length}
                                           fetchGames={fetchGamesLoading}
                                           index={() => changeIndex(1)}
                                         />

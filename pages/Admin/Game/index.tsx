@@ -478,7 +478,7 @@ export default function Index(props) {
     let errors = [];
     let sortPercentage = [...distribution].sort((a, b) => b.percentage - a.percentage);
 
-    if (details.gameId == "") {
+    if (details.gameId == '') {
       errors.push('Game ID cannot be empty');
     }
 
@@ -692,13 +692,13 @@ export default function Index(props) {
       const upcomingGames = await Promise.all(
         result
           .filter((x) => x[1].start_time > getUTCTimestampFromLocal())
-          .map((item) => getGameInfoById(item))
+          .map((item) => getGameInfoById(accountId, item, 'new', currentSport))
       );
 
       const completedGames = await Promise.all(
         result
           .filter((x) => x[1].end_time < getUTCTimestampFromLocal())
-          .map((item) => getGameInfoById(item))
+          .map((item) => getGameInfoById(accountId, item, 'completed', currentSport))
       );
 
       const ongoingGames = await Promise.all(
@@ -708,7 +708,7 @@ export default function Index(props) {
               x[1].start_time < getUTCTimestampFromLocal() &&
               x[1].end_time > getUTCTimestampFromLocal()
           )
-          .map((item) => getGameInfoById(item))
+          .map((item) => getGameInfoById(accountId, item, 'on-going', currentSport))
       );
       setCurrentTotal(upcomingGames.length);
       setNewGames(upcomingGames);
@@ -1304,13 +1304,14 @@ export default function Index(props) {
               </li>
             ))}
         <p className="font-bold">Image: </p>
-        <button className='fixed top-4 right-4 '
-                      onClick={() => {
-                        setConfirmModal(false);
-                      }}
-                    >
-                      <img src="/images/x.png" />
-                    </button>
+        <button
+          className="fixed top-4 right-4 "
+          onClick={() => {
+            setConfirmModal(false);
+          }}
+        >
+          <img src="/images/x.png" />
+        </button>
         <img src={details.game_image} />
         <button
           className="bg-indigo-green font-monument tracking-widest text-indigo-white w-full h-16 text-center text-sm mt-4"
