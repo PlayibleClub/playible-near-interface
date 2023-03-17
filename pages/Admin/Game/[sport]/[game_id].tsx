@@ -2,16 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { getContract, getRPCProvider } from 'utils/near';
 import { providers } from 'near-api-js';
-import { getAthleteInfoById, convertNftToAthlete } from 'utils/athlete/helper';
-import {
-  compute_scores,
-  query_all_players_lineup,
-  query_game_data,
-  query_player_lineup,
-} from 'utils/near/helper';
+import { compute_scores, query_game_data, query_player_lineup } from 'utils/near/helper';
 import { getNflWeek, getNflSeason, formatToUTCDate } from 'utils/date/helper';
 import { getSportType, SPORT_TYPES, SPORT_NAME_LOOKUP } from 'data/constants/sportConstants';
-import moment, { Moment } from 'moment';
 
 export default function AdminPlayerLineup(props) {
   const { query } = props;

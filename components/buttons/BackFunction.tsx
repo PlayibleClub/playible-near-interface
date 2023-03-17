@@ -1,7 +1,5 @@
-import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
-import { BrowserView, MobileView } from 'react-device-detect';
-import Image from 'next/image';
+import React from 'react';
+import { BrowserView } from 'react-device-detect';
 
 const BackFunction = (props) => {
   const { prev } = props;

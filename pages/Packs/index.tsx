@@ -1,23 +1,14 @@
-import React, { Component, useState, useEffect } from 'react';
-import { transactions, utils, WalletConnection, providers } from 'near-api-js';
-import { useForm } from 'react-hook-form';
+import React, { useState, useEffect } from 'react';
 import PortfolioContainer from '../../components/containers/PortfolioContainer';
-import LargePackContainer from '../../components/containers/LargePackContainer';
 import Container from '../../components/containers/Container';
-import BackFunction from '../../components/buttons/BackFunction';
 import Main from '../../components/Main';
 import 'regenerator-runtime/runtime';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
 import PackComponent from './components/PackComponent';
-import PlayComponent from '../Play/components/PlayComponent';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
-import { getRPCProvider, getContract } from 'utils/near';
-import { OPENPACK_PROMO_NFL, PACK_NFL, PACK_PROMO_NFL } from '../../data/constants/nearContracts';
 import ReactPaginate from 'react-paginate';
-import BigNumber from 'bignumber.js';
-import { DEFAULT_MAX_FEES, MINT_STORAGE_COST } from 'data/constants/gasFees';
 import {
   execute_claim_soulbound_pack,
   query_claim_status,
@@ -29,29 +20,17 @@ import { persistor } from 'redux/athlete/store';
 import Modal from 'components/modals/Modal';
 import { SPORT_TYPES, getSportType } from 'data/constants/sportConstants';
 export default function Packs() {
-  const { selector, modal, accounts, accountId } = useWalletSelector();
+  const { selector, accountId } = useWalletSelector();
 
-  const provider = new providers.JsonRpcProvider({
-    url: getRPCProvider(),
-  });
   const router = useRouter();
   const dispatch = useDispatch();
 
-  const [filterInfo, handleFilter] = useState(false);
-  const { register, handleSubmit } = useForm();
-  const [result, setResult] = useState('');
-  const [teamFilter, setTeamFilter] = useState('');
-  const [posFilter, setPosFilter] = useState('');
-  const [isClosed, setClosed] = useState(true);
-  const [filterMode, setMode] = useState(false);
-  const [showFilter, setFilter] = useState(false);
   const [packs, setPacks] = useState([]);
   const [soulboundPacks, setSoulboundPacks] = useState([]);
   const [editModal, setEditModal] = useState(false);
   const [pageCount, setPageCount] = useState(0);
   const [packOffset, setPackOffset] = useState(0);
   const [packLimit, setPackLimit] = useState(30);
-  const [soulboundPackLimit, setSoulboundPackLimit] = useState(30);
   const [totalPacks, setTotalPacks] = useState(0);
   const [isClaimed, setIsClaimed] = useState(false);
   const [totalSoulboundPacks, setTotalSoulboundPacks] = useState(0);
@@ -174,21 +153,6 @@ export default function Packs() {
     });
   }
 
-  // async function get_soulbound_pack(selector) {
-  //   execute_claim_soulbound_pack(selector, getSport);
-  // }
-
-  const onSubmit = (data) => {
-    if (data.search) setResult(data.search);
-    else setResult('');
-
-    if (data.teamName) setTeamFilter(data.teamName);
-    else setTeamFilter('');
-
-    if (data.positions) setPosFilter(data.positions);
-    else setPosFilter('');
-  };
-  const [isNarrowScreen, setIsNarrowScreen] = useState(false);
   const handleButtonClick = (e) => {
     e.preventDefault();
     dispatch(setSportTypeRedux(currentSport));
@@ -228,24 +192,6 @@ export default function Packs() {
   useEffect(() => {
     get_claim_status(accountId);
   }, [currentSport]);
-
-  // useEffect(() => {
-  //     // set initial value
-  //     const mediaWatcher = window.matchMedia("(max-width: 500px)")
-
-  //     //watch for updates
-  //     function updateIsNarrowScreen(e) {
-  //       setIsNarrowScreen(e.matches);
-  //     }
-  //     mediaWatcher.addEventListener('change', updateIsNarrowScreen)
-
-  //     // clean up after ourselves
-  //     return function cleanup() {
-  //       mediaWatcher.removeEventListener('change', updateIsNarrowScreen)
-  //     }
-  //   })
-
-  // if (isNarrowScreen) {
 
   return (
     <Container activeName="SQUAD">

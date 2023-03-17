@@ -1,23 +1,12 @@
 import { providers } from 'near-api-js';
 import { getContract, getRPCProvider } from 'utils/near';
-import { useWalletSelector } from 'contexts/WalletSelectorContext';
-import {
-  GAME_NFL,
-  ATHLETE_NFL,
-  PACK_PROMO_NFL,
-  PACK_NFL,
-  ATHLETE_PROMO_NFL,
-} from 'data/constants/nearContracts';
 import {
   convertNftToAthlete,
   getAthleteInfoById,
-  getAthleteInfoByIdWithDate,
 } from 'utils/athlete/helper';
-import React, { useEffect, useState } from 'react';
 import { DEFAULT_MAX_FEES, MINT_STORAGE_COST } from 'data/constants/gasFees';
 import BigNumber from 'bignumber.js';
 import { getSportType, SPORT_NAME_LOOKUP } from 'data/constants/sportConstants';
-import moment, {Moment} from 'moment';
 const provider = new providers.JsonRpcProvider({
   url: getRPCProvider(),
 });
@@ -69,7 +58,7 @@ async function query_nft_token_by_id(token_id, currentSport, start_time, end_tim
       //         start_time,
       //         end_time
       //       );
-      const result_two = await getAthleteInfoByIdWithDate( await convertNftToAthlete(result), start_time, end_time)
+      const result_two = await getAthleteInfoById( await convertNftToAthlete(result), start_time, end_time)
       return result_two;
     });
 }
@@ -358,7 +347,7 @@ async function query_filter_tokens_for_owner(
     .then((data) => {
       //@ts-ignore:next-line
       const result = JSON.parse(Buffer.from(data.result).toString());
-      const result_two = Promise.all(result.map(convertNftToAthlete).map(getAthleteInfoById));
+      const result_two = Promise.all(result.map(convertNftToAthlete).map((item) => getAthleteInfoById(item, undefined, undefined)));
 
       return result_two;
     });

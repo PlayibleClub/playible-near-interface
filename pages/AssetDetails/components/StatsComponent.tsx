@@ -35,25 +35,19 @@ const StatsComponent = (props) => {
     switch (position) {
       case 'RB':
         avg = Math.round((newState[3] / newState[2]) * 10 + Number.EPSILON) / 10;
-        // newState.push(Number.isNaN(avg) ? 0 : avg);
         newState.splice(4, 0, Number.isNaN(avg) ? 0 : avg);
         break;
       case 'WR':
       case 'TE':
         avg = Math.round((newState[4] / newState[3]) * 10 + Number.EPSILON) / 10;
-        // newState.push(Number.isNaN(avg) ? 0 : avg);
         newState.splice(4, 0, Number.isNaN(avg) ? 0 : avg);
         break;
-      // default:
-      //   // nba shit??
-      //   break;
     }
     return newState;
   }
 
   const query_stats = useCallback(async (position, id) => {
     let query;
-    let state;
     switch (position) {
       case 'QB':
         query = await getAthleteQB({ variables: { getAthleteById: parseFloat(id.toString()) } });
@@ -151,19 +145,12 @@ const StatsComponent = (props) => {
 
   useEffect(() => {
     if (athleteData) {
-      //console.log(athleteData);
       /*
       slice athleteData array, removing 'AthleteStat', 'weekly/daily', and 'played' and 'opponent' objects
       for displaying purposes
       */
       const athlete = athleteData.slice(2, athleteData.length - 3);
-      //console.log(athlete);
       setAthleteStat(athlete);
-      // setAthleteSorted(
-      //   athleteData.sort((a, b) => {
-      //     return moment.utc(b.gameDate).unix() - moment.utc(a.gameDate).unix();
-      //   })
-      // );
     }
   }, [athleteData]);
 
@@ -194,46 +181,6 @@ const StatsComponent = (props) => {
             </div>
           );
         })}
-        {/* <div>
-          <div className="font-monument text-5xl -mb-6">{athleteData[2]?.toFixed(2)}</div>
-          <br></br>
-          <div className="">{statNames[1]}</div>
-        </div>
-        <div>
-          <div className="font-monument text-5xl -mb-6">{athleteData[3]?.toFixed(2)}</div>
-          <br></br>
-          {statNames[2]}
-        </div>
-        <div>
-          <div className="font-monument text-5xl -mb-6">{athleteData[4]?.toFixed(2)}</div>
-          <br></br>
-          {statNames[3]}
-        </div>
-        <div>
-          <div className="font-monument text-5xl -mb-6">{athleteData[5]?.toFixed(2)}</div>
-          <br></br>
-          {statNames[4]}
-        </div>
-        <div>
-          <div className="font-monument text-5xl -mb-6 mt-2">{athleteData[6]?.toFixed(2)}</div>
-          <br></br>
-          {statNames[5]}
-        </div>
-        <div>
-          <div className="font-monument text-5xl -mb-6 mt-2">{athleteData[7]?.toFixed(2)}</div>
-          <br></br>
-          {statNames[6]}
-        </div>
-        <div>
-          <div className="font-monument text-5xl -mb-6 mt-2">{athleteData[8]?.toFixed(2)}</div>
-          <br></br>
-          {statNames[7]}
-        </div>
-        <div>
-          <div className="font-monument text-5xl -mb-6 mt-2">{athleteData[9]?.toFixed(2)}</div>
-          <br></br>
-          {statNames[8]}
-        </div> */}
       </div>
     </>
   );

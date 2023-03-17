@@ -1,41 +1,22 @@
 import Container from '../components/containers/Container';
 import Main from '../components/Main';
 import React, { useCallback, useEffect, useState } from 'react';
-import viewall from '../public/images/viewall.png';
-import PrizePoolComponent from '../components/PrizePoolComponent';
-import Link from 'next/link';
-import MarketplaceContainer from '../components/containers/MarketplaceContainer';
-import LargePackContainer from '../components/containers/LargePackContainer';
-import filterIcon from '../public/images/filterBlack.png';
 import PerformerContainer from '../components/containers/PerformerContainer';
-import progressBar from '../public/images/progressbar.png';
-import banner from '../public/images/promotionheader.png';
-import bannerDesktop from '../public/images/promotionheaderDesktop.png';
-import { axiosInstance } from '../utils/playible';
 import 'regenerator-runtime/runtime';
-import Head from 'next/head';
 import { AiOutlineVerticalRight, AiOutlineVerticalLeft } from 'react-icons/ai';
 import { GET_ATHLETES_TOP, GET_NBA_CURRENT_SEASON, GET_NFL_SEASON } from '../utils/queries';
-import { useLazyQuery, useQuery } from '@apollo/client';
-import Image from 'next/image';
+import { useLazyQuery } from '@apollo/client';
 import { store } from 'redux/athlete/store';
 import { Provider } from 'react-redux';
-import { PersistGate } from 'redux-persist/integration/react';
 import { SPORT_NAME_LOOKUP, SPORT_TYPES } from 'data/constants/sportConstants';
-import { x64 } from 'crypto-js';
 import { formatToUTCDate, getUTCTimestampFromLocal } from 'utils/date/helper';
 let count = 0;
 
 export default function Home(props) {
-  const [activeGames, setActiveGames] = useState([]);
-  const [topAthletes, setTopAthletes] = useState([]);
-  const [athletesLoading, setAthletesLoading] = useState(true);
   const [sportList, setSportList] = useState(
     SPORT_TYPES.map((x) => ({ name: x.sport, key: x.key }))
   );
   const [currentSport, setCurrentSport] = useState('NBA'.toLocaleLowerCase());
-  // const { loading, error, data } = useQuery(GET_ATHLETES_TOP, {
-  // });
   const [getAthletes, { loading, error, data }] = useLazyQuery(GET_ATHLETES_TOP);
   const [athletes, setAthletes] = useState([]);
   const [getNbaCurrentSeason] = useLazyQuery(GET_NBA_CURRENT_SEASON);
@@ -69,17 +50,6 @@ export default function Home(props) {
             })
           )
         );
-        // let newQuery = await getNbaCurrentSeason().then(async (x) => {
-        //   let nbaSeason = x.data.getNbaCurrentSeason.apiSeason;
-        //   console.log(nbaSeason);
-        //   setAthletes(
-        //     await Promise.all(
-        //       query.data.getAthletes.map((element) => {
-        //         return { ...element, stats: element.stats.filter((x) => x.season === nbaSeason) };
-        //       })
-        //     )
-        //   );
-        // });
       } else {
         setAthletes(
           await Promise.all(
@@ -112,7 +82,6 @@ export default function Home(props) {
     if (nbaSeason.length > 0) {
       fetchTopAthletes(nbaSeason, nflSeason, currentSport);
     }
-    //fetchNbaCurrentSeason();
   }, [nbaSeason, nflSeason, currentSport]);
 
   function getAvgFantasyScore(array) {
@@ -129,24 +98,6 @@ export default function Home(props) {
       return 0;
     }
   }
-
-  async function fetchActiveGames() {
-    const res = await axiosInstance.get(`/fantasy/game/active/?limit=2`);
-    // if (res.status === 200) {
-    //   setActiveGames(res.data.results);
-    // }
-    // const gqldata = await getAthlete({ variables: { getAthleteByIdId: 2163 } });
-    // console.log(gqldata.data.getAthleteById);
-  }
-
-  const getImage = async (player) => {
-    const imgRes = await axiosInstance.get(`/fantasy/athlete/${player.athlete.id}/`);
-
-    return {
-      ...player,
-      nft_image: imgRes.status === 200 ? imgRes.data.nft_image : null,
-    };
-  };
 
   const handleOnNextClick = () => {
     count = (count + 1) % featuredImagesMobile.length;
@@ -186,17 +137,6 @@ export default function Home(props) {
           <Main color="indigo-white">
             <div className="flex flex-col md:flex-row md:ml-12">
               <div className="md:w-2/3">
-                {/* <div className="flex flex-col md:border rounded-lg md:p-6 md:mr-8">
-                <div className="flex">
-                  <div className="ml-8 md:ml-0">
-                    <div className="text-l font-bold font-monument">PLAYIBLE TOTAL VALUE</div>
-                    <div className="text-3xl font-bold font-monument mt-2 whitespace-nowrap">
-                      $ 1,750,990.00
-                    </div>
-                  </div>
-                </div>
-              </div> */}
-
                 <div className="md:mr-8">
                   <div className="w-12/13 relative select-none mx-2 mt-24 md:mt-0">
                     <img
@@ -246,24 +186,6 @@ export default function Home(props) {
                     </select>
                   </form>
                 </div>
-                {/* <div className="bg-indigo-white h-11 flex justify-between self-center font-thin w-72 mt-6 border-2 border-indigo-lightgray border-opacity-50">
-                <div className="text-lg ml-4 mt-1.5 md:mb-1.5 text-indigo-black">
-                  <form>
-                    <select className="filter-select bg-white">
-                      <option name="sevendays" value="sevendays">
-                        Last 7 days
-                      </option>
-                      <option name="month" value="month">
-                        Last month
-                      </option>
-                      <option name="year" value="year">
-                        Last year
-                      </option>
-                    </select>
-                  </form>
-                </div>
-                <img src={filterIcon} className="object-none w-4 mr-4" />
-              </div> */}
                 <div></div>
                 {loading ? (
                   <div className="flex justify-center w-full mt-10">
@@ -308,18 +230,3 @@ export default function Home(props) {
     </Provider>
   );
 }
-
-// export const getServerSideProps = async () => {
-//   let topPerformers = [];
-//   const res = await axiosInstance.get('/fantasy/athlete/top_performers/?limit=4');
-//
-//   if (res.status === 200) {
-//     topPerformers = res.data.results;
-//   }
-//
-//   return {
-//     props: {
-//       topPerformers,
-//     },
-//   };
-// };

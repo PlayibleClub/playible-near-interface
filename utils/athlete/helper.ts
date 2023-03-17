@@ -1,6 +1,6 @@
 import client from 'apollo-client';
 import { objectTraps } from 'immer/dist/internal';
-import { GET_ATHLETE_BY_ID, GET_ATHLETE_BY_ID_DATE, GET_NBA_PLAYER_SCHEDULE } from '../queries';
+import { GET_ATHLETE_BY_ID, GET_NBA_PLAYER_SCHEDULE } from '../queries';
 import { formatToUTCDate, getUTCTimestampFromLocal } from 'utils/date/helper';
 import { getSportType } from 'data/constants/sportConstants';
 
@@ -17,20 +17,30 @@ interface trait_type {
 
 // pull from graphQL and append the nft animation
 // return assembled Athlete
-async function getAthleteInfoById(item) {
-  console.log(item.extra);
+async function getAthleteInfoById(item, from, to) {
+  //console.log(item.extra);
   let value = {} as trait_type;
-
   for (const key of item.extra) {
     value[key.trait_type] = key.value;
   }
   const { data } = await client.query({
     query: GET_ATHLETE_BY_ID,
-    variables: { getAthleteById: parseFloat(value['athlete_id']) },
+    variables: { getAthleteById: parseFloat(value['athlete_id']), from: from, to: to },
   });
-  const basketball = item.token_id.includes('2000');
-  let diff;
-
+  // let queryData;
+  // if (from === undefined && to === undefined){
+  //   const { data } = await client.query({
+  //     query: GET_ATHLETE_BY_ID,
+  //     variables: { getAthleteById: parseFloat(value['athlete_id']) },
+  //   });
+  //   queryData = data;
+  // } else{
+  //   const { data } = await client.query({
+  //     query: GET_ATHLETE_BY_ID_DATE,
+  //     variables: { getAthleteById: parseFloat(value['athlete_id']), from: from, to: to },
+  //   });
+  //   queryData = data;
+  // }
   const isPromo = item.token_id.includes('SB') || item.token_id.includes('PR');
   const returningData = {
     primary_id: value['athlete_id'],
@@ -45,7 +55,10 @@ async function getAthleteInfoById(item) {
     isOpen: false,
     animation: data.getAthleteById.nftAnimation,
     image: item.metadata.media,
-    fantasy_score: getAvgFantasyScore(data.getAthleteById.stats),
+    fantasy_score:
+      from === null && to === null
+        ? getAvgSeasonFantasyScore(data.getAthleteById.stats)
+        : getDailyFantasyScore(data.getAthleteById.stats),
     stats_breakdown: data.getAthleteById.stats,
     isInGame: item.metadata['starts_at'] > getUTCTimestampFromLocal() ? true : false,
     isInjured: data.getAthleteById.isInjured,
@@ -53,53 +66,21 @@ async function getAthleteInfoById(item) {
   };
   return returningData;
 }
-async function getAthleteBasketballSchedule(athlete, startDate, endDate){
-  
 
-  const { data }  = await client.query({
+async function getAthleteBasketballSchedule(athlete, startDate, endDate) {
+  const { data } = await client.query({
     query: GET_NBA_PLAYER_SCHEDULE,
     variables: {
       team: athlete.team,
-      startDate: formatToUTCDate(startDate),//formatToUTCDate(1676418043000),
-      endDate: formatToUTCDate(endDate),//formatToUTCDate(1677282043000),
-    }
+      startDate: formatToUTCDate(startDate), //formatToUTCDate(1676418043000),
+      endDate: formatToUTCDate(endDate), //formatToUTCDate(1677282043000),
+    },
   });
 
-  return {...athlete, schedule: data.getNbaPlayerSchedule};
-}
-async function getAthleteInfoByIdWithDate(item, from, to) {
-  let value = item.extra.map((item) => item.value);
-  const { data } = await client.query({
-    query: GET_ATHLETE_BY_ID_DATE,
-    variables: { getAthleteById: parseFloat(value[0]), from: from, to: to },
-  });
-  const basketball = item.token_id.includes('2000');
-  const diff =
-    item.token_id.includes('SB') || item.token_id.includes('PR') ? 1 : basketball ? 1 : 0;
-  const isPromo = item.token_id.includes('SB') || item.token_id.includes('PR');
-  const returningData = {
-    primary_id: value[0],
-    athlete_id: item.token_id,
-    rarity: value[1],
-    usage: isPromo ? 0 : basketball ? 0 : value[2],
-    name: value[3 - diff],
-    team: value[4 - diff],
-    position: value[5 - diff],
-    release: value[6 - diff],
-    ...(isPromo && { type: value[7 - diff] }),
-    isOpen: false,
-    animation: data.getAthleteById.nftAnimation,
-    image: item.metadata.media,
-    fantasy_score: getDailyFantasyScore(data.getAthleteById.stats),
-    stats_breakdown: data.getAthleteById.stats,
-    isInGame: item.metadata['starts_at'] > getUTCTimestampFromLocal() ? true : false,
-    isInjured: data.getAthleteById.isInjured,
-    isActive: data.getAthleteById.isActive,
-  };
-  return returningData;
+  return { ...athlete, schedule: data.getNbaPlayerSchedule };
 }
 
-function getAvgFantasyScore(array) {
+function getAvgSeasonFantasyScore(array) {
   if (Array.isArray(array) && array.length > 0) {
     return array.filter((item) => {
       return item.season != '2022' && item.type == 'season';
@@ -177,9 +158,8 @@ function cutAthleteName(name) {
 export {
   convertNftToAthlete,
   getAthleteInfoById,
-  getAthleteInfoByIdWithDate,
   getPositionDisplay,
   checkInjury,
   cutAthleteName,
-  getAthleteBasketballSchedule
+  getAthleteBasketballSchedule,
 };

@@ -4,26 +4,13 @@ import Container from 'components/containers/Container';
 import 'regenerator-runtime/runtime';
 import BackFunction from 'components/buttons/BackFunction';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
-import { getContract, getRPCProvider } from 'utils/near';
-import {
-  OPENPACK_NFL,
-  OPENPACK_PROMO_NFL,
-  PACK_NFL,
-  PACK_PROMO_NFL,
-} from 'data/constants/nearContracts';
+import { getRPCProvider } from 'utils/near';
 import { providers } from 'near-api-js';
 import BigNumber from 'bignumber.js';
 import { DEFAULT_MAX_FEES, MINT_STORAGE_COST } from 'data/constants/gasFees';
 import Image from 'next/image';
 import { getSportType } from 'data/constants/sportConstants';
-import {
-  query_nft_supply_for_owner,
-  query_nft_tokens_by_id,
-  query_nft_tokens_for_owner,
-} from 'utils/near/helper';
-import storage from 'redux-persist/lib/storage';
-const sampleImage = '/images/packimages/Starter.png';
-const sbImage = '/images/packimages/NFL-SB-Pack.png';
+import { query_nft_tokens_by_id } from 'utils/near/helper';
 const DECIMALS_NEAR = 1000000000000000000000000;
 export default function PackDetails(props) {
   const provider = new providers.JsonRpcProvider({

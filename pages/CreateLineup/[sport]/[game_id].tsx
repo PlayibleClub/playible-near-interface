@@ -5,17 +5,12 @@ import ModalPortfolioContainer from 'components/containers/ModalPortfolioContain
 import Container from 'components/containers/Container';
 import BackFunction from 'components/buttons/BackFunction';
 import { useRouter } from 'next/router';
-import { axiosInstance } from 'utils/playible';
 import Link from 'next/link';
 import 'regenerator-runtime/runtime';
-import LoadingPageDark from 'components/loading/LoadingPageDark';
-import { providers } from 'near-api-js';
-import { getContract, getRPCProvider } from 'utils/near';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
 import ViewTeamsContainer from 'components/containers/ViewTeamsContainer';
 import { query_player_teams } from 'utils/near/helper';
-import { getImage } from 'utils/game/helper';
-import { Provider, useSelector, useDispatch } from 'react-redux';
+import { Provider, useDispatch } from 'react-redux';
 import { store, persistor } from 'redux/athlete/store';
 import { query_game_data } from 'utils/near/helper';
 import { getSportType } from 'data/constants/sportConstants';
@@ -25,26 +20,13 @@ export default function CreateLineup(props) {
   const { query } = props;
   const gameId = query.game_id;
   const currentSport = query.sport.toString().toUpperCase();
-  const teamName = 'Team 1';
   const router = useRouter();
   const dispatch = useDispatch();
   const { accountId } = useWalletSelector();
   const [gameData, setGameData] = useState(null);
-  const [teamModal, setTeamModal] = useState(false);
   const [playerTeams, setPlayerTeams] = useState([]);
-  const [startDate, setStartDate] = useState();
-  const [buttonMute, setButtonMute] = useState(false);
-
-  const [loading, setLoading] = useState(true);
   // const [err, setErr] = useState(error);
   const playGameImage = '/images/game.png';
-  useEffect(() => {
-    const id = setInterval(() => {
-      const currentDate = new Date();
-      const end = new Date(startDate);
-    }, 1000);
-    return () => clearInterval(id);
-  }, [startDate]);
 
   async function get_player_teams(account, game_id) {
     setPlayerTeams(
@@ -71,10 +53,8 @@ export default function CreateLineup(props) {
   };
   useEffect(() => {
     setTimeout(() => persistor.purge(), 200);
-    console.log('loading');
     get_game_data(gameId);
     get_player_teams(accountId, gameId);
-    console.log(playerTeams);
   }, []);
 
   return (
@@ -123,7 +103,7 @@ export default function CreateLineup(props) {
 
               {
                 /* @ts-expect-error */
-                playerTeams.team_names == undefined ? (
+                playerTeams.team_names === undefined || playerTeams.team_names.length === 0 ? (
                   <p>No teams assigned</p>
                 ) : (
                   <div>
