@@ -1380,13 +1380,13 @@ export default function Index(props) {
           </div>
           <div className="flex flex-row mt-4">
             <button
-              className="bg-red-pastel font-monument tracking-widest text-indigo-white w-full h-8 tracking-widest text-center text-sm"
+              className="bg-red-pastel font-monument text-indigo-white w-full h-8 tracking-widest text-center text-sm"
               onClick={() => setImageModal(false)}
             >
               CANCEL
             </button>
             <button
-              className="bg-green-pastel font-monument tracking-widest text-indigo-white w-full h-8 tracking-widest text-center text-sm"
+              className="bg-green-pastel font-monument text-indigo-white w-full h-8 tracking-widest text-center text-sm"
               onClick={(e) => {
                 setGameImage(radioValue);
                 setImageModal(false);
