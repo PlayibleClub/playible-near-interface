@@ -647,7 +647,7 @@ export default function Home(props) {
           <Main color="indigo-white">
             <div className="flex-initial iphone5:mt-20 md:ml-6 md:mt-8">
               <div className="flex md:flex-row md:float-right iphone5:flex-col md:mt-0">
-                {/* <div className="md:mr-5 md:mt-4 iphone5:mt-10">
+                <div className="md:mr-5 md:mt-4 iphone5:mt-10">
                   <form>
                     <select
                       onChange={(e) => {
@@ -662,7 +662,7 @@ export default function Home(props) {
                       })}
                     </select>
                   </form>
-                </div> */}
+                </div>
               </div>
               <div className="ml-8">
                 <ModalPortfolioContainer title="MINT PACKS" textcolor="text-indigo-black" />
@@ -774,7 +774,7 @@ export default function Home(props) {
                   </div>
                 </div> */}
                 <div className="flex md:flex-row flex-col md:ml-2 mt-12">
-                  {currentSport === 'FOOTBALL' ? (
+                  {currentSport === SPORT_NAME_LOOKUP.football ? (
                     <div className="md:w-1/2 w-full ">
                       <Image
                         src={'/images/mintpage.png'}
@@ -783,10 +783,19 @@ export default function Home(props) {
                         alt="pack-image"
                       />
                     </div>
-                  ) : (
+                  ) : currentSport === SPORT_NAME_LOOKUP.basketball ? (
                     <div className="md:w-1/2 w-full ">
                       <Image
                         src={'/images/mintpagebasketball.png'}
+                        width={400}
+                        height={400}
+                        alt="pack-image"
+                      />
+                    </div>
+                  ) : (
+                    <div className="md:w-1/2 w-full ">
+                      <Image
+                        src={'/images/mintpage.png'}
                         width={400}
                         height={400}
                         alt="pack-image"
@@ -800,7 +809,7 @@ export default function Home(props) {
                         textcolor="text-indigo-black"
                       />
                     </div>
-                    {currentSport === 'BASKETBALL' ? '' : ''}
+                    {currentSport === SPORT_NAME_LOOKUP.basketball ? '' : ''}
 
                     <div className="flex justify-between w-4/5 md:w-1/2 mt-5">
                       <div>
@@ -816,7 +825,7 @@ export default function Home(props) {
                       </div>
 
                       <div className="border">
-                        {currentSport === 'BASKETBALL' ? (
+                        {currentSport === SPORT_NAME_LOOKUP.basketball ? (
                           ''
                         ) : (
                           <div>
@@ -849,7 +858,7 @@ export default function Home(props) {
                           </div>
                         )}
 
-                        {currentSport === 'BASKETBALL' ? (
+                        {currentSport === SPORT_NAME_LOOKUP.basketball ? (
                           <button
                             onClick={() => setUseNEP141(NEP141NEAR)}
                             className={
@@ -893,7 +902,7 @@ export default function Home(props) {
                     <div className="flex gap-16">
                       <div className="border border-indigo-lightgray rounded-2xl text-center p-4 w-40 flex flex-col justify-center  mt-8">
                         <div className="text-2xl font-black font-monument ">
-                          {currentSport === 'FOOTBALL' ? minted : mintedNba}
+                          {currentSport === SPORT_NAME_LOOKUP.football ? minted : mintedNba}
                         </div>
                         <div className="text-xs">YOU HAVE MINTED</div>
                       </div>
@@ -1096,20 +1105,25 @@ export default function Home(props) {
                   <div className="text-xl font-bold font-monument ml-0 md:-mt-14 w-1/3">
                     <ModalPortfolioContainer title="PACK DETAILS" textcolor="text-indigo-black" />
                   </div>
-                  {currentSport === 'FOOTBALL' ? (
+                  {currentSport === SPORT_NAME_LOOKUP.football ? (
                     <div className="mt-10">
                       This pack will contain 8 randomly generated <br></br>
                       American Football players.
                     </div>
-                  ) : (
+                  ) : currentSport === SPORT_NAME_LOOKUP.basketball ? (
                     <div className="mt-10">
                       This pack will contain 8 randomly generated <br></br>
                       American Basketball players.
                     </div>
+                  ) : (
+                    <div className="mt-10">
+                      This pack will contain 9 randomly generated <br></br>
+                      American Baseball players.
+                    </div>
                   )}
                   <div className="mt-5 mb-12">
                     <div className="mb-5">1 for each of the positions below:</div>
-                    {currentSport === 'FOOTBALL' ? (
+                    {currentSport === SPORT_NAME_LOOKUP.football ? (
                       <ul className="marker list-disc pl-5 space-y-3 ">
                         <li>1 Quarter Back (QB)</li>
                         <li>2 Running Back (RB) </li>
@@ -1118,7 +1132,7 @@ export default function Home(props) {
                         <li>1 Flex (RB/WR/TE) </li>
                         <li>1 Super Flex (QB/RB/WR/TE) </li>
                       </ul>
-                    ) : (
+                    ) : currentSport === SPORT_NAME_LOOKUP.basketball ? (
                       <ul className="marker list-disc pl-5 space-y-3 ">
                         <li>1 Point Guard (PG)</li>
                         <li>1 Shooting Guard (SG) </li>
@@ -1128,6 +1142,18 @@ export default function Home(props) {
                         <li>1 Guard (PG/SG) </li>
                         <li>1 Forward (SF/PF) </li>
                         <li>1 Any (ANY) </li>
+                      </ul>
+                    ) : (
+                      <ul className="marker list-disc pl-5 space-y-3 ">
+                        <li>1 Pitcher (P)</li>
+                        <li>1 Catcher (C) </li>
+                        <li>1 First Baseman (1B) </li>
+                        <li>1 Second Baseman (2B)</li>
+                        <li>1 Third Baseman (3B) </li>
+                        <li>1 Shortstop (SS) </li>
+                        <li>1 Left Fielder (LF) </li>
+                        <li>1 Center Fielder (CF)</li>
+                        <li>1 Right Fielder (RF)</li>
                       </ul>
                     )}
                   </div>
