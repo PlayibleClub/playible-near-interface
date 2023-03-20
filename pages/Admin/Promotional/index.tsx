@@ -9,6 +9,7 @@ export default function Promotional(props) {
   const { selector, modal, accounts, accountId } = useWalletSelector();
   const [whitelistInfoNFL, setWhitelistInfoNFL] = useState(null);
   const [whitelistInfoNBA, setWhitelistInfoNBA] = useState(null);
+  const [whitelistInfoMLB, setWhitelistInfoMLB] = useState(null);
   const [currentSport, setCurrentSport] = useState(null);
   const [detailsNFL, setDetailsNFL] = useState({
     receiverAccount: '',
@@ -16,7 +17,9 @@ export default function Promotional(props) {
   const [detailsNBA, setDetailsNBA] = useState({
     receiverAccount: '',
   });
-
+  const [detailsMLB, setDetailsMLB] = useState({
+    receiverAccount: '',
+  });
   async function execute_send_type_1_pack(selector) {
     const transferArgs = Buffer.from(
       JSON.stringify({
@@ -91,6 +94,25 @@ export default function Promotional(props) {
     }
   };
 
+  const onChangeWhitelistMLB = (e) => {
+    if (e.target.name === 'receiverAccount') {
+      if (e.target.value !== '') {
+        const whitelistArray = e.target.value.split('\n').filter((n) => n);
+        setWhitelistInfoMLB(whitelistArray);
+        setDetailsMLB({
+          ...detailsMLB,
+          [e.target.name]: e.target.value,
+        });
+      } else if (e.target.value.length === 0) {
+        setWhitelistInfoMLB(null);
+        setDetailsMLB({
+          ...detailsMLB,
+          [e.target.name]: e.target.value,
+        });
+      }
+    }
+  };
+
   const handleButtonClick = (e) => {
     e.preventDefault();
     execute_send_type_1_pack(selector);
@@ -136,6 +158,30 @@ export default function Promotional(props) {
             setCurrentSport('BASKETBALL'), onChangeWhitelistNBA(e);
           }}
           value={detailsNBA.receiverAccount}
+        />
+        <div className="  mt-6">
+          <button
+            className=" flex text-center justify-center items-center iphone5:w-64 bg-indigo-buttonblue font-montserrat text-indigo-white p-3 mb-4 md:mr-4 text-xs"
+            onClick={(e) => handleButtonClick(e)}
+          >
+            Send
+          </button>
+        </div>
+      </div>
+      <div className="flex flex-col w-1/2 ml-24 mt-24">
+        <label className="font-monument" htmlFor="duration">
+          SEND TYPE 1 BASEBALL PACK
+        </label>
+        <input
+          className="border outline-none rounded-lg px-3 p-2"
+          id="receiverAccount"
+          name="receiverAccount"
+          type="text"
+          placeholder="Enter account to send type 1 pack to."
+          onChange={(e) => {
+            setCurrentSport('BASEBALL'), onChangeWhitelistMLB(e);
+          }}
+          value={detailsMLB.receiverAccount}
         />
         <div className="  mt-6">
           <button
