@@ -718,9 +718,12 @@ export default function Index(props) {
     if (currentSport === 'FOOTBALL') {
       positionsInfo.pop();
       positionsDisplay.pop();
-    } else {
+    } else if (currentSport === 'BASKETBALL'){
       positionsInfoBasketball.pop();
       positionsDisplayBasketball.pop();
+    } else {
+      positionsInfoBaseball.pop();
+      positionsDisplayBaseball.pop();
     }
     setRemountPositionArea(Math.random());
   };
