@@ -186,7 +186,24 @@ export default function Index(props) {
     { positions: ['F'], amount: 1 },
     { positions: ['ANY'], amount: 1 },
   ]);
-
+  const [positionsInfoBaseball, setPositionsInfoBaseball] = useState([
+    { positions: ['P'], amount: 2 },
+    { positions: ['C'], amount: 1 },
+    { positions: ['1B'], amount: 1 },
+    { positions: ['2B'], amount: 1 },
+    { positions: ['3B'], amount: 1 },
+    { positions: ['SS'], amount: 1 },
+    { positions: ['OF'], amount: 3 },
+  ]);
+  const [positionsDisplayBaseball, setPositionsDisplayBaseball] = useState([
+    { positions: ['P'], amount: 1 },
+    { positions: ['C'], amount: 1 },
+    { positions: ['1B'], amount: 1 },
+    { positions: ['2B'], amount: 1 },
+    { positions: ['3B'], amount: 1 },
+    { positions: ['SS'], amount: 1 },
+    { positions: ['OF'], amount: 1 },
+  ]);
   const defaultGameDescription =
     'Enter a team into the The Blitz tournament to compete for cash prizes. Create a lineup by selecting 8 Playible Football Athlete Tokens now.';
   const defaultPrizeDescription = '$100 + 2 Championship Tickets';
@@ -478,7 +495,7 @@ export default function Index(props) {
     let errors = [];
     let sortPercentage = [...distribution].sort((a, b) => b.percentage - a.percentage);
 
-    if (details.gameId == "") {
+    if (details.gameId == '') {
       errors.push('Game ID cannot be empty');
     }
 
@@ -584,7 +601,7 @@ export default function Index(props) {
         setPositionsDisplay(current2);
         setRemountPositionArea(Math.random());
       }
-    } else {
+    } else if (currentSport === 'BASKETBALL') {
       let position = [details['position']];
       let display = position;
       let amount = details['positionAmount'];
@@ -624,6 +641,54 @@ export default function Index(props) {
         setPositionsDisplayBasketball(current2);
         setRemountPositionArea(Math.random());
       }
+    } else if (currentSport === 'BASEBALL') {
+      let position = [details['position']];
+      let display = position;
+      let amount = details['positionAmount'];
+      switch (position[0]) {
+        case 'P':
+          position = ['SP', 'RP'];
+          break;
+        case 'C':
+          position = ['C'];
+          break;
+        case '1B':
+          position = ['1B'];
+          break;
+        case '2B':
+          position = ['2B'];
+          break;
+        case '3B':
+          position = ['3B'];
+          break;
+        case 'SS':
+          position = ['SS'];
+          break;
+        case 'OF':
+          position = ['OF'];
+          break;
+      }
+      let found = positionsInfoBaseball.findIndex((e) => e.positions.join() === position.join());
+
+      if (positionsInfoBaseball.length === 0) {
+        let object = { positions: position, amount: amount };
+        let object2 = { positions: display, amount: amount };
+        setPositionsInfoBaseball([object]);
+        setPositionsDisplayBaseball([object2]);
+      } else if (found === -1) {
+        let object = { positions: position, amount: amount };
+        let object2 = { positions: display, amount: amount };
+        setPositionsInfoBaseball((current) => [...current, object]);
+        setPositionsDisplayBaseball((current) => [...current, object2]);
+      } else {
+        let current = positionsInfoBaseball;
+        let current2 = positionsDisplayBaseball;
+        current[found].amount += amount;
+        current2[found].amount += amount;
+        setPositionsInfoBaseball(current);
+        setPositionsDisplayBaseball(current2);
+        setRemountPositionArea(Math.random());
+      }
     }
   };
   const getExtraPos = (currentSport) => {
@@ -634,6 +699,13 @@ export default function Index(props) {
           { name: 'SUPERFLEX', key: 'SUPERFLEX' },
         ];
       case 'BASKETBALL':
+        return [
+          { name: 'GUARD', key: 'G' },
+          { name: 'FORWARD', key: 'F' },
+          { name: 'ANY', key: 'ANY' },
+        ];
+      //baseball placeholder
+      case 'BASEBALL':
         return [
           { name: 'GUARD', key: 'G' },
           { name: 'FORWARD', key: 'F' },
@@ -719,7 +791,12 @@ export default function Index(props) {
 
   function getLineupLength(currentSport) {
     let counter = 0;
-    let sportInfo = currentSport === 'FOOTBALL' ? positionsInfo : positionsInfoBasketball;
+    let sportInfo =
+      currentSport === 'FOOTBALL'
+        ? positionsInfo
+        : currentSport === 'BASKETBALL'
+        ? positionsInfoBasketball
+        : positionsInfoBaseball;
     for (let i = 0; i < sportInfo.length; i++) {
       counter = counter + sportInfo[i]?.amount;
     }
@@ -782,7 +859,14 @@ export default function Index(props) {
   }, [distribution]);
   useEffect(() => {
     setRemountPositionArea(Math.random());
-  }, [positionsInfo, positionsDisplay, positionsInfoBasketball, positionsDisplayBasketball]);
+  }, [
+    positionsInfo,
+    positionsDisplay,
+    positionsInfoBasketball,
+    positionsDisplayBasketball,
+    positionsInfoBaseball,
+    positionsDisplayBaseball,
+  ]);
   useEffect(() => {
     get_games_list(totalGames);
     get_game_supply();
@@ -1206,9 +1290,19 @@ export default function Index(props) {
                             );
                           })}
                         </div>
-                      ) : (
+                      ) : currentSport === 'BASKETBALL' ? (
                         <div className="border outline-none rounded-lg px-3 p-2">
                           {positionsDisplayBasketball.map((x) => {
+                            return (
+                              <label className="flex w-full whitespace-pre-line">
+                                Position: {x.positions} Amount: {x.amount}
+                              </label>
+                            );
+                          })}
+                        </div>
+                      ) : (
+                        <div className="border outline-none rounded-lg px-3 p-2">
+                          {positionsDisplayBaseball.map((x) => {
                             return (
                               <label className="flex w-full whitespace-pre-line">
                                 Position: {x.positions} Amount: {x.amount}
@@ -1304,13 +1398,14 @@ export default function Index(props) {
               </li>
             ))}
         <p className="font-bold">Image: </p>
-        <button className='fixed top-4 right-4 '
-                      onClick={() => {
-                        setConfirmModal(false);
-                      }}
-                    >
-                      <img src="/images/x.png" />
-                    </button>
+        <button
+          className="fixed top-4 right-4 "
+          onClick={() => {
+            setConfirmModal(false);
+          }}
+        >
+          <img src="/images/x.png" />
+        </button>
         <img src={details.game_image} />
         <button
           className="bg-indigo-green font-monument tracking-widest text-indigo-white w-full h-16 text-center text-sm mt-4"
