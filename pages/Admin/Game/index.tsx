@@ -645,29 +645,7 @@ export default function Index(props) {
       let position = [details['position']];
       let display = position;
       let amount = details['positionAmount'];
-      switch (position[0]) {
-        case 'P':
-          position = ['SP', 'RP'];
-          break;
-        case 'C':
-          position = ['C'];
-          break;
-        case '1B':
-          position = ['1B'];
-          break;
-        case '2B':
-          position = ['2B'];
-          break;
-        case '3B':
-          position = ['3B'];
-          break;
-        case 'SS':
-          position = ['SS'];
-          break;
-        case 'OF':
-          position = ['OF'];
-          break;
-      }
+      
       let found = positionsInfoBaseball.findIndex((e) => e.positions.join() === position.join());
 
       if (positionsInfoBaseball.length === 0) {
