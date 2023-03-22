@@ -170,10 +170,15 @@ export default function PackDetails(props) {
               This pack will contain 8 randomly generated <br></br>
               American Football players.
             </div>
-          ) : (
+          ) : query.sport.toString().toUpperCase() === 'BASKETBALL' ? (
             <div className="mt-10">
               This pack will contain 8 randomly generated <br></br>
               American Basketball players.
+            </div>
+          ) : (
+            <div className="mt-10">
+              This pack will contain 9 randomly generated <br></br>
+              American Baseball players.
             </div>
           )}
           <div className="mt-5 mb-12">
@@ -187,7 +192,7 @@ export default function PackDetails(props) {
                 <li>1 Flex (RB/WR/TE) </li>
                 <li>1 Super Flex (QB/RB/WR/TE) </li>
               </ul>
-            ) : (
+            ) : query.sport.toString().toUpperCase() === 'BASKETBALL' ? (
               <ul className="marker list-disc pl-5 space-y-3 ">
                 <li>1 Point Guard (PG)</li>
                 <li>1 Shooting Guard (SG) </li>
@@ -197,6 +202,18 @@ export default function PackDetails(props) {
                 <li>1 Guard (PG/SG) </li>
                 <li>1 Forward (SF/PF) </li>
                 <li>1 Any (ANY) </li>
+              </ul>
+            ) : (
+              <ul className="marker list-disc pl-5 space-y-3 ">
+                <li>1 Pitcher (P)</li>
+                <li>1 Catcher (C) </li>
+                <li>1 First Baseman (1B) </li>
+                <li>1 Second Baseman (2B)</li>
+                <li>1 Third Baseman (3B) </li>
+                <li>1 Shortstop (SS) </li>
+                <li>1 Left Fielder (LF) </li>
+                <li>1 Center Fielder (CF)</li>
+                <li>1 Right Fielder (RF)</li>
               </ul>
             )}
           </div>
