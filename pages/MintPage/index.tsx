@@ -792,10 +792,19 @@ export default function Home(props) {
                         alt="pack-image"
                       />
                     </div>
-                  ) : (
+                  ) : currentSport === SPORT_NAME_LOOKUP.baseball ? (
                     <div className="md:w-1/2 w-full ">
                       <Image
                         src={'/images/mintpage.png'}
+                        width={400}
+                        height={400}
+                        alt="pack-image"
+                      />
+                    </div>
+                  ) : (
+                    <div className="md:w-1/2 w-full ">
+                      <Image
+                        src={'/images/mintpagebasketball.png'}
                         width={400}
                         height={400}
                         alt="pack-image"
@@ -1115,10 +1124,15 @@ export default function Home(props) {
                       This pack will contain 8 randomly generated <br></br>
                       American Basketball players.
                     </div>
-                  ) : (
+                  ) : currentSport === SPORT_NAME_LOOKUP.baseball ? (
                     <div className="mt-10">
                       This pack will contain 9 randomly generated <br></br>
                       American Baseball players.
+                    </div>
+                  ) : (
+                    <div className="mt-10">
+                      This pack will contain ? randomly generated <br></br>
+                      American Cricket players.
                     </div>
                   )}
                   <div className="mt-5 mb-12">
@@ -1143,7 +1157,7 @@ export default function Home(props) {
                         <li>1 Forward (SF/PF) </li>
                         <li>1 Any (ANY) </li>
                       </ul>
-                    ) : (
+                    ) : currentSport === SPORT_NAME_LOOKUP.baseball ? (
                       <ul className="marker list-disc pl-5 space-y-3 ">
                         <li>1 Pitcher (P)</li>
                         <li>1 Catcher (C) </li>
@@ -1154,6 +1168,14 @@ export default function Home(props) {
                         <li>1 Left Fielder (LF) </li>
                         <li>1 Center Fielder (CF)</li>
                         <li>1 Right Fielder (RF)</li>
+                      </ul>
+                    ) : (
+                      //Ask for the amount for each position
+                      <ul className="marker list-disc pl-5 space-y-3 ">
+                        <li>1 Bowler (BWL)</li>
+                        <li>1 Keeper (K) </li>
+                        <li>1 Batsman (B) </li>
+                        <li>1 All rounder (AR)</li>
                       </ul>
                     )}
                   </div>

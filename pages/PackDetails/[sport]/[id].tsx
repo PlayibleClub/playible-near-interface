@@ -175,10 +175,15 @@ export default function PackDetails(props) {
               This pack will contain 8 randomly generated <br></br>
               American Basketball players.
             </div>
-          ) : (
+          ) : query.sport.toString().toUpperCase() === 'BASEBALL' ? (
             <div className="mt-10">
               This pack will contain 9 randomly generated <br></br>
               American Baseball players.
+            </div>
+          ) : (
+            <div className="mt-10">
+              This pack will contain ? randomly generated <br></br>
+              American Cricket players.
             </div>
           )}
           <div className="mt-5 mb-12">
@@ -203,17 +208,25 @@ export default function PackDetails(props) {
                 <li>1 Forward (SF/PF) </li>
                 <li>1 Any (ANY) </li>
               </ul>
-            ) : (
+            ) : query.sport.toString().toUpperCase() === 'BASEBALL' ? (
               <ul className="marker list-disc pl-5 space-y-3 ">
                 <li>1 Pitcher (P)</li>
-                <li>1 Catcher (C) </li>
+                <li>1 Catcher (C)</li>
                 <li>1 First Baseman (1B) </li>
                 <li>1 Second Baseman (2B)</li>
-                <li>1 Third Baseman (3B) </li>
+                <li>1 Third Baseman (3B)</li>
                 <li>1 Shortstop (SS) </li>
                 <li>1 Left Fielder (LF) </li>
                 <li>1 Center Fielder (CF)</li>
                 <li>1 Right Fielder (RF)</li>
+              </ul>
+            ) : (
+              //Ask for the amount for each position
+              <ul className="marker list-disc pl-5 space-y-3 ">
+                <li>1 Bowler (BWL)</li>
+                <li>1 Keeper (K)</li>
+                <li>1 Batsman (B)</li>
+                <li>1 All rounder (AR)</li>
               </ul>
             )}
           </div>
