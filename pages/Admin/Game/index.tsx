@@ -204,6 +204,19 @@ export default function Index(props) {
     { positions: ['SS'], amount: 1 },
     { positions: ['OF'], amount: 1 },
   ]);
+  const [positionsInfoCricket, setPositionsInfoCricket] = useState([
+    { positions: ['BWL'], amount: 1 },
+    { positions: ['K'], amount: 1 },
+    { positions: ['B'], amount: 1 },
+    { positions: ['AR'], amount: 1 },
+  ]);
+  
+  const [positionsDisplayCricket, setPositionsDisplayCricket] = useState([
+    { positions: ['BWL'], amount: 1 },
+    { positions: ['K'], amount: 1 },
+    { positions: ['B'], amount: 1 },
+    { positions: ['AR'], amount: 1 },
+  ]);
   const defaultGameDescription =
     'Enter a team into the The Blitz tournament to compete for cash prizes. Create a lineup by selecting 8 Playible Football Athlete Tokens now.';
   const defaultPrizeDescription = '$100 + 2 Championship Tickets';
@@ -667,6 +680,34 @@ export default function Index(props) {
         setPositionsDisplayBaseball(current2);
         setRemountPositionArea(Math.random());
       }
+    } else {
+      let position = [details['position']];
+      let display = position;
+      let amount = details['positionAmount'];
+     
+      let found = positionsInfoCricket.findIndex((e) => e.positions.join() === position.join());
+  
+      if (positionsInfoCricket.length === 0) {
+        let object = { positions: position, amount: amount };
+        let object2 = { positions: display, amount: amount };
+        setPositionsInfoCricket([object]);
+        setPositionsDisplayCricket([object2]);
+      }
+      else if (found === -1) {
+        let object = { positions: position, amount: amount };
+        let object2 = { positions: display, amount: amount };
+        setPositionsInfoCricket((current) => [...current, object]);
+        setPositionsDisplayCricket((current) => [...current, object2]);
+      } else {
+        let current = positionsInfoCricket;
+        let current2 = positionsDisplayCricket;
+        //@ts-ignore:next-line
+        current[found].amount += amount;
+        current2[found].amount += amount;
+        setPositionsInfoCricket(current);
+        setPositionsDisplayCricket(current2);
+        setRemountPositionArea(Math.random());
+      }
     }
   };
   const getExtraPos = (currentSport) => {
@@ -689,7 +730,13 @@ export default function Index(props) {
           { name: 'FORWARD', key: 'F' },
           { name: 'ANY', key: 'ANY' },
         ];
-    }
+        //cricket placeholder
+        case 'CRICKET':
+        return [
+          { name: 'FLEX', key: 'FLEX' },
+          { name: 'SUPERFLEX', key: 'SUPERFLEX' },
+        ];
+    }  
   };
   const handleRemove = (e, currentSport) => {
     e.preventDefault();
@@ -699,9 +746,12 @@ export default function Index(props) {
     } else if (currentSport === 'BASKETBALL'){
       positionsInfoBasketball.pop();
       positionsDisplayBasketball.pop();
-    } else {
+    } else if (currentSport === 'BASEBALL'){
       positionsInfoBaseball.pop();
       positionsDisplayBaseball.pop();
+    } else {
+      positionsInfoCricket.pop();
+      positionsDisplayCricket.pop();
     }
     setRemountPositionArea(Math.random());
   };
@@ -847,6 +897,8 @@ export default function Index(props) {
     positionsDisplayBasketball,
     positionsInfoBaseball,
     positionsDisplayBaseball,
+    positionsInfoCricket,
+    positionsDisplayCricket
   ]);
   useEffect(() => {
     get_games_list(totalGames);
@@ -1274,6 +1326,16 @@ export default function Index(props) {
                       ) : currentSport === 'BASKETBALL' ? (
                         <div className="border outline-none rounded-lg px-3 p-2">
                           {positionsDisplayBasketball.map((x) => {
+                            return (
+                              <label className="flex w-full whitespace-pre-line">
+                                Position: {x.positions} Amount: {x.amount}
+                              </label>
+                            );
+                          })}
+                        </div>
+                      ) : currentSport === 'CRICKET' ? (
+                        <div className="border outline-none rounded-lg px-3 p-2">
+                          {positionsDisplayCricket.map((x) => {
                             return (
                               <label className="flex w-full whitespace-pre-line">
                                 Position: {x.positions} Amount: {x.amount}
