@@ -261,7 +261,7 @@ const Games = (props) => {
             <div className="iphone5:ml-6 md:ml-18 ml-18 mt-4 md:mr-0 md:mb-0 iphone5:mr-6 iphone5:mb-10">
               <ModalPortfolioContainer textcolor="indigo-black" title={'LEADERBOARD'} />
               <div
-                className={`flex justify-end md:mr-13 ${playerLineups.length > 0 ? '' : 'hidden'}`}
+                className={`flex justify-end md:mr-1.5 iphone5:mr-2 iphoneX:mr-16 ${playerLineups.length > 0 ? '' : 'hidden'}`}
               >
                 <button
                   onClick={() => {
