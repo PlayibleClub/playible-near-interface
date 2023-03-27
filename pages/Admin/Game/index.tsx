@@ -795,13 +795,13 @@ export default function Index(props) {
       const upcomingGames = await Promise.all(
         result
           .filter((x) => x[1].start_time > getUTCTimestampFromLocal())
-          .map((item) => getGameInfoById(item))
+          .map((item) => getGameInfoById(accountId, item, 'new', currentSport))
       );
 
       const completedGames = await Promise.all(
         result
           .filter((x) => x[1].end_time < getUTCTimestampFromLocal())
-          .map((item) => getGameInfoById(item))
+          .map((item) => getGameInfoById(accountId, item, 'completed', currentSport))
       );
 
       const ongoingGames = await Promise.all(
@@ -811,7 +811,7 @@ export default function Index(props) {
               x[1].start_time < getUTCTimestampFromLocal() &&
               x[1].end_time > getUTCTimestampFromLocal()
           )
-          .map((item) => getGameInfoById(item))
+          .map((item) => getGameInfoById(accountId, item, 'on-going', currentSport))
       );
       setCurrentTotal(upcomingGames.length);
       setNewGames(upcomingGames);
