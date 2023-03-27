@@ -73,8 +73,8 @@ export const NBA_POSITIONS = [
 ];
 export const MLB_POSITIONS = [
   {
-    name: 'PITCHER',
-    key: 'P',
+    name: 'STARTING PITCHER',
+    key: 'SP',
   },
   {
     name: 'CATCHER',
@@ -97,16 +97,8 @@ export const MLB_POSITIONS = [
     key: 'SS',
   },
   {
-    name: 'LEFT FIELDER',
-    key: 'LF',
-  },
-  {
-    name: 'CENTER FIELDER',
-    key: 'CF',
-  },
-  {
-    name: 'RIGHT FIELDER',
-    key: 'RF',
+    name: 'OUTFIELDER',
+    key: 'OF',
   },
 ];
 export const CRICKET_POSITIONS = [

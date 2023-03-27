@@ -187,7 +187,7 @@ export default function Index(props) {
     { positions: ['ANY'], amount: 1 },
   ]);
   const [positionsInfoBaseball, setPositionsInfoBaseball] = useState([
-    { positions: ['P'], amount: 2 },
+    { positions: ['SP'], amount: 2 },
     { positions: ['C'], amount: 1 },
     { positions: ['1B'], amount: 1 },
     { positions: ['2B'], amount: 1 },
@@ -196,13 +196,13 @@ export default function Index(props) {
     { positions: ['OF'], amount: 3 },
   ]);
   const [positionsDisplayBaseball, setPositionsDisplayBaseball] = useState([
-    { positions: ['P'], amount: 1 },
+    { positions: ['SP'], amount: 2 },
     { positions: ['C'], amount: 1 },
     { positions: ['1B'], amount: 1 },
     { positions: ['2B'], amount: 1 },
     { positions: ['3B'], amount: 1 },
     { positions: ['SS'], amount: 1 },
-    { positions: ['OF'], amount: 1 },
+    { positions: ['OF'], amount: 3 },
   ]);
   const [positionsInfoCricket, setPositionsInfoCricket] = useState([
     { positions: ['BWL'], amount: 1 },
