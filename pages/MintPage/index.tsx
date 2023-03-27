@@ -95,6 +95,8 @@ export default function Home(props) {
   const [balanceErrorMsg, setBalanceErrorMsg] = useState('');
   const [isClaimedFootball, setIsClaimedFootball] = useState(false);
   const [isClaimedBasketball, setIsClaimedBasketball] = useState(false);
+  const [isClaimedBaseball, setIsClaimedBaseball] = useState(false);
+  const [isClaimedCricket, setIsClaimedCricket] = useState(false);
   const router = useRouter();
   const [day, setDay] = useState(0);
   const [hour, setHour] = useState(0);
@@ -116,6 +118,12 @@ export default function Home(props) {
     );
     setIsClaimedBasketball(
       await query_claim_status(accountId, getSportType('BASKETBALL').packPromoContract)
+    );
+    setIsClaimedBaseball(
+      await query_claim_status(accountId, getSportType('BASEBALL').packPromoContract)
+    );
+    setIsClaimedCricket(
+      await query_claim_status(accountId, getSportType('CRICKET').packPromoContract)
     );
   }
   function query_config_contract() {
@@ -670,11 +678,7 @@ export default function Home(props) {
               {selector.isSignedIn() ? (
                 <div className="ml-12 mt-4 md:flex md:flex-row md:ml-8">
                   {isClaimedFootball ? (
-                    <button
-                      className={`bg-indigo-gray bg-opacity-40 text-indigo-white w-12 text-center hidden justify-center items-center font-montserrat p-4 text-xs mt-8`}
-                    >
-                      CLAIM FOOTBALL PACK
-                    </button>
+                    ''
                   ) : (
                     <button
                       className="w-60 flex text-center justify-center items-center iphone5:w-64 bg-indigo-buttonblue font-montserrat text-indigo-white p-3 mb-4 md:mr-4 text-xs "
@@ -684,28 +688,40 @@ export default function Home(props) {
                     </button>
                   )}
                   {isClaimedBasketball ? (
-                    <button
-                      className={`bg-indigo-gray bg-opacity-40 text-indigo-white w-12 text-center hidden justify-center items-center font-montserrat p-4 text-xs mt-8`}
-                    >
-                      CLAIM BASKETBALL PACK
-                    </button>
+                    ''
                   ) : (
                     <button
-                      className="w-60 flex text-center justify-center items-center iphone5:w-64 bg-indigo-buttonblue font-montserrat text-indigo-white p-3 mb-4 text-xs "
+                      className="w-60 flex text-center justify-center items-center iphone5:w-64 bg-indigo-buttonblue font-montserrat text-indigo-white p-3 mb-4 md:mr-4 text-xs "
                       onClick={(e) => handleButtonClick(e, 'BASKETBALL')}
                     >
                       CLAIM BASKETBALL PACK
+                    </button>
+                  )}
+                  {isClaimedBaseball ? (
+                    ''
+                  ) : (
+                    <button
+                      className="w-60 flex text-center justify-center items-center iphone5:w-64 bg-indigo-buttonblue font-montserrat text-indigo-white p-3 mb-4 md:mr-4 text-xs "
+                      onClick={(e) => handleButtonClick(e, 'BASEBALL')}
+                    >
+                      CLAIM BASEBALL PACK
+                    </button>
+                  )}
+                  {isClaimedCricket ? (
+                    ''
+                  ) : (
+                    <button
+                      className="w-60 flex text-center justify-center items-center iphone5:w-64 bg-indigo-buttonblue font-montserrat text-indigo-white p-3 mb-4 text-xs "
+                      onClick={(e) => handleButtonClick(e, 'CRICKET')}
+                    >
+                      CLAIM CRICKET PACK
                     </button>
                   )}
                 </div>
               ) : (
                 <div className="ml-12 mt-4 md:flex md:flex-row md:ml-8">
                   {isClaimedFootball ? (
-                    <button
-                      className={`bg-indigo-gray bg-opacity-40 text-indigo-white w-12 text-center hidden justify-center items-center font-montserrat p-4 text-xs mt-8`}
-                    >
-                      CLAIM FOOTBALL PACK
-                    </button>
+                    ''
                   ) : (
                     <button
                       className="w-60 flex text-center justify-center items-center iphone5:w-64 bg-indigo-buttonblue font-montserrat text-indigo-white p-3 mb-4 md:mr-4 text-xs "
@@ -715,17 +731,33 @@ export default function Home(props) {
                     </button>
                   )}
                   {isClaimedBasketball ? (
-                    <button
-                      className={`bg-indigo-gray bg-opacity-40 text-indigo-white w-12 text-center hidden justify-center items-center font-montserrat p-4 text-xs mt-8`}
-                    >
-                      CLAIM BASKETBALL PACK
-                    </button>
+                    ''
                   ) : (
                     <button
                       className="w-60 flex text-center justify-center items-center iphone5:w-64 bg-indigo-buttonblue font-montserrat text-indigo-white p-3 mb-4 text-xs "
                       onClick={logIn}
                     >
                       CLAIM BASKETBALL PACK
+                    </button>
+                  )}
+                  {isClaimedBaseball ? (
+                    ''
+                  ) : (
+                    <button
+                      className="w-60 flex text-center justify-center items-center iphone5:w-64 bg-indigo-buttonblue font-montserrat text-indigo-white p-3 text-xs"
+                      onClick={logIn}
+                    >
+                      CLAIM BASEBALL PACK
+                    </button>
+                  )}
+                  {isClaimedCricket ? (
+                    ''
+                  ) : (
+                    <button
+                      className="w-60 flex text-center justify-center items-center iphone5:w-64 bg-indigo-buttonblue font-montserrat text-indigo-white p-3 text-xs"
+                      onClick={logIn}
+                    >
+                      CLAIM CRICKET PACK
                     </button>
                   )}
                 </div>

@@ -18,7 +18,7 @@ import {
 import { getSportTypeRedux, setSportTypeRedux } from 'redux/athlete/sportSlice';
 import { persistor } from 'redux/athlete/store';
 import Modal from 'components/modals/Modal';
-import { SPORT_TYPES, getSportType } from 'data/constants/sportConstants';
+import { SPORT_TYPES, getSportType, SPORT_NAME_LOOKUP } from 'data/constants/sportConstants';
 export default function Packs() {
   const { selector, accountId } = useWalletSelector();
 
@@ -256,9 +256,13 @@ export default function Packs() {
            text-center font-bold text-xs`}
                       onClick={(e) => handleButtonClick(e)}
                     >
-                      {currentSport === 'BASKETBALL'
+                      {currentSport === SPORT_NAME_LOOKUP.basketball
                         ? 'CLAIM BASKETBALL PACK'
-                        : 'CLAIM FOOTBALL PACK'}
+                        : currentSport === SPORT_NAME_LOOKUP.football
+                        ? 'CLAIM FOOTBALL PACK'
+                        : currentSport === SPORT_NAME_LOOKUP.baseball
+                        ? 'CLAIM BASEBALL PACK'
+                        : 'CLAIM CRICKET PACK'}
                     </button>
                   )}
                 </div>
@@ -303,13 +307,13 @@ export default function Packs() {
             >
               Your pack has been minted successfully!
               <button
-                  className="fixed top-4 right-4"
-                  onClick={() => {
-                    setEditModal(false);
-                  }}
-                >
-                  <img src="/images/x.png" />
-                </button>
+                className="fixed top-4 right-4"
+                onClick={() => {
+                  setEditModal(false);
+                }}
+              >
+                <img src="/images/x.png" />
+              </button>
               <div className="flex flex-wrap flex-col mt-10 mb-5 bg-opacity-70 z-50 w-full">
                 <div className="ml-20 mb-12">
                   <img width={240} height={340} src={modalImage}></img>
