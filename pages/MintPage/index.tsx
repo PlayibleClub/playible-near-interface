@@ -827,7 +827,7 @@ export default function Home(props) {
                   ) : currentSport === SPORT_NAME_LOOKUP.baseball ? (
                     <div className="md:w-1/2 w-full ">
                       <Image
-                        src={'/images/mintpage.png'}
+                        src={'/images/mintpagebaseball.png'}
                         width={400}
                         height={400}
                         alt="pack-image"
@@ -866,7 +866,7 @@ export default function Home(props) {
                       </div>
 
                       <div className="border">
-                        {currentSport === SPORT_NAME_LOOKUP.basketball ? (
+                        {currentSport === SPORT_NAME_LOOKUP.basketball || SPORT_NAME_LOOKUP.baseball ? (
                           ''
                         ) : (
                           <div>
@@ -899,7 +899,7 @@ export default function Home(props) {
                           </div>
                         )}
 
-                        {currentSport === SPORT_NAME_LOOKUP.basketball ? (
+                        {currentSport === SPORT_NAME_LOOKUP.basketball || SPORT_NAME_LOOKUP.baseball ? (
                           <button
                             onClick={() => setUseNEP141(NEP141NEAR)}
                             className={
@@ -1191,13 +1191,13 @@ export default function Home(props) {
                       </ul>
                     ) : currentSport === SPORT_NAME_LOOKUP.baseball ? (
                       <ul className="marker list-disc pl-5 space-y-3 ">
-                        <li>2 Starting Pitcher (SP)</li>
+                        <li>2 Pitchers (P)</li>
                         <li>1 Catcher (C) </li>
                         <li>1 First Baseman (1B) </li>
                         <li>1 Second Baseman (2B)</li>
                         <li>1 Third Baseman (3B) </li>
                         <li>1 Shortstop (SS) </li>
-                        <li>3 Outfielder (OF) </li>
+                        <li>3 Outfielders (OF) </li>
                       </ul>
                     ) : (
                       //Ask for the amount for each position
