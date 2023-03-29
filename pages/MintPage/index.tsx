@@ -90,7 +90,7 @@ export default function Home(props) {
   const [minted, setMinted] = useState(0);
   const [accountBalance, setAccountBalance] = useState(0);
   const [mintedNba, setMintedNba] = useState(0);
-  const [useNEP141, setUseNEP141] = useState(NEP141USDT);
+  const [useNEP141, setUseNEP141] = useState(NEP141NEAR);
   const [intervalSale, setIntervalSale] = useState(0);
   const [balanceErrorMsg, setBalanceErrorMsg] = useState('');
   const [isClaimedFootball, setIsClaimedFootball] = useState(false);
@@ -660,7 +660,7 @@ export default function Home(props) {
                     <select
                       onChange={(e) => {
                         setCurrentSport(e.target.value);
-                        setUseNEP141(NEP141USDT);
+                        setUseNEP141(NEP141NEAR);
                       }}
                       className="bg-filter-icon bg-no-repeat bg-right bg-indigo-white ring-2 ring-offset-8 ring-indigo-black ring-opacity-25 focus:ring-2 focus:ring-indigo-black 
                         focus:outline-none cursor-pointer text-xs iphone5:ml-8 iphone5:w-4/6 md:text-base md:ml-8 md:mt-0 md:w-72 md:p-2 md:block lg:block"
@@ -1128,7 +1128,7 @@ export default function Home(props) {
                     ) : selector.isSignedIn() ? (
                       //Change "MINT BASKETBALL STARTER PACK SOON" based on new sport that will be added
                       <div className="w-9/12 flex text-center justify-center items-center bg-indigo-buttonblue font-montserrat text-indigo-white p-4 text-xs mt-8 ">
-                        MINT BASKETBALL STARTER PACK SOON
+                        MINT {currentSport} STARTER PACK SOON
                       </div>
                     ) : (
                       <button
