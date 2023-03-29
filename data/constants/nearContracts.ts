@@ -254,3 +254,29 @@ export const GAME_BASKETBALL = {
     changeMethods: ['add_game'],
   },
 };
+
+//baseball below
+
+export const MINTER_BASEBALL = {
+  mainnet: 'pack_minter.baseball.playible.near',
+  testnet: 'pack_minter.baseball.playible.testnet',
+  interface: {
+    viewMethods: [
+      'get_config',
+      'get_account_whitelist',
+      'get_storage_balance_of',
+      'get_whitelist',
+      'get_minting_of',
+    ],
+    changeMethods: ['storage_deposit', 'storage_withdraw_all', 'mint'],
+  },
+};
+
+export const PACK_BASEBALL = {
+  mainnet: 'pack.pack_minter.baseball.playible.near',
+  testnet: 'pack.pack_minter.baseball.playible.testnet',
+  interface: {
+    viewMethods: ['nft_tokens_for_owner', 'nft_total_supply', 'nft_tokens', 'nft_supply_for_owner'],
+    changeMethods: ['nft_transfer', 'nft_transfer_call', 'nft_resolve_transfer'],
+  },
+};
