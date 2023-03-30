@@ -180,11 +180,11 @@ export default function PackDetails(props) {
               This pack will contain 10 randomly generated <br></br>
               American Baseball players.
             </div>
-          ) : (
-            <div className="mt-10">
-              This pack will contain ? randomly generated <br></br>
-              American Cricket players.
-            </div>
+          ) : ( ''
+            // <div className="mt-10">
+            //   This pack will contain ? randomly generated <br></br>
+            //   American Cricket players.
+            // </div>
           )}
           <div className="mt-5 mb-12">
             {query.sport.toString().toUpperCase() === 'BASEBALL' ? 

@@ -10,7 +10,7 @@ export default function Promotional(props) {
   const [whitelistInfoNFL, setWhitelistInfoNFL] = useState(null);
   const [whitelistInfoNBA, setWhitelistInfoNBA] = useState(null);
   const [whitelistInfoMLB, setWhitelistInfoMLB] = useState(null);
-  const [whitelistInfoCRICKET, setWhitelistInfoCRICKET] = useState(null);
+  // const [whitelistInfoCRICKET, setWhitelistInfoCRICKET] = useState(null);
   const [currentSport, setCurrentSport] = useState(null);
   const [detailsNFL, setDetailsNFL] = useState({
     receiverAccount: '',
@@ -21,9 +21,9 @@ export default function Promotional(props) {
   const [detailsMLB, setDetailsMLB] = useState({
     receiverAccount: '',
   });
-  const [detailsCRICKET, setDetailsCRICKET] = useState({
-    receiverAccount: '',
-  });
+  // const [detailsCRICKET, setDetailsCRICKET] = useState({
+  //   receiverAccount: '',
+  // });
   async function execute_send_type_1_pack(selector) {
     const transferArgs = Buffer.from(
       JSON.stringify({
@@ -33,7 +33,8 @@ export default function Promotional(props) {
   ? whitelistInfoNFL?.toString()
   : currentSport === SPORT_NAME_LOOKUP.baseball
     ? whitelistInfoMLB?.toString()
-    : whitelistInfoCRICKET?.toString()
+    : ''
+    // whitelistInfoCRICKET?.toString()
       })
     );
 
@@ -119,24 +120,24 @@ export default function Promotional(props) {
     }
   };
 
-  const onChangeWhitelistCRICKET = (e) => {
-    if (e.target.name === 'receiverAccount') {
-      if (e.target.value !== '') {
-        const whitelistArray = e.target.value.split('\n').filter((n) => n);
-        setWhitelistInfoCRICKET(whitelistArray);
-        setDetailsCRICKET({
-          ...detailsCRICKET,
-          [e.target.name]: e.target.value,
-        });
-      } else if (e.target.value.length === 0) {
-        setWhitelistInfoCRICKET(null);
-        setDetailsCRICKET({
-          ...detailsCRICKET,
-          [e.target.name]: e.target.value,
-        });
-      }
-    }
-  };
+  // const onChangeWhitelistCRICKET = (e) => {
+  //   if (e.target.name === 'receiverAccount') {
+  //     if (e.target.value !== '') {
+  //       const whitelistArray = e.target.value.split('\n').filter((n) => n);
+  //       setWhitelistInfoCRICKET(whitelistArray);
+  //       setDetailsCRICKET({
+  //         ...detailsCRICKET,
+  //         [e.target.name]: e.target.value,
+  //       });
+  //     } else if (e.target.value.length === 0) {
+  //       setWhitelistInfoCRICKET(null);
+  //       setDetailsCRICKET({
+  //         ...detailsCRICKET,
+  //         [e.target.name]: e.target.value,
+  //       });
+  //     }
+  //   }
+  // };
   
   const handleButtonClick = (e) => {
     e.preventDefault();
@@ -218,7 +219,7 @@ export default function Promotional(props) {
           </button>
         </div>
       </div>
-      <div className="flex flex-col w-1/2 ml-24 mt-24">
+      {/* <div className="flex flex-col w-1/2 ml-24 mt-24">
         <label className="font-monument" htmlFor="duration">
           SEND TYPE 1 CRICKET PACK
         </label>
@@ -241,7 +242,7 @@ export default function Promotional(props) {
             Send
           </button>
         </div>
-      </div>
+      </div> */}
       </div>
     </Container>
   );

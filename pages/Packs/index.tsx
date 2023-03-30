@@ -262,7 +262,9 @@ export default function Packs() {
                         ? 'CLAIM FOOTBALL PACK'
                         : currentSport === SPORT_NAME_LOOKUP.baseball
                         ? 'CLAIM BASEBALL PACK'
-                        : 'CLAIM CRICKET PACK'}
+                        : ''
+                        //CLAIM CRICKET PACK
+                        }
                     </button>
                   )}
                 </div>

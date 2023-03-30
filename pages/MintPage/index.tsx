@@ -96,7 +96,7 @@ export default function Home(props) {
   const [isClaimedFootball, setIsClaimedFootball] = useState(false);
   const [isClaimedBasketball, setIsClaimedBasketball] = useState(false);
   const [isClaimedBaseball, setIsClaimedBaseball] = useState(false);
-  const [isClaimedCricket, setIsClaimedCricket] = useState(false);
+  // const [isClaimedCricket, setIsClaimedCricket] = useState(false);
   const router = useRouter();
   const [day, setDay] = useState(0);
   const [hour, setHour] = useState(0);
@@ -122,9 +122,9 @@ export default function Home(props) {
     setIsClaimedBaseball(
       await query_claim_status(accountId, getSportType('BASEBALL').packPromoContract)
     );
-    setIsClaimedCricket(
-      await query_claim_status(accountId, getSportType('CRICKET').packPromoContract)
-    );
+    // setIsClaimedCricket(
+    //   await query_claim_status(accountId, getSportType('CRICKET').packPromoContract)
+    // );
   }
   function query_config_contract() {
     provider
@@ -707,7 +707,7 @@ export default function Home(props) {
                       CLAIM BASEBALL PACK
                     </button>
                   )}
-                  {isClaimedCricket ? (
+                  {/* {isClaimedCricket ? (
                     ''
                   ) : (
                     <button
@@ -716,7 +716,7 @@ export default function Home(props) {
                     >
                       CLAIM CRICKET PACK
                     </button>
-                  )}
+                  )} */}
                 </div>
               ) : (
                 <div className="ml-12 mt-4 md:flex md:flex-row md:ml-8">
@@ -750,7 +750,7 @@ export default function Home(props) {
                       CLAIM BASEBALL PACK
                     </button>
                   )}
-                  {isClaimedCricket ? (
+                  {/* {isClaimedCricket ? (
                     ''
                   ) : (
                     <button
@@ -759,7 +759,7 @@ export default function Home(props) {
                     >
                       CLAIM CRICKET PACK
                     </button>
-                  )}
+                  )} */}
                 </div>
               )}
 
@@ -1161,11 +1161,11 @@ export default function Home(props) {
                       This pack will contain 10 randomly generated <br></br>
                       American Baseball players.
                     </div>
-                  ) : (
-                    <div className="mt-10">
-                      This pack will contain ? randomly generated <br></br>
-                      American Cricket players.
-                    </div>
+                  ) : ( ''
+                    // <div className="mt-10">
+                    //   This pack will contain ? randomly generated <br></br>
+                    //   American Cricket players.
+                    // </div>
                   )}
                   <div className="mt-5 mb-12">
                     <div className="mb-5">1 for each of the positions below:</div>
@@ -1200,15 +1200,16 @@ export default function Home(props) {
                         <li>2 Outfielder (OF) </li>
                         <li>1 Designated Hitter (DH) </li>
                       </ul>
-                    ) : (
-                      //Ask for the amount for each position
-                      <ul className="marker list-disc pl-5 space-y-3 ">
-                        <li>1 Bowler (BWL)</li>
-                        <li>1 Keeper (K) </li>
-                        <li>1 Batsman (B) </li>
-                        <li>1 All rounder (AR)</li>
-                      </ul>
-                    )}
+                    ) : '' 
+                    // (
+                    //   //Ask for the amount for each position
+                    //   <ul className="marker list-disc pl-5 space-y-3 ">
+                    //     <li>1 Bowler (BWL)</li>
+                    //     <li>1 Keeper (K) </li>
+                    //     <li>1 Batsman (B) </li>
+                    //     <li>1 All rounder (AR)</li>
+                    //   </ul>)
+                      }
                   </div>
                 </div>
               </div>
