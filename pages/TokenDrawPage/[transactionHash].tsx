@@ -65,6 +65,12 @@ const TokenDrawPage = (props) => {
       promo: '/videos/NBA_PROMO.mp4',
       soulbound: '/videos/NBA_SB.mp4',
     },
+    {
+      name: SPORT_NAME_LOOKUP.baseball,
+      base: '/videos/MLB_BASE.mp4',
+      promo: '/videos/MLB_PROMO.mp4',
+      soulbound: '/videos/MLB_SB.mp4',
+    },
   ]);
   const [videoFile, setVideoFile] = useState('');
   const provider = new providers.JsonRpcProvider({
@@ -74,11 +80,14 @@ const TokenDrawPage = (props) => {
   function findContract(contract) {
     if (
       contract.includes(SPORT_CONTRACT_LOOKUP.football) ||
-      !contract.includes(SPORT_CONTRACT_LOOKUP.basketball)
+      !contract.includes(SPORT_CONTRACT_LOOKUP.basketball) ||
+      !contract.includes(SPORT_CONTRACT_LOOKUP.baseball)
     ) {
       return fileList.find((x) => x.name === SPORT_NAME_LOOKUP.football);
     } else if (contract.includes(SPORT_CONTRACT_LOOKUP.basketball)) {
       return fileList.find((x) => x.name === SPORT_NAME_LOOKUP.basketball);
+    } else if (contract.includes(SPORT_CONTRACT_LOOKUP.baseball)) {
+      return fileList.find((x) => x.name === SPORT_NAME_LOOKUP.baseball)
     }
   }
 
