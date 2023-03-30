@@ -113,11 +113,13 @@ export default function Home(props) {
   const featuredImagesDesktop = [
     '/images/basketball_starterpack_publicmint_desktop.png',
     '/images/basketball_championship_ongoing.png',
+    '/images/baseball_starterpack_promotion_desktop.png',
   ];
 
   const featuredImagesMobile = [
     '/images/basketball_starterpack_publicmint_mobile.png',
     '/images/basketball_championship_ongoing.png',
+    '/images/baseball_starterpack_promotion_desktop.png',
   ];
 
   const startSlider = () => {
