@@ -17,6 +17,9 @@ import {
   GAME_BASKETBALL,
   MINTER_BASEBALL,
   PACK_BASEBALL,
+  ATHLETE_BASEBALL,
+  OPENPACK_BASEBALL,
+  GAME_BASEBALL,
 } from 'data/constants/nearContracts';
 import { getContract } from 'utils/near';
 export const NFL_SCHEDULE = {
@@ -158,11 +161,11 @@ export const SPORT_TYPES = [
     mintContract: getContract(MINTER_BASEBALL),
     packContract: getContract(PACK_BASEBALL),
     packPromoContract: getContract(PACK_PROMO_NFL),
-    regContract: getContract(ATHLETE_NFL),
+    regContract: getContract(ATHLETE_BASEBALL),
     promoContract: getContract(ATHLETE_PROMO_NFL),
-    openContract: getContract(OPENPACK_NFL),
+    openContract: getContract(OPENPACK_BASEBALL),
     openPromoContract: getContract(OPENPACK_PROMO_NFL),
-    gameContract: getContract(GAME_NFL),
+    gameContract: getContract(GAME_BASEBALL),
     positionList: MLB_POSITIONS,
     extra: EXTRA_NFL,
   },
