@@ -187,25 +187,25 @@ export default function Index(props) {
     { positions: ['ANY'], amount: 1 },
   ]);
   const [positionsInfoBaseball, setPositionsInfoBaseball] = useState([
-    { positions: ['P'], amount: 1 },
+    { positions: ['SP','RP'], amount: 1 },
     { positions: ['C'], amount: 1 },
     { positions: ['1B'], amount: 1 },
     { positions: ['2B'], amount: 1 },
     { positions: ['3B'], amount: 1 },
     { positions: ['SS'], amount: 1 },
-    { positions: ['OF'], amount: 1 },
-    { positions: ['ANY'], amount: 1 },
+    { positions: ['RF','LF','CF'], amount: 1 },
+    { positions: ['RF', 'LF', 'CF', 'SS', '3B', '2B', '1B', 'C'], amount: 1 },
 
   ]);
   const [positionsDisplayBaseball, setPositionsDisplayBaseball] = useState([
-    { positions: ['P'], amount: 1 },
+    { positions: ['P'], amount: 2 },
     { positions: ['C'], amount: 1 },
     { positions: ['1B'], amount: 1 },
     { positions: ['2B'], amount: 1 },
     { positions: ['3B'], amount: 1 },
     { positions: ['SS'], amount: 1 },
-    { positions: ['OF'], amount: 1 },
-    { positions: ['ANY'], amount: 1 },
+    { positions: ['OF'], amount: 2 },
+    { positions: ['DH'], amount: 1 },
 
   ]);
   const [positionsInfoCricket, setPositionsInfoCricket] = useState([
@@ -662,7 +662,17 @@ export default function Index(props) {
       let position = [details['position']];
       let display = position;
       let amount = details['positionAmount'];
-      
+      switch (position[0]) {
+        case 'P':
+          position = ['SP', 'RP'];
+          break;
+        case 'OF':
+          position = ['RF', 'LF', 'CF'];
+          break;
+        case 'DH':
+          position = ['RF', 'LF', 'CF', 'SS', '3B', '2B', '1B', 'C'];
+          break;
+      }
       let found = positionsInfoBaseball.findIndex((e) => e.positions.join() === position.join());
 
       if (positionsInfoBaseball.length === 0) {
@@ -688,7 +698,7 @@ export default function Index(props) {
       let position = [details['position']];
       let display = position;
       let amount = details['positionAmount'];
-     
+   
       let found = positionsInfoCricket.findIndex((e) => e.positions.join() === position.join());
   
       if (positionsInfoCricket.length === 0) {
@@ -730,7 +740,7 @@ export default function Index(props) {
       //baseball placeholder
       case 'BASEBALL':
         return [
-          { name: 'ANY', key: 'ANY' },
+          { name: 'DESIGNATED HITTER', key: 'DH' },
         ];
         //cricket placeholder
         case 'CRICKET':
