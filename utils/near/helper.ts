@@ -342,6 +342,11 @@ async function query_filter_tokens_for_owner(
   name,
   contract
 ) {
+
+  if(position[0].includes(",")){
+    position = position[0].split(",")
+  }
+  console.log(position);
   const query = JSON.stringify({
     account_id: accountId,
     from_index: athleteOffset.toString(),

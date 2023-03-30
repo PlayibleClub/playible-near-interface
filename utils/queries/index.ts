@@ -185,8 +185,8 @@ export const GET_ATHLETEDATA_NBA = gql`
 `;
 
 export const GET_ATHLETEDATA_PITCHER = gql`
-  query GetAthleteData_PITCHER($getAthleteById: Float!) {
-    getAthleteById(id: $getAthleteById) {
+  query GetAthleteData_PITCHER($getAthleteById: Float!, $season: String!) {
+    getAthleteById(id: $getAthleteById, season: $season) {
       id
       firstName
       lastName
@@ -213,8 +213,8 @@ export const GET_ATHLETEDATA_PITCHER = gql`
 
 
 export const GET_ATHLETEDATA_HITTER= gql`
-  query GetAthleteData_PITCHER($getAthleteById: Float!) {
-    getAthleteById(id: $getAthleteById) {
+  query GetAthleteData_HITTER($getAthleteById: Float!,$season: String!) {
+    getAthleteById(id: $getAthleteById,season: $season) {
       id
       firstName
       lastName

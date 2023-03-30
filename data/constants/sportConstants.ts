@@ -144,7 +144,7 @@ export const MLB_ASSET_POSITIONS = [
 export const MLB_POSITIONS = [
   {
     name: 'PITCHER',
-    key: 'P',
+    key: 'SP,RP',
   },
   {
     name: 'CATCHER',
@@ -168,7 +168,7 @@ export const MLB_POSITIONS = [
   },
   {
     name: 'OUTFIELDER',
-    key: 'OF',
+    key: 'CF,LF,RF',
   }
 ];
 // export const CRICKET_POSITIONS = [

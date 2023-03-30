@@ -5,6 +5,8 @@ import {
   GET_ATHLETEDATA_WR,
   GET_ATHLETEDATA_TE,
   GET_ATHLETEDATA_NBA,
+  GET_ATHLETEDATA_HITTER,
+  GET_ATHLETEDATA_PITCHER,
 } from 'utils/queries';
 import { useLazyQuery } from '@apollo/client';
 import {
@@ -13,16 +15,21 @@ import {
   wrStatNames,
   teStatNames,
   nbaStatNames,
+  pitcherStatNames,
+  hitterStatNames,
 } from 'data/constants/statNames';
 import { getSportType } from 'data/constants/sportConstants';
 import moment from 'moment';
 const StatsComponent = (props) => {
-  const { id, position, sport } = props;
+  const { id, position, sport, mlbSeason } = props;
   const [statNames, setStatNames] = useState([]);
+  
   const [getAthleteQB] = useLazyQuery(GET_ATHLETEDATA_QB);
   const [getAthleteRB] = useLazyQuery(GET_ATHLETEDATA_RB);
   const [getAthleteWR] = useLazyQuery(GET_ATHLETEDATA_WR);
   const [getAthleteTE] = useLazyQuery(GET_ATHLETEDATA_TE);
+  const [getAthletePitcher] = useLazyQuery(GET_ATHLETEDATA_PITCHER);
+  const [getAthleteHitter] = useLazyQuery(GET_ATHLETEDATA_HITTER);
   const [getAthleteNBA] = useLazyQuery(GET_ATHLETEDATA_NBA);
   const [athleteData, setAthleteData] = useState([]);
   const [athleteStat, setAthleteStat] = useState([]);
@@ -117,6 +124,45 @@ const StatsComponent = (props) => {
         );
         setStatNames(teStatNames);
         break;
+      case 'SP':
+      case 'RP':
+        query = await getAthletePitcher({ variables: { getAthleteById: parseFloat(id.toString()), season: mlbSeason } });
+        if(query.data.getAthleteById.stats.length > 0){
+          console.log("Stats is Empty");
+        }
+        setAthleteData(
+          await Promise.all(
+            query.data.getAthleteById.stats.filter((x) => x.type === 'daily' && x.played === 1)
+          ).then((x) => {
+            let sorted = x.sort((a, b) => {
+              return moment.utc(b.gameDate).unix() - moment.utc(a.gameDate).unix();
+            });
+            return Object.values(sorted[0]);
+          })
+        );
+        setStatNames(pitcherStatNames);
+        break;
+      case 'CF':
+      case 'C':
+      case 'SS':
+      case 'LF':
+      case 'RF':
+      case '1B':
+      case '2B':
+      case '3B':
+        query = await getAthleteHitter({ variables: { getAthleteById: parseFloat(id.toString()) , season: mlbSeason } });
+        setAthleteData(
+          await Promise.all(
+            query.data.getAthleteById.stats.filter((x) => x.type === 'daily' && x.played === 1)
+          ).then((x) => {
+            let sorted = x.sort((a, b) => {
+              return moment.utc(b.gameDate).unix() - moment.utc(a.gameDate).unix();
+            });
+            return Object.values(sorted[0]);
+          })
+        );
+        setStatNames(hitterStatNames);
+        break;
       default:
         query = await getAthleteNBA({ variables: { getAthleteById: parseFloat(id.toString()) } });
         setAthleteData(
@@ -135,11 +181,16 @@ const StatsComponent = (props) => {
   }, []);
 
   useEffect(() => {
-    if (id !== undefined && position !== undefined) {
+    if (id !== undefined && position !== undefined && mlbSeason !== '') {
       query_stats(position, id).catch(console.error);
-      setPositionDisplay(getSportType(sport).positionList.find((x) => x.key === position).name);
+      if(sport === 'BASEBALL') {
+        setPositionDisplay(getSportType(sport).assetPositionList.find((x) => x.key === position).name);
+      }
+      else {
+        setPositionDisplay(getSportType(sport).positionList.find((x) => x.key === position).name);
+      }
     }
-  }, [id, position, query_stats]);
+  }, [id, position, mlbSeason, query_stats]);
 
   useEffect(() => {}, []);
 

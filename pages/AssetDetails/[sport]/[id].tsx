@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import Container from 'components/containers/Container';
 import { getAthleteInfoById, convertNftToAthlete } from 'utils/athlete/helper';
 import BackFunction from 'components/buttons/BackFunction';
@@ -7,10 +7,14 @@ import Link from 'next/link';
 import { query_nft_tokens_by_id } from 'utils/near/helper';
 import { getSportType } from 'data/constants/sportConstants';
 import { checkInjury } from 'utils/athlete/helper';
+import { GET_SPORT_CURRENT_SEASON} from 'utils/queries';
+import { useLazyQuery } from '@apollo/client';
 import moment from 'moment';
 const AssetDetails = (props) => {
   const { query } = props;
 
+  const [getSportCurrentSeason] = useLazyQuery(GET_SPORT_CURRENT_SEASON);
+  const [mlbSeason,setMlbSeason] = useState('');
   const athleteIndex = query.id;
   const currentSport = query.sport.toString().toUpperCase();
   const isSoulbound = athleteIndex.includes('SB') || athleteIndex.includes('PR') ? true : false;
@@ -69,7 +73,7 @@ const AssetDetails = (props) => {
     athlete?.stats_breakdown.forEach((game) => {
       if (game.type === 'weekly' && game.played == 1) {
         totalGames++;
-      } else if (game.type === 'daily' && game.played == 1) {
+      } else if (game.type === 'daily' && game.played == 1 && game.season === mlbSeason) {
         totalGames++;
       }
     });
@@ -85,6 +89,17 @@ const AssetDetails = (props) => {
     });
     return totalGames;
   }
+
+  const fetchCurrentSeason = useCallback(async () => {
+    let queryMlb = await getSportCurrentSeason({
+      variables: { sport: "mlb" },
+    });
+    setMlbSeason(await (queryMlb.data.getSportCurrentSeason.apiSeason));
+  }, []);
+  useEffect(() => {
+    fetchCurrentSeason();
+  }, []);
+
   useEffect(() => {
     console.log(sortedGames);
   }, [sortedGames]);
@@ -175,7 +190,7 @@ const AssetDetails = (props) => {
           </div>
           <div className="ml-4 mr-5 p-4 border border-indigo-slate rounded-lg text-center">
             <div className="font-monument text-3xl">
-              {currentSport === 'FOOTBALL'
+              {currentSport === 'FOOTBALL' || currentSport === 'BASEBALL'
                 ? athlete === undefined
                   ? ''
                   : getGamesPlayed()
@@ -191,6 +206,7 @@ const AssetDetails = (props) => {
           id={athlete?.primary_id}
           position={athlete?.position}
           sport={currentSport}
+          mlbSeason={mlbSeason}
         />
         <div className="text-2xl font-bold font-monument mt-3 ml-10 mb-10 mr-8 align-baseline md:-mt-14">
           GAME SCORES
@@ -206,13 +222,13 @@ const AssetDetails = (props) => {
             </tr>
           </thead>
           <tbody>
-            {sortedGames == undefined
+            {sortedGames == undefined || sortedGames.length === 0 
               ? 'LOADING GAMES....'
               : sortedGames
                   .filter(
                     (statType) =>
                       (statType.type == 'weekly' || statType.type == 'daily') &&
-                      statType.played == 1
+                      statType.played == 1 && statType.season == mlbSeason
                   )
                   .map((item, index) => {
                     return (
