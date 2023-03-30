@@ -187,22 +187,26 @@ export default function Index(props) {
     { positions: ['ANY'], amount: 1 },
   ]);
   const [positionsInfoBaseball, setPositionsInfoBaseball] = useState([
-    { positions: ['SP'], amount: 2 },
+    { positions: ['P'], amount: 1 },
     { positions: ['C'], amount: 1 },
     { positions: ['1B'], amount: 1 },
     { positions: ['2B'], amount: 1 },
     { positions: ['3B'], amount: 1 },
     { positions: ['SS'], amount: 1 },
-    { positions: ['OF'], amount: 3 },
+    { positions: ['OF'], amount: 1 },
+    { positions: ['ANY'], amount: 1 },
+
   ]);
   const [positionsDisplayBaseball, setPositionsDisplayBaseball] = useState([
-    { positions: ['SP'], amount: 2 },
+    { positions: ['P'], amount: 1 },
     { positions: ['C'], amount: 1 },
     { positions: ['1B'], amount: 1 },
     { positions: ['2B'], amount: 1 },
     { positions: ['3B'], amount: 1 },
     { positions: ['SS'], amount: 1 },
-    { positions: ['OF'], amount: 3 },
+    { positions: ['OF'], amount: 1 },
+    { positions: ['ANY'], amount: 1 },
+
   ]);
   const [positionsInfoCricket, setPositionsInfoCricket] = useState([
     { positions: ['BWL'], amount: 1 },
@@ -726,8 +730,6 @@ export default function Index(props) {
       //baseball placeholder
       case 'BASEBALL':
         return [
-          { name: 'GUARD', key: 'G' },
-          { name: 'FORWARD', key: 'F' },
           { name: 'ANY', key: 'ANY' },
         ];
         //cricket placeholder
