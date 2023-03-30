@@ -42,3 +42,19 @@ export const nbaStatNames = [
   'STEALS',
   'TURNOVERS'
 ]
+
+export const pitcherStatNames = [
+  'WINS',
+  'ERA',
+  'WHIP',
+  'STRIKEOUTS',
+  'SAVES'
+]
+
+export const hitterStatNames = [
+  'RUNS',
+  'BATTING AVERAGE',
+  'HOME RUNS',
+  'RBI',
+  'STOLEN BASES'
+]

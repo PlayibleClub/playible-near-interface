@@ -184,6 +184,61 @@ export const GET_ATHLETEDATA_NBA = gql`
   }
 `;
 
+export const GET_ATHLETEDATA_PITCHER = gql`
+  query GetAthleteData_PITCHER($getAthleteById: Float!) {
+    getAthleteById(id: $getAthleteById) {
+      id
+      firstName
+      lastName
+      position
+      isInjured
+      isActive
+      nftImage
+      stats {
+        type
+        wins
+        earnedRunAverage
+        walksHitsPerInningsPitched
+        strikeouts
+        saves
+        played
+        opponent{
+          name
+        }
+        gameDate
+      }
+    }
+  }
+`;
+
+
+export const GET_ATHLETEDATA_HITTER= gql`
+  query GetAthleteData_PITCHER($getAthleteById: Float!) {
+    getAthleteById(id: $getAthleteById) {
+      id
+      firstName
+      lastName
+      position
+      isInjured
+      isActive
+      nftImage
+      stats {
+        type
+        runs
+        battingAverage
+        homeRuns
+        runsBattedIn
+        stolenBases
+        played
+        opponent{
+          name
+        }
+        gameDate
+      }
+    }
+  }
+`;
+
 export const GET_SPORT_CURRENT_SEASON = gql`
   query GetSportCurrentSeason($sport: String!) {
     getSportCurrentSeason(sport: $sport) {
