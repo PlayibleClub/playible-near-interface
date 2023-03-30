@@ -4,7 +4,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import PerformerContainer from '../components/containers/PerformerContainer';
 import 'regenerator-runtime/runtime';
 import { AiOutlineVerticalRight, AiOutlineVerticalLeft } from 'react-icons/ai';
-import { GET_ATHLETES_TOP, GET_NBA_CURRENT_SEASON, GET_NFL_SEASON } from '../utils/queries';
+import { GET_ATHLETES_TOP, GET_SPORT_CURRENT_SEASON, GET_NFL_SEASON } from '../utils/queries';
 import { useLazyQuery } from '@apollo/client';
 import { store } from 'redux/athlete/store';
 import { Provider } from 'react-redux';
@@ -16,15 +16,16 @@ export default function Home(props) {
   const [sportList, setSportList] = useState(
     SPORT_TYPES.map((x) => ({ name: x.sport, key: x.key }))
   );
-  const [currentSport, setCurrentSport] = useState('NBA'.toLocaleLowerCase());
+  const [currentSport, setCurrentSport] = useState('MLB'.toLocaleLowerCase());
   const [getAthletes, { loading, error, data }] = useLazyQuery(GET_ATHLETES_TOP);
   const [athletes, setAthletes] = useState([]);
-  const [getNbaCurrentSeason] = useLazyQuery(GET_NBA_CURRENT_SEASON);
+  const [getSportCurrentSeason] = useLazyQuery(GET_SPORT_CURRENT_SEASON);
   const [getNflCurrentSeason] = useLazyQuery(GET_NFL_SEASON);
   const [nbaSeason, setNbaSeason] = useState('');
   const [nflSeason, setNflSeason] = useState('');
+  const [mlbSeason, setMlbSeason] = useState('');
   const fetchTopAthletes = useCallback(
-    async (nbaSeason, nflSeason, currentSport) => {
+    async (nbaSeason, nflSeason, mlbSeason, currentSport) => {
       console.log(nflSeason);
       let query = await getAthletes({
         variables: {
@@ -50,7 +51,7 @@ export default function Home(props) {
             })
           )
         );
-      } else {
+      } else if (currentSport === SPORT_NAME_LOOKUP.footballKey){
         setAthletes(
           await Promise.all(
             query.data.getAthletes.map((element) => {
@@ -59,12 +60,35 @@ export default function Home(props) {
           )
         );
       }
+      else {
+        console.log("MLB Season:", mlbSeason);
+        setAthletes(
+          await Promise.all(
+            query.data.getAthletes.map((element) => {
+              return { ...element, stats: element.stats.filter((x) => x.season === mlbSeason) };
+            })
+          )
+        );
+        console.log("MLB Athletes:",athletes);
+      }
+      
       //
     },
     [loading]
   );
-  const fetchNbaCurrentSeason = useCallback(async () => {
-    setNbaSeason((await getNbaCurrentSeason()).data.getNbaCurrentSeason.apiSeason);
+  const fetchCurrentSeason = useCallback(async () => {
+    let queryNba = await getSportCurrentSeason({
+      variables: { sport: "nba" },
+    });
+    let queryMlb = await getSportCurrentSeason({
+      variables: { sport: "mlb" },
+    });
+    setNbaSeason(await (queryNba.data.getSportCurrentSeason.apiSeason));
+    setMlbSeason(await (queryMlb.data.getSportCurrentSeason.apiSeason));
+    // setMlbSeason((await getSportCurrentSeason({
+    //   variables: {sport: "nba"},
+    // })).data.getSportCurrentSeason.apiSeason);
+    //  setNbaSeason((await getSportCurrentSeason()).data.getSportCurrentSeason.apiSeason);
     await getNflCurrentSeason({
       variables: {
         startDate: formatToUTCDate(getUTCTimestampFromLocal()),
@@ -76,13 +100,13 @@ export default function Home(props) {
     });
   }, []);
   useEffect(() => {
-    fetchNbaCurrentSeason();
+    fetchCurrentSeason();
   }, []);
   useEffect(() => {
     if (nbaSeason.length > 0) {
-      fetchTopAthletes(nbaSeason, nflSeason, currentSport);
+      fetchTopAthletes(nbaSeason, nflSeason, mlbSeason, currentSport);
     }
-  }, [nbaSeason, nflSeason, currentSport]);
+  }, [nbaSeason, nflSeason, mlbSeason, currentSport]);
 
   function getAvgFantasyScore(array) {
     let totalFantasy = 0;
