@@ -352,7 +352,7 @@ const Games = (props) => {
                   />
                 </div>
                 <div className="h-128">
-                  <div className="flex flex-col w-full md:pb-12 ml-24 iphoneX:ml-24 md:ml-20">
+                  <div className="flex flex-col md:pb-12 ml-24 iphoneX:ml-24 md:ml-20">
                     <div className="grid grid-cols-4 gap-6 md:gap-y-4 mb-2 md:mb-10 md:grid-cols-4 md:ml-7 mt-8 -ml-9 mr-6 md:mr-0  ">
                       {playerLineups.length === 0
                         ? 'Loading athletes...'
