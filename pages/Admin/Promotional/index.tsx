@@ -29,9 +29,11 @@ export default function Promotional(props) {
       JSON.stringify({
         msg: 'Promotional pack',
         receiver_id:
-          currentSport === SPORT_NAME_LOOKUP.football
-            ? whitelistInfoNFL?.toString()
-            : whitelistInfoNBA?.toString(),
+        currentSport === SPORT_NAME_LOOKUP.football
+  ? whitelistInfoNFL?.toString()
+  : currentSport === SPORT_NAME_LOOKUP.baseball
+    ? whitelistInfoMLB?.toString()
+    : whitelistInfoCRICKET?.toString()
       })
     );
 
@@ -227,9 +229,9 @@ export default function Promotional(props) {
           type="text"
           placeholder="Enter account to send type 1 pack to."
           onChange={(e) => {
-            setCurrentSport('BASEBALL'), onChangeWhitelistMLB(e);
+            setCurrentSport('CRICKET'), onChangeWhitelistMLB(e);
           }}
-          value={detailsMLB.receiverAccount}
+          value={detailsCRICKET.receiverAccount}
         />
         <div className="  mt-6">
           <button
