@@ -95,6 +95,52 @@ export const NBA_POSITIONS = [
     key: 'C',
   },
 ];
+
+//New MLB positions were created with separate Keys for Pitchers (SP and RP)
+//And Outfielders (LF,CF,RF) to prevent errors in assetDetails
+export const MLB_ASSET_POSITIONS = [
+  {
+    name: 'PITCHER',
+    key: 'SP',
+  },
+  {
+    name: 'PITCHER',
+    key: 'RP',
+  },
+  {
+    name: 'CATCHER',
+    key: 'C',
+  },
+  {
+    name: 'FIRST BASEMAN',
+    key: '1B',
+  },
+  {
+    name: 'SECOND BASEMAN',
+    key: '2B',
+  },
+  {
+    name: 'THIRD BASEMAN',
+    key: '3B',
+  },
+  {
+    name: 'SHORTSTOP',
+    key: 'SS',
+  },
+  {
+    name: 'OUTFIELDER',
+    key: 'RF',
+  },
+  {
+    name: 'OUTFIELDER',
+    key: 'CF',
+  },
+  {
+    name: 'OUTFIELDER',
+    key: 'LF',
+  }
+];
+
 export const MLB_POSITIONS = [
   {
     name: 'PITCHER',
@@ -186,6 +232,7 @@ export const SPORT_TYPES = [
     openPromoContract: getContract(OPENPACK_PROMO_BASEBALL),
     gameContract: getContract(GAME_BASEBALL),
     positionList: MLB_POSITIONS,
+    assetPositionList: MLB_ASSET_POSITIONS,
     extra: EXTRA_MLB,
   },
   {
