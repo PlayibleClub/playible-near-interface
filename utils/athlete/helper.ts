@@ -1,6 +1,6 @@
 import client from 'apollo-client';
 import { objectTraps } from 'immer/dist/internal';
-import { GET_ATHLETE_BY_ID, GET_NBA_PLAYER_SCHEDULE } from '../queries';
+import { GET_ATHLETE_BY_ID, GET_PLAYER_SCHEDULE } from '../queries';
 import { formatToUTCDate, getUTCTimestampFromLocal } from 'utils/date/helper';
 import { getSportType } from 'data/constants/sportConstants';
 
@@ -69,13 +69,14 @@ async function getAthleteInfoById(item, from, to) {
   return returningData;
 }
 
-async function getAthleteBasketballSchedule(athlete, startDate, endDate) {
+async function getAthleteSchedule(athlete, startDate, endDate, currentSport) {
   const { data } = await client.query({
-    query: GET_NBA_PLAYER_SCHEDULE,
+    query: GET_PLAYER_SCHEDULE,
     variables: {
       team: athlete.team,
       startDate: formatToUTCDate(startDate), //formatToUTCDate(1676418043000),
       endDate: formatToUTCDate(endDate), //formatToUTCDate(1677282043000),
+      sport: currentSport,
     },
   });
 
@@ -174,5 +175,5 @@ export {
   getPositionDisplay,
   checkInjury,
   cutAthleteName,
-  getAthleteBasketballSchedule,
+  getAthleteSchedule,
 };
