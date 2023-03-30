@@ -184,9 +184,9 @@ export const GET_ATHLETEDATA_NBA = gql`
   }
 `;
 
-export const GET_NBA_CURRENT_SEASON = gql`
-  query GetNbaCurrentSeason {
-    getNbaCurrentSeason {
+export const GET_SPORT_CURRENT_SEASON = gql`
+  query GetSportCurrentSeason($sport: String!) {
+    getSportCurrentSeason(sport: $sport) {
       apiSeason
     }
 }
