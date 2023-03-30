@@ -54,6 +54,14 @@ export const EXTRA_NFL = [
     key: ['QB', 'RB', 'WR', 'TE'],
   },
 ];
+
+export const EXTRA_MLB  = [
+  {
+    name: 'DESIGNATED HITTER',
+    key: ['DH', 'RF', 'LF', 'CF', 'SS', '3B', '2B', '1B', 'C'],
+  },
+]
+
 export const NBA_POSITIONS = [
   {
     name: 'POINT GUARD',
@@ -78,8 +86,12 @@ export const NBA_POSITIONS = [
 ];
 export const MLB_POSITIONS = [
   {
-    name: 'STARTING PITCHER',
+    name: 'PITCHER',
     key: 'SP',
+  },
+  {
+    name: 'PITCHER',
+    key: 'RP',
   },
   {
     name: 'CATCHER',
@@ -103,7 +115,15 @@ export const MLB_POSITIONS = [
   },
   {
     name: 'OUTFIELDER',
-    key: 'OF',
+    key: 'LF',
+  },
+  {
+    name: 'OUTFIELDER',
+    key: 'RF',
+  },
+  {
+    name: 'OUTFIELDER',
+    key: 'CF',
   },
 ];
 export const CRICKET_POSITIONS = [

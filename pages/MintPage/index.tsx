@@ -1192,12 +1192,13 @@ export default function Home(props) {
                     ) : currentSport === SPORT_NAME_LOOKUP.baseball ? (
                       <ul className="marker list-disc pl-5 space-y-3 ">
                         <li>2 Pitchers (P)</li>
-                        <li>1 Catcher (C) </li>
+                        <li>1 Catcher (C)</li>
                         <li>1 First Baseman (1B) </li>
                         <li>1 Second Baseman (2B)</li>
-                        <li>1 Third Baseman (3B) </li>
+                        <li>1 Third Baseman (3B)</li>
                         <li>1 Shortstop (SS) </li>
-                        <li>3 Outfielders (OF) </li>
+                        <li>2 Outfielder (OF) </li>
+                        <li>1 Designated Hitter (DH) </li>
                       </ul>
                     ) : (
                       //Ask for the amount for each position

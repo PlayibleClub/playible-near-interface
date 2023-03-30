@@ -187,7 +187,9 @@ export default function PackDetails(props) {
             </div>
           )}
           <div className="mt-5 mb-12">
-            <div className="mb-5">1 for each of the positions below:</div>
+            {query.sport.toString().toUpperCase() === 'BASEBALL' ? 
+            (<div className="mb-5">An amount for each of the positions below:</div>) : 
+            (<div className="mb-5">1 for each of the positions below:</div>)}
             {query.sport.toString().toUpperCase() === 'FOOTBALL' ? (
               <ul className="marker list-disc pl-5 space-y-3 ">
                 <li>1 Quarter Back (QB)</li>
@@ -210,13 +212,14 @@ export default function PackDetails(props) {
               </ul>
             ) : query.sport.toString().toUpperCase() === 'BASEBALL' ? (
               <ul className="marker list-disc pl-5 space-y-3 ">
-                <li>2 Starting Pitcher (SP)</li>
+                <li>2 Pitchers (P)</li>
                 <li>1 Catcher (C)</li>
                 <li>1 First Baseman (1B) </li>
                 <li>1 Second Baseman (2B)</li>
                 <li>1 Third Baseman (3B)</li>
                 <li>1 Shortstop (SS) </li>
-                <li>1 Outfielder (OF) </li>
+                <li>2 Outfielder (OF) </li>
+                <li>1 Designated Hitter (DH) </li>
               </ul>
             ) : (
               //Ask for the amount for each position
