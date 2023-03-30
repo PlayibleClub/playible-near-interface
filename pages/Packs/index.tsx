@@ -37,6 +37,7 @@ export default function Packs() {
   const [activeCategory, setCategory] = useState('NEW');
   const nflImage = '/images/packimages/NFL-SB-Pack.png';
   const nbaImage = '/images/packimages/nbaStarterPackSoulbound.png';
+  const mlbSBImage = '/images/packimages/MLB-Lock-Pack.png'
   const [modalImage, setModalImage] = useState(nflImage);
   const [currentTotal, setCurrentTotal] = useState(0);
   const [categoryList, setcategoryList] = useState([
@@ -182,8 +183,11 @@ export default function Packs() {
     if (router.asPath.indexOf('transactionHashes') > -1) {
       {
         //add checking here, use sportFromRedux variable
-        sportFromRedux === 'BASKETBALL' ? setModalImage(nbaImage) : setModalImage(nflImage);
-      }
+        sportFromRedux === SPORT_NAME_LOOKUP.basketball
+        ? setModalImage(nbaImage)
+        : sportFromRedux === SPORT_NAME_LOOKUP.football
+        ? setModalImage(nflImage)
+        : setModalImage(mlbSBImage);}
       setTimeout(() => persistor.purge(), 200);
       setEditModal(true);
     }
