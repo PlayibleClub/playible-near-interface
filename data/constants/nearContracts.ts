@@ -314,3 +314,42 @@ export const GAME_BASEBALL = {
     changeMethods: ['add_game'],
   },
 }; //Game Contract
+
+export const OPENPACK_PROMO_BASEBALL = {
+  mainnet: 'open_pack.promotional.baseball.playible.near',
+  testnet: 'open_pack.promotional.baseball.playible.testnet',
+  interface: {
+    viewMethods: ['getMessages'],
+    changeMethods: ['execute_add_athletes', 'execute_open_pack'],
+  },
+}; //OpenPack Promo Contract
+
+export const ATHLETE_PROMO_BASEBALL = {
+  mainnet: 'athlete.promotional.baseball.playible.near',
+  testnet: 'athlete.promotional.baseball.playible.testnet',
+  interface: {
+    viewMethods: [
+      'nft_tokens_for_owner',
+      'nft_total_supply',
+      'nft_tokens',
+      'nft_supply_for_owner',
+      'filter_tokens_for_owner',
+      'filtered_nft_supply_for_owner',
+    ],
+    changeMethods: ['addMessage'],
+  },
+};
+
+export const PACK_PROMO_BASEBALL = {
+  mainnet: 'pack.promotional.baseball.playible.near',
+  testnet: 'pack.promotional.baseball.playible.testnet',
+  interface: {
+    viewMethods: ['nft_tokens_for_owner', 'nft_supply_for_owner'],
+    changeMethods: [
+      'nft_transfer',
+      'nft_transfer_call',
+      'nft_resolve_transfer',
+      'claim_promo_pack',
+    ],
+  },
+};
