@@ -111,6 +111,7 @@ export default function Home(props) {
   const nbaRegImage = '/images/packimages/nbaStarterPack.png';
   const nflSbImage = '/images/packimages/NFL-SB-Pack.png';
   const nbaSbImage = '/images/packimages/nbaStarterPackSoulbound.png';
+  const mlbSbImage = '/images/packimages/MLB-Lock-Pack.png'
   const [modalImage, setModalImage] = useState(nflSbImage);
   async function get_claim_status(accountId) {
     setIsClaimedFootball(
@@ -594,8 +595,10 @@ export default function Home(props) {
   useEffect(() => {
     if (router.asPath.indexOf('transactionHashes') > -1 && isPromoFromRedux === false) {
       sportFromRedux === SPORT_NAME_LOOKUP.basketball
-        ? setModalImage(nbaRegImage)
-        : setModalImage(nflRegImage);
+      ? setModalImage(nbaRegImage)
+      : sportFromRedux === SPORT_NAME_LOOKUP.football
+      ? setModalImage(nflRegImage)
+      : setModalImage(mlbSbImage);
       setTimeout(() => persistor.purge(), 200);
       setEditModal(true);
     } else if (router.asPath.indexOf('transactionHashes') > -1) {
