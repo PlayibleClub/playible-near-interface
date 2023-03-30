@@ -183,7 +183,7 @@ export const SPORT_TYPES = [
     openPromoContract: getContract(OPENPACK_PROMO_NFL),
     gameContract: getContract(GAME_BASEBALL),
     positionList: MLB_POSITIONS,
-    extra: EXTRA_NFL,
+    extra: EXTRA_MLB,
   },
   {
     key: 'NBA',
