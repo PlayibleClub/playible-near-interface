@@ -56,8 +56,10 @@ async function getAthleteInfoById(item, from, to) {
     animation: data.getAthleteById.nftAnimation,
     image: item.metadata.media,
     fantasy_score:
-      from === null && to === null
-        ? getAvgSeasonFantasyScore(data.getAthleteById.stats)
+    from === null && to === null
+      ? getAvgSeasonFantasyScore(data.getAthleteById.stats)
+      : from !== null && to !== null
+        ? getDailySeasonFantasyScore(data.getAthleteById.stats)
         : getDailyFantasyScore(data.getAthleteById.stats),
     stats_breakdown: data.getAthleteById.stats,
     isInGame: item.metadata['starts_at'] > getUTCTimestampFromLocal() ? true : false,
@@ -99,6 +101,17 @@ function getDailyFantasyScore(array) {
     return 0;
   }
 }
+
+function getDailySeasonFantasyScore(array) {
+  if (Array.isArray(array) && array.length > 0) {
+    return array.filter((item) => {
+      return item.type == 'daily' || item.type == 'season';
+    })[0].fantasyScore;
+  } else {
+    return 0;
+  }
+}
+
 function convertNftToAthlete(item) {
   const token_metadata = item.token_metadata || item.metadata;
 
