@@ -26,7 +26,7 @@ import {
 import { getGameStartDate, getGameEndDate } from 'redux/athlete/athleteSlice';
 import { getSportType, SPORT_NAME_LOOKUP } from 'data/constants/sportConstants';
 import NftTypeComponent from 'pages/Portfolio/components/NftTypeComponent';
-import { getAthleteBasketballSchedule, getPositionDisplay } from 'utils/athlete/helper';
+import { getAthleteSchedule, getPositionDisplay } from 'utils/athlete/helper';
 import { useLazyQuery } from '@apollo/client';
 import { GET_TEAMS } from 'utils/queries';
 const AthleteSelect = (props) => {
@@ -125,7 +125,7 @@ const AthleteSelect = (props) => {
       let athletes = result;
       if (currentSport === SPORT_NAME_LOOKUP.basketball) {
         athletes = await Promise.all(
-          result.map((x) => getAthleteBasketballSchedule(x, startDate, endDate))
+          result.map((x) => getAthleteSchedule(x, startDate, endDate, 'nba'))
         );
       }
       setAthletes(athletes);
@@ -158,7 +158,12 @@ const AthleteSelect = (props) => {
       let athletes = result;
       if (currentSport === SPORT_NAME_LOOKUP.basketball) {
         athletes = await Promise.all(
-          result.map((x) => getAthleteBasketballSchedule(x, startDate, endDate))
+          result.map((x) => getAthleteSchedule(x, startDate, endDate, 'nba'))
+        );
+      }
+      else if (currentSport === SPORT_NAME_LOOKUP.baseball) {
+        athletes = await Promise.all(
+          result.map((x) => getAthleteSchedule(x, startDate, endDate, 'mlb'))
         );
       }
       setAthletes(athletes);
