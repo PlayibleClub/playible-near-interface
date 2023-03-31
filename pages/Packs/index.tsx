@@ -265,7 +265,8 @@ export default function Packs() {
                     </button>
                   ) : (
                     <button
-                      className={`bg-indigo-buttonblue text-indigo-white iphone5:w-full md:w-80 h-10 
+                      className={`${currentSport === SPORT_NAME_LOOKUP.football
+                        ? 'hidden' : ''}bg-indigo-buttonblue text-indigo-white iphone5:w-full md:w-80 h-10 
            text-center font-bold text-xs`}
                       onClick={(e) => handleButtonClick(e)}
                     >
