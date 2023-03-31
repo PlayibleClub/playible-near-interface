@@ -135,15 +135,17 @@ export default function Home(props) {
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const featuredImagesDesktop = [
+    '/images/baseball_starterpack_publicmint_desktop.png',
+    '/images/baseball_starterpack_promotion_desktop.png',
     '/images/basketball_starterpack_publicmint_desktop.png',
     '/images/basketball_championship_ongoing.png',
-    '/images/baseball_starterpack_promotion_desktop.png',
   ];
 
   const featuredImagesMobile = [
+    '/images/baseball_starterpack_publicmint_desktop.png',
+    '/images/baseball_starterpack_promotion_desktop.png',
     '/images/basketball_starterpack_publicmint_mobile.png',
     '/images/basketball_championship_ongoing.png',
-    '/images/baseball_starterpack_promotion_desktop.png',
   ];
 
   const startSlider = () => {
