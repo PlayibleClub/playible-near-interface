@@ -966,7 +966,9 @@ export default function Home(props) {
                     {currentSport === 'FOOTBALL' ? (
                       <div className="ml-3"></div>
                     ) : (
-                      <div>{/* <div className="mt-4">Limit: 10 packs per wallet</div> */}</div>
+                      <div>
+                        <div className="mt-4">Limit: 10 packs per wallet</div>
+                      </div>
                     )}
                     {/*TODO: start styling */}
                     {/*<div>*/}
