@@ -194,7 +194,7 @@ export default function Index(props) {
     { positions: ['3B'], amount: 1 },
     { positions: ['SS'], amount: 1 },
     { positions: ['RF', 'LF', 'CF'], amount: 2 },
-    { positions: ['RF', 'LF', 'CF', 'SS', '3B', '2B', '1B', 'C'], amount: 1 },
+    { positions: ['DH', 'RF', 'LF', 'CF', 'SS', '3B', '2B', '1B', 'C'], amount: 1 },
   ]);
   const [positionsDisplayBaseball, setPositionsDisplayBaseball] = useState([
     { positions: ['P'], amount: 2 },
