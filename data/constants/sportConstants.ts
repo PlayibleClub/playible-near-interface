@@ -169,6 +169,10 @@ export const MLB_POSITIONS = [
   {
     name: 'OUTFIELDER',
     key: 'CF,LF,RF',
+  },
+  {
+    name: 'DESIGNATED HITTER',
+    key: 'DH, RF, LF, CF, SS, 3B, 2B, 1B, C',
   }
 ];
 // export const CRICKET_POSITIONS = [
