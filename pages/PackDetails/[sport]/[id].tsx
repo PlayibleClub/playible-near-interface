@@ -83,7 +83,10 @@ export default function PackDetails(props) {
   function computeDeposit(deposit) {
     if (deposit / DECIMALS_NEAR >= 480000000000000000000000 / DECIMALS_NEAR) {
       return '1';
-    } else {
+    } else if (myPack.sport === 'BASEBALL'){
+      return new BigNumber(10).multipliedBy(new BigNumber(MINT_STORAGE_COST)).toFixed();
+    }
+    else{
       return new BigNumber(8).multipliedBy(new BigNumber(MINT_STORAGE_COST)).toFixed();
     }
   }
