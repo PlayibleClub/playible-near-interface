@@ -15,7 +15,7 @@ import {
   query_nft_supply_for_owner,
   query_nft_tokens_for_owner,
 } from 'utils/near/helper';
-import { getSportTypeRedux, setSportTypeRedux } from 'redux/athlete/sportSlice';
+import { getIsPromoRedux, getSportTypeRedux, setSportTypeRedux } from 'redux/athlete/sportSlice';
 import { persistor } from 'redux/athlete/store';
 import Modal from 'components/modals/Modal';
 import { SPORT_TYPES, getSportType, SPORT_NAME_LOOKUP } from 'data/constants/sportConstants';
@@ -56,6 +56,7 @@ export default function Packs() {
   const [currentSport, setCurrentSport] = useState(sportObj[0].sport);
   //for soulbound claiming, redirecting, and displaying the corresponding pack image
   const [sportFromRedux, setSportFromRedux] = useState(useSelector(getSportTypeRedux));
+  const [isPromoFromRedux, setIsPromoFromRedux] = useState(useSelector(getIsPromoRedux));
   const [remountComponent, setRemountComponent] = useState(0);
   const changecategoryList = (name) => {
     const tabList = [...categoryList];
@@ -180,7 +181,7 @@ export default function Packs() {
   }, [remountComponent]);
 
   useEffect(() => {
-    if (router.asPath.indexOf('transactionHashes') > -1) {
+    if (router.asPath.indexOf('transactionHashes') > -1 && isPromoFromRedux === false) {
       {
         //add checking here, use sportFromRedux variable
         sportFromRedux === SPORT_NAME_LOOKUP.basketball
@@ -188,6 +189,14 @@ export default function Packs() {
         : sportFromRedux === SPORT_NAME_LOOKUP.football
         ? setModalImage(nflImage)
         : setModalImage(mlbSBImage);}
+      setTimeout(() => persistor.purge(), 200);
+      setEditModal(true);
+    }
+    else if (router.asPath.indexOf('transactionHashes') > -1) {
+      {
+        sportFromRedux === 'BASKETBALL' ? setModalImage(nbaImage) :
+         sportFromRedux === 'FOOTBALL' ? setModalImage(nflImage) : setModalImage(mlbSBImage);
+      }
       setTimeout(() => persistor.purge(), 200);
       setEditModal(true);
     }

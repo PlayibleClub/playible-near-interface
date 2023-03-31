@@ -603,7 +603,8 @@ export default function Home(props) {
       setEditModal(true);
     } else if (router.asPath.indexOf('transactionHashes') > -1) {
       {
-        sportFromRedux === 'BASKETBALL' ? setModalImage(nbaSbImage) : setModalImage(nflSbImage);
+        sportFromRedux === 'BASKETBALL' ? setModalImage(nbaSbImage) :
+         sportFromRedux === 'FOOTBALL' ? setModalImage(nflSbImage) : setModalImage(mlbSbImage);
       }
       setTimeout(() => persistor.purge(), 200);
       setEditModal(true);
