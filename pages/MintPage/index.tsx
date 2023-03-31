@@ -93,6 +93,7 @@ export default function Home(props) {
   const [minted, setMinted] = useState(0);
   const [accountBalance, setAccountBalance] = useState(0);
   const [mintedNba, setMintedNba] = useState(0);
+  const [mintedMlb, setMintedMlb] = useState(0);
   const [useNEP141, setUseNEP141] = useState(NEP141NEAR);
   const [intervalSale, setIntervalSale] = useState(0);
   const [balanceErrorMsg, setBalanceErrorMsg] = useState('');
@@ -162,13 +163,21 @@ export default function Home(props) {
         const _minted = JSON.parse(Buffer.from(minting_of.result).toString());
         setMinted(_minted);
         {
-          currentSport === 'FOOTBALL' ? setMinted(_minted) : setMintedNba(_minted);
+          currentSport === SPORT_NAME_LOOKUP.football
+            ? setMinted(_minted)
+            : currentSport === SPORT_NAME_LOOKUP.basketball
+            ? setMintedNba(_minted)
+            : setMintedMlb(_minted);
         }
       }
     } catch (e) {
       // define default minted
       {
-        currentSport === 'FOOTBALL' ? setMinted(0) : setMintedNba(0);
+        currentSport === SPORT_NAME_LOOKUP.football
+          ? setMinted(0)
+          : currentSport === SPORT_NAME_LOOKUP.basketball
+          ? setMintedNba(0)
+          : setMintedMlb(0);
       }
     }
   }
@@ -509,6 +518,21 @@ export default function Home(props) {
   function selectMintNba() {
     let optionMint = [];
     let limit = 11 - mintedNba;
+    for (let x = 1; x < limit; x++) {
+      optionMint.push({ value: x, label: `${x} ${x > 1 ? 'packs' : 'pack'}` });
+    }
+    return (
+      <Select
+        onChange={(event) => setSelectedMintAmount(event.value)}
+        options={optionMint.splice(0, 5)}
+        className="md:w-1/3 w-4/5 mr-9 mt-5"
+      />
+    );
+  }
+
+  function selectMintMlb() {
+    let optionMint = [];
+    let limit = 11 - mintedMlb;
     for (let x = 1; x < limit; x++) {
       optionMint.push({ value: x, label: `${x} ${x > 1 ? 'packs' : 'pack'}` });
     }
@@ -935,7 +959,11 @@ export default function Home(props) {
                     <div className="flex gap-16">
                       <div className="border border-indigo-lightgray rounded-2xl text-center p-4 w-40 flex flex-col justify-center  mt-8">
                         <div className="text-2xl font-black font-monument ">
-                          {currentSport === SPORT_NAME_LOOKUP.football ? minted : mintedNba}
+                          {currentSport === SPORT_NAME_LOOKUP.football
+                            ? minted
+                            : currentSport === SPORT_NAME_LOOKUP.basketball
+                            ? mintedNba
+                            : mintedMlb}
                         </div>
                         <div className="text-xs">YOU HAVE MINTED</div>
                       </div>
