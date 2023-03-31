@@ -959,7 +959,7 @@ export default function Home(props) {
                       <div className="ml-3"></div>
                     ) : (
                       <div>
-                        <div className="mt-4">Limit: 10 packs per wallet</div>
+                        {/* <div className="mt-4">Limit: 10 packs per wallet</div> */}
                       </div>
                     )}
                     {/*TODO: start styling */}
