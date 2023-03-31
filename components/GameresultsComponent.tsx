@@ -41,7 +41,7 @@ const GameResultsComponent = (props) => {
 
   return (
     <div data-test="GameResultsComponent" className={`w-10/12 mt-5`}>
-      <RoundedContainer>
+      {/* <RoundedContainer>
         <select className="w-5/6 bg-indigo-light p-2" name="games" id="cars">
           <option value="All Games">All Games</option>
           <option value="Some games">Some Games</option>
@@ -65,7 +65,7 @@ const GameResultsComponent = (props) => {
             ))}
           </ul>
         </RoundedContainer>
-      </div>
+      </div> */}
     </div>
   );
 };
