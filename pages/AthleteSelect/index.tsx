@@ -128,6 +128,11 @@ const AthleteSelect = (props) => {
           result.map((x) => getAthleteSchedule(x, startDate, endDate, 'nba'))
         );
       }
+      else if (currentSport === SPORT_NAME_LOOKUP.baseball) {
+        athletes = await Promise.all(
+          result.map((x) => getAthleteSchedule(x, startDate, endDate, 'mlb'))
+        );
+      }
       setAthletes(athletes);
     });
     //   setAthletes(

@@ -80,7 +80,7 @@ async function getAthleteSchedule(athlete, startDate, endDate, currentSport) {
     },
   });
 
-  return { ...athlete, schedule: data.getNbaPlayerSchedule };
+  return { ...athlete, schedule: data.getPlayerSchedule };
 }
 
 function getAvgSeasonFantasyScore(array) {
