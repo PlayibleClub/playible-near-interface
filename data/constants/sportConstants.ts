@@ -61,7 +61,7 @@ export const EXTRA_NFL = [
 export const EXTRA_MLB  = [
   {
     name: 'DESIGNATED HITTER',
-    key: ['RF', 'LF', 'CF', 'SS', '3B', '2B', '1B', 'C'],
+    key: ['DH', 'RF', 'LF', 'CF', 'SS', '3B', '2B', '1B', 'C'],
   },
   {
     name: 'PITCHER',
