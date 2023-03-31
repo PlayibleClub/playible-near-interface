@@ -48,7 +48,7 @@ const TokenDrawPage = (props) => {
   const [videoPlaying, setVideoPlaying] = useState(true);
   const [sport, setSport] = useState('');
   const [loading, setLoading] = useState(true);
-
+  const [length, setLength] = useState(8);
   const [assets, setassets] = useState([]);
   const [athletes, setAthletes] = useState([]);
   const [remountComponent, setRemountComponent] = useState(0);
@@ -79,10 +79,13 @@ const TokenDrawPage = (props) => {
 
   function findContract(contract) {
     if (contract.includes(SPORT_CONTRACT_LOOKUP.football)) {
+      setLength(8);
       return fileList.find((x) => x.name === SPORT_NAME_LOOKUP.football);
     } else if (contract.includes(SPORT_CONTRACT_LOOKUP.basketball)) {
+      setLength(8);
       return fileList.find((x) => x.name === SPORT_NAME_LOOKUP.basketball);
     } else if (contract.includes(SPORT_CONTRACT_LOOKUP.baseball)) {
+      setLength(10);
       return fileList.find((x) => x.name === SPORT_NAME_LOOKUP.baseball);
     }
   }
@@ -143,7 +146,7 @@ const TokenDrawPage = (props) => {
         // filter out all receipts, and find those that array of 8 actions (since 8 nft_mints)
         queryFromNear.receipts
           .filter((item) => {
-            return item.receipt.Action.actions.length == 8;
+            return item.receipt.Action.actions.length == length;
           })[0]
           // decode the arguments of nft_mint, and determine the json
           .receipt.Action.actions.map((item) => {
@@ -155,7 +158,7 @@ const TokenDrawPage = (props) => {
       )
     );
     setLoading(false);
-  }, []);
+  }, [length]);
 
   const query_transaction_mainnet = useCallback(async () => {
     const queryFromNear = await provider.sendJsonRpc<responseExperimentalTxStatus>(
@@ -208,7 +211,7 @@ const TokenDrawPage = (props) => {
         // filter out all receipts, and find those that array of 8 actions (since 8 nft_mints)
         queryFromNear.receipts
           .filter((item) => {
-            return item.receipt.Action.actions.length == 8;
+            return item.receipt.Action.actions.length == length;
           })[0]
           // decode the arguments of nft_mint, and determine the json
           .receipt.Action.actions.map((item) => {
@@ -220,7 +223,7 @@ const TokenDrawPage = (props) => {
       )
     );
     setLoading(false);
-  }, []);
+  }, [length]);
 
   const activeChecker = () => {
     if (athletes.length > 0) {
