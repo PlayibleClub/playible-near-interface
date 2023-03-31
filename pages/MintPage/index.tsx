@@ -59,7 +59,7 @@ export default function Home(props) {
   const { contract } = selector.store.getState();
   const dispatch = useDispatch();
   const [positionList, setPositionList] = useState(SPORT_TYPES[0].positionList);
-  const sportObj = SPORT_TYPES.map((x) => ({ name: x.sport, isActive: false }));
+  const sportObj = SPORT_TYPES.filter((x) => x.sport !== SPORT_NAME_LOOKUP.football ).map((x) => ({ name: x.sport, isActive: false }));
   const [sportFromRedux, setSportFromRedux] = useState(useSelector(getSportTypeRedux));
   const [isPromoFromRedux, setIsPromoFromRedux] = useState(useSelector(getIsPromoRedux));
   const [categoryList, setCategoryList] = useState([...sportObj]);
@@ -681,16 +681,6 @@ export default function Home(props) {
               </div>
               {selector.isSignedIn() ? (
                 <div className="ml-12 mt-4 md:flex md:flex-row md:ml-8">
-                  {isClaimedFootball ? (
-                    ''
-                  ) : (
-                    <button
-                      className="w-60 flex text-center justify-center items-center iphone5:w-64 bg-indigo-buttonblue font-montserrat text-indigo-white p-3 mb-4 md:mr-4 text-xs "
-                      onClick={(e) => handleButtonClick(e, 'FOOTBALL')}
-                    >
-                      CLAIM FOOTBALL PACK
-                    </button>
-                  )}
                   {isClaimedBasketball ? (
                     ''
                   ) : (
@@ -724,16 +714,6 @@ export default function Home(props) {
                 </div>
               ) : (
                 <div className="ml-12 mt-4 md:flex md:flex-row md:ml-8">
-                  {isClaimedFootball ? (
-                    ''
-                  ) : (
-                    <button
-                      className="w-60 flex text-center justify-center items-center iphone5:w-64 bg-indigo-buttonblue font-montserrat text-indigo-white p-3 mb-4 md:mr-4 text-xs "
-                      onClick={logIn}
-                    >
-                      CLAIM FOOTBALL PACK
-                    </button>
-                  )}
                   {isClaimedBasketball ? (
                     ''
                   ) : (
