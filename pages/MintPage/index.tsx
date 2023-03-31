@@ -59,7 +59,10 @@ export default function Home(props) {
   const { contract } = selector.store.getState();
   const dispatch = useDispatch();
   const [positionList, setPositionList] = useState(SPORT_TYPES[0].positionList);
-  const sportObj = SPORT_TYPES.filter((x) => x.sport !== SPORT_NAME_LOOKUP.football ).map((x) => ({ name: x.sport, isActive: false }));
+  const sportObj = SPORT_TYPES.filter((x) => x.sport !== SPORT_NAME_LOOKUP.football).map((x) => ({
+    name: x.sport,
+    isActive: false,
+  }));
   const [sportFromRedux, setSportFromRedux] = useState(useSelector(getSportTypeRedux));
   const [isPromoFromRedux, setIsPromoFromRedux] = useState(useSelector(getIsPromoRedux));
   const [categoryList, setCategoryList] = useState([...sportObj]);
@@ -111,7 +114,7 @@ export default function Home(props) {
   const nbaRegImage = '/images/packimages/nbaStarterPack.png';
   const nflSbImage = '/images/packimages/NFL-SB-Pack.png';
   const nbaSbImage = '/images/packimages/nbaStarterPackSoulbound.png';
-  const mlbSbImage = '/images/packimages/MLB-Lock-Pack.png'
+  const mlbSbImage = '/images/packimages/MLB-Lock-Pack.png';
   const [modalImage, setModalImage] = useState(nflSbImage);
   async function get_claim_status(accountId) {
     setIsClaimedFootball(
@@ -595,16 +598,19 @@ export default function Home(props) {
   useEffect(() => {
     if (router.asPath.indexOf('transactionHashes') > -1 && isPromoFromRedux === false) {
       sportFromRedux === SPORT_NAME_LOOKUP.basketball
-      ? setModalImage(nbaRegImage)
-      : sportFromRedux === SPORT_NAME_LOOKUP.football
-      ? setModalImage(nflRegImage)
-      : setModalImage(mlbSbImage);
+        ? setModalImage(nbaRegImage)
+        : sportFromRedux === SPORT_NAME_LOOKUP.football
+        ? setModalImage(nflRegImage)
+        : setModalImage(mlbSbImage);
       setTimeout(() => persistor.purge(), 200);
       setEditModal(true);
     } else if (router.asPath.indexOf('transactionHashes') > -1) {
       {
-        sportFromRedux === 'BASKETBALL' ? setModalImage(nbaSbImage) :
-         sportFromRedux === 'FOOTBALL' ? setModalImage(nflSbImage) : setModalImage(mlbSbImage);
+        sportFromRedux === 'BASKETBALL'
+          ? setModalImage(nbaSbImage)
+          : sportFromRedux === 'FOOTBALL'
+          ? setModalImage(nflSbImage)
+          : setModalImage(mlbSbImage);
       }
       setTimeout(() => persistor.purge(), 200);
       setEditModal(true);
@@ -850,7 +856,8 @@ export default function Home(props) {
                       </div>
 
                       <div className="border">
-                        {currentSport === SPORT_NAME_LOOKUP.basketball || SPORT_NAME_LOOKUP.baseball ? (
+                        {currentSport === SPORT_NAME_LOOKUP.basketball ||
+                        SPORT_NAME_LOOKUP.baseball ? (
                           ''
                         ) : (
                           <div>
@@ -883,7 +890,8 @@ export default function Home(props) {
                           </div>
                         )}
 
-                        {currentSport === SPORT_NAME_LOOKUP.basketball || SPORT_NAME_LOOKUP.baseball ? (
+                        {currentSport === SPORT_NAME_LOOKUP.basketball ||
+                        SPORT_NAME_LOOKUP.baseball ? (
                           <button
                             onClick={() => setUseNEP141(NEP141NEAR)}
                             className={
@@ -958,9 +966,7 @@ export default function Home(props) {
                     {currentSport === 'FOOTBALL' ? (
                       <div className="ml-3"></div>
                     ) : (
-                      <div>
-                        {/* <div className="mt-4">Limit: 10 packs per wallet</div> */}
-                      </div>
+                      <div>{/* <div className="mt-4">Limit: 10 packs per wallet</div> */}</div>
                     )}
                     {/*TODO: start styling */}
                     {/*<div>*/}
@@ -1127,7 +1133,7 @@ export default function Home(props) {
                   </div>
                 </div>
                 <div className="iphone5:mt-5 md:mt-0 ml-8 md:ml-2">
-                  <div className="text-xl font-bold font-monument ml-0 md:-mt-14 w-1/3">
+                  <div className="text-xl font-bold font-monument ml-0 md:-mt-6 w-1/3">
                     <ModalPortfolioContainer title="PACK DETAILS" textcolor="text-indigo-black" />
                   </div>
                   {currentSport === SPORT_NAME_LOOKUP.football ? (
@@ -1145,7 +1151,8 @@ export default function Home(props) {
                       This pack will contain 10 randomly generated <br></br>
                       American Baseball players.
                     </div>
-                  ) : ( ''
+                  ) : (
+                    ''
                     // <div className="mt-10">
                     //   This pack will contain ? randomly generated <br></br>
                     //   American Cricket players.
@@ -1153,47 +1160,50 @@ export default function Home(props) {
                   )}
                   <div className="mt-5 mb-12">
                     <div className="mb-5">1 for each of the positions below:</div>
-                    {currentSport === SPORT_NAME_LOOKUP.football ? (
-                      <ul className="marker list-disc pl-5 space-y-3 ">
-                        <li>1 Quarter Back (QB)</li>
-                        <li>2 Running Back (RB) </li>
-                        <li>2 Wide Receivers (WR) </li>
-                        <li>1 Tight End (TE)</li>
-                        <li>1 Flex (RB/WR/TE) </li>
-                        <li>1 Super Flex (QB/RB/WR/TE) </li>
-                      </ul>
-                    ) : currentSport === SPORT_NAME_LOOKUP.basketball ? (
-                      <ul className="marker list-disc pl-5 space-y-3 ">
-                        <li>1 Point Guard (PG)</li>
-                        <li>1 Shooting Guard (SG) </li>
-                        <li>1 Small Forward (SF) </li>
-                        <li>1 Power Forward (PF)</li>
-                        <li>1 Center (C) </li>
-                        <li>1 Guard (PG/SG) </li>
-                        <li>1 Forward (SF/PF) </li>
-                        <li>1 Any (ANY) </li>
-                      </ul>
-                    ) : currentSport === SPORT_NAME_LOOKUP.baseball ? (
-                      <ul className="marker list-disc pl-5 space-y-3 ">
-                        <li>2 Pitchers (P)</li>
-                        <li>1 Catcher (C)</li>
-                        <li>1 First Baseman (1B) </li>
-                        <li>1 Second Baseman (2B)</li>
-                        <li>1 Third Baseman (3B)</li>
-                        <li>1 Shortstop (SS) </li>
-                        <li>2 Outfielder (OF) </li>
-                        <li>1 Designated Hitter (DH) </li>
-                      </ul>
-                    ) : '' 
-                    // (
-                    //   //Ask for the amount for each position
-                    //   <ul className="marker list-disc pl-5 space-y-3 ">
-                    //     <li>1 Bowler (BWL)</li>
-                    //     <li>1 Keeper (K) </li>
-                    //     <li>1 Batsman (B) </li>
-                    //     <li>1 All rounder (AR)</li>
-                    //   </ul>)
-                      }
+                    {
+                      currentSport === SPORT_NAME_LOOKUP.football ? (
+                        <ul className="marker list-disc pl-5 space-y-3 ">
+                          <li>1 Quarter Back (QB)</li>
+                          <li>2 Running Back (RB) </li>
+                          <li>2 Wide Receivers (WR) </li>
+                          <li>1 Tight End (TE)</li>
+                          <li>1 Flex (RB/WR/TE) </li>
+                          <li>1 Super Flex (QB/RB/WR/TE) </li>
+                        </ul>
+                      ) : currentSport === SPORT_NAME_LOOKUP.basketball ? (
+                        <ul className="marker list-disc pl-5 space-y-3 ">
+                          <li>1 Point Guard (PG)</li>
+                          <li>1 Shooting Guard (SG) </li>
+                          <li>1 Small Forward (SF) </li>
+                          <li>1 Power Forward (PF)</li>
+                          <li>1 Center (C) </li>
+                          <li>1 Guard (PG/SG) </li>
+                          <li>1 Forward (SF/PF) </li>
+                          <li>1 Any (ANY) </li>
+                        </ul>
+                      ) : currentSport === SPORT_NAME_LOOKUP.baseball ? (
+                        <ul className="marker list-disc pl-5 space-y-3 ">
+                          <li>2 Pitchers (P)</li>
+                          <li>1 Catcher (C)</li>
+                          <li>1 First Baseman (1B) </li>
+                          <li>1 Second Baseman (2B)</li>
+                          <li>1 Third Baseman (3B)</li>
+                          <li>1 Shortstop (SS) </li>
+                          <li>2 Outfielder (OF) </li>
+                          <li>1 Designated Hitter (DH) </li>
+                        </ul>
+                      ) : (
+                        ''
+                      )
+                      // (
+                      //   //Ask for the amount for each position
+                      //   <ul className="marker list-disc pl-5 space-y-3 ">
+                      //     <li>1 Bowler (BWL)</li>
+                      //     <li>1 Keeper (K) </li>
+                      //     <li>1 Batsman (B) </li>
+                      //     <li>1 All rounder (AR)</li>
+                      //   </ul>)
+                    }
                   </div>
                 </div>
               </div>
