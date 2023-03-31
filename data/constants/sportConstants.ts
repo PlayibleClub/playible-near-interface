@@ -206,7 +206,7 @@ export const EXTRA_NBA = [
 export const SPORT_CONTRACT_LOOKUP = {
   basketball: '.basketball.',
   football: '.nfl.',
-  baseball: '.mlb',
+  baseball: '.baseball',
   // cricket: '.cricket',
 };
 export const SPORT_NAME_LOOKUP = {

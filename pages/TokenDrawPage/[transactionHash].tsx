@@ -78,16 +78,12 @@ const TokenDrawPage = (props) => {
   });
 
   function findContract(contract) {
-    if (
-      contract.includes(SPORT_CONTRACT_LOOKUP.football) ||
-      !contract.includes(SPORT_CONTRACT_LOOKUP.basketball) ||
-      !contract.includes(SPORT_CONTRACT_LOOKUP.baseball)
-    ) {
+    if (contract.includes(SPORT_CONTRACT_LOOKUP.football)) {
       return fileList.find((x) => x.name === SPORT_NAME_LOOKUP.football);
     } else if (contract.includes(SPORT_CONTRACT_LOOKUP.basketball)) {
       return fileList.find((x) => x.name === SPORT_NAME_LOOKUP.basketball);
     } else if (contract.includes(SPORT_CONTRACT_LOOKUP.baseball)) {
-      return fileList.find((x) => x.name === SPORT_NAME_LOOKUP.baseball)
+      return fileList.find((x) => x.name === SPORT_NAME_LOOKUP.baseball);
     }
   }
 
