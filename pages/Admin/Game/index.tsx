@@ -187,15 +187,14 @@ export default function Index(props) {
     { positions: ['ANY'], amount: 1 },
   ]);
   const [positionsInfoBaseball, setPositionsInfoBaseball] = useState([
-    { positions: ['SP','RP'], amount: 2 },
+    { positions: ['SP', 'RP'], amount: 2 },
     { positions: ['C'], amount: 1 },
     { positions: ['1B'], amount: 1 },
     { positions: ['2B'], amount: 1 },
     { positions: ['3B'], amount: 1 },
     { positions: ['SS'], amount: 1 },
-    { positions: ['RF','LF','CF'], amount: 2 },
+    { positions: ['RF', 'LF', 'CF'], amount: 2 },
     { positions: ['RF', 'LF', 'CF', 'SS', '3B', '2B', '1B', 'C'], amount: 1 },
-
   ]);
   const [positionsDisplayBaseball, setPositionsDisplayBaseball] = useState([
     { positions: ['P'], amount: 2 },
@@ -206,7 +205,6 @@ export default function Index(props) {
     { positions: ['SS'], amount: 1 },
     { positions: ['OF'], amount: 2 },
     { positions: ['DH'], amount: 1 },
-
   ]);
   // const [positionsInfoCricket, setPositionsInfoCricket] = useState([
   //   { positions: ['BWL'], amount: 1 },
@@ -214,7 +212,7 @@ export default function Index(props) {
   //   { positions: ['B'], amount: 1 },
   //   { positions: ['AR'], amount: 1 },
   // ]);
-  
+
   // const [positionsDisplayCricket, setPositionsDisplayCricket] = useState([
   //   { positions: ['BWL'], amount: 1 },
   //   { positions: ['K'], amount: 1 },
@@ -694,14 +692,14 @@ export default function Index(props) {
         setPositionsDisplayBaseball(current2);
         setRemountPositionArea(Math.random());
       }
-    } 
+    }
     // else {
     //   let position = [details['position']];
     //   let display = position;
     //   let amount = details['positionAmount'];
-   
+
     //   let found = positionsInfoCricket.findIndex((e) => e.positions.join() === position.join());
-  
+
     //   if (positionsInfoCricket.length === 0) {
     //     let object = { positions: position, amount: amount };
     //     let object2 = { positions: display, amount: amount };
@@ -740,29 +738,27 @@ export default function Index(props) {
         ];
       //baseball placeholder
       case 'BASEBALL':
-        return [
-          { name: 'DESIGNATED HITTER', key: 'DH' },
-        ];
-        //cricket placeholder
-        // case 'CRICKET':
-        // return [
-        //   { name: 'FLEX', key: 'FLEX' },
-        //   { name: 'SUPERFLEX', key: 'SUPERFLEX' },
-        // ];
-    }  
+        return [{ name: 'DESIGNATED HITTER', key: 'DH' }];
+      //cricket placeholder
+      // case 'CRICKET':
+      // return [
+      //   { name: 'FLEX', key: 'FLEX' },
+      //   { name: 'SUPERFLEX', key: 'SUPERFLEX' },
+      // ];
+    }
   };
   const handleRemove = (e, currentSport) => {
     e.preventDefault();
     if (currentSport === 'FOOTBALL') {
       positionsInfo.pop();
       positionsDisplay.pop();
-    } else if (currentSport === 'BASKETBALL'){
+    } else if (currentSport === 'BASKETBALL') {
       positionsInfoBasketball.pop();
       positionsDisplayBasketball.pop();
-    } else if (currentSport === 'BASEBALL'){
+    } else if (currentSport === 'BASEBALL') {
       positionsInfoBaseball.pop();
       positionsDisplayBaseball.pop();
-    } 
+    }
     // else {
     //   positionsInfoCricket.pop();
     //   positionsDisplayCricket.pop();
@@ -855,7 +851,12 @@ export default function Index(props) {
         game_time_start: dateStart,
         game_time_end: dateEnd,
         whitelist: whitelistInfo,
-        positions: currentSport === 'FOOTBALL' ? positionsInfo : (currentSport === 'BASKETBALL' ? positionsInfoBasketball : positionsInfoBaseball),
+        positions:
+          currentSport === 'FOOTBALL'
+            ? positionsInfo
+            : currentSport === 'BASKETBALL'
+            ? positionsInfoBasketball
+            : positionsInfoBaseball,
         lineup_len: getLineupLength(currentSport),
         game_description: gameDescription,
         prize_description: prizeDescription,
@@ -879,7 +880,12 @@ export default function Index(props) {
         game_time_start: dateStart,
         game_time_end: dateEnd,
         whitelist: whitelistInfo,
-        positions: currentSport === 'FOOTBALL' ? positionsInfo : (currentSport === 'BASKETBALL' ? positionsInfoBasketball : positionsInfoBaseball),
+        positions:
+          currentSport === 'FOOTBALL'
+            ? positionsInfo
+            : currentSport === 'BASKETBALL'
+            ? positionsInfoBasketball
+            : positionsInfoBaseball,
         lineup_len: getLineupLength(currentSport),
         game_description: gameDescription,
         prize_description: prizeDescription,
@@ -1347,20 +1353,19 @@ export default function Index(props) {
                             );
                           })}
                         </div>
-                      )
-                      //  : 
-                      //  currentSport === 'CRICKET' ? (
-                      //   <div className="border outline-none rounded-lg px-3 p-2">
-                      //     {positionsDisplayCricket.map((x) => {
-                      //       return (
-                      //         <label className="flex w-full whitespace-pre-line">
-                      //           Position: {x.positions} Amount: {x.amount}
-                      //         </label>
-                      //       );
-                      //     })}
-                      //   </div>
-                      // ) 
-                      : (
+                      ) : (
+                        //  :
+                        //  currentSport === 'CRICKET' ? (
+                        //   <div className="border outline-none rounded-lg px-3 p-2">
+                        //     {positionsDisplayCricket.map((x) => {
+                        //       return (
+                        //         <label className="flex w-full whitespace-pre-line">
+                        //           Position: {x.positions} Amount: {x.amount}
+                        //         </label>
+                        //       );
+                        //     })}
+                        //   </div>
+                        // )
                         <div className="border outline-none rounded-lg px-3 p-2">
                           {positionsDisplayBaseball.map((x) => {
                             return (
@@ -1452,7 +1457,13 @@ export default function Index(props) {
                 {position.positions} {position.amount}x
               </li>
             ))
-          : positionsDisplayBasketball.map((position) => (
+          : currentSport === 'BASKETBALL'
+          ? positionsDisplayBasketball.map((position) => (
+              <li>
+                {position.positions} {position.amount}x
+              </li>
+            ))
+          : positionsDisplayBaseball.map((position) => (
               <li>
                 {position.positions} {position.amount}x
               </li>
