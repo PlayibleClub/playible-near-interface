@@ -990,7 +990,7 @@ export default function Home(props) {
                         262}
                       /{minterConfig.nft_pack_max_sale_supply + RESERVED_AMOUNT} packs remaining */}
                     </div>
-                    <div>{currentSport === 'FOOTBALL' ? selectMint() : selectMintNba()}</div>
+                    <div>{currentSport === 'FOOTBALL' ? selectMint() : currentSport === 'BASKETBALL' ? selectMintNba() : selectMintMlb()}</div>
                     {currentSport === 'FOOTBALL' ? (
                       <div className="ml-3"></div>
                     ) : (
