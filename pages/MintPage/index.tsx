@@ -113,6 +113,7 @@ export default function Home(props) {
   const [editModal, setEditModal] = useState(false);
   const nflRegImage = '/images/packimages/nflStarterPack.png';
   const nbaRegImage = '/images/packimages/nbaStarterPack.png';
+  const mlbRegImage = '/images/packimages/mlbStarterPack.png';
   const nflSbImage = '/images/packimages/NFL-SB-Pack.png';
   const nbaSbImage = '/images/packimages/nbaStarterPackSoulbound.png';
   const mlbSbImage = '/images/packimages/MLB-Lock-Pack.png';
@@ -625,7 +626,7 @@ export default function Home(props) {
         ? setModalImage(nbaRegImage)
         : sportFromRedux === SPORT_NAME_LOOKUP.football
         ? setModalImage(nflRegImage)
-        : setModalImage(mlbSbImage);
+        : setModalImage(mlbRegImage);
       setTimeout(() => persistor.purge(), 200);
       setEditModal(true);
     } else if (router.asPath.indexOf('transactionHashes') > -1) {
