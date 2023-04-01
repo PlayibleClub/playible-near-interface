@@ -58,20 +58,20 @@ export const EXTRA_NFL = [
   },
 ];
 
-export const EXTRA_MLB  = [
+export const EXTRA_MLB = [
   {
     name: 'DESIGNATED HITTER',
     key: ['DH', 'RF', 'LF', 'CF', 'SS', '3B', '2B', '1B', 'C'],
   },
   {
     name: 'PITCHER',
-    key: ['SP','RP'],
+    key: ['SP', 'RP'],
   },
   {
     name: 'OUTFIELDER',
     key: ['RF', 'LF', 'CF'],
   },
-]
+];
 
 export const NBA_POSITIONS = [
   {
@@ -138,7 +138,7 @@ export const MLB_ASSET_POSITIONS = [
   {
     name: 'OUTFIELDER',
     key: 'LF',
-  }
+  },
 ];
 
 export const MLB_POSITIONS = [
@@ -173,26 +173,28 @@ export const MLB_POSITIONS = [
   {
     name: 'DESIGNATED HITTER',
     key: 'DH,RF,LF,CF,SS,3B,2B,1B,C',
-  }
+  },
 ];
-// export const CRICKET_POSITIONS = [
-//   {
-//     name: 'BOWLER',
-//     key: 'BWL',
-//   },
-//   {
-//     name: 'KEEPER',
-//     key: 'K',
-//   },
-//   {
-//     name: 'BATSMAN',
-//     key: 'B',
-//   },
-//   {
-//     name: 'ALL ROUNDER',
-//     key: 'AR',
-//   },
-// ];
+export const CRICKET_POSITIONS = [
+  {
+    name: 'BOWLER',
+    key: 'BWL',
+  },
+  {
+    name: 'KEEPER',
+    key: 'K',
+  },
+  {
+    name: 'BATSMAN',
+    key: 'B',
+  },
+  {
+    name: 'ALL ROUNDER',
+    key: 'AR',
+  },
+];
+
+export const EXTRA_CRICKET = [];
 export const EXTRA_NBA = [
   {
     name: 'GUARD',
@@ -211,7 +213,7 @@ export const SPORT_CONTRACT_LOOKUP = {
   basketball: '.basketball.',
   football: '.nfl.',
   baseball: '.baseball',
-  // cricket: '.cricket',
+  cricket: '.cricket',
 };
 export const SPORT_NAME_LOOKUP = {
   basketball: 'BASKETBALL',
@@ -220,8 +222,8 @@ export const SPORT_NAME_LOOKUP = {
   footballKey: 'nfl',
   baseball: 'BASEBALL',
   baseballKey: 'mlb',
-  // cricket: 'CRICKET',
-  // cricketKey: 'cricket',
+  cricket: 'CRICKET',
+  cricketKey: 'cricket',
 };
 export const SPORT_TYPES = [
   {
@@ -267,20 +269,20 @@ export const SPORT_TYPES = [
     positionList: NFL_POSITIONS,
     extra: EXTRA_NFL,
   },
-  // {
-  //   key: 'CRICKET',
-  //   sport: SPORT_NAME_LOOKUP.cricket,
-  //   mintContract: getContract(MINTER_BASKETBALL),
-  //   packContract: getContract(PACK_BASKETBALL),
-  //   packPromoContract: getContract(PACK_PROMO_BASKETBALL),
-  //   regContract: getContract(ATHLETE_BASKETBALL),
-  //   promoContract: getContract(ATHLETE_PROMO_BASKETBALL),
-  //   openContract: getContract(OPENPACK_BASKETBALL),
-  //   openPromoContract: getContract(OPENPACK_PROMO_BASKETBALL),
-  //   gameContract: getContract(GAME_BASKETBALL),
-  //   positionList: CRICKET_POSITIONS,
-  //   extra: EXTRA_NBA,
-  // },
+  {
+    key: 'CRICKET',
+    sport: SPORT_NAME_LOOKUP.cricket,
+    mintContract: getContract(MINTER_BASKETBALL),
+    packContract: getContract(PACK_BASKETBALL),
+    packPromoContract: getContract(PACK_PROMO_BASKETBALL),
+    regContract: getContract(ATHLETE_BASKETBALL),
+    promoContract: getContract(ATHLETE_PROMO_BASKETBALL),
+    openContract: getContract(OPENPACK_BASKETBALL),
+    openPromoContract: getContract(OPENPACK_PROMO_BASKETBALL),
+    gameContract: getContract(GAME_BASKETBALL),
+    positionList: CRICKET_POSITIONS,
+    extra: EXTRA_NBA,
+  },
 ];
 
 function getSportType(sport) {
