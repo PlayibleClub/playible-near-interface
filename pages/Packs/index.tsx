@@ -37,7 +37,8 @@ export default function Packs() {
   const [activeCategory, setCategory] = useState('NEW');
   const nflImage = '/images/packimages/NFL-SB-Pack.png';
   const nbaImage = '/images/packimages/nbaStarterPackSoulbound.png';
-  const mlbSBImage = '/images/packimages/MLB-Lock-Pack.png'
+  const mlbSBImage = '/images/packimages/MLB-Lock-Pack.png';
+  const cricketSBImage = '/images/packimages/Cricket-SB-Pack.png';
   const [modalImage, setModalImage] = useState(nflImage);
   const [currentTotal, setCurrentTotal] = useState(0);
   const [categoryList, setcategoryList] = useState([
@@ -185,17 +186,24 @@ export default function Packs() {
       {
         //add checking here, use sportFromRedux variable
         sportFromRedux === SPORT_NAME_LOOKUP.basketball
-        ? setModalImage(nbaImage)
-        : sportFromRedux === SPORT_NAME_LOOKUP.football
-        ? setModalImage(nflImage)
-        : setModalImage(mlbSBImage);}
+          ? setModalImage(nbaImage)
+          : sportFromRedux === SPORT_NAME_LOOKUP.football
+          ? setModalImage(nflImage)
+          : sportFromRedux === SPORT_NAME_LOOKUP.baseball
+          ? setModalImage(mlbSBImage)
+          : setModalImage(cricketSBImage);
+      }
       setTimeout(() => persistor.purge(), 200);
       setEditModal(true);
-    }
-    else if (router.asPath.indexOf('transactionHashes') > -1) {
+    } else if (router.asPath.indexOf('transactionHashes') > -1) {
       {
-        sportFromRedux === 'BASKETBALL' ? setModalImage(nbaImage) :
-         sportFromRedux === 'FOOTBALL' ? setModalImage(nflImage) : setModalImage(mlbSBImage);
+        sportFromRedux === 'BASKETBALL'
+          ? setModalImage(nbaImage)
+          : sportFromRedux === 'FOOTBALL'
+          ? setModalImage(nflImage)
+          : sportFromRedux === 'BASEBALL'
+          ? setModalImage(mlbSBImage)
+          : setModalImage(cricketSBImage);
       }
       setTimeout(() => persistor.purge(), 200);
       setEditModal(true);
@@ -265,8 +273,9 @@ export default function Packs() {
                     </button>
                   ) : (
                     <button
-                      className={`${currentSport === SPORT_NAME_LOOKUP.football
-                        ? 'hidden' : ''}bg-indigo-buttonblue text-indigo-white iphone5:w-full md:w-80 h-10 
+                      className={`${
+                        currentSport === SPORT_NAME_LOOKUP.football ? 'hidden' : ''
+                      }bg-indigo-buttonblue text-indigo-white iphone5:w-full md:w-80 h-10 
            text-center font-bold text-xs`}
                       onClick={(e) => handleButtonClick(e)}
                     >

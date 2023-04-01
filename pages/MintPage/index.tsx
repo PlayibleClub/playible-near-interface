@@ -100,7 +100,7 @@ export default function Home(props) {
   const [isClaimedFootball, setIsClaimedFootball] = useState(false);
   const [isClaimedBasketball, setIsClaimedBasketball] = useState(false);
   const [isClaimedBaseball, setIsClaimedBaseball] = useState(false);
-  // const [isClaimedCricket, setIsClaimedCricket] = useState(false);
+  const [isClaimedCricket, setIsClaimedCricket] = useState(false);
   const router = useRouter();
   const [day, setDay] = useState(0);
   const [hour, setHour] = useState(0);
@@ -114,9 +114,11 @@ export default function Home(props) {
   const nflRegImage = '/images/packimages/nflStarterPack.png';
   const nbaRegImage = '/images/packimages/nbaStarterPack.png';
   const mlbRegImage = '/images/packimages/mlbStarterPack.png';
+  const cricketRegImage = '/images/packimages/cricketStarterPack.png';
   const nflSbImage = '/images/packimages/NFL-SB-Pack.png';
   const nbaSbImage = '/images/packimages/nbaStarterPackSoulbound.png';
   const mlbSbImage = '/images/packimages/MLB-Lock-Pack.png';
+  const cricketSbImage = '/images/packimages/Cricket-SB-Pack.png';
   const [modalImage, setModalImage] = useState(nflSbImage);
   async function get_claim_status(accountId) {
     setIsClaimedFootball(
@@ -128,9 +130,9 @@ export default function Home(props) {
     setIsClaimedBaseball(
       await query_claim_status(accountId, getSportType('BASEBALL').packPromoContract)
     );
-    // setIsClaimedCricket(
-    //   await query_claim_status(accountId, getSportType('CRICKET').packPromoContract)
-    // );
+    setIsClaimedCricket(
+      await query_claim_status(accountId, getSportType('CRICKET').packPromoContract)
+    );
   }
   function query_config_contract() {
     provider
@@ -626,7 +628,9 @@ export default function Home(props) {
         ? setModalImage(nbaRegImage)
         : sportFromRedux === SPORT_NAME_LOOKUP.football
         ? setModalImage(nflRegImage)
-        : setModalImage(mlbRegImage);
+        : sportFromRedux === SPORT_NAME_LOOKUP.baseball
+        ? setModalImage(mlbRegImage)
+        : setModalImage(cricketRegImage);
       setTimeout(() => persistor.purge(), 200);
       setEditModal(true);
     } else if (router.asPath.indexOf('transactionHashes') > -1) {
@@ -635,7 +639,9 @@ export default function Home(props) {
           ? setModalImage(nbaSbImage)
           : sportFromRedux === 'FOOTBALL'
           ? setModalImage(nflSbImage)
-          : setModalImage(mlbSbImage);
+          : sportFromRedux === 'BASEBALL'
+          ? setModalImage(mlbSbImage)
+          : setModalImage(cricketSbImage);
       }
       setTimeout(() => persistor.purge(), 200);
       setEditModal(true);
@@ -732,7 +738,7 @@ export default function Home(props) {
                       CLAIM BASEBALL PACK
                     </button>
                   )}
-                  {/* {isClaimedCricket ? (
+                  {isClaimedCricket ? (
                     ''
                   ) : (
                     <button
@@ -741,7 +747,7 @@ export default function Home(props) {
                     >
                       CLAIM CRICKET PACK
                     </button>
-                  )} */}
+                  )}
                 </div>
               ) : (
                 <div className="ml-12 mt-4 md:flex md:flex-row md:ml-8">
@@ -765,7 +771,7 @@ export default function Home(props) {
                       CLAIM BASEBALL PACK
                     </button>
                   )}
-                  {/* {isClaimedCricket ? (
+                  {isClaimedCricket ? (
                     ''
                   ) : (
                     <button
@@ -774,7 +780,7 @@ export default function Home(props) {
                     >
                       CLAIM CRICKET PACK
                     </button>
-                  )} */}
+                  )}
                 </div>
               )}
 
@@ -851,7 +857,7 @@ export default function Home(props) {
                   ) : (
                     <div className="md:w-1/2 w-full ">
                       <Image
-                        src={'/images/mintpagebasketball.png'}
+                        src={'/images/mintpagecricket.png'}
                         width={400}
                         height={400}
                         alt="pack-image"
