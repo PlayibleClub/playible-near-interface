@@ -302,7 +302,7 @@ const Play = (props) => {
                                         startDate={data.start_time}
                                         endDate={data.end_time}
                                         img={data.game_image}
-                                        hasEntered={data.user_team_count.team_names.length}
+                                        hasEntered={data.user_team_count.team_names?.length}
                                         index={() => changeIndex(1)}
                                       />
                                     </div>
