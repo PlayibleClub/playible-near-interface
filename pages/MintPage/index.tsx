@@ -990,7 +990,13 @@ export default function Home(props) {
                         262}
                       /{minterConfig.nft_pack_max_sale_supply + RESERVED_AMOUNT} packs remaining */}
                     </div>
-                    <div>{currentSport === 'FOOTBALL' ? selectMint() : currentSport === 'BASKETBALL' ? selectMintNba() : selectMintMlb()}</div>
+                    <div>
+                      {currentSport === 'FOOTBALL'
+                        ? selectMint()
+                        : currentSport === 'BASKETBALL'
+                        ? selectMintNba()
+                        : selectMintMlb()}
+                    </div>
                     {currentSport === 'FOOTBALL' ? (
                       <div className="ml-3"></div>
                     ) : (
@@ -1190,50 +1196,46 @@ export default function Home(props) {
                   )}
                   <div className="mt-5 mb-12">
                     <div className="mb-5">1 for each of the positions below:</div>
-                    {
-                      currentSport === SPORT_NAME_LOOKUP.football ? (
-                        <ul className="marker list-disc pl-5 space-y-3 ">
-                          <li>1 Quarter Back (QB)</li>
-                          <li>2 Running Back (RB) </li>
-                          <li>2 Wide Receivers (WR) </li>
-                          <li>1 Tight End (TE)</li>
-                          <li>1 Flex (RB/WR/TE) </li>
-                          <li>1 Super Flex (QB/RB/WR/TE) </li>
-                        </ul>
-                      ) : currentSport === SPORT_NAME_LOOKUP.basketball ? (
-                        <ul className="marker list-disc pl-5 space-y-3 ">
-                          <li>1 Point Guard (PG)</li>
-                          <li>1 Shooting Guard (SG) </li>
-                          <li>1 Small Forward (SF) </li>
-                          <li>1 Power Forward (PF)</li>
-                          <li>1 Center (C) </li>
-                          <li>1 Guard (PG/SG) </li>
-                          <li>1 Forward (SF/PF) </li>
-                          <li>1 Any (ANY) </li>
-                        </ul>
-                      ) : currentSport === SPORT_NAME_LOOKUP.baseball ? (
-                        <ul className="marker list-disc pl-5 space-y-3 ">
-                          <li>2 Pitchers (P)</li>
-                          <li>1 Catcher (C)</li>
-                          <li>1 First Baseman (1B) </li>
-                          <li>1 Second Baseman (2B)</li>
-                          <li>1 Third Baseman (3B)</li>
-                          <li>1 Shortstop (SS) </li>
-                          <li>2 Outfielder (OF) </li>
-                          <li>1 Designated Hitter (DH) </li>
-                        </ul>
-                      ) : (
-                        ''
-                      )
-                      // (
-                      //   //Ask for the amount for each position
-                      //   <ul className="marker list-disc pl-5 space-y-3 ">
-                      //     <li>1 Bowler (BWL)</li>
-                      //     <li>1 Keeper (K) </li>
-                      //     <li>1 Batsman (B) </li>
-                      //     <li>1 All rounder (AR)</li>
-                      //   </ul>)
-                    }
+                    {currentSport === SPORT_NAME_LOOKUP.football ? (
+                      <ul className="marker list-disc pl-5 space-y-3 ">
+                        <li>1 Quarter Back (QB)</li>
+                        <li>2 Running Back (RB) </li>
+                        <li>2 Wide Receivers (WR) </li>
+                        <li>1 Tight End (TE)</li>
+                        <li>1 Flex (RB/WR/TE) </li>
+                        <li>1 Super Flex (QB/RB/WR/TE) </li>
+                      </ul>
+                    ) : currentSport === SPORT_NAME_LOOKUP.basketball ? (
+                      <ul className="marker list-disc pl-5 space-y-3 ">
+                        <li>1 Point Guard (PG)</li>
+                        <li>1 Shooting Guard (SG) </li>
+                        <li>1 Small Forward (SF) </li>
+                        <li>1 Power Forward (PF)</li>
+                        <li>1 Center (C) </li>
+                        <li>1 Guard (PG/SG) </li>
+                        <li>1 Forward (SF/PF) </li>
+                        <li>1 Any (ANY) </li>
+                      </ul>
+                    ) : currentSport === SPORT_NAME_LOOKUP.baseball ? (
+                      <ul className="marker list-disc pl-5 space-y-3 ">
+                        <li>2 Pitchers (P)</li>
+                        <li>1 Catcher (C)</li>
+                        <li>1 First Baseman (1B) </li>
+                        <li>1 Second Baseman (2B)</li>
+                        <li>1 Third Baseman (3B)</li>
+                        <li>1 Shortstop (SS) </li>
+                        <li>2 Outfielder (OF) </li>
+                        <li>1 Designated Hitter (DH) </li>
+                      </ul>
+                    ) : (
+                      //Ask for the amount for each position
+                      <ul className="marker list-disc pl-5 space-y-3 ">
+                        <li>1 Bowler (BWL)</li>
+                        <li>1 Keeper (K) </li>
+                        <li>1 Batsman (B) </li>
+                        <li>1 All rounder (AR)</li>
+                      </ul>
+                    )}
                   </div>
                 </div>
               </div>
