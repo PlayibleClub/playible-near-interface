@@ -113,6 +113,7 @@ export default function Home(props) {
   const [editModal, setEditModal] = useState(false);
   const nflRegImage = '/images/packimages/nflStarterPack.png';
   const nbaRegImage = '/images/packimages/nbaStarterPack.png';
+  const mlbRegImage = '/images/packimages/mlbStarterPack.png';
   const nflSbImage = '/images/packimages/NFL-SB-Pack.png';
   const nbaSbImage = '/images/packimages/nbaStarterPackSoulbound.png';
   const mlbSbImage = '/images/packimages/MLB-Lock-Pack.png';
@@ -625,7 +626,7 @@ export default function Home(props) {
         ? setModalImage(nbaRegImage)
         : sportFromRedux === SPORT_NAME_LOOKUP.football
         ? setModalImage(nflRegImage)
-        : setModalImage(mlbSbImage);
+        : setModalImage(mlbRegImage);
       setTimeout(() => persistor.purge(), 200);
       setEditModal(true);
     } else if (router.asPath.indexOf('transactionHashes') > -1) {
@@ -990,7 +991,13 @@ export default function Home(props) {
                         262}
                       /{minterConfig.nft_pack_max_sale_supply + RESERVED_AMOUNT} packs remaining */}
                     </div>
-                    <div>{currentSport === 'FOOTBALL' ? selectMint() : currentSport === 'BASKETBALL' ? selectMintNba() : selectMintMlb()}</div>
+                    <div>
+                      {currentSport === 'FOOTBALL'
+                        ? selectMint()
+                        : currentSport === 'BASKETBALL'
+                        ? selectMintNba()
+                        : selectMintMlb()}
+                    </div>
                     {currentSport === 'FOOTBALL' ? (
                       <div className="ml-3"></div>
                     ) : (
