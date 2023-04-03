@@ -29,12 +29,12 @@ export default function Promotional(props) {
       JSON.stringify({
         msg: 'Promotional pack',
         receiver_id:
-        currentSport === SPORT_NAME_LOOKUP.football
-  ? whitelistInfoNFL?.toString()
-  : currentSport === SPORT_NAME_LOOKUP.baseball
-    ? whitelistInfoMLB?.toString()
-    : ''
-    // whitelistInfoCRICKET?.toString()
+          currentSport === SPORT_NAME_LOOKUP.football
+            ? whitelistInfoNFL?.toString()
+            : currentSport === SPORT_NAME_LOOKUP.baseball
+              ? whitelistInfoMLB?.toString()
+              : currentSport === SPORT_NAME_LOOKUP.basketball ? whitelistInfoNBA?.toString() : ''
+        // whitelistInfoCRICKET?.toString()
       })
     );
 
@@ -138,7 +138,7 @@ export default function Promotional(props) {
   //     }
   //   }
   // };
-  
+
   const handleButtonClick = (e) => {
     e.preventDefault();
     execute_send_type_1_pack(selector);
@@ -147,79 +147,79 @@ export default function Promotional(props) {
   return (
     <Container>
       <div className='grid grid-cols-2'>
-      <div className="flex flex-col w-1/2 ml-24 mt-24">
-        <label className="font-monument" htmlFor="duration">
-          SEND TYPE 1 FOOTBALL PACK
-        </label>
-        <input
-          className="border outline-none rounded-lg px-3 p-2"
-          id="receiverAccount"
-          name="receiverAccount"
-          type="text"
-          placeholder="Enter account to send type 1 pack to."
-          onChange={(e) => {
-            setCurrentSport('FOOTBALL'), onChangeWhitelistNFL(e);
-          }}
-          value={detailsNFL.receiverAccount}
-        />
-        <div className="  mt-6">
-          <button
-            className=" flex text-center justify-center items-center iphone5:w-64 bg-indigo-buttonblue font-montserrat text-indigo-white p-3 mb-4 md:mr-4 text-xs"
-            onClick={(e) => handleButtonClick(e)}
-          >
-            Send
-          </button>
+        <div className="flex flex-col w-1/2 ml-24 mt-24">
+          <label className="font-monument" htmlFor="duration">
+            SEND TYPE 1 FOOTBALL PACK
+          </label>
+          <input
+            className="border outline-none rounded-lg px-3 p-2"
+            id="receiverAccount"
+            name="receiverAccount"
+            type="text"
+            placeholder="Enter account to send type 1 pack to."
+            onChange={(e) => {
+              setCurrentSport('FOOTBALL'), onChangeWhitelistNFL(e);
+            }}
+            value={detailsNFL.receiverAccount}
+          />
+          <div className="  mt-6">
+            <button
+              className=" flex text-center justify-center items-center iphone5:w-64 bg-indigo-buttonblue font-montserrat text-indigo-white p-3 mb-4 md:mr-4 text-xs"
+              onClick={(e) => handleButtonClick(e)}
+            >
+              Send
+            </button>
+          </div>
         </div>
-      </div>
-      <div className="flex flex-col w-1/2 ml-24 mt-24">
-        <label className="font-monument" htmlFor="duration">
-          SEND TYPE 1 BASKETBALL PACK
-        </label>
-        <input
-          className="border outline-none rounded-lg px-3 p-2"
-          id="receiverAccount"
-          name="receiverAccount"
-          type="text"
-          placeholder="Enter account to send type 1 pack to."
-          onChange={(e) => {
-            setCurrentSport('BASKETBALL'), onChangeWhitelistNBA(e);
-          }}
-          value={detailsNBA.receiverAccount}
-        />
-        <div className="  mt-6">
-          <button
-            className=" flex text-center justify-center items-center iphone5:w-64 bg-indigo-buttonblue font-montserrat text-indigo-white p-3 mb-4 md:mr-4 text-xs"
-            onClick={(e) => handleButtonClick(e)}
-          >
-            Send
-          </button>
+        <div className="flex flex-col w-1/2 ml-24 mt-24">
+          <label className="font-monument" htmlFor="duration">
+            SEND TYPE 1 BASKETBALL PACK
+          </label>
+          <input
+            className="border outline-none rounded-lg px-3 p-2"
+            id="receiverAccount"
+            name="receiverAccount"
+            type="text"
+            placeholder="Enter account to send type 1 pack to."
+            onChange={(e) => {
+              setCurrentSport('BASKETBALL'), onChangeWhitelistNBA(e);
+            }}
+            value={detailsNBA.receiverAccount}
+          />
+          <div className="  mt-6">
+            <button
+              className=" flex text-center justify-center items-center iphone5:w-64 bg-indigo-buttonblue font-montserrat text-indigo-white p-3 mb-4 md:mr-4 text-xs"
+              onClick={(e) => handleButtonClick(e)}
+            >
+              Send
+            </button>
+          </div>
         </div>
-      </div>
-      <div className="flex flex-col w-1/2 ml-24 mt-24">
-        <label className="font-monument" htmlFor="duration">
-          SEND TYPE 1 BASEBALL PACK
-        </label>
-        <input
-          className="border outline-none rounded-lg px-3 p-2"
-          id="receiverAccount"
-          name="receiverAccount"
-          type="text"
-          placeholder="Enter account to send type 1 pack to."
-          onChange={(e) => {
-            setCurrentSport('BASEBALL'), onChangeWhitelistMLB(e);
-          }}
-          value={detailsMLB.receiverAccount}
-        />
-        <div className="  mt-6">
-          <button
-            className=" flex text-center justify-center items-center iphone5:w-64 bg-indigo-buttonblue font-montserrat text-indigo-white p-3 mb-4 md:mr-4 text-xs"
-            onClick={(e) => handleButtonClick(e)}
-          >
-            Send
-          </button>
+        <div className="flex flex-col w-1/2 ml-24 mt-24">
+          <label className="font-monument" htmlFor="duration">
+            SEND TYPE 1 BASEBALL PACK
+          </label>
+          <input
+            className="border outline-none rounded-lg px-3 p-2"
+            id="receiverAccount"
+            name="receiverAccount"
+            type="text"
+            placeholder="Enter account to send type 1 pack to."
+            onChange={(e) => {
+              setCurrentSport('BASEBALL'), onChangeWhitelistMLB(e);
+            }}
+            value={detailsMLB.receiverAccount}
+          />
+          <div className="  mt-6">
+            <button
+              className=" flex text-center justify-center items-center iphone5:w-64 bg-indigo-buttonblue font-montserrat text-indigo-white p-3 mb-4 md:mr-4 text-xs"
+              onClick={(e) => handleButtonClick(e)}
+            >
+              Send
+            </button>
+          </div>
         </div>
-      </div>
-      {/* <div className="flex flex-col w-1/2 ml-24 mt-24">
+        {/* <div className="flex flex-col w-1/2 ml-24 mt-24">
         <label className="font-monument" htmlFor="duration">
           SEND TYPE 1 CRICKET PACK
         </label>
