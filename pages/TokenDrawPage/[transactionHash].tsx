@@ -178,7 +178,7 @@ const TokenDrawPage = (props) => {
     //get the last transaction to check if token was transferred successfully
     console.log(queryFromNear);
     //@ts-ignore:next-line
-    const success = queryFromNear.status.SuccessValue;
+    const success = JSON.parse(decode(queryFromNear.status.SuccessValue));
     console.log(success);
     if (success) {
       //get the last transaction that holds the token_id needed
@@ -228,7 +228,7 @@ const TokenDrawPage = (props) => {
           })
           // get metadata
           .map(convertNftToAthlete)
-          .map(getAthleteInfoById)
+          .map((item) => getAthleteInfoById(item, null, null))
       )
     );
     setLoading(false);
