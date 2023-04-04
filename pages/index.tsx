@@ -135,16 +135,18 @@ export default function Home(props) {
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const featuredImagesDesktop = [
-    '/images/baseball_starterpack_publicmint_desktop.png',
-    '/images/baseball_starterpack_promotion_desktop.png',
+    '/images/baseball_starterpack_publicmint_desktop_updated.jpg',
+    '/images/baseball_starterpack_promotion_desktop_updated.jpg',
+    '/images/baseball_banner_live.jpg',
     '/images/basketball_starterpack_publicmint_desktop.png',
     '/images/basketball_championship_ongoing.png',
   ];
 
   const featuredImagesMobile = [
-    '/images/baseball_starterpack_publicmint_desktop.png',
-    '/images/baseball_starterpack_promotion_desktop.png',
-    '/images/basketball_starterpack_publicmint_mobile.png',
+    '/images/baseball_starterpack_publicmint_desktop_updated.jpg',
+    '/images/baseball_starterpack_promotion_desktop_updated.jpg',
+    '/images/baseball_banner_live.jpg',
+    '/images/basketball_starterpack_publicmint_desktop.png',
     '/images/basketball_championship_ongoing.png',
   ];
 

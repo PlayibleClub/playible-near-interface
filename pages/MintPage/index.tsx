@@ -848,7 +848,7 @@ export default function Home(props) {
                   ) : currentSport === SPORT_NAME_LOOKUP.baseball ? (
                     <div className="md:w-1/2 w-full ">
                       <Image
-                        src={'/images/mintpagebaseball.png'}
+                        src={'/images/mintpagebasketballupdated.jpg'}
                         width={400}
                         height={400}
                         alt="pack-image"
