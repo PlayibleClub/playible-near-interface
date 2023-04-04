@@ -261,7 +261,9 @@ const Games = (props) => {
             <div className="iphone5:ml-6 md:ml-18 ml-18 mt-4 md:mr-0 md:mb-0 iphone5:mr-6 iphone5:mb-10">
               <ModalPortfolioContainer textcolor="indigo-black" title={'LEADERBOARD'} />
               <div
-                className={`flex justify-end md:mr-1.5 iphone5:mr-2 iphoneX:mr-16 ${playerLineups.length > 0 ? '' : 'hidden'}`}
+                className={`flex justify-end md:mr-1.5 iphone5:mr-2 iphoneX:mr-16 ${
+                  playerLineups.length > 0 ? '' : 'hidden'
+                }`}
               >
                 <button
                   onClick={() => {
@@ -344,7 +346,7 @@ const Games = (props) => {
               </Modal>
 
               <EntrySummaryModal title={'ENTRY SUMMARY'} visible={entryModal}>
-                <div className=" transform iphone5:scale-55 md:scale-85 md:-mt-6 iphoneX:fixed iphoneX:-mt-6 iphone5:-ml-12 md:static">
+                <div className=" transform iphone5:scale-55 md:scale-85 md:-mt-6 iphoneX:fixed iphoneX:-mt-6 iphone5:-ml-20 md:-ml-12 md:static">
                   <ModalPortfolioContainer
                     title={playerLineups[currentIndex]?.teamName}
                     accountId={playerLineups[currentIndex]?.accountId}
@@ -353,7 +355,7 @@ const Games = (props) => {
                 </div>
                 <div className="h-128">
                   <div className="flex flex-col md:pb-12 ml-24 iphoneX:ml-24 md:ml-20">
-                    <div className="grid grid-cols-4 gap-6 md:gap-y-4 mb-2 md:mb-10 md:grid-cols-4 md:ml-7 mt-8 -ml-9 mr-6 md:mr-0  ">
+                    <div className="grid grid-cols-4 md:gap-6 iphone5:gap-x-20 md:gap-y-4 mb-2 md:mb-10 md:grid-cols-4 md:ml-7 iphone5:mt-12 iphone5:-ml-6 iphone5:mr-6 md:mr-0  ">
                       {playerLineups.length === 0
                         ? 'Loading athletes...'
                         : playerLineups[currentIndex]?.lineup.map((item, i) => {

@@ -83,10 +83,9 @@ export default function PackDetails(props) {
   function computeDeposit(deposit) {
     if (deposit / DECIMALS_NEAR >= 480000000000000000000000 / DECIMALS_NEAR) {
       return '1';
-    } else if (myPack.sport === 'BASEBALL'){
+    } else if (myPack.sport === 'BASEBALL') {
       return new BigNumber(10).multipliedBy(new BigNumber(MINT_STORAGE_COST)).toFixed();
-    }
-    else{
+    } else {
       return new BigNumber(8).multipliedBy(new BigNumber(MINT_STORAGE_COST)).toFixed();
     }
   }
@@ -142,18 +141,20 @@ export default function PackDetails(props) {
         <BackFunction prev={query.origin ? `/${query.origin}` : '/Packs'}></BackFunction>
       </div>
       <div className="flex flex-col w-full overflow-y-auto h-screen pb-40">
-        <div className="flex flex-row ml-24 mt-10">
+        <div className="flex flex-row md:ml-24 iphone5:ml-4 md:mt-10 iphone5:mt-20">
           <div>
             {packDetails.map((x) => {
               return <Image src={x.metadata.media} height="200" width="200" alt="pack-image" />;
             })}
           </div>
           <div className="grid grid-rows">
-            <div className="text-2xl font-bold font-monument">
+            <div className="iphone5:text-base md:text-2xl font-bold font-monument">
               {myPack.sport + ' ' + myPack.packName}
               <hr className="w-10 border-4"></hr>
             </div>
-            <div className="text-lg h-0 font-bold">#{myPack.id}</div>
+            <div className="md:text-lg iphone5:text-sm md:h-0 iphone5:h-5 font-bold">
+              #{myPack.id}
+            </div>
             <div className="text-sm">RELEASE 1</div>
             <button
               className="bg-indigo-buttonblue text-indigo-white w-5/6 md:w-80 h-10 text-center font-bold text-sm mt-4"
@@ -163,7 +164,7 @@ export default function PackDetails(props) {
             </button>
           </div>
         </div>
-        <div className="ml-8 md:ml-28 mt-16">
+        <div className="ml-8 md:ml-28 mt-10">
           <div className="text-2xl font-bold font-monument ">
             PACK DETAILS
             <hr className="w-10 border-4"></hr>
@@ -183,16 +184,19 @@ export default function PackDetails(props) {
               This pack will contain 10 randomly generated <br></br>
               American Baseball players.
             </div>
-          ) : ( ''
+          ) : (
+            ''
             // <div className="mt-10">
             //   This pack will contain ? randomly generated <br></br>
             //   American Cricket players.
             // </div>
           )}
           <div className="mt-5 mb-12">
-            {query.sport.toString().toUpperCase() === 'BASEBALL' ? 
-            (<div className="mb-5">An amount for each of the positions below:</div>) : 
-            (<div className="mb-5">1 for each of the positions below:</div>)}
+            {query.sport.toString().toUpperCase() === 'BASEBALL' ? (
+              <div className="mb-5">An amount for each of the positions below:</div>
+            ) : (
+              <div className="mb-5">1 for each of the positions below:</div>
+            )}
             {query.sport.toString().toUpperCase() === 'FOOTBALL' ? (
               <ul className="marker list-disc pl-5 space-y-3 ">
                 <li>1 Quarter Back (QB)</li>
