@@ -12,6 +12,8 @@ import Image from 'next/image';
 import { getSportType } from 'data/constants/sportConstants';
 import { query_nft_tokens_by_id } from 'utils/near/helper';
 const DECIMALS_NEAR = 1000000000000000000000000;
+const MINT_10_COST = 600000000000000000000000;
+const MINT_8_COST = 480000000000000000000000;
 export default function PackDetails(props) {
   const provider = new providers.JsonRpcProvider({
     url: getRPCProvider(),
@@ -80,13 +82,32 @@ export default function PackDetails(props) {
       setDeposit(computeDeposit(0));
     }
   }
+
+  // function computeDeposit(deposit) {
+  //   if (deposit / DECIMALS_NEAR >= 480000000000000000000000 / DECIMALS_NEAR) {
+  //     return '1';
+  //   } else if (myPack.sport === 'BASEBALL') {
+  //     return new BigNumber(10).multipliedBy(new BigNumber(MINT_STORAGE_COST)).toFixed();
+  //   } else {
+  //     return new BigNumber(8).multipliedBy(new BigNumber(MINT_STORAGE_COST)).toFixed();
+  //   }
+  // }
+
   function computeDeposit(deposit) {
-    if (deposit / DECIMALS_NEAR >= 480000000000000000000000 / DECIMALS_NEAR) {
-      return '1';
-    } else if (myPack.sport === 'BASEBALL') {
-      return new BigNumber(10).multipliedBy(new BigNumber(MINT_STORAGE_COST)).toFixed();
+    if (myPack.sport === 'BASEBALL') {
+      if (deposit / DECIMALS_NEAR >= MINT_10_COST / DECIMALS_NEAR) {
+        return '1';
+      } else {
+        // return new BigNumber((MINT_10_COST / DECIMALS_NEAR) - (deposit / DECIMALS_NEAR)).multipliedBy(new BigNumber(DECIMALS_NEAR)).toFixed();
+        return new BigNumber(8).multipliedBy(new BigNumber(MINT_STORAGE_COST)).toFixed();
+      }
     } else {
-      return new BigNumber(8).multipliedBy(new BigNumber(MINT_STORAGE_COST)).toFixed();
+      if (deposit / DECIMALS_NEAR >= MINT_8_COST / DECIMALS_NEAR) {
+        return '1';
+      } else {
+        // return new BigNumber((MINT_8_COST / DECIMALS_NEAR) - (deposit / DECIMALS_NEAR)).multipliedBy(new BigNumber(DECIMALS_NEAR)).toFixed();
+        return new BigNumber(8).multipliedBy(new BigNumber(MINT_STORAGE_COST)).toFixed();
+      }
     }
   }
 
