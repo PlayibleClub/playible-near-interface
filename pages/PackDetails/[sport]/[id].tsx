@@ -99,7 +99,7 @@ export default function PackDetails(props) {
         return '1';
       } else {
         // return new BigNumber((MINT_10_COST / DECIMALS_NEAR) - (deposit / DECIMALS_NEAR)).multipliedBy(new BigNumber(DECIMALS_NEAR)).toFixed();
-        return new BigNumber(8).multipliedBy(new BigNumber(MINT_STORAGE_COST)).toFixed();
+        return new BigNumber(10).multipliedBy(new BigNumber(MINT_STORAGE_COST)).toFixed();
       }
     } else {
       if (deposit / DECIMALS_NEAR >= MINT_8_COST / DECIMALS_NEAR) {
