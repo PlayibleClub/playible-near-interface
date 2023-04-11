@@ -26,7 +26,9 @@ async function getGameInfoById(accountId, item, status, currentSport) {
     isCompleted: getUTCTimestampFromLocal() >= item[1].end_time ? true : false,
     status: status,
     user_team_count:
-      status === 'on-going'
+      accountId === null
+        ? ''
+        : status === 'on-going'
         ? await query_player_teams(accountId, item[0], getSportType(currentSport).gameContract)
         : '',
   };

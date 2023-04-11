@@ -87,10 +87,10 @@ export default function PlayDetails(props) {
             <div className="iphone5:mt-24 md:mt-8">
               <BackFunction prev="/Play" />
             </div>
-            <div className="ml-6 mr-6 md:ml-7 flex flex-col md:flex-row">
+            <div className="md:ml-6 md:mr-6 md:ml-7 flex flex-col md:flex-row">
               <div className="md:ml-7 flex flex-row md:flex-row">
                 <div className="iphone5:mt-4 md:mt-7 flex justify-center md:self-left md:mr-8 iphone5:flex-col md:flex-row">
-                  <div className="iphone5:-ml-3 md:-ml-7 mr-7">
+                  <div className="iphone5:ml-4 iphone5:mr-7 md:-ml-7 md:mr-7">
                     <Image
                       src={gameData?.game_image ? gameData.game_image : defaultGameImage}
                       width={550}
@@ -99,11 +99,11 @@ export default function PlayDetails(props) {
                     />
                   </div>
                   <div className="md:-mt-7 w-96">
-                    <div className="iphone5:-ml-5 md:ml-0">
+                    <div className="iphone5:-ml-1 md:ml-0">
                       <PortfolioContainer textcolor="indigo-black" title={gameFreeOrPaid} />
                     </div>
                     <div className="flex md:space-x-14 md:mt-4 iphone5:flex-col md:flex-row">
-                      <div className="iphone5:ml-0 md:ml-7">
+                      <div className="iphone5:ml-4 md:ml-7">
                         <div>PRIZE POOL</div>
                         <div className=" font-monument text-lg">
                           {gameData?.prize_description
@@ -111,7 +111,7 @@ export default function PlayDetails(props) {
                             : defaultPrizeDescription}
                         </div>
                       </div>
-                      <div>
+                      <div className="iphone5:ml-4 md:ml-0">
                         <div className="iphone5:mt-4 md:mt-0">START DATE</div>
                         <div className=" font-monument text-lg">
                           {(gameData &&
@@ -120,7 +120,7 @@ export default function PlayDetails(props) {
                         </div>
                       </div>
                     </div>
-                    <div className="md:ml-7">
+                    <div className="iphone5:ml-4 md:ml-7">
                       <div className="mt-4">
                         {gameData &&
                           (moment.utc(gameData.start_time).local() <= moment() &&
@@ -153,7 +153,7 @@ export default function PlayDetails(props) {
                           ))}
                         <div className="flex iphone5:justify-left md:justify-start iphone5:ml-0 md:ml-0">
                           <Link href={`/CreateLineup/${currentSport.toLowerCase()}/${gameId}`}>
-                            <button className="bg-indigo-buttonblue text-indigo-white iphone5:w-80 iphone5:h-12 md:max-w-full md:h-12 text-center font-bold text-md md:mt-8">
+                            <button className="bg-indigo-buttonblue text-indigo-white iphone5:w-80 iphone5:h-12 md:max-w-full md:h-12 text-center font-bold text-md md:mt-8 iphone5:mt-4">
                               ENTER GAME
                             </button>
                           </Link>

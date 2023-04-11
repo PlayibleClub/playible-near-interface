@@ -215,11 +215,11 @@ const Play = (props) => {
                   ))}
                 </div>
                 <hr className="opacity-10" />
-                <div className="flex iphone5:ml-7 flex-row first:md:ml-14">
+                <div className="flex iphone5:ml-7 flex-row first:md:ml-14 overflow-y-auto no-scrollbar">
                   {sportList.map((x, index) => {
                     return (
                       <button
-                        className={`rounded-lg border mt-4 px-8 p-1 text-xs md:font-medium font-monument ${
+                        className={`rounded-lg border mt-4 iphone5:mr-2 md:mr-0 px-8 p-1 text-xs md:font-medium font-monument ${
                           index === 0 ? `md:ml-14` : 'md:ml-4'
                         } ${
                           x.isActive

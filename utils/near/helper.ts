@@ -181,7 +181,7 @@ async function compute_scores(result, currentSport, start_time, end_time) {
               .filter((statType) =>
                 currentSport === SPORT_NAME_LOOKUP.football
                   ? statType.type == 'weekly' && statType.played == 1 //&& statType.week == week && statType.season == nflSeason
-                  : currentSport === SPORT_NAME_LOOKUP.basketball
+                  : currentSport === SPORT_NAME_LOOKUP.basketball || currentSport === SPORT_NAME_LOOKUP.baseball
                   ? statType.type == 'daily' && statType.played == 1
                   : ''
               )
@@ -453,7 +453,6 @@ async function query_mixed_tokens_pagination(
 }
 async function query_game_supply(contract) {
   const query = JSON.stringify({});
-
   return provider
     .query({
       request_type: 'call_function',
