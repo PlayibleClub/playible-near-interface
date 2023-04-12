@@ -178,23 +178,24 @@ export const MLB_POSITIONS = [
 export const CRICKET_POSITIONS = [
   {
     name: 'BOWLER',
-    key: 'BWL',
+    key: 'BOWL',
   },
   {
-    name: 'KEEPER',
-    key: 'K',
+    name: 'WICKET KEEPER',
+    key: 'WK',
   },
   {
     name: 'BATSMAN',
-    key: 'B',
-  },
-  {
-    name: 'ALL ROUNDER',
-    key: 'AR',
+    key: 'BAT',
   },
 ];
 
-export const EXTRA_CRICKET = [];
+export const EXTRA_CRICKET = [
+  {
+    name: 'ALL ROUNDER',
+    key: 'AR,BOWL,WK,BAT',
+  },
+];
 export const EXTRA_NBA = [
   {
     name: 'GUARD',
