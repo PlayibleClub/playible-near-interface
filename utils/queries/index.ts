@@ -45,7 +45,7 @@ export const GET_ATHLETE_BY_ID = gql`
       }
     }
   }
-`
+`;
 
 export const GET_ATHLETEDATA_QB = gql`
   query GetAthleteData_QB($getAthleteById: Float!) {
@@ -67,7 +67,7 @@ export const GET_ATHLETEDATA_QB = gql`
         rushingTouchdowns
         carries
         played
-        opponent{
+        opponent {
           name
         }
         gameDate
@@ -95,7 +95,7 @@ export const GET_ATHLETEDATA_RB = gql`
         receivingTouchdowns
         receptions
         played
-        opponent{
+        opponent {
           name
         }
         gameDate
@@ -121,7 +121,7 @@ export const GET_ATHLETEDATA_WR = gql`
         receivingYards
         receivingTouchdowns
         played
-        opponent{
+        opponent {
           name
         }
         gameDate
@@ -147,7 +147,7 @@ export const GET_ATHLETEDATA_TE = gql`
         receivingYards
         receivingTouchdowns
         played
-        opponent{
+        opponent {
           name
         }
         gameDate
@@ -175,7 +175,7 @@ export const GET_ATHLETEDATA_NBA = gql`
         steals
         turnovers
         played
-        opponent{
+        opponent {
           name
         }
         gameDate
@@ -202,7 +202,7 @@ export const GET_ATHLETEDATA_PITCHER = gql`
         strikeouts
         saves
         played
-        opponent{
+        opponent {
           name
         }
         gameDate
@@ -211,10 +211,9 @@ export const GET_ATHLETEDATA_PITCHER = gql`
   }
 `;
 
-
-export const GET_ATHLETEDATA_HITTER= gql`
-  query GetAthleteData_HITTER($getAthleteById: Float!,$season: String!) {
-    getAthleteById(id: $getAthleteById,season: $season) {
+export const GET_ATHLETEDATA_HITTER = gql`
+  query GetAthleteData_HITTER($getAthleteById: Float!, $season: String!) {
+    getAthleteById(id: $getAthleteById, season: $season) {
       id
       firstName
       lastName
@@ -230,10 +229,58 @@ export const GET_ATHLETEDATA_HITTER= gql`
         runsBattedIn
         stolenBases
         played
-        opponent{
+        opponent {
           name
         }
         gameDate
+      }
+    }
+  }
+`;
+
+export const GET_ATHLETEDATA_BOWL = gql`
+  query GetAthleteByKey($key: String!) {
+    getAthleteByKey(key: $key) {
+      stats {
+        bowling_balls
+        bowling_runs
+        wickets
+        bowling_average
+        economy
+        bowling_strike_rate
+        four_wickets
+        five_wickets
+      }
+    }
+  }
+`;
+
+export const GET_ATHLETEDATA_WK = gql`
+  query GetAthleteByKey($key: String!) {
+    getAthleteByKey(key: $key) {
+      stats {
+        catches
+        stumpings
+      }
+    }
+  }
+`;
+
+export const GET_ATHLETEDATA_BAT = gql`
+  query GetAthleteByKey($key: String!) {
+    getAthleteByKey(key: $key) {
+      stats {
+        matches
+        not_outs
+        batting_runs
+        high_score
+        batting_average
+        batting_balls
+        batting_strike_rate
+        hundreds
+        fifties
+        fours
+        sixes
       }
     }
   }
@@ -244,7 +291,7 @@ export const GET_SPORT_CURRENT_SEASON = gql`
     getSportCurrentSeason(sport: $sport) {
       apiSeason
     }
-}
+  }
 `;
 
 export const GET_NFL_SEASON = gql`
@@ -255,25 +302,29 @@ export const GET_NFL_SEASON = gql`
       apiWeek
       endDate
       startDate
-      
     }
   }
-`
+`;
 export const GET_TEAMS = gql`
   query GetTeams($sport: String!) {
     getTeams(sport: $sport) {
       key
       name
     }
-}
-`
+  }
+`;
 
 export const GET_PLAYER_SCHEDULE = gql`
-  query GetPlayerSchedule($team: String!, $startDate: DateTime!, $endDate: DateTime! $sport: String!){
-    getPlayerSchedule(team: $team, startDate: $startDate, endDate: $endDate, sport: $sport){
+  query GetPlayerSchedule(
+    $team: String!
+    $startDate: DateTime!
+    $endDate: DateTime!
+    $sport: String!
+  ) {
+    getPlayerSchedule(team: $team, startDate: $startDate, endDate: $endDate, sport: $sport) {
       homeTeam
       awayTeam
       dateTimeUTC
     }
   }
-`
+`;
