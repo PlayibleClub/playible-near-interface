@@ -7,14 +7,14 @@ import Link from 'next/link';
 import { query_nft_tokens_by_id } from 'utils/near/helper';
 import { getSportType } from 'data/constants/sportConstants';
 import { checkInjury } from 'utils/athlete/helper';
-import { GET_SPORT_CURRENT_SEASON} from 'utils/queries';
+import { GET_SPORT_CURRENT_SEASON } from 'utils/queries';
 import { useLazyQuery } from '@apollo/client';
 import moment from 'moment';
 const AssetDetails = (props) => {
   const { query } = props;
 
   const [getSportCurrentSeason] = useLazyQuery(GET_SPORT_CURRENT_SEASON);
-  const [mlbSeason,setMlbSeason] = useState('');
+  const [mlbSeason, setMlbSeason] = useState('');
   const athleteIndex = query.id;
   const currentSport = query.sport.toString().toUpperCase();
   const isSoulbound = athleteIndex.includes('SB') || athleteIndex.includes('PR') ? true : false;
@@ -92,9 +92,9 @@ const AssetDetails = (props) => {
 
   const fetchCurrentSeason = useCallback(async () => {
     let queryMlb = await getSportCurrentSeason({
-      variables: { sport: "mlb" },
+      variables: { sport: 'mlb' },
     });
-    setMlbSeason(await (queryMlb.data.getSportCurrentSeason.apiSeason));
+    setMlbSeason(await queryMlb.data.getSportCurrentSeason.apiSeason);
   }, []);
   useEffect(() => {
     fetchCurrentSeason();
@@ -207,6 +207,7 @@ const AssetDetails = (props) => {
           position={athlete?.position}
           sport={currentSport}
           mlbSeason={mlbSeason}
+          //key={athlete?.key}
         />
         <div className="text-2xl font-bold font-monument mt-3 ml-10 mb-10 mr-8 align-baseline md:-mt-14">
           GAME SCORES
@@ -222,13 +223,14 @@ const AssetDetails = (props) => {
             </tr>
           </thead>
           <tbody>
-            {sortedGames == undefined || sortedGames.length === 0 
+            {sortedGames == undefined || sortedGames.length === 0
               ? 'LOADING GAMES....'
               : sortedGames
                   .filter(
                     (statType) =>
                       (statType.type == 'weekly' || statType.type == 'daily') &&
-                      statType.played == 1 && statType.season == mlbSeason
+                      statType.played == 1 &&
+                      statType.season == mlbSeason
                   )
                   .map((item, index) => {
                     return (
