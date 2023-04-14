@@ -179,11 +179,13 @@ const StatsComponent = (props) => {
         break;
       case 'BOWL':
         query = await getAthleteBOWL({
-          // variables: { getAthleteByKey: key },
+          // variables: { getAthleteMatchResults: playerKey, matchKey: matchKey },
         });
         setAthleteData(
           await Promise.all(
-            query.data.getAthleteByKey.stats.filter((x) => x.type === 'daily' && x.played === 1)
+            query.data.getAthleteMatchResults.stats.filter(
+              (x) => x.type === 'daily' && x.played === 1
+            )
           ).then((x) => {
             let sorted = x.sort((a, b) => {
               return moment.utc(b.match.start_at).unix() - moment.utc(a.match.start_at).unix();
@@ -195,11 +197,13 @@ const StatsComponent = (props) => {
         break;
       case 'WK':
         query = await getAthleteWK({
-          // variables: { getAthleteByKey: key },
+          // variables: { getAthleteMatchResults: playerKey, matchKey: matchKey },
         });
         setAthleteData(
           await Promise.all(
-            query.data.getAthleteByKey.stats.filter((x) => x.type === 'daily' && x.played === 1)
+            query.data.getAthleteMatchResults.stats.filter(
+              (x) => x.type === 'daily' && x.played === 1
+            )
           ).then((x) => {
             let sorted = x.sort((a, b) => {
               return moment.utc(b.match.start_at).unix() - moment.utc(a.match.start_at).unix();
@@ -211,11 +215,13 @@ const StatsComponent = (props) => {
         break;
       case 'BAT':
         query = await getAthleteBAT({
-          // variables: { getAthleteByKey: key },
+          // variables: { getAthleteMatchResults: playerKey, matchKey: matchKey },
         });
         setAthleteData(
           await Promise.all(
-            query.data.getAthleteByKey.stats.filter((x) => x.type === 'daily' && x.played === 1)
+            query.data.getAthleteMatchResults.stats.filter(
+              (x) => x.type === 'daily' && x.played === 1
+            )
           ).then((x) => {
             let sorted = x.sort((a, b) => {
               return moment.utc(b.match.start_at).unix() - moment.utc(a.match.start_at).unix();
