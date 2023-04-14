@@ -24,6 +24,27 @@ export const GET_ATHLETES_TOP = gql`
   }
 `;
 
+export const GET_CRICKET_ATHLETES_TOP = gql`
+  query getCricketAthleteAvgFantasyScore($args: GetAthletesArgs) {
+    getCricketAthleteAvgFantasyScore(args: $args) {
+      id
+      name
+      seasonalRole
+      jerseyName
+      isActive
+      isInjured
+      nftImage
+      nftAnimation
+      stats {
+        fantasyScore
+        week
+        type
+        season
+      }
+    }
+  }
+`;
+
 export const GET_ATHLETE_BY_ID = gql`
   query GetAthleteById($getAthleteById: Float!, $to: DateTime, $from: DateTime) {
     getAthleteById(id: $getAthleteById, to: $to, from: $from) {
@@ -239,8 +260,8 @@ export const GET_ATHLETEDATA_HITTER = gql`
 `;
 
 export const GET_ATHLETEDATA_BOWL = gql`
-  query GetAthleteByKey($key: String!) {
-    getAthleteByKey(key: $key) {
+  query GetAthleteMatchResults($playerKey: String!, $matchKey: String!) {
+    getAthleteMatchResults(playerKey: $playerKey, matchKey: $matchKey) {
       stats {
         bowling_balls
         bowling_runs
@@ -256,8 +277,8 @@ export const GET_ATHLETEDATA_BOWL = gql`
 `;
 
 export const GET_ATHLETEDATA_WK = gql`
-  query GetAthleteByKey($key: String!) {
-    getAthleteByKey(key: $key) {
+  query GetAthleteMatchResults($playerKey: String!, $matchKey: String!) {
+    getAthleteMatchResults(playerKey: $playerKey, matchKey: $matchKey) {
       stats {
         catches
         stumpings
@@ -267,8 +288,8 @@ export const GET_ATHLETEDATA_WK = gql`
 `;
 
 export const GET_ATHLETEDATA_BAT = gql`
-  query GetAthleteByKey($key: String!) {
-    getAthleteByKey(key: $key) {
+  query GetAthleteMatchResults($playerKey: String!, $matchKey: String!) {
+    getAthleteMatchResults(playerKey: $playerKey, matchKey: $matchKey) {
       stats {
         matches
         not_outs
