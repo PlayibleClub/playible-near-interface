@@ -8,13 +8,13 @@ import 'regenerator-runtime/runtime';
 import { getGameInfoById } from 'utils/game/helper';
 import { getUTCTimestampFromLocal } from 'utils/date/helper';
 import ReactPaginate from 'react-paginate';
-import { SPORT_TYPES, getSportType } from 'data/constants/sportConstants';
+import { SPORT_NAME_LOOKUP, SPORT_TYPES, getSportType } from 'data/constants/sportConstants';
 import { query_games_list, query_game_supply } from 'utils/near/helper';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
 
 const Play = (props) => {
   const { accountId } = useWalletSelector();
-  const [activeCategory, setCategory] = useState('NEW');
+  const [activeCategory, setCategory] = useState('ALL');
   const [offset, setOffset] = useState(0);
   const [pageCount, setPageCount] = useState(0);
   const [gamesLimit, setgamesLimit] = useState(10);
@@ -23,8 +23,12 @@ const Play = (props) => {
   const [currentTotal, setCurrentTotal] = useState(0);
   const [categoryList, setcategoryList] = useState([
     {
-      name: 'NEW',
+      name: 'ALL',
       isActive: true,
+    },
+    {
+      name: 'NEW',
+      isActive: false,
     },
     {
       name: 'ON-GOING',
@@ -46,6 +50,9 @@ const Play = (props) => {
     const active = categoryList.find((x) => x.isActive);
 
     switch (active.name) {
+      case 'ALL':
+        setCurrentTotal(allGames.length);
+        break;
       case 'NEW':
         setCurrentTotal(newGames.length);
         break;
@@ -63,6 +70,9 @@ const Play = (props) => {
     setgamesLimit(10);
     setRemountComponent(Math.random());
     switch (name) {
+      case 'ALL':
+        setCurrentTotal(allGames.length);
+        break;
       case 'NEW':
         setCurrentTotal(newGames.length);
         break;
@@ -98,7 +108,7 @@ const Play = (props) => {
     setSportList([...sports]);
     setCurrentSport(name);
   };
-
+  const [allGames, setAllGames] = useState([]);
   const [newGames, setNewGames] = useState([]);
   const [ongoingGames, setOngoingGames] = useState([]);
   const [completedGames, setCompletedGames] = useState([]);
@@ -141,6 +151,50 @@ const Play = (props) => {
       //@ts-ignore:next-line
       const result = JSON.parse(Buffer.from(data.result).toString());
 
+      //get all upcoming and ongoing for each sport
+
+      const baseballUpcoming = await Promise.all(
+        result
+          .filter((x) => x[1].start_time > getUTCTimestampFromLocal())
+          .map((item) => getGameInfoById(accountId, item, 'all', SPORT_NAME_LOOKUP.baseball))
+      );
+      const baseballOngoing = await Promise.all(
+        result
+          .filter(
+            (x) =>
+              x[1].start_time < getUTCTimestampFromLocal() &&
+              x[1].end_time > getUTCTimestampFromLocal()
+          )
+          .map((item) => getGameInfoById(accountId, item, 'all', SPORT_NAME_LOOKUP.baseball))
+      );
+      const basketballUpcoming = await Promise.all(
+        result
+          .filter((x) => x[1].start_time > getUTCTimestampFromLocal())
+          .map((item) => getGameInfoById(accountId, item, 'all', SPORT_NAME_LOOKUP.basketball))
+      );
+      const basketballOngoing = await Promise.all(
+        result
+          .filter(
+            (x) =>
+              x[1].start_time < getUTCTimestampFromLocal() &&
+              x[1].end_time > getUTCTimestampFromLocal()
+          )
+          .map((item) => getGameInfoById(accountId, item, 'all', SPORT_NAME_LOOKUP.basketball))
+      );
+      const footballUpcoming = await Promise.all(
+        result
+          .filter((x) => x[1].start_time > getUTCTimestampFromLocal())
+          .map((item) => getGameInfoById(accountId, item, 'all', SPORT_NAME_LOOKUP.football))
+      );
+      const footballOngoing = await Promise.all(
+        result
+          .filter(
+            (x) =>
+              x[1].start_time < getUTCTimestampFromLocal() &&
+              x[1].end_time > getUTCTimestampFromLocal()
+          )
+          .map((item) => getGameInfoById(accountId, item, 'all', SPORT_NAME_LOOKUP.football))
+      );
       const upcomingGames = await Promise.all(
         result
           .filter((x) => x[1].start_time > getUTCTimestampFromLocal())
@@ -165,7 +219,15 @@ const Play = (props) => {
       upcomingGames.sort(function (a, b) {
         return a.start_time - b.start_time;
       });
-
+      //combine the array
+      setAllGames([
+        ...baseballOngoing,
+        ...baseballUpcoming,
+        ...footballOngoing,
+        ...footballUpcoming,
+        ...basketballOngoing,
+        ...basketballUpcoming,
+      ]);
       setNewGames(upcomingGames);
       setCompletedGames(completedGames);
       setOngoingGames(ongoingGames);
@@ -187,6 +249,7 @@ const Play = (props) => {
   }, [currentTotal]);
 
   useEffect(() => {}, [sportList]);
+  console.log(allGames, 'allgames');
   return (
     <>
       <Container activeName="PLAY">
@@ -216,30 +279,41 @@ const Play = (props) => {
                 </div>
                 <hr className="opacity-10" />
                 <div className="flex iphone5:ml-7 flex-row first:md:ml-14 overflow-y-auto no-scrollbar">
-                  {sportList.map((x, index) => {
-                    return (
-                      <button
-                        className={`rounded-lg border mt-4 iphone5:mr-2 md:mr-0 px-8 p-1 text-xs md:font-medium font-monument ${
-                          index === 0 ? `md:ml-14` : 'md:ml-4'
-                        } ${
-                          x.isActive
-                            ? 'bg-indigo-buttonblue text-indigo-white border-indigo-buttonblue'
-                            : ''
-                        }`}
-                        onClick={() => {
-                          changeSportList(x.name);
-                        }}
-                      >
-                        {x.name}
-                      </button>
-                    );
-                  })}
+                  {!categoryList[0].isActive && // hide sportstab when all is active
+                    sportList.map((x, index) => {
+                      return (
+                        <button
+                          className={`rounded-lg border mt-4 iphone5:mr-2 md:mr-0 px-8 p-1 text-xs md:font-medium font-monument ${
+                            index === 0 ? `md:ml-14` : 'md:ml-4'
+                          } ${
+                            x.isActive
+                              ? 'bg-indigo-buttonblue text-indigo-white border-indigo-buttonblue'
+                              : ''
+                          }`}
+                          onClick={() => {
+                            changeSportList(x.name);
+                          }}
+                        >
+                          {x.name}
+                        </button>
+                      );
+                    })}
                 </div>
                 {currentTotal > 0 ? (
                   <>
                     <div className="mt-4 md:ml-10 grid grid-cols-0 md:grid-cols-3 iphone5:self-center md:self-start">
-                      {(categoryList[0].isActive ? newGames : emptyGames).length > 0 &&
-                        (categoryList[0].isActive ? newGames : emptyGames)
+                      {(categoryList[0].isActive //map allgames when all is active
+                        ? allGames
+                        : categoryList[1].isActive
+                        ? newGames
+                        : emptyGames
+                      ).length > 0 &&
+                        (categoryList[0].isActive
+                          ? allGames
+                          : categoryList[1].isActive
+                          ? newGames
+                          : emptyGames
+                        )
                           .filter((data, i) => i >= gamesOffset && i < gamesOffset + gamesLimit)
                           .map((data, i) => {
                             return (
@@ -271,15 +345,19 @@ const Play = (props) => {
                           })}
                     </div>
                     <div className="mt-4 md:ml-10 grid grid-cols-0 md:grid-cols-3 iphone5:self-center md:self-start">
-                      {(categoryList[1].isActive
-                        ? ongoingGames
+                      {(categoryList[0].isActive
+                        ? [...newGames, ...ongoingGames]
                         : categoryList[2].isActive
+                        ? ongoingGames
+                        : categoryList[3].isActive
                         ? completedGames
                         : emptyGames
                       ).length > 0 &&
                         (categoryList[1].isActive
-                          ? ongoingGames
+                          ? [...newGames, ...ongoingGames]
                           : categoryList[2].isActive
+                          ? ongoingGames
+                          : categoryList[3].isActive
                           ? completedGames
                           : emptyGames
                         )
