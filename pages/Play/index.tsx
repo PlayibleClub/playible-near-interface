@@ -151,49 +151,10 @@ const Play = (props) => {
       //@ts-ignore:next-line
       const result = JSON.parse(Buffer.from(data.result).toString());
 
-      //get all upcoming and ongoing for each sport
-
-      const baseballUpcoming = await Promise.all(
+      const all = await Promise.all(
         result
-          .filter((x) => x[1].start_time > getUTCTimestampFromLocal())
-          .map((item) => getGameInfoById(accountId, item, 'all', SPORT_NAME_LOOKUP.baseball))
-      );
-      const baseballOngoing = await Promise.all(
-        result
-          .filter(
-            (x) =>
-              x[1].start_time < getUTCTimestampFromLocal() &&
-              x[1].end_time > getUTCTimestampFromLocal()
-          )
-          .map((item) => getGameInfoById(accountId, item, 'all', SPORT_NAME_LOOKUP.baseball))
-      );
-      const basketballUpcoming = await Promise.all(
-        result
-          .filter((x) => x[1].start_time > getUTCTimestampFromLocal())
-          .map((item) => getGameInfoById(accountId, item, 'all', SPORT_NAME_LOOKUP.basketball))
-      );
-      const basketballOngoing = await Promise.all(
-        result
-          .filter(
-            (x) =>
-              x[1].start_time < getUTCTimestampFromLocal() &&
-              x[1].end_time > getUTCTimestampFromLocal()
-          )
-          .map((item) => getGameInfoById(accountId, item, 'all', SPORT_NAME_LOOKUP.basketball))
-      );
-      const footballUpcoming = await Promise.all(
-        result
-          .filter((x) => x[1].start_time > getUTCTimestampFromLocal())
-          .map((item) => getGameInfoById(accountId, item, 'all', SPORT_NAME_LOOKUP.football))
-      );
-      const footballOngoing = await Promise.all(
-        result
-          .filter(
-            (x) =>
-              x[1].start_time < getUTCTimestampFromLocal() &&
-              x[1].end_time > getUTCTimestampFromLocal()
-          )
-          .map((item) => getGameInfoById(accountId, item, 'all', SPORT_NAME_LOOKUP.football))
+        .filter((x) => x[1].start_time > getUTCTimestampFromLocal() || (x[1].start_time < getUTCTimestampFromLocal() && x[1].end_time > getUTCTimestampFromLocal()))
+        .map((item) => getGameInfoById(accountId, item, 'all', currentSport))
       );
       const upcomingGames = await Promise.all(
         result
@@ -219,15 +180,7 @@ const Play = (props) => {
       upcomingGames.sort(function (a, b) {
         return a.start_time - b.start_time;
       });
-      //combine the array
-      setAllGames([
-        ...baseballOngoing,
-        ...baseballUpcoming,
-        ...footballOngoing,
-        ...footballUpcoming,
-        ...basketballOngoing,
-        ...basketballUpcoming,
-      ]);
+      setAllGames(all);
       setNewGames(upcomingGames);
       setCompletedGames(completedGames);
       setOngoingGames(ongoingGames);
@@ -354,7 +307,7 @@ const Play = (props) => {
                         : emptyGames
                       ).length > 0 &&
                         (categoryList[1].isActive
-                          ? [...newGames, ...ongoingGames]
+                          ? newGames
                           : categoryList[2].isActive
                           ? ongoingGames
                           : categoryList[3].isActive

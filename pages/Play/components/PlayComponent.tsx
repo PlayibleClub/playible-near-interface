@@ -47,7 +47,7 @@ const PlayComponent = (props) => {
     setSecond(0);
     const id = setInterval(() => {
       const currentDate = getUTCDateFromLocal();
-      const end = moment.utc(type === 'ON-GOING' || type === 'ACTIVE' ? endDate : startDate);
+      const end = moment.utc(type === 'ON-GOING' || type === 'ACTIVE' || type === 'ALL' ? endDate : startDate);
 
       setDay(formatTime(Math.floor(end.diff(currentDate, 'second') / 3600 / 24)));
       setHour(formatTime(Math.floor((end.diff(currentDate, 'second') / 3600) % 24)));
@@ -116,14 +116,14 @@ const PlayComponent = (props) => {
                 <div className="text-xs font-monument w-32">
                   {moment
                     .tz(
-                      type === 'ON-GOING' || type === 'ACTIVE' ? endDate : startDate,
+                      type === 'ON-GOING' || type === 'ACTIVE' || type === 'ALL'? endDate : startDate,
                       moment.tz.guess()
                     )
                     .format('Do MMMM, hA z')}
                 </div>
-                <div className="font-thin text-sm">{type === 'NEW' ? 'END DATE' : ''}</div>
+                <div className="font-thin text-sm">{type === 'NEW' || type === 'ALL' ? 'END DATE' : ''}</div>
                 <div className="text-xs font-monument w-32">
-                  {type === 'NEW'
+                  {type === 'NEW' || type === 'ALL'
                     ? moment.tz(endDate, moment.tz.guess()).format('Do MMMM, hA zz')
                     : ''}
                 </div>
@@ -140,14 +140,14 @@ const PlayComponent = (props) => {
 
             <div className="flex mt-2">
               <div className="">
-                {type === 'COMPLETED' ? (
+                {type === 'COMPLETED' || type === 'ALL'? (
                   ''
                 ) : type === 'ACTIVE' || type === 'ON-GOING' ? (
                   <div className="font-thin text-sm">ENDS IN</div>
                 ) : (
                   <div className="font-thin text-sm">REGISTRATION ENDS IN</div>
                 )}
-                {(type === 'NEW' || type === 'ON-GOING' || type === 'ACTIVE') && (
+                {(type === 'NEW' || type === 'ON-GOING' || type === 'ACTIVE' || type === 'ALL') && (
                   <div className="text-sm font-montserrat font-normal flex mt-2 space-x-3">
                     <div className="bg-indigo-darkgray text-indigo-white w-9 h-10 rounded justify-center flex pt-2">
                       {day}
