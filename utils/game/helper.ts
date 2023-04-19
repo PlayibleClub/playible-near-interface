@@ -31,6 +31,7 @@ async function getGameInfoById(accountId, item, status, currentSport) {
         : status === 'on-going'
         ? await query_player_teams(accountId, item[0], getSportType(currentSport).gameContract)
         : '',
+    sport:getSportType(currentSport).gameContract
   };
 
   return returningData;
