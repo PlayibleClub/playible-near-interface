@@ -14,7 +14,7 @@ import { useWalletSelector } from 'contexts/WalletSelectorContext';
 
 const Play = (props) => {
   const { accountId } = useWalletSelector();
-  const [activeCategory, setCategory] = useState('ALL');
+  const [activeCategory, setCategory] = useState('NEW');
   const [offset, setOffset] = useState(0);
   const [pageCount, setPageCount] = useState(0);
   const [gamesLimit, setgamesLimit] = useState(10);
@@ -48,14 +48,6 @@ const Play = (props) => {
   function getActiveTabGameTotal() {
     const active = categoryList.find((x) => x.isActive);
 
-    if (active.name === 'NEW' && sportList[0].isActive) {
-      setCurrentTotal(allNew.length);
-      return;
-    }
-    if (active.name === 'ON-GOING' && sportList[0].isActive) {
-      setCurrentTotal(allGoing.length);
-      return;
-    }
     switch (active.name) {
       case 'NEW':
         setCurrentTotal(newGames.length);
@@ -74,14 +66,28 @@ const Play = (props) => {
     setgamesOffset(0);
     setgamesLimit(10);
     setRemountComponent(Math.random());
+    const prevSport = [...sportList];
+    const all = prevSport.find((sport) => sport.name === 'ALL');
     switch (name) {
       case 'NEW':
+        if (!all) {
+          prevSport.unshift({ name: 'ALL', isActive: false });
+        }
+        setSportList(prevSport);
         setCurrentTotal(newGames.length);
         break;
       case 'ON-GOING':
-        setCurrentTotal(ongoingGames.length);
+        if (!all) {
+          prevSport.unshift({ name: 'ALL', isActive: false });
+        }
+        setSportList(prevSport);
         break;
       case 'COMPLETED':
+        sportList.shift();
+        prevSport.forEach((sport, index) => {
+          sport.isActive = index === 1;
+        });
+
         setCurrentTotal(completedGames.length);
         break;
     }
@@ -96,6 +102,7 @@ const Play = (props) => {
 
     setcategoryList([...tabList]);
   };
+
   const changeSportList = (name) => {
     const sports = [...sportList];
 
@@ -111,7 +118,6 @@ const Play = (props) => {
       setCurrentSport((prevSport) => prevSport);
     } else {
       setCurrentSport((prevSport) => {
-        setCategory('NEW');
         setOffset(0);
         setgamesOffset(0);
         setgamesLimit(10);
@@ -121,12 +127,13 @@ const Play = (props) => {
     }
     setSportList([...sports]);
   };
+
   const [footballNew, setFootballNew] = useState([]);
   const [basketballNew, setBasketballNew] = useState([]);
   const [baseballNew, setBaseballNew] = useState([]);
-  const [football, setFootball] = useState([]);
-  const [basketball, setBasketball] = useState([]);
-  const [baseball, setBaseball] = useState([]);
+  const [footballGoing, setFootballGoing] = useState([]);
+  const [basketballGoing, setBasketballGoing] = useState([]);
+  const [baseballGoing, setBaseballGoing] = useState([]);
   const [newGames, setNewGames] = useState([]);
   const [ongoingGames, setOngoingGames] = useState([]);
   const [completedGames, setCompletedGames] = useState([]);
@@ -199,6 +206,7 @@ const Play = (props) => {
       console.log(ongoingGames);
     });
   }
+
   function getFootball(totalGames) {
     query_games_list(totalGames, getSportType(SPORT_NAME_LOOKUP.football).gameContract).then(
       async (data) => {
@@ -208,8 +216,9 @@ const Play = (props) => {
         const upcomingGames = await Promise.all(
           result
             .filter((x) => x[1].start_time > getUTCTimestampFromLocal())
-            .map((item) => getGameInfoById(accountId, item, 'new', currentSport))
+            .map((item) => getGameInfoById(accountId, item, 'new', SPORT_NAME_LOOKUP.football))
         );
+
         const ongoingGames = await Promise.all(
           result
             .filter(
@@ -217,16 +226,18 @@ const Play = (props) => {
                 x[1].start_time < getUTCTimestampFromLocal() &&
                 x[1].end_time > getUTCTimestampFromLocal()
             )
-            .map((item) => getGameInfoById(accountId, item, 'on-going', currentSport))
+            .map((item) => getGameInfoById(accountId, item, 'on-going', SPORT_NAME_LOOKUP.football))
         );
+
         upcomingGames.sort(function (a, b) {
           return a.start_time - b.start_time;
         });
         setFootballNew(upcomingGames);
-        setFootball(ongoingGames);
+        setFootballGoing(ongoingGames);
       }
     );
   }
+
   function getBaseball(totalGames) {
     query_games_list(totalGames, getSportType(SPORT_NAME_LOOKUP.baseball).gameContract).then(
       async (data) => {
@@ -236,8 +247,9 @@ const Play = (props) => {
         const upcomingGames = await Promise.all(
           result
             .filter((x) => x[1].start_time > getUTCTimestampFromLocal())
-            .map((item) => getGameInfoById(accountId, item, 'new', currentSport))
+            .map((item) => getGameInfoById(accountId, item, 'new', SPORT_NAME_LOOKUP.baseball))
         );
+
         const ongoingGames = await Promise.all(
           result
             .filter(
@@ -245,16 +257,18 @@ const Play = (props) => {
                 x[1].start_time < getUTCTimestampFromLocal() &&
                 x[1].end_time > getUTCTimestampFromLocal()
             )
-            .map((item) => getGameInfoById(accountId, item, 'on-going', currentSport))
+            .map((item) => getGameInfoById(accountId, item, 'on-going', SPORT_NAME_LOOKUP.baseball))
         );
+
         upcomingGames.sort(function (a, b) {
           return a.start_time - b.start_time;
         });
         setBaseballNew(upcomingGames);
-        setBaseball(ongoingGames);
+        setBaseballGoing(ongoingGames);
       }
     );
   }
+
   function getBasketball(totalGames) {
     query_games_list(totalGames, getSportType(SPORT_NAME_LOOKUP.basketball).gameContract).then(
       async (data) => {
@@ -264,8 +278,9 @@ const Play = (props) => {
         const upcomingGames = await Promise.all(
           result
             .filter((x) => x[1].start_time > getUTCTimestampFromLocal())
-            .map((item) => getGameInfoById(accountId, item, 'new', currentSport))
+            .map((item) => getGameInfoById(accountId, item, 'new', SPORT_NAME_LOOKUP.basketball))
         );
+
         const ongoingGames = await Promise.all(
           result
             .filter(
@@ -274,21 +289,20 @@ const Play = (props) => {
                 x[1].end_time > getUTCTimestampFromLocal()
             )
             .map((item) =>
-              getGameInfoById(accountId, item, 'on-going', currentSport)
+              getGameInfoById(accountId, item, 'on-going', SPORT_NAME_LOOKUP.basketball)
             )
         );
         upcomingGames.sort(function (a, b) {
           return a.start_time - b.start_time;
         });
         setBasketballNew(upcomingGames);
-        setBasketball(ongoingGames);
+        setBasketballGoing(ongoingGames);
       }
     );
   }
-  const allGoing = [...football, ...baseball, ...basketball];
-  const allNew = [...footballNew, ...baseballNew, ...basketballNew];
+  const allGoing = [...baseballGoing, ...basketballGoing, ...footballGoing];
+  const allNew = [...baseballNew, ...basketballNew, ...footballNew];
 
-  console.log(...allGoing, 'awou3yaiuw3');
   useEffect(() => {
     console.log(sportList);
     get_game_supply();
@@ -306,7 +320,9 @@ const Play = (props) => {
   }, [currentTotal]);
 
   useEffect(() => {}, [sportList]);
-  console.log(JSON.stringify(football))
+  console.log(sportList, 'sportlist');
+  console.log(categoryList, 'categorylist');
+  console.log(currentSport, 'currentsport');
   return (
     <>
       <Container activeName="PLAY">
@@ -363,13 +379,16 @@ const Play = (props) => {
                           (categoryList[0].isActive ? allNew : emptyGames)
                             .filter((data, i) => i >= gamesOffset && i < gamesOffset + gamesLimit)
                             .map((data, i) => {
+                              const currentSportIndex = allNew.findIndex(
+                                (game) => game.sport === data.sport
+                              );
                               return (
                                 <div key={i} className="flex">
                                   <div className="iphone5:mr-0 md:mr-6 cursor-pointer">
                                     <Link
-                                      href={`/PlayDetails/${currentSport.toLowerCase()}/${
-                                        data.game_id
-                                      }`}
+                                      href={`/PlayDetails/${allNew[
+                                        currentSportIndex
+                                      ].sport.toLowerCase()}/${data.game_id}`}
                                       passHref
                                     >
                                       <div className="iphone5:mr-0 md:mr-6">
@@ -381,6 +400,7 @@ const Play = (props) => {
                                           endDate={data.end_time}
                                           img={data.game_image}
                                           lineupLength={data.lineup_len}
+                                          sport={data.sport}
                                           prizePool={data.prize_description}
                                           index={() => changeIndex(1)}
                                         />
@@ -394,13 +414,16 @@ const Play = (props) => {
                           (categoryList[0].isActive ? newGames : emptyGames)
                             .filter((data, i) => i >= gamesOffset && i < gamesOffset + gamesLimit)
                             .map((data, i) => {
+                              const currentSportIndex = allGoing.findIndex(
+                                (game) => game.sport === allGoing[0].sport
+                              );
                               return (
                                 <div key={i} className="flex">
                                   <div className="iphone5:mr-0 md:mr-6 cursor-pointer">
                                     <Link
-                                      href={`/PlayDetails/${currentSport.toLowerCase()}/${
-                                        data.game_id
-                                      }`}
+                                      href={`/PlayDetails/${allGoing[
+                                        currentSportIndex
+                                      ].sport.toLowerCase()}/${data.game_id}`}
                                       passHref
                                     >
                                       <div className="iphone5:mr-0 md:mr-6">
@@ -412,6 +435,7 @@ const Play = (props) => {
                                           endDate={data.end_time}
                                           img={data.game_image}
                                           lineupLength={data.lineup_len}
+                                          sport={data.sport}
                                           prizePool={data.prize_description}
                                           index={() => changeIndex(1)}
                                         />
@@ -438,12 +462,17 @@ const Play = (props) => {
                           )
                             .filter((data, i) => i >= gamesOffset && i < gamesOffset + gamesLimit)
                             .map((data, i) => {
+                              const currentSportIndex = allGoing.findIndex(
+                                (game) => game.sport === data.sport
+                              );
                               console.log(currentTotal);
                               return (
                                 <div key={i} className="flex">
                                   <div className="iphone5:mr-0 md:mr-6 cursor-pointer ">
                                     <Link
-                                      href={`/Games/${currentSport.toLowerCase()}/${data.game_id}`}
+                                      href={`/Games/${allGoing[
+                                        currentSportIndex
+                                      ]?.sport.toLowerCase()}/${data.game_id}`}
                                       passHref
                                     >
                                       <div className="iphone5:mr-0 md:mr-6">
@@ -455,6 +484,7 @@ const Play = (props) => {
                                           startDate={data.start_time}
                                           endDate={data.end_time}
                                           img={data.game_image}
+                                          sport={data.sport}
                                           hasEntered={data.user_team_count.team_names?.length}
                                           index={() => changeIndex(1)}
                                         />
@@ -498,6 +528,7 @@ const Play = (props) => {
                                           startDate={data.start_time}
                                           endDate={data.end_time}
                                           img={data.game_image}
+                                          sport={data.sport}
                                           hasEntered={data.user_team_count.team_names?.length}
                                           index={() => changeIndex(1)}
                                         />
