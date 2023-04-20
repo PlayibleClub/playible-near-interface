@@ -188,12 +188,16 @@ export const CRICKET_POSITIONS = [
     name: 'BATSMAN',
     key: 'BAT',
   },
+  {
+    name: 'ALL ROUNDERS',
+    key: 'AR',
+  },
 ];
 
 export const EXTRA_CRICKET = [
   {
-    name: 'ALL ROUNDER',
-    key: 'AR,BOWL,WK,BAT',
+    name: 'ANY',
+    key: ['AR', 'BOWL', 'WK', 'BAT'],
   },
 ];
 export const EXTRA_NBA = [
