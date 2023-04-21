@@ -1195,14 +1195,18 @@ export default function Home(props) {
                       American Baseball players.
                     </div>
                   ) : (
-                    ''
-                    // <div className="mt-10">
-                    //   This pack will contain ? randomly generated <br></br>
-                    //   American Cricket players.
-                    // </div>
+                    <div className="mt-10">
+                      This pack will contain 12 randomly generated <br></br>
+                      Cricket players.
+                    </div>
                   )}
                   <div className="mt-5 mb-12">
-                    <div className="mb-5">1 for each of the positions below:</div>
+                    {currentSport === SPORT_NAME_LOOKUP.baseball ||
+                    currentSport === SPORT_NAME_LOOKUP.cricket ? (
+                      <div className="mb-5">An amount for each of the positions below:</div>
+                    ) : (
+                      <div className="mb-5">1 for each of the positions below:</div>
+                    )}
                     {currentSport === SPORT_NAME_LOOKUP.football ? (
                       <ul className="marker list-disc pl-5 space-y-3 ">
                         <li>1 Quarter Back (QB)</li>
@@ -1237,10 +1241,10 @@ export default function Home(props) {
                     ) : (
                       //Ask for the amount for each position
                       <ul className="marker list-disc pl-5 space-y-3 ">
-                        <li>1 Bowler (BWL)</li>
-                        <li>1 Keeper (K) </li>
-                        <li>1 Batsman (B) </li>
-                        <li>1 All rounder (AR)</li>
+                        <li>2 Bowlers (BOWL)</li>
+                        <li>1 Wicket Keeper (WK) </li>
+                        <li>2 Batsman (BAT) </li>
+                        <li>2 All rounders (AR)</li>
                       </ul>
                     )}
                   </div>
