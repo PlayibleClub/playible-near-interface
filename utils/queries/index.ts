@@ -263,14 +263,12 @@ export const GET_ATHLETEDATA_BOWL = gql`
   query GetAthleteMatchResults($playerKey: String!, $matchKey: String!) {
     getAthleteMatchResults(playerKey: $playerKey, matchKey: $matchKey) {
       stats {
-        bowling_balls
-        bowling_runs
-        wickets
-        bowling_average
-        economy
-        bowling_strike_rate
-        four_wickets
-        five_wickets
+        cricket_for_every_run
+        cricket_for_every_wicket
+        cricket_economy_rate
+        cricket_strike_rate
+        cricket_four_wickets
+        cricket_five_wickets
       }
     }
   }
@@ -280,8 +278,8 @@ export const GET_ATHLETEDATA_WK = gql`
   query GetAthleteMatchResults($playerKey: String!, $matchKey: String!) {
     getAthleteMatchResults(playerKey: $playerKey, matchKey: $matchKey) {
       stats {
-        catches
-        stumpings
+        cricket_for_every_catch
+        cricket_for_every_stumping
       }
     }
   }
@@ -291,17 +289,26 @@ export const GET_ATHLETEDATA_BAT = gql`
   query GetAthleteMatchResults($playerKey: String!, $matchKey: String!) {
     getAthleteMatchResults(playerKey: $playerKey, matchKey: $matchKey) {
       stats {
-        matches
-        not_outs
-        batting_runs
-        high_score
-        batting_average
-        batting_balls
-        batting_strike_rate
-        hundreds
-        fifties
-        fours
-        sixes
+        cricket_for_every_run
+        cricket_strike_rate
+        cricket_hundred_runs
+        cricket_fifty_runs
+        cricket_for_every_four
+        cricket_for_every_six
+      }
+    }
+  }
+`;
+
+export const GET_ATHLETEDATA_AR = gql`
+  query GetAthleteMatchResults($playerKey: String!, $matchKey: String!) {
+    getAthleteMatchResults(playerKey: $playerKey, matchKey: $matchKey) {
+      stats {
+        cricket_hundred_runs
+        cricket_fifty_runs
+        cricket_four_wickets
+        cricket_five_wickets
+        cricket_for_every_catch
       }
     }
   }

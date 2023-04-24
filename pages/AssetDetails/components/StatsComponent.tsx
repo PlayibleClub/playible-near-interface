@@ -21,11 +21,14 @@ import {
   pitcherStatNames,
   hitterStatNames,
   batsmanStatNames,
+  bowlingStatNames,
+  wicketKeeperStatNames,
+  allRounderStatNames,
 } from 'data/constants/statNames';
 import { getSportType } from 'data/constants/sportConstants';
 import moment from 'moment';
-import { bowlingStatNames } from 'data/constants/statNames';
-import { fielderStatNames } from 'data/constants/statNames';
+import {} from 'data/constants/statNames';
+import {} from 'data/constants/statNames';
 const StatsComponent = (props) => {
   const { id, position, sport, mlbSeason } = props;
   const [statNames, setStatNames] = useState([]);
@@ -211,7 +214,7 @@ const StatsComponent = (props) => {
             return Object.values(sorted[0]);
           })
         );
-        setStatNames(fielderStatNames);
+        setStatNames(wicketKeeperStatNames);
         break;
       case 'BAT':
         query = await getAthleteBAT({
@@ -230,6 +233,24 @@ const StatsComponent = (props) => {
           })
         );
         setStatNames(batsmanStatNames);
+        break;
+      case 'AR':
+        query = await getAthleteBAT({
+          // variables: { getAthleteMatchResults: playerKey, matchKey: matchKey },
+        });
+        setAthleteData(
+          await Promise.all(
+            query.data.getAthleteMatchResults.stats.filter(
+              (x) => x.type === 'daily' && x.played === 1
+            )
+          ).then((x) => {
+            let sorted = x.sort((a, b) => {
+              return moment.utc(b.match.start_at).unix() - moment.utc(a.match.start_at).unix();
+            });
+            return Object.values(sorted[0]);
+          })
+        );
+        setStatNames(allRounderStatNames);
         break;
       default:
         query = await getAthleteNBA({ variables: { getAthleteById: parseFloat(id.toString()) } });

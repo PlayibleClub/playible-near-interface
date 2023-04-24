@@ -41,12 +41,7 @@ export const pitcherStatNames = ['WINS', 'ERA', 'WHIP', 'STRIKEOUTS', 'SAVES'];
 export const hitterStatNames = ['RUNS', 'BATTING AVERAGE', 'HOME RUNS', 'RBI', 'STOLEN BASES'];
 
 export const batsmanStatNames = [
-  'MATCHES',
-  'NOT OUTS',
   'BATTING RUNS',
-  'HIGHSCORE',
-  'BATTING AVERAGE',
-  'BATTING BALLS',
   'BATTING STRIKE RATE',
   'HUNDREDS',
   'FIFTIES',
@@ -54,15 +49,15 @@ export const batsmanStatNames = [
   'SIXES',
 ];
 
-export const fielderStatNames = ['CATCHES', 'STUMPINGS'];
+export const wicketKeeperStatNames = ['CATCHES', 'STUMPINGS'];
 
 export const bowlingStatNames = [
-  'BOWLING BALLS',
   'BOWLING RUNS',
   'WICKETS',
-  'BOWLING AVERAGE',
-  'ECONOMY',
+  'ECONOMY RATE',
   'BOWLING STRIKE RATE',
   'FOUR WICKETS',
   'FIVE WICKETS',
 ];
+
+export const allRounderStatNames = ['HUNDREDS', 'FOURS', 'FIFTIES', 'FIVES', 'CATCHES', 'RUNS'];
