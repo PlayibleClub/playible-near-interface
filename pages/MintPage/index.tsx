@@ -94,6 +94,7 @@ export default function Home(props) {
   const [accountBalance, setAccountBalance] = useState(0);
   const [mintedNba, setMintedNba] = useState(0);
   const [mintedMlb, setMintedMlb] = useState(0);
+  const [mintedIpl, setMintedIpl] = useState(0);
   const [useNEP141, setUseNEP141] = useState(NEP141NEAR);
   const [intervalSale, setIntervalSale] = useState(0);
   const [balanceErrorMsg, setBalanceErrorMsg] = useState('');
@@ -170,7 +171,9 @@ export default function Home(props) {
             ? setMinted(_minted)
             : currentSport === SPORT_NAME_LOOKUP.basketball
             ? setMintedNba(_minted)
-            : setMintedMlb(_minted);
+            : currentSport === SPORT_NAME_LOOKUP.baseball
+            ? setMintedMlb(_minted)
+            : setMintedIpl(_minted);
         }
       }
     } catch (e) {
@@ -180,7 +183,9 @@ export default function Home(props) {
           ? setMinted(0)
           : currentSport === SPORT_NAME_LOOKUP.basketball
           ? setMintedNba(0)
-          : setMintedMlb(0);
+          : currentSport === SPORT_NAME_LOOKUP.baseball
+          ? setMintedMlb(0)
+          : setMintedIpl(0);
       }
     }
   }
@@ -536,6 +541,21 @@ export default function Home(props) {
   function selectMintMlb() {
     let optionMint = [];
     let limit = 11 - mintedMlb;
+    for (let x = 1; x < limit; x++) {
+      optionMint.push({ value: x, label: `${x} ${x > 1 ? 'packs' : 'pack'}` });
+    }
+    return (
+      <Select
+        onChange={(event) => setSelectedMintAmount(event.value)}
+        options={optionMint.splice(0, 5)}
+        className="md:w-1/3 w-4/5 mr-9 mt-5"
+      />
+    );
+  }
+
+  function selectMintIpl() {
+    let optionMint = [];
+    let limit = 11 - mintedIpl;
     for (let x = 1; x < limit; x++) {
       optionMint.push({ value: x, label: `${x} ${x > 1 ? 'packs' : 'pack'}` });
     }
@@ -970,7 +990,9 @@ export default function Home(props) {
                             ? minted
                             : currentSport === SPORT_NAME_LOOKUP.basketball
                             ? mintedNba
-                            : mintedMlb}
+                            : currentSport === SPORT_NAME_LOOKUP.baseball
+                            ? mintedMlb
+                            : mintedIpl}
                         </div>
                         <div className="text-xs">YOU HAVE MINTED</div>
                       </div>
@@ -1002,7 +1024,9 @@ export default function Home(props) {
                         ? selectMint()
                         : currentSport === 'BASKETBALL'
                         ? selectMintNba()
-                        : selectMintMlb()}
+                        : currentSport === 'BASEBALL'
+                        ? selectMintMlb()
+                        : selectMintIpl()}
                     </div>
                     {currentSport === 'FOOTBALL' ? (
                       <div className="ml-3"></div>
