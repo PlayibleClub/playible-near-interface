@@ -8,7 +8,7 @@ import 'regenerator-runtime/runtime';
 import { getGameInfoById } from 'utils/game/helper';
 import { getUTCTimestampFromLocal } from 'utils/date/helper';
 import ReactPaginate from 'react-paginate';
-import { SPORT_TYPES, getSportType } from 'data/constants/sportConstants';
+import { SPORT_NAME_LOOKUP, SPORT_TYPES, getSportType } from 'data/constants/sportConstants';
 import { query_games_list, query_game_supply } from 'utils/near/helper';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
 
@@ -36,10 +36,13 @@ const Play = (props) => {
     },
   ]);
 
-  const sportObj = SPORT_TYPES.map((x) => ({ name: x.sport, isActive: false }));
+  const sportObj = [
+    { name: 'ALL', isActive: true },
+    ...SPORT_TYPES.map((x) => ({ name: x.sport, isActive: false })),
+  ];
   sportObj[0].isActive = true;
   const [sportList, setSportList] = useState([...sportObj]);
-  const [currentSport, setCurrentSport] = useState(sportObj[0].name);
+  const [currentSport, setCurrentSport] = useState('BASEBALL');
   const [remountComponent, setRemountComponent] = useState(0);
 
   function getActiveTabGameTotal() {
@@ -57,19 +60,34 @@ const Play = (props) => {
         break;
     }
   }
+
   const changecategoryList = (name) => {
     const tabList = [...categoryList];
     setgamesOffset(0);
     setgamesLimit(10);
     setRemountComponent(Math.random());
+    const prevSport = [...sportList];
+    const all = prevSport.find((sport) => sport.name === 'ALL');
     switch (name) {
       case 'NEW':
+        if (!all) {
+          prevSport.unshift({ name: 'ALL', isActive: false });
+        }
+        setSportList(prevSport);
         setCurrentTotal(newGames.length);
         break;
       case 'ON-GOING':
-        setCurrentTotal(ongoingGames.length);
+        if (!all) {
+          prevSport.unshift({ name: 'ALL', isActive: false });
+        }
+        setSportList(prevSport);
         break;
       case 'COMPLETED':
+        sportList.shift();
+        prevSport.forEach((sport, index) => {
+          sport.isActive = index === 1;
+        });
+
         setCurrentTotal(completedGames.length);
         break;
     }
@@ -84,6 +102,7 @@ const Play = (props) => {
 
     setcategoryList([...tabList]);
   };
+
   const changeSportList = (name) => {
     const sports = [...sportList];
 
@@ -95,10 +114,26 @@ const Play = (props) => {
       }
     });
 
+    if (name === 'ALL') {
+      setCurrentSport((prevSport) => prevSport);
+    } else {
+      setCurrentSport((prevSport) => {
+        setOffset(0);
+        setgamesOffset(0);
+        setgamesLimit(10);
+        setRemountComponent(Math.random());
+        return name;
+      });
+    }
     setSportList([...sports]);
-    setCurrentSport(name);
   };
 
+  const [footballNew, setFootballNew] = useState([]);
+  const [basketballNew, setBasketballNew] = useState([]);
+  const [baseballNew, setBaseballNew] = useState([]);
+  const [footballGoing, setFootballGoing] = useState([]);
+  const [basketballGoing, setBasketballGoing] = useState([]);
+  const [baseballGoing, setBaseballGoing] = useState([]);
   const [newGames, setNewGames] = useState([]);
   const [ongoingGames, setOngoingGames] = useState([]);
   const [completedGames, setCompletedGames] = useState([]);
@@ -165,7 +200,6 @@ const Play = (props) => {
       upcomingGames.sort(function (a, b) {
         return a.start_time - b.start_time;
       });
-
       setNewGames(upcomingGames);
       setCompletedGames(completedGames);
       setOngoingGames(ongoingGames);
@@ -173,10 +207,109 @@ const Play = (props) => {
     });
   }
 
+  function getFootball(totalGames) {
+    query_games_list(totalGames, getSportType(SPORT_NAME_LOOKUP.football).gameContract).then(
+      async (data) => {
+        //@ts-ignore:next-line
+        const result = JSON.parse(Buffer.from(data.result).toString());
+
+        const upcomingGames = await Promise.all(
+          result
+            .filter((x) => x[1].start_time > getUTCTimestampFromLocal())
+            .map((item) => getGameInfoById(accountId, item, 'new', SPORT_NAME_LOOKUP.football))
+        );
+
+        const ongoingGames = await Promise.all(
+          result
+            .filter(
+              (x) =>
+                x[1].start_time < getUTCTimestampFromLocal() &&
+                x[1].end_time > getUTCTimestampFromLocal()
+            )
+            .map((item) => getGameInfoById(accountId, item, 'on-going', SPORT_NAME_LOOKUP.football))
+        );
+
+        upcomingGames.sort(function (a, b) {
+          return a.start_time - b.start_time;
+        });
+        setFootballNew(upcomingGames);
+        setFootballGoing(ongoingGames);
+      }
+    );
+  }
+
+  function getBaseball(totalGames) {
+    query_games_list(totalGames, getSportType(SPORT_NAME_LOOKUP.baseball).gameContract).then(
+      async (data) => {
+        //@ts-ignore:next-line
+        const result = JSON.parse(Buffer.from(data.result).toString());
+
+        const upcomingGames = await Promise.all(
+          result
+            .filter((x) => x[1].start_time > getUTCTimestampFromLocal())
+            .map((item) => getGameInfoById(accountId, item, 'new', SPORT_NAME_LOOKUP.baseball))
+        );
+
+        const ongoingGames = await Promise.all(
+          result
+            .filter(
+              (x) =>
+                x[1].start_time < getUTCTimestampFromLocal() &&
+                x[1].end_time > getUTCTimestampFromLocal()
+            )
+            .map((item) => getGameInfoById(accountId, item, 'on-going', SPORT_NAME_LOOKUP.baseball))
+        );
+
+        upcomingGames.sort(function (a, b) {
+          return a.start_time - b.start_time;
+        });
+        setBaseballNew(upcomingGames);
+        setBaseballGoing(ongoingGames);
+      }
+    );
+  }
+
+  function getBasketball(totalGames) {
+    query_games_list(totalGames, getSportType(SPORT_NAME_LOOKUP.basketball).gameContract).then(
+      async (data) => {
+        //@ts-ignore:next-line
+        const result = JSON.parse(Buffer.from(data.result).toString());
+
+        const upcomingGames = await Promise.all(
+          result
+            .filter((x) => x[1].start_time > getUTCTimestampFromLocal())
+            .map((item) => getGameInfoById(accountId, item, 'new', SPORT_NAME_LOOKUP.basketball))
+        );
+
+        const ongoingGames = await Promise.all(
+          result
+            .filter(
+              (x) =>
+                x[1].start_time < getUTCTimestampFromLocal() &&
+                x[1].end_time > getUTCTimestampFromLocal()
+            )
+            .map((item) =>
+              getGameInfoById(accountId, item, 'on-going', SPORT_NAME_LOOKUP.basketball)
+            )
+        );
+        upcomingGames.sort(function (a, b) {
+          return a.start_time - b.start_time;
+        });
+        setBasketballNew(upcomingGames);
+        setBasketballGoing(ongoingGames);
+      }
+    );
+  }
+  const allGoing = [...baseballGoing, ...basketballGoing, ...footballGoing];
+  const allNew = [...baseballNew, ...basketballNew, ...footballNew];
+
   useEffect(() => {
     console.log(sportList);
     get_game_supply();
     get_games_list(totalGames);
+    getBaseball(totalGames);
+    getFootball(totalGames);
+    getBasketball(totalGames);
   }, [totalGames, currentSport]);
 
   useEffect(() => {
@@ -187,6 +320,9 @@ const Play = (props) => {
   }, [currentTotal]);
 
   useEffect(() => {}, [sportList]);
+  console.log(sportList, 'sportlist');
+  console.log(categoryList, 'categorylist');
+  console.log(currentSport, 'currentsport');
   return (
     <>
       <Container activeName="PLAY">
@@ -238,87 +374,186 @@ const Play = (props) => {
                 {currentTotal > 0 ? (
                   <>
                     <div className="mt-4 md:ml-10 grid grid-cols-0 md:grid-cols-3 iphone5:self-center md:self-start">
-                      {(categoryList[0].isActive ? newGames : emptyGames).length > 0 &&
-                        (categoryList[0].isActive ? newGames : emptyGames)
-                          .filter((data, i) => i >= gamesOffset && i < gamesOffset + gamesLimit)
-                          .map((data, i) => {
-                            return (
-                              <div key={i} className="flex">
-                                <div className="iphone5:mr-0 md:mr-6 cursor-pointer">
-                                  <Link
-                                    href={`/PlayDetails/${currentSport.toLowerCase()}/${
-                                      data.game_id
-                                    }`}
-                                    passHref
-                                  >
-                                    <div className="iphone5:mr-0 md:mr-6">
-                                      <PlayComponent
-                                        type={activeCategory}
-                                        game_id={data.game_id}
-                                        icon="test"
-                                        startDate={data.start_time}
-                                        endDate={data.end_time}
-                                        img={data.game_image}
-                                        lineupLength={data.lineup_len}
-                                        prizePool={data.prize_description}
-                                        index={() => changeIndex(1)}
-                                      />
-                                    </div>
-                                  </Link>
+                      {sportList[0].isActive
+                        ? (categoryList[0].isActive ? allNew : newGames).length > 0 &&
+                          (categoryList[0].isActive ? allNew : emptyGames)
+                            .filter((data, i) => i >= gamesOffset && i < gamesOffset + gamesLimit)
+                            .map((data, i) => {
+                              const currentSportIndex = allNew.findIndex(
+                                (game) => game.sport === data.sport
+                              );
+                              return (
+                                <div key={i} className="flex">
+                                  <div className="iphone5:mr-0 md:mr-6 cursor-pointer">
+                                    <Link
+                                      href={`/PlayDetails/${allNew[
+                                        currentSportIndex
+                                      ].sport.toLowerCase()}/${data.game_id}`}
+                                      passHref
+                                    >
+                                      <div className="iphone5:mr-0 md:mr-6">
+                                        <PlayComponent
+                                          type={activeCategory}
+                                          game_id={data.game_id}
+                                          icon="test"
+                                          startDate={data.start_time}
+                                          endDate={data.end_time}
+                                          img={data.game_image}
+                                          lineupLength={data.lineup_len}
+                                          sport={data.sport}
+                                          prizePool={data.prize_description}
+                                          index={() => changeIndex(1)}
+                                        />
+                                      </div>
+                                    </Link>
+                                  </div>
                                 </div>
-                              </div>
-                            );
-                          })}
+                              );
+                            })
+                        : (categoryList[0].isActive ? newGames : emptyGames).length > 0 &&
+                          (categoryList[0].isActive ? newGames : emptyGames)
+                            .filter((data, i) => i >= gamesOffset && i < gamesOffset + gamesLimit)
+                            .map((data, i) => {
+                              const currentSportIndex = allGoing.findIndex(
+                                (game) => game.sport === allGoing[0].sport
+                              );
+                              return (
+                                <div key={i} className="flex">
+                                  <div className="iphone5:mr-0 md:mr-6 cursor-pointer">
+                                    <Link
+                                      href={`/PlayDetails/${allGoing[
+                                        currentSportIndex
+                                      ].sport.toLowerCase()}/${data.game_id}`}
+                                      passHref
+                                    >
+                                      <div className="iphone5:mr-0 md:mr-6">
+                                        <PlayComponent
+                                          type={activeCategory}
+                                          game_id={data.game_id}
+                                          icon="test"
+                                          startDate={data.start_time}
+                                          endDate={data.end_time}
+                                          img={data.game_image}
+                                          lineupLength={data.lineup_len}
+                                          sport={data.sport}
+                                          prizePool={data.prize_description}
+                                          index={() => changeIndex(1)}
+                                        />
+                                      </div>
+                                    </Link>
+                                  </div>
+                                </div>
+                              );
+                            })}
                     </div>
-                    <div className="mt-4 md:ml-10 grid grid-cols-0 md:grid-cols-3 iphone5:self-center md:self-start">
-                      {(categoryList[1].isActive
-                        ? ongoingGames
-                        : categoryList[2].isActive
-                        ? completedGames
-                        : emptyGames
-                      ).length > 0 &&
-                        (categoryList[1].isActive
+                    {sportList[0].isActive ? (
+                      <div className="mt-4 md:ml-10 grid grid-cols-0 md:grid-cols-3 iphone5:self-center md:self-start">
+                        {(categoryList[1].isActive
+                          ? allGoing
+                          : categoryList[2].isActive
+                          ? completedGames
+                          : emptyGames
+                        ).length > 0 &&
+                          (categoryList[1].isActive
+                            ? allGoing
+                            : categoryList[2].isActive
+                            ? completedGames
+                            : emptyGames
+                          )
+                            .filter((data, i) => i >= gamesOffset && i < gamesOffset + gamesLimit)
+                            .map((data, i) => {
+                              const currentSportIndex = allGoing.findIndex(
+                                (game) => game.sport === data.sport
+                              );
+                              console.log(currentTotal);
+                              return (
+                                <div key={i} className="flex">
+                                  <div className="iphone5:mr-0 md:mr-6 cursor-pointer ">
+                                    <Link
+                                      href={`/Games/${allGoing[
+                                        currentSportIndex
+                                      ]?.sport.toLowerCase()}/${data.game_id}`}
+                                      passHref
+                                    >
+                                      <div className="iphone5:mr-0 md:mr-6">
+                                        <PlayComponent
+                                          type={activeCategory}
+                                          game_id={data.game_id}
+                                          icon="test"
+                                          prizePool={data.prize_description}
+                                          startDate={data.start_time}
+                                          endDate={data.end_time}
+                                          img={data.game_image}
+                                          sport={data.sport}
+                                          hasEntered={data.user_team_count.team_names?.length}
+                                          index={() => changeIndex(1)}
+                                        />
+                                      </div>
+                                    </Link>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                      </div>
+                    ) : (
+                      <div className="mt-4 md:ml-10 grid grid-cols-0 md:grid-cols-3 iphone5:self-center md:self-start">
+                        {(categoryList[1].isActive
                           ? ongoingGames
                           : categoryList[2].isActive
                           ? completedGames
                           : emptyGames
-                        )
-                          .filter((data, i) => i >= gamesOffset && i < gamesOffset + gamesLimit)
-                          .map((data, i) => {
-                            console.log(currentTotal);
-                            return (
-                              <div key={i} className="flex">
-                                <div className="iphone5:mr-0 md:mr-6 cursor-pointer ">
-                                  <Link
-                                    href={`/Games/${currentSport.toLowerCase()}/${data.game_id}`}
-                                    passHref
-                                  >
-                                    <div className="iphone5:mr-0 md:mr-6">
-                                      <PlayComponent
-                                        type={activeCategory}
-                                        game_id={data.game_id}
-                                        icon="test"
-                                        prizePool={data.prize_description}
-                                        startDate={data.start_time}
-                                        endDate={data.end_time}
-                                        img={data.game_image}
-                                        hasEntered={data.user_team_count.team_names?.length}
-                                        index={() => changeIndex(1)}
-                                      />
-                                    </div>
-                                  </Link>
+                        ).length > 0 &&
+                          (categoryList[1].isActive
+                            ? ongoingGames
+                            : categoryList[2].isActive
+                            ? completedGames
+                            : emptyGames
+                          )
+                            .filter((data, i) => i >= gamesOffset && i < gamesOffset + gamesLimit)
+                            .map((data, i) => {
+                              console.log(currentTotal);
+                              return (
+                                <div key={i} className="flex">
+                                  <div className="iphone5:mr-0 md:mr-6 cursor-pointer ">
+                                    <Link
+                                      href={`/Games/${currentSport.toLowerCase()}/${data.game_id}`}
+                                      passHref
+                                    >
+                                      <div className="iphone5:mr-0 md:mr-6">
+                                        <PlayComponent
+                                          type={activeCategory}
+                                          game_id={data.game_id}
+                                          icon="test"
+                                          prizePool={data.prize_description}
+                                          startDate={data.start_time}
+                                          endDate={data.end_time}
+                                          img={data.game_image}
+                                          sport={data.sport}
+                                          hasEntered={data.user_team_count.team_names?.length}
+                                          index={() => changeIndex(1)}
+                                        />
+                                      </div>
+                                    </Link>
+                                  </div>
                                 </div>
-                              </div>
-                            );
-                          })}
-                    </div>
+                              );
+                            })}
+                      </div>
+                    )}
                   </>
                 ) : (
                   <>
-                    <div className="iphone5:ml-7 md:ml-14 mt-7 text-xl font-bold">
-                      There are no {activeCategory.toLowerCase() + ' ' + currentSport.toLowerCase()}{' '}
-                      games to be displayed
-                    </div>
+                    {sportList[0].isActive ? (
+                      <div className="iphone5:ml-7 md:ml-14 mt-7 text-xl font-bold">
+                        There are no games to be displayed
+                      </div>
+                    ) : (
+                      <div className="iphone5:ml-7 md:ml-14 mt-7 text-xl font-bold">
+                        There are no{' '}
+                        {activeCategory.toLowerCase() + ' ' + currentSport.toLowerCase()} games to
+                        be displayed
+                      </div>
+                    )}
                   </>
                 )}
                 <div className="absolute md:bottom-4 right-10 iphone5:bottom-16 iphone5:right-2 iphoneX:bottom-16 iphoneX:right-4 iphoneX-fixed">

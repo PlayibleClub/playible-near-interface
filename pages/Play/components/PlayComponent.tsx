@@ -7,6 +7,7 @@ import { getUTCDateFromLocal } from 'utils/date/helper';
 
 const PlayComponent = (props) => {
   const {
+    allGoing,
     game_id,
     icon,
     prizePool,
@@ -22,6 +23,7 @@ const PlayComponent = (props) => {
     img,
     fetchGames,
     index,
+    sport,
     lineupLength,
     hasEntered,
   } = props;
@@ -109,7 +111,9 @@ const PlayComponent = (props) => {
                 <div className="font-thin text-sm">PRIZE POOL</div>
                 <div className="text-base font-monument">${prizePool}</div>
               </div> */}
+              
               <div className="">
+                <div className="text-base font-monument">{sport}</div>
                 <div className="font-thin text-sm">
                   {type === 'ON-GOING' || type === 'ACTIVE' ? 'END' : 'START'} DATE
                 </div>
@@ -127,8 +131,10 @@ const PlayComponent = (props) => {
                     ? moment.tz(endDate, moment.tz.guess()).format('Do MMMM, hA zz')
                     : ''}
                 </div>
+                
               </div>
               <div>
+                
                 <div className="font-thin text-sm">GAME ID</div>
                 <div className="text-base font-monument">{game_id}</div>
                 <div className={`${type === 'NEW' ? ' ' : 'hidden'}`}>
@@ -201,6 +207,7 @@ PlayComponent.propTypes = {
   index: PropTypes.func,
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
   img: PropTypes.string,
+  sport: PropTypes.string,
   hasEntered: PropTypes.string,
 };
 
