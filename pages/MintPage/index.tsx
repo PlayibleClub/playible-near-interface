@@ -1245,6 +1245,7 @@ export default function Home(props) {
                         <li>1 Wicket Keeper (WK) </li>
                         <li>2 Batsman (BAT) </li>
                         <li>2 All rounders (AR)</li>
+                        <li>5 Any (BOWL/WK/BAT/AR)</li>
                       </ul>
                     )}
                   </div>
