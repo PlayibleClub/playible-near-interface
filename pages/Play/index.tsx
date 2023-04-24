@@ -81,13 +81,21 @@ const Play = (props) => {
           prevSport.unshift({ name: 'ALL', isActive: false });
         }
         setSportList(prevSport);
+        setCurrentTotal(ongoingGames.length);
         break;
       case 'COMPLETED':
-        sportList.shift();
-        prevSport.forEach((sport, index) => {
-          sport.isActive = index === 1;
-        });
-
+        const prevIndex = prevSport.findIndex((sport) => sport.isActive);
+        prevSport.splice(0, 1);
+        if (prevIndex > 1) {
+          prevSport.forEach((sport, index) => {
+            sport.isActive = index === prevIndex - 1;
+          });
+        } else {
+          prevSport.forEach((sport, index) => {
+            sport.isActive = index === 0;
+          });
+        }
+        setSportList(prevSport);
         setCurrentTotal(completedGames.length);
         break;
     }
@@ -131,9 +139,13 @@ const Play = (props) => {
   const [footballNew, setFootballNew] = useState([]);
   const [basketballNew, setBasketballNew] = useState([]);
   const [baseballNew, setBaseballNew] = useState([]);
+  const [cricketNew, setCricketNew] = useState([]);
   const [footballGoing, setFootballGoing] = useState([]);
   const [basketballGoing, setBasketballGoing] = useState([]);
   const [baseballGoing, setBaseballGoing] = useState([]);
+  const [cricketGoing, setCricketGoing] = useState([]);
+  const allGoing = [...cricketGoing, ...baseballGoing, ...basketballGoing, ...footballGoing];
+  const allNew = [...cricketNew, ...baseballNew, ...basketballNew, ...footballNew];
   const [newGames, setNewGames] = useState([]);
   const [ongoingGames, setOngoingGames] = useState([]);
   const [completedGames, setCompletedGames] = useState([]);
@@ -300,8 +312,36 @@ const Play = (props) => {
       }
     );
   }
-  const allGoing = [...baseballGoing, ...basketballGoing, ...footballGoing];
-  const allNew = [...baseballNew, ...basketballNew, ...footballNew];
+
+  function getCricket(totalGames) {
+    query_games_list(totalGames, getSportType(SPORT_NAME_LOOKUP.cricket).gameContract).then(
+      async (data) => {
+        //@ts-ignore:next-line
+        const result = JSON.parse(Buffer.from(data.result).toString());
+
+        const upcomingGames = await Promise.all(
+          result
+            .filter((x) => x[1].start_time > getUTCTimestampFromLocal())
+            .map((item) => getGameInfoById(accountId, item, 'new', SPORT_NAME_LOOKUP.cricket))
+        );
+
+        const ongoingGames = await Promise.all(
+          result
+            .filter(
+              (x) =>
+                x[1].start_time < getUTCTimestampFromLocal() &&
+                x[1].end_time > getUTCTimestampFromLocal()
+            )
+            .map((item) => getGameInfoById(accountId, item, 'on-going', SPORT_NAME_LOOKUP.cricket))
+        );
+        upcomingGames.sort(function (a, b) {
+          return a.start_time - b.start_time;
+        });
+        setCricketNew(upcomingGames);
+        setCricketGoing(ongoingGames);
+      }
+    );
+  }
 
   useEffect(() => {
     console.log(sportList);
@@ -310,6 +350,7 @@ const Play = (props) => {
     getBaseball(totalGames);
     getFootball(totalGames);
     getBasketball(totalGames);
+    getCricket(totalGames);
   }, [totalGames, currentSport]);
 
   useEffect(() => {
