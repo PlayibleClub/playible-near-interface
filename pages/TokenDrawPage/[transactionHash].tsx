@@ -94,7 +94,7 @@ const TokenDrawPage = (props) => {
       setLength(10);
       return fileList.find((x) => x.name === SPORT_NAME_LOOKUP.baseball);
     } else if (contract.includes(SPORT_CONTRACT_LOOKUP.cricket)) {
-      setLength(10);
+      setLength(12);
       return fileList.find((x) => x.name === SPORT_NAME_LOOKUP.cricket);
     }
   }
