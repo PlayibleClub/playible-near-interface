@@ -207,11 +207,11 @@ export default function Index(props) {
     { positions: ['DH'], amount: 1 },
   ]);
   const [positionsInfoCricket, setPositionsInfoCricket] = useState([
-    { positions: ['BOWL'], amount: 2 },
-    { positions: ['WK'], amount: 1 },
-    { positions: ['BAT'], amount: 2 },
-    { positions: ['AR'], amount: 2 },
-    { positions: ['BOWL', 'WK', 'BAT', 'AR'], amount: 5 },
+    { positions: ['bowler'], amount: 2 },
+    { positions: ['keeper'], amount: 1 },
+    { positions: ['batsman'], amount: 2 },
+    { positions: ['all_rounder'], amount: 2 },
+    { positions: ['bowler', 'batsman', 'all_rounder', 'keeper'], amount: 5 },
   ]);
 
   const [positionsDisplayCricket, setPositionsDisplayCricket] = useState([

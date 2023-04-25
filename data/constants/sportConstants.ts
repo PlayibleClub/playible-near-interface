@@ -186,26 +186,26 @@ export const MLB_POSITIONS = [
 export const CRICKET_POSITIONS = [
   {
     name: 'BOWLER',
-    key: 'BOWL',
+    key: 'bowler',
   },
   {
     name: 'WICKET KEEPER',
-    key: 'WK',
+    key: 'keeper',
   },
   {
     name: 'BATSMAN',
-    key: 'BAT',
+    key: 'batsman',
   },
   {
     name: 'ALL ROUNDERS',
-    key: 'AR',
+    key: 'all_rounder',
   },
 ];
 
 export const EXTRA_CRICKET = [
   {
     name: 'ANY',
-    key: ['AR', 'BOWL', 'WK', 'BAT'],
+    key: ['bowler', 'batsman', 'all_rounder', 'keeper'],
   },
 ];
 export const EXTRA_NBA = [
