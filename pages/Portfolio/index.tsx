@@ -181,7 +181,8 @@ const Portfolio = () => {
         position,
         team,
         name,
-        contract
+        contract,
+        currentSport
       )
     );
   }
