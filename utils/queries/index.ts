@@ -68,6 +68,42 @@ export const GET_ATHLETE_BY_ID = gql`
   }
 `;
 
+export const GET_CRICKET_ATHLETE_BY_ID = gql`
+  query GetCricketAthleteById(
+    $getCricketAthleteById: Float!
+    $team: String
+    $from: DateTime
+    $to: DateTime
+  ) {
+    getCricketAthleteById(id: $getCricketAthleteById, team: $team, from: $from, to: $to) {
+      id
+      name
+      playerKey
+      seasonalRole
+      stats {
+        fantasyScore
+        match {
+          name
+          start_at
+          status
+          key
+          team_a {
+            name
+            key
+          }
+          team_b {
+            name
+            key
+          }
+        }
+        type
+      }
+      nftAnimation
+      nftImage
+    }
+  }
+`;
+
 export const GET_ATHLETEDATA_QB = gql`
   query GetAthleteData_QB($getAthleteById: Float!) {
     getAthleteById(id: $getAthleteById) {
@@ -260,55 +296,98 @@ export const GET_ATHLETEDATA_HITTER = gql`
 `;
 
 export const GET_ATHLETEDATA_BOWL = gql`
-  query GetAthleteMatchResults($playerKey: String!, $matchKey: String!) {
-    getAthleteMatchResults(playerKey: $playerKey, matchKey: $matchKey) {
+  query GetCricketAthleteById($getCricketAthleteById: Float!) {
+    getCricketAthleteById(id: $getCricketAthleteById) {
+      id
+      name
+      playerKey
+      seasonalRole
       stats {
+        type
         cricket_for_every_run
         cricket_for_every_wicket
         cricket_economy_rate
         cricket_strike_rate
         cricket_four_wickets
         cricket_five_wickets
+        tournament_points
+        match {
+          name
+          start_at
+        }
+        id
       }
     }
   }
 `;
 
 export const GET_ATHLETEDATA_WK = gql`
-  query GetAthleteMatchResults($playerKey: String!, $matchKey: String!) {
-    getAthleteMatchResults(playerKey: $playerKey, matchKey: $matchKey) {
+  query GetCricketAthleteById($getCricketAthleteById: Float!) {
+    getCricketAthleteById(id: $getCricketAthleteById) {
+      id
+      name
+      playerKey
+      seasonalRole
       stats {
         cricket_for_every_catch
         cricket_for_every_stumping
+        tournament_points
+        match {
+          name
+          start_at
+        }
+        id
       }
     }
   }
 `;
 
 export const GET_ATHLETEDATA_BAT = gql`
-  query GetAthleteMatchResults($playerKey: String!, $matchKey: String!) {
-    getAthleteMatchResults(playerKey: $playerKey, matchKey: $matchKey) {
+  query GetCricketAthleteById($getCricketAthleteById: Float!) {
+    getCricketAthleteById(id: $getCricketAthleteById) {
+      id
+      name
+      playerKey
+      seasonalRole
       stats {
+        type
         cricket_for_every_run
         cricket_strike_rate
         cricket_hundred_runs
         cricket_fifty_runs
         cricket_for_every_four
         cricket_for_every_six
+        tournament_points
+        match {
+          name
+          start_at
+        }
+        id
       }
     }
   }
 `;
 
 export const GET_ATHLETEDATA_AR = gql`
-  query GetAthleteMatchResults($playerKey: String!, $matchKey: String!) {
-    getAthleteMatchResults(playerKey: $playerKey, matchKey: $matchKey) {
+  query GetCricketAthleteById($getCricketAthleteById: Float!) {
+    getCricketAthleteById(id: $getCricketAthleteById) {
+      id
+      name
+      playerKey
+      seasonalRole
       stats {
+        type
         cricket_hundred_runs
         cricket_fifty_runs
         cricket_four_wickets
         cricket_five_wickets
         cricket_for_every_catch
+        tournament_points
+        match {
+          name
+          start_at
+        }
+        id
       }
     }
   }

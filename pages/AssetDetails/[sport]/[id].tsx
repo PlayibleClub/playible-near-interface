@@ -1,6 +1,10 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import Container from 'components/containers/Container';
-import { getAthleteInfoById, convertNftToAthlete } from 'utils/athlete/helper';
+import {
+  getAthleteInfoById,
+  getCricketAthleteInfoById,
+  convertNftToAthlete,
+} from 'utils/athlete/helper';
 import BackFunction from 'components/buttons/BackFunction';
 import StatsComponent from '../components/StatsComponent';
 import Link from 'next/link';
@@ -46,17 +50,32 @@ const AssetDetails = (props) => {
     query_nft_tokens_by_id(athleteIndex, contract).then(async (data) => {
       // @ts-ignore:next-line
       const result = JSON.parse(Buffer.from(data.result).toString());
-      const result_two = await getAthleteInfoById(await convertNftToAthlete(result), null, null);
-      let games = result_two.stats_breakdown.slice();
-      console.log(result_two);
-      setAthlete(result_two);
-      setSortedGames(
-        games
-          .filter((x) => x.type === 'weekly' || x.type === 'daily')
-          .sort((a, b) => {
-            return moment.utc(a.gameDate).unix() - moment.utc(b.gameDate).unix();
-          })
-      );
+      let result_two;
+      if (currentSport !== 'CRICKET') {
+        result_two = await getAthleteInfoById(await convertNftToAthlete(result), null, null);
+        let games = result_two.stats_breakdown.slice();
+        console.log(result_two);
+        setAthlete(result_two);
+        setSortedGames(
+          games
+            .filter((x) => x.type === 'weekly' || x.type === 'daily')
+            .sort((a, b) => {
+              return moment.utc(a.gameDate).unix() - moment.utc(b.gameDate).unix();
+            })
+        );
+      } else {
+        result_two = await getCricketAthleteInfoById(await convertNftToAthlete(result), null, null);
+        let games = result_two.stats_breakdown.slice();
+        console.log(result_two);
+        setAthlete(result_two);
+        setSortedGames(
+          games
+            .filter((x) => x.type === 'daily')
+            .sort((a, b) => {
+              return moment.utc(a.match.starts_at).unix() - moment.utc(b.match.starts_at).unix();
+            })
+        );
+      }
     });
   }
   useEffect(() => {
@@ -85,6 +104,16 @@ const AssetDetails = (props) => {
     athlete?.stats_breakdown.forEach((game) => {
       if (game.type === 'season') {
         totalGames = game.played;
+      }
+    });
+    return totalGames;
+  }
+
+  function getGamesPlayedCricket() {
+    let totalGames = 0;
+    athlete?.stats_breakdown.forEach((game) => {
+      if (game.type === 'daily' && game.match.status === 'completed') {
+        totalGames++;
       }
     });
     return totalGames;
@@ -154,7 +183,7 @@ const AssetDetails = (props) => {
                 </div>
                 <div>FANTASY SCORE</div>
               </div>
-              <div className="font-bold">{athlete?.fantasy_score.toFixed(2)}</div>
+              <div className="font-bold">{athlete?.fantasy_score?.toFixed(2)}</div>
             </div>
             {currentSport === 'FOOTBALL' ? (
               <Link href="https://paras.id/collection/athlete.nfl.playible.near">
@@ -178,14 +207,21 @@ const AssetDetails = (props) => {
             <div></div>
           </div>
         </div>
-        <div className="text-2xl font-bold font-monument ml-10 mt-16 mr-8 align-baseline">
-          SEASON STATS
-          <hr className="w-10 border-4"></hr>
-        </div>
+        {currentSport !== 'CRICKET' ? (
+          <div className="text-2xl font-bold font-monument ml-10 mt-16 mr-8 align-baseline">
+            SEASON STATS
+            <hr className="w-10 border-4"></hr>
+          </div>
+        ) : (
+          <div className="text-2xl font-bold font-monument ml-10 mt-16 mr-8 align-baseline">
+            SEASON TOTAL POINTS
+            <hr className="w-10 border-4"></hr>
+          </div>
+        )}
 
         <div className="grid grid-cols-2 ml-10 mt-10 mb-20 w:3/4 md:w-5/12 md:text-center">
           <div className="mr-2 p-4 border border-indigo-slate rounded-lg ">
-            <div className="font-monument text-3xl">{athlete?.fantasy_score.toFixed(2)}</div>
+            <div className="font-monument text-3xl">{athlete?.fantasy_score?.toFixed(2)}</div>
             <div className="text-sm">AVG.FANTASY SCORE</div>
           </div>
           <div className="ml-4 mr-5 p-4 border border-indigo-slate rounded-lg text-center">
@@ -194,9 +230,13 @@ const AssetDetails = (props) => {
                 ? athlete === undefined
                   ? ''
                   : getGamesPlayed()
+                : currentSport === 'BASKETBALL'
+                ? athlete === undefined
+                  ? ''
+                  : getGamesPlayedNba()
                 : athlete === undefined
                 ? ''
-                : getGamesPlayedNba()}
+                : getGamesPlayedCricket()}
             </div>
             <div className="text-sm">GAMES PLAYED</div>
           </div>
@@ -207,7 +247,6 @@ const AssetDetails = (props) => {
           position={athlete?.position}
           sport={currentSport}
           mlbSeason={mlbSeason}
-          //key={athlete?.key}
         />
         <div className="text-2xl font-bold font-monument mt-3 ml-10 mb-10 mr-8 align-baseline md:-mt-14">
           GAME SCORES
@@ -222,31 +261,58 @@ const AssetDetails = (props) => {
               <th className="font-monument text-xs text-right pr-24 p-2">FANTASY SCORE</th>
             </tr>
           </thead>
-          <tbody>
-            {sortedGames == undefined || sortedGames.length === 0
-              ? 'LOADING GAMES....'
-              : sortedGames
-                  .filter(
-                    (statType) =>
-                      (statType.type == 'weekly' || statType.type == 'daily') &&
-                      statType.played == 1 &&
-                      statType.season == mlbSeason
-                  )
-                  .map((item, index) => {
-                    return (
-                      <tr key={index} className="border border-indigo-slate">
-                        <td className="text-sm text-center w-6 pl-4 pr-4">
-                          {getDateOfGame(item.gameDate)}
-                        </td>
-                        <td className="text-sm w-px">vs.</td>
-                        <td className="text-sm pl-2 font-black w-96">{item.opponent.name}</td>
-                        <td className="text-sm text-right font-black p-3 pr-24 w-12">
-                          {item.fantasyScore.toFixed(2)}
-                        </td>
-                      </tr>
-                    );
-                  })}
-          </tbody>
+          {currentSport !== 'CRICKET' ? (
+            <tbody>
+              {sortedGames == undefined || sortedGames.length === 0
+                ? 'LOADING GAMES....'
+                : sortedGames
+                    .filter(
+                      (statType) =>
+                        (statType.type == 'weekly' || statType.type == 'daily') &&
+                        statType.played == 1 &&
+                        statType.season == mlbSeason
+                    )
+                    .map((item, index) => {
+                      return (
+                        <tr key={index} className="border border-indigo-slate">
+                          <td className="text-sm text-center w-6 pl-4 pr-4">
+                            {getDateOfGame(item.gameDate)}
+                          </td>
+                          <td className="text-sm w-px">vs.</td>
+                          <td className="text-sm pl-2 font-black w-96">{item.opponent.name}</td>
+                          <td className="text-sm text-right font-black p-3 pr-24 w-12">
+                            {item.fantasyScore.toFixed(2)}
+                          </td>
+                        </tr>
+                      );
+                    })}
+            </tbody>
+          ) : (
+            <tbody>
+              {sortedGames == undefined || sortedGames.length === 0
+                ? 'LOADING GAMES....'
+                : sortedGames
+                    .filter((statType) => statType.type == 'daily')
+                    .map((item, index) => {
+                      return (
+                        <tr key={index} className="border border-indigo-slate">
+                          <td className="text-sm text-center w-6 pl-4 pr-4">
+                            {getDateOfGame(item.match.start_at)}
+                          </td>
+                          <td className="text-sm w-px">vs.</td>
+                          <td className="text-sm pl-2 font-black w-96">
+                            {athlete.team === item.match.team_b.key
+                              ? item.match.team_a.name
+                              : item.match.team_b.name}
+                          </td>
+                          <td className="text-sm text-right font-black p-3 pr-24 w-12">
+                            {item.fantasyScore.toFixed(2)}
+                          </td>
+                        </tr>
+                      );
+                    })}
+            </tbody>
+          )}
         </table>
       </div>
     </Container>

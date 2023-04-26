@@ -180,15 +180,15 @@ const StatsComponent = (props) => {
         );
         setStatNames(hitterStatNames);
         break;
-      case 'BOWL':
+      case 'bowler':
         query = await getAthleteBOWL({
-          // variables: { getAthleteMatchResults: playerKey, matchKey: matchKey },
+          variables: {
+            getCricketAthleteById: parseFloat(id.toString()),
+          },
         });
         setAthleteData(
           await Promise.all(
-            query.data.getAthleteMatchResults.stats.filter(
-              (x) => x.type === 'daily' && x.played === 1
-            )
+            query.data.getCricketAthleteById.stats.filter((x) => x.type === 'daily')
           ).then((x) => {
             let sorted = x.sort((a, b) => {
               return moment.utc(b.match.start_at).unix() - moment.utc(a.match.start_at).unix();
@@ -198,15 +198,15 @@ const StatsComponent = (props) => {
         );
         setStatNames(bowlingStatNames);
         break;
-      case 'WK':
+      case 'keeper':
         query = await getAthleteWK({
-          // variables: { getAthleteMatchResults: playerKey, matchKey: matchKey },
+          variables: {
+            getCricketAthleteById: parseFloat(id.toString()),
+          },
         });
         setAthleteData(
           await Promise.all(
-            query.data.getAthleteMatchResults.stats.filter(
-              (x) => x.type === 'daily' && x.played === 1
-            )
+            query.data.getCricketAthleteById.stats.filter((x) => x.type === 'daily')
           ).then((x) => {
             let sorted = x.sort((a, b) => {
               return moment.utc(b.match.start_at).unix() - moment.utc(a.match.start_at).unix();
@@ -216,15 +216,15 @@ const StatsComponent = (props) => {
         );
         setStatNames(wicketKeeperStatNames);
         break;
-      case 'BAT':
+      case 'batsman':
         query = await getAthleteBAT({
-          // variables: { getAthleteMatchResults: playerKey, matchKey: matchKey },
+          variables: {
+            getCricketAthleteById: parseFloat(id.toString()),
+          },
         });
         setAthleteData(
           await Promise.all(
-            query.data.getAthleteMatchResults.stats.filter(
-              (x) => x.type === 'daily' && x.played === 1
-            )
+            query.data.getCricketAthleteById.stats.filter((x) => x.type === 'daily')
           ).then((x) => {
             let sorted = x.sort((a, b) => {
               return moment.utc(b.match.start_at).unix() - moment.utc(a.match.start_at).unix();
@@ -232,17 +232,18 @@ const StatsComponent = (props) => {
             return Object.values(sorted[0]);
           })
         );
+
         setStatNames(batsmanStatNames);
         break;
-      case 'AR':
+      case 'all_rounder':
         query = await getAthleteBAT({
-          // variables: { getAthleteMatchResults: playerKey, matchKey: matchKey },
+          variables: {
+            getCricketAthleteById: parseFloat(id.toString()),
+          },
         });
         setAthleteData(
           await Promise.all(
-            query.data.getAthleteMatchResults.stats.filter(
-              (x) => x.type === 'daily' && x.played === 1
-            )
+            query.data.getCricketAthleteById.stats.filter((x) => x.type === 'daily')
           ).then((x) => {
             let sorted = x.sort((a, b) => {
               return moment.utc(b.match.start_at).unix() - moment.utc(a.match.start_at).unix();
@@ -304,13 +305,17 @@ const StatsComponent = (props) => {
         <div className="">{positionDisplay}</div>
       </div>
       <div className="mt-10 ml-10 md:ml-10">
-        <div className="font-monument md:text-xl">
-          Most recent game stats &#40;against{' '}
-          {athleteData[athleteData.length - 2] !== undefined
-            ? athleteData[athleteData.length - 2].name
-            : ''}
-          &#41;
-        </div>
+        {sport !== 'CRICKET' ? (
+          <div className="font-monument md:text-xl">
+            Most recent game stats &#40;against{' '}
+            {athleteData[athleteData.length - 2] !== undefined
+              ? athleteData[athleteData.length - 2].name
+              : ''}
+            &#41;
+          </div>
+        ) : (
+          <div className="font-monument md:text-xl">Most recent fantasy score breakdown</div>
+        )}
       </div>
       <div className="mt-4 ml-10 md:ml-10 text-sm grid grid-rows-4 grid-cols-2 md:grid-cols-4 md:w-1/2 md:mt-4">
         {athleteStat?.map((x, index) => {
