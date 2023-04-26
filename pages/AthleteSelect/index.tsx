@@ -133,6 +133,11 @@ const AthleteSelect = (props) => {
           result.map((x) => getAthleteSchedule(x, startDate, endDate, 'mlb'))
         );
       }
+      else if (currentSport === SPORT_NAME_LOOKUP.cricket) {
+        athletes = await Promise.all(
+          result.map((x) => getAthleteSchedule(x, startDate, endDate, 'ipl'))
+        );
+      }
       setAthletes(athletes);
     });
     //   setAthletes(
@@ -169,6 +174,11 @@ const AthleteSelect = (props) => {
       else if (currentSport === SPORT_NAME_LOOKUP.baseball) {
         athletes = await Promise.all(
           result.map((x) => getAthleteSchedule(x, startDate, endDate, 'mlb'))
+        );
+      }
+      else if (currentSport === SPORT_NAME_LOOKUP.cricket) {
+        athletes = await Promise.all(
+          result.map((x) => getAthleteSchedule(x, startDate, endDate, 'cricket'))
         );
       }
       setAthletes(athletes);
