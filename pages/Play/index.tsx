@@ -461,10 +461,8 @@ const Play = (props) => {
                               return (
                                 <div key={i} className="flex">
                                   <div className="iphone5:mr-0 md:mr-6 cursor-pointer">
-                                    <Link
-                                      href={`/PlayDetails/${allGoing[
-                                        currentSportIndex
-                                      ].sport.toLowerCase()}/${data.game_id}`}
+                                  <Link
+                                      href={`/PlayDetails/${currentSport.toLowerCase()}/${data.game_id}`}
                                       passHref
                                     >
                                       <div className="iphone5:mr-0 md:mr-6">
