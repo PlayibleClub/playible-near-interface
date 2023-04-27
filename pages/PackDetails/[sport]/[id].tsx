@@ -216,7 +216,7 @@ export default function PackDetails(props) {
           ) : (
             <div className="mt-10">
               This pack will contain 12 randomly generated <br></br>
-              American Cricket players.
+              Cricket players.
             </div>
           )}
           <div className="mt-5 mb-12">
