@@ -294,7 +294,7 @@ export const SPORT_TYPES = [
     openPromoContract: getContract(OPENPACK_PROMO_CRICKET),
     gameContract: getContract(GAME_CRICKET),
     positionList: CRICKET_POSITIONS,
-    extra: EXTRA_NBA,
+    extra: EXTRA_CRICKET,
   },
 ];
 
