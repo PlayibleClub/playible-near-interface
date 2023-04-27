@@ -16,13 +16,13 @@ import {
   query_filter_tokens_for_owner,
   query_mixed_tokens_pagination,
 } from 'utils/near/helper';
-import { getSportType } from 'data/constants/sportConstants';
+import { SPORT_NAME_LOOKUP, getSportType } from 'data/constants/sportConstants';
 import ReactPaginate from 'react-paginate';
 import NftTypeComponent from './components/NftTypeComponent';
 import { getAthleteLineup, getIndex } from 'redux/athlete/athleteSlice';
 import { SPORT_TYPES } from 'data/constants/sportConstants';
 import { useLazyQuery } from '@apollo/client';
-import { GET_TEAMS } from 'utils/queries';
+import { GET_TEAMS, GET_CRICKET_TEAMS } from 'utils/queries';
 const Portfolio = () => {
   const [searchText, setSearchText] = useState('');
   const [displayMode, setDisplay] = useState(true);
@@ -67,6 +67,7 @@ const Portfolio = () => {
   const [team, setTeam] = useState(['allTeams']);
   const [name, setName] = useState(['allNames']);
   const [getTeams] = useLazyQuery(GET_TEAMS);
+  const [getCricketTeams] = useLazyQuery(GET_CRICKET_TEAMS);
   const [teams, setTeams] = useState([]);
   const [remountComponent, setRemountComponent] = useState(0);
   const [remountDropdown, setRemountDropdown] = useState(0);
@@ -108,10 +109,18 @@ const Portfolio = () => {
   };
 
   const query_teams = useCallback(async (currentSport) => {
-    let query = await getTeams({
-      variables: { sport: getSportType(currentSport).key.toLocaleLowerCase() },
-    });
-    setTeams(await Promise.all(query.data.getTeams));
+    let query;
+    if (currentSport !== SPORT_NAME_LOOKUP.cricket) {
+      query = await getTeams({
+        variables: { sport: getSportType(currentSport).key.toLocaleLowerCase() },
+      });
+      setTeams(await Promise.all(query.data.getTeams));
+    } else {
+      query = await getCricketTeams({
+        variables: { sport: getSportType(currentSport).key.toLocaleLowerCase() },
+      });
+      setTeams(await Promise.all(query.data.getCricketTeams));
+    }
   }, []);
   function getAthleteLimit() {
     try {
@@ -221,7 +230,7 @@ const Portfolio = () => {
     } else {
       setAthletes([]);
     }
-  }, [totalRegularSupply, totalPromoSupply, athleteOffset, currentPage, position]);
+  }, [totalRegularSupply, totalPromoSupply, athleteOffset, currentPage, team, position]);
 
   const handleSearchDynamic = (value) => {
     setName(value);
@@ -441,7 +450,7 @@ const Portfolio = () => {
                     >
                       <option value="allTeams">ALL TEAMS</option>
                       {teams.map((x) => {
-                        return <option value={x.key}>{x.key}</option>;
+                        return <option value={x.key}>{x.key.toUpperCase()}</option>;
                       })}
                     </select>
                   </form>

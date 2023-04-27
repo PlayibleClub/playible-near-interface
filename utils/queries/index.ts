@@ -418,6 +418,15 @@ export const GET_TEAMS = gql`
   }
 `;
 
+export const GET_CRICKET_TEAMS = gql`
+  query GetCricketTeams($sport: String!) {
+    getCricketTeams(sport: $sport) {
+      key
+      name
+    }
+  }
+`;
+
 export const GET_PLAYER_SCHEDULE = gql`
   query GetPlayerSchedule(
     $team: String!
