@@ -280,7 +280,7 @@ export default function Home(props) {
                                 ? stats.length == 1
                                   ? stats[0].fantasyScore.toFixed(2)
                                   : getAvgFantasyScore(stats).toFixed(2)
-                                : parseFloat(stats[0].tournament_points).toFixed(2)
+                                : parseFloat(stats[0]?.tournament_points).toFixed(2)
                             }
                             id={id}
                             uri={nftImage || null}
