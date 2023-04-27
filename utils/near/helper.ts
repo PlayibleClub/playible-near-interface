@@ -36,6 +36,7 @@ async function query_nft_token_by_id(token_id, currentSport, start_time, end_tim
   const query = JSON.stringify({
     token_id: token_id,
   });
+  let result_two;
   // console.log(token_id);
   return provider
     .query({
@@ -60,11 +61,19 @@ async function query_nft_token_by_id(token_id, currentSport, start_time, end_tim
       //         start_time,
       //         end_time
       //       );
-      const result_two = await getAthleteInfoById(
-        await convertNftToAthlete(result),
-        start_time,
-        end_time
-      );
+      if (currentSport !== 'CRICKET') {
+        result_two = await getAthleteInfoById(
+          await convertNftToAthlete(result),
+          start_time,
+          end_time
+        );
+      } else {
+        result_two = await getCricketAthleteInfoById(
+          await convertNftToAthlete(result),
+          start_time,
+          end_time
+        );
+      }
       return result_two;
     });
 }
