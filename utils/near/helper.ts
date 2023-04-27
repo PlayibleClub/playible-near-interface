@@ -197,6 +197,8 @@ async function compute_scores(result, currentSport, start_time, end_time) {
                   : currentSport === SPORT_NAME_LOOKUP.basketball ||
                     currentSport === SPORT_NAME_LOOKUP.baseball
                   ? statType.type == 'daily' && statType.played == 1
+                  : currentSport === SPORT_NAME_LOOKUP.cricket
+                  ? statType.type == 'daily'
                   : ''
               )
               .reduce((accumulator, item) => {
