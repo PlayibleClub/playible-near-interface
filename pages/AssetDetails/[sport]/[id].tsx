@@ -214,7 +214,7 @@ const AssetDetails = (props) => {
           </div>
         ) : (
           <div className="text-2xl font-bold font-monument ml-10 mt-16 mr-8 align-baseline">
-            SEASON TOTAL POINTS
+            SEASON STATS
             <hr className="w-10 border-4"></hr>
           </div>
         )}
