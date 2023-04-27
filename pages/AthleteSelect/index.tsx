@@ -26,9 +26,9 @@ import {
 import { getGameStartDate, getGameEndDate } from 'redux/athlete/athleteSlice';
 import { getSportType, SPORT_NAME_LOOKUP } from 'data/constants/sportConstants';
 import NftTypeComponent from 'pages/Portfolio/components/NftTypeComponent';
-import { getAthleteSchedule, getPositionDisplay } from 'utils/athlete/helper';
+import { getAthleteSchedule, getCricketSchedule, getPositionDisplay } from 'utils/athlete/helper';
 import { useLazyQuery } from '@apollo/client';
-import { GET_TEAMS } from 'utils/queries';
+import { GET_CRICKET_TEAMS, GET_TEAMS } from 'utils/queries';
 const AthleteSelect = (props) => {
   const router = useRouter();
   const dispatch = useDispatch();
@@ -61,6 +61,7 @@ const AthleteSelect = (props) => {
   const [remountComponent, setRemountComponent] = useState(0);
   const [remountAthlete, setRemountAthlete] = useState(0);
   const [getTeams] = useLazyQuery(GET_TEAMS);
+  const [getCricketTeams] = useLazyQuery(GET_CRICKET_TEAMS);
   const [teams, setTeams] = useState([]);
 
   async function get_filter_supply_for_owner() {
@@ -120,22 +121,23 @@ const AthleteSelect = (props) => {
       position,
       team,
       name,
-      contract
+      contract,
+      currentSport
     ).then(async (result) => {
       let athletes = result;
       if (currentSport === SPORT_NAME_LOOKUP.basketball) {
         athletes = await Promise.all(
           result.map((x) => getAthleteSchedule(x, startDate, endDate, 'nba'))
         );
-      }
-      else if (currentSport === SPORT_NAME_LOOKUP.baseball) {
+      } else if (currentSport === SPORT_NAME_LOOKUP.baseball) {
         athletes = await Promise.all(
           result.map((x) => getAthleteSchedule(x, startDate, endDate, 'mlb'))
         );
-      }
-      else if (currentSport === SPORT_NAME_LOOKUP.cricket) {
+      } else if (currentSport === SPORT_NAME_LOOKUP.cricket) {
         athletes = await Promise.all(
-          result.map((x) => getAthleteSchedule(x, startDate, endDate, 'ipl'))
+          result
+            .filter((x) => x.status !== 'not_started')
+            .map((x) => getCricketSchedule(x, startDate, endDate))
         );
       }
       setAthletes(athletes);
@@ -170,15 +172,15 @@ const AthleteSelect = (props) => {
         athletes = await Promise.all(
           result.map((x) => getAthleteSchedule(x, startDate, endDate, 'nba'))
         );
-      }
-      else if (currentSport === SPORT_NAME_LOOKUP.baseball) {
+      } else if (currentSport === SPORT_NAME_LOOKUP.baseball) {
         athletes = await Promise.all(
           result.map((x) => getAthleteSchedule(x, startDate, endDate, 'mlb'))
         );
-      }
-      else if (currentSport === SPORT_NAME_LOOKUP.cricket) {
+      } else if (currentSport === SPORT_NAME_LOOKUP.cricket) {
         athletes = await Promise.all(
-          result.map((x) => getAthleteSchedule(x, startDate, endDate, 'cricket'))
+          result
+            .filter((x) => x.status !== 'not_started')
+            .map((x) => getCricketSchedule(x, startDate, endDate))
         );
       }
       setAthletes(athletes);
@@ -220,10 +222,18 @@ const AthleteSelect = (props) => {
   }
 
   async function query_teams_graphql(currentSport) {
-    let query = await getTeams({
-      variables: { sport: getSportType(currentSport).key.toLocaleLowerCase() },
-    });
-    setTeams(await Promise.all(query.data.getTeams));
+    let query;
+    if (currentSport !== SPORT_NAME_LOOKUP.cricket) {
+      query = await getTeams({
+        variables: { sport: getSportType(currentSport).key.toLocaleLowerCase() },
+      });
+      setTeams(await Promise.all(query.data.getTeams));
+    } else {
+      query = await getCricketTeams({
+        variables: { sport: getSportType(currentSport).key.toLocaleLowerCase() },
+      });
+      setTeams(await Promise.all(query.data.getCricketTeams));
+    }
   }
 
   const handleRadioClick = (value) => {
@@ -291,7 +301,7 @@ const AthleteSelect = (props) => {
     }
     setPageCount(Math.ceil((totalRegularSupply + totalPromoSupply) / athleteLimit));
     //setup regular_offset, soulbound_offset
-  }, [team, name, totalRegularSupply, totalPromoSupply, selectedRegular, selectedPromo]);
+  }, [team, name, totalRegularSupply, totalPromoSupply, selectedRegular, selectedPromo, team]);
   useEffect(() => {
     query_teams_graphql(currentSport);
   }, []);
@@ -317,7 +327,7 @@ const AthleteSelect = (props) => {
             >
               <option value="allTeams">ALL TEAMS</option>
               {teams.map((x) => {
-                return <option value={x.key}>{x.key}</option>;
+                return <option value={x.key}>{x.key.toUpperCase()}</option>;
               })}
             </select>
           </form>

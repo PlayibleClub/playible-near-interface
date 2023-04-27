@@ -1,6 +1,11 @@
 import client from 'apollo-client';
 import { objectTraps } from 'immer/dist/internal';
-import { GET_ATHLETE_BY_ID, GET_CRICKET_ATHLETE_BY_ID, GET_PLAYER_SCHEDULE } from '../queries';
+import {
+  GET_ATHLETE_BY_ID,
+  GET_CRICKET_ATHLETE_BY_ID,
+  GET_CRICKET_SCHEDULE,
+  GET_PLAYER_SCHEDULE,
+} from '../queries';
 import { formatToUTCDate, getUTCTimestampFromLocal } from 'utils/date/helper';
 import { getSportType } from 'data/constants/sportConstants';
 
@@ -120,6 +125,18 @@ async function getAthleteSchedule(athlete, startDate, endDate, currentSport) {
   return { ...athlete, schedule: data.getPlayerSchedule };
 }
 
+async function getCricketSchedule(x, startDate, endDate) {
+  const { data } = await client.query({
+    query: GET_CRICKET_SCHEDULE,
+    variables: {
+      team: x.team,
+      startDate: formatToUTCDate(startDate),
+      endDate: formatToUTCDate(endDate),
+    },
+  });
+  return { ...x, schedule: data.getCricketTeamSchedule };
+}
+
 function getAvgSeasonFantasyScore(array) {
   if (Array.isArray(array) && array.length > 0) {
     return array.filter((item) => {
@@ -214,4 +231,5 @@ export {
   cutAthleteName,
   getAthleteSchedule,
   getCricketAthleteInfoById,
+  getCricketSchedule,
 };

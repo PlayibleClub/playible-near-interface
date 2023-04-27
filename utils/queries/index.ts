@@ -441,3 +441,20 @@ export const GET_PLAYER_SCHEDULE = gql`
     }
   }
 `;
+
+export const GET_CRICKET_SCHEDULE = gql`
+  query GetCricketTeamSchedule($endDate: DateTime!, $startDate: DateTime!, $team: String!) {
+    getCricketTeamSchedule(endDate: $endDate, startDate: $startDate, team: $team) {
+      key
+      name
+      start_at
+      team_a {
+        name
+      }
+      team_b {
+        name
+      }
+      status
+    }
+  }
+`;
