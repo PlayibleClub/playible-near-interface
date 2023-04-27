@@ -25,21 +25,18 @@ export const GET_ATHLETES_TOP = gql`
 `;
 
 export const GET_CRICKET_ATHLETES_TOP = gql`
-  query getCricketAthleteAvgFantasyScore($args: GetAthletesArgs) {
-    getCricketAthleteAvgFantasyScore(args: $args) {
+  query GetCricketAthletes($args: GetAthletesArgs) {
+    getCricketAthletes(args: $args) {
       id
       name
-      seasonalRole
       jerseyName
-      isActive
-      isInjured
+      playerKey
+      seasonalRole
       nftImage
       nftAnimation
       stats {
+        tournament_points
         fantasyScore
-        week
-        type
-        season
       }
     }
   }

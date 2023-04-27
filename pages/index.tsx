@@ -4,7 +4,12 @@ import React, { useCallback, useEffect, useState } from 'react';
 import PerformerContainer from '../components/containers/PerformerContainer';
 import 'regenerator-runtime/runtime';
 import { AiOutlineVerticalRight, AiOutlineVerticalLeft } from 'react-icons/ai';
-import { GET_ATHLETES_TOP, GET_SPORT_CURRENT_SEASON, GET_NFL_SEASON } from '../utils/queries';
+import {
+  GET_ATHLETES_TOP,
+  GET_SPORT_CURRENT_SEASON,
+  GET_NFL_SEASON,
+  GET_CRICKET_ATHLETES_TOP,
+} from '../utils/queries';
 import { useLazyQuery } from '@apollo/client';
 import { store } from 'redux/athlete/store';
 import { Provider } from 'react-redux';
@@ -18,6 +23,7 @@ export default function Home(props) {
   );
   const [currentSport, setCurrentSport] = useState('MLB'.toLocaleLowerCase());
   const [getAthletes, { loading, error, data }] = useLazyQuery(GET_ATHLETES_TOP);
+  const [getCricketAthletes] = useLazyQuery(GET_CRICKET_ATHLETES_TOP);
   const [athletes, setAthletes] = useState([]);
   const [getSportCurrentSeason] = useLazyQuery(GET_SPORT_CURRENT_SEASON);
   const [getNflCurrentSeason] = useLazyQuery(GET_NFL_SEASON);
@@ -51,7 +57,7 @@ export default function Home(props) {
             })
           )
         );
-      } else if (currentSport === SPORT_NAME_LOOKUP.footballKey){
+      } else if (currentSport === SPORT_NAME_LOOKUP.footballKey) {
         setAthletes(
           await Promise.all(
             query.data.getAthletes.map((element) => {
@@ -59,9 +65,8 @@ export default function Home(props) {
             })
           )
         );
-      }
-      else {
-        console.log("MLB Season:", mlbSeason);
+      } else {
+        console.log('MLB Season:', mlbSeason);
         setAthletes(
           await Promise.all(
             query.data.getAthletes.map((element) => {
@@ -69,22 +74,47 @@ export default function Home(props) {
             })
           )
         );
-        console.log("MLB Athletes:",athletes);
+        console.log('MLB Athletes:', athletes);
       }
-      
       //
     },
     [loading]
   );
+
+  const fetchCricketTopAthletes = useCallback(async () => {
+    let query = await getCricketAthletes({
+      variables: {
+        args: {
+          filter: {
+            sport: 'cricket',
+            statType: 'daily',
+          },
+          pagination: {
+            limit: 4,
+            offset: 0,
+          },
+          sort: 'score',
+        },
+      },
+    });
+    setAthletes(
+      await Promise.all(
+        query.data.getCricketAthletes.map((element) => {
+          return { ...element, stats: element.stats };
+        })
+      )
+    );
+  }, [loading]);
+
   const fetchCurrentSeason = useCallback(async () => {
     let queryNba = await getSportCurrentSeason({
-      variables: { sport: "nba" },
+      variables: { sport: 'nba' },
     });
     let queryMlb = await getSportCurrentSeason({
-      variables: { sport: "mlb" },
+      variables: { sport: 'mlb' },
     });
-    setNbaSeason(await (queryNba.data.getSportCurrentSeason.apiSeason));
-    setMlbSeason(await (queryMlb.data.getSportCurrentSeason.apiSeason));
+    setNbaSeason(await queryNba.data.getSportCurrentSeason.apiSeason);
+    setMlbSeason(await queryMlb.data.getSportCurrentSeason.apiSeason);
     // setMlbSeason((await getSportCurrentSeason({
     //   variables: {sport: "nba"},
     // })).data.getSportCurrentSeason.apiSeason);
@@ -99,14 +129,22 @@ export default function Home(props) {
       setNflSeason(query.data.getNflSeason[0].apiSeason);
     });
   }, []);
+
   useEffect(() => {
     fetchCurrentSeason();
   }, []);
+
   useEffect(() => {
     if (nbaSeason.length > 0) {
       fetchTopAthletes(nbaSeason, nflSeason, mlbSeason, currentSport);
     }
   }, [nbaSeason, nflSeason, mlbSeason, currentSport]);
+
+  useEffect(() => {
+    if (currentSport === SPORT_NAME_LOOKUP.cricketKey) {
+      fetchCricketTopAthletes();
+    }
+  }, [currentSport]);
 
   function getAvgFantasyScore(array) {
     let totalFantasy = 0;
@@ -226,17 +264,23 @@ export default function Home(props) {
                 ) : athletes.length > 0 ? (
                   <div className="grid grid-cols-2 gap-x-4 mt-4 md:mt-8">
                     {athletes.map(function (
-                      { firstName, lastName, id, nftImage, stats, isInjured, isActive },
+                      { firstName, lastName, name, id, nftImage, stats, isInjured, isActive },
                       i
                     ) {
                       return (
                         <div className="" key={i}>
                           <PerformerContainer
-                            AthleteName={`${firstName} ${lastName}`}
+                            AthleteName={
+                              currentSport !== SPORT_NAME_LOOKUP.cricketKey
+                                ? `${firstName} ${lastName}`
+                                : `${name}`
+                            }
                             AvgScore={
-                              stats.length == 1
-                                ? stats[0].fantasyScore.toFixed(2)
-                                : getAvgFantasyScore(stats).toFixed(2)
+                              currentSport !== SPORT_NAME_LOOKUP.cricketKey
+                                ? stats.length == 1
+                                  ? stats[0].fantasyScore.toFixed(2)
+                                  : getAvgFantasyScore(stats).toFixed(2)
+                                : parseFloat(stats[0].tournament_points).toFixed(2)
                             }
                             id={id}
                             uri={nftImage || null}
