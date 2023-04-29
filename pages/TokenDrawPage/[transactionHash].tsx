@@ -71,6 +71,12 @@ const TokenDrawPage = (props) => {
       promo: '/videos/MLB_PROMO.mp4',
       soulbound: '/videos/MLB_SB.mp4',
     },
+    {
+      name: SPORT_NAME_LOOKUP.cricket,
+      base: '/videos/CRICKET_BASE.mp4',
+      promo: '/videos/CRICKET_PROMO.mp4',
+      soulbound: '/videos/CRICKET_SB.mp4',
+    },
   ]);
   const [videoFile, setVideoFile] = useState('');
   const provider = new providers.JsonRpcProvider({
@@ -87,6 +93,9 @@ const TokenDrawPage = (props) => {
     } else if (contract.includes(SPORT_CONTRACT_LOOKUP.baseball)) {
       setLength(10);
       return fileList.find((x) => x.name === SPORT_NAME_LOOKUP.baseball);
+    } else if (contract.includes(SPORT_CONTRACT_LOOKUP.cricket)) {
+      setLength(12);
+      return fileList.find((x) => x.name === SPORT_NAME_LOOKUP.cricket);
     }
   }
 

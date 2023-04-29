@@ -206,19 +206,21 @@ export default function Index(props) {
     { positions: ['OF'], amount: 2 },
     { positions: ['DH'], amount: 1 },
   ]);
-  // const [positionsInfoCricket, setPositionsInfoCricket] = useState([
-  //   { positions: ['BWL'], amount: 1 },
-  //   { positions: ['K'], amount: 1 },
-  //   { positions: ['B'], amount: 1 },
-  //   { positions: ['AR'], amount: 1 },
-  // ]);
+  const [positionsInfoCricket, setPositionsInfoCricket] = useState([
+    { positions: ['bowler'], amount: 2 },
+    { positions: ['keeper'], amount: 1 },
+    { positions: ['batsman'], amount: 2 },
+    { positions: ['all_rounder'], amount: 2 },
+    { positions: ['bowler', 'batsman', 'all_rounder', 'keeper'], amount: 5 },
+  ]);
 
-  // const [positionsDisplayCricket, setPositionsDisplayCricket] = useState([
-  //   { positions: ['BWL'], amount: 1 },
-  //   { positions: ['K'], amount: 1 },
-  //   { positions: ['B'], amount: 1 },
-  //   { positions: ['AR'], amount: 1 },
-  // ]);
+  const [positionsDisplayCricket, setPositionsDisplayCricket] = useState([
+    { positions: ['BOWL'], amount: 2 },
+    { positions: ['WK'], amount: 1 },
+    { positions: ['BAT'], amount: 2 },
+    { positions: ['AR'], amount: 2 },
+    { positions: ['ANY'], amount: 5 },
+  ]);
   const defaultGameDescription =
     'Enter a team into the The Blitz tournament to compete for cash prizes. Create a lineup by selecting 8 Playible Football Athlete Tokens now.';
   const defaultPrizeDescription = '$100 + 2 Championship Tickets';
@@ -692,36 +694,39 @@ export default function Index(props) {
         setPositionsDisplayBaseball(current2);
         setRemountPositionArea(Math.random());
       }
+    } else {
+      let position = [details['position']];
+      let display = position;
+      let amount = details['positionAmount'];
+
+      switch (position[0]) {
+        case 'ANY':
+          position = ['BOWL', 'WK', 'BAT', 'AR'];
+          break;
+      }
+      let found = positionsInfoCricket.findIndex((e) => e.positions.join() === position.join());
+
+      if (positionsInfoCricket.length === 0) {
+        let object = { positions: position, amount: amount };
+        let object2 = { positions: display, amount: amount };
+        setPositionsInfoCricket([object]);
+        setPositionsDisplayCricket([object2]);
+      } else if (found === -1) {
+        let object = { positions: position, amount: amount };
+        let object2 = { positions: display, amount: amount };
+        setPositionsInfoCricket((current) => [...current, object]);
+        setPositionsDisplayCricket((current) => [...current, object2]);
+      } else {
+        let current = positionsInfoCricket;
+        let current2 = positionsDisplayCricket;
+        //@ts-ignore:next-line
+        current[found].amount += amount;
+        current2[found].amount += amount;
+        setPositionsInfoCricket(current);
+        setPositionsDisplayCricket(current2);
+        setRemountPositionArea(Math.random());
+      }
     }
-    // else {
-    //   let position = [details['position']];
-    //   let display = position;
-    //   let amount = details['positionAmount'];
-
-    //   let found = positionsInfoCricket.findIndex((e) => e.positions.join() === position.join());
-
-    //   if (positionsInfoCricket.length === 0) {
-    //     let object = { positions: position, amount: amount };
-    //     let object2 = { positions: display, amount: amount };
-    //     setPositionsInfoCricket([object]);
-    //     setPositionsDisplayCricket([object2]);
-    //   }
-    //   else if (found === -1) {
-    //     let object = { positions: position, amount: amount };
-    //     let object2 = { positions: display, amount: amount };
-    //     setPositionsInfoCricket((current) => [...current, object]);
-    //     setPositionsDisplayCricket((current) => [...current, object2]);
-    //   } else {
-    //     let current = positionsInfoCricket;
-    //     let current2 = positionsDisplayCricket;
-    //     //@ts-ignore:next-line
-    //     current[found].amount += amount;
-    //     current2[found].amount += amount;
-    //     setPositionsInfoCricket(current);
-    //     setPositionsDisplayCricket(current2);
-    //     setRemountPositionArea(Math.random());
-    //   }
-    // }
   };
   const getExtraPos = (currentSport) => {
     switch (currentSport) {
@@ -740,11 +745,8 @@ export default function Index(props) {
       case 'BASEBALL':
         return [{ name: 'DESIGNATED HITTER', key: 'DH' }];
       //cricket placeholder
-      // case 'CRICKET':
-      // return [
-      //   { name: 'FLEX', key: 'FLEX' },
-      //   { name: 'SUPERFLEX', key: 'SUPERFLEX' },
-      // ];
+      case 'CRICKET':
+        return [{ name: 'ANY', key: 'ANY' }];
     }
   };
   const handleRemove = (e, currentSport) => {
@@ -758,11 +760,10 @@ export default function Index(props) {
     } else if (currentSport === 'BASEBALL') {
       positionsInfoBaseball.pop();
       positionsDisplayBaseball.pop();
+    } else {
+      positionsInfoCricket.pop();
+      positionsDisplayCricket.pop();
     }
-    // else {
-    //   positionsInfoCricket.pop();
-    //   positionsDisplayCricket.pop();
-    // }
     setRemountPositionArea(Math.random());
   };
 
@@ -837,7 +838,9 @@ export default function Index(props) {
         ? positionsInfo
         : currentSport === 'BASKETBALL'
         ? positionsInfoBasketball
-        : positionsInfoBaseball;
+        : currentSport === 'BASEBALL'
+        ? positionsInfoBaseball
+        : positionsInfoCricket;
     for (let i = 0; i < sportInfo.length; i++) {
       counter = counter + sportInfo[i]?.amount;
     }
@@ -856,7 +859,9 @@ export default function Index(props) {
             ? positionsInfo
             : currentSport === 'BASKETBALL'
             ? positionsInfoBasketball
-            : positionsInfoBaseball,
+            : currentSport === 'BASEBALL'
+            ? positionsInfoBaseball
+            : positionsInfoCricket,
         lineup_len: getLineupLength(currentSport),
         game_description: gameDescription,
         prize_description: prizeDescription,
@@ -885,7 +890,9 @@ export default function Index(props) {
             ? positionsInfo
             : currentSport === 'BASKETBALL'
             ? positionsInfoBasketball
-            : positionsInfoBaseball,
+            : currentSport === 'BASEBALL'
+            ? positionsInfoBaseball
+            : positionsInfoCricket,
         lineup_len: getLineupLength(currentSport),
         game_description: gameDescription,
         prize_description: prizeDescription,
@@ -917,6 +924,8 @@ export default function Index(props) {
     positionsDisplayBasketball,
     positionsInfoBaseball,
     positionsDisplayBaseball,
+    positionsInfoCricket,
+    positionsDisplayCricket,
     // positionsInfoCricket,
     // positionsDisplayCricket
   ]);
@@ -1353,21 +1362,19 @@ export default function Index(props) {
                             );
                           })}
                         </div>
-                      ) : (
-                        //  :
-                        //  currentSport === 'CRICKET' ? (
-                        //   <div className="border outline-none rounded-lg px-3 p-2">
-                        //     {positionsDisplayCricket.map((x) => {
-                        //       return (
-                        //         <label className="flex w-full whitespace-pre-line">
-                        //           Position: {x.positions} Amount: {x.amount}
-                        //         </label>
-                        //       );
-                        //     })}
-                        //   </div>
-                        // )
+                      ) : currentSport === 'BASEBALL' ? (
                         <div className="border outline-none rounded-lg px-3 p-2">
                           {positionsDisplayBaseball.map((x) => {
+                            return (
+                              <label className="flex w-full whitespace-pre-line">
+                                Position: {x.positions} Amount: {x.amount}
+                              </label>
+                            );
+                          })}
+                        </div>
+                      ) : (
+                        <div className="border outline-none rounded-lg px-3 p-2">
+                          {positionsDisplayCricket.map((x) => {
                             return (
                               <label className="flex w-full whitespace-pre-line">
                                 Position: {x.positions} Amount: {x.amount}
@@ -1463,7 +1470,13 @@ export default function Index(props) {
                 {position.positions} {position.amount}x
               </li>
             ))
-          : positionsDisplayBaseball.map((position) => (
+          : currentSport === 'BASEBALL'
+          ? positionsDisplayBaseball.map((position) => (
+              <li>
+                {position.positions} {position.amount}x
+              </li>
+            ))
+          : positionsDisplayCricket.map((position) => (
               <li>
                 {position.positions} {position.amount}x
               </li>

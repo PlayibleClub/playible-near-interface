@@ -353,7 +353,7 @@ const Games = (props) => {
                     textcolor="text-indigo-black"
                   />
                 </div>
-                <div className="h-128">
+                <div className="h-130">
                   <div className="flex flex-col md:pb-12 ml-24 iphoneX:ml-24 md:ml-20">
                     <div className="grid grid-cols-4 md:gap-6 iphone5:gap-x-20 md:gap-y-4 mb-2 md:mb-10 md:grid-cols-4 md:ml-7 iphone5:mt-12 iphone5:-ml-6 iphone5:mr-6 md:mr-0  ">
                       {playerLineups.length === 0

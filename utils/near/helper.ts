@@ -1,6 +1,10 @@
 import { providers } from 'near-api-js';
 import { getContract, getRPCProvider } from 'utils/near';
-import { convertNftToAthlete, getAthleteInfoById } from 'utils/athlete/helper';
+import {
+  convertNftToAthlete,
+  getAthleteInfoById,
+  getCricketAthleteInfoById,
+} from 'utils/athlete/helper';
 import { DEFAULT_MAX_FEES, MINT_STORAGE_COST } from 'data/constants/gasFees';
 import BigNumber from 'bignumber.js';
 import { getSportType, SPORT_NAME_LOOKUP } from 'data/constants/sportConstants';
@@ -32,6 +36,7 @@ async function query_nft_token_by_id(token_id, currentSport, start_time, end_tim
   const query = JSON.stringify({
     token_id: token_id,
   });
+  let result_two;
   // console.log(token_id);
   return provider
     .query({
@@ -56,11 +61,19 @@ async function query_nft_token_by_id(token_id, currentSport, start_time, end_tim
       //         start_time,
       //         end_time
       //       );
-      const result_two = await getAthleteInfoById(
-        await convertNftToAthlete(result),
-        start_time,
-        end_time
-      );
+      if (currentSport !== 'CRICKET') {
+        result_two = await getAthleteInfoById(
+          await convertNftToAthlete(result),
+          start_time,
+          end_time
+        );
+      } else {
+        result_two = await getCricketAthleteInfoById(
+          await convertNftToAthlete(result),
+          start_time,
+          end_time
+        );
+      }
       return result_two;
     });
 }
@@ -181,8 +194,11 @@ async function compute_scores(result, currentSport, start_time, end_time) {
               .filter((statType) =>
                 currentSport === SPORT_NAME_LOOKUP.football
                   ? statType.type == 'weekly' && statType.played == 1 //&& statType.week == week && statType.season == nflSeason
-                  : currentSport === SPORT_NAME_LOOKUP.basketball || currentSport === SPORT_NAME_LOOKUP.baseball
+                  : currentSport === SPORT_NAME_LOOKUP.basketball ||
+                    currentSport === SPORT_NAME_LOOKUP.baseball
                   ? statType.type == 'daily' && statType.played == 1
+                  : currentSport === SPORT_NAME_LOOKUP.cricket
+                  ? statType.type == 'daily'
                   : ''
               )
               .reduce((accumulator, item) => {
@@ -340,11 +356,12 @@ async function query_filter_tokens_for_owner(
   position,
   team,
   name,
-  contract
+  contract,
+  currentSport
 ) {
-
-  if(position[0].includes(",")){
-    position = position[0].split(",")
+  let result_two;
+  if (position[0].includes(',')) {
+    position = position[0].split(',');
   }
   console.log(position);
   const query = JSON.stringify({
@@ -367,12 +384,20 @@ async function query_filter_tokens_for_owner(
     .then((data) => {
       //@ts-ignore:next-line
       const result = JSON.parse(Buffer.from(data.result).toString());
-      const result_two = Promise.all(
-        result
-          .map(convertNftToAthlete)
-          .map((item) => getAthleteInfoById(item, undefined, undefined))
-      );
 
+      if (currentSport !== 'CRICKET')
+        result_two = Promise.all(
+          result
+            .map(convertNftToAthlete)
+            .map((item) => getAthleteInfoById(item, undefined, undefined))
+        );
+      else {
+        result_two = Promise.all(
+          result
+            .map(convertNftToAthlete)
+            .map((item) => getCricketAthleteInfoById(item, undefined, undefined))
+        );
+      }
       return result_two;
     });
 }
@@ -415,7 +440,8 @@ async function query_mixed_tokens_pagination(
     position,
     team,
     name,
-    isPromoPage ? getSportType(currentSport).promoContract : getSportType(currentSport).regContract
+    isPromoPage ? getSportType(currentSport).promoContract : getSportType(currentSport).regContract,
+    currentSport
   ).then(async (result) => {
     if (result.length < athleteLimit && !isPromoPage && promoSupply !== 0) {
       let sbLimit = athleteLimit - result.length;
@@ -427,7 +453,8 @@ async function query_mixed_tokens_pagination(
           position,
           team,
           name,
-          getSportType(currentSport).promoContract
+          getSportType(currentSport).promoContract,
+          currentSport
         )
       ).then((result2) => {
         result2.map((obj) => result.push(obj));

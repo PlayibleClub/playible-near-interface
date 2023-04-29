@@ -94,13 +94,14 @@ export default function Home(props) {
   const [accountBalance, setAccountBalance] = useState(0);
   const [mintedNba, setMintedNba] = useState(0);
   const [mintedMlb, setMintedMlb] = useState(0);
+  const [mintedIpl, setMintedIpl] = useState(0);
   const [useNEP141, setUseNEP141] = useState(NEP141NEAR);
   const [intervalSale, setIntervalSale] = useState(0);
   const [balanceErrorMsg, setBalanceErrorMsg] = useState('');
   const [isClaimedFootball, setIsClaimedFootball] = useState(false);
   const [isClaimedBasketball, setIsClaimedBasketball] = useState(false);
   const [isClaimedBaseball, setIsClaimedBaseball] = useState(false);
-  // const [isClaimedCricket, setIsClaimedCricket] = useState(false);
+  const [isClaimedCricket, setIsClaimedCricket] = useState(false);
   const router = useRouter();
   const [day, setDay] = useState(0);
   const [hour, setHour] = useState(0);
@@ -114,9 +115,11 @@ export default function Home(props) {
   const nflRegImage = '/images/packimages/nflStarterPack.png';
   const nbaRegImage = '/images/packimages/nbaStarterPack.png';
   const mlbRegImage = '/images/packimages/mlbStarterPack.png';
+  const cricketRegImage = '/images/packimages/cricketStarterPack.png';
   const nflSbImage = '/images/packimages/NFL-SB-Pack.png';
   const nbaSbImage = '/images/packimages/nbaStarterPackSoulbound.png';
   const mlbSbImage = '/images/packimages/MLB-Lock-Pack.png';
+  const cricketSbImage = '/images/packimages/Cricket-SB-Pack.png';
   const [modalImage, setModalImage] = useState(nflSbImage);
   async function get_claim_status(accountId) {
     setIsClaimedFootball(
@@ -128,9 +131,9 @@ export default function Home(props) {
     setIsClaimedBaseball(
       await query_claim_status(accountId, getSportType('BASEBALL').packPromoContract)
     );
-    // setIsClaimedCricket(
-    //   await query_claim_status(accountId, getSportType('CRICKET').packPromoContract)
-    // );
+    setIsClaimedCricket(
+      await query_claim_status(accountId, getSportType('CRICKET').packPromoContract)
+    );
   }
   function query_config_contract() {
     provider
@@ -168,7 +171,9 @@ export default function Home(props) {
             ? setMinted(_minted)
             : currentSport === SPORT_NAME_LOOKUP.basketball
             ? setMintedNba(_minted)
-            : setMintedMlb(_minted);
+            : currentSport === SPORT_NAME_LOOKUP.baseball
+            ? setMintedMlb(_minted)
+            : setMintedIpl(_minted);
         }
       }
     } catch (e) {
@@ -178,7 +183,9 @@ export default function Home(props) {
           ? setMinted(0)
           : currentSport === SPORT_NAME_LOOKUP.basketball
           ? setMintedNba(0)
-          : setMintedMlb(0);
+          : currentSport === SPORT_NAME_LOOKUP.baseball
+          ? setMintedMlb(0)
+          : setMintedIpl(0);
       }
     }
   }
@@ -546,6 +553,21 @@ export default function Home(props) {
     );
   }
 
+  function selectMintIpl() {
+    let optionMint = [];
+    let limit = 11 - mintedIpl;
+    for (let x = 1; x < limit; x++) {
+      optionMint.push({ value: x, label: `${x} ${x > 1 ? 'packs' : 'pack'}` });
+    }
+    return (
+      <Select
+        onChange={(event) => setSelectedMintAmount(event.value)}
+        options={optionMint.splice(0, 5)}
+        className="md:w-1/3 w-4/5 mr-9 mt-5"
+      />
+    );
+  }
+
   function format_price() {
     let price = Math.floor(
       Number(
@@ -626,7 +648,9 @@ export default function Home(props) {
         ? setModalImage(nbaRegImage)
         : sportFromRedux === SPORT_NAME_LOOKUP.football
         ? setModalImage(nflRegImage)
-        : setModalImage(mlbRegImage);
+        : sportFromRedux === SPORT_NAME_LOOKUP.baseball
+        ? setModalImage(mlbRegImage)
+        : setModalImage(cricketRegImage);
       setTimeout(() => persistor.purge(), 200);
       setEditModal(true);
     } else if (router.asPath.indexOf('transactionHashes') > -1) {
@@ -635,7 +659,9 @@ export default function Home(props) {
           ? setModalImage(nbaSbImage)
           : sportFromRedux === 'FOOTBALL'
           ? setModalImage(nflSbImage)
-          : setModalImage(mlbSbImage);
+          : sportFromRedux === 'BASEBALL'
+          ? setModalImage(mlbSbImage)
+          : setModalImage(cricketSbImage);
       }
       setTimeout(() => persistor.purge(), 200);
       setEditModal(true);
@@ -732,7 +758,7 @@ export default function Home(props) {
                       CLAIM BASEBALL PACK
                     </button>
                   )}
-                  {/* {isClaimedCricket ? (
+                  {isClaimedCricket ? (
                     ''
                   ) : (
                     <button
@@ -741,7 +767,7 @@ export default function Home(props) {
                     >
                       CLAIM CRICKET PACK
                     </button>
-                  )} */}
+                  )}
                 </div>
               ) : (
                 <div className="ml-12 mt-4 md:flex md:flex-row md:ml-8">
@@ -765,7 +791,7 @@ export default function Home(props) {
                       CLAIM BASEBALL PACK
                     </button>
                   )}
-                  {/* {isClaimedCricket ? (
+                  {isClaimedCricket ? (
                     ''
                   ) : (
                     <button
@@ -774,7 +800,7 @@ export default function Home(props) {
                     >
                       CLAIM CRICKET PACK
                     </button>
-                  )} */}
+                  )}
                 </div>
               )}
 
@@ -851,7 +877,7 @@ export default function Home(props) {
                   ) : (
                     <div className="md:w-1/2 w-full ">
                       <Image
-                        src={'/images/mintpagebasketball.png'}
+                        src={'/images/mintpagecricket.png'}
                         width={400}
                         height={400}
                         alt="pack-image"
@@ -964,7 +990,9 @@ export default function Home(props) {
                             ? minted
                             : currentSport === SPORT_NAME_LOOKUP.basketball
                             ? mintedNba
-                            : mintedMlb}
+                            : currentSport === SPORT_NAME_LOOKUP.baseball
+                            ? mintedMlb
+                            : mintedIpl}
                         </div>
                         <div className="text-xs">YOU HAVE MINTED</div>
                       </div>
@@ -996,7 +1024,9 @@ export default function Home(props) {
                         ? selectMint()
                         : currentSport === 'BASKETBALL'
                         ? selectMintNba()
-                        : selectMintMlb()}
+                        : currentSport === 'BASEBALL'
+                        ? selectMintMlb()
+                        : selectMintIpl()}
                     </div>
                     {currentSport === 'FOOTBALL' ? (
                       <div className="ml-3"></div>
@@ -1189,58 +1219,59 @@ export default function Home(props) {
                       American Baseball players.
                     </div>
                   ) : (
-                    ''
-                    // <div className="mt-10">
-                    //   This pack will contain ? randomly generated <br></br>
-                    //   American Cricket players.
-                    // </div>
+                    <div className="mt-10">
+                      This pack will contain 12 randomly generated <br></br>
+                      Cricket players.
+                    </div>
                   )}
                   <div className="mt-5 mb-12">
-                    <div className="mb-5">1 for each of the positions below:</div>
-                    {
-                      currentSport === SPORT_NAME_LOOKUP.football ? (
-                        <ul className="marker list-disc pl-5 space-y-3 ">
-                          <li>1 Quarter Back (QB)</li>
-                          <li>2 Running Back (RB) </li>
-                          <li>2 Wide Receivers (WR) </li>
-                          <li>1 Tight End (TE)</li>
-                          <li>1 Flex (RB/WR/TE) </li>
-                          <li>1 Super Flex (QB/RB/WR/TE) </li>
-                        </ul>
-                      ) : currentSport === SPORT_NAME_LOOKUP.basketball ? (
-                        <ul className="marker list-disc pl-5 space-y-3 ">
-                          <li>1 Point Guard (PG)</li>
-                          <li>1 Shooting Guard (SG) </li>
-                          <li>1 Small Forward (SF) </li>
-                          <li>1 Power Forward (PF)</li>
-                          <li>1 Center (C) </li>
-                          <li>1 Guard (PG/SG) </li>
-                          <li>1 Forward (SF/PF) </li>
-                          <li>1 Any (ANY) </li>
-                        </ul>
-                      ) : currentSport === SPORT_NAME_LOOKUP.baseball ? (
-                        <ul className="marker list-disc pl-5 space-y-3 ">
-                          <li>2 Pitchers (P)</li>
-                          <li>1 Catcher (C)</li>
-                          <li>1 First Baseman (1B) </li>
-                          <li>1 Second Baseman (2B)</li>
-                          <li>1 Third Baseman (3B)</li>
-                          <li>1 Shortstop (SS) </li>
-                          <li>2 Outfielder (OF) </li>
-                          <li>1 Designated Hitter (DH) </li>
-                        </ul>
-                      ) : (
-                        ''
-                      )
-                      // (
-                      //   //Ask for the amount for each position
-                      //   <ul className="marker list-disc pl-5 space-y-3 ">
-                      //     <li>1 Bowler (BWL)</li>
-                      //     <li>1 Keeper (K) </li>
-                      //     <li>1 Batsman (B) </li>
-                      //     <li>1 All rounder (AR)</li>
-                      //   </ul>)
-                    }
+                    {currentSport === SPORT_NAME_LOOKUP.baseball ||
+                    currentSport === SPORT_NAME_LOOKUP.cricket ? (
+                      <div className="mb-5">An amount for each of the positions below:</div>
+                    ) : (
+                      <div className="mb-5">1 for each of the positions below:</div>
+                    )}
+                    {currentSport === SPORT_NAME_LOOKUP.football ? (
+                      <ul className="marker list-disc pl-5 space-y-3 ">
+                        <li>1 Quarter Back (QB)</li>
+                        <li>2 Running Back (RB) </li>
+                        <li>2 Wide Receivers (WR) </li>
+                        <li>1 Tight End (TE)</li>
+                        <li>1 Flex (RB/WR/TE) </li>
+                        <li>1 Super Flex (QB/RB/WR/TE) </li>
+                      </ul>
+                    ) : currentSport === SPORT_NAME_LOOKUP.basketball ? (
+                      <ul className="marker list-disc pl-5 space-y-3 ">
+                        <li>1 Point Guard (PG)</li>
+                        <li>1 Shooting Guard (SG) </li>
+                        <li>1 Small Forward (SF) </li>
+                        <li>1 Power Forward (PF)</li>
+                        <li>1 Center (C) </li>
+                        <li>1 Guard (PG/SG) </li>
+                        <li>1 Forward (SF/PF) </li>
+                        <li>1 Any (ANY) </li>
+                      </ul>
+                    ) : currentSport === SPORT_NAME_LOOKUP.baseball ? (
+                      <ul className="marker list-disc pl-5 space-y-3 ">
+                        <li>2 Pitchers (P)</li>
+                        <li>1 Catcher (C)</li>
+                        <li>1 First Baseman (1B) </li>
+                        <li>1 Second Baseman (2B)</li>
+                        <li>1 Third Baseman (3B)</li>
+                        <li>1 Shortstop (SS) </li>
+                        <li>2 Outfielder (OF) </li>
+                        <li>1 Designated Hitter (DH) </li>
+                      </ul>
+                    ) : (
+                      //Ask for the amount for each position
+                      <ul className="marker list-disc pl-5 space-y-3 ">
+                        <li>2 Bowlers (BOWL)</li>
+                        <li>1 Wicket Keeper (WK) </li>
+                        <li>2 Batsman (BAT) </li>
+                        <li>2 All rounders (AR)</li>
+                        <li>5 Any (BOWL/WK/BAT/AR)</li>
+                      </ul>
+                    )}
                   </div>
                 </div>
               </div>

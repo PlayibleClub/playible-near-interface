@@ -1,6 +1,11 @@
 import client from 'apollo-client';
 import { objectTraps } from 'immer/dist/internal';
-import { GET_ATHLETE_BY_ID, GET_PLAYER_SCHEDULE } from '../queries';
+import {
+  GET_ATHLETE_BY_ID,
+  GET_CRICKET_ATHLETE_BY_ID,
+  GET_CRICKET_SCHEDULE,
+  GET_PLAYER_SCHEDULE,
+} from '../queries';
 import { formatToUTCDate, getUTCTimestampFromLocal } from 'utils/date/helper';
 import { getSportType } from 'data/constants/sportConstants';
 
@@ -56,15 +61,52 @@ async function getAthleteInfoById(item, from, to) {
     animation: data.getAthleteById.nftAnimation,
     image: item.metadata.media,
     fantasy_score:
-    from === null && to === null
-      ? getAvgSeasonFantasyScore(data.getAthleteById.stats)
-      : from !== null && to !== null
+      from === null && to === null
+        ? getAvgSeasonFantasyScore(data.getAthleteById.stats)
+        : from !== null && to !== null
         ? getDailySeasonFantasyScore(data.getAthleteById.stats)
         : getDailyFantasyScore(data.getAthleteById.stats),
     stats_breakdown: data.getAthleteById.stats,
     isInGame: item.metadata['starts_at'] > getUTCTimestampFromLocal() ? true : false,
     isInjured: data.getAthleteById.isInjured,
     isActive: data.getAthleteById.isActive,
+  };
+  return returningData;
+}
+
+async function getCricketAthleteInfoById(item, from, to) {
+  //console.log(item.extra);
+  let value = {} as trait_type;
+  for (const key of item.extra) {
+    value[key.trait_type] = key.value;
+  }
+  const { data } = await client.query({
+    query: GET_CRICKET_ATHLETE_BY_ID,
+    variables: {
+      getCricketAthleteById: parseFloat(value['athlete_id']),
+      team: value['team'],
+      from: from,
+      to: to,
+    },
+  });
+  const isPromo = item.token_id.includes('SB') || item.token_id.includes('PR');
+  const returningData = {
+    primary_id: value['athlete_id'],
+    athlete_id: item.token_id,
+    player_key: data.getCricketAthleteById.playerKey,
+    rarity: value['rarity'],
+    usage: value['usage'],
+    name: value['name'],
+    team: value['team'],
+    position: value['position'],
+    release: value['release'],
+    ...(isPromo && { type: value['type'] }),
+    isOpen: false,
+    animation: data.getCricketAthleteById.nftAnimation,
+    image: item.metadata.media,
+    fantasy_score: getDailyFantasyScore(data.getCricketAthleteById.stats),
+    stats_breakdown: data.getCricketAthleteById.stats,
+    isInGame: item.metadata['starts_at'] > getUTCTimestampFromLocal() ? true : false,
   };
   return returningData;
 }
@@ -81,6 +123,18 @@ async function getAthleteSchedule(athlete, startDate, endDate, currentSport) {
   });
 
   return { ...athlete, schedule: data.getPlayerSchedule };
+}
+
+async function getCricketSchedule(x, startDate, endDate) {
+  const { data } = await client.query({
+    query: GET_CRICKET_SCHEDULE,
+    variables: {
+      team: x.team,
+      startDate: formatToUTCDate(startDate),
+      endDate: formatToUTCDate(endDate),
+    },
+  });
+  return { ...x, schedule: data.getCricketTeamSchedule };
 }
 
 function getAvgSeasonFantasyScore(array) {
@@ -176,4 +230,6 @@ export {
   checkInjury,
   cutAthleteName,
   getAthleteSchedule,
+  getCricketAthleteInfoById,
+  getCricketSchedule,
 };

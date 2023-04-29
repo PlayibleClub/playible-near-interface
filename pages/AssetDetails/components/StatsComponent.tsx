@@ -7,6 +7,9 @@ import {
   GET_ATHLETEDATA_NBA,
   GET_ATHLETEDATA_HITTER,
   GET_ATHLETEDATA_PITCHER,
+  GET_ATHLETEDATA_BOWL,
+  GET_ATHLETEDATA_WK,
+  GET_ATHLETEDATA_BAT,
 } from 'utils/queries';
 import { useLazyQuery } from '@apollo/client';
 import {
@@ -17,13 +20,19 @@ import {
   nbaStatNames,
   pitcherStatNames,
   hitterStatNames,
+  batsmanStatNames,
+  bowlingStatNames,
+  wicketKeeperStatNames,
+  allRounderStatNames,
 } from 'data/constants/statNames';
 import { getSportType } from 'data/constants/sportConstants';
 import moment from 'moment';
+import {} from 'data/constants/statNames';
+import {} from 'data/constants/statNames';
 const StatsComponent = (props) => {
   const { id, position, sport, mlbSeason } = props;
   const [statNames, setStatNames] = useState([]);
-  
+
   const [getAthleteQB] = useLazyQuery(GET_ATHLETEDATA_QB);
   const [getAthleteRB] = useLazyQuery(GET_ATHLETEDATA_RB);
   const [getAthleteWR] = useLazyQuery(GET_ATHLETEDATA_WR);
@@ -31,6 +40,10 @@ const StatsComponent = (props) => {
   const [getAthletePitcher] = useLazyQuery(GET_ATHLETEDATA_PITCHER);
   const [getAthleteHitter] = useLazyQuery(GET_ATHLETEDATA_HITTER);
   const [getAthleteNBA] = useLazyQuery(GET_ATHLETEDATA_NBA);
+  const [getAthleteBOWL] = useLazyQuery(GET_ATHLETEDATA_BOWL);
+  const [getAthleteWK] = useLazyQuery(GET_ATHLETEDATA_WK);
+  const [getAthleteBAT] = useLazyQuery(GET_ATHLETEDATA_BAT);
+
   const [athleteData, setAthleteData] = useState([]);
   const [athleteStat, setAthleteStat] = useState([]);
   const [positionDisplay, setPositionDisplay] = useState('');
@@ -126,9 +139,11 @@ const StatsComponent = (props) => {
         break;
       case 'SP':
       case 'RP':
-        query = await getAthletePitcher({ variables: { getAthleteById: parseFloat(id.toString()), season: mlbSeason } });
-        if(query.data.getAthleteById.stats.length > 0){
-          console.log("Stats is Empty");
+        query = await getAthletePitcher({
+          variables: { getAthleteById: parseFloat(id.toString()), season: mlbSeason },
+        });
+        if (query.data.getAthleteById.stats.length > 0) {
+          console.log('Stats is Empty');
         }
         setAthleteData(
           await Promise.all(
@@ -150,7 +165,9 @@ const StatsComponent = (props) => {
       case '1B':
       case '2B':
       case '3B':
-        query = await getAthleteHitter({ variables: { getAthleteById: parseFloat(id.toString()) , season: mlbSeason } });
+        query = await getAthleteHitter({
+          variables: { getAthleteById: parseFloat(id.toString()), season: mlbSeason },
+        });
         setAthleteData(
           await Promise.all(
             query.data.getAthleteById.stats.filter((x) => x.type === 'daily' && x.played === 1)
@@ -162,6 +179,79 @@ const StatsComponent = (props) => {
           })
         );
         setStatNames(hitterStatNames);
+        break;
+      case 'bowler':
+        query = await getAthleteBOWL({
+          variables: {
+            getCricketAthleteById: parseFloat(id.toString()),
+          },
+        });
+        setAthleteData(
+          await Promise.all(
+            query.data.getCricketAthleteById.stats.filter((x) => x.type === 'daily')
+          ).then((x) => {
+            let sorted = x.sort((a, b) => {
+              return moment.utc(b.match.start_at).unix() - moment.utc(a.match.start_at).unix();
+            });
+            return Object.values(sorted[0]);
+          })
+        );
+        setStatNames(bowlingStatNames);
+        break;
+      case 'keeper':
+        query = await getAthleteWK({
+          variables: {
+            getCricketAthleteById: parseFloat(id.toString()),
+          },
+        });
+        setAthleteData(
+          await Promise.all(
+            query.data.getCricketAthleteById.stats.filter((x) => x.type === 'daily')
+          ).then((x) => {
+            let sorted = x.sort((a, b) => {
+              return moment.utc(b.match.start_at).unix() - moment.utc(a.match.start_at).unix();
+            });
+            return Object.values(sorted[0]);
+          })
+        );
+        setStatNames(wicketKeeperStatNames);
+        break;
+      case 'batsman':
+        query = await getAthleteBAT({
+          variables: {
+            getCricketAthleteById: parseFloat(id.toString()),
+          },
+        });
+        setAthleteData(
+          await Promise.all(
+            query.data.getCricketAthleteById.stats.filter((x) => x.type === 'daily')
+          ).then((x) => {
+            let sorted = x.sort((a, b) => {
+              return moment.utc(b.match.start_at).unix() - moment.utc(a.match.start_at).unix();
+            });
+            return Object.values(sorted[0]);
+          })
+        );
+
+        setStatNames(batsmanStatNames);
+        break;
+      case 'all_rounder':
+        query = await getAthleteBAT({
+          variables: {
+            getCricketAthleteById: parseFloat(id.toString()),
+          },
+        });
+        setAthleteData(
+          await Promise.all(
+            query.data.getCricketAthleteById.stats.filter((x) => x.type === 'daily')
+          ).then((x) => {
+            let sorted = x.sort((a, b) => {
+              return moment.utc(b.match.start_at).unix() - moment.utc(a.match.start_at).unix();
+            });
+            return Object.values(sorted[0]);
+          })
+        );
+        setStatNames(allRounderStatNames);
         break;
       default:
         query = await getAthleteNBA({ variables: { getAthleteById: parseFloat(id.toString()) } });
@@ -183,10 +273,11 @@ const StatsComponent = (props) => {
   useEffect(() => {
     if (id !== undefined && position !== undefined && mlbSeason !== '') {
       query_stats(position, id).catch(console.error);
-      if(sport === 'BASEBALL') {
-        setPositionDisplay(getSportType(sport).assetPositionList.find((x) => x.key === position).name);
-      }
-      else {
+      if (sport === 'BASEBALL') {
+        setPositionDisplay(
+          getSportType(sport).assetPositionList.find((x) => x.key === position).name
+        );
+      } else {
         setPositionDisplay(getSportType(sport).positionList.find((x) => x.key === position).name);
       }
     }
@@ -214,13 +305,17 @@ const StatsComponent = (props) => {
         <div className="">{positionDisplay}</div>
       </div>
       <div className="mt-10 ml-10 md:ml-10">
-        <div className="font-monument md:text-xl">
-          Most recent game stats &#40;against{' '}
-          {athleteData[athleteData.length - 2] !== undefined
-            ? athleteData[athleteData.length - 2].name
-            : ''}
-          &#41;
-        </div>
+        {sport !== 'CRICKET' ? (
+          <div className="font-monument md:text-xl">
+            Most recent game stats &#40;against{' '}
+            {athleteData[athleteData.length - 2] !== undefined
+              ? athleteData[athleteData.length - 2].name
+              : ''}
+            &#41;
+          </div>
+        ) : (
+          <div className="font-monument md:text-xl">Most recent fantasy score breakdown</div>
+        )}
       </div>
       <div className="mt-4 ml-10 md:ml-10 text-sm grid grid-rows-4 grid-cols-2 md:grid-cols-4 md:w-1/2 md:mt-4">
         {athleteStat?.map((x, index) => {

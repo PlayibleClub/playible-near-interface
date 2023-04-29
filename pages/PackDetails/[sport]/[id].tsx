@@ -14,6 +14,7 @@ import { query_nft_tokens_by_id } from 'utils/near/helper';
 const DECIMALS_NEAR = 1000000000000000000000000;
 const MINT_10_COST = 600000000000000000000000;
 const MINT_8_COST = 480000000000000000000000;
+const MINT_12_COST = 720000000000000000000000;
 export default function PackDetails(props) {
   const provider = new providers.JsonRpcProvider({
     url: getRPCProvider(),
@@ -100,6 +101,13 @@ export default function PackDetails(props) {
       } else {
         // return new BigNumber((MINT_10_COST / DECIMALS_NEAR) - (deposit / DECIMALS_NEAR)).multipliedBy(new BigNumber(DECIMALS_NEAR)).toFixed();
         return new BigNumber(10).multipliedBy(new BigNumber(MINT_STORAGE_COST)).toFixed();
+      }
+    } else if (myPack.sport === 'CRICKET') {
+      if (deposit / DECIMALS_NEAR >= MINT_12_COST / DECIMALS_NEAR) {
+        return '1';
+      } else {
+        // return new BigNumber((MINT_10_COST / DECIMALS_NEAR) - (deposit / DECIMALS_NEAR)).multipliedBy(new BigNumber(DECIMALS_NEAR)).toFixed();
+        return new BigNumber(12).multipliedBy(new BigNumber(MINT_STORAGE_COST)).toFixed();
       }
     } else {
       if (deposit / DECIMALS_NEAR >= MINT_8_COST / DECIMALS_NEAR) {
@@ -206,11 +214,10 @@ export default function PackDetails(props) {
               American Baseball players.
             </div>
           ) : (
-            ''
-            // <div className="mt-10">
-            //   This pack will contain ? randomly generated <br></br>
-            //   American Cricket players.
-            // </div>
+            <div className="mt-10">
+              This pack will contain 12 randomly generated <br></br>
+              Cricket players.
+            </div>
           )}
           <div className="mt-5 mb-12">
             {query.sport.toString().toUpperCase() === 'BASEBALL' ? (
@@ -252,10 +259,11 @@ export default function PackDetails(props) {
             ) : (
               //Ask for the amount for each position
               <ul className="marker list-disc pl-5 space-y-3 ">
-                <li>1 Bowler (BWL)</li>
-                <li>1 Keeper (K)</li>
-                <li>1 Batsman (B)</li>
-                <li>1 All rounder (AR)</li>
+                <li>2 Bowlers (BOWL)</li>
+                <li>1 Wicket Keeper (WK) </li>
+                <li>2 Batsman (BAT) </li>
+                <li>2 All rounders (AR)</li>
+                <li>5 Any (BOWL/WK/BAT/AR)</li>
               </ul>
             )}
           </div>

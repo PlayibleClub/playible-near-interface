@@ -5,7 +5,7 @@ export const qbStatNames = [
   'INTERCEPTION',
   'RUSHING YARDS',
   'RUSHING TOUCHDOWNS',
-  'CARRIES'
+  'CARRIES',
 ];
 
 export const rbStatNames = [
@@ -15,7 +15,7 @@ export const rbStatNames = [
   'RUSHING TOUCHDOWNS',
   'RECEIVING YARDS',
   'RECEIVING TOUCHDOWNS',
-  'RECEPTIONS'
+  'RECEPTIONS',
 ];
 
 export const wrStatNames = [
@@ -23,7 +23,7 @@ export const wrStatNames = [
   'RECEPTIONS',
   'AVERAGE YARDS/RECEPTION',
   'RECEIVING YARDS',
-  'RECEIVING TOUCHDOWNS'
+  'RECEIVING TOUCHDOWNS',
 ];
 
 export const teStatNames = [
@@ -31,30 +31,33 @@ export const teStatNames = [
   'RECEPTIONS',
   'AVERAGE YARDS/RECEPTION',
   'RECEIVING YARDS',
-  'RECEIVING TOUCHDOWNS'
+  'RECEIVING TOUCHDOWNS',
 ];
 
-export const nbaStatNames = [
-  'ASSISTS',
-  'POINTS',
-  'REBOUNDS',
-  'BLOCKS',
-  'STEALS',
-  'TURNOVERS'
-]
+export const nbaStatNames = ['ASSISTS', 'POINTS', 'REBOUNDS', 'BLOCKS', 'STEALS', 'TURNOVERS'];
 
-export const pitcherStatNames = [
-  'WINS',
-  'ERA',
-  'WHIP',
-  'STRIKEOUTS',
-  'SAVES'
-]
+export const pitcherStatNames = ['WINS', 'ERA', 'WHIP', 'STRIKEOUTS', 'SAVES'];
 
-export const hitterStatNames = [
-  'RUNS',
-  'BATTING AVERAGE',
-  'HOME RUNS',
-  'RBI',
-  'STOLEN BASES'
-]
+export const hitterStatNames = ['RUNS', 'BATTING AVERAGE', 'HOME RUNS', 'RBI', 'STOLEN BASES'];
+
+export const batsmanStatNames = [
+  'BATTING RUNS',
+  'BATTING STRIKE RATE',
+  'HUNDREDS',
+  'FIFTIES',
+  'FOURS',
+  'SIXES',
+];
+
+export const wicketKeeperStatNames = ['CATCHES', 'STUMPINGS'];
+
+export const bowlingStatNames = [
+  'BOWLING RUNS',
+  'WICKETS',
+  'ECONOMY RATE',
+  'BOWLING STRIKE RATE',
+  'FOUR WICKETS',
+  'FIVE WICKETS',
+];
+
+export const allRounderStatNames = ['HUNDREDS', 'FOURS', 'FIFTIES', 'FIVES', 'CATCHES', 'RUNS'];
