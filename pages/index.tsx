@@ -21,7 +21,7 @@ export default function Home(props) {
   const [sportList, setSportList] = useState(
     SPORT_TYPES.map((x) => ({ name: x.sport, key: x.key }))
   );
-  const [currentSport, setCurrentSport] = useState('MLB'.toLocaleLowerCase());
+  const [currentSport, setCurrentSport] = useState('cricket'.toLocaleLowerCase());
   const [getAthletes, { loading, error, data }] = useLazyQuery(GET_ATHLETES_TOP);
   const [getCricketAthletes] = useLazyQuery(GET_CRICKET_ATHLETES_TOP);
   const [athletes, setAthletes] = useState([]);
@@ -65,7 +65,7 @@ export default function Home(props) {
             })
           )
         );
-      } else {
+      } else if (currentSport === SPORT_NAME_LOOKUP.baseballKey){
         console.log('MLB Season:', mlbSeason);
         setAthletes(
           await Promise.all(

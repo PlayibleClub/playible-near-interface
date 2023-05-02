@@ -43,11 +43,11 @@ export default function Packs() {
   const [currentTotal, setCurrentTotal] = useState(0);
   const [categoryList, setcategoryList] = useState([
     {
-      name: 'STARTER',
+      name: 'PROMOTIONAL',
       isActive: true,
     },
     {
-      name: 'PROMOTIONAL',
+      name: 'STARTER',
       isActive: false,
     },
   ]);
@@ -290,8 +290,8 @@ export default function Packs() {
                   )}
                 </div>
                 <div className="grid iphone5:grid-cols-2 gap-y-8 mt-4 md:grid-cols-4 iphone5:mt-8 iphone5:ml-2 md:ml-7 md:mt-9 ">
-                  {(categoryList[0].isActive ? packs : soulboundPacks).length > 0 &&
-                    (categoryList[0].isActive ? packs : soulboundPacks)
+                  {(categoryList[0].isActive ? soulboundPacks : packs).length > 0 &&
+                    (categoryList[0].isActive ? soulboundPacks : packs)
                       .filter((data, i) => i >= packOffset && i < packOffset + packLimit)
                       .map(({ metadata, token_id }) => (
                         <PackComponent
