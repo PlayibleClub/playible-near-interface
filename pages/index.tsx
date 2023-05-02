@@ -173,6 +173,7 @@ export default function Home(props) {
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const featuredImagesDesktop = [
+    '/images/cricket_homepage_banner.png',
     '/images/BSBALL_CHAMPIONSHIP.png',
     '/images/baseball_starterpack_publicmint_desktop_updated.jpg',
     '/images/baseball_banner_live.jpg',
@@ -181,6 +182,7 @@ export default function Home(props) {
   ];
 
   const featuredImagesMobile = [
+    '/images/cricket_homepage_banner.png',
     '/images/BSBALL_CHAMPIONSHIP.png',
     '/images/baseball_starterpack_publicmint_desktop_updated.jpg',
     '/images/baseball_banner_live.jpg',
