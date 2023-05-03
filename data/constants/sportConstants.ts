@@ -240,6 +240,20 @@ export const SPORT_NAME_LOOKUP = {
 };
 export const SPORT_TYPES = [
   {
+    key: 'CRICKET',
+    sport: SPORT_NAME_LOOKUP.cricket,
+    mintContract: getContract(MINTER_CRICKET),
+    packContract: getContract(PACK_CRICKET),
+    packPromoContract: getContract(PACK_PROMO_CRICKET),
+    regContract: getContract(ATHLETE_CRICKET),
+    promoContract: getContract(ATHLETE_PROMO_CRICKET),
+    openContract: getContract(OPENPACK_CRICKET),
+    openPromoContract: getContract(OPENPACK_PROMO_CRICKET),
+    gameContract: getContract(GAME_CRICKET),
+    positionList: CRICKET_POSITIONS,
+    extra: EXTRA_CRICKET,
+  },
+  {
     key: 'MLB',
     sport: SPORT_NAME_LOOKUP.baseball,
     mintContract: getContract(MINTER_BASEBALL),
@@ -281,20 +295,6 @@ export const SPORT_TYPES = [
     gameContract: getContract(GAME_NFL),
     positionList: NFL_POSITIONS,
     extra: EXTRA_NFL,
-  },
-  {
-    key: 'CRICKET',
-    sport: SPORT_NAME_LOOKUP.cricket,
-    mintContract: getContract(MINTER_CRICKET),
-    packContract: getContract(PACK_CRICKET),
-    packPromoContract: getContract(PACK_PROMO_CRICKET),
-    regContract: getContract(ATHLETE_CRICKET),
-    promoContract: getContract(ATHLETE_PROMO_CRICKET),
-    openContract: getContract(OPENPACK_CRICKET),
-    openPromoContract: getContract(OPENPACK_PROMO_CRICKET),
-    gameContract: getContract(GAME_CRICKET),
-    positionList: CRICKET_POSITIONS,
-    extra: EXTRA_CRICKET,
   },
 ];
 
