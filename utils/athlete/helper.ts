@@ -60,12 +60,12 @@ async function getAthleteInfoById(item, from, to) {
     isOpen: false,
     animation: data.getAthleteById.nftAnimation,
     image: item.metadata.media,
-    fantasy_score:
-      from === null && to === null
-        ? getAvgSeasonFantasyScore(data.getAthleteById.stats)
-        : from !== null && to !== null
-        ? getDailySeasonFantasyScore(data.getAthleteById.stats)
-        : getDailyFantasyScore(data.getAthleteById.stats),
+    fantasy_score:getAvgSeasonFantasyScore(data.getAthleteById.stats),
+      // from === null && to === null
+      //   ? getAvgSeasonFantasyScore(data.getAthleteById.stats)
+      //   : from !== null && to !== null
+      //   ? getDailySeasonFantasyScore(data.getAthleteById.stats)
+      //   : getDailyFantasyScore(data.getAthleteById.stats),
     stats_breakdown: data.getAthleteById.stats,
     isInGame: item.metadata['starts_at'] > getUTCTimestampFromLocal() ? true : false,
     isInjured: data.getAthleteById.isInjured,
