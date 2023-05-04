@@ -208,19 +208,8 @@ const Portfolio = () => {
         offset = ((athleteLimit - totalRegularSupply) % athleteLimit) + athleteLimit;
       } else offset = (athleteLimit - totalRegularSupply) % athleteLimit;
       let extra = 0;
-      let add = 0;
-      let promoPageCount = pageCount - regPageCount;
-      console.log('offset: ' + offset);
-
       if (totalPromoSupply >= offset + athleteLimit + 1) extra = 1;
-      if (promoPageCount > regPageCount) add = 1;
-      newOffset = Math.abs(Math.abs(e.selected - regPageCount + 1) - extra + add) * athleteLimit;
-      console.log('selected: ' + e.selected);
-      console.log('regPageCount: ' + regPageCount);
-      console.log('pageCount: ' + pageCount);
-      console.log('extra: ' + extra);
-      console.log('totalpromo: ' + totalPromoSupply);
-      console.log(newOffset);
+      newOffset = Math.abs(Math.abs(e.selected - regPageCount + 1) - extra) * athleteLimit;
       setPromoOffset(offset);
       setIsPromoPage(true);
     } else {
