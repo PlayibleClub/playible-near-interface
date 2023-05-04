@@ -52,6 +52,7 @@ const Portfolio = () => {
   const [athleteLimit, setAthleteLimit] = useState(10);
   const [totalRegularSupply, setTotalRegularSupply] = useState(0);
   const [pageCount, setPageCount] = useState(0);
+  const [regPageCount, setRegPageCount] = useState(0);
   const [promoOffset, setPromoOffset] = useState(0);
   const [isPromoPage, setIsPromoPage] = useState(false);
   const [totalPromoSupply, setTotalPromoSupply] = useState(0);
@@ -208,7 +209,8 @@ const Portfolio = () => {
       } else offset = (athleteLimit - totalRegularSupply) % athleteLimit;
       let extra = 0;
       if (totalPromoSupply >= offset + athleteLimit + 1) extra = 1;
-      newOffset = Math.abs(Math.abs(e.selected + 1 - pageCount) - extra) * athleteLimit;
+      newOffset =
+        Math.abs(Math.abs(e.selected + 1 + regPageCount - pageCount) - extra) * athleteLimit;
       setPromoOffset(offset);
       setIsPromoPage(true);
     } else {
@@ -279,6 +281,7 @@ const Portfolio = () => {
       setTotalRegularSupply(0);
       setTotalPromoSupply(0);
     }
+    setRegPageCount(Math.ceil(totalRegularSupply / athleteLimit));
     setPageCount(Math.ceil((totalRegularSupply + totalPromoSupply) / athleteLimit));
     //setup regular_offset, soulbound_offset
   }, [
