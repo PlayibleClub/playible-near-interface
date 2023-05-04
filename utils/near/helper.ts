@@ -3,6 +3,7 @@ import { getContract, getRPCProvider } from 'utils/near';
 import {
   convertNftToAthlete,
   getAthleteInfoById,
+  getPortfolioAssetDetailsById,
   getCricketAthleteInfoById,
 } from 'utils/athlete/helper';
 import { DEFAULT_MAX_FEES, MINT_STORAGE_COST } from 'data/constants/gasFees';
@@ -389,7 +390,7 @@ async function query_filter_tokens_for_owner(
         result_two = Promise.all(
           result
             .map(convertNftToAthlete)
-            .map((item) => getAthleteInfoById(item, undefined, undefined))
+            .map((item) => getPortfolioAssetDetailsById(item, undefined, undefined))
         );
       else {
         result_two = Promise.all(

@@ -60,12 +60,47 @@ async function getAthleteInfoById(item, from, to) {
     isOpen: false,
     animation: data.getAthleteById.nftAnimation,
     image: item.metadata.media,
-    fantasy_score:getAvgSeasonFantasyScore(data.getAthleteById.stats),
-      // from === null && to === null
-      //   ? getAvgSeasonFantasyScore(data.getAthleteById.stats)
-      //   : from !== null && to !== null
-      //   ? getDailySeasonFantasyScore(data.getAthleteById.stats)
-      //   : getDailyFantasyScore(data.getAthleteById.stats),
+    fantasy_score:
+      from === null && to === null
+        ? getAvgSeasonFantasyScore(data.getAthleteById.stats)
+        : from !== null && to !== null
+        ? getDailySeasonFantasyScore(data.getAthleteById.stats)
+        : getDailyFantasyScore(data.getAthleteById.stats),
+    stats_breakdown: data.getAthleteById.stats,
+    isInGame: item.metadata['starts_at'] > getUTCTimestampFromLocal() ? true : false,
+    isInjured: data.getAthleteById.isInjured,
+    isActive: data.getAthleteById.isActive,
+  };
+  return returningData;
+}
+
+//used by portfolio and assetdetails
+async function getPortfolioAssetDetailsById(item, from, to) {
+  //console.log(item.extra);
+  let value = {} as trait_type;
+  for (const key of item.extra) {
+    value[key.trait_type] = key.value;
+  }
+  const { data } = await client.query({
+    query: GET_ATHLETE_BY_ID,
+    variables: { getAthleteById: parseFloat(value['athlete_id']), from: from, to: to },
+  });
+  const isPromo = item.token_id.includes('SB') || item.token_id.includes('PR');
+  const returningData = {
+    primary_id: value['athlete_id'],
+    athlete_id: item.token_id,
+    rarity: value['rarity'],
+    usage: value['usage'],
+    name: value['name'],
+    team: value['team'],
+    position: value['position'],
+    release: value['release'],
+    ...(isPromo && { type: value['type'] }),
+    isOpen: false,
+    animation: data.getAthleteById.nftAnimation,
+    image: item.metadata.media,
+    fantasy_score:
+    getAvgSeasonFantasyScore(data.getAthleteById.stats),
     stats_breakdown: data.getAthleteById.stats,
     isInGame: item.metadata['starts_at'] > getUTCTimestampFromLocal() ? true : false,
     isInjured: data.getAthleteById.isInjured,
@@ -232,4 +267,5 @@ export {
   getAthleteSchedule,
   getCricketAthleteInfoById,
   getCricketSchedule,
+  getPortfolioAssetDetailsById,
 };
