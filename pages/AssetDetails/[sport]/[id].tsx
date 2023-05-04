@@ -4,6 +4,7 @@ import {
   getAthleteInfoById,
   getCricketAthleteInfoById,
   convertNftToAthlete,
+  getPortfolioAssetDetailsById,
 } from 'utils/athlete/helper';
 import BackFunction from 'components/buttons/BackFunction';
 import StatsComponent from '../components/StatsComponent';
@@ -52,7 +53,7 @@ const AssetDetails = (props) => {
       const result = JSON.parse(Buffer.from(data.result).toString());
       let result_two;
       if (currentSport !== 'CRICKET') {
-        result_two = await getAthleteInfoById(await convertNftToAthlete(result), null, null);
+        result_two = await getPortfolioAssetDetailsById(await convertNftToAthlete(result), null, null);
         let games = result_two.stats_breakdown.slice();
         console.log(result_two);
         setAthlete(result_two);
