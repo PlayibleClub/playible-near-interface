@@ -545,21 +545,6 @@ function query_nft_tokens_for_owner(accountId, packOffset, packLimit, contract) 
   });
 }
 
-function query_all_tokens_for_owner(accountId, packLimit, contract) {
-  const query = JSON.stringify({
-    account_id: accountId,
-    limit: packLimit,
-  });
-
-  return provider.query({
-    request_type: 'call_function',
-    finality: 'optimistic',
-    account_id: contract,
-    method_name: 'nft_tokens_for_owner',
-    args_base64: Buffer.from(query).toString('base64'),
-  });
-}
-
 function query_claim_status(accountId, contract) {
   const query = JSON.stringify({
     account_id: accountId,
@@ -629,6 +614,5 @@ export {
   query_claim_status,
   query_nft_token_by_id,
   execute_claim_soulbound_pack,
-  query_all_tokens_for_owner,
   compute_scores,
 };

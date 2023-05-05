@@ -11,7 +11,6 @@ import { useWalletSelector } from 'contexts/WalletSelectorContext';
 import ReactPaginate from 'react-paginate';
 import {
   execute_claim_soulbound_pack,
-  query_all_tokens_for_owner,
   query_claim_status,
   query_nft_supply_for_owner,
   query_nft_tokens_for_owner,
@@ -42,15 +41,10 @@ export default function Packs() {
   const cricketSBImage = '/images/packimages/Cricket-SB-Pack.png';
   const [modalImage, setModalImage] = useState(nflImage);
   const [currentTotal, setCurrentTotal] = useState(0);
-  const [copiedSportList, setCopiedSportList] = useState([]);
   const [categoryList, setcategoryList] = useState([
     {
-      name: 'ALL',
-      isActive: true,
-    },
-    {
       name: 'PROMOTIONAL',
-      isActive: false,
+      isActive: true,
     },
     {
       name: 'STARTER',
@@ -61,25 +55,6 @@ export default function Packs() {
   sportObj[0].isActive = true;
   const [sportList, setSportList] = useState([...sportObj]);
   const [currentSport, setCurrentSport] = useState(sportObj[0].sport);
-  const [footballPacks, setFootballPacks] = useState([]);
-  const [basketballPacks, setBasketballPacks] = useState([]);
-  const [baseballPacks, setBaseballPacks] = useState([]);
-  const [cricketPacks, setCricketPacks] = useState([]);
-  const [footballSbPacks, setFootballSbPacks] = useState([]);
-  const [basketballSbPacks, setBasketballSbPacks] = useState([]);
-  const [baseballSbPacks, setBaseballSbPacks] = useState([]);
-  const [cricketSbPacks, setCricketSbPacks] = useState([]);
-  const [totalSupply, setTotalSupply] = useState(0);
-  const allPack = [
-    ...cricketPacks,
-    ...cricketSbPacks,
-    ...baseballPacks,
-    ...baseballSbPacks,
-    ...basketballPacks,
-    ...basketballSbPacks,
-    ...footballPacks,
-    ...footballSbPacks,
-  ];
   //for soulbound claiming, redirecting, and displaying the corresponding pack image
   const [sportFromRedux, setSportFromRedux] = useState(useSelector(getSportTypeRedux));
   const [isPromoFromRedux, setIsPromoFromRedux] = useState(useSelector(getIsPromoRedux));
@@ -87,27 +62,14 @@ export default function Packs() {
   const changecategoryList = (name) => {
     const tabList = [...categoryList];
     setPackOffset(0);
-    // setPackLimit(10);
-    setRemountComponent(Math.random());
-    const prevSport = [...sportList];
-
+    setPackLimit(10);
+    setRemountComponent(Math.random() + 1);
     switch (name) {
-      case 'ALL':
-        if (sportList.length > 0) {
-          setSportList([]);
-        }
-        break;
-      case 'PROMOTIONAL':
-        if ((sportList.length = 0)) {
-          setSportList(prevSport);
-        }
-        setCurrentTotal(soulboundPacks.length);
-        break;
       case 'STARTER':
-        if ((sportList.length = 0)) {
-          setSportList(prevSport);
-        }
         setCurrentTotal(packs.length);
+        break;
+      case 'SOULBOUND':
+        setCurrentTotal(soulboundPacks.length);
         break;
     }
 
@@ -137,48 +99,6 @@ export default function Packs() {
     setTotalPacks(
       await query_nft_supply_for_owner(accountId, getSportType(currentSport).packContract)
     );
-    const resultFootball = await query_nft_supply_for_owner(
-      accountId,
-      getSportType(SPORT_NAME_LOOKUP.football).packContract
-    );
-    const resultBasketball = await query_nft_supply_for_owner(
-      accountId,
-      getSportType(SPORT_NAME_LOOKUP.basketball).packContract
-    );
-    const resultBaSeball = await query_nft_supply_for_owner(
-      accountId,
-      getSportType(SPORT_NAME_LOOKUP.baseball).packContract
-    );
-    const resultCricket = await query_nft_supply_for_owner(
-      accountId,
-      getSportType(SPORT_NAME_LOOKUP.cricket).packContract
-    );
-    const resultFootballSb = await query_nft_supply_for_owner(
-      accountId,
-      getSportType(SPORT_NAME_LOOKUP.football).packPromoContract
-    );
-    const resultBasketballSb = await query_nft_supply_for_owner(
-      accountId,
-      getSportType(SPORT_NAME_LOOKUP.basketball).packPromoContract
-    );
-    const resultBaSeballSb = await query_nft_supply_for_owner(
-      accountId,
-      getSportType(SPORT_NAME_LOOKUP.baseball).packPromoContract
-    );
-    const resultCricketSb = await query_nft_supply_for_owner(
-      accountId,
-      getSportType(SPORT_NAME_LOOKUP.cricket).packPromoContract
-    );
-    setTotalSupply(
-      Number(resultFootball) +
-        Number(resultBasketball) +
-        Number(resultBaSeball) +
-        Number(resultCricket) +
-        Number(resultFootballSb) +
-        Number(resultBasketballSb) +
-        Number(resultBaSeballSb) +
-        Number(resultCricketSb)
-    );
   }
 
   async function get_nft_sb_supply_for_owner(accountId) {
@@ -189,11 +109,7 @@ export default function Packs() {
 
   function getPackLimit() {
     try {
-      if (categoryList[0].isActive && totalSupply > 30) {
-        const _packLimit = 15;
-        console.log('Reloading packs');
-        setPackLimit(_packLimit);
-      } else if (!categoryList[0].isActive && totalPacks > 30) {
+      if (totalPacks > 30) {
         const _packLimit = 15;
         console.log('Reloading packs');
         setPackLimit(_packLimit);
@@ -204,63 +120,23 @@ export default function Packs() {
   }
 
   const handlePageClick = (event) => {
-    const newOffset = categoryList[0].isActive
-      ? (event.selected * packLimit) % totalSupply
-      : (event.selected * packLimit) % totalPacks;
+    const newOffset = (event.selected * packLimit) % totalPacks;
     setPackOffset(newOffset);
   };
 
   async function get_nft_pack_tokens_for_owner(accountId, packOffset, packLimit) {
     //@ts-ignore:next-line
-    if (!categoryList[0].isActive) {
-      query_nft_tokens_for_owner(
-        accountId,
-        packOffset,
-        packLimit,
-        getSportType(currentSport).packContract
-      ).then(async (data) => {
-        //@ts-ignore:next-line
-        const result = JSON.parse(Buffer.from(data.result).toString());
-        setPacks(result);
-      });
-    } else {
-      query_all_tokens_for_owner(
-        accountId,
-        packLimit,
-        getSportType(SPORT_NAME_LOOKUP.football).packContract
-      ).then(async (data) => {
-        //@ts-ignore:next-line
-        const result = JSON.parse(Buffer.from(data.result).toString());
-        setFootballPacks(result);
-      });
-      query_all_tokens_for_owner(
-        accountId,
-        packLimit,
-        getSportType(SPORT_NAME_LOOKUP.basketball).packContract
-      ).then(async (data) => {
-        //@ts-ignore:next-line
-        const result = JSON.parse(Buffer.from(data.result).toString());
-        setBasketballPacks(result);
-      });
-      query_all_tokens_for_owner(
-        accountId,
-        packLimit,
-        getSportType(SPORT_NAME_LOOKUP.baseball).packContract
-      ).then(async (data) => {
-        //@ts-ignore:next-line
-        const result = JSON.parse(Buffer.from(data.result).toString());
-        setBaseballPacks(result);
-      });
-      query_all_tokens_for_owner(
-        accountId,
-        packLimit,
-        getSportType(SPORT_NAME_LOOKUP.cricket).packContract
-      ).then(async (data) => {
-        //@ts-ignore:next-line
-        const result = JSON.parse(Buffer.from(data.result).toString());
-        setCricketPacks(result);
-      });
-    }
+
+    query_nft_tokens_for_owner(
+      accountId,
+      packOffset,
+      packLimit,
+      getSportType(currentSport).packContract
+    ).then(async (data) => {
+      //@ts-ignore:next-line
+      const result = JSON.parse(Buffer.from(data.result).toString());
+      setPacks(result);
+    });
   }
 
   async function get_claim_status(accountId) {
@@ -278,46 +154,6 @@ export default function Packs() {
       const result = JSON.parse(Buffer.from(data.result).toString());
       setSoulboundPacks(result);
     });
-    query_nft_tokens_for_owner(
-      accountId,
-      packOffset,
-      packLimit,
-      getSportType(SPORT_NAME_LOOKUP.football).packPromoContract
-    ).then(async (data) => {
-      //@ts-ignore:next-line
-      const result = JSON.parse(Buffer.from(data.result).toString());
-      setFootballSbPacks(result);
-    });
-    query_nft_tokens_for_owner(
-      accountId,
-      packOffset,
-      packLimit,
-      getSportType(SPORT_NAME_LOOKUP.basketball).packPromoContract
-    ).then(async (data) => {
-      //@ts-ignore:next-line
-      const result = JSON.parse(Buffer.from(data.result).toString());
-      setBasketballSbPacks(result);
-    });
-    query_nft_tokens_for_owner(
-      accountId,
-      packOffset,
-      packLimit,
-      getSportType(SPORT_NAME_LOOKUP.baseball).packPromoContract
-    ).then(async (data) => {
-      //@ts-ignore:next-line
-      const result = JSON.parse(Buffer.from(data.result).toString());
-      setBaseballSbPacks(result);
-    });
-    query_nft_tokens_for_owner(
-      accountId,
-      packOffset,
-      packLimit,
-      getSportType(SPORT_NAME_LOOKUP.cricket).packPromoContract
-    ).then(async (data) => {
-      //@ts-ignore:next-line
-      const result = JSON.parse(Buffer.from(data.result).toString());
-      setCricketSbPacks(result);
-    });
   }
 
   const handleButtonClick = (e) => {
@@ -329,15 +165,11 @@ export default function Packs() {
   useEffect(() => {
     get_nft_pack_supply_for_owner(accountId);
     getPackLimit();
-    setPageCount(
-      categoryList[0].isActive
-        ? Math.ceil(totalSupply / packLimit)
-        : Math.ceil(totalPacks / packLimit)
-    );
+    setPageCount(Math.ceil(totalPacks / packLimit));
     const endOffset = packOffset + packLimit;
     console.log(`Loading packs from ${packOffset} to ${endOffset}`);
     get_nft_pack_tokens_for_owner(accountId, packOffset, packLimit);
-  }, [totalPacks, packLimit, packOffset, currentSport, totalSupply, categoryList, sportList]);
+  }, [totalPacks, packLimit, packOffset, currentSport]);
 
   useEffect(() => {
     get_nft_sb_supply_for_owner(accountId);
@@ -377,24 +209,11 @@ export default function Packs() {
       setEditModal(true);
     }
   }, []);
-  useEffect(() => {
-    // Copy the original sportList on load
-    setCopiedSportList([...sportList]);
-  }, []);
 
-  useEffect(() => {
-    // Check if categoryList[0] is active
-    if (categoryList.length > 0 && categoryList[0].isActive) {
-      // Empty the sportList when categoryList[0] is active
-      setSportList([]);
-    } else {
-      // Restore the copied sportList when other category is active
-      setSportList([...copiedSportList]);
-    }
-  }, [categoryList, copiedSportList]);
   useEffect(() => {
     get_claim_status(accountId);
   }, [currentSport]);
+
   return (
     <Container activeName="SQUAD">
       <div className="flex flex-col w-full overflow-y-auto h-screen">
@@ -444,10 +263,10 @@ export default function Packs() {
                   })}
                 </div>
                 <div className="iphone5:ml-6 md:ml-9 iphone5:mr-0 md:mr-4 iphone5:mt-4">
-                  {categoryList[0].isActive ? null : isClaimed ? (
+                  {isClaimed ? (
                     <button
                       className={`hidden bg-indigo-gray bg-opacity-40 text-indigo-white w-5/6 md:w-80 h-10 pointer-events-none 
-      text-center font-bold text-xs `}
+            text-center font-bold text-xs `}
                       onClick={(e) => handleButtonClick(e)}
                     >
                       CLAIM SOULBOUND PACK
@@ -457,7 +276,7 @@ export default function Packs() {
                       className={`${
                         currentSport === SPORT_NAME_LOOKUP.football ? 'hidden' : ''
                       }bg-indigo-buttonblue text-indigo-white iphone5:w-full md:w-80 h-10 
-      text-center font-bold text-xs`}
+           text-center font-bold text-xs`}
                       onClick={(e) => handleButtonClick(e)}
                     >
                       {currentSport === SPORT_NAME_LOOKUP.basketball
@@ -471,31 +290,17 @@ export default function Packs() {
                   )}
                 </div>
                 <div className="grid iphone5:grid-cols-2 gap-y-8 mt-4 md:grid-cols-4 iphone5:mt-8 iphone5:ml-2 md:ml-7 md:mt-9 ">
-                  {categoryList[0].isActive
-                    ? (categoryList[0].isActive ? allPack : packs).length > 0 &&
-                      (categoryList[0].isActive ? allPack : packs)
-                        .filter((data, i) => i >= packOffset && i < packOffset + packLimit)
-                        .map(({ metadata, token_id }) => (
-                          <PackComponent
-                            key={token_id}
-                            image={metadata.media}
-                            id={token_id}
-                            sport={currentSport}
-                            media={metadata.media}
-                          ></PackComponent>
-                        ))
-                    : (categoryList[1].isActive ? soulboundPacks : packs).length > 0 &&
-                      (categoryList[1].isActive ? soulboundPacks : packs)
-                        .filter((data, i) => i >= packOffset && i < packOffset + packLimit)
-                        .map(({ metadata, token_id }) => (
-                          <PackComponent
-                            key={token_id}
-                            image={metadata.media}
-                            id={token_id}
-                            sport={currentSport}
-                            media={metadata.media}
-                          ></PackComponent>
-                        ))}
+                  {(categoryList[0].isActive ? soulboundPacks : packs).length > 0 &&
+                    (categoryList[0].isActive ? soulboundPacks : packs)
+                      .filter((data, i) => i >= packOffset && i < packOffset + packLimit)
+                      .map(({ metadata, token_id }) => (
+                        <PackComponent
+                          key={token_id}
+                          image={metadata.media}
+                          id={token_id}
+                          sport={currentSport}
+                        ></PackComponent>
+                      ))}
                 </div>
               </div>
             </PortfolioContainer>
