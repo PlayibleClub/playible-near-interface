@@ -104,10 +104,13 @@ const AthleteSelect = (props) => {
     setLineup(passedLineup);
   }
 
-  function checkIfAthleteExists(athlete_id) {
+  function checkIfAthleteExists(athlete_id, primary_id) {
     for (let i = 0; i < passedLineup.length; i++) {
       if (passedLineup[i].isAthlete === true) {
-        if (athlete_id === passedLineup[i].athlete.athlete_id) {
+        if (
+          athlete_id === passedLineup[i].athlete.athlete_id ||
+          primary_id === passedLineup[i].athlete.primary_id
+        ) {
           return true;
         }
       }
@@ -285,6 +288,7 @@ const AthleteSelect = (props) => {
   useEffect(() => {
     setRemountAthlete(Math.random() + 1);
     console.log(athletes);
+    console.log('passedLineup:', passedLineup);
   }, [athletes]);
   useEffect(() => {
     if (selectedRegular !== false && selectedPromo === false) {
@@ -358,7 +362,7 @@ const AthleteSelect = (props) => {
             const accountAthleteIndex = athletes.indexOf(item, 0) + athleteOffset;
             return (
               <>
-                {checkIfAthleteExists(item.athlete_id) || item.isInGame ? (
+                {checkIfAthleteExists(item.athlete_id, item.primary_id) || item.isInGame ? (
                   <div className="w-4/5 h-5/6 border-transparent pointer-events-none">
                     <div className="mt-1.5 w-full h-14px mb-1"></div>
                     <PerformerContainer
