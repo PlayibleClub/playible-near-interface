@@ -58,6 +58,7 @@ const AthleteSelect = (props) => {
   const [lineup, setLineup] = useState([]);
   const { accountId } = useWalletSelector();
   const [pageCount, setPageCount] = useState(0);
+  const [regPageCount, setRegPageCount] = useState(0);
   const [remountComponent, setRemountComponent] = useState(0);
   const [remountAthlete, setRemountAthlete] = useState(0);
   const [getTeams] = useLazyQuery(GET_TEAMS);
@@ -198,7 +199,7 @@ const AthleteSelect = (props) => {
       } else offset = (athleteLimit - totalRegularSupply) % athleteLimit;
       let extra = 0;
       if (totalPromoSupply >= offset + athleteLimit + 1) extra = 1;
-      newOffset = Math.abs(Math.abs(e.selected + 1 - pageCount) - extra) * athleteLimit;
+      newOffset = Math.abs(Math.abs(e.selected - regPageCount + 1) - extra) * athleteLimit;
       setPromoOffset(offset);
       setIsPromoPage(true);
     } else {
@@ -299,6 +300,7 @@ const AthleteSelect = (props) => {
       setTotalRegularSupply(0);
       setTotalPromoSupply(0);
     }
+    setRegPageCount(Math.ceil(totalRegularSupply / athleteLimit));
     setPageCount(Math.ceil((totalRegularSupply + totalPromoSupply) / athleteLimit));
     //setup regular_offset, soulbound_offset
   }, [team, name, totalRegularSupply, totalPromoSupply, selectedRegular, selectedPromo, team]);
