@@ -125,38 +125,41 @@ export default function PackDetails(props) {
     }
   }
 
-  // async function execute_transfer_pack(selector) {
-  //   const transferArgs = Buffer.from(
-  //     JSON.stringify({
-  //       msg: 'Transfer pack',
-  //       receiver_id: whitelistInfo?.toString(),
-  //     })
-  //   );
+  async function execute_transfer_pack(selector) {
+    const contract = getSportType(myPack.sport);
+    const transferArgs = Buffer.from(
+      JSON.stringify({
+        msg: 'Transfer' + ' ' + myPack.sport.toLowerCase() + ' ' + myPack.packName.toLowerCase(),
+        receiver_id: whitelistInfo?.toString(),
+        token_id: myPack.id,
+      })
+    );
 
-  //   const deposit = new BigNumber(MINT_STORAGE_COST).toFixed();
+    const action_transfer_call = {
+      type: 'FunctionCall',
+      params: {
+        methodName: 'nft_transfer',
+        args: transferArgs,
+        gas: DEFAULT_MAX_FEES,
+        deposit: 1,
+      },
+    };
 
-  //   const action_transfer_call = {
-  //     type: 'FunctionCall',
-  //     params: {
-  //       methodName: 'send_type_1_pack',
-  //       args: transferArgs,
-  //       gas: DEFAULT_MAX_FEES,
-  //       deposit: deposit,
-  //     },
-  //   };
-
-  //   const wallet = await selector.wallet();
-  //   // @ts-ignore:next-line;
-  //   const tx = wallet.signAndSendTransactions({
-  //     transactions: [
-  //       {
-  //         receiverId: getSportType(myPack.sport).packPromoContract,
-  //         //@ts-ignore:next-line
-  //         actions: [action_transfer_call],
-  //       },
-  //     ],
-  //   });
-  // }
+    const wallet = await selector.wallet();
+    // @ts-ignore:next-line;
+    const tx = wallet.signAndSendTransactions({
+      transactions: [
+        {
+          receiverId:
+            myPack.packName === 'SOULBOUND PACK' || myPack.packName === 'PROMO PACK'
+              ? contract.packPromoContract
+              : contract.packContract,
+          //@ts-ignore:next-line
+          actions: [action_transfer_call],
+        },
+      ],
+    });
+  }
 
   async function execute_open_pack() {
     const contract = getSportType(myPack.sport);
@@ -244,7 +247,7 @@ export default function PackDetails(props) {
               {myPack.sport + ' ' + myPack.packName}
               <hr className="w-10 border-4"></hr>
             </div>
-            <div className="md:text-lg iphone5:text-sm md:h-0 iphone5:h-5 font-bold">
+            <div className="md:text-lg iphone5:text-sm md:h-10 iphone5:h-5 font-bold">
               #{myPack.id}
             </div>
             <div className="text-sm">RELEASE 1</div>
