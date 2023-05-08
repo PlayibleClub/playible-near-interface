@@ -11,6 +11,7 @@ import { DEFAULT_MAX_FEES, MINT_STORAGE_COST } from 'data/constants/gasFees';
 import Image from 'next/image';
 import { getSportType } from 'data/constants/sportConstants';
 import { query_nft_tokens_by_id } from 'utils/near/helper';
+import Modal from 'components/modals/Modal';
 const DECIMALS_NEAR = 1000000000000000000000000;
 const MINT_10_COST = 600000000000000000000000;
 const MINT_8_COST = 480000000000000000000000;
@@ -19,7 +20,12 @@ export default function PackDetails(props) {
   const provider = new providers.JsonRpcProvider({
     url: getRPCProvider(),
   });
+  const [transferModal, setTransferModal] = useState(false);
   const [deposit, setDeposit] = useState('');
+  const [whitelistInfo, setWhitelistInfo] = useState(null);
+  const [details, setDetails] = useState({
+    receiverAccount: '',
+  });
   const { query } = props;
   const { selector, accountId } = useWalletSelector();
   const router = useRouter();
@@ -119,6 +125,39 @@ export default function PackDetails(props) {
     }
   }
 
+  // async function execute_transfer_pack(selector) {
+  //   const transferArgs = Buffer.from(
+  //     JSON.stringify({
+  //       msg: 'Transfer pack',
+  //       receiver_id: whitelistInfo?.toString(),
+  //     })
+  //   );
+
+  //   const deposit = new BigNumber(MINT_STORAGE_COST).toFixed();
+
+  //   const action_transfer_call = {
+  //     type: 'FunctionCall',
+  //     params: {
+  //       methodName: 'send_type_1_pack',
+  //       args: transferArgs,
+  //       gas: DEFAULT_MAX_FEES,
+  //       deposit: deposit,
+  //     },
+  //   };
+
+  //   const wallet = await selector.wallet();
+  //   // @ts-ignore:next-line;
+  //   const tx = wallet.signAndSendTransactions({
+  //     transactions: [
+  //       {
+  //         receiverId: getSportType(myPack.sport).packPromoContract,
+  //         //@ts-ignore:next-line
+  //         actions: [action_transfer_call],
+  //       },
+  //     ],
+  //   });
+  // }
+
   async function execute_open_pack() {
     const contract = getSportType(myPack.sport);
 
@@ -159,6 +198,30 @@ export default function PackDetails(props) {
     });
   }
 
+  const handleButtonClick = (e) => {
+    e.preventDefault();
+    execute_transfer_pack(selector);
+  };
+
+  const onChangeWhitelist = (e) => {
+    if (e.target.name === 'receiverAccount') {
+      if (e.target.value !== '') {
+        const whitelistArray = e.target.value.split('\n').filter((n) => n);
+        setWhitelistInfo(whitelistArray);
+        setDetails({
+          ...details,
+          [e.target.name]: e.target.value,
+        });
+      } else if (e.target.value.length === 0) {
+        setWhitelistInfo(null);
+        setDetails({
+          ...details,
+          [e.target.name]: e.target.value,
+        });
+      }
+    }
+  };
+
   useEffect(() => {
     get_pack_token_by_id();
     query_storage_deposit_account_id();
@@ -190,6 +253,12 @@ export default function PackDetails(props) {
               onClick={() => execute_open_pack()}
             >
               OPEN PACK
+            </button>
+            <button
+              className="bg-indigo-buttonblue text-indigo-white w-5/6 md:w-80 h-10 text-center font-bold text-sm mt-4"
+              onClick={() => setTransferModal(true)}
+            >
+              TRANSFER PACK
             </button>
           </div>
         </div>
@@ -269,6 +338,41 @@ export default function PackDetails(props) {
           </div>
         </div>
       </div>
+      <Modal
+        title={'Transfer Pack'}
+        visible={transferModal}
+        onClose={() => setTransferModal(false)}
+      >
+        <button
+          className="fixed top-4 right-4 "
+          onClick={() => {
+            setTransferModal(false);
+          }}
+        >
+          <img src="/images/x.png" />
+        </button>
+        <div className="flex flex-col ">
+          <input
+            className="border outline-none rounded-lg px-3 p-2"
+            id="receiverAccount"
+            name="receiverAccount"
+            type="text"
+            placeholder="Enter account to transfer pack to."
+            onChange={(e) => {
+              onChangeWhitelist(e);
+            }}
+            value={details.receiverAccount}
+          />
+          <div className="mt-6">
+            <button
+              className=" flex text-center justify-center items-center iphone5:w-64 md:w-full bg-indigo-buttonblue font-montserrat text-indigo-white p-3 mb-4 md:mr-4 text-xs"
+              onClick={(e) => handleButtonClick(e)}
+            >
+              TRANSFER
+            </button>
+          </div>
+        </div>
+      </Modal>
     </Container>
   );
 }
