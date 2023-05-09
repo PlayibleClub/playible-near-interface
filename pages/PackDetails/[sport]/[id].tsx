@@ -11,6 +11,7 @@ import { DEFAULT_MAX_FEES, MINT_STORAGE_COST } from 'data/constants/gasFees';
 import Image from 'next/image';
 import { getSportType } from 'data/constants/sportConstants';
 import { query_nft_tokens_by_id } from 'utils/near/helper';
+import Link from 'next/link';
 const DECIMALS_NEAR = 1000000000000000000000000;
 const MINT_10_COST = 600000000000000000000000;
 const MINT_8_COST = 480000000000000000000000;
@@ -181,7 +182,7 @@ export default function PackDetails(props) {
               {myPack.sport + ' ' + myPack.packName}
               <hr className="w-10 border-4"></hr>
             </div>
-            <div className="md:text-lg iphone5:text-sm md:h-0 iphone5:h-5 font-bold">
+            <div className="md:text-lg iphone5:text-sm md:h-10 iphone5:h-5 font-bold">
               #{myPack.id}
             </div>
             <div className="text-sm">RELEASE 1</div>
@@ -190,6 +191,14 @@ export default function PackDetails(props) {
               onClick={() => execute_open_pack()}
             >
               OPEN PACK
+            </button>
+            <button className="bg-indigo-buttonblue text-indigo-white w-5/6 md:w-80 h-10 text-center font-bold text-sm mt-4">
+              <Link
+                href={`/TransferPack/${myPack.sport.toLowerCase()}/${encodeURIComponent(id)}/`}
+                passHref
+              >
+                TRANSFER PACK
+              </Link>
             </button>
           </div>
         </div>
