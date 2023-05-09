@@ -383,7 +383,15 @@ export default function PackDetails(props) {
 export async function getServerSideProps(ctx) {
   const { query } = ctx;
 
+  let result;
   if (query) {
+    const provider = new providers.JsonRpcProvider({
+      url: getRPCProvider(),
+    });
+    const transaction = await provider.txStatus(query.transactionHashes, 'unnused');
+    // true if successful
+    // false if unsuccessful
+    result = providers.getTransactionLastResult(transaction);
     if (query.transactionHashes) {
       return {
         redirect: {
@@ -402,6 +410,6 @@ export async function getServerSideProps(ctx) {
   }
 
   return {
-    props: { query },
+    props: { query, result },
   };
 }
