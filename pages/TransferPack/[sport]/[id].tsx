@@ -119,7 +119,28 @@ export default function PackDetails(props) {
       }
     }
   };
-  
+
+  const checkNameValidity = () => {
+    let errors = [];
+
+    if (accountNameInfo == null) {
+      errors.push('Account name cannot be empty.');
+    }
+    return errors;
+  }
+
+  const validateName = () => {
+    if (checkNameValidity().length > 0) {
+      alert(
+        `ERRORS: \n${checkNameValidity()
+          .map((item) => '❌ ' + item)
+          .join(` \n`)}`.replace(',', '')
+      );
+    } else {
+      setConfirmModal(true);
+    }
+  };
+
   useEffect(() => {
     get_pack_token_by_id();
   }, []);
@@ -161,7 +182,7 @@ export default function PackDetails(props) {
           <div className="mt-6">
             <button
               className=" flex text-center justify-center items-center iphone5:w-64 md:w-96 bg-indigo-buttonblue font-montserrat text-indigo-white p-3 mb-4 md:mr-4 text-xs"
-              onClick={(e) => setConfirmModal(true)}
+              onClick={(e) => validateName()}
             >
               TRANSFER
             </button>
