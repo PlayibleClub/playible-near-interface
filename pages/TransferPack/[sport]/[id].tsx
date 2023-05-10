@@ -148,7 +148,7 @@ export default function PackDetails(props) {
             #{myPack.id}
           </div>
         </div>
-        <div className="flex flex-col center md:mt-20">
+        <div className="flex flex-col center md:mt-14">
           <input
             className="border outline-none rounded-lg px-3 p-2 iphone5:w-64 md:w-96"
             id="receiverAccount"
@@ -183,8 +183,9 @@ export default function PackDetails(props) {
         >
           <img src="/images/x.png" />
         </button>
+        <p className="font-bold">PACK SPORT:</p> {myPack.sport}
         <p className="font-bold">PACK ID:</p> {myPack.id}
-        <p className="font-bold">ACCOUNT NAME:</p> {whitelistInfo}
+        <p className="font-bold">TRANSFER TO ACCOUNT NAME:</p> {whitelistInfo}
         <button
           className=" flex text-center justify-center items-center iphone5:w-64 md:w-full bg-indigo-buttonblue font-montserrat text-indigo-white p-3 mb-4 md:mr-4 iphone5:mt-2 md:mt-5 text-xs"
           onClick={(e) => handleButtonClick(e)}
