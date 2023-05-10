@@ -192,18 +192,17 @@ export default function PackDetails(props) {
             >
               OPEN PACK
             </button>
+
+            <Link href={`/TransferPack/${myPack.sport.toLowerCase()}/${encodeURIComponent(id)}/`} passHref>
             <button
               className={`${
                 myPack.id.startsWith('SB') ? 'hidden' : ' '
               }bg-indigo-buttonblue text-indigo-white w-5/6 md:w-80 h-10 text-center font-bold text-sm mt-4 `}
             >
-              <Link
-                href={`/TransferPack/${myPack.sport.toLowerCase()}/${encodeURIComponent(id)}/`}
-                passHref
-              >
-                TRANSFER PACK
-              </Link>
+                TRANSFER PACK 
             </button>
+            </Link>
+            
           </div>
         </div>
         <div className="ml-8 md:ml-28 mt-10">
