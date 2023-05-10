@@ -19,7 +19,7 @@ export default function PackDetails(props) {
     url: getRPCProvider(),
   });
   const { query } = props;
-  const [whitelistInfo, setWhitelistInfo] = useState(null);
+  const [accountNameInfo, setAccountNameInfo] = useState(null);
   const [confirmModal, setConfirmModal] = useState(false);
   const [details, setDetails] = useState({
     receiverAccount: '',
@@ -65,7 +65,7 @@ export default function PackDetails(props) {
     const transferArgs = Buffer.from(
       JSON.stringify({
         msg: 'Transfer' + ' ' + myPack.sport.toLowerCase() + ' ' + myPack.packName.toLowerCase(),
-        receiver_id: whitelistInfo?.toString(),
+        receiver_id: accountNameInfo?.toString(),
         token_id: myPack.id,
       })
     );
@@ -101,17 +101,17 @@ export default function PackDetails(props) {
     execute_transfer_pack(selector);
   };
 
-  const onChangeWhitelist = (e) => {
+  const onChangeReceiverAccount = (e) => {
     if (e.target.name === 'receiverAccount') {
       if (e.target.value !== '') {
-        const whitelistArray = e.target.value.split('\n').filter((n) => n);
-        setWhitelistInfo(whitelistArray);
+        const receiverAccountArray = e.target.value.split('\n').filter((n) => n);
+        setAccountNameInfo(receiverAccountArray);
         setDetails({
           ...details,
           [e.target.name]: e.target.value,
         });
       } else if (e.target.value.length === 0) {
-        setWhitelistInfo(null);
+        setAccountNameInfo(null);
         setDetails({
           ...details,
           [e.target.name]: e.target.value,
@@ -119,6 +119,28 @@ export default function PackDetails(props) {
       }
     }
   };
+
+  const checkNameValidity = () => {
+    let errors = [];
+
+    if (accountNameInfo == null) {
+      errors.push('Account name cannot be empty.');
+    }
+    return errors;
+  }
+
+  const validateName = () => {
+    if (checkNameValidity().length > 0) {
+      alert(
+        `ERRORS: \n${checkNameValidity()
+          .map((item) => '❌ ' + item)
+          .join(` \n`)}`.replace(',', '')
+      );
+    } else {
+      setConfirmModal(true);
+    }
+  };
+
   useEffect(() => {
     get_pack_token_by_id();
   }, []);
@@ -153,14 +175,14 @@ export default function PackDetails(props) {
             type="text"
             placeholder="Enter account name to transfer pack to."
             onChange={(e) => {
-              onChangeWhitelist(e);
+              onChangeReceiverAccount(e);
             }}
             value={details.receiverAccount}
           />
           <div className="mt-6">
             <button
               className=" flex text-center justify-center items-center iphone5:w-64 md:w-96 bg-indigo-buttonblue font-montserrat text-indigo-white p-3 mb-4 md:mr-4 text-xs"
-              onClick={(e) => setConfirmModal(true)}
+              onClick={(e) => validateName()}
             >
               TRANSFER
             </button>
@@ -182,7 +204,7 @@ export default function PackDetails(props) {
         </button>
         <p className="font-bold">PACK SPORT:</p> {myPack.sport}
         <p className="font-bold">PACK ID:</p> {myPack.id}
-        <p className="font-bold">TRANSFER TO ACCOUNT NAME:</p> {whitelistInfo}
+        <p className="font-bold">TRANSFER TO ACCOUNT NAME:</p> {accountNameInfo}
         <button
           className=" flex text-center justify-center items-center iphone5:w-64 md:w-full bg-indigo-buttonblue font-montserrat text-indigo-white p-3 mb-4 md:mr-4 iphone5:mt-2 md:mt-5 text-xs"
           onClick={(e) => handleButtonClick(e)}
