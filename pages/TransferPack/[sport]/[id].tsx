@@ -126,13 +126,10 @@ export default function PackDetails(props) {
   return (
     <Container activeName="TRANSFER PACK">
       <div className="md:ml-6 mt-12">
-        <BackFunction
-          prev={
-            query.origin
-              ? `/${query.origin}`
-              : `PackDetails/${myPack.sport.toLowerCase()}/${encodeURIComponent(id)}/`
-          }
-        ></BackFunction>
+      <BackFunction prev={query.origin ? 
+        `/${query.origin}` : 
+        `/PackDetails/${myPack.sport.toLowerCase()}/${encodeURIComponent(id)}/`}>
+      </BackFunction>
       </div>
       <div className="iphone5:mt-20 md:ml-6 md:mt-0">
         <PortfolioContainer textcolor="indigo-black" title="TRANSFER PACK" />
