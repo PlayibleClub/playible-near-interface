@@ -532,7 +532,7 @@ function query_nft_supply_for_owner(accountId, contract) {
 function query_nft_tokens_for_owner(accountId, packOffset, packLimit, contract) {
   const query = JSON.stringify({
     account_id: accountId,
-    from_index: packOffset.toString(),
+    // from_index: packOffset.toString(),
     limit: packLimit,
   });
 
