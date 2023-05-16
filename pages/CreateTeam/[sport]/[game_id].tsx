@@ -223,9 +223,9 @@ export default function CreateLineup(props) {
                     })}
                   </div>
                 </div>
-                <div className="flex bg-indigo-black bg-opacity-5 w-full justify-end  bottom-0 md:right-0 md:relative">
+                <div className="flex w-full bottom-3 md:sticky z-50">
                   <button
-                    className="bg-indigo-buttonblue text-indigo-white w-full md:w-80 h-12 md:h-14 text-center font-bold text-md"
+                    className="bg-indigo-buttonblue text-indigo-white w-full md:w-80 h-12 md:h-14 text-center font-bold text-md md:ml-auto md:mr-5"
                     onClick={() => setSubmitModal(true)}
                   >
                     CONFIRM TEAM
