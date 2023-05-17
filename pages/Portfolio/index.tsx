@@ -197,25 +197,49 @@ const Portfolio = () => {
     );
   }
 
+  /**
+   * Handles pagination for a mixed data set.
+   *
+   * @param {Object} e - The event object containing information about the pagination event.
+   */
   const mixedPaginationHandling = (e) => {
     let newOffset;
+
+    // Check if the selected page exceeds the total number of regular data items
     if (e.selected * athleteLimit >= totalRegularSupply) {
       let offset;
+
+      // Check if the difference between athleteLimit and totalRegularSupply is negative
+      // and not divisible evenly by athleteLimit
       if (
         athleteLimit - totalRegularSupply < 0 &&
         (athleteLimit - totalRegularSupply) % athleteLimit !== 0
       ) {
         offset = ((athleteLimit - totalRegularSupply) % athleteLimit) + athleteLimit;
-      } else offset = (athleteLimit - totalRegularSupply) % athleteLimit;
+      } else {
+        offset = (athleteLimit - totalRegularSupply) % athleteLimit;
+      }
+
       let extra = 1;
       newOffset = Math.abs(Math.abs(e.selected - regPageCount + 1) - extra) * athleteLimit;
+
+      // Set the promo offset to control the display of promo data
       setPromoOffset(offset);
+
+      // Indicate that the current page is a promo page
       setIsPromoPage(true);
     } else {
+      // Reset the promo page indicator
       setIsPromoPage(false);
+
+      // Calculate the new offset based on the selected page and athlete limit
       newOffset = (e.selected * athleteLimit) % totalRegularSupply;
     }
+
+    // Update the athlete offset with the new calculated value
     setAthleteOffset(newOffset);
+
+    // Update the current page value
     setCurrentPage(e.selected);
   };
 
