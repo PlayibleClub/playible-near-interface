@@ -118,31 +118,47 @@ export default function CreateLineup(props) {
     execute_submit_lineup(game_id, team_name, token_ids, promo_ids);
   }
 
-  const checkLineups = () => {
-    let errors = [];
-  
-      const trueNumber = lineup.filter((player) => player.isAthlete === true).length;
-      const diff = lineup.length - trueNumber;
+  /**
+ * Checks the lineup for errors and returns an array of error messages.
+ * @returns {string[]} An array of error messages indicating missing athletes in the lineup.
+ */
+const checkLineups = () => {
+  let errors = [];
 
-      if (lineup.length !== trueNumber) {
-        errors.push(`Add more Athletes. (Need ${diff} more)`);
-      }
-    
-    return errors;
-  };
-  
-  const validateLineup = () => {
-    const errors = checkLineups();
-    if (errors.length > 0) {
-      alert(
-        `ERROR: \n${errors
-          .map((item) => '❌ ' + item)
-          .join(` \n`)}`.replace(',', '')
-      );
-    } else {
-      setSubmitModal(true);
-    }
-  };
+  // Count the number of true values in the "isAthlete" property of each player in the lineup
+  const trueNumber = lineup.filter((player) => player.isAthlete === true).length;
+
+  // Calculate the difference between the lineup length and the number of true values
+  const diff = lineup.length - trueNumber;
+
+  // If the lineup length is not equal to the number of true values, add an error message
+  if (lineup.length !== trueNumber) {
+    errors.push(`Add more Athletes. (Need ${diff} more)`);
+  }
+
+  return errors;
+};
+
+/**
+ * Validates the lineup and displays an alert with error messages if there are any,
+ * otherwise, sets the submit modal to true.
+ */
+const validateLineup = () => {
+  const errors = checkLineups();
+
+  if (errors.length > 0) {
+    // Display an alert with the error messages
+    alert(
+      `ERROR: \n${errors
+        .map((item) => '❌ ' + item)
+        .join(` \n`)}`.replace(',', '')
+    );
+  } else {
+    // Set the submit modal to true if no errors are found
+    setSubmitModal(true);
+  }
+};
+
   
   const handleLineupClick = (game_id, position, athleteLineup, index, teamName) => {
     dispatch(setGameId(game_id));
