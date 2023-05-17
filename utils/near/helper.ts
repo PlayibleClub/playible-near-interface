@@ -336,8 +336,7 @@ async function query_filter_supply_for_owner(accountId, position, team, name, co
     team: team,
     name: name,
   });
-  
-  console.table(position);
+
   return provider
     .query({
       request_type: 'call_function',
@@ -349,7 +348,6 @@ async function query_filter_supply_for_owner(accountId, position, team, name, co
     .then((data) => {
       // @ts-ignore:next-line
       const totalAthletes = JSON.parse(Buffer.from(data.result));
-      console.log("total ath: " + totalAthletes);
       return totalAthletes;
     });
 }

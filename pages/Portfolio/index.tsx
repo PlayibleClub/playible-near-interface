@@ -199,9 +199,6 @@ const Portfolio = () => {
 
   const mixedPaginationHandling = (e) => {
     let newOffset;
-    console.log('selected: ' + e.selected);
-    console.log('athleteLimit: ' + athleteLimit);
-    console.log('totalRegularSupply: +' + totalRegularSupply);
     if (e.selected * athleteLimit >= totalRegularSupply) {
       let offset;
       if (
@@ -211,15 +208,8 @@ const Portfolio = () => {
         offset = ((athleteLimit - totalRegularSupply) % athleteLimit) + athleteLimit;
       } else offset = (athleteLimit - totalRegularSupply) % athleteLimit;
       let extra = 1;
-      console.log('total promo: ' + totalPromoSupply);
-      //if (totalPromoSupply >= offset + athleteLimit + 1) extra = 1;
-      console.log('reg page count: ' + regPageCount);
-      console.log('extra: ' + extra);
-      console.log('offset: ' + offset);
       newOffset = Math.abs(Math.abs(e.selected - regPageCount + 1) - extra) * athleteLimit;
       setPromoOffset(offset);
-      console.log('newoffset: ' + newOffset);
-      console.log('athlete offset: ' + athleteOffset);
       setIsPromoPage(true);
     } else {
       setIsPromoPage(false);
