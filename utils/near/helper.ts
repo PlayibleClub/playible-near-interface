@@ -327,13 +327,17 @@ async function query_nft_tokens_by_id(token_id, contract) {
 }
 
 async function query_filter_supply_for_owner(accountId, position, team, name, contract) {
+  if (position[0].includes(',')) {
+    position = position[0].split(',');
+  }
   const query = JSON.stringify({
     account_id: accountId,
     position: position,
     team: team,
     name: name,
   });
-
+  
+  console.table(position);
   return provider
     .query({
       request_type: 'call_function',
@@ -345,7 +349,7 @@ async function query_filter_supply_for_owner(accountId, position, team, name, co
     .then((data) => {
       // @ts-ignore:next-line
       const totalAthletes = JSON.parse(Buffer.from(data.result));
-
+      console.log("total ath: " + totalAthletes);
       return totalAthletes;
     });
 }
