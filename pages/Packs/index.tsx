@@ -70,8 +70,16 @@ export default function Packs() {
   const [baseballSbPacks, setBaseballSbPacks] = useState([]);
   const [cricketSbPacks, setCricketSbPacks] = useState([]);
   const [totalSupply, setTotalSupply] = useState(0);
-  const allStandard = [...cricketPacks, ...baseballPacks, ...basketballPacks, ...footballPacks];
-  const allSb = [...cricketSbPacks, ...baseballSbPacks, ...basketballSbPacks, ...footballSbPacks];
+  const allPacks = [
+    ...cricketSbPacks,
+    ...cricketPacks,
+    ...baseballSbPacks,
+    ...baseballPacks,
+    ...basketballSbPacks,
+    ...basketballPacks,
+    ...footballSbPacks,
+    ...footballPacks,
+  ];
   //for soulbound claiming, redirecting, and displaying the corresponding pack image
   const [sportFromRedux, setSportFromRedux] = useState(useSelector(getSportTypeRedux));
   const [isPromoFromRedux, setIsPromoFromRedux] = useState(useSelector(getIsPromoRedux));
@@ -329,7 +337,7 @@ export default function Packs() {
     );
     const endOffset = packOffset + packLimit;
     console.log(`Loading packs from ${packOffset} to ${endOffset}`);
-    get_nft_pack_tokens_for_owner(accountId, packOffset, packLimit);
+    get_nft_pack_tokens_for_owner(accountId, 0, packLimit);
   }, [totalPacks, packLimit, packOffset, currentSport, totalSupply, categoryList, sportList]);
 
   useEffect(() => {
@@ -465,8 +473,8 @@ export default function Packs() {
                 </div>
                 <div className="grid iphone5:grid-cols-2 gap-y-8 mt-4 md:grid-cols-4 iphone5:mt-8 iphone5:ml-2 md:ml-7 md:mt-9 ">
                   {categoryList[0].isActive
-                    ? (categoryList[0].isActive ? allSb.concat(allStandard) : packs).length > 0 &&
-                      (categoryList[0].isActive ? allSb.concat(allStandard) : packs)
+                    ? (categoryList[0].isActive ? allPacks : packs).length > 0 &&
+                      (categoryList[0].isActive ? allPacks : packs)
                         .filter((data, i) => i >= packOffset && i < packOffset + packLimit)
                         .map(({ metadata, token_id }) => (
                           <PackComponent
