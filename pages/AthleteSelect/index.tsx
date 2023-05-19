@@ -200,8 +200,7 @@ const AthleteSelect = (props) => {
       ) {
         offset = ((athleteLimit - totalRegularSupply) % athleteLimit) + athleteLimit;
       } else offset = (athleteLimit - totalRegularSupply) % athleteLimit;
-      let extra = 0;
-      if (totalPromoSupply >= offset + athleteLimit + 1) extra = 1;
+      let extra = 1;
       newOffset = Math.abs(Math.abs(e.selected - regPageCount + 1) - extra) * athleteLimit;
       setPromoOffset(offset);
       setIsPromoPage(true);
