@@ -62,7 +62,7 @@ export default function Packs() {
   const changecategoryList = (name) => {
     const tabList = [...categoryList];
     setPackOffset(0);
-    setPackLimit(10);
+    // setPackLimit(10);
     setRemountComponent(Math.random() + 1);
     switch (name) {
       case 'STARTER':
