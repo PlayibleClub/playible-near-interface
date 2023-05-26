@@ -35,17 +35,10 @@ jobs:
         ssh -i ~/.ssh/id_rsa ubuntu@18.141.212.141
       env:
         SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-    - name: CD into project folder
     - run: cd playible-interface
-    - name: Run git pull
     - run: git pull
-    - name: Run git checkout
     - run: git checkout origin/dev 
-    - name: Run npm ci
     - run: npm ci
-    - name: Run npm run build
     - run: npm run build
-    - name: Switch to running screen and close service
     - run: screen -r -X quit || true
-    - name: Start npm server (npm run start) 
     - run: npm run start
