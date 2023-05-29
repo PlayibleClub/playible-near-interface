@@ -50,10 +50,10 @@ const Play = (props) => {
 
     switch (active.name) {
       case 'NEW':
-        setCurrentTotal(newGames.length);
+        setCurrentTotal(sportList[0].isActive ? allNew.length : newGames.length);
         break;
       case 'ON-GOING':
-        setCurrentTotal(ongoingGames.length);
+        setCurrentTotal(sportList[0].isActive ? allGoing.length : ongoingGames.length);
         break;
       case 'COMPLETED':
         setCurrentTotal(completedGames.length);
@@ -354,149 +354,164 @@ const Play = (props) => {
                     );
                   })}
                 </div>
-
-                <div className="mt-4 md:ml-10 grid grid-cols-0 md:grid-cols-3 iphone5:self-center md:self-start">
-                  {(sportList[0].isActive
-                    ? categoryList[0].isActive
-                      ? allNew
-                      : newGames
-                    : categoryList[0].isActive
-                    ? newGames
-                    : emptyGames
-                  ).length > 0 &&
-                    (sportList[0].isActive
-                      ? categoryList[0].isActive
-                        ? allNew
+                {currentTotal > 0 ? (
+                  <>
+                    <div className="mt-4 md:ml-10 grid grid-cols-0 md:grid-cols-3 iphone5:self-center md:self-start">
+                      {(sportList[0].isActive
+                        ? categoryList[0].isActive
+                          ? allNew
+                          : newGames
+                        : categoryList[0].isActive
+                        ? newGames
                         : emptyGames
-                      : categoryList[0].isActive
-                      ? newGames
-                      : emptyGames
-                    )
-                      .filter((data, i) => i >= gamesOffset && i < gamesOffset + gamesLimit)
-                      .map((data, i) => {
-                        const currentSportIndex = sportList[0].isActive
-                          ? allNew.findIndex((game) => game.sport === data.sport)
-                          : allGoing.findIndex((game) => game.sport === allGoing[0].sport);
-                        return (
-                          <div key={i} className="flex">
-                            <div className="iphone5:mr-0 md:mr-6 cursor-pointer">
-                              <Link
-                                href={`/PlayDetails/${
-                                  sportList[0].isActive
-                                    ? allNew[currentSportIndex].sport.toLowerCase()
-                                    : currentSport
-                                }/${data.game_id}`}
-                                passHref
-                              >
-                                <div className="iphone5:mr-0 md:mr-6">
-                                  <PlayComponent
-                                    type={activeCategory}
-                                    game_id={data.game_id}
-                                    icon="test"
-                                    startDate={data.start_time}
-                                    endDate={data.end_time}
-                                    img={data.game_image}
-                                    lineupLength={data.lineup_len}
-                                    sport={data.sport}
-                                    prizePool={data.prize_description}
-                                    index={() => changeIndex(1)}
-                                  />
+                      ).length > 0 &&
+                        (sportList[0].isActive
+                          ? categoryList[0].isActive
+                            ? allNew
+                            : emptyGames
+                          : categoryList[0].isActive
+                          ? newGames
+                          : emptyGames
+                        )
+                          .filter((data, i) => i >= gamesOffset && i < gamesOffset + gamesLimit)
+                          .map((data, i) => {
+                            const currentSportIndex = sportList[0].isActive
+                              ? allNew.findIndex((game) => game.sport === data.sport)
+                              : allGoing.findIndex((game) => game.sport === allGoing[0].sport);
+                            return (
+                              <div key={i} className="flex">
+                                <div className="iphone5:mr-0 md:mr-6 cursor-pointer">
+                                  <Link
+                                    href={`/PlayDetails/${
+                                      sportList[0].isActive
+                                        ? allNew[currentSportIndex].sport.toLowerCase()
+                                        : currentSport
+                                    }/${data.game_id}`}
+                                    passHref
+                                  >
+                                    <div className="iphone5:mr-0 md:mr-6">
+                                      <PlayComponent
+                                        type={activeCategory}
+                                        game_id={data.game_id}
+                                        icon="test"
+                                        startDate={data.start_time}
+                                        endDate={data.end_time}
+                                        img={data.game_image}
+                                        lineupLength={data.lineup_len}
+                                        sport={data.sport}
+                                        prizePool={data.prize_description}
+                                        index={() => changeIndex(1)}
+                                      />
+                                    </div>
+                                  </Link>
                                 </div>
-                              </Link>
-                            </div>
-                          </div>
-                        );
-                      })}
-                </div>
-
-                <div className="mt-4 md:ml-10 grid grid-cols-0 md:grid-cols-3 iphone5:self-center md:self-start">
-                  {sportList[0].isActive
-                    ? (categoryList[1].isActive
-                        ? allGoing
-                        : categoryList[2].isActive
-                        ? completedGames
-                        : emptyGames
-                      ).length > 0 &&
-                      (categoryList[1].isActive
-                        ? allGoing
-                        : categoryList[2].isActive
-                        ? completedGames
-                        : emptyGames
-                      )
-                        .filter((data, i) => i >= gamesOffset && i < gamesOffset + gamesLimit)
-                        .map((data, i) => {
-                          const currentSportIndex = allGoing.findIndex(
-                            (game) => game.sport === data.sport
-                          );
-                          console.log(currentTotal);
-                          return (
-                            <div key={i} className="flex">
-                              <div className="iphone5:mr-0 md:mr-6 cursor-pointer">
-                                <Link
-                                  href={`/Games/${allGoing[
-                                    currentSportIndex
-                                  ]?.sport.toLowerCase()}/${data.game_id}`}
-                                  passHref
-                                >
-                                  <div className="iphone5:mr-0 md:mr-6">
-                                    <PlayComponent
-                                      type={activeCategory}
-                                      game_id={data.game_id}
-                                      icon="test"
-                                      prizePool={data.prize_description}
-                                      startDate={data.start_time}
-                                      endDate={data.end_time}
-                                      img={data.game_image}
-                                      sport={data.sport}
-                                      hasEntered={data.user_team_count.team_names?.length}
-                                      index={() => changeIndex(1)}
-                                    />
-                                  </div>
-                                </Link>
                               </div>
-                            </div>
-                          );
-                        })
-                    : (categoryList[1].isActive
-                        ? ongoingGames
-                        : categoryList[2].isActive
-                        ? completedGames
-                        : emptyGames
-                      ).length > 0 &&
-                      (categoryList[1].isActive
-                        ? ongoingGames
-                        : categoryList[2].isActive
-                        ? completedGames
-                        : emptyGames
-                      )
-                        .filter((data, i) => i >= gamesOffset && i < gamesOffset + gamesLimit)
-                        .map((data, i) => {
-                          console.log(currentTotal);
-                          return (
-                            <div key={i} className="flex">
-                              <div className="iphone5:mr-0 md:mr-6 cursor-pointer">
-                                <Link href={`/Games/${currentSport}/${data.game_id}`} passHref>
-                                  <div className="iphone5:mr-0 md:mr-6">
-                                    <PlayComponent
-                                      type={activeCategory}
-                                      game_id={data.game_id}
-                                      icon="test"
-                                      prizePool={data.prize_description}
-                                      startDate={data.start_time}
-                                      endDate={data.end_time}
-                                      img={data.game_image}
-                                      sport={data.sport}
-                                      hasEntered={data.user_team_count.team_names?.length}
-                                      index={() => changeIndex(1)}
-                                    />
+                            );
+                          })}
+                    </div>
+                    <div className="mt-4 md:ml-10 grid grid-cols-0 md:grid-cols-3 iphone5:self-center md:self-start">
+                      {sportList[0].isActive
+                        ? (categoryList[1].isActive
+                            ? allGoing
+                            : categoryList[2].isActive
+                            ? completedGames
+                            : emptyGames
+                          ).length > 0 &&
+                          (categoryList[1].isActive
+                            ? allGoing
+                            : categoryList[2].isActive
+                            ? completedGames
+                            : emptyGames
+                          )
+                            .filter((data, i) => i >= gamesOffset && i < gamesOffset + gamesLimit)
+                            .map((data, i) => {
+                              const currentSportIndex = allGoing.findIndex(
+                                (game) => game.sport === data.sport
+                              );
+                              console.log(currentTotal);
+                              return (
+                                <div key={i} className="flex">
+                                  <div className="iphone5:mr-0 md:mr-6 cursor-pointer">
+                                    <Link
+                                      href={`/Games/${allGoing[
+                                        currentSportIndex
+                                      ]?.sport.toLowerCase()}/${data.game_id}`}
+                                      passHref
+                                    >
+                                      <div className="iphone5:mr-0 md:mr-6">
+                                        <PlayComponent
+                                          type={activeCategory}
+                                          game_id={data.game_id}
+                                          icon="test"
+                                          prizePool={data.prize_description}
+                                          startDate={data.start_time}
+                                          endDate={data.end_time}
+                                          img={data.game_image}
+                                          sport={data.sport}
+                                          hasEntered={data.user_team_count.team_names?.length}
+                                          index={() => changeIndex(1)}
+                                        />
+                                      </div>
+                                    </Link>
                                   </div>
-                                </Link>
-                              </div>
-                            </div>
-                          );
-                        })}
-                </div>
-
+                                </div>
+                              );
+                            })
+                        : (categoryList[1].isActive
+                            ? ongoingGames
+                            : categoryList[2].isActive
+                            ? completedGames
+                            : emptyGames
+                          ).length > 0 &&
+                          (categoryList[1].isActive
+                            ? ongoingGames
+                            : categoryList[2].isActive
+                            ? completedGames
+                            : emptyGames
+                          )
+                            .filter((data, i) => i >= gamesOffset && i < gamesOffset + gamesLimit)
+                            .map((data, i) => {
+                              console.log(currentTotal);
+                              return (
+                                <div key={i} className="flex">
+                                  <div className="iphone5:mr-0 md:mr-6 cursor-pointer">
+                                    <Link href={`/Games/${currentSport}/${data.game_id}`} passHref>
+                                      <div className="iphone5:mr-0 md:mr-6">
+                                        <PlayComponent
+                                          type={activeCategory}
+                                          game_id={data.game_id}
+                                          icon="test"
+                                          prizePool={data.prize_description}
+                                          startDate={data.start_time}
+                                          endDate={data.end_time}
+                                          img={data.game_image}
+                                          sport={data.sport}
+                                          hasEntered={data.user_team_count.team_names?.length}
+                                          index={() => changeIndex(1)}
+                                        />
+                                      </div>
+                                    </Link>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    {sportList[0].isActive ? (
+                      <div className="iphone5:ml-7 md:ml-14 mt-7 text-xl font-bold">
+                        There are no games to be displayed
+                      </div>
+                    ) : (
+                      <div className="iphone5:ml-7 md:ml-14 mt-7 text-xl font-bold">
+                        There are no{' '}
+                        {activeCategory.toLowerCase() + ' ' + currentSport.toLowerCase()} games to
+                        be displayed
+                      </div>
+                    )}
+                  </>
+                )}
                 <div className="absolute md:bottom-4 right-10 iphone5:bottom-16 iphone5:right-2 iphoneX:bottom-16 iphoneX:right-4 iphoneX-fixed">
                   <div key={remountComponent}>
                     <ReactPaginate
