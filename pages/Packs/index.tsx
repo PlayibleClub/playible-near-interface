@@ -197,9 +197,13 @@ export default function Packs() {
         const _packLimit = 15;
         console.log('Reloading packs');
         setPackLimit(_packLimit);
+      } else {
+        const defaultPackLimit = 30;
+        setPackLimit(defaultPackLimit);
       }
     } catch (e) {
-      setPackLimit(30);
+      const defaultPackLimit = 30;
+      setPackLimit(defaultPackLimit);
     }
   }
 
