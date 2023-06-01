@@ -70,14 +70,14 @@ export default function Packs() {
   const [cricketSbPacks, setCricketSbPacks] = useState([]);
   const [totalSupply, setTotalSupply] = useState(0);
   const allPacks = [
-    ...cricketSbPacks,
-    ...cricketPacks,
     ...baseballSbPacks,
     ...baseballPacks,
     ...basketballSbPacks,
     ...basketballPacks,
     ...footballSbPacks,
     ...footballPacks,
+    ...cricketSbPacks,
+    ...cricketPacks,
   ];
   //for soulbound claiming, redirecting, and displaying the corresponding pack image
   const [sportFromRedux, setSportFromRedux] = useState(useSelector(getSportTypeRedux));
