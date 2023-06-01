@@ -336,7 +336,7 @@ export default function Packs() {
     getPackLimit();
     setPageCount(
       categoryList[0].isActive
-        ? Math.ceil(totalSupply / packLimit)
+        ? Math.floor(totalSupply / packLimit)
         : Math.ceil(totalPacks / packLimit)
     );
     const endOffset = packOffset + packLimit;
