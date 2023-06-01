@@ -21,7 +21,7 @@ export default function Home(props) {
   const [sportList, setSportList] = useState(
     SPORT_TYPES.map((x) => ({ name: x.sport, key: x.key }))
   );
-  const [currentSport, setCurrentSport] = useState('cricket'.toLocaleLowerCase());
+  const [currentSport, setCurrentSport] = useState('mlb'.toLocaleLowerCase());
   const [getAthletes, { loading, error, data }] = useLazyQuery(GET_ATHLETES_TOP);
   const [getCricketAthletes] = useLazyQuery(GET_CRICKET_ATHLETES_TOP);
   const [athletes, setAthletes] = useState([]);
@@ -65,7 +65,7 @@ export default function Home(props) {
             })
           )
         );
-      } else if (currentSport === SPORT_NAME_LOOKUP.baseballKey){
+      } else if (currentSport === SPORT_NAME_LOOKUP.baseballKey) {
         console.log('MLB Season:', mlbSeason);
         setAthletes(
           await Promise.all(
@@ -173,7 +173,6 @@ export default function Home(props) {
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const featuredImagesDesktop = [
-    '/images/cricket_homepage_banner.png',
     '/images/BSBALL_CHAMPIONSHIP.png',
     '/images/baseball_starterpack_publicmint_desktop_updated.jpg',
     '/images/baseball_banner_live.jpg',
@@ -182,7 +181,6 @@ export default function Home(props) {
   ];
 
   const featuredImagesMobile = [
-    '/images/cricket_homepage_banner.png',
     '/images/BSBALL_CHAMPIONSHIP.png',
     '/images/baseball_starterpack_publicmint_desktop_updated.jpg',
     '/images/baseball_banner_live.jpg',

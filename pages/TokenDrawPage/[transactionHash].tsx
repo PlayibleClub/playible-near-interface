@@ -16,7 +16,11 @@ import { useWalletSelector } from 'contexts/WalletSelectorContext';
 import { decode } from 'js-base64';
 import { useLazyQuery, useQuery } from '@apollo/client';
 import client from 'apollo-client';
-import { getAthleteInfoById, convertNftToAthlete } from 'utils/athlete/helper';
+import {
+  getAthleteInfoById,
+  convertNftToAthlete,
+  getCricketAthleteInfoById,
+} from 'utils/athlete/helper';
 import {
   SPORT_NAME_LOOKUP,
   SPORT_CONTRACT_LOOKUP,
@@ -113,12 +117,11 @@ const TokenDrawPage = (props) => {
     //@ts-ignore:next-line
     const success = JSON.parse(decode(queryFromNear.status.SuccessValue));
     console.log(success);
-
+    //get the last transaction that holds the token_id needed
+    const txObject = queryFromNear.receipts[queryFromNear.receipts.length - 3];
+    //@ts-ignore:next-line
+    const contract = txObject.receiver_id;
     if (success) {
-      //get the last transaction that holds the token_id needed
-      const txObject = queryFromNear.receipts[queryFromNear.receipts.length - 3];
-      //@ts-ignore:next-line
-      const contract = txObject.receiver_id;
       const args = JSON.parse(decode(txObject.receipt.Action.actions[0].FunctionCall.args));
       //for additional checking later for what file to use
       const isPromoContract = contract.toString().includes('promotional');
@@ -150,22 +153,41 @@ const TokenDrawPage = (props) => {
     }
 
     // See https://docs.near.org/api/rpc/transactions
-    setAthletes(
-      await Promise.all(
-        // filter out all receipts, and find those that array of 8 actions (since 8 nft_mints)
-        queryFromNear.receipts
-          .filter((item) => {
-            return item.receipt.Action.actions.length == length;
-          })[0]
-          // decode the arguments of nft_mint, and determine the json
-          .receipt.Action.actions.map((item) => {
-            return JSON.parse(decode(item.FunctionCall.args));
-          })
-          // get metadata
-          .map(convertNftToAthlete)
-          .map((item) => getAthleteInfoById(item, null, null))
-      )
-    );
+    if (contract.includes(SPORT_CONTRACT_LOOKUP.cricket)) {
+      setAthletes(
+        await Promise.all(
+          // filter out all receipts, and find those that array of 8 actions (since 8 nft_mints)
+          queryFromNear.receipts
+            .filter((item) => {
+              return item.receipt.Action.actions.length == length;
+            })[0]
+            // decode the arguments of nft_mint, and determine the json
+            .receipt.Action.actions.map((item) => {
+              return JSON.parse(decode(item.FunctionCall.args));
+            })
+            // get metadata
+            .map(convertNftToAthlete)
+            .map((item) => getCricketAthleteInfoById(item, null, null))
+        )
+      );
+    } else {
+      setAthletes(
+        await Promise.all(
+          // filter out all receipts, and find those that array of 8 actions (since 8 nft_mints)
+          queryFromNear.receipts
+            .filter((item) => {
+              return item.receipt.Action.actions.length == length;
+            })[0]
+            // decode the arguments of nft_mint, and determine the json
+            .receipt.Action.actions.map((item) => {
+              return JSON.parse(decode(item.FunctionCall.args));
+            })
+            // get metadata
+            .map(convertNftToAthlete)
+            .map((item) => getAthleteInfoById(item, null, null))
+        )
+      );
+    }
     setLoading(false);
   }, [length]);
 
@@ -180,11 +202,11 @@ const TokenDrawPage = (props) => {
     //@ts-ignore:next-line
     const success = JSON.parse(decode(queryFromNear.status.SuccessValue));
     console.log(success);
+    //get the last transaction that holds the token_id needed
+    const txObject = queryFromNear.receipts[queryFromNear.receipts.length - 3];
+    //@ts-ignore:next-line
+    const contract = txObject.receiver_id;
     if (success) {
-      //get the last transaction that holds the token_id needed
-      const txObject = queryFromNear.receipts[queryFromNear.receipts.length - 3];
-      //@ts-ignore:next-line
-      const contract = txObject.receiver_id;
       const args = JSON.parse(decode(txObject.receipt.Action.actions[0].FunctionCall.args));
       //for additional checking later for what file to use
       const isPromoContract = contract.toString().includes('promotional');
@@ -215,22 +237,41 @@ const TokenDrawPage = (props) => {
     }
 
     // See https://docs.near.org/api/rpc/transactions
-    setAthletes(
-      await Promise.all(
-        // filter out all receipts, and find those that array of 8 actions (since 8 nft_mints)
-        queryFromNear.receipts
-          .filter((item) => {
-            return item.receipt.Action.actions.length == length;
-          })[0]
-          // decode the arguments of nft_mint, and determine the json
-          .receipt.Action.actions.map((item) => {
-            return JSON.parse(decode(item.FunctionCall.args));
-          })
-          // get metadata
-          .map(convertNftToAthlete)
-          .map((item) => getAthleteInfoById(item, null, null))
-      )
-    );
+    if (contract.includes(SPORT_CONTRACT_LOOKUP.cricket)) {
+      setAthletes(
+        await Promise.all(
+          // filter out all receipts, and find those that array of 8 actions (since 8 nft_mints)
+          queryFromNear.receipts
+            .filter((item) => {
+              return item.receipt.Action.actions.length == length;
+            })[0]
+            // decode the arguments of nft_mint, and determine the json
+            .receipt.Action.actions.map((item) => {
+              return JSON.parse(decode(item.FunctionCall.args));
+            })
+            // get metadata
+            .map(convertNftToAthlete)
+            .map((item) => getCricketAthleteInfoById(item, null, null))
+        )
+      );
+    } else {
+      setAthletes(
+        await Promise.all(
+          // filter out all receipts, and find those that array of 8 actions (since 8 nft_mints)
+          queryFromNear.receipts
+            .filter((item) => {
+              return item.receipt.Action.actions.length == length;
+            })[0]
+            // decode the arguments of nft_mint, and determine the json
+            .receipt.Action.actions.map((item) => {
+              return JSON.parse(decode(item.FunctionCall.args));
+            })
+            // get metadata
+            .map(convertNftToAthlete)
+            .map((item) => getAthleteInfoById(item, null, null))
+        )
+      );
+    }
     setLoading(false);
   }, [length]);
 

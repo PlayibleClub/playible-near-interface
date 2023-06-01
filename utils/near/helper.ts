@@ -327,6 +327,9 @@ async function query_nft_tokens_by_id(token_id, contract) {
 }
 
 async function query_filter_supply_for_owner(accountId, position, team, name, contract) {
+  if (position[0].includes(',')) {
+    position = position[0].split(',');
+  }
   const query = JSON.stringify({
     account_id: accountId,
     position: position,
@@ -345,7 +348,6 @@ async function query_filter_supply_for_owner(accountId, position, team, name, co
     .then((data) => {
       // @ts-ignore:next-line
       const totalAthletes = JSON.parse(Buffer.from(data.result));
-
       return totalAthletes;
     });
 }
@@ -545,21 +547,6 @@ function query_nft_tokens_for_owner(accountId, packOffset, packLimit, contract) 
   });
 }
 
-function query_all_tokens_for_owner(accountId, packLimit, contract) {
-  const query = JSON.stringify({
-    account_id: accountId,
-    limit: packLimit,
-  });
-
-  return provider.query({
-    request_type: 'call_function',
-    finality: 'optimistic',
-    account_id: contract,
-    method_name: 'nft_tokens_for_owner',
-    args_base64: Buffer.from(query).toString('base64'),
-  });
-}
-
 function query_claim_status(accountId, contract) {
   const query = JSON.stringify({
     account_id: accountId,
@@ -629,6 +616,5 @@ export {
   query_claim_status,
   query_nft_token_by_id,
   execute_claim_soulbound_pack,
-  query_all_tokens_for_owner,
   compute_scores,
 };

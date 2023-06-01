@@ -118,6 +118,32 @@ export default function CreateLineup(props) {
     execute_submit_lineup(game_id, team_name, token_ids, promo_ids);
   }
 
+  const checkLineups = () => {
+    let errors = [];
+  
+      const trueNumber = lineup.filter((player) => player.isAthlete === true).length;
+      const diff = lineup.length - trueNumber;
+
+      if (lineup.length !== trueNumber) {
+        errors.push(`Add more Athletes. (Need ${diff} more)`);
+      }
+    
+    return errors;
+  };
+  
+  const validateLineup = () => {
+    const errors = checkLineups();
+    if (errors.length > 0) {
+      alert(
+        `ERROR: \n${errors
+          .map((item) => '❌ ' + item)
+          .join(` \n`)}`.replace(',', '')
+      );
+    } else {
+      setSubmitModal(true);
+    }
+  };
+  
   const handleLineupClick = (game_id, position, athleteLineup, index, teamName) => {
     dispatch(setGameId(game_id));
     dispatch(setPosition(position));
@@ -223,10 +249,10 @@ export default function CreateLineup(props) {
                     })}
                   </div>
                 </div>
-                <div className="flex bg-indigo-black bg-opacity-5 w-full justify-end  bottom-0 md:right-0 md:relative">
+                <div className="flex w-full bottom-3 md:sticky z-50">
                   <button
-                    className="bg-indigo-buttonblue text-indigo-white w-full md:w-80 h-12 md:h-14 text-center font-bold text-md"
-                    onClick={() => setSubmitModal(true)}
+                    className="bg-indigo-buttonblue text-indigo-white w-full md:w-80 h-12 md:h-14 text-center font-bold text-md md:ml-auto md:mr-5"
+                    onClick={() => validateLineup()}
                   >
                     CONFIRM TEAM
                   </button>

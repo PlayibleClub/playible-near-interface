@@ -59,7 +59,9 @@ export default function Home(props) {
   const { contract } = selector.store.getState();
   const dispatch = useDispatch();
   const [positionList, setPositionList] = useState(SPORT_TYPES[0].positionList);
-  const sportObj = SPORT_TYPES.filter((x) => x.sport !== SPORT_NAME_LOOKUP.football).map((x) => ({
+  const sportObj = SPORT_TYPES.filter(
+    (x) => x.sport !== SPORT_NAME_LOOKUP.football && x.sport !== SPORT_NAME_LOOKUP.cricket
+  ).map((x) => ({
     name: x.sport,
     isActive: false,
   }));
@@ -122,18 +124,18 @@ export default function Home(props) {
   const cricketSbImage = '/images/packimages/Cricket-SB-Pack.png';
   const [modalImage, setModalImage] = useState(nflSbImage);
   async function get_claim_status(accountId) {
-    setIsClaimedFootball(
-      await query_claim_status(accountId, getSportType('FOOTBALL').packPromoContract)
-    );
+    // setIsClaimedFootball(
+    //   await query_claim_status(accountId, getSportType('FOOTBALL').packPromoContract)
+    // );
     setIsClaimedBasketball(
       await query_claim_status(accountId, getSportType('BASKETBALL').packPromoContract)
     );
     setIsClaimedBaseball(
       await query_claim_status(accountId, getSportType('BASEBALL').packPromoContract)
     );
-    setIsClaimedCricket(
-      await query_claim_status(accountId, getSportType('CRICKET').packPromoContract)
-    );
+    // setIsClaimedCricket(
+    //   await query_claim_status(accountId, getSportType('CRICKET').packPromoContract)
+    // );
   }
   function query_config_contract() {
     provider
@@ -758,16 +760,6 @@ export default function Home(props) {
                       CLAIM BASEBALL PACK
                     </button>
                   )}
-                  {isClaimedCricket ? (
-                    ''
-                  ) : (
-                    <button
-                      className="w-60 flex text-center justify-center items-center iphone5:w-64 bg-indigo-buttonblue font-montserrat text-indigo-white p-3 mb-4 text-xs "
-                      onClick={(e) => handleButtonClick(e, 'CRICKET')}
-                    >
-                      CLAIM CRICKET PACK
-                    </button>
-                  )}
                 </div>
               ) : (
                 <div className="ml-12 mt-4 md:flex md:flex-row md:ml-8">
@@ -789,16 +781,6 @@ export default function Home(props) {
                       onClick={logIn}
                     >
                       CLAIM BASEBALL PACK
-                    </button>
-                  )}
-                  {isClaimedCricket ? (
-                    ''
-                  ) : (
-                    <button
-                      className="w-60 flex text-center justify-center items-center iphone5:w-64 bg-indigo-buttonblue font-montserrat text-indigo-white p-3 text-xs"
-                      onClick={logIn}
-                    >
-                      CLAIM CRICKET PACK
                     </button>
                   )}
                 </div>
