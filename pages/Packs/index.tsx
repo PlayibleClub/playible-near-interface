@@ -41,10 +41,15 @@ export default function Packs() {
   const cricketSBImage = '/images/packimages/Cricket-SB-Pack.png';
   const [modalImage, setModalImage] = useState(nflImage);
   const [currentTotal, setCurrentTotal] = useState(0);
+  const [copiedSportList, setCopiedSportList] = useState([]);
   const [categoryList, setcategoryList] = useState([
     {
-      name: 'PROMOTIONAL',
+      name: 'ALL',
       isActive: true,
+    },
+    {
+      name: 'PROMOTIONAL',
+      isActive: false,
     },
     {
       name: 'STARTER',
@@ -82,13 +87,26 @@ export default function Packs() {
     const tabList = [...categoryList];
     setPackOffset(0);
     // setPackLimit(10);
-    setRemountComponent(Math.random() + 1);
+    setRemountComponent(Math.random());
+    const prevSport = [...sportList];
+
     switch (name) {
-      case 'STARTER':
-        setCurrentTotal(packs.length);
+      case 'ALL':
+        if (sportList.length > 0) {
+          setSportList([]);
+        }
         break;
-      case 'SOULBOUND':
+      case 'PROMOTIONAL':
+        if ((sportList.length = 0)) {
+          setSportList(prevSport);
+        }
         setCurrentTotal(soulboundPacks.length);
+        break;
+      case 'STARTER':
+        if ((sportList.length = 0)) {
+          setSportList(prevSport);
+        }
+        setCurrentTotal(packs.length);
         break;
     }
 
@@ -117,6 +135,48 @@ export default function Packs() {
   async function get_nft_pack_supply_for_owner(accountId) {
     setTotalPacks(
       await query_nft_supply_for_owner(accountId, getSportType(currentSport).packContract)
+    );
+    const resultFootball = await query_nft_supply_for_owner(
+      accountId,
+      getSportType(SPORT_NAME_LOOKUP.football).packContract
+    );
+    const resultBasketball = await query_nft_supply_for_owner(
+      accountId,
+      getSportType(SPORT_NAME_LOOKUP.basketball).packContract
+    );
+    const resultBaSeball = await query_nft_supply_for_owner(
+      accountId,
+      getSportType(SPORT_NAME_LOOKUP.baseball).packContract
+    );
+    const resultCricket = await query_nft_supply_for_owner(
+      accountId,
+      getSportType(SPORT_NAME_LOOKUP.cricket).packContract
+    );
+    const resultFootballSb = await query_nft_supply_for_owner(
+      accountId,
+      getSportType(SPORT_NAME_LOOKUP.football).packPromoContract
+    );
+    const resultBasketballSb = await query_nft_supply_for_owner(
+      accountId,
+      getSportType(SPORT_NAME_LOOKUP.basketball).packPromoContract
+    );
+    const resultBaSeballSb = await query_nft_supply_for_owner(
+      accountId,
+      getSportType(SPORT_NAME_LOOKUP.baseball).packPromoContract
+    );
+    const resultCricketSb = await query_nft_supply_for_owner(
+      accountId,
+      getSportType(SPORT_NAME_LOOKUP.cricket).packPromoContract
+    );
+    setTotalSupply(
+      Number(resultFootball) +
+        Number(resultBasketball) +
+        Number(resultBaSeball) +
+        Number(resultCricket) +
+        Number(resultFootballSb) +
+        Number(resultBasketballSb) +
+        Number(resultBaSeballSb) +
+        Number(resultCricketSb)
     );
   }
 
@@ -147,7 +207,9 @@ export default function Packs() {
   }
 
   const handlePageClick = (event) => {
-    const newOffset = (event.selected * packLimit) % totalPacks;
+    const newOffset = categoryList[0].isActive
+      ? (event.selected * packLimit) % totalSupply
+      : (event.selected * packLimit) % totalPacks;
     setPackOffset(newOffset);
   };
 
@@ -220,6 +282,46 @@ export default function Packs() {
       const result = JSON.parse(Buffer.from(data.result).toString());
       setSoulboundPacks(result);
     });
+    query_nft_tokens_for_owner(
+      accountId,
+      packOffset,
+      packLimit,
+      getSportType(SPORT_NAME_LOOKUP.football).packPromoContract
+    ).then(async (data) => {
+      //@ts-ignore:next-line
+      const result = JSON.parse(Buffer.from(data.result).toString());
+      setFootballSbPacks(result);
+    });
+    query_nft_tokens_for_owner(
+      accountId,
+      packOffset,
+      packLimit,
+      getSportType(SPORT_NAME_LOOKUP.basketball).packPromoContract
+    ).then(async (data) => {
+      //@ts-ignore:next-line
+      const result = JSON.parse(Buffer.from(data.result).toString());
+      setBasketballSbPacks(result);
+    });
+    query_nft_tokens_for_owner(
+      accountId,
+      packOffset,
+      packLimit,
+      getSportType(SPORT_NAME_LOOKUP.baseball).packPromoContract
+    ).then(async (data) => {
+      //@ts-ignore:next-line
+      const result = JSON.parse(Buffer.from(data.result).toString());
+      setBaseballSbPacks(result);
+    });
+    query_nft_tokens_for_owner(
+      accountId,
+      packOffset,
+      packLimit,
+      getSportType(SPORT_NAME_LOOKUP.cricket).packPromoContract
+    ).then(async (data) => {
+      //@ts-ignore:next-line
+      const result = JSON.parse(Buffer.from(data.result).toString());
+      setCricketSbPacks(result);
+    });
   }
 
   const handleButtonClick = (e) => {
@@ -279,11 +381,20 @@ export default function Packs() {
       setEditModal(true);
     }
   }, []);
+  useEffect(() => {
+    setCopiedSportList([...sportList]);
+  }, []);
 
+  useEffect(() => {
+    if (categoryList.length > 0 && categoryList[0].isActive) {
+      setSportList([]);
+    } else {
+      setSportList([...copiedSportList]);
+    }
+  }, [categoryList, copiedSportList]);
   useEffect(() => {
     get_claim_status(accountId);
   }, [currentSport]);
-
   return (
     <Container activeName="SQUAD">
       <div className="flex flex-col w-full overflow-y-auto h-screen">
@@ -333,10 +444,10 @@ export default function Packs() {
                   })}
                 </div>
                 <div className="iphone5:ml-6 md:ml-9 iphone5:mr-0 md:mr-4 iphone5:mt-4">
-                  {isClaimed ? (
+                  {categoryList[0].isActive ? null : isClaimed ? (
                     <button
                       className={`hidden bg-indigo-gray bg-opacity-40 text-indigo-white w-5/6 md:w-80 h-10 pointer-events-none 
-            text-center font-bold text-xs `}
+      text-center font-bold text-xs `}
                       onClick={(e) => handleButtonClick(e)}
                     >
                       CLAIM SOULBOUND PACK
@@ -344,12 +455,9 @@ export default function Packs() {
                   ) : (
                     <button
                       className={`${
-                        currentSport === SPORT_NAME_LOOKUP.football ||
-                        currentSport === SPORT_NAME_LOOKUP.cricket
-                          ? 'hidden'
-                          : ''
+                        currentSport === SPORT_NAME_LOOKUP.football ? 'hidden' : ''
                       }bg-indigo-buttonblue text-indigo-white iphone5:w-full md:w-80 h-10 
-           text-center font-bold text-xs`}
+      text-center font-bold text-xs`}
                       onClick={(e) => handleButtonClick(e)}
                     >
                       {currentSport === SPORT_NAME_LOOKUP.basketball
