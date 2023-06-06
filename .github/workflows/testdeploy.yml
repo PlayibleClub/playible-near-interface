@@ -28,11 +28,12 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
+    
     - name: Setup SSH connection
-      uses: webfactory/ssh-agent@v0.5.2
+      uses: webfactory/ssh-agent@v0.8.0
       with:
         ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-    - name: Test git pull
+    - name: SSH into EC2 instance
       run: |
-        ssh -o StrictHostKeyChecking=no -i ${{ secrets.SSH_PRIVATE_KEY }} ubuntu@ec2-18-141-212-141.ap-southeast-1.compute.amazonaws.com 'cd /playible-interface && git pull'
+        ssh -o StrictHostKeyChecking=no -i ${{ secrets.SSH_PRIVATE_KEY }} ubuntu@ec2-18-141-212-141.ap-southeast-1.compute.amazonaws.com
