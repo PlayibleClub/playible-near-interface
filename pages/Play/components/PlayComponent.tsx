@@ -47,7 +47,7 @@ const PlayComponent = (props) => {
     setHour(0);
     setMinute(0);
     setSecond(0);
-    const countdownTimer = () => {
+    const id = setInterval(() => {
       const currentDate = getUTCDateFromLocal();
       const end = moment.utc(type === 'ON-GOING' || type === 'ACTIVE' ? endDate : startDate);
 
@@ -60,11 +60,7 @@ const PlayComponent = (props) => {
         setGetGames(true);
         fetchGames();
       }
-    };
-
-    countdownTimer();
-
-    const id = setInterval(countdownTimer, 1000);
+    }, 1000);
     return () => clearInterval(id);
   }, [index, getGames]);
 
@@ -115,7 +111,7 @@ const PlayComponent = (props) => {
                 <div className="font-thin text-sm">PRIZE POOL</div>
                 <div className="text-base font-monument">${prizePool}</div>
               </div> */}
-
+              
               <div className="">
                 <div className="text-base font-monument">{sport}</div>
                 <div className="font-thin text-sm">
@@ -135,8 +131,10 @@ const PlayComponent = (props) => {
                     ? moment.tz(endDate, moment.tz.guess()).format('Do MMMM, hA zz')
                     : ''}
                 </div>
+                
               </div>
               <div>
+                
                 <div className="font-thin text-sm">GAME ID</div>
                 <div className="text-base font-monument">{game_id}</div>
                 <div className={`${type === 'NEW' ? ' ' : 'hidden'}`}>
