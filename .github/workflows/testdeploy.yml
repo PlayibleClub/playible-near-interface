@@ -28,17 +28,11 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - name: SSH into EC2 instance
+    - name: Setup SSH connection
+      uses: webfactory/ssh-agent@v0.5.2
+      with:
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+    - name: Test git pull
       run: |
-        echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
-        chmod 600 ~/.ssh/id_rsa
-        ssh -i ~/.ssh/id_rsa ubuntu@18.141.212.141
-      env:
-        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-    - run: cd playible-interface
-    - run: git pull
-    - run: git checkout origin/dev 
-    - run: npm ci
-    - run: npm run build
-    - run: screen -r -X quit || true
-    - run: npm run start
+        ssh -o StrictHostKeyChecking=no -i ${{ secrets.SSH_PRIVATE_KEY }} ubuntu@ec2-18-141-212-141.ap-southeast-1.compute.amazonaws.com 'cd /playible-interface && git pull'
