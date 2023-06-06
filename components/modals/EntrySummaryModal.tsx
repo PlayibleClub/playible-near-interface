@@ -2,7 +2,7 @@ import { Dialog, Transition } from '@headlessui/react';
 import React, { Fragment, useEffect } from 'react';
 import * as statusCode from '../../data/constants/status';
 import LoadingModal from '../loading/LoadingModal';
-import { useRouter } from "next/router";
+import { useRouter } from 'next/router';
 
 const EntrySummaryModal = (props) => {
   const { title, children, visible, onClose = undefined } = props;
@@ -43,8 +43,15 @@ const EntrySummaryModal = (props) => {
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <div className={`bg-indigo-white inline-block md:w-3/5 h-full p-6 my-8 text-left align-middle transform shadow-xl max-w-full
-                      ${router.asPath.indexOf("baseball") >= 0 || router.asPath.indexOf("cricket") >= 0 ? " max-h-screen overflow-y-auto" : ""}`}>
+              <div
+                className={`bg-indigo-white inline-block md:w-3/5 h-full iphone5:px-2 iphone5:py-6 iPhoneX:p-6 md:p-6 my-8 text-left align-middle transform shadow-xl max-w-full
+                      ${
+                        router.asPath.indexOf('baseball') >= 0 ||
+                        router.asPath.indexOf('cricket') >= 0
+                          ? ' max-h-screen overflow-y-auto'
+                          : ''
+                      }`}
+              >
                 <Dialog.Title
                   as="h3"
                   className="text-lg font-medium leading-6 text-gray-900 pb-4 font-monument uppercase"
