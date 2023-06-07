@@ -18,7 +18,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [14.x, 16.x, 18.x]
+        node-version: [16.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
@@ -28,16 +28,12 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - name: run ci and build
-      run: |
-        npm ci
-        npm run build
     
     # - name: Setup SSH connection
     #   uses: webfactory/ssh-agent@v0.8.0
     #   with:
     #     ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-    # - name: SSH into EC2 instance
-    #   run: |
-    #     ssh -o StrictHostKeyChecking=no -i "${{ secrets.SSH_PRIVATE_KEY }}" ubuntu@ec2-18-141-212-141.ap-southeast-1.compute.amazonaws.com
+    - name: SSH into EC2 instance
+      run: |
+        ssh -o StrictHostKeyChecking=no -i ${{ secrets.SSH_PRIVATE_KEY }} root@ec2-18-141-212-141.ap-southeast-1.compute.amazonaws.com
