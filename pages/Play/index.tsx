@@ -42,7 +42,7 @@ const Play = (props) => {
   ];
   sportObj[0].isActive = true;
   const [sportList, setSportList] = useState([...sportObj]);
-  const [currentSport, setCurrentSport] = useState('CRICKET');
+  const [currentSport, setCurrentSport] = useState('BASEBALL');
   const [remountComponent, setRemountComponent] = useState(0);
 
   function getActiveTabGameTotal() {
