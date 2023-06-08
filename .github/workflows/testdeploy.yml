@@ -39,6 +39,7 @@ jobs:
         echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
         echo ${{ secrets.EC2_INSTANCE_HOSTNAMEDNS }} > ~/.ssh/id_rsa
         chmod 400 ~/.ssh/id_rsa
+        ssh-keyscan -H ${{ secrets.EC2_INSTANCE_HOSTNAMEDNS }} >> ~/.ssh/known_hosts
         cat ~/.ssh/known_hosts
 
     - name: SSH into EC2 instance
