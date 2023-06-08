@@ -30,7 +30,7 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
 
-    - name: Install SSH on runner
+    - name: Ensure SSH is installed on runner
       run: sudo apt-get install openssh-client -y
 
     - name: Set up SSH
@@ -39,7 +39,6 @@ jobs:
         echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
         echo ${{ secrets.EC2_INSTANCE_HOSTNAMEDNS }} > ~/.ssh/id_rsa
         chmod 400 ~/.ssh/id_rsa
-        ssh-keyscan -H ${{ secrets.SSH_PRIVATE_KEY }} >> ~/.ssh/known_hosts
 
     - name: SSH into EC2 instance
       run: |
