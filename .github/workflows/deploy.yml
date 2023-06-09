@@ -12,14 +12,11 @@ on:
     branches: [ "dev" ]
 
 jobs:
-  build:
-
+  ssh_setup:
     runs-on: ubuntu-latest
-
     strategy:
       matrix:
         node-version: [16.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
     - name: Checkout code
@@ -48,3 +45,14 @@ jobs:
     - name: SSH into EC2 instance
       run: |
         ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{ secrets.EC2_USER }}@${{ secrets.EC2_INSTANCE_HOSTNAMEDNS }}
+
+  build:
+    needs: ssh_setup
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16.x]
+
+    steps:
+      - name: cd to project folder
+        run: cd /home/ubuntu/playible-interface
