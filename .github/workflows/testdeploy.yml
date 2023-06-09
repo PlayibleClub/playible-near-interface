@@ -40,10 +40,8 @@ jobs:
         cat ~/.ssh/known_hosts
         echo ${{ secrets.SSH_PRIVATE_KEY }} > ~/.ssh/id_rsa
         chmod 400 ~/.ssh/id_rsa
-        ssh-keygen -p -m PEM -f ~/.ssh/id_rsa -e > ~/.ssh/id_rsa_openssh
-        chmod 400 ~/.ssh/id_rsa_openssh
-        ls -l ~/.ssh/id_rsa_openssh
+        ls -l ~/.ssh/id_rsa
 
     - name: SSH into EC2 instance
       run: |
-        ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa_openssh ${{ secrets.EC2_USER }}@${{ secrets.EC2_INSTANCE_HOSTNAMEDNS }}
+        ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{ secrets.EC2_USER }}@${{ secrets.EC2_INSTANCE_HOSTNAMEDNS }}
