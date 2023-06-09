@@ -46,7 +46,9 @@ jobs:
       run: git pull
 
     - name: git checkout to branch
-      run: git checkout origin/dev
+      run: |
+        git reset --hard
+        git checkout origin/dev
 
     - name: build project
       run: npm run build
