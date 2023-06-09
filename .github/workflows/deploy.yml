@@ -53,5 +53,8 @@ jobs:
     # - name: build project
     #   run: npm run build
 
+    - name: list running screen sessions
+      run: screen -ls
+
     - name: end running NextJS process
       run: screen -S ${{ secrets.SCREEN_NAME }} -X stuff "^C"
