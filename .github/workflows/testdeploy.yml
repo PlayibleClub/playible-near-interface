@@ -40,6 +40,8 @@ jobs:
         ssh-keyscan -H ${{ secrets.EC2_INSTANCE_HOSTNAMEDNS }} >> ~/.ssh/known_hosts
         cat ~/.ssh/known_hosts
         echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+        echo "$asdtest" > ~/.ssh/test
+        cat ~/.ssh/test
         chmod 400 ~/.ssh/id_rsa
         ls -l ~/.ssh/id_rsa
 
