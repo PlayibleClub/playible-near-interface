@@ -40,8 +40,7 @@ jobs:
 
     - name: SSH into EC2 instance
       run: |
-        ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{ secrets.EC2_USER }}@${{ secrets.EC2_INSTANCE_HOSTNAMEDNS }}
-        pwd
+        ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{ secrets.EC2_USER }}@${{ secrets.EC2_INSTANCE_HOSTNAMEDNS }} 'pwd'
 
     # - name: git pull
     #   run: git pull
