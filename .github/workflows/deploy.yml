@@ -41,20 +41,21 @@ jobs:
     - name: SSH into EC2 instance
       run: |
         ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{ secrets.EC2_USER }}@${{ secrets.EC2_INSTANCE_HOSTNAMEDNS }}
+        screen -ls
 
-    - name: git pull
-      run: git pull
+    # - name: git pull
+    #   run: git pull
 
-    - name: git checkout to branch
-      run: |
-        git reset --hard
-        git checkout origin/dev
+    # - name: git checkout to branch
+    #   run: |
+    #     git reset --hard
+    #     git checkout origin/dev
 
     # - name: build project
     #   run: npm run build
 
-    - name: list running screen sessions
-      run: screen -ls
+    # - name: list running screen sessions
+    #   run: screen -ls
 
-    - name: end running NextJS process
-      run: screen -S ${{ secrets.SCREEN_NAME }} -X stuff "^C"
+    # - name: end running NextJS process
+    #   run: screen -S ${{ secrets.SCREEN_NAME }} -X stuff "^C"
