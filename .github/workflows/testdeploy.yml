@@ -14,7 +14,7 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
 
     strategy:
       matrix:
@@ -24,6 +24,7 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
+
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
@@ -38,7 +39,7 @@ jobs:
         mkdir -p ~/.ssh/
         ssh-keyscan -H ${{ secrets.EC2_INSTANCE_HOSTNAMEDNS }} >> ~/.ssh/known_hosts
         cat ~/.ssh/known_hosts
-        echo ${{ secrets.SSH_PRIVATE_KEY }} > ~/.ssh/id_rsa
+        echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
         chmod 400 ~/.ssh/id_rsa
         ls -l ~/.ssh/id_rsa
 
