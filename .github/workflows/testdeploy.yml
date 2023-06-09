@@ -39,6 +39,7 @@ jobs:
         ssh-keyscan -H ${{ secrets.EC2_INSTANCE_HOSTNAMEDNS }} >> ~/.ssh/known_hosts
         cat ~/.ssh/known_hosts
         echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+        chmod 400 ~/.ssh/id_rsa
         ssh-keygen -p -m PEM -f ~/.ssh/id_rsa -e > ~/.ssh/id_rsa_openssh
         chmod 400 ~/.ssh/id_rsa_openssh
         ls -l ~/.ssh/id_rsa_openssh
