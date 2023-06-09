@@ -50,8 +50,8 @@ jobs:
         git reset --hard
         git checkout origin/dev
 
-    - name: build project
-      run: npm run build
+    # - name: build project
+    #   run: npm run build
 
     - name: end running NextJS process
       run: screen -S ${{ secrets.SCREEN_NAME }} -X stuff "^C"
