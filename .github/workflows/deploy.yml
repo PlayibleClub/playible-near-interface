@@ -46,13 +46,14 @@ jobs:
       run: |
         ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{ secrets.EC2_USER }}@${{ secrets.EC2_INSTANCE_HOSTNAMEDNS }}
 
-  build:
-    needs: ssh_setup
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [16.x]
+    - name: cd to project folder
+      run: cd /home/ubuntu/playible-interface
 
-    steps:
-      - name: cd to project folder
-        run: cd /home/ubuntu/playible-interface
+  # build:
+  #   needs: ssh_setup
+  #   runs-on: ubuntu-latest
+  #   strategy:
+  #     matrix:
+  #       node-version: [16.x]
+
+  #   steps:
