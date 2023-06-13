@@ -44,6 +44,7 @@ jobs:
           cd /home/ubuntu/playible-interface &&
           ls -a &&
           pwd
+          git pull
         '
 
     # - name: git pull
