@@ -45,6 +45,7 @@ jobs:
           ls -a &&
           pwd &&
           git pull origin dev
+          git checkout origin/dev
         '
 
     # - name: git pull
