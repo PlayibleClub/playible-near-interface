@@ -44,8 +44,9 @@ jobs:
           cd /home/ubuntu/playible-interface &&
           ls -a &&
           pwd &&
-          git pull origin dev
-          git checkout origin/dev
+          git pull origin dev &&
+          git checkout origin/dev &&
+          npm run build
         '
 
     # - name: git pull
