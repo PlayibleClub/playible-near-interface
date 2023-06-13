@@ -46,7 +46,7 @@ jobs:
           pwd &&
           git pull origin dev &&
           git checkout origin/dev &&
-          sudo npm run build
+          sudo -E npm run build
         '
 
     # - name: git pull
