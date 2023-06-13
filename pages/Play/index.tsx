@@ -410,7 +410,7 @@ const Play = (props) => {
                           })}
                     </div>
                     <div className="mt-4 md:ml-10 grid grid-cols-0 md:grid-cols-3 iphone5:self-center md:self-start">
-                      {sportList[0].isActive
+                      {sportList[0].name === 'ALL'
                         ? (categoryList[1].isActive
                             ? allGoing
                             : categoryList[2].isActive
@@ -475,7 +475,10 @@ const Play = (props) => {
                               return (
                                 <div key={i} className="flex">
                                   <div className="iphone5:mr-0 md:mr-6 cursor-pointer">
-                                    <Link href={`/Games/${currentSport}/${data.game_id}`} passHref>
+                                    <Link
+                                      href={`/Games/${currentSport.toLowerCase()}/${data.game_id}`}
+                                      passHref
+                                    >
                                       <div className="iphone5:mr-0 md:mr-6">
                                         <PlayComponent
                                           type={activeCategory}
