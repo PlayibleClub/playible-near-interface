@@ -42,7 +42,8 @@ jobs:
       run: |
         ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{ secrets.EC2_USER }}@${{ secrets.EC2_INSTANCE_HOSTNAMEDNS }} '
           cd /home/ubuntu/playible-interface &&
-          ls -a
+          ls -a &&
+          pwd
         '
 
     # - name: git pull
