@@ -41,13 +41,12 @@ jobs:
     - name: SSH into EC2 instance
       run: |
         ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{ secrets.EC2_USER }}@${{ secrets.EC2_INSTANCE_HOSTNAMEDNS }} '
-          sudo su &&
           cd /home/ubuntu/playible-interface &&
           ls -a &&
           pwd &&
           git pull origin dev &&
           git checkout origin/dev &&
-          npm run build
+          sudo npm run build
         '
 
     # - name: git pull
