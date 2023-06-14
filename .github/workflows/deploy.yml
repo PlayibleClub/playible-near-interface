@@ -51,4 +51,5 @@ jobs:
           npm run build
           screen -ls
           screen -S ${{ secrets.SCREEN_NAME }} -X stuff "^C"
+          screen -S ${{ secrets.SCREEN_NAME }} -X stuff "npm run start$(printf \\r)"
         '
