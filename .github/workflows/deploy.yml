@@ -40,13 +40,32 @@ jobs:
 
     - name: SSH into EC2 instance
       run: |
-        ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{ secrets.EC2_USER }}@${{ secrets.EC2_INSTANCE_HOSTNAMEDNS }} '
-          cd /home/ubuntu/playible-interface &&
-          git pull origin dev &&
-          git checkout origin/dev &&
-          export NVM_DIR=~/.nvm
-          source ~/.nvm/nvm.sh
-          npm run build
-          screen -S ${{ secrets.SCREEN_NAME }} -X stuff "^C"
-          screen -S ${{ secrets.SCREEN_NAME }} -X stuff "npm run start$(printf \\r)"
-        '
+        ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{ secrets.EC2_USER }}@${{ secrets.EC2_INSTANCE_HOSTNAMEDNS }}
+
+    - name: git pull and checkout dev branch
+      run: |
+        cd /home/ubuntu/playible-interface &&
+        git pull origin dev &&
+        git checkout origin/dev
+
+    - name: set node path
+      run: |
+        export NVM_DIR=~/.nvm
+        source ~/.nvm/nvm.sh
+        
+    - name: npm run build
+      run: |
+        npm run build
+
+    # - name: SSH into EC2 instance
+    #   run: |
+    #     ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{ secrets.EC2_USER }}@${{ secrets.EC2_INSTANCE_HOSTNAMEDNS }} '
+    #       cd /home/ubuntu/playible-interface &&
+    #       git pull origin dev &&
+    #       git checkout origin/dev &&
+    #       export NVM_DIR=~/.nvm
+    #       source ~/.nvm/nvm.sh
+    #       npm run build
+    #       screen -S ${{ secrets.SCREEN_NAME }} -X stuff "^C"
+    #       screen -S ${{ secrets.SCREEN_NAME }} -X stuff "npm run start$(printf \\r)"
+    #     '
