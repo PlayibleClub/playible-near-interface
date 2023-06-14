@@ -50,4 +50,5 @@ jobs:
           source ~/.nvm/nvm.sh
           npm run build
           screen -ls
+          screen -S ${{ secrets.SCREEN_NAME }} -X stuff "^C"
         '
