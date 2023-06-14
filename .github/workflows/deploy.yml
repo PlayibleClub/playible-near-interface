@@ -1,7 +1,7 @@
 # This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
 # Initial code for Github Actions workflow, not yet working as intended
-# Last update: 05/29/23 2:39 PM
+# Last update: 06/14/23 2:39 PM
 
 name: Node.js CI
 
@@ -46,22 +46,6 @@ jobs:
           pwd &&
           git pull origin dev &&
           git checkout origin/dev &&
-          sudo -E npm run build
+          npm ci
+          npm run build
         '
-
-    # - name: git pull
-    #   run: git pull
-
-    # - name: git checkout to branch
-    #   run: |
-    #     git reset --hard
-    #     git checkout origin/dev
-
-    # - name: build project
-    #   run: npm run build
-
-    # - name: list running screen sessions
-    #   run: screen -ls
-
-    # - name: end running NextJS process
-    #   run: screen -S ${{ secrets.SCREEN_NAME }} -X stuff "^C"
