@@ -46,6 +46,7 @@ jobs:
           pwd &&
           git pull origin dev &&
           git checkout origin/dev &&
-          npm ci
+          export NVM_DIR=~/.nvm
+          source ~/.nvm/nvm.sh
           npm run build
         '
