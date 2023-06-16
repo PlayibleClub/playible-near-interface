@@ -58,6 +58,7 @@ jobs:
             npm run build
             screen -S ${{ secrets.SCREEN_NAME }} -X stuff "^C"
             screen -S ${{ secrets.SCREEN_NAME }} -X stuff "npm run start$(printf \\r)"
+            echo "Successfully deployed to dev instance."
           '
         elif [[ ${{ github.ref }} == 'refs/heads/main' ]]; then
           echo "Connecting to production instance via SSH"
@@ -70,5 +71,6 @@ jobs:
             npm run build
             screen -S ${{ secrets.PROD_SCREEN_NAME }} -X stuff "^C"
             screen -S ${{ secrets.PROD_SCREEN_NAME }} -X stuff "npm run start$(printf \\r)"
+            echo "Successfully deployed to production instance."
           '
           fi
