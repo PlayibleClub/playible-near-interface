@@ -1,15 +1,18 @@
-# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
-# Initial code for Github Actions workflow, not yet working as intended
-# Last update: 06/14/23 2:39 PM
+# Instructions and documentation can be found on the project's DevOps Linear project
+# Last change: Added main branch/production server
+# Last update: 06/16/23
 
 name: Node.js CI
 
 on:
   push:
-    branches: [ "dev" ]
+    branches: 
+      - dev
+      - main
   pull_request:
-    branches: [ "dev" ]
+    branches:
+      - dev
+      - main
 
 jobs:
   deploy:
@@ -19,25 +22,52 @@ jobs:
         node-version: [16.x]
 
     steps:
+    - name: Set up SSH keys
+      run: |
+        if [[ ${{ github.ref }} == 'refs/heads/dev' ]]; then
+          echo "This is the dev branch."
+          echo "Performing actions for dev branch."
+          mkdir -p ~/.ssh/
+          ssh-keyscan -H ${{ secrets.EC2_INSTANCE_HOSTNAMEDNS }} >> ~/.ssh/known_hosts
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 400 ~/.ssh/id_rsa
+        elif [[ ${{ github.ref }} == 'refs/heads/main' ]]; then
+          echo "This is the main branch."
+          echo "Performing actions for main branch."
+          mkdir -p ~/.ssh/
+          ssh-keyscan -H ${{ secrets.PROD_EC2_INSTANCE_HOSTNAMEDNS }} >> ~/.ssh/known_hosts
+          echo "${{ secrets.PROD_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 400 ~/.ssh/id_rsa
+        else
+          echo "This branch is not supported."
+        fi
+
     - name: Ensure SSH is installed on runner
       run: sudo apt-get install openssh-client -y
 
-    - name: Set up SSH
-      run: |
-        mkdir -p ~/.ssh/
-        ssh-keyscan -H ${{ secrets.EC2_INSTANCE_HOSTNAMEDNS }} >> ~/.ssh/known_hosts
-        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-        chmod 400 ~/.ssh/id_rsa
-
     - name: SSH, build and deploy
       run: |
-        ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{ secrets.EC2_USER }}@${{ secrets.EC2_INSTANCE_HOSTNAMEDNS }} '
-          cd /home/ubuntu/playible-interface &&
-          git pull origin dev &&
-          git checkout origin/dev &&
-          export NVM_DIR=~/.nvm
-          source ~/.nvm/nvm.sh
-          npm run build
-          screen -S ${{ secrets.SCREEN_NAME }} -X stuff "^C"
-          screen -S ${{ secrets.SCREEN_NAME }} -X stuff "npm run start$(printf \\r)"
-        '
+        if [[ ${{ github.ref }} == 'refs/heads/dev' ]]; then
+          echo "Connecting to dev instance via SSH"
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{ secrets.EC2_USER }}@${{ secrets.EC2_INSTANCE_HOSTNAMEDNS }} '
+            cd /home/ubuntu/playible-interface &&
+            git pull origin dev &&
+            git checkout origin/dev &&
+            export NVM_DIR=~/.nvm
+            source ~/.nvm/nvm.sh
+            npm run build
+            screen -S ${{ secrets.SCREEN_NAME }} -X stuff "^C"
+            screen -S ${{ secrets.SCREEN_NAME }} -X stuff "npm run start$(printf \\r)"
+          '
+        elif [[ ${{ github.ref }} == 'refs/heads/main' ]]; then
+          echo "Connecting to production instance via SSH"
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{ secrets.EC2_USER }}@${{ secrets.PROD_EC2_INSTANCE_HOSTNAMEDNS }} '
+            cd /home/ubuntu/playible-interface &&
+            git pull origin main &&
+            git checkout origin/main &&
+            export NVM_DIR=~/.nvm
+            source ~/.nvm/nvm.sh
+            npm run build
+            screen -S ${{ secrets.PROD_SCREEN_NAME }} -X stuff "^C"
+            screen -S ${{ secrets.PROD_SCREEN_NAME }} -X stuff "npm run start$(printf \\r)"
+          '
