@@ -455,7 +455,7 @@ export default function Packs() {
                   ) : (
                     <button
                       className={`${
-                        currentSport === SPORT_NAME_LOOKUP.football ? 'hidden' : ''
+                        currentSport !== SPORT_NAME_LOOKUP.baseball ? 'hidden' : ''
                       }bg-indigo-buttonblue text-indigo-white iphone5:w-full md:w-80 h-10 
       text-center font-bold text-xs`}
                       onClick={(e) => handleButtonClick(e)}

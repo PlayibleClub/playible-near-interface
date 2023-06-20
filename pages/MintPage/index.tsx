@@ -127,9 +127,9 @@ export default function Home(props) {
     // setIsClaimedFootball(
     //   await query_claim_status(accountId, getSportType('FOOTBALL').packPromoContract)
     // );
-    setIsClaimedBasketball(
-      await query_claim_status(accountId, getSportType('BASKETBALL').packPromoContract)
-    );
+    // setIsClaimedBasketball(
+    //   await query_claim_status(accountId, getSportType('BASKETBALL').packPromoContract)
+    // );
     setIsClaimedBaseball(
       await query_claim_status(accountId, getSportType('BASEBALL').packPromoContract)
     );
@@ -740,16 +740,6 @@ export default function Home(props) {
               </div>
               {selector.isSignedIn() ? (
                 <div className="ml-12 mt-4 md:flex md:flex-row md:ml-8">
-                  {isClaimedBasketball ? (
-                    ''
-                  ) : (
-                    <button
-                      className="w-60 flex text-center justify-center items-center iphone5:w-64 bg-indigo-buttonblue font-montserrat text-indigo-white p-3 mb-4 md:mr-4 text-xs "
-                      onClick={(e) => handleButtonClick(e, 'BASKETBALL')}
-                    >
-                      CLAIM BASKETBALL PACK
-                    </button>
-                  )}
                   {isClaimedBaseball ? (
                     ''
                   ) : (
@@ -763,21 +753,11 @@ export default function Home(props) {
                 </div>
               ) : (
                 <div className="ml-12 mt-4 md:flex md:flex-row md:ml-8">
-                  {isClaimedBasketball ? (
-                    ''
-                  ) : (
-                    <button
-                      className="w-60 flex text-center justify-center items-center iphone5:w-64 bg-indigo-buttonblue font-montserrat text-indigo-white p-3 mb-4 text-xs "
-                      onClick={logIn}
-                    >
-                      CLAIM BASKETBALL PACK
-                    </button>
-                  )}
                   {isClaimedBaseball ? (
                     ''
                   ) : (
                     <button
-                      className="w-60 flex text-center justify-center items-center iphone5:w-64 bg-indigo-buttonblue font-montserrat text-indigo-white p-3 text-xs"
+                      className="w-60 flex text-center justify-center items-center iphone5:w-64 bg-indigo-buttonblue font-montserrat text-indigo-white p-3 mb-4 md:mr-4 text-xs "
                       onClick={logIn}
                     >
                       CLAIM BASEBALL PACK
