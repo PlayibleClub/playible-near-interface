@@ -14,6 +14,7 @@ import { getSportType } from 'data/constants/sportConstants';
 import { checkInjury } from 'utils/athlete/helper';
 import { GET_SPORT_CURRENT_SEASON } from 'utils/queries';
 import { useLazyQuery } from '@apollo/client';
+import Image from 'next/image';
 import moment from 'moment';
 const AssetDetails = (props) => {
   const { query } = props;
@@ -53,7 +54,11 @@ const AssetDetails = (props) => {
       const result = JSON.parse(Buffer.from(data.result).toString());
       let result_two;
       if (currentSport !== 'CRICKET') {
-        result_two = await getPortfolioAssetDetailsById(await convertNftToAthlete(result), null, null);
+        result_two = await getPortfolioAssetDetailsById(
+          await convertNftToAthlete(result),
+          null,
+          null
+        );
         let games = result_two.stats_breakdown.slice();
         console.log(result_two);
         setAthlete(result_two);
@@ -205,9 +210,25 @@ const AssetDetails = (props) => {
                 </button>
               </Link>
             )}
-            <div></div>
           </div>
         </div>
+        <div className="md:mt-2 relative">
+          <Image
+            src="/images/player_headshot_background.png"
+            width={1400}
+            height={300}
+            alt="headshot-banner"
+            className="absolute"
+          />
+          <Image
+            src={athlete?.playerHeadshot}
+            width={300}
+            height={200}
+            alt="player-headshot"
+            className="absolute right-96 top-18"
+          />
+        </div>
+
         {currentSport !== 'CRICKET' ? (
           <div className="text-2xl font-bold font-monument ml-10 mt-16 mr-8 align-baseline">
             SEASON STATS

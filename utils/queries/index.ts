@@ -49,6 +49,7 @@ export const GET_ATHLETE_BY_ID = gql`
       nftImage
       isInjured
       isActive
+      playerHeadshot
       stats {
         season
         fantasyScore

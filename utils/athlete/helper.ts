@@ -65,11 +65,12 @@ async function getAthleteInfoById(item, from, to) {
         ? getAvgSeasonFantasyScore(data.getAthleteById.stats)
         : from !== null && to !== null
         ? getDailySeasonFantasyScore(data.getAthleteById.stats)
-        : getDailyFantasyScore(data.getAthleteById.stats),
+        : getDailyFantasyScore(data.getAthleteByIds.stats),
     stats_breakdown: data.getAthleteById.stats,
     isInGame: item.metadata['starts_at'] > getUTCTimestampFromLocal() ? true : false,
     isInjured: data.getAthleteById.isInjured,
     isActive: data.getAthleteById.isActive,
+    playerHeadshot: data.getAthleteById.playerHeadshot,
   };
   return returningData;
 }
@@ -99,12 +100,12 @@ async function getPortfolioAssetDetailsById(item, from, to) {
     isOpen: false,
     animation: data.getAthleteById.nftAnimation,
     image: item.metadata.media,
-    fantasy_score:
-    getAvgSeasonFantasyScore(data.getAthleteById.stats),
+    fantasy_score: getAvgSeasonFantasyScore(data.getAthleteById.stats),
     stats_breakdown: data.getAthleteById.stats,
     isInGame: item.metadata['starts_at'] > getUTCTimestampFromLocal() ? true : false,
     isInjured: data.getAthleteById.isInjured,
     isActive: data.getAthleteById.isActive,
+    playerHeadshot: data.getAthleteById.playerHeadshot,
   };
   return returningData;
 }
