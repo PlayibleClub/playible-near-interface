@@ -147,6 +147,10 @@ export const MLB_ASSET_POSITIONS = [
     name: 'OUTFIELDER',
     key: 'LF',
   },
+  {
+    name: 'DESIGNATED HITTER',
+    key: 'DH',
+  },
 ];
 
 export const MLB_POSITIONS = [
