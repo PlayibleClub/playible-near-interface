@@ -165,6 +165,7 @@ const StatsComponent = (props) => {
       case '1B':
       case '2B':
       case '3B':
+      case 'DH':
         query = await getAthleteHitter({
           variables: { getAthleteById: parseFloat(id.toString()), season: mlbSeason },
         });
