@@ -229,7 +229,7 @@ const AssetDetails = (props) => {
                 className="object-cover"
               />
             </div>
-            <div className="absolute inset-0 flex items-center justify-end iphone5:right-16 md:right-96">
+            <div className="absolute inset-0 flex items-center justify-end iphone5:right-16 md:right-36 lg:right-96">
               <Image
                 src={athlete?.playerHeadshot}
                 width={300}

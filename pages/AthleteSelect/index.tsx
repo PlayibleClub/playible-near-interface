@@ -326,7 +326,7 @@ const AthleteSelect = (props) => {
                 handleDropdownChange();
                 setTeam([e.target.value]);
               }}
-              className="bg-filter-icon bg-no-repeat bg-right bg-indigo-white iphone5:w-28 w-36 md:w-42 lg:w-60
+              className="bg-filter-icon bg-no-repeat bg-right bg-indigo-white iphone5:w-28 w-36 md:w-60 lg:w-60
                       ring-2 ring-offset-4 ring-indigo-black ring-opacity-25 focus:ring-2 focus:ring-indigo-black 
                       focus:outline-none cursor-pointer text-xs md:text-base"
             >

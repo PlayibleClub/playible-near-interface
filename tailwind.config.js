@@ -88,7 +88,7 @@ module.exports = {
             'iphone5': '320px',
             'iphoneX' : '375px',
             'md' : '768px',
-            'lg' : '1024px',
+            'lg' : '1920px',
         },
         animation: {
             'bounce' : 'bounce 0.75s infinite'
