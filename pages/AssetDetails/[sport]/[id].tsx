@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import Container from 'components/containers/Container';
 import {
-  getAthleteInfoById,
   getCricketAthleteInfoById,
   convertNftToAthlete,
   getPortfolioAssetDetailsById,
@@ -212,33 +211,40 @@ const AssetDetails = (props) => {
             )}
           </div>
         </div>
-        <div className="iphone5:mt-2 md:mt-2 relative">
-          <div className="aspect-w-1 aspect-h-1">
-            <Image
-              src="/images/player_headshot_background.png"
-              width={1400}
-              height={300}
-              alt="headshot-banner"
-              // className="absolute"
-              // className="absolute z-0"
-              // className="md:w-auto md:h-auto iphone5:w-full iphone5:h-full"
-              // className=""
-              className="object-cover"
-            />
+
+        {currentSport === 'BASEBALL' ? (
+          <div className="iphone5:mt-2 md:mt-2 relative">
+            <div className="aspect-w-1 aspect-h-1">
+              <Image
+                src={`https://playible-api-dev.s3.ap-southeast-1.amazonaws.com/team-banners/${getSportType(
+                  currentSport
+                ).key.toLowerCase()}/${athlete?.team}.png`}
+                width={1400}
+                height={300}
+                alt="headshot-banner"
+                // className="absolute"
+                // className="absolute z-0"
+                // className="md:w-auto md:h-auto iphone5:w-full iphone5:h-full"
+                // className=""
+                className="object-cover"
+              />
+            </div>
+            <div className="absolute inset-0 flex items-center justify-end iphone5:right-16 md:right-96">
+              <Image
+                src={athlete?.playerHeadshot}
+                width={300}
+                height={200}
+                alt="player-headshot"
+                // className="absolute right-96 top-18"
+                // className="absolute z-10 right-96"
+                // className="absolute md:inset-y-0 iphone5:-inset-y-2 md:right-96 iphone5:right-14 md:h-full md:w-auto iphone5:h-24 iphone5:w-24 topobject-cover"
+                className="iphone5:w-20 md:w-auto md:h-full object-contain"
+              />
+            </div>
           </div>
-          <div className="absolute inset-0 flex items-center justify-end iphone5:right-16 md:right-96">
-            <Image
-              src={athlete?.playerHeadshot}
-              width={300}
-              height={200}
-              alt="player-headshot"
-              // className="absolute right-96 top-18"
-              // className="absolute z-10 right-96"
-              // className="absolute md:inset-y-0 iphone5:-inset-y-2 md:right-96 iphone5:right-14 md:h-full md:w-auto iphone5:h-24 iphone5:w-24 topobject-cover"
-              className="iphone5:w-20 md:w-auto md:h-full object-contain"
-            />
-          </div>
-        </div>
+        ) : (
+          ''
+        )}
 
         {currentSport !== 'CRICKET' ? (
           <div className="text-2xl font-bold font-monument ml-10 mt-16 mr-8 align-baseline">
