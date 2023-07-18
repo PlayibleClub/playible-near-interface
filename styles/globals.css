@@ -11,6 +11,10 @@
   src: url('/fonts/MonumentExtended.otf');
 }
 
+.ml-negative-38 {
+  margin-left: -38rem;
+}
+
 html,
 body {
   padding: 0;
@@ -67,6 +71,6 @@ select {
   -webkit-text-stroke: 1px black;
 }
 
-svg:hover{
-    fill: white
+svg:hover {
+  fill: white;
 }

@@ -1,6 +1,6 @@
  const plugin = require('tailwindcss/plugin');
 module.exports = {
-    purge: [],
+    purge: ['./styles/globals.css'],
     darkMode: false, // or 'media' or 'class'
     theme: {
         fontFamily: {
@@ -15,7 +15,7 @@ module.exports = {
                 'search-icon': "url('/images/icons/Search.svg')"
             },
             width: {
-                '133px': '133px'
+                '133px': '133px',
             },
             height: {
                 '135px': '135px',
@@ -26,7 +26,8 @@ module.exports = {
             },
             margin: {
                 '15': '60px',
-                '13': '54px'
+                '13': '54px',
+                '-negative-38': '-38rem',
             }
         },
         colors: {
@@ -89,6 +90,8 @@ module.exports = {
             'iphoneX' : '375px',
             'md' : '768px',
             'lg' : '1920px',
+            'xl' : '2560px',
+            '2xl' : '3840px',
         },
         animation: {
             'bounce' : 'bounce 0.75s infinite'
@@ -132,5 +135,6 @@ module.exports = {
                 },
             })
         })
-    ]
+    ],
+    content: ['./styles/globals.css'],
 };
