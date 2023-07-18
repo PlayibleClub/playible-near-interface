@@ -217,28 +217,18 @@ const AssetDetails = (props) => {
 
         {currentSport === 'BASEBALL' ? (
           <div className="iphone5:mt-2 md:mt-2">
-            {/* <div
-              className={`bg-[url(https://playible-api-dev.s3.ap-southeast-1.amazonaws.com/team-banners/${getSportType(
-                currentSport
-              ).key.toLowerCase()}/${athlete?.team}.png)]`}
-            > */}
-            {/*TODO 7.15.23: USE HEADSHOT AS BG IMAGE? TRY TO FIND WAYS FOR BG-URL CUSTOM LINK TO WORK, OR FIND A WAY TO PASS A VARAIBLE IN TAILWIND CONFIG, WORK ON MOBILE RESOLUTION FIRST SO RESPONSIVENESS IS EASIER TO WORK ON. */}
             <div
-              className="bg-no-repeat iphone5:bg-cover bg-auto md:bg-contain lg:bg-auto iphone5:md:bg-[length:1400px_300px]"
+              className="bg-no-repeat iphone5:bg-cover bg-auto md:bg-contain md:bg-[length:1400px_300px] lg:bg-auto"
               style={{
                 backgroundImage: `url('${playerHeadshotBackground}')`,
               }}
             >
-              <div className="flex justify-end iphone5:mr-16 md:mr-40 lg:mr-96">
+              <div className="flex iphone5:justify-end iphone5:mr-16 md:mr-40 lg:mr-96 xl:justify-center xl:ml-72 2xl:-ml-negative-38 2xl:justify-center">
                 <Image
                   src={athlete?.playerHeadshot}
                   width={300}
                   height={200}
                   alt="player-headshot"
-                  // className="absolute right-96 top-18"
-                  // className="absolute z-10 right-96"
-                  // className="absolute md:inset-y-0 iphone5:-inset-y-2 md:right-96 iphone5:right-14 md:h-full md:w-auto iphone5:h-24 iphone5:w-24 topobject-cover"
-                  // className="iphone5:w-20 md:w-auto md:h-full object-contain"
                   className="iphone5:w-20 md:w-60 lg:w-72"
                 />
               </div>
