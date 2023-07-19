@@ -310,7 +310,7 @@ const AssetDetails = (props) => {
                             {getDateOfGame(item.gameDate)}
                           </td>
                           <td className="text-sm w-px">vs.</td>
-                          <td className="text-sm pl-2 font-black w-96">{item.opponent.name}</td>
+                          <td className="text-sm pl-2 font-black w-96">{item.opponent?.name}</td>
                           <td className="text-sm text-right font-black p-3 pr-24 w-12">
                             {item.fantasyScore.toFixed(2)}
                           </td>
