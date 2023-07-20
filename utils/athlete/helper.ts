@@ -176,7 +176,7 @@ async function getCricketSchedule(x, startDate, endDate) {
 function getAvgSeasonFantasyScore(array) {
   if (Array.isArray(array) && array.length > 0) {
     return array.filter((item) => {
-      return item.season != '2022' && item.type == 'season';
+      return item.season != '2022' && item.season == '2023REG' && item.type == 'season';
     })[0].fantasyScore;
   } else {
     return 0;
