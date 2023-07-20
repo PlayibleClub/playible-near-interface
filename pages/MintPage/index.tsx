@@ -527,8 +527,7 @@ export default function Home(props) {
 
   function selectMintNba() {
     let optionMint = [];
-    let limit = 11 - mintedNba;
-    for (let x = 1; x < limit; x++) {
+    for (let x = 1; x < 11; x++) {
       optionMint.push({ value: x, label: `${x} ${x > 1 ? 'packs' : 'pack'}` });
     }
     return (
@@ -542,8 +541,7 @@ export default function Home(props) {
 
   function selectMintMlb() {
     let optionMint = [];
-    let limit = 11 - mintedMlb;
-    for (let x = 1; x < limit; x++) {
+    for (let x = 1; x < 11; x++) {
       optionMint.push({ value: x, label: `${x} ${x > 1 ? 'packs' : 'pack'}` });
     }
     return (
@@ -557,8 +555,7 @@ export default function Home(props) {
 
   function selectMintIpl() {
     let optionMint = [];
-    let limit = 11 - mintedIpl;
-    for (let x = 1; x < limit; x++) {
+    for (let x = 1; x < 11; x++) {
       optionMint.push({ value: x, label: `${x} ${x > 1 ? 'packs' : 'pack'}` });
     }
     return (
@@ -994,7 +991,7 @@ export default function Home(props) {
                       <div className="ml-3"></div>
                     ) : (
                       <div>
-                        <div className="mt-4">Limit: 10 packs per wallet</div>
+                        {/* <div className="mt-4">Limit: 10 packs per wallet</div> */}
                       </div>
                     )}
                     {/*TODO: start styling */}
