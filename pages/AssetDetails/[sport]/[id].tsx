@@ -216,7 +216,7 @@ const AssetDetails = (props) => {
         </div>
 
         {currentSport === 'BASEBALL' ? (
-          <div className="iphone5:mt-2 md:mt-2">
+          <div className="iphone5:mt-2 md:mt-5">
             <div
               className="bg-no-repeat iphone5:bg-cover bg-auto md:bg-contain md:bg-[length:1400px_300px] lg:bg-auto"
               style={{
@@ -239,7 +239,7 @@ const AssetDetails = (props) => {
         )}
 
         {currentSport !== 'CRICKET' ? (
-          <div className="text-2xl font-bold font-monument ml-10 mt-16 mr-8 align-baseline">
+          <div className="text-2xl font-bold font-monument ml-10 mt-8 mr-8 align-baseline">
             SEASON STATS
             <hr className="w-10 border-4"></hr>
           </div>
