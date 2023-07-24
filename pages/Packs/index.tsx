@@ -445,29 +445,25 @@ export default function Packs() {
                 </div>
                 <div className="iphone5:ml-6 md:ml-9 iphone5:mr-0 md:mr-4 iphone5:mt-4">
                   {categoryList[0].isActive ? null : isClaimed ? (
-                    <button
-                      className={`hidden bg-indigo-gray bg-opacity-40 text-indigo-white w-5/6 md:w-80 h-10 pointer-events-none 
-      text-center font-bold text-xs `}
-                      onClick={(e) => handleButtonClick(e)}
-                    >
-                      CLAIM SOULBOUND PACK
-                    </button>
+                    ''
                   ) : (
-                    <button
-                      className={`${
-                        currentSport !== SPORT_NAME_LOOKUP.baseball ? 'hidden' : ''
-                      }bg-indigo-buttonblue text-indigo-white iphone5:w-full md:w-80 h-10 
-      text-center font-bold text-xs`}
-                      onClick={(e) => handleButtonClick(e)}
+                    <div
+                      className={`${currentSport !== SPORT_NAME_LOOKUP.baseball ? 'hidden' : ''}`}
                     >
-                      {currentSport === SPORT_NAME_LOOKUP.basketball
-                        ? 'CLAIM BASKETBALL PACK'
-                        : currentSport === SPORT_NAME_LOOKUP.football
-                        ? 'CLAIM FOOTBALL PACK'
-                        : currentSport === SPORT_NAME_LOOKUP.baseball
-                        ? 'CLAIM BASEBALL PACK'
-                        : 'CLAIM CRICKET PACK'}
-                    </button>
+                      <button
+                        className="bg-indigo-buttonblue text-indigo-white iphone5:w-full md:w-80 h-10 
+      text-center font-bold text-xs"
+                        onClick={(e) => handleButtonClick(e)}
+                      >
+                        {currentSport === SPORT_NAME_LOOKUP.basketball
+                          ? 'CLAIM BASKETBALL PACK'
+                          : currentSport === SPORT_NAME_LOOKUP.football
+                          ? 'CLAIM FOOTBALL PACK'
+                          : currentSport === SPORT_NAME_LOOKUP.baseball
+                          ? 'CLAIM BASEBALL PACK'
+                          : 'CLAIM CRICKET PACK'}
+                      </button>
+                    </div>
                   )}
                 </div>
                 <div className="grid iphone5:grid-cols-2 gap-y-8 mt-4 md:grid-cols-4 iphone5:mt-8 iphone5:ml-2 md:ml-7 md:mt-9 ">
