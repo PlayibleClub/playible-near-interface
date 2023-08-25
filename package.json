@@ -14,7 +14,7 @@
     "@babel/core": "^7.20.2",
     "@headlessui/react": "^1.7.4",
     "@heroicons/react": "^2.0.13",
-    "@near-wallet-selector/core": "^7.2.1",
+    "@near-wallet-selector/core": "^7.9.3",
     "@near-wallet-selector/ledger": "^7.3.0",
     "@near-wallet-selector/meteor-wallet": "^7.3.0",
     "@near-wallet-selector/modal-ui": "^7.2.1",
