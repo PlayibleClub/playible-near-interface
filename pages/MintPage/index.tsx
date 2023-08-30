@@ -345,7 +345,7 @@ export default function Home(props) {
       if (balance < mint_cost && currentSport === 'FOOTBALL') {
         setBalanceErrorMsg(
           'Error you need ' +
-            selectedMintAmount * 200 +
+            selectedMintAmount * 85 +
             ' ' +
             useNEP141.title +
             ', You have ' +
@@ -886,7 +886,7 @@ export default function Home(props) {
                       </div>
 
                       <div className="border">
-                        {currentSport === SPORT_NAME_LOOKUP.basketball ||
+                        {/* {currentSport === SPORT_NAME_LOOKUP.basketball ||
                         SPORT_NAME_LOOKUP.baseball ? (
                           ''
                         ) : (
@@ -918,26 +918,20 @@ export default function Home(props) {
                               ></Usdc>
                             </button>
                           </div>
-                        )}
-
-                        {currentSport === SPORT_NAME_LOOKUP.basketball ||
-                        SPORT_NAME_LOOKUP.baseball ? (
-                          <button
-                            onClick={() => setUseNEP141(NEP141NEAR)}
-                            className={
-                              'p-3 ' +
-                              (useNEP141.title == NEP141NEAR.title
-                                ? 'bg-indigo-black'
-                                : 'hover:bg-indigo-slate')
-                            }
-                          >
-                            <NEAR
-                              hardCodeMode={useNEP141.title == NEP141NEAR.title ? '#fff' : '#000'}
-                            ></NEAR>
-                          </button>
-                        ) : (
-                          ''
-                        )}
+                        )} */}
+                        <button
+                          onClick={() => setUseNEP141(NEP141NEAR)}
+                          className={
+                            'p-3 ' +
+                            (useNEP141.title == NEP141NEAR.title
+                              ? 'bg-indigo-black'
+                              : 'hover:bg-indigo-slate')
+                          }
+                        >
+                          <NEAR
+                            hardCodeMode={useNEP141.title == NEP141NEAR.title ? '#fff' : '#000'}
+                          ></NEAR>
+                        </button>
                       </div>
                     </div>
 
