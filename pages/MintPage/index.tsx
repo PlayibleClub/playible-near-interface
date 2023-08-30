@@ -249,7 +249,19 @@ export default function Home(props) {
 
     console.log(mint_cost);
     try {
-      if (accountBalance < mint_cost) {
+      if (accountBalance < mint_cost && currentSport === 'FOOTBALL') {
+        setBalanceErrorMsg(
+          'Error you need ' +
+            selectedMintAmount * 85 +
+            ' ' +
+            useNEP141.title +
+            ', You have ' +
+            accountBalance.toFixed(2) +
+            ' ' +
+            useNEP141.title
+        );
+        return;
+      } else if (accountBalance < mint_cost && currentSport === 'BASEBALL') {
         setBalanceErrorMsg(
           'Error you need ' +
             selectedMintAmount * 30 +
