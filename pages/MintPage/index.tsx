@@ -1020,9 +1020,7 @@ export default function Home(props) {
                           {currentSport === 'FOOTBALL' ? (
                             <button
                               className="w-9/12 flex text-center justify-center items-center bg-indigo-buttonblue font-montserrat text-indigo-white p-4 text-xs mt-8 "
-                              onClick={() =>
-                                execute_batch_transaction_storage_deposit_and_mint_token()
-                              }
+                              onClick={() => execute_near_storage_deposit_and_mint_token()}
                             >
                               Mint {Math.floor(selectedMintAmount * format_price())}N + fee{' '}
                               {utils.format.formatNearAmount(
