@@ -60,7 +60,7 @@ export default function Home(props) {
   const dispatch = useDispatch();
   const [positionList, setPositionList] = useState(SPORT_TYPES[0].positionList);
   const sportObj = SPORT_TYPES.filter(
-    (x) => x.sport !== SPORT_NAME_LOOKUP.football && x.sport !== SPORT_NAME_LOOKUP.cricket
+    (x) => x.sport !== SPORT_NAME_LOOKUP.cricket && x.sport !== SPORT_NAME_LOOKUP.basketball
   ).map((x) => ({
     name: x.sport,
     isActive: false,
@@ -124,9 +124,9 @@ export default function Home(props) {
   const cricketSbImage = '/images/packimages/Cricket-SB-Pack.png';
   const [modalImage, setModalImage] = useState(nflSbImage);
   async function get_claim_status(accountId) {
-    // setIsClaimedFootball(
-    //   await query_claim_status(accountId, getSportType('FOOTBALL').packPromoContract)
-    // );
+    setIsClaimedFootball(
+      await query_claim_status(accountId, getSportType('FOOTBALL').packPromoContract)
+    );
     // setIsClaimedBasketball(
     //   await query_claim_status(accountId, getSportType('BASKETBALL').packPromoContract)
     // );
@@ -714,7 +714,7 @@ export default function Home(props) {
         <div className="flex flex-col w-screen md:w-full overflow-y-auto h-screen justify-center self-center text-indigo-black">
           <Main color="indigo-white">
             <div className="flex-initial iphone5:mt-20 md:ml-6 md:mt-8">
-              {/* <div className="flex md:flex-row md:float-right iphone5:flex-col md:mt-0">
+              <div className="flex md:flex-row md:float-right iphone5:flex-col md:mt-0">
                 <div className="md:mr-5 md:mt-4 iphone5:mt-10">
                   <form>
                     <select
@@ -731,12 +731,22 @@ export default function Home(props) {
                     </select>
                   </form>
                 </div>
-              </div> */}
+              </div>
               <div className="ml-8">
                 <ModalPortfolioContainer title="MINT PACKS" textcolor="text-indigo-black" />
               </div>
               {selector.isSignedIn() ? (
                 <div className="ml-12 mt-4 md:flex md:flex-row md:ml-8">
+                  {isClaimedFootball ? (
+                    ''
+                  ) : (
+                    <button
+                      className="w-60 flex text-center justify-center items-center iphone5:w-64 bg-indigo-buttonblue font-montserrat text-indigo-white p-3 mb-4 md:mr-4 text-xs "
+                      onClick={(e) => handleButtonClick(e, 'FOOTBALL')}
+                    >
+                      CLAIM FOOTBALL PACK
+                    </button>
+                  )}
                   {isClaimedBaseball ? (
                     ''
                   ) : (
@@ -750,6 +760,16 @@ export default function Home(props) {
                 </div>
               ) : (
                 <div className="ml-12 mt-4 md:flex md:flex-row md:ml-8">
+                  {isClaimedFootball ? (
+                    ''
+                  ) : (
+                    <button
+                      className="w-60 flex text-center justify-center items-center iphone5:w-64 bg-indigo-buttonblue font-montserrat text-indigo-white p-3 mb-4 md:mr-4 text-xs "
+                      onClick={logIn}
+                    >
+                      CLAIM FOOTBALL PACK
+                    </button>
+                  )}
                   {isClaimedBaseball ? (
                     ''
                   ) : (
@@ -990,9 +1010,7 @@ export default function Home(props) {
                     {currentSport === 'FOOTBALL' ? (
                       <div className="ml-3"></div>
                     ) : (
-                      <div>
-                        {/* <div className="mt-4">Limit: 10 packs per wallet</div> */}
-                      </div>
+                      <div>{/* <div className="mt-4">Limit: 10 packs per wallet</div> */}</div>
                     )}
                     {/*TODO: start styling */}
                     {/*<div>*/}

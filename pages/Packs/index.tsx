@@ -448,7 +448,12 @@ export default function Packs() {
                     ''
                   ) : (
                     <div
-                      className={`${currentSport !== SPORT_NAME_LOOKUP.baseball ? 'hidden' : ''}`}
+                      className={`${
+                        currentSport !== SPORT_NAME_LOOKUP.baseball &&
+                        currentSport !== SPORT_NAME_LOOKUP.football
+                          ? 'hidden'
+                          : ''
+                      }`}
                     >
                       <button
                         className="bg-indigo-buttonblue text-indigo-white iphone5:w-full md:w-80 h-10 
