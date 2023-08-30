@@ -120,7 +120,11 @@ const TokenDrawPage = (props) => {
     //get the last transaction that holds the token_id needed
     const txObject = queryFromNear.receipts[queryFromNear.receipts.length - 3];
     //@ts-ignore:next-line
-    const contract = txObject.receiver_id;
+    let contract = txObject.receiver_id;
+    console.log(contract);
+    if (contract.includes('pack.pack_minter')) {
+      contract = 'pack.nfl.playible.testnet';
+    }
     if (success) {
       const args = JSON.parse(decode(txObject.receipt.Action.actions[0].FunctionCall.args));
       //for additional checking later for what file to use
@@ -205,7 +209,10 @@ const TokenDrawPage = (props) => {
     //get the last transaction that holds the token_id needed
     const txObject = queryFromNear.receipts[queryFromNear.receipts.length - 3];
     //@ts-ignore:next-line
-    const contract = txObject.receiver_id;
+    let contract = txObject.receiver_id;
+    if (contract.includes('pack.pack_minter')) {
+      contract = 'pack.nfl.playible.near';
+    }
     if (success) {
       const args = JSON.parse(decode(txObject.receipt.Action.actions[0].FunctionCall.args));
       //for additional checking later for what file to use
