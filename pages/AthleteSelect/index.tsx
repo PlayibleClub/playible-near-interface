@@ -376,7 +376,7 @@ const AthleteSelect = (props) => {
                       fromPortfolio={false}
                       isActive={item.isActive}
                       isInjured={item.isInjured}
-                      gameCount={item.schedule.length}
+                      gameCount={0}
                     />
                   </div>
                 ) : (
