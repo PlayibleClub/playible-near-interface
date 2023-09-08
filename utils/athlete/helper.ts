@@ -32,6 +32,10 @@ async function getAthleteInfoById(item, from, to) {
     query: GET_ATHLETE_BY_ID,
     variables: { getAthleteById: parseFloat(value['athlete_id']), from: from, to: to },
   });
+
+  // console.log(data);
+  // console.log(value['athlete_id']);
+  // console.log(value['name']);
   // let queryData;
   // if (from === undefined && to === undefined){
   //   const { data } = await client.query({
@@ -196,7 +200,7 @@ function getDailyFantasyScore(array) {
 function getDailySeasonFantasyScore(array) {
   if (Array.isArray(array) && array.length > 0) {
     return array.filter((item) => {
-      return item.type == 'daily' || item.type == 'season';
+      return item.type == 'daily' || item.type == 'weekly' || item.type == 'season';
     })[0].fantasyScore;
   } else {
     return 0;
