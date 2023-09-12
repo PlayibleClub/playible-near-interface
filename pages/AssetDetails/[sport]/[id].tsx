@@ -98,7 +98,7 @@ const AssetDetails = (props) => {
   function getGamesPlayed() {
     let totalGames = 0;
     athlete?.stats_breakdown.forEach((game) => {
-      if (game.type === 'weekly' && game.played == 1) {
+      if (game.type === 'weekly' && game.played == 1 && game.season === '2023REG') {
         totalGames++;
       } else if (game.type === 'daily' && game.played == 1 && game.season === mlbSeason) {
         totalGames++;
