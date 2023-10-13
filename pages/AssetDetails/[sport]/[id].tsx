@@ -215,7 +215,8 @@ const AssetDetails = (props) => {
           </div>
         </div>
 
-        {currentSport === 'BASEBALL' || currentSport === 'FOOTBALL' ? (
+        {currentSport === 'BASEBALL' || currentSport === 'FOOTBALL' || currentSport ==='BASKETBALL'
+ ? (
           <div className="iphone5:mt-2 md:mt-5">
             <div
               className="bg-no-repeat iphone5:bg-cover bg-auto md:bg-contain md:bg-[length:1400px_300px] lg:bg-auto"
