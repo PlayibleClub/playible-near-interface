@@ -450,7 +450,8 @@ export default function Packs() {
                     <div
                       className={`${
                         currentSport !== SPORT_NAME_LOOKUP.baseball &&
-                        currentSport !== SPORT_NAME_LOOKUP.football
+                        currentSport !== SPORT_NAME_LOOKUP.football &&
+                        currentSport !== SPORT_NAME_LOOKUP.basketball
                           ? 'hidden'
                           : ''
                       }`}
