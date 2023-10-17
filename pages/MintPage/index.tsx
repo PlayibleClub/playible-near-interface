@@ -127,9 +127,9 @@ export default function Home(props) {
     setIsClaimedFootball(
       await query_claim_status(accountId, getSportType('FOOTBALL').packPromoContract)
     );
-    // setIsClaimedBasketball(
-    //   await query_claim_status(accountId, getSportType('BASKETBALL').packPromoContract)
-    // );
+    setIsClaimedBasketball(
+      await query_claim_status(accountId, getSportType('BASKETBALL').packPromoContract)
+    );
     setIsClaimedBaseball(
       await query_claim_status(accountId, getSportType('BASEBALL').packPromoContract)
     );
