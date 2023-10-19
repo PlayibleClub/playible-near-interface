@@ -122,7 +122,7 @@ const TokenDrawPage = (props) => {
     //@ts-ignore:next-line
     let contract = txObject.receiver_id;
     console.log(contract);
-    if (contract.includes('pack.pack_minter')) {
+    if (contract.includes('pack.pack_minter.playible.testnet')) {
       contract = 'pack.nfl.playible.testnet';
     }
     if (success) {
@@ -210,7 +210,7 @@ const TokenDrawPage = (props) => {
     const txObject = queryFromNear.receipts[queryFromNear.receipts.length - 3];
     //@ts-ignore:next-line
     let contract = txObject.receiver_id;
-    if (contract.includes('pack.pack_minter')) {
+    if (contract.includes('pack.pack_minter.playible.near')) {
       contract = 'pack.nfl.playible.near';
     }
     if (success) {
