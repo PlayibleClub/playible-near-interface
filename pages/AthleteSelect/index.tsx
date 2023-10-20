@@ -137,6 +137,10 @@ const AthleteSelect = (props) => {
         athletes = await Promise.all(
           result.map((x) => getAthleteSchedule(x, startDate, endDate, 'mlb'))
         );
+      } else if (currentSport === SPORT_NAME_LOOKUP.football) {
+        athletes = await Promise.all(
+          result.map((x) => getAthleteSchedule(x, startDate, endDate, 'nfl'))
+        );
       } else if (currentSport === SPORT_NAME_LOOKUP.cricket) {
         athletes = await Promise.all(
           result
@@ -179,6 +183,10 @@ const AthleteSelect = (props) => {
       } else if (currentSport === SPORT_NAME_LOOKUP.baseball) {
         athletes = await Promise.all(
           result.map((x) => getAthleteSchedule(x, startDate, endDate, 'mlb'))
+        );
+      } else if (currentSport === SPORT_NAME_LOOKUP.football) {
+        athletes = await Promise.all(
+          result.map((x) => getAthleteSchedule(x, startDate, endDate, 'nfl'))
         );
       } else if (currentSport === SPORT_NAME_LOOKUP.cricket) {
         athletes = await Promise.all(
@@ -376,7 +384,7 @@ const AthleteSelect = (props) => {
                       fromPortfolio={false}
                       isActive={item.isActive}
                       isInjured={item.isInjured}
-                      gameCount={0}
+                      gameCount={item.schedule.length}
                     />
                   </div>
                 ) : (
@@ -399,7 +407,7 @@ const AthleteSelect = (props) => {
                         fromPortfolio={false}
                         isActive={item.isActive}
                         isInjured={item.isInjured}
-                        gameCount={0}
+                        gameCount={item.schedule.length}
                       />
                     </div>
                   </label>
