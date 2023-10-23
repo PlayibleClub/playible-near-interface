@@ -1075,7 +1075,7 @@
   dependencies:
     "@babel/helper-plugin-utils" "^7.22.5"
 
-"@babel/plugin-transform-class-properties@^7.22.5":
+"@babel/plugin-transform-class-properties@^7.22.5", "@babel/plugin-transform-class-properties@7.22.5":
   "integrity" "sha512-nDkQ0NfkOhPTq8YCLiWNxp1+f9fCobEjCb0n8WdbNUBc4IB5V7P1QnX9IjpSoquKrXF5SKojHleVNs2vGeHCHQ=="
   "resolved" "https://registry.npmjs.org/@babel/plugin-transform-class-properties/-/plugin-transform-class-properties-7.22.5.tgz"
   "version" "7.22.5"
@@ -1273,7 +1273,7 @@
     "@babel/helper-plugin-utils" "^7.22.5"
     "@babel/plugin-syntax-numeric-separator" "^7.10.4"
 
-"@babel/plugin-transform-object-rest-spread@^7.22.15":
+"@babel/plugin-transform-object-rest-spread@^7.22.15", "@babel/plugin-transform-object-rest-spread@7.22.15":
   "integrity" "sha512-fEB+I1+gAmfAyxZcX1+ZUwLeAuuf8VIg67CTznZE0MqVFumWkh8xWtn58I4dxdVf080wn7gzWoF8vndOViJe9Q=="
   "resolved" "https://registry.npmjs.org/@babel/plugin-transform-object-rest-spread/-/plugin-transform-object-rest-spread-7.22.15.tgz"
   "version" "7.22.15"
@@ -1588,7 +1588,7 @@
   "resolved" "https://registry.npmjs.org/@babel/regjsgen/-/regjsgen-0.8.0.tgz"
   "version" "0.8.0"
 
-"@babel/runtime@^7.1.2", "@babel/runtime@^7.12.0", "@babel/runtime@^7.12.1", "@babel/runtime@^7.12.5", "@babel/runtime@^7.16.7", "@babel/runtime@^7.18.3", "@babel/runtime@^7.20.6", "@babel/runtime@^7.22.10", "@babel/runtime@^7.3.1", "@babel/runtime@^7.5.5", "@babel/runtime@^7.8.3", "@babel/runtime@^7.8.4", "@babel/runtime@^7.8.7", "@babel/runtime@^7.9.2":
+"@babel/runtime@^7.1.2", "@babel/runtime@^7.12.0", "@babel/runtime@^7.12.1", "@babel/runtime@^7.12.5", "@babel/runtime@^7.16.7", "@babel/runtime@^7.18.3", "@babel/runtime@^7.20.6", "@babel/runtime@^7.22.10", "@babel/runtime@^7.22.11", "@babel/runtime@^7.3.1", "@babel/runtime@^7.5.5", "@babel/runtime@^7.8.3", "@babel/runtime@^7.8.4", "@babel/runtime@^7.8.7", "@babel/runtime@^7.9.2":
   "integrity" "sha512-T0O+aa+4w0u06iNmapipJXMV4HoUir03hpx3/YqXXhu9xim3w+dVphjFWl1OH8NbZHw5Lbm9k45drDkgq2VNNA=="
   "resolved" "https://registry.npmjs.org/@babel/runtime/-/runtime-7.22.15.tgz"
   "version" "7.22.15"
@@ -2518,6 +2518,13 @@
     "@gar/promisify" "^1.0.1"
     "semver" "^7.3.5"
 
+"@npmcli/fs@3.1.0":
+  "integrity" "sha512-7kZUAaLscfgbwBQRbvdMYaZOWyMEcPTH/tJjnyAWJ/dvvs9Ef+CERx/qJb9GExJpl1qipaDGn7KqHnFGGixd0w=="
+  "resolved" "https://registry.npmjs.org/@npmcli/fs/-/fs-3.1.0.tgz"
+  "version" "3.1.0"
+  dependencies:
+    "semver" "^7.3.5"
+
 "@npmcli/move-file@^1.0.1":
   "integrity" "sha512-1SUf/Cg2GzGDyaf15aR9St9TWlb+XvbZXWpDx8YKs7MLzMH/BCeopv+y9vzrzgkfykCGuWOlSu3mZhj2+FQcrg=="
   "resolved" "https://registry.npmjs.org/@npmcli/move-file/-/move-file-1.1.2.tgz"
@@ -2590,6 +2597,37 @@
   "version" "3.0.0"
   dependencies:
     "@babel/runtime" "^7.22.10"
+    "@redux-devtools/chart-monitor" "^4.0.0"
+    "@redux-devtools/core" "^3.13.0"
+    "@redux-devtools/inspector-monitor" "^4.0.0"
+    "@redux-devtools/inspector-monitor-test-tab" "^2.0.0"
+    "@redux-devtools/inspector-monitor-trace-tab" "^2.0.0"
+    "@redux-devtools/log-monitor" "^4.0.2"
+    "@redux-devtools/rtk-query-monitor" "^3.1.1"
+    "@redux-devtools/slider-monitor" "^4.0.0"
+    "@redux-devtools/ui" "^1.3.0"
+    "@reduxjs/toolkit" "^1.9.5"
+    "@types/prop-types" "^15.7.5"
+    "d3-state-visualizer" "^2.0.0"
+    "javascript-stringify" "^2.1.0"
+    "jsan" "^3.1.14"
+    "jsondiffpatch" "^0.5.0"
+    "localforage" "^1.10.0"
+    "lodash" "^4.17.21"
+    "prop-types" "^15.8.1"
+    "react-icons" "^4.10.1"
+    "react-is" "^18.2.0"
+    "react-redux" "^8.1.2"
+    "redux" "^4.2.1"
+    "redux-persist" "^6.0.0"
+    "socketcluster-client" "^17.2.2"
+
+"@redux-devtools/app@^4.0.0":
+  "integrity" "sha512-fvPYQcEGIwLD+yysaCm4hRSS3sJkNc8biOA7s1WIe7B0jFBIAFmCOT98m0+QcNMfO9pv6LBIcvlNAeha/oFpFw=="
+  "resolved" "https://registry.npmjs.org/@redux-devtools/app/-/app-4.0.0.tgz"
+  "version" "4.0.0"
+  dependencies:
+    "@babel/runtime" "^7.22.11"
     "@redux-devtools/chart-monitor" "^4.0.0"
     "@redux-devtools/core" "^3.13.0"
     "@redux-devtools/inspector-monitor" "^4.0.0"
@@ -2764,6 +2802,14 @@
     "react-base16-styling" "^0.9.1"
     "react-json-tree" "^0.18.0"
     "redux-devtools-themes" "^1.0.0"
+
+"@redux-devtools/serialize@^0.4.1":
+  "integrity" "sha512-Bfy2ka6OJiBwAYifADVZ8kUf9FPBPB4aIMqVtT3gR13Gzv8MvdESzp9IQp9v3dp0UsMurMGnb/AYS1DS8C8p7w=="
+  "resolved" "https://registry.npmjs.org/@redux-devtools/serialize/-/serialize-0.4.1.tgz"
+  "version" "0.4.1"
+  dependencies:
+    "@babel/runtime" "^7.16.7"
+    "jsan" "^3.1.14"
 
 "@redux-devtools/slider-monitor@^4.0.0":
   "integrity" "sha512-pjHPYLG91GLRQVcNAIu3Colc6nIqR4mSQYN1MWUqP8nTAlkP1ihEN44KXxcnTUEzuSLRYm1YW3jsI5p4q3aXZA=="
@@ -4986,7 +5032,7 @@
   optionalDependencies:
     "fsevents" "^1.2.7"
 
-"chokidar@^3.4.1":
+"chokidar@^3.4.1", "chokidar@^3.5.3":
   "integrity" "sha512-Dr3sfKRP6oTcjf2JmUmFJfeVMvXBdegxB0iVQ5eb2V10uFJUCAS8OByZdVAyVb8xXNz3GjjTgj9kLWsZTqE6kw=="
   "resolved" "https://registry.npmjs.org/chokidar/-/chokidar-3.5.3.tgz"
   "version" "3.5.3"
@@ -5312,6 +5358,11 @@
   "integrity" "sha512-Kb2wC0fvsWfQrgk8HU5lW6U/Lcs8+9aaYcy4ZFc6DDlo4nZ7n70dEgE5rtR0oG6ufKDUnrwfWL1mXR5ljDatrQ=="
   "resolved" "https://registry.npmjs.org/core-js/-/core-js-2.6.12.tgz"
   "version" "2.6.12"
+
+"core-js@3.33.1":
+  "integrity" "sha512-qVSq3s+d4+GsqN0teRCJtM6tdEEXyWxjzbhVrCHmBS5ZTM0FS2MOS0D13dUXAWDUN6a+lHI/N1hF9Ytz6iLl9Q=="
+  "resolved" "https://registry.npmjs.org/core-js/-/core-js-3.33.1.tgz"
+  "version" "3.33.1"
 
 "core-util-is@~1.0.0":
   "integrity" "sha512-ZQBvi1DcpJ4GDqanjucZ2Hj3wEO5pZDS89BWbkcrvdxksJorwUDDZamX9ldFkp9aw2lmBDLgkObEA4DWNJ9FYQ=="
@@ -6455,11 +6506,6 @@
     "semver" "^6.3.1"
     "string.prototype.matchall" "^4.0.8"
 
-"eslint-plugin-standard@^5.0.0":
-  "integrity" "sha512-eSIXPc9wBM4BrniMzJRBm2uoVuXz2EPa+NXPk2+itrVt+r5SbKFERx/IgrK/HmfjddyKVz2f+j+7gBRvu19xLg=="
-  "resolved" "https://registry.npmjs.org/eslint-plugin-standard/-/eslint-plugin-standard-5.0.0.tgz"
-  "version" "5.0.0"
-
 "eslint-scope@^7.2.2":
   "integrity" "sha512-dOt21O7lTMhDM+X9mB4GX+DZrZtCUJPL/wlcTqxyrx5IvO0IYtILdtrQGQp+8n5S0gwSVmOf9NQrjMOgfQZlIg=="
   "resolved" "https://registry.npmjs.org/eslint-scope/-/eslint-scope-7.2.2.tgz"
@@ -6493,7 +6539,7 @@
   "resolved" "https://registry.npmjs.org/eslint-visitor-keys/-/eslint-visitor-keys-3.4.3.tgz"
   "version" "3.4.3"
 
-"eslint@^2 || ^3 || ^4 || ^5 || ^6 || ^7.2.0 || ^8", "eslint@^3 || ^4 || ^5 || ^6 || ^7 || ^8", "eslint@^6.0.0 || ^7.0.0 || >=8.0.0", "eslint@^7.0.0 || ^8.0.0", "eslint@^8.0.1", "eslint@^8.48.0", "eslint@>=4.19.1", "eslint@>=5.0.0", "eslint@>=5.16.0", "eslint@>=7.0.0", "eslint@>=8":
+"eslint@^2 || ^3 || ^4 || ^5 || ^6 || ^7.2.0 || ^8", "eslint@^3 || ^4 || ^5 || ^6 || ^7 || ^8", "eslint@^6.0.0 || ^7.0.0 || >=8.0.0", "eslint@^7.0.0 || ^8.0.0", "eslint@^8.0.1", "eslint@^8.48.0", "eslint@>=4.19.1", "eslint@>=5.16.0", "eslint@>=7.0.0", "eslint@>=8":
   "integrity" "sha512-sb6DLeIuRXxeM1YljSe1KEx9/YYeZFQWcV8Rq9HfigmdDEugjLEVEa1ozDjL6YDjBpQHPJxJzze+alxi4T3OLg=="
   "resolved" "https://registry.npmjs.org/eslint/-/eslint-8.48.0.tgz"
   "version" "8.48.0"
@@ -7038,7 +7084,7 @@
     "bindings" "^1.5.0"
     "nan" "^2.12.1"
 
-"fsevents@~2.3.2":
+"fsevents@^2.3.2", "fsevents@~2.3.2":
   "integrity" "sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw=="
   "resolved" "https://registry.npmjs.org/fsevents/-/fsevents-2.3.3.tgz"
   "version" "2.3.3"
@@ -7583,7 +7629,7 @@
   "resolved" "https://registry.npmjs.org/immer/-/immer-9.0.21.tgz"
   "version" "9.0.21"
 
-"immutable@^4.1.0", "immutable@^4.3.2":
+"immutable@^4.0.0", "immutable@^4.1.0", "immutable@^4.3.2":
   "integrity" "sha512-fsXeu4J4i6WNWSikpI88v/PcVflZz+6kMhUfIwc5SY+poQRPnaf5V7qds6SUyUN3cVxEzuCab7QIoLOQ+DQ1wA=="
   "resolved" "https://registry.npmjs.org/immutable/-/immutable-4.3.4.tgz"
   "version" "4.3.4"
@@ -11320,6 +11366,14 @@
     "source-map-url" "^0.4.0"
     "urix" "^0.1.0"
 
+"source-map-resolve@^0.6.0":
+  "integrity" "sha512-KXBr9d/fO/bWo97NXsPIAW1bFSBOuCnjbNTBMO7N59hsv5i9yzRDfcYwwt0l04+VqnKC+EwzvJZIP/qkuMgR/w=="
+  "resolved" "https://registry.npmjs.org/source-map-resolve/-/source-map-resolve-0.6.0.tgz"
+  "version" "0.6.0"
+  dependencies:
+    "atob" "^2.1.2"
+    "decode-uri-component" "^0.2.0"
+
 "source-map-support@~0.5.20":
   "integrity" "sha512-uBHU3L3czsIyYXKX88fdrGovxdSCoTGDRZ6SYXtSRxLZUzHg5P/66Ht6uoUlHu9EZod+inXhKo3qQgwXUT/y1w=="
   "resolved" "https://registry.npmjs.org/source-map-support/-/source-map-support-0.5.21.tgz"
@@ -11328,12 +11382,17 @@
     "buffer-from" "^1.0.0"
     "source-map" "^0.6.0"
 
-"source-map-url@^0.4.0":
+"source-map-url@^0.4.0", "source-map-url@^0.4.1":
   "integrity" "sha512-cPiFOTLUKvJFIg4SKVScy4ilPPW6rFgMgfuZJPNoDuMs3nC1HbMUycBoJw77xFIp6z1UJQJOfx6C9GMH80DiTw=="
   "resolved" "https://registry.npmjs.org/source-map-url/-/source-map-url-0.4.1.tgz"
   "version" "0.4.1"
 
-"source-map@^0.5.3", "source-map@^0.5.6", "source-map@^0.5.7", "source-map@~0.5.1":
+"source-map@^0.5.3", "source-map@^0.5.6":
+  "integrity" "sha512-LbrmJOMUSdEVxIKvdcJzQC+nQhe8FUZQTXQy6+I75skNgn3OoQ0DZA8YnFa7gp8tqtL3KPf1kmo0R5DoApeSGQ=="
+  "resolved" "https://registry.npmjs.org/source-map/-/source-map-0.5.7.tgz"
+  "version" "0.5.7"
+
+"source-map@^0.5.7":
   "integrity" "sha512-LbrmJOMUSdEVxIKvdcJzQC+nQhe8FUZQTXQy6+I75skNgn3OoQ0DZA8YnFa7gp8tqtL3KPf1kmo0R5DoApeSGQ=="
   "resolved" "https://registry.npmjs.org/source-map/-/source-map-0.5.7.tgz"
   "version" "0.5.7"
@@ -11354,6 +11413,11 @@
   "version" "0.1.43"
   dependencies:
     "amdefine" ">=0.0.4"
+
+"source-map@~0.5.1":
+  "integrity" "sha512-LbrmJOMUSdEVxIKvdcJzQC+nQhe8FUZQTXQy6+I75skNgn3OoQ0DZA8YnFa7gp8tqtL3KPf1kmo0R5DoApeSGQ=="
+  "resolved" "https://registry.npmjs.org/source-map/-/source-map-0.5.7.tgz"
+  "version" "0.5.7"
 
 "source-map@~0.6.1":
   "integrity" "sha512-UjgapumWlbMhkBgzT7Ykc5YXUT46F0iKu8SGXq0bcwP5dz/h0Plj6enJqjz1Zbq2l5WaqYnrVbwWOWMyF3F47g=="
@@ -12256,10 +12320,10 @@
   "resolved" "https://registry.npmjs.org/uuid/-/uuid-8.3.2.tgz"
   "version" "8.3.2"
 
-"uuid@^9.0.0":
-  "integrity" "sha512-MXcSTerfPa4uqyzStbRoTgt5XIe3x5+42+q1sDuy3R5MDk66URdLMOZe5aPX/SQd+kuYAh0FdP/pO28IkQyTeg=="
-  "resolved" "https://registry.npmjs.org/uuid/-/uuid-9.0.0.tgz"
-  "version" "9.0.0"
+"uuid@^9.0.0", "uuid@9.0.1":
+  "integrity" "sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA=="
+  "resolved" "https://registry.npmjs.org/uuid/-/uuid-9.0.1.tgz"
+  "version" "9.0.1"
 
 "uuid@3.2.1":
   "integrity" "sha512-jZnMwlb9Iku/O3smGWvZhauCf6cvvpKi4BKRiliS3cxnI+Gz9j5MEpTz2UFuXiKPJocb7gnsLHwiS05ige5BEA=="
