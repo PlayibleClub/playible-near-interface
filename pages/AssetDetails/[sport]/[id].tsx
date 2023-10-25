@@ -9,7 +9,7 @@ import BackFunction from 'components/buttons/BackFunction';
 import StatsComponent from '../components/StatsComponent';
 import Link from 'next/link';
 import { query_nft_tokens_by_id } from 'utils/near/helper';
-import { getSportType } from 'data/constants/sportConstants';
+import { getSportType, SPORT_NAME_LOOKUP } from 'data/constants/sportConstants';
 import { checkInjury } from 'utils/athlete/helper';
 import { GET_SPORT_CURRENT_SEASON } from 'utils/queries';
 import { useLazyQuery } from '@apollo/client';
@@ -19,7 +19,7 @@ const AssetDetails = (props) => {
   const { query } = props;
 
   const [getSportCurrentSeason] = useLazyQuery(GET_SPORT_CURRENT_SEASON);
-  const [mlbSeason, setMlbSeason] = useState('');
+  const [sportSeason, setSportSeason] = useState('');
   const athleteIndex = query.id;
   const currentSport = query.sport.toString().toUpperCase();
   const isSoulbound = athleteIndex.includes('SB') || athleteIndex.includes('PR') ? true : false;
@@ -100,7 +100,7 @@ const AssetDetails = (props) => {
     athlete?.stats_breakdown.forEach((game) => {
       if (game.type === 'weekly' && game.played == 1 && game.season === '2023REG') {
         totalGames++;
-      } else if (game.type === 'daily' && game.played == 1 && game.season === mlbSeason) {
+      } else if (game.type === 'daily' && game.played == 1 && game.season === sportSeason) {
         totalGames++;
       }
     });
@@ -128,10 +128,17 @@ const AssetDetails = (props) => {
   }
 
   const fetchCurrentSeason = useCallback(async () => {
-    let queryMlb = await getSportCurrentSeason({
-      variables: { sport: 'mlb' },
-    });
-    setMlbSeason(await queryMlb.data.getSportCurrentSeason.apiSeason);
+    let query;
+    switch (currentSport) {
+      case SPORT_NAME_LOOKUP.baseball:
+        query = await getSportCurrentSeason({ variables: { sport: 'mlb' } });
+        break;
+      case SPORT_NAME_LOOKUP.basketball:
+        query = await getSportCurrentSeason({ variables: { sport: 'nba' } });
+        break;
+    }
+
+    setSportSeason(await query.data.getSportCurrentSeason.apiSeason);
   }, []);
   useEffect(() => {
     fetchCurrentSeason();
@@ -215,8 +222,9 @@ const AssetDetails = (props) => {
           </div>
         </div>
 
-        {currentSport === 'BASEBALL' || currentSport === 'FOOTBALL' || currentSport ==='BASKETBALL'
- ? (
+        {currentSport === 'BASEBALL' ||
+        currentSport === 'FOOTBALL' ||
+        currentSport === 'BASKETBALL' ? (
           <div className="iphone5:mt-2 md:mt-5">
             <div
               className="bg-no-repeat iphone5:bg-cover bg-auto md:bg-contain md:bg-[length:1400px_300px] lg:bg-auto"
@@ -278,7 +286,7 @@ const AssetDetails = (props) => {
           id={athlete?.primary_id}
           position={athlete?.position}
           sport={currentSport}
-          mlbSeason={mlbSeason}
+          mlbSeason={sportSeason}
         />
         <div className="text-2xl font-bold font-monument mt-3 ml-10 mb-10 mr-8 align-baseline md:-mt-14">
           GAME SCORES
@@ -302,7 +310,7 @@ const AssetDetails = (props) => {
                       (statType) =>
                         (statType.type == 'weekly' || statType.type == 'daily') &&
                         statType.played == 1 &&
-                        statType.season == mlbSeason
+                        statType.season == sportSeason
                     )
                     .map((item, index) => {
                       return (
