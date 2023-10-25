@@ -110,7 +110,7 @@ const AssetDetails = (props) => {
   function getGamesPlayedNba() {
     let totalGames = 0;
     athlete?.stats_breakdown.forEach((game) => {
-      if (game.type === 'season') {
+      if (game.season === sportSeason) {
         totalGames = game.played;
       }
     });
