@@ -392,7 +392,7 @@ async function query_filter_tokens_for_owner(
         result_two = Promise.all(
           result
             .map(convertNftToAthlete)
-            .map((item) => getPortfolioAssetDetailsById(item, undefined, undefined))
+            .map((item) => getPortfolioAssetDetailsById(item, undefined, undefined, currentSport))
         );
       else {
         result_two = Promise.all(

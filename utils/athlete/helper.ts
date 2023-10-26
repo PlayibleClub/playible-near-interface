@@ -80,7 +80,7 @@ async function getAthleteInfoById(item, from, to) {
 }
 
 //used by portfolio and assetdetails
-async function getPortfolioAssetDetailsById(item, from, to) {
+async function getPortfolioAssetDetailsById(item, from, to, currentSport) {
   //console.log(item.extra);
   let value = {} as trait_type;
   for (const key of item.extra) {
@@ -104,7 +104,10 @@ async function getPortfolioAssetDetailsById(item, from, to) {
     isOpen: false,
     animation: data.getAthleteById.nftAnimation,
     image: item.metadata.media,
-    fantasy_score: getAvgSeasonFantasyScore(data.getAthleteById.stats),
+    fantasy_score:
+      currentSport === 'FOOTBALL'
+        ? getAvgSeasonFantasyScore(data.getAthleteById.stats)
+        : getAvgCurrentSeasonFantasyScore(data.getAthleteById.stats),
     stats_breakdown: data.getAthleteById.stats,
     isInGame: item.metadata['starts_at'] > getUTCTimestampFromLocal() ? true : false,
     isInjured: data.getAthleteById.isInjured,
@@ -185,6 +188,19 @@ function getAvgSeasonFantasyScore(array) {
   } else {
     return 0;
   }
+}
+
+function getAvgCurrentSeasonFantasyScore(array) {
+  if (Array.isArray(array) && array.length > 0) {
+    const filteredData = array.filter((item) => {
+      return item.season === '2024REG';
+    });
+
+    if (filteredData.length > 0) {
+      return filteredData[0].fantasyScore;
+    }
+  }
+  return 0;
 }
 
 function getDailyFantasyScore(array) {

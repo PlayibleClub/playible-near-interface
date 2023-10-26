@@ -59,7 +59,8 @@ const AssetDetails = (props) => {
         result_two = await getPortfolioAssetDetailsById(
           await convertNftToAthlete(result),
           null,
-          null
+          null,
+          currentSport
         );
         let games = result_two.stats_breakdown.slice();
         console.log(result_two);
