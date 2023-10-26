@@ -136,6 +136,9 @@ const AssetDetails = (props) => {
       case SPORT_NAME_LOOKUP.basketball:
         query = await getSportCurrentSeason({ variables: { sport: 'nba' } });
         break;
+        case SPORT_NAME_LOOKUP.football:
+        query = await getSportCurrentSeason({ variables: { sport: 'nfl' } });
+        break;
     }
 
     setSportSeason(await query.data.getSportCurrentSeason.apiSeason);
