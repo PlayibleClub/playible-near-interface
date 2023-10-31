@@ -12,6 +12,7 @@ import { setupMyNearWallet } from '@near-wallet-selector/my-near-wallet';
 import { setupMeteorWallet } from '@near-wallet-selector/meteor-wallet';
 import { getConfig, getContract } from '../utils/near';
 import { MINTER_NFL } from '../data/constants/nearContracts';
+import { setupHereWallet } from '@near-wallet-selector/here-wallet';
 
 declare global {
   interface Window {
@@ -45,6 +46,7 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
         setupLedger(),
         setupNightly(),
         setupMeteorWallet(),
+        setupHereWallet()
       ],
     });
     const _modal = setupModal(_selector, {
