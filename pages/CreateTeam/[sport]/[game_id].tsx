@@ -19,6 +19,7 @@ import {
   setPosition,
   setTeamNameRedux,
   setSport,
+  setTokenWhitelist,
 } from 'redux/athlete/athleteSlice';
 import { query_game_data } from 'utils/near/helper';
 
@@ -34,6 +35,7 @@ export default function CreateLineup(props) {
   // @ts-ignore:next-line
   const [teamName, setTeamName] = useState('Team 1');
   const [gameData, setGameData] = useState([]);
+  const [tokenTypeWhitelist, setTokenTypeWhitelist] = useState([]);
   const [submitModal, setSubmitModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
   const [editInput, setEditInput] = useState(teamName);
@@ -53,6 +55,7 @@ export default function CreateLineup(props) {
   }
 
   function populateLineup(array) {
+    console.log('test');
     const array2 = [];
     for (let i = 0; i < array.length; i++) {
       for (let j = 0; j < array[i].amount; j++) {
@@ -120,34 +123,32 @@ export default function CreateLineup(props) {
 
   const checkLineups = () => {
     let errors = [];
-  
-      const trueNumber = lineup.filter((player) => player.isAthlete === true).length;
-      const diff = lineup.length - trueNumber;
 
-      if (lineup.length !== trueNumber) {
-        errors.push(`Add more Athletes. (Need ${diff} more)`);
-      }
-    
+    const trueNumber = lineup.filter((player) => player.isAthlete === true).length;
+    const diff = lineup.length - trueNumber;
+
+    if (lineup.length !== trueNumber) {
+      errors.push(`Add more Athletes. (Need ${diff} more)`);
+    }
+
     return errors;
   };
-  
+
   const validateLineup = () => {
     const errors = checkLineups();
     if (errors.length > 0) {
-      alert(
-        `ERROR: \n${errors
-          .map((item) => '❌ ' + item)
-          .join(` \n`)}`.replace(',', '')
-      );
+      alert(`ERROR: \n${errors.map((item) => '❌ ' + item).join(` \n`)}`.replace(',', ''));
     } else {
       setSubmitModal(true);
     }
   };
-  
-  const handleLineupClick = (game_id, position, athleteLineup, index, teamName) => {
+
+  const handleLineupClick = (game_id, position, athleteLineup, tokenWhitelist, index, teamName) => {
+    console.log(tokenWhitelist);
     dispatch(setGameId(game_id));
     dispatch(setPosition(position));
     dispatch(setAthleteLineup(athleteLineup));
+    dispatch(setTokenWhitelist(tokenWhitelist));
     dispatch(setIndex(index));
     dispatch(setTeamNameRedux(teamName));
     dispatch(setSport(currentSport));
@@ -156,18 +157,26 @@ export default function CreateLineup(props) {
 
   useEffect(() => {
     getTeamNamePage();
-    if (lineup.length === 0) {
-      get_game_data(gameId);
-    }
+    console.log(lineup.length);
+    // if (lineup.length === 0) {
+    //   console.log('query game data');
+    //   get_game_data(gameId);
+    // }
+    get_game_data(gameId);
   }, []);
 
   useEffect(() => {
     //@ts-ignore:next-line
     console.log(gameData);
-    if (gameData.length !== 0) {
+    if (gameData.length !== 0 && lineup.length === 0) {
       //@ts-ignore:next-line
       populateLineup(gameData.positions);
+
+      //@ts-ignore:next-line
+      console.log(gameData.token_type_whitelist);
     }
+    //@ts-ignore:next-line
+    setTokenTypeWhitelist(gameData.token_type_whitelist);
   }, [gameData]);
   useEffect(() => {
     console.log(lineup);
@@ -207,7 +216,14 @@ export default function CreateLineup(props) {
                             <div
                               className="cursor-pointer"
                               onClick={() =>
-                                handleLineupClick(gameId, data.position, lineup, i, teamName)
+                                handleLineupClick(
+                                  gameId,
+                                  data.position,
+                                  lineup,
+                                  tokenTypeWhitelist,
+                                  i,
+                                  teamName
+                                )
                               }
                             >
                               <Lineup
@@ -227,7 +243,14 @@ export default function CreateLineup(props) {
                             <div
                               className="cursor-pointer"
                               onClick={() =>
-                                handleLineupClick(gameId, data.position, lineup, i, teamName)
+                                handleLineupClick(
+                                  gameId,
+                                  data.position,
+                                  lineup,
+                                  tokenTypeWhitelist,
+                                  i,
+                                  teamName
+                                )
                               }
                             >
                               <Lineup
