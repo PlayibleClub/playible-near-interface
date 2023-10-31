@@ -120,6 +120,8 @@ async function getPortfolioAssetDetailsById(item, from, to, whitelist) {
     isInjured: data.getAthleteById.isInjured,
     isActive: data.getAthleteById.isActive,
     isAllowed: isAllowed,
+    backendTeam: data.getAthleteById.team.key,
+    backendPosition: data.getAthleteById.position,
     playerHeadshot: data.getAthleteById.playerHeadshot,
   };
   return returningData;

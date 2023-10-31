@@ -7,7 +7,15 @@ import LoadingModal from '../loading/LoadingModal';
 // TODO: Modal Design for dark mode and light mode
 
 const Modal = (props) => {
-  const { title, children, visible, onClose = undefined, AdminGame, isEntrySummary } = props;
+  const {
+    title,
+    children,
+    visible,
+    onClose = undefined,
+    AdminGame,
+    isEntrySummary,
+    isUpdateWarning,
+  } = props;
 
   // TODO: Make the modal more presentable
   return (
@@ -46,9 +54,16 @@ const Modal = (props) => {
             >
               <div
                 className={`bg-indigo-white inline-block p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl  ${
-                  AdminGame === true ? 'w-full' : isEntrySummary ? 'w-3/5' : 'w-full max-w-md'
+                  AdminGame === true
+                    ? 'w-full'
+                    : isEntrySummary
+                    ? 'w-3/5'
+                    : isUpdateWarning
+                    ? 'md:w-2/5 w-full'
+                    : 'w-full max-w-md'
                 }`}
-              >{console.log(isEntrySummary, 'test')}
+              >
+                {console.log(isEntrySummary, 'test')}
                 <Dialog.Title
                   as="h3"
                   className="text-lg font-medium leading-6 text-gray-900 pb-4 font-monument uppercase"

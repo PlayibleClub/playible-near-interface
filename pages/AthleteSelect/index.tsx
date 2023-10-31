@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import Modal from 'components/modals/Modal';
 import { providers } from 'near-api-js';
 import { getRPCProvider } from 'utils/near';
 import BackFunction from 'components/buttons/BackFunction';
@@ -60,9 +61,14 @@ const AthleteSelect = (props) => {
   const [name, setName] = useState(['allNames']);
   const [lineup, setLineup] = useState([]);
   const [selectedAthlete, setSelectedAthlete] = useState(null);
+  const [nearPosition, setNearPosition] = useState('');
+  const [nearTeam, setNearTeam] = useState('');
+  const [backendPosition, setBackendPosition] = useState('');
+  const [backendTeam, setBackendTeam] = useState('');
   const { accountId } = useWalletSelector();
   const [pageCount, setPageCount] = useState(0);
   const [regPageCount, setRegPageCount] = useState(0);
+  const [updateModal, setUpdateModal] = useState(false);
   const [remountComponent, setRemountComponent] = useState(0);
   const [remountAthlete, setRemountAthlete] = useState(0);
   const [getTeams] = useLazyQuery(GET_TEAMS);
@@ -261,6 +267,16 @@ const AthleteSelect = (props) => {
 
   const handleProceedClick = (game_id, lineup) => {
     console.log(selectedAthlete);
+
+    if (
+      selectedAthlete.position !== selectedAthlete.backendPosition ||
+      selectedAthlete.team !== selectedAthlete.backendTeam
+    ) {
+      setUpdateModal(true);
+    }
+
+    //if there is difference,
+
     // dispatch(setGameId(game_id));
     // dispatch(setAthleteLineup(lineup));
     // router.push({
@@ -268,6 +284,8 @@ const AthleteSelect = (props) => {
     //   query: { sport: currentSport, game_id: game_id },
     // });
   };
+
+  const handleUpdateConfirm = (game_id, lineup) => {};
 
   const handlePageClick = (event) => {
     let total = selectedRegular ? totalRegularSupply : selectedPromo ? totalPromoSupply : 0;
@@ -371,6 +389,53 @@ const AthleteSelect = (props) => {
         />
       </div>
 
+      <Modal title={'UPDATE METADATA WARNING'} visible={updateModal} isUpdateWarning={true}>
+        <div className="md:h-64 h-80 overflow-y-auto">
+          <button
+            className="fixed top-4 right-4"
+            onClick={() => {
+              setUpdateModal(false);
+            }}
+          >
+            <img src="/images/x.png"></img>
+          </button>
+          <div className="text-lg font-monument text-indigo-red">
+            This athlete has conflicting metadata with the blockchain and our database, and cannot
+            be used until it is updated. Would you like to update?
+          </div>
+          <div className="font-monument">NEAR metadata:</div>
+          <div className="text-base font-monument">
+            {1 == 1 ? (
+              <>
+                Position: {selectedAthlete?.position} Team: {selectedAthlete?.team}
+              </>
+            ) : (
+              ''
+            )}
+          </div>
+          <div className="font-monument">Backend metadata:</div>
+          <div className="font-monument">
+            {1 == 1 ? (
+              <>
+                Position: {selectedAthlete?.backendPosition} Team: {selectedAthlete?.backendTeam}
+              </>
+            ) : (
+              ''
+            )}
+          </div>
+          <div className="flex w-full md:sticky z-50 justify-between md:mt-4 mt-12">
+            <button
+              onClick={() => setUpdateModal(false)}
+              className="bg-indigo-red  text-indigo-white w-1/3 md:w-80 h-12 md:h-14 text-center font-bold"
+            >
+              CANCEL
+            </button>
+            <button className="bg-indigo-blue text-indigo-white w-1/3 md:w-80 h-12 md:h-14 text-center font-bold">
+              CONFIRM
+            </button>
+          </div>
+        </div>
+      </Modal>
       <div key={remountAthlete} className="flex flex-col overflow-y-auto">
         <div className="grid grid-cols-2 mt-1 ml-4 md:grid-cols-4 md:ml-7 md:mt-2">
           {athletes.map((item, i) => {
