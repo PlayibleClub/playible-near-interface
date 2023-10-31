@@ -62,6 +62,10 @@ export const GET_ATHLETE_BY_ID = gql`
         gameDate
         played
       }
+      team {
+        key
+      }
+      position
     }
   }
 `;
