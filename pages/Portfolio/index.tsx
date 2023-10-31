@@ -83,6 +83,7 @@ const Portfolio = () => {
   sportObj[0].isActive = true;
   const [categoryList, setCategoryList] = useState([...sportObj]);
   const [currentSport, setCurrentSport] = useState(sportObj[0].name);
+  const whitelist = ['regular', 'promo', 'soulbound'];
   // const [contractList, setContractList] = useState([
   //   {
   //     name: 'FOOTBALL',
@@ -176,7 +177,8 @@ const Portfolio = () => {
       position,
       team,
       name,
-      currentSport
+      currentSport,
+      whitelist
     ).then((result) => {
       setAthletes(result);
     });
@@ -192,7 +194,8 @@ const Portfolio = () => {
         team,
         name,
         contract,
-        currentSport
+        currentSport,
+        whitelist
       )
     );
   }
