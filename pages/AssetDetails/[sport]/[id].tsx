@@ -112,7 +112,7 @@ const AssetDetails = (props) => {
     let totalGames = 0;
     athlete?.stats_breakdown.forEach((game) => {
       if (game.season === sportSeason) {
-        totalGames = game.played;
+        totalGames++;
       }
     });
     return totalGames;

@@ -193,7 +193,7 @@ function getAvgSeasonFantasyScore(array) {
 function getAvgCurrentSeasonFantasyScore(array) {
   if (Array.isArray(array) && array.length > 0) {
     const filteredData = array.filter((item) => {
-      return item.season === '2024REG';
+      return item.season === '2024REG' && item.type === 'season';
     });
 
     if (filteredData.length > 0) {
