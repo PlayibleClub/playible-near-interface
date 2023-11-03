@@ -60,6 +60,7 @@ const AssetDetails = (props) => {
           await convertNftToAthlete(result),
           null,
           null,
+          ['regular', 'promo', 'soulbound'],
           currentSport
         );
         let games = result_two.stats_breakdown.slice();
