@@ -245,6 +245,7 @@ export const SPORT_NAME_LOOKUP = {
 export const SPORT_TYPES = [
   {
     key: 'NFL',
+    promoKey: 'NFL-PROMO',
     sport: SPORT_NAME_LOOKUP.football,
     mintContract: getContract(MINTER_NFL),
     packContract: getContract(PACK_NFL),
@@ -259,6 +260,7 @@ export const SPORT_TYPES = [
   },
   {
     key: 'MLB',
+    promoKey: 'MLB-PROMO',
     sport: SPORT_NAME_LOOKUP.baseball,
     mintContract: getContract(MINTER_BASEBALL),
     packContract: getContract(PACK_BASEBALL),
@@ -274,6 +276,7 @@ export const SPORT_TYPES = [
   },
   {
     key: 'NBA',
+    promoKey: 'NBA-PROMO',
     sport: SPORT_NAME_LOOKUP.basketball,
     mintContract: getContract(MINTER_BASKETBALL),
     packContract: getContract(PACK_BASKETBALL),

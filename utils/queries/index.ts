@@ -62,6 +62,10 @@ export const GET_ATHLETE_BY_ID = gql`
         gameDate
         played
       }
+      team {
+        key
+      }
+      position
     }
   }
 `;
@@ -457,5 +461,11 @@ export const GET_CRICKET_SCHEDULE = gql`
       }
       status
     }
+  }
+`;
+
+export const UPDATE_NEAR_ATHLETE_METADATA = gql`
+  mutation Mutation($tokenId: String!, $sportType: String!) {
+    updateMetadataOfNearAthlete(tokenId: $tokenId, sportType: $sportType)
   }
 `;

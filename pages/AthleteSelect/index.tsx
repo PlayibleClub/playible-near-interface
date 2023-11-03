@@ -1,10 +1,12 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import Modal from 'components/modals/Modal';
 import { providers } from 'near-api-js';
 import { getRPCProvider } from 'utils/near';
 import BackFunction from 'components/buttons/BackFunction';
 import Container from 'components/containers/Container';
 import PortfolioContainer from 'components/containers/PortfolioContainer';
 import { useRouter } from 'next/router';
+import client from 'apollo-client';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
 import SearchComponent from 'components/SearchComponent';
 import ReactPaginate from 'react-paginate';
@@ -16,6 +18,7 @@ import {
   getIndex,
   getPosition,
   getSport,
+  getTokenWhitelist,
 } from 'redux/athlete/athleteSlice';
 import { setAthleteLineup, setGameId } from 'redux/athlete/athleteSlice';
 import {
@@ -23,6 +26,7 @@ import {
   query_filter_tokens_for_owner,
   query_mixed_tokens_pagination,
 } from 'utils/near/helper';
+import { UPDATE_NEAR_ATHLETE_METADATA } from 'utils/queries';
 import { getGameStartDate, getGameEndDate } from 'redux/athlete/athleteSlice';
 import { getSportType, SPORT_NAME_LOOKUP } from 'data/constants/sportConstants';
 import NftTypeComponent from 'pages/Portfolio/components/NftTypeComponent';
@@ -37,6 +41,8 @@ const AthleteSelect = (props) => {
   const startDate = useSelector(getGameStartDate);
   const endDate = useSelector(getGameEndDate);
   const position = useSelector(getPosition);
+  const whitelist = useSelector(getTokenWhitelist);
+  console.log(whitelist);
   console.log(position);
   const index = useSelector(getIndex);
   const reduxLineup = useSelector(getAthleteLineup);
@@ -56,9 +62,15 @@ const AthleteSelect = (props) => {
   const [team, setTeam] = useState(['allTeams']);
   const [name, setName] = useState(['allNames']);
   const [lineup, setLineup] = useState([]);
+  const [selectedAthlete, setSelectedAthlete] = useState(null);
+  const [nearPosition, setNearPosition] = useState('');
+  const [nearTeam, setNearTeam] = useState('');
+  const [backendPosition, setBackendPosition] = useState('');
+  const [backendTeam, setBackendTeam] = useState('');
   const { accountId } = useWalletSelector();
   const [pageCount, setPageCount] = useState(0);
   const [regPageCount, setRegPageCount] = useState(0);
+  const [updateModal, setUpdateModal] = useState(false);
   const [remountComponent, setRemountComponent] = useState(0);
   const [remountAthlete, setRemountAthlete] = useState(0);
   const [getTeams] = useLazyQuery(GET_TEAMS);
@@ -102,6 +114,7 @@ const AthleteSelect = (props) => {
       athlete: athletes[radioIndex],
     });
     setLineup(passedLineup);
+    setSelectedAthlete(athletes[radioIndex]);
   }
 
   function checkIfAthleteExists(athlete_id, primary_id) {
@@ -126,7 +139,8 @@ const AthleteSelect = (props) => {
       team,
       name,
       contract,
-      currentSport
+      currentSport,
+      whitelist
     ).then(async (result) => {
       let athletes = result;
       if (currentSport === SPORT_NAME_LOOKUP.basketball) {
@@ -173,7 +187,8 @@ const AthleteSelect = (props) => {
       position,
       team,
       name,
-      currentSport
+      currentSport,
+      whitelist
     ).then(async (result) => {
       let athletes = result;
       if (currentSport === SPORT_NAME_LOOKUP.basketball) {
@@ -253,12 +268,62 @@ const AthleteSelect = (props) => {
   };
 
   const handleProceedClick = (game_id, lineup) => {
-    dispatch(setGameId(game_id));
-    dispatch(setAthleteLineup(lineup));
-    router.push({
-      pathname: '/CreateTeam/[sport]/[game_id]',
-      query: { sport: currentSport, game_id: game_id },
-    });
+    let showUpdateModal = false;
+    if (
+      selectedAthlete.position !== selectedAthlete.backendPosition ||
+      selectedAthlete.team !== selectedAthlete.backendTeam
+    ) {
+      setUpdateModal(true);
+      showUpdateModal = true;
+    }
+    if (!showUpdateModal) {
+      //no issues with metadata
+      dispatch(setGameId(game_id));
+      dispatch(setAthleteLineup(lineup));
+      router.push({
+        pathname: '/CreateTeam/[sport]/[game_id]',
+        query: { sport: currentSport, game_id: game_id },
+      });
+    }
+    //if there is difference,
+
+    // dispatch(setGameId(game_id));
+    // dispatch(setAthleteLineup(lineup));
+    // router.push({
+    //   pathname: '/CreateTeam/[sport]/[game_id]',
+    //   query: { sport: currentSport, game_id: game_id },
+    // });
+  };
+
+  const handleUpdateConfirm = async (game_id, lineup) => {
+    try {
+      let sportType = getSportType(currentSport);
+
+      const { data, errors } = await client.mutate({
+        mutation: UPDATE_NEAR_ATHLETE_METADATA,
+        variables: {
+          sportType:
+            selectedAthlete.isSoul || selectedAthlete.isPromo
+              ? sportType.promoKey.toLowerCase()
+              : sportType.key.toLowerCase(),
+          tokenId: selectedAthlete.athlete_id,
+        },
+      });
+      if (data) {
+        //successfully changed metadata, return to CreateTeam first
+        alert('Successfully changed metadata. Returning to CreateTeam...');
+        router.push({
+          pathname: '/CreateTeam/[sport]/[game_id]',
+          query: { sport: currentSport, game_id: game_id },
+        });
+      } else {
+        alert('Error in changing metadata. Returning to CreateTeam...');
+        router.push({
+          pathname: '/CreateTeam/[sport]/[game_id]',
+          query: { sport: currentSport, game_id: game_id },
+        });
+      }
+    } catch (error) {}
   };
 
   const handlePageClick = (event) => {
@@ -363,13 +428,65 @@ const AthleteSelect = (props) => {
         />
       </div>
 
+      <Modal title={'UPDATE METADATA WARNING'} visible={updateModal} isUpdateWarning={true}>
+        <div className="md:h-64 h-80 overflow-y-auto">
+          <button
+            className="fixed top-4 right-4"
+            onClick={() => {
+              setUpdateModal(false);
+            }}
+          >
+            <img src="/images/x.png"></img>
+          </button>
+          <div className="text-lg font-monument text-indigo-red">
+            This athlete has conflicting metadata with the blockchain and our database, and cannot
+            be used until it is updated. Would you like to update?
+          </div>
+          <div className="font-monument">NEAR metadata:</div>
+          <div className="text-base font-monument">
+            {1 == 1 ? (
+              <>
+                Position: {selectedAthlete?.position} Team: {selectedAthlete?.team}
+              </>
+            ) : (
+              ''
+            )}
+          </div>
+          <div className="font-monument">SportsData API:</div>
+          <div className="font-monument">
+            {1 == 1 ? (
+              <>
+                Position: {selectedAthlete?.backendPosition} Team: {selectedAthlete?.backendTeam}
+              </>
+            ) : (
+              ''
+            )}
+          </div>
+          <div className="flex w-full md:sticky z-50 justify-between md:mt-4 mt-12">
+            <button
+              onClick={() => setUpdateModal(false)}
+              className="bg-indigo-red  text-indigo-white w-1/3 md:w-80 h-12 md:h-14 text-center font-bold"
+            >
+              CANCEL
+            </button>
+            <button
+              onClick={() => handleUpdateConfirm(gameId, lineup)}
+              className="bg-indigo-blue text-indigo-white w-1/3 md:w-80 h-12 md:h-14 text-center font-bold"
+            >
+              CONFIRM
+            </button>
+          </div>
+        </div>
+      </Modal>
       <div key={remountAthlete} className="flex flex-col overflow-y-auto">
         <div className="grid grid-cols-2 mt-1 ml-4 md:grid-cols-4 md:ml-7 md:mt-2">
           {athletes.map((item, i) => {
             const accountAthleteIndex = athletes.indexOf(item, 0) + athleteOffset;
             return (
               <>
-                {checkIfAthleteExists(item.athlete_id, item.primary_id) || item.isInGame ? (
+                {checkIfAthleteExists(item.athlete_id, item.primary_id) ||
+                item.isInGame ||
+                !item.isAllowed ? (
                   <div className="w-4/5 h-5/6 border-transparent pointer-events-none">
                     <div className="mt-1.5 w-full h-14px mb-1"></div>
                     <PerformerContainer

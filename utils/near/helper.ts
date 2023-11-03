@@ -360,7 +360,8 @@ async function query_filter_tokens_for_owner(
   team,
   name,
   contract,
-  currentSport
+  currentSport,
+  whitelist
 ) {
   let result_two;
   if (position[0].includes(',')) {
@@ -392,7 +393,9 @@ async function query_filter_tokens_for_owner(
         result_two = Promise.all(
           result
             .map(convertNftToAthlete)
-            .map((item) => getPortfolioAssetDetailsById(item, undefined, undefined, currentSport))
+            .map((item) =>
+              getPortfolioAssetDetailsById(item, undefined, undefined, whitelist, currentSport)
+            )
         );
       else {
         result_two = Promise.all(
@@ -434,7 +437,8 @@ async function query_mixed_tokens_pagination(
   position,
   team,
   name,
-  currentSport
+  currentSport,
+  whitelist
 ) {
   return await query_filter_tokens_for_owner(
     accountId,
@@ -444,7 +448,8 @@ async function query_mixed_tokens_pagination(
     team,
     name,
     isPromoPage ? getSportType(currentSport).promoContract : getSportType(currentSport).regContract,
-    currentSport
+    currentSport,
+    whitelist
   ).then(async (result) => {
     if (result.length < athleteLimit && !isPromoPage && promoSupply !== 0) {
       let sbLimit = athleteLimit - result.length;
@@ -457,7 +462,8 @@ async function query_mixed_tokens_pagination(
           team,
           name,
           getSportType(currentSport).promoContract,
-          currentSport
+          currentSport,
+          whitelist
         )
       ).then((result2) => {
         result2.map((obj) => result.push(obj));

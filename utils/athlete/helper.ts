@@ -80,7 +80,7 @@ async function getAthleteInfoById(item, from, to) {
 }
 
 //used by portfolio and assetdetails
-async function getPortfolioAssetDetailsById(item, from, to, currentSport) {
+async function getPortfolioAssetDetailsById(item, from, to, whitelist, currentSport) {
   //console.log(item.extra);
   let value = {} as trait_type;
   for (const key of item.extra) {
@@ -90,7 +90,17 @@ async function getPortfolioAssetDetailsById(item, from, to, currentSport) {
     query: GET_ATHLETE_BY_ID,
     variables: { getAthleteById: parseFloat(value['athlete_id']), from: from, to: to },
   });
-  const isPromo = item.token_id.includes('SB') || item.token_id.includes('PR');
+  const isPromo = item.token_id.includes('PR');
+  const isSoul = item.token_id.includes('SB');
+  let isAllowed = false;
+  if (whitelist.includes('regular') && !isPromo && !isSoul) {
+    isAllowed = true;
+  } else if (whitelist.includes('promo') && isPromo) {
+    isAllowed = true;
+  } else if (whitelist.includes('soulbound') && isSoul) {
+    isAllowed = true;
+  }
+
   const returningData = {
     primary_id: value['athlete_id'],
     athlete_id: item.token_id,
@@ -100,8 +110,10 @@ async function getPortfolioAssetDetailsById(item, from, to, currentSport) {
     team: value['team'],
     position: value['position'],
     release: value['release'],
-    ...(isPromo && { type: value['type'] }),
+    ...((isPromo || isSoul) && { type: value['type'] }),
     isOpen: false,
+    isPromo: isPromo,
+    isSoul: isSoul,
     animation: data.getAthleteById.nftAnimation,
     image: item.metadata.media,
     fantasy_score:
@@ -112,6 +124,9 @@ async function getPortfolioAssetDetailsById(item, from, to, currentSport) {
     isInGame: item.metadata['starts_at'] > getUTCTimestampFromLocal() ? true : false,
     isInjured: data.getAthleteById.isInjured,
     isActive: data.getAthleteById.isActive,
+    isAllowed: isAllowed,
+    backendTeam: data.getAthleteById.team.key,
+    backendPosition: data.getAthleteById.position,
     playerHeadshot: data.getAthleteById.playerHeadshot,
   };
   return returningData;
@@ -144,6 +159,7 @@ async function getCricketAthleteInfoById(item, from, to) {
     position: value['position'],
     release: value['release'],
     ...(isPromo && { type: value['type'] }),
+    isPromo: isPromo,
     isOpen: false,
     animation: data.getCricketAthleteById.nftAnimation,
     image: item.metadata.media,
