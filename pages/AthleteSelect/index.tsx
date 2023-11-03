@@ -306,9 +306,10 @@ const AthleteSelect = (props) => {
       const { data, errors } = await client.mutate({
         mutation: UPDATE_NEAR_ATHLETE_METADATA,
         variables: {
-          sportType: selectedAthlete.isPromo
-            ? sportType.promoKey.toLowerCase()
-            : sportType.key.toLowerCase(),
+          sportType:
+            selectedAthlete.isPromo || selectedAthlete.isSoul
+              ? sportType.promoKey.toLowerCase()
+              : sportType.key.toLowerCase(),
           tokenId: selectedAthlete.athlete_id,
         },
       });
