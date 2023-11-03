@@ -6,6 +6,7 @@ import BackFunction from 'components/buttons/BackFunction';
 import Container from 'components/containers/Container';
 import PortfolioContainer from 'components/containers/PortfolioContainer';
 import { useRouter } from 'next/router';
+import client from 'apollo-client';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
 import SearchComponent from 'components/SearchComponent';
 import ReactPaginate from 'react-paginate';
@@ -25,6 +26,7 @@ import {
   query_filter_tokens_for_owner,
   query_mixed_tokens_pagination,
 } from 'utils/near/helper';
+import { UPDATE_NEAR_ATHLETE_METADATA } from 'utils/queries';
 import { getGameStartDate, getGameEndDate } from 'redux/athlete/athleteSlice';
 import { getSportType, SPORT_NAME_LOOKUP } from 'data/constants/sportConstants';
 import NftTypeComponent from 'pages/Portfolio/components/NftTypeComponent';
@@ -267,14 +269,23 @@ const AthleteSelect = (props) => {
 
   const handleProceedClick = (game_id, lineup) => {
     console.log(selectedAthlete);
-
+    let showUpdateModal = false;
     if (
       selectedAthlete.position !== selectedAthlete.backendPosition ||
       selectedAthlete.team !== selectedAthlete.backendTeam
     ) {
       setUpdateModal(true);
+      showUpdateModal = true;
     }
-
+    if (!showUpdateModal) {
+      //no issues with metadata
+      dispatch(setGameId(game_id));
+      dispatch(setAthleteLineup(lineup));
+      router.push({
+        pathname: '/CreateTeam/[sport]/[game_id]',
+        query: { sport: currentSport, game_id: game_id },
+      });
+    }
     //if there is difference,
 
     // dispatch(setGameId(game_id));
@@ -285,7 +296,38 @@ const AthleteSelect = (props) => {
     // });
   };
 
-  const handleUpdateConfirm = (game_id, lineup) => {};
+  const handleUpdateConfirm = async (game_id, lineup) => {
+    try {
+      console.log(gameId);
+      let sportType = getSportType(currentSport);
+      console.log(sportType.promoKey.toLowerCase());
+      console.log(sportType.key.toLowerCase());
+      console.log(selectedAthlete.athlete_id);
+      const { data, errors } = await client.mutate({
+        mutation: UPDATE_NEAR_ATHLETE_METADATA,
+        variables: {
+          sportType: selectedAthlete.isPromo
+            ? sportType.promoKey.toLowerCase()
+            : sportType.key.toLowerCase(),
+          tokenId: selectedAthlete.athlete_id,
+        },
+      });
+      if (data) {
+        //successfully changed metadata, return to CreateTeam first
+        alert('Successfully changed metadata. Returning to CreateTeam...');
+        router.push({
+          pathname: '/CreateTeam/[sport]/[game_id]',
+          query: { sport: currentSport, game_id: game_id },
+        });
+      } else {
+        alert('Error in changing metadata. Returning to CreateTeam...');
+        router.push({
+          pathname: '/CreateTeam/[sport]/[game_id]',
+          query: { sport: currentSport, game_id: game_id },
+        });
+      }
+    } catch (error) {}
+  };
 
   const handlePageClick = (event) => {
     let total = selectedRegular ? totalRegularSupply : selectedPromo ? totalPromoSupply : 0;
@@ -413,7 +455,7 @@ const AthleteSelect = (props) => {
               ''
             )}
           </div>
-          <div className="font-monument">Backend metadata:</div>
+          <div className="font-monument">SportsData API:</div>
           <div className="font-monument">
             {1 == 1 ? (
               <>
@@ -430,7 +472,10 @@ const AthleteSelect = (props) => {
             >
               CANCEL
             </button>
-            <button className="bg-indigo-blue text-indigo-white w-1/3 md:w-80 h-12 md:h-14 text-center font-bold">
+            <button
+              onClick={() => handleUpdateConfirm(gameId, lineup)}
+              className="bg-indigo-blue text-indigo-white w-1/3 md:w-80 h-12 md:h-14 text-center font-bold"
+            >
               CONFIRM
             </button>
           </div>
