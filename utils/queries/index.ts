@@ -463,3 +463,9 @@ export const GET_CRICKET_SCHEDULE = gql`
     }
   }
 `;
+
+export const UPDATE_NEAR_ATHLETE_METADATA = gql`
+  mutation Mutation($tokenId: String!, $sportType: String!) {
+    updateMetadataOfNearAthlete(tokenId: $tokenId, sportType: $sportType)
+  }
+`;
