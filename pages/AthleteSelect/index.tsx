@@ -268,7 +268,6 @@ const AthleteSelect = (props) => {
   };
 
   const handleProceedClick = (game_id, lineup) => {
-    console.log(selectedAthlete);
     let showUpdateModal = false;
     if (
       selectedAthlete.position !== selectedAthlete.backendPosition ||
@@ -298,16 +297,13 @@ const AthleteSelect = (props) => {
 
   const handleUpdateConfirm = async (game_id, lineup) => {
     try {
-      console.log(gameId);
       let sportType = getSportType(currentSport);
-      console.log(sportType.promoKey.toLowerCase());
-      console.log(sportType.key.toLowerCase());
-      console.log(selectedAthlete.athlete_id);
+
       const { data, errors } = await client.mutate({
         mutation: UPDATE_NEAR_ATHLETE_METADATA,
         variables: {
           sportType:
-            selectedAthlete.isPromo || selectedAthlete.isSoul
+            selectedAthlete.isSoul || selectedAthlete.isPromo
               ? sportType.promoKey.toLowerCase()
               : sportType.key.toLowerCase(),
           tokenId: selectedAthlete.athlete_id,
