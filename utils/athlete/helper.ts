@@ -113,7 +113,7 @@ async function getPortfolioAssetDetailsById(item, from, to, whitelist) {
     ...((isPromo || isSoul) && { type: value['type'] }),
     isOpen: false,
     isPromo: isPromo,
-    IsSoul: isSoul,
+    isSoul: isSoul,
     animation: data.getAthleteById.nftAnimation,
     image: item.metadata.media,
     fantasy_score: getAvgSeasonFantasyScore(data.getAthleteById.stats),
