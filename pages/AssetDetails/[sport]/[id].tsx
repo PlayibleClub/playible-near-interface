@@ -98,6 +98,7 @@ const AssetDetails = (props) => {
   function getGamesPlayed() {
     let totalGames = 0;
     athlete?.stats_breakdown.forEach((game) => {
+      console.log('sportseason', sportSeason);
       if (game.type === 'weekly' && game.played == 1 && game.season === '2023REG') {
         totalGames++;
       } else if (game.type === 'daily' && game.played == 1 && game.season === sportSeason) {
@@ -304,7 +305,7 @@ const AssetDetails = (props) => {
               <th className="font-monument text-xs text-right pr-24 p-2">FANTASY SCORE</th>
             </tr>
           </thead>
-          {currentSport !== 'CRICKET' ? (
+          {(currentSport !== 'CRICKET' || currentSport !== 'FOOTBALL') ? (
             <tbody>
               {sortedGames == undefined || sortedGames.length === 0
                 ? 'LOADING GAMES....'
@@ -312,8 +313,8 @@ const AssetDetails = (props) => {
                     .filter(
                       (statType) =>
                         (statType.type == 'weekly' || statType.type == 'daily') &&
-                        statType.played == 1 &&
-                        statType.season == sportSeason
+                        statType.played == 1 //&&
+                        //statType.season == sportSeason
                     )
                     .map((item, index) => {
                       return (
