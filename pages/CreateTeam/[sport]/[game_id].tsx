@@ -171,12 +171,9 @@ export default function CreateLineup(props) {
     if (gameData.length !== 0 && lineup.length === 0) {
       //@ts-ignore:next-line
       populateLineup(gameData.positions);
-
-      //@ts-ignore:next-line
-      console.log(gameData.token_type_whitelist);
     }
     //@ts-ignore:next-line
-    setTokenTypeWhitelist(gameData.token_type_whitelist);
+    setTokenTypeWhitelist(['regular', 'promo', 'soulbound']);
   }, [gameData]);
   useEffect(() => {
     console.log(lineup);
