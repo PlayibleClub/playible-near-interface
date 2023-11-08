@@ -174,14 +174,14 @@ export default function Home(props) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const featuredImagesDesktop = [
     '/images/football_prize_money.jpg',
-    '/images/BSBALL_CHAMPIONSHIP.png',
+    '/images/basketball_prize.jpg',
     '/images/baseball_starterpack_publicmint_desktop_updated.jpg',
     '/images/baseball_banner_live.jpg',
   ];
 
   const featuredImagesMobile = [
     '/images/football_prize_money.jpg',
-    '/images/BSBALL_CHAMPIONSHIP.png',
+    '/images/basketball_prize.jpg',
     '/images/baseball_starterpack_publicmint_desktop_updated.jpg',
     '/images/baseball_banner_live.jpg',
   ];
