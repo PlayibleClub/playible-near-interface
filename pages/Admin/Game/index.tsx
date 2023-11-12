@@ -34,8 +34,9 @@ import { ErrorResponse } from '@remix-run/router';
 import { current } from '@reduxjs/toolkit';
 import { getSport } from 'redux/athlete/athleteSlice';
 import Modal from 'components/modals/Modal';
+import AdminGameFilter from './components/AdminGameFilter';
 TimeAgo.addDefaultLocale(en);
-
+  
 export default function Index(props) {
   const [createNewGame, { data, error }] = useMutation(CREATE_GAME);
   const { selector, accountId } = useWalletSelector();
@@ -952,11 +953,21 @@ export default function Index(props) {
       .catch((error) => console.log(error));
   }, [totalGames, currentSport]);
 
+  const [selectedRegular, setSelectedRegular] = useState(true);
+  const [selectedPromo, setSelectedPromo] = useState(true);
+
   useEffect(() => {
     currentTotal !== 0 ? setPageCount(Math.ceil(currentTotal / gamesLimit)) : setPageCount(1);
   }, [currentTotal]);
   return (
     <Container isAdmin>
+      <AdminGameFilter 
+      onChangeFn={(selectedRegular, selectedPromo) => {
+        setSelectedRegular(selectedRegular);
+        setSelectedPromo(selectedPromo);
+        setRemountComponent(Math.random());
+      }}
+      />
       <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center">
         <Main color="indigo-white">
           <div className="flex flex-col w-full overflow-y-auto overflow-x-hidden h-screen self-center text-indigo-black">
