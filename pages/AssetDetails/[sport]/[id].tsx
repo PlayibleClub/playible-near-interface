@@ -100,6 +100,7 @@ const AssetDetails = (props) => {
   function getGamesPlayed() {
     let totalGames = 0;
     athlete?.stats_breakdown.forEach((game) => {
+      console.log('sportseason', sportSeason);
       if (game.type === 'weekly' && game.played == 1 && game.season === '2023REG') {
         totalGames++;
       } else if (game.type === 'daily' && game.played == 1 && game.season === sportSeason) {
@@ -137,6 +138,9 @@ const AssetDetails = (props) => {
         break;
       case SPORT_NAME_LOOKUP.basketball:
         query = await getSportCurrentSeason({ variables: { sport: 'nba' } });
+        break;
+        case SPORT_NAME_LOOKUP.football:
+        query = await getSportCurrentSeason({ variables: { sport: 'nfl' } });
         break;
     }
 
@@ -303,7 +307,34 @@ const AssetDetails = (props) => {
               <th className="font-monument text-xs text-right pr-24 p-2">FANTASY SCORE</th>
             </tr>
           </thead>
-          {currentSport !== 'CRICKET' ? (
+          {(currentSport === 'FOOTBALL') ? (
+            <tbody>
+              {sortedGames == undefined || sortedGames.length === 0
+                ? 'LOADING GAMES....'
+                : sortedGames
+                    .filter(
+                      (statType) =>
+                        (statType.type == 'weekly' || statType.type == 'daily') &&
+                        statType.played == 1 &&
+                        statType.season == '2023REG'
+                    )
+                    .map((item, index) => {
+                      return (
+                        <tr key={index} className="border border-indigo-slate">
+                          <td className="text-sm text-center w-6 pl-4 pr-4">
+                            {getDateOfGame(item.gameDate)}
+                          </td>
+                          <td className="text-sm w-px">vs.</td>
+                          <td className="text-sm pl-2 font-black w-96">{item.opponent?.name}</td>
+                          <td className="text-sm text-right font-black p-3 pr-24 w-12">
+                            {item.fantasyScore.toFixed(2)}
+                          </td>
+                        </tr>
+                      );
+                    })}
+            </tbody>
+          ) :
+          (currentSport !== 'CRICKET') ? (
             <tbody>
               {sortedGames == undefined || sortedGames.length === 0
                 ? 'LOADING GAMES....'
@@ -330,6 +361,7 @@ const AssetDetails = (props) => {
                     })}
             </tbody>
           ) : (
+            
             <tbody>
               {sortedGames == undefined || sortedGames.length === 0
                 ? 'LOADING GAMES....'
