@@ -177,6 +177,8 @@ export default function Home(props) {
     '/images/basketball_prize.jpg',
     '/images/baseball_starterpack_publicmint_desktop_updated.jpg',
     '/images/baseball_banner_live.jpg',
+    '/images/basketballStarterPack.jpg',
+    '/images/footballBannerLive.jpg',
   ];
 
   const featuredImagesMobile = [
@@ -184,6 +186,8 @@ export default function Home(props) {
     '/images/basketball_prize.jpg',
     '/images/baseball_starterpack_publicmint_desktop_updated.jpg',
     '/images/baseball_banner_live.jpg',
+    '/images/basketballStarterPack.jpg',
+    '/images/footballBannerLive.jpg',
   ];
 
   const startSlider = () => {
