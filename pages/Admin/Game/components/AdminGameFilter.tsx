@@ -6,6 +6,7 @@ const AdminGameFilter = (props) => {
   
     const [selectedRegular, setSelectedRegular] = useState(true);
     const [selectedPromo, setSelectedPromo] = useState(true);
+    const [selectedSoulBound, setSelectedSoulBound] = useState(true);
   
     const handleRegularChange = (event) => {
       setSelectedRegular(event.target.checked);
@@ -17,6 +18,12 @@ const AdminGameFilter = (props) => {
       setSelectedPromo(event.target.checked);
       onChangeFn(selectedRegular, selectedPromo);
     };
+
+    const handleSoulBoundChange = (event) => {
+      setSelectedPromo(event.target.checked);
+      onChangeFn(selectedRegular, selectedPromo, selectedSoulBound);
+    };
+  
   
     useEffect(() => {
       onChangeFn(selectedRegular, selectedPromo);
@@ -48,6 +55,17 @@ const AdminGameFilter = (props) => {
               />
               Regular
             </div>
+            <div>
+            <input
+              type="checkbox"
+              name="Sample"
+              value="Sample"
+              // @ts-ignore:next-line
+              checked={selectedSoulBound}
+              onChange={handleSoulBoundChange}
+            />
+            SoulBound
+          </div>
           </div>
         </div>
       </form>
