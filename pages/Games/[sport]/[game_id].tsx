@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import Main from 'components/Main';
-import { getRPCProvider } from 'utils/near';
+import { getRPCProvider, get_near_connection } from 'utils/near';
 import LeaderboardComponent from '../components/LeaderboardComponent';
 import ViewTeamsContainer from 'components/containers/ViewTeamsContainer';
 import {
@@ -25,7 +25,7 @@ import { persistor } from 'redux/athlete/store';
 import { getSportType, SPORT_NAME_LOOKUP } from 'data/constants/sportConstants';
 import moment, { Moment } from 'moment';
 import Modal from 'components/modals/Modal';
-import { providers } from 'near-api-js';
+import { providers, Contract } from 'near-api-js';
 import EntrySummaryPopup from '../components/EntrySummaryPopup';
 import EntrySummaryModal from 'components/modals/EntrySummaryModal';
 import PerformerContainer from 'components/containers/PerformerContainer';
@@ -38,7 +38,7 @@ const Games = (props) => {
   const dispatch = useDispatch();
   const [playerLineups, setPlayerLineups] = useState([]);
   const provider = new providers.JsonRpcProvider({ url: getRPCProvider() });
-  const { accountId } = useWalletSelector();
+  const { accountId, selector } = useWalletSelector();
   const [playerTeams, setPlayerTeams] = useState([]);
   const [playerTeamSorted, setPlayerTeamSorted] = useState([]);
   const [gameInfo, setGameInfo] = useState([]);
@@ -108,34 +108,69 @@ const Games = (props) => {
     setCurrentIndex(currentIndex);
   };
 
-  async function get_all_players_lineup_with_index() {
+  // async function get_all_players_lineup_with_index() {
+  //   const startTimeFormatted = formatToUTCDate(gameData.start_time);
+  //   const endTimeFormatted = formatToUTCDate(gameData.end_time);
+  //   // console.log('    TEST start date: ' + startTimeFormatted);
+  //   // console.log('    TEST end date: ' + endTimeFormatted);
+
+  //   await get_all_player_keys().then(async (result) => {
+  //     let filteredResult = result.filter((data) => data[1] === gameId);
+  //     console.log(filteredResult);
+  //     let lineups = [];
+
+  //     for (const entry of filteredResult) {
+  //       await query_player_lineup(currentSport, entry[0], entry[1], entry[2]).then((lineup) => {
+  //         if (lineups.length === 0) {
+  //           lineups = [lineup];
+  //         } else {
+  //           lineups = lineups.concat([lineup]);
+  //         }
+  //       });
+  //     }
+  //     let computedLineup = await compute_scores(
+  //       lineups,
+  //       currentSport,
+  //       startTimeFormatted,
+  //       endTimeFormatted
+  //     );
+  //     setPlayerLineups(computedLineup);
+  //   });
+  // }
+  async function get_all_players_lineup_chunkify() {
     const startTimeFormatted = formatToUTCDate(gameData.start_time);
     const endTimeFormatted = formatToUTCDate(gameData.end_time);
-    // console.log('    TEST start date: ' + startTimeFormatted);
-    // console.log('    TEST end date: ' + endTimeFormatted);
 
-    await get_all_player_keys().then(async (result) => {
-      let filteredResult = result.filter((data) => data[1] === gameId);
-      //console.log(filteredResult);
-      let lineups = [];
-
-      for (const entry of filteredResult) {
-        await query_player_lineup(currentSport, entry[0], entry[1], entry[2]).then((lineup) => {
-          if (lineups.length === 0) {
-            lineups = [lineup];
-          } else {
-            lineups = lineups.concat([lineup]);
-          }
-        });
-      }
-      let computedLineup = await compute_scores(
-        lineups,
-        currentSport,
-        startTimeFormatted,
-        endTimeFormatted
-      );
-      setPlayerLineups(computedLineup);
-    });
+    const lineupLen = await get_player_lineup_length();
+    const halfLen = Math.ceil(lineupLen / 2);
+    let result = [];
+    for (let i = 0; i < lineupLen; i += halfLen) {
+      await get_all_player_keys_chunk(i, halfLen).then(async (halfResult) => {
+        if (result.length === 0) {
+          result = halfResult;
+        } else {
+          result = result.concat(halfResult);
+        }
+      });
+    }
+    let filteredResult = result.filter((data) => data[1] === gameId);
+    let lineups = [];
+    for (const entry of filteredResult) {
+      await query_player_lineup(currentSport, entry[0], entry[1], entry[2]).then((lineup) => {
+        if (lineups.length === 0) {
+          lineups = [lineup];
+        } else {
+          lineups = lineups.concat([lineup]);
+        }
+      });
+    }
+    let computedLineup = await compute_scores(
+      lineups,
+      currentSport,
+      startTimeFormatted,
+      endTimeFormatted
+    );
+    setPlayerLineups(computedLineup);
   }
 
   function getAccountScore(accountId, teamName) {
@@ -146,23 +181,75 @@ const Games = (props) => {
   function getAccountPlacement(accountId, teamName) {
     return playerLineups.findIndex((x) => x.accountId === accountId && x.teamName === teamName) + 1;
   }
-  async function get_all_player_keys() {
+
+  async function get_player_lineup_length() {
     const query = JSON.stringify({});
     return await provider
       .query({
         request_type: 'call_function',
         finality: 'optimistic',
         account_id: getSportType(currentSport).gameContract,
-        method_name: 'get_player_lineup_keys',
+        method_name: 'get_player_lineup_length',
         args_base64: Buffer.from(query).toString('base64'),
       })
       .then(async (data) => {
         //@ts-ignore:next-line
         const result = JSON.parse(Buffer.from(data.result).toString());
-        //console.log(result);
         return result;
       });
   }
+  async function get_all_player_keys_chunk(start, limit) {
+    const query = JSON.stringify({
+      from_index: start,
+      limit: limit,
+    });
+    return await provider
+      .query({
+        request_type: 'call_function',
+        finality: 'optimistic',
+        account_id: getSportType(currentSport).gameContract,
+        method_name: 'get_player_lineup_keys_chunk',
+        args_base64: Buffer.from(query).toString('base64'),
+      })
+      .then(async (data) => {
+        //@ts-ignore:next-line
+        const result = JSON.parse(Buffer.from(data.result).toString());
+        return result;
+      });
+  }
+  // async function get_all_player_keys() {
+  //   // const query = JSON.stringify({});
+  //   // return await provider
+  //   //   .query({
+  //   //     request_type: 'call_function',
+  //   //     finality: 'optimistic',
+  //   //     account_id: getSportType(currentSport).gameContract,
+  //   //     method_name: 'get_player_lineup_keys',
+  //   //     args_base64: Buffer.from(query).toString('base64'),
+  //   //     gas: 300000000000000,
+  //   //   })
+  //   //   .then(async (data) => {
+  //   //     //@ts-ignore:next-line
+  //   //     const result = JSON.parse(Buffer.from(data.result).toString());
+  //   //     //console.log(result);
+  //   //     return result;
+  //   //   });
+  //   const wallet = await selector.wallet();
+  //   const accounts = await wallet.getAccounts();
+  //   const walletAccount = accounts[0].accountId;
+  //   const account = await get_near_connection().then((connection) =>
+  //     connection.account(walletAccount)
+  //   );
+  //   const contract = new Contract(account, getSportType(currentSport).gameContract, {
+  //     viewMethods: ['get_player_lineup_keys'],
+  //     changeMethods: [],
+  //   });
+  //   //@ts-ignore:next-line
+  //   const response = await contract.get_player_lineup_keys({ gas: '300000000000000' });
+  //   console.log(response);
+  //   return response;
+  // }
+
   function sortPlayerTeamScores(accountId) {
     const x = playerLineups.filter((x) => x.accountId === accountId);
     // console.log(x);
@@ -189,7 +276,8 @@ const Games = (props) => {
     if (gameData !== undefined && gameData !== null) {
       // console.log('Joined team counter: ' + gameData.joined_team_counter);
       get_player_teams(accountId, gameId);
-      get_all_players_lineup_with_index();
+      //get_all_players_lineup_with_index();
+      get_all_players_lineup_chunkify();
       //get_all_players_lineup_rposition(gameData.joined_team_counter);
     }
   }, [gameData]);
