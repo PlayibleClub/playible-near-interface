@@ -886,6 +886,7 @@ export default function Index(props) {
         game_time_start: dateStart,
         game_time_end: dateEnd,
         whitelist: whitelistInfo,
+        token_type_whitelist: ['regular', 'promo', 'soulbound'],
         positions:
           currentSport === 'FOOTBALL'
             ? positionsInfo
