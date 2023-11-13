@@ -848,13 +848,14 @@ export default function Index(props) {
     return counter;
   }
 
-  async function execute_add_game() {
+  async function execute_add_game(selectedWhitelistType) {
     const addGameArgs = Buffer.from(
       JSON.stringify({
         game_id: details.gameId.toString(),
         game_time_start: dateStart,
         game_time_end: dateEnd,
         whitelist: whitelistInfo,
+        token_type_whitelist: selectedWhitelistType,
         //token_type_whitelist: ['regular', 'soulbound', 'promo'],
         positions:
           currentSport === 'FOOTBALL'
@@ -961,13 +962,6 @@ export default function Index(props) {
   }, [currentTotal]);
   return (
     <Container isAdmin>
-      <AdminGameFilter 
-      onChangeFn={(selectedRegular, selectedPromo) => {
-        setSelectedRegular(selectedRegular);
-        setSelectedPromo(selectedPromo);
-        setRemountComponent(Math.random());
-      }}
-      />
       <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center">
         <Main color="indigo-white">
           <div className="flex flex-col w-full overflow-y-auto overflow-x-hidden h-screen self-center text-indigo-black">
@@ -1121,6 +1115,14 @@ export default function Index(props) {
               ) : (
                 <>
                   <div>
+                    <AdminGameFilter 
+                      onChangeFn={(selectedRegular, selectedPromo) => {
+                        setSelectedRegular(selectedRegular);
+                        setSelectedPromo(selectedPromo);
+                        setRemountComponent(Math.random());
+                        execute_add_game(selectedRegular);
+                        }}
+                    />
                     {/* GAME ID */}
                     <div className="flex flex-col lg:w-1/2">
                       <label className="font-monument" htmlFor="gameid">
@@ -1506,7 +1508,7 @@ export default function Index(props) {
         <button
           className="bg-indigo-green font-monument tracking-widest text-indigo-white w-full h-16 text-center text-sm mt-4"
           onClick={() => {
-            execute_add_game();
+            execute_add_game(selectedRegular);
             setConfirmModal(false);
           }}
         >
