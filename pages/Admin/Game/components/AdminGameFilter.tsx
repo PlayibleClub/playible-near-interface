@@ -16,18 +16,20 @@ const AdminGameFilter = (props) => {
   
     const handlePromoChange = (event) => {
       setSelectedPromo(event.target.checked);
+      console.log("Selected Promo:", event.target.checked);
       onChangeFn(selectedRegular, selectedPromo);
     };
 
     const handleSoulBoundChange = (event) => {
-      setSelectedPromo(event.target.checked);
+      setSelectedSoulBound(event.target.checked);
+      console.log("Selected SoulBound:", event.target.checked);
       onChangeFn(selectedRegular, selectedPromo, selectedSoulBound);
     };
   
   
     useEffect(() => {
-      onChangeFn(selectedRegular, selectedPromo);
-    }, [selectedRegular, selectedPromo]);
+      onChangeFn(selectedRegular, selectedPromo, selectedSoulBound);
+    }, [selectedRegular, selectedPromo, selectedSoulBound]);
   
     return (
       <form>
