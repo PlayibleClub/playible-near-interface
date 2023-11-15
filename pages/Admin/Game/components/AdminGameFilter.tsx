@@ -6,30 +6,30 @@ const AdminGameFilter = (props) => {
   
     const [selectedRegular, setSelectedRegular] = useState(true);
     const [selectedPromo, setSelectedPromo] = useState(true);
-    const [selectedSoulBound, setSelectedSoulBound] = useState(true);
+    const [selectedSoulbound, setSelectedSoulbound] = useState(true);
   
     const handleRegularChange = (event) => {
       setSelectedRegular(event.target.checked);
       console.log("Selected Regular:", event.target.checked);
-      onChangeFn(selectedRegular, selectedPromo);
+      onChangeFn(selectedRegular, selectedPromo, selectedSoulbound);
     };
   
     const handlePromoChange = (event) => {
       setSelectedPromo(event.target.checked);
       console.log("Selected Promo:", event.target.checked);
-      onChangeFn(selectedRegular, selectedPromo);
+      onChangeFn(selectedRegular, selectedPromo, selectedSoulbound);
     };
 
-    const handleSoulBoundChange = (event) => {
-      setSelectedSoulBound(event.target.checked);
-      console.log("Selected SoulBound:", event.target.checked);
-      onChangeFn(selectedRegular, selectedPromo, selectedSoulBound);
+    const handleSoulboundChange = (event) => {
+      setSelectedSoulbound(event.target.checked);
+      console.log("Selected Soulbound:", event.target.checked);
+      onChangeFn(selectedRegular, selectedPromo, selectedSoulbound);
     };
   
   
     useEffect(() => {
-      onChangeFn(selectedRegular, selectedPromo, selectedSoulBound);
-    }, [selectedRegular, selectedPromo, selectedSoulBound]);
+      onChangeFn(selectedRegular, selectedPromo, selectedSoulbound);
+    }, [selectedRegular, selectedPromo, selectedSoulbound]);
   
     return (
       <form>
@@ -60,13 +60,13 @@ const AdminGameFilter = (props) => {
             <div>
             <input
               type="checkbox"
-              name="Sample"
-              value="Sample"
+              name="Soulbound"
+              value="Soulbound"
               // @ts-ignore:next-line
-              checked={selectedSoulBound}
-              onChange={handleSoulBoundChange}
+              checked={selectedSoulbound}
+              onChange={handleSoulboundChange}
             />
-            SoulBound
+            Soulbound
           </div>
           </div>
         </div>
