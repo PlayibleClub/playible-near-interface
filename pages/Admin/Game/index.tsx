@@ -848,15 +848,15 @@ export default function Index(props) {
     return counter;
   }
 
-  async function execute_add_game(selectedWhitelistType) {
+  async function execute_add_game(whitelist) {
     const addGameArgs = Buffer.from(
       JSON.stringify({
         game_id: details.gameId.toString(),
         game_time_start: dateStart,
         game_time_end: dateEnd,
         whitelist: whitelistInfo,
-        token_type_whitelist: selectedWhitelistType,
-        //token_type_whitelist: ['regular', 'soulbound', 'promo'],
+        token_type_whitelist: whitelist,
+        //token_type_whitelist: ['Regular', 'Soulbound', 'Promo'],
         positions:
           currentSport === 'FOOTBALL'
             ? positionsInfo
@@ -956,6 +956,19 @@ export default function Index(props) {
 
   const [selectedRegular, setSelectedRegular] = useState(true);
   const [selectedPromo, setSelectedPromo] = useState(true);
+  const [selectedSoulbound, setSelectedSoulbound] = useState(true);
+
+  let whitelist = []
+    if(selectedRegular){
+      whitelist.push('Regular');
+      }
+    if(selectedPromo){
+      whitelist.push('Promo');
+      }
+    if(selectedSoulbound){
+      whitelist.push('Soulbound');
+      }
+
 
   useEffect(() => {
     currentTotal !== 0 ? setPageCount(Math.ceil(currentTotal / gamesLimit)) : setPageCount(1);
@@ -1116,11 +1129,12 @@ export default function Index(props) {
                 <>
                   <div>
                     <AdminGameFilter 
-                      onChangeFn={(selectedRegular, selectedPromo) => {
+                      onChangeFn={(selectedRegular, selectedPromo, selectedSoulbound) => {
                         setSelectedRegular(selectedRegular);
                         setSelectedPromo(selectedPromo);
+                        setSelectedSoulbound(selectedSoulbound);
                         setRemountComponent(Math.random());
-                        execute_add_game(selectedRegular);
+                        //execute_add_game(selectedRegular);
                         }}
                     />
                     {/* GAME ID */}
@@ -1465,7 +1479,7 @@ export default function Index(props) {
         <p className="font-bold">GAME DETAILS:</p>
         <p className="font-bold">Start Date:</p> {startFormattedTimestamp}
         <p className="font-bold">End Date:</p> {endFormattedTimestamp}
-        <p className="font-bold">Whitelist: </p>{' '}
+        <p className="font-bold">Whitelist: </p>{whitelist}
         {whitelistInfo === null ? '' : whitelistInfo.join(', ')}
         <p className="font-bold">Game Description: </p>
         {gameDescription}
