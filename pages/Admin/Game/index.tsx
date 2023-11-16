@@ -854,7 +854,7 @@ export default function Index(props) {
         game_id: details.gameId.toString(),
         game_time_start: dateStart,
         game_time_end: dateEnd,
-        tokenTypeWhitelist: whitelistInfo,
+        whitelist: whitelistInfo,
         token_type_whitelist: tokenTypeWhitelist,
         //token_type_whitelist: ['regular', 'soulbound', 'promo'],
         positions:
