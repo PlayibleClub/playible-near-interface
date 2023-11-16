@@ -848,15 +848,15 @@ export default function Index(props) {
     return counter;
   }
 
-  async function execute_add_game(whitelist) {
+  async function execute_add_game(tokenTypeWhitelist) {
     const addGameArgs = Buffer.from(
       JSON.stringify({
         game_id: details.gameId.toString(),
         game_time_start: dateStart,
         game_time_end: dateEnd,
-        whitelist: whitelistInfo,
-        token_type_whitelist: whitelist,
-        //token_type_whitelist: ['Regular', 'Soulbound', 'Promo'],
+        tokenTypeWhitelist: whitelistInfo,
+        token_type_whitelist: tokenTypeWhitelist,
+        //token_type_whitelist: ['regular', 'soulbound', 'promo'],
         positions:
           currentSport === 'FOOTBALL'
             ? positionsInfo
@@ -888,6 +888,7 @@ export default function Index(props) {
         game_time_start: dateStart,
         game_time_end: dateEnd,
         whitelist: whitelistInfo,
+        token_type_whitelist: tokenTypeWhitelist,
         positions:
           currentSport === 'FOOTBALL'
             ? positionsInfo
@@ -958,15 +959,26 @@ export default function Index(props) {
   const [selectedPromo, setSelectedPromo] = useState(true);
   const [selectedSoulbound, setSelectedSoulbound] = useState(true);
 
-  let whitelist = []
+  let tokenTypeWhitelist = []
     if(selectedRegular){
-      whitelist.push('Regular');
+      tokenTypeWhitelist.push('regular');
       }
     if(selectedPromo){
-      whitelist.push('Promo');
+      tokenTypeWhitelist.push('promo');
       }
     if(selectedSoulbound){
-      whitelist.push('Soulbound');
+      tokenTypeWhitelist.push('soulbound');
+      }
+
+      let tokenWhitelist = []
+    if(selectedRegular){
+      tokenWhitelist.push('Regular, ');
+      }
+    if(selectedPromo){
+      tokenWhitelist.push('Promo, ');
+      }
+    if(selectedSoulbound){
+      tokenWhitelist.push('Soulbound, ');
       }
 
 
@@ -1479,8 +1491,9 @@ export default function Index(props) {
         <p className="font-bold">GAME DETAILS:</p>
         <p className="font-bold">Start Date:</p> {startFormattedTimestamp}
         <p className="font-bold">End Date:</p> {endFormattedTimestamp}
-        <p className="font-bold">Whitelist: </p>{whitelist}
+        <p className="font-bold">Whitelist: </p>{}
         {whitelistInfo === null ? '' : whitelistInfo.join(', ')}
+        <p className="font-bold">NFT Token Type:</p>{tokenWhitelist}
         <p className="font-bold">Game Description: </p>
         {gameDescription}
         <p className="font-bold">Prize Description: </p>
@@ -1522,7 +1535,7 @@ export default function Index(props) {
         <button
           className="bg-indigo-green font-monument tracking-widest text-indigo-white w-full h-16 text-center text-sm mt-4"
           onClick={() => {
-            execute_add_game(selectedRegular);
+            execute_add_game(tokenTypeWhitelist);
             setConfirmModal(false);
           }}
         >
