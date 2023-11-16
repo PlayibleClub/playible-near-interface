@@ -970,18 +970,6 @@ export default function Index(props) {
       tokenTypeWhitelist.push('soulbound');
       }
 
-      let tokenWhitelist = []
-    if(selectedRegular){
-      tokenWhitelist.push('Regular, ');
-      }
-    if(selectedPromo){
-      tokenWhitelist.push('Promo, ');
-      }
-    if(selectedSoulbound){
-      tokenWhitelist.push('Soulbound, ');
-      }
-
-
   useEffect(() => {
     currentTotal !== 0 ? setPageCount(Math.ceil(currentTotal / gamesLimit)) : setPageCount(1);
   }, [currentTotal]);
@@ -1493,7 +1481,9 @@ export default function Index(props) {
         <p className="font-bold">End Date:</p> {endFormattedTimestamp}
         <p className="font-bold">Whitelist: </p>{}
         {whitelistInfo === null ? '' : whitelistInfo.join(', ')}
-        <p className="font-bold">NFT Token Type:</p>{tokenWhitelist}
+        <p className="font-bold">NFT Token Type: </p>{tokenTypeWhitelist.map((type, index) => (
+          <span key={index}>{index > 0 ? ', ' : ''}"{type.charAt(0).toUpperCase() + type.slice(1)}"</span>
+        ))}
         <p className="font-bold">Game Description: </p>
         {gameDescription}
         <p className="font-bold">Prize Description: </p>
