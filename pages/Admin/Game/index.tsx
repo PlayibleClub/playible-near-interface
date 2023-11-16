@@ -34,8 +34,9 @@ import { ErrorResponse } from '@remix-run/router';
 import { current } from '@reduxjs/toolkit';
 import { getSport } from 'redux/athlete/athleteSlice';
 import Modal from 'components/modals/Modal';
+import AdminGameFilter from './components/AdminGameFilter';
 TimeAgo.addDefaultLocale(en);
-
+  
 export default function Index(props) {
   const [createNewGame, { data, error }] = useMutation(CREATE_GAME);
   const { selector, accountId } = useWalletSelector();
@@ -847,14 +848,15 @@ export default function Index(props) {
     return counter;
   }
 
-  async function execute_add_game() {
+  async function execute_add_game(tokenTypeWhitelist) {
     const addGameArgs = Buffer.from(
       JSON.stringify({
         game_id: details.gameId.toString(),
         game_time_start: dateStart,
         game_time_end: dateEnd,
         whitelist: whitelistInfo,
-        token_type_whitelist: ['regular', 'soulbound', 'promo'],
+        token_type_whitelist: tokenTypeWhitelist,
+        //token_type_whitelist: ['regular', 'soulbound', 'promo'],
         positions:
           currentSport === 'FOOTBALL'
             ? positionsInfo
@@ -952,6 +954,21 @@ export default function Index(props) {
       })
       .catch((error) => console.log(error));
   }, [totalGames, currentSport]);
+
+  const [selectedRegular, setSelectedRegular] = useState(true);
+  const [selectedPromo, setSelectedPromo] = useState(true);
+  const [selectedSoulbound, setSelectedSoulbound] = useState(true);
+
+  let tokenTypeWhitelist = []
+    if(selectedRegular){
+      tokenTypeWhitelist.push('regular');
+      }
+    if(selectedPromo){
+      tokenTypeWhitelist.push('promo');
+      }
+    if(selectedSoulbound){
+      tokenTypeWhitelist.push('soulbound');
+      }
 
   useEffect(() => {
     currentTotal !== 0 ? setPageCount(Math.ceil(currentTotal / gamesLimit)) : setPageCount(1);
@@ -1111,6 +1128,15 @@ export default function Index(props) {
               ) : (
                 <>
                   <div>
+                    <AdminGameFilter 
+                      onChangeFn={(selectedRegular, selectedPromo, selectedSoulbound) => {
+                        setSelectedRegular(selectedRegular);
+                        setSelectedPromo(selectedPromo);
+                        setSelectedSoulbound(selectedSoulbound);
+                        setRemountComponent(Math.random());
+                        //execute_add_game(selectedRegular);
+                        }}
+                    />
                     {/* GAME ID */}
                     <div className="flex flex-col lg:w-1/2">
                       <label className="font-monument" htmlFor="gameid">
@@ -1453,8 +1479,11 @@ export default function Index(props) {
         <p className="font-bold">GAME DETAILS:</p>
         <p className="font-bold">Start Date:</p> {startFormattedTimestamp}
         <p className="font-bold">End Date:</p> {endFormattedTimestamp}
-        <p className="font-bold">Whitelist: </p>{' '}
+        <p className="font-bold">Whitelist: </p>{}
         {whitelistInfo === null ? '' : whitelistInfo.join(', ')}
+        <p className="font-bold">NFT Token Type: </p>{tokenTypeWhitelist.map((type, index) => (
+          <span key={index}>{index > 0 ? ', ' : ''}"{type.charAt(0).toUpperCase() + type.slice(1)}"</span>
+        ))}
         <p className="font-bold">Game Description: </p>
         {gameDescription}
         <p className="font-bold">Prize Description: </p>
@@ -1496,7 +1525,7 @@ export default function Index(props) {
         <button
           className="bg-indigo-green font-monument tracking-widest text-indigo-white w-full h-16 text-center text-sm mt-4"
           onClick={() => {
-            execute_add_game();
+            execute_add_game(tokenTypeWhitelist);
             setConfirmModal(false);
           }}
         >
