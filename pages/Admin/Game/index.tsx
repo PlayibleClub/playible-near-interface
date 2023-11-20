@@ -557,6 +557,10 @@ export default function Index(props) {
       errors.push('A distribution percentage of 0% is not allowed');
     }
 
+    if (!selectedRegular && !selectedPromo && !selectedSoulbound) {
+      errors.push('NFT Type cannot be empty');
+    }
+
     for (let i = 0; i < distribution.length; i++) {
       if (distribution[i].rank !== sortPercentage[i].rank) {
         errors.push('Higher rank must have a higher percentage than the rest below');
