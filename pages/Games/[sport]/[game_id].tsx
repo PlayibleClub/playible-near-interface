@@ -145,8 +145,8 @@ const Games = (props) => {
       let newLineups = [...playerLineups];
       newLineups[currentIndex].lineup = await getScores(
         'near',
+        nearGameId,
         0,
-        gameId,
         playerLineups[currentIndex].accountId,
         playerLineups[currentIndex].teamName,
         startTimeFormatted,
