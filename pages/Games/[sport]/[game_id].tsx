@@ -19,7 +19,7 @@ import {
   compute_scores,
 } from 'utils/near/helper';
 import { getNflWeek, getNflSeason, formatToUTCDate } from 'utils/date/helper';
-import { buildLeaderboard } from 'utils/game/helper';
+import { buildLeaderboard, getScores } from 'utils/game/helper';
 import LoadingPageDark from 'components/loading/LoadingPageDark';
 import { setTeamName, setAccountId, setGameId, setSport2 } from 'redux/athlete/teamSlice';
 import { useDispatch } from 'react-redux';
@@ -58,6 +58,7 @@ const Games = (props) => {
   const [viewModal, setViewModal] = useState(false);
   const [entryModal, setEntryModal] = useState(false);
   const [isExtendedLeaderboard, setIsExtendedLeaderboard] = useState(0);
+  const [remountComponent, setRemountComponent] = useState(0);
   const playGameImage = '/images/game.png';
   async function get_game_data(game_id) {
     setGameInfo(await query_game_data(game_id, getSportType(currentSport).gameContract));
@@ -102,17 +103,61 @@ const Games = (props) => {
   //   //   await query_all_players_lineup(gameId, currentSport, startTimeFormatted, endTimeFormatted)
   //   // );
   // }
-  const togglePopup = (item) => {
+  const togglePopup = async (item) => {
+    console.log('hello');
     console.log(item);
+    console.log(playerLineups[item.index]);
+    if (playerLineups[item.index].scoresChecked === false) {
+      //lineup is from polygon, show entrysummary
+      let newLineups = [...playerLineups];
+      const startTimeFormatted = formatToUTCDate(1699326000 * 1000);
+      const endTimeFormatted = formatToUTCDate(gameData.end_time);
+
+      newLineups[item.index].lineup = await getScores(
+        playerLineups[item.index].chain,
+        nearGameId,
+        polygonGameId,
+        playerLineups[item.index].accountId,
+        playerLineups[item.index].teamName,
+        startTimeFormatted,
+        endTimeFormatted
+      );
+      newLineups[item.index].scoresChecked = true;
+      console.log(newLineups[item.index]);
+      setPlayerLineups(newLineups);
+      setRemountComponent(Math.random());
+    }
     setViewModal(false);
     setEntryModal(true);
     setCurrentIndex(item.index);
   };
 
-  const viewPopup = (accountId, teamName) => {
+  const viewPopup = async (accountId, teamName) => {
+    console.log('hello');
     const currentIndex = playerLineups.findIndex(
-      (item) => item.accountId === accountId && item.teamName === teamName
+      (item) => item.accountId.toLowerCase() === accountId && item.teamName === teamName
     );
+    console.log(`account id: ${accountId} teamName: ${teamName}`);
+    if (playerLineups[currentIndex].scoresChecked === false) {
+      //lineup is from near, show entrysummary
+      const startTimeFormatted = formatToUTCDate(1699326000 * 1000);
+      const endTimeFormatted = formatToUTCDate(gameData.end_time);
+      let newLineups = [...playerLineups];
+      newLineups[currentIndex].lineup = await getScores(
+        'near',
+        0,
+        gameId,
+        playerLineups[currentIndex].accountId,
+        playerLineups[currentIndex].teamName,
+        startTimeFormatted,
+        endTimeFormatted
+      );
+      newLineups[currentIndex].scoresChecked = true;
+      setPlayerLineups(newLineups);
+      setRemountComponent(Math.random());
+      console.log('next is lineups');
+      console.log(newLineups[currentIndex]);
+    }
     setViewModal(false);
     setEntryModal(true);
     setCurrentIndex(currentIndex);
@@ -541,7 +586,11 @@ const Games = (props) => {
                 </button>
               </Modal>
 
-              <EntrySummaryModal title={'ENTRY SUMMARY'} visible={entryModal}>
+              <EntrySummaryModal
+                key={remountComponent}
+                title={'ENTRY SUMMARY'}
+                visible={entryModal}
+              >
                 <div className=" transform iphone5:scale-55 md:scale-85 md:-mt-6 iphoneX:fixed iphoneX:-mt-6 iphone5:-ml-14 iPhonneX:-ml-20 md:-ml-12 md:static">
                   <ModalPortfolioContainer
                     title={playerLineups[currentIndex]?.teamName}
@@ -558,7 +607,11 @@ const Games = (props) => {
                             return (
                               <EntrySummaryPopup
                                 AthleteName={`${item.name}`}
-                                AvgScore={item.stats_breakdown?.toFixed(2)}
+                                AvgScore={
+                                  item.stats_breakdown !== undefined
+                                    ? item.stats_breakdown?.toFixed(2)
+                                    : 0
+                                }
                                 id={item.primary_id}
                                 uri={item.image}
                                 hoverable={false}

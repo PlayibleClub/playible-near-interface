@@ -3,7 +3,11 @@ import client from 'apollo-client';
 import { getSportType } from 'data/constants/sportConstants';
 import { getUTCTimestampFromLocal } from 'utils/date/helper';
 import { query_player_teams } from 'utils/near/helper';
-import { GET_MULTI_CHAIN_LEADERBOARD_RESULT, GET_LEADERBOARD_RESULT } from 'utils/queries';
+import {
+  GET_MULTI_CHAIN_LEADERBOARD_RESULT,
+  GET_LEADERBOARD_RESULT,
+  GET_ENTRY_SUMMARY_ATHLETES,
+} from 'utils/queries';
 async function getGameInfoById(accountId, item, status, currentSport) {
   // let game_id = item[0];
   // let end_time = item[1].end_time;s
@@ -90,6 +94,62 @@ export async function buildLeaderboard(
     })
   );
   console.log(arrayToReturn);
+  return arrayToReturn;
+}
+
+export async function getScores(chain, nearGameId, polygonGameId, address, teamName, from, to) {
+  console.log({
+    chain: chain,
+    //gameId: parseFloat(gameId.toString()),
+    address: address,
+    teamName: teamName,
+    from: from,
+    to: to,
+  });
+  const { data } = await client.query({
+    query: GET_ENTRY_SUMMARY_ATHLETES,
+    variables: {
+      chain: chain,
+      gameId:
+        chain === 'polygon'
+          ? parseFloat(polygonGameId.toString())
+          : parseFloat(nearGameId.toString()),
+      address: address,
+      teamName: teamName,
+      from: from,
+      to: to,
+    },
+  });
+  let athletes = data.getEntrySummaryAthletes;
+  console.log(athletes);
+  const arrayToReturn = athletes.map((item) => {
+    let isPromo = item.type === 'promo' ? true : false;
+    let isSoul = item.type === 'soulbound' ? true : false;
+    let returnAthlete = {
+      primary_id: item.token_id,
+      athlete_id: item.athlete.apiId,
+      name: `${item.athlete.firstName} ${item.athlete.lastName}`,
+      team: item.athlete.team.key,
+      position: item.athlete.position,
+      release: 'default',
+      isPromo: isPromo,
+      isSoul: isSoul,
+      isAllowed: true,
+      image:
+        isPromo === true
+          ? item.athlete.nftImagePromo
+          : isSoul === true
+          ? item.athlete.nftImageLocked
+          : item.athlete.nftImage,
+      stats_breakdown:
+        item.athlete.stats
+          .filter((type) => type.type === 'weekly' && type.played === 1)
+          .reduce((accumulator, item) => {
+            return accumulator + item.fantasyScore;
+          }, 0) || 0,
+    };
+    return returnAthlete;
+  });
   return arrayToReturn;
 }
 
