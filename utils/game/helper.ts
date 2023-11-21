@@ -3,7 +3,7 @@ import client from 'apollo-client';
 import { getSportType } from 'data/constants/sportConstants';
 import { getUTCTimestampFromLocal } from 'utils/date/helper';
 import { query_player_teams } from 'utils/near/helper';
-
+import { GET_MULTI_CHAIN_LEADERBOARD_RESULT, GET_LEADERBOARD_RESULT } from 'utils/queries';
 async function getGameInfoById(accountId, item, status, currentSport) {
   // let game_id = item[0];
   // let end_time = item[1].end_time;s
@@ -32,10 +32,65 @@ async function getGameInfoById(accountId, item, status, currentSport) {
         : status === 'on-going'
         ? await query_player_teams(accountId, item[0], getSportType(currentSport).gameContract)
         : '',
-    sport:currentSport,
+    sport: currentSport,
   };
 
   return returningData;
+}
+
+export async function buildLeaderboard(
+  playerTeams,
+  currentSport,
+  startTime,
+  endTime,
+  gameId,
+  id,
+  isMulti
+) {
+  let leaderboardResults;
+  if (isMulti) {
+    //TODO make into one function, rename else contract to chain
+    const { data } = await client.query({
+      query: GET_MULTI_CHAIN_LEADERBOARD_RESULT,
+      variables: {
+        sport: 'nfl',
+        gameId: parseFloat(id),
+        chain: 'near',
+      },
+    });
+    leaderboardResults = data.getMultiChainLeaderboardResult;
+  } else {
+    const { data } = await client.query({
+      query: GET_LEADERBOARD_RESULT,
+      variables: {
+        sport: 'nfl',
+        gameId: parseFloat(gameId),
+        chain: 'near',
+      },
+    });
+    leaderboardResults = data.getLeaderboardResult;
+  }
+  // const merge = playerTeams.map((item) => ({
+  //   ...item,
+  //   ...leaderboardResults.find((newItem) => {
+  //     newItem.team_name === item.team_name && newItem.wallet_address === item.wallet_address;
+  //   }),
+  // }));
+  // console.log(leaderboardResults);
+  const arrayToReturn = await Promise.all(
+    leaderboardResults.map(async (item) => {
+      return {
+        accountId: item.wallet_address,
+        teamName: item.team_name,
+        lineup: [],
+        total: item.total,
+        scoresChecked: false,
+        chain: item.chain_name,
+      };
+    })
+  );
+  console.log(arrayToReturn);
+  return arrayToReturn;
 }
 
 function getImage(gameId: string): string {
