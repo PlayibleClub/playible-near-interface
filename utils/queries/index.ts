@@ -469,3 +469,142 @@ export const UPDATE_NEAR_ATHLETE_METADATA = gql`
     updateMetadataOfNearAthlete(tokenId: $tokenId, sportType: $sportType)
   }
 `;
+
+export const GET_ENTRY_SUMMARY_ATHLETES = gql`
+  query GetEntrySummaryAthletes(
+    $chain: String!
+    $gameId: Float!
+    $address: String!
+    $teamName: String!
+    $from: DateTime!
+    $to: DateTime!
+  ) {
+    getEntrySummaryAthletes(
+      chain: $chain
+      gameId: $gameId
+      address: $address
+      teamName: $teamName
+      from: $from
+      to: $to
+    ) {
+      athlete {
+        apiId
+        firstName
+        lastName
+        team {
+          key
+        }
+        position
+        stats {
+          type
+          fantasyScore
+          gameDate
+          played
+        }
+        nftImage
+        nftImageLocked
+        nftImagePromo
+        isInjured
+        isActive
+      }
+      type
+      token_id
+    }
+  }
+`;
+export const GET_LEADERBOARD_TEAMS = gql`
+  query GetLeaderboardTeams($chain: String!, $sport: String!, $gameId: Float!) {
+    getLeaderboardTeams(chain: $chain, sport: $sport, gameId: $gameId) {
+      game_team_id
+      team_name
+      wallet_address
+      total
+      chain_name
+    }
+  }
+`;
+export const GET_LEADERBOARD_RESULT = gql`
+  query GetLeaderboardResult($sport: String!, $gameId: Float!, $chain: String!) {
+    getLeaderboardResult(sport: $sport, gameId: $gameId, chain: $chain) {
+      game_team_id
+      wallet_address
+      team_name
+      chain_name
+      total
+    }
+  }
+`;
+export const GET_GAME_BY_GAME_ID_AND_CHAIN = gql`
+  query GetGameByGameIdAndChain($chain: String!, $gameId: Float!, $sport: String!) {
+    getGameByGameIdAndChain(chain: $chain, gameId: $gameId, sport: $sport) {
+      id
+      name
+      gameId
+      startTime
+      endTime
+      chain
+      sport
+    }
+  }
+`;
+export const GET_MULTI_CHAIN_LEADERBOARD_TEAMS = gql`
+  query GetMultiChainLeaderboardTeams($chain: String!, $sport: String!, $gameId: Float!) {
+    getMultiChainLeaderboardTeams(chain: $chain, sport: $sport, gameId: $gameId) {
+      game_team_id
+      team_name
+      wallet_address
+      total
+      chain_name
+    }
+  }
+`;
+export const GET_MULTI_CHAIN_LEADERBOARD_RESULT = gql`
+  query GetMultiChainLeaderboardResult($chain: String!, $sport: String!, $gameId: Float!) {
+    getMultiChainLeaderboardResult(chain: $chain, sport: $sport, gameId: $gameId) {
+      game_team_id
+      team_name
+      wallet_address
+      total
+      chain_name
+    }
+  }
+`;
+
+export const MERGE_INTO_LEADERBOARD = gql`
+  mutation Mutation($sport: String!, $polygonGameId: Float!, $nearGameId: Float!) {
+    mergeIntoMultiChainLeaderboard(
+      sport: $sport
+      polygonGameId: $polygonGameId
+      nearGameId: $nearGameId
+    ) {
+      id
+      nearGame {
+        id
+        gameId
+      }
+      polygonGame {
+        id
+        gameId
+      }
+      sport
+    }
+  }
+`;
+
+export const CHECK_IF_GAME_EXISTS_IN_MULTI_CHAIN_LEADERBOARD = gql`
+  query CheckIfGameExistsInMultiChainLeaderboard(
+    $chain: String!
+    $sport: String!
+    $gameId: Float!
+  ) {
+    checkIfGameExistsInMultiChainLeaderboard(chain: $chain, sport: $sport, gameId: $gameId) {
+      id
+      nearGame {
+        gameId
+      }
+      polygonGame {
+        gameId
+      }
+    }
+  }
+`;

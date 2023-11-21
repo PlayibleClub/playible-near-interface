@@ -179,7 +179,7 @@ async function compute_scores(result, currentSport, start_time, end_time) {
         accountId: item[0][0],
         teamName: item[0][2],
         lineup: item[1].lineup,
-        sumScore: 0,
+        total: 0,
       };
 
       itemToReturn.lineup = await Promise.all(
@@ -228,7 +228,7 @@ async function compute_scores(result, currentSport, start_time, end_time) {
         };
       });
 
-      itemToReturn.sumScore = itemToReturn.lineup.reduce((accumulator, object) => {
+      itemToReturn.total = itemToReturn.lineup.reduce((accumulator, object) => {
         return accumulator + object.stats_breakdown;
       }, 0);
       // itemToReturn.sumScore = itemToReturn.lineup.reduce((accumulator, object) => {
@@ -240,7 +240,7 @@ async function compute_scores(result, currentSport, start_time, end_time) {
     })
   );
   arrayToReturn.sort(function (a, b) {
-    return b.sumScore - a.sumScore;
+    return b.total - a.total;
   });
   return arrayToReturn;
 }

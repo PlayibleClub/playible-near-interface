@@ -9,6 +9,7 @@ import { useRouter } from 'next/router';
 import Main from 'components/Main';
 import { getRPCProvider, get_near_connection } from 'utils/near';
 import LeaderboardComponent from '../components/LeaderboardComponent';
+import client from 'apollo-client';
 import ViewTeamsContainer from 'components/containers/ViewTeamsContainer';
 import {
   query_game_data,
@@ -18,6 +19,7 @@ import {
   compute_scores,
 } from 'utils/near/helper';
 import { getNflWeek, getNflSeason, formatToUTCDate } from 'utils/date/helper';
+import { buildLeaderboard, getScores } from 'utils/game/helper';
 import LoadingPageDark from 'components/loading/LoadingPageDark';
 import { setTeamName, setAccountId, setGameId, setSport2 } from 'redux/athlete/teamSlice';
 import { useDispatch } from 'react-redux';
@@ -29,6 +31,12 @@ import { providers, Contract } from 'near-api-js';
 import EntrySummaryPopup from '../components/EntrySummaryPopup';
 import EntrySummaryModal from 'components/modals/EntrySummaryModal';
 import PerformerContainer from 'components/containers/PerformerContainer';
+import {
+  CHECK_IF_GAME_EXISTS_IN_MULTI_CHAIN_LEADERBOARD,
+  GET_GAME_BY_GAME_ID_AND_CHAIN,
+  GET_MULTI_CHAIN_LEADERBOARD_TEAMS,
+  GET_LEADERBOARD_TEAMS,
+} from 'utils/queries';
 const Games = (props) => {
   const { query } = props;
   const [currentIndex, setCurrentIndex] = useState(null);
@@ -41,6 +49,8 @@ const Games = (props) => {
   const { accountId, selector } = useWalletSelector();
   const [playerTeams, setPlayerTeams] = useState([]);
   const [playerTeamSorted, setPlayerTeamSorted] = useState([]);
+  const [nearGameId, setNearGameId] = useState(0);
+  const [polygonGameId, setPolygonGameId] = useState(0);
   const [gameInfo, setGameInfo] = useState([]);
   const [week, setWeek] = useState(0);
   const [nflSeason, setNflSeason] = useState('');
@@ -48,6 +58,7 @@ const Games = (props) => {
   const [viewModal, setViewModal] = useState(false);
   const [entryModal, setEntryModal] = useState(false);
   const [isExtendedLeaderboard, setIsExtendedLeaderboard] = useState(0);
+  const [remountComponent, setRemountComponent] = useState(0);
   const playGameImage = '/images/game.png';
   async function get_game_data(game_id) {
     setGameInfo(await query_game_data(game_id, getSportType(currentSport).gameContract));
@@ -92,17 +103,59 @@ const Games = (props) => {
   //   //   await query_all_players_lineup(gameId, currentSport, startTimeFormatted, endTimeFormatted)
   //   // );
   // }
-  const togglePopup = (item) => {
+  const togglePopup = async (item) => {
+    console.log('hello');
     console.log(item);
+    console.log(playerLineups[item.index]);
+    if (playerLineups[item.index].scoresChecked === false) {
+      //lineup is from polygon, show entrysummary
+      let newLineups = [...playerLineups];
+      const startTimeFormatted = formatToUTCDate(1699326000 * 1000);
+      const endTimeFormatted = formatToUTCDate(gameData.end_time);
+
+      newLineups[item.index].lineup = await getScores(
+        playerLineups[item.index].chain,
+        playerLineups[item.index].chain === 'near' ? nearGameId : polygonGameId,
+        playerLineups[item.index].accountId,
+        playerLineups[item.index].teamName,
+        startTimeFormatted,
+        endTimeFormatted
+      );
+      newLineups[item.index].scoresChecked = true;
+      console.log(newLineups[item.index]);
+      setPlayerLineups(newLineups);
+      setRemountComponent(Math.random());
+    }
     setViewModal(false);
     setEntryModal(true);
     setCurrentIndex(item.index);
   };
 
-  const viewPopup = (accountId, teamName) => {
+  const viewPopup = async (accountId, teamName) => {
+    console.log('hello');
     const currentIndex = playerLineups.findIndex(
-      (item) => item.accountId === accountId && item.teamName === teamName
+      (item) => item.accountId.toLowerCase() === accountId && item.teamName === teamName
     );
+    console.log(`account id: ${accountId} teamName: ${teamName}`);
+    if (playerLineups[currentIndex].scoresChecked === false) {
+      //lineup is from near, show entrysummary
+      const startTimeFormatted = formatToUTCDate(1699326000 * 1000);
+      const endTimeFormatted = formatToUTCDate(gameData.end_time);
+      let newLineups = [...playerLineups];
+      newLineups[currentIndex].lineup = await getScores(
+        'near',
+        gameId,
+        playerLineups[currentIndex].accountId,
+        playerLineups[currentIndex].teamName,
+        startTimeFormatted,
+        endTimeFormatted
+      );
+      newLineups[currentIndex].scoresChecked = true;
+      setPlayerLineups(newLineups);
+      setRemountComponent(Math.random());
+      console.log('next is lineups');
+      console.log(newLineups[currentIndex]);
+    }
     setViewModal(false);
     setEntryModal(true);
     setCurrentIndex(currentIndex);
@@ -137,6 +190,103 @@ const Games = (props) => {
   //     setPlayerLineups(computedLineup);
   //   });
   // }
+  async function getLeaderboardOnlyBackend(id) {
+    let isMulti = true;
+    const { data, error } = await client.query({
+      query: CHECK_IF_GAME_EXISTS_IN_MULTI_CHAIN_LEADERBOARD,
+      variables: {
+        chain: 'near',
+        sport: getSportType(currentSport).key.toLowerCase(),
+        gameId: parseFloat(id),
+      },
+      errorPolicy: 'all',
+    });
+    console.log(data);
+    let leaderboardDetails;
+    if (data === null) {
+      isMulti = false;
+    } else {
+      leaderboardDetails = data.checkIfGameExistsInMultiChainLeaderboard;
+    }
+
+    //console.log(data.checkIfGameExistsInMultiChainLeaderboard);
+
+    console.log(isMulti);
+    let dbArray;
+    if (isMulti) {
+      const { data } = await client.query({
+        query: GET_MULTI_CHAIN_LEADERBOARD_TEAMS,
+        variables: {
+          chain: 'near',
+          sport: 'nfl',
+          gameId: parseFloat(id),
+        },
+      });
+      setNearGameId(leaderboardDetails.nearGame.gameId);
+      setPolygonGameId(leaderboardDetails.polygonGame.gameId);
+      dbArray = data.getMultiChainLeaderboardTeams;
+    } else {
+      const { data } = await client.query({
+        query: GET_LEADERBOARD_TEAMS,
+        variables: {
+          chain: 'near',
+          sport: 'nfl',
+          gameId: parseFloat(gameId),
+        },
+      });
+
+      dbArray = data.getLeaderboardTeams;
+    }
+    console.log({
+      startTime: gameData.start_time,
+      endTime: gameData.end_time,
+    });
+    const startTimeFormatted = formatToUTCDate(1699326000);
+    const endTimeFormatted = formatToUTCDate(gameData.end_time);
+
+    console.log(startTimeFormatted);
+    console.log(endTimeFormatted);
+    const playerLineups = await buildLeaderboard(
+      dbArray,
+      currentSport,
+      startTimeFormatted,
+      endTimeFormatted,
+      gameId,
+      id,
+      isMulti
+    );
+    console.log(playerLineups);
+    setPlayerLineups(playerLineups);
+  }
+  async function getGameInfoFromServer() {
+    console.log({
+      sport: getSportType(currentSport).key.toLowerCase(),
+    });
+    const { data } = await client.query({
+      query: GET_GAME_BY_GAME_ID_AND_CHAIN,
+      variables: {
+        chain: 'near',
+        sport: getSportType(currentSport).key.toLowerCase(),
+        gameId: parseFloat(gameId.toString()),
+      },
+      errorPolicy: 'all',
+    });
+    console.log(data);
+    if (data === null) {
+      //game not found on db, game is pre multi-chain update, uses contract to retrieve players in contest
+      get_all_players_lineup_chunkify();
+    } else {
+      console.log({
+        startTimeBend: data.getGameByGameIdAndChain.startTime,
+        endTimeBend: data.getGameByGameIdAndChain.endTime,
+      });
+      console.log({
+        startTimeNear: formatToUTCDate(gameData.start_time),
+        endTimeNear: formatToUTCDate(gameData.end_time),
+      });
+      getLeaderboardOnlyBackend(data.getGameByGameIdAndChain.id);
+    }
+  }
   async function get_all_players_lineup_chunkify() {
     const startTimeFormatted = formatToUTCDate(gameData.start_time);
     const endTimeFormatted = formatToUTCDate(gameData.end_time);
@@ -175,7 +325,7 @@ const Games = (props) => {
 
   function getAccountScore(accountId, teamName) {
     const x = playerLineups.findIndex((x) => x.accountId === accountId && x.teamName === teamName);
-    return playerLineups[x]?.sumScore.toFixed(2);
+    return playerLineups[x]?.total.toFixed(2);
   }
 
   function getAccountPlacement(accountId, teamName) {
@@ -256,7 +406,7 @@ const Games = (props) => {
     if (x !== undefined) {
       setPlayerTeamSorted(
         x.sort(function (a, b) {
-          return b.sumScore - a.sumScore;
+          return b.total - a.total;
         })
       );
     }
@@ -277,7 +427,8 @@ const Games = (props) => {
       // console.log('Joined team counter: ' + gameData.joined_team_counter);
       get_player_teams(accountId, gameId);
       //get_all_players_lineup_with_index();
-      get_all_players_lineup_chunkify();
+      //get_all_players_lineup_chunkify();
+      getGameInfoFromServer();
       //get_all_players_lineup_rposition(gameData.joined_team_counter);
     }
   }, [gameData]);
@@ -375,7 +526,7 @@ const Games = (props) => {
                       <LeaderboardComponent
                         accountId={item.accountId}
                         teamName={item.teamName}
-                        teamScore={item.sumScore}
+                        teamScore={item.total}
                         index={index}
                         gameId={gameId}
                         isExtendedLeaderboard={false}
@@ -410,7 +561,7 @@ const Games = (props) => {
                           <LeaderboardComponent
                             accountId={item.accountId}
                             teamName={item.teamName}
-                            teamScore={item.sumScore}
+                            teamScore={item.total}
                             index={index}
                             gameId={gameId}
                             isExtendedLeaderboard={true}
@@ -433,7 +584,11 @@ const Games = (props) => {
                 </button>
               </Modal>
 
-              <EntrySummaryModal title={'ENTRY SUMMARY'} visible={entryModal}>
+              <EntrySummaryModal
+                key={remountComponent}
+                title={'ENTRY SUMMARY'}
+                visible={entryModal}
+              >
                 <div className=" transform iphone5:scale-55 md:scale-85 md:-mt-6 iphoneX:fixed iphoneX:-mt-6 iphone5:-ml-14 iPhonneX:-ml-20 md:-ml-12 md:static">
                   <ModalPortfolioContainer
                     title={playerLineups[currentIndex]?.teamName}
@@ -450,7 +605,11 @@ const Games = (props) => {
                             return (
                               <EntrySummaryPopup
                                 AthleteName={`${item.name}`}
-                                AvgScore={item.stats_breakdown?.toFixed(2)}
+                                AvgScore={
+                                  item.stats_breakdown !== undefined
+                                    ? item.stats_breakdown?.toFixed(2)
+                                    : 0
+                                }
                                 id={item.primary_id}
                                 uri={item.image}
                                 hoverable={false}
