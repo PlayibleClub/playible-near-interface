@@ -97,7 +97,7 @@ export async function buildLeaderboard(
   return arrayToReturn;
 }
 
-export async function getScores(chain, nearGameId, polygonGameId, address, teamName, from, to) {
+export async function getScores(chain, gameId, address, teamName, from, to) {
   console.log({
     chain: chain,
     //gameId: parseFloat(gameId.toString()),
@@ -110,10 +110,7 @@ export async function getScores(chain, nearGameId, polygonGameId, address, teamN
     query: GET_ENTRY_SUMMARY_ATHLETES,
     variables: {
       chain: chain,
-      gameId:
-        chain === 'polygon'
-          ? parseFloat(polygonGameId.toString())
-          : parseFloat(nearGameId.toString()),
+      gameId: gameId,
       address: address,
       teamName: teamName,
       from: from,
