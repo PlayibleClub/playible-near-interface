@@ -3069,6 +3069,14 @@
     "react-json-tree" "^0.17.0"
     "redux-devtools-themes" "^1.0.0"
 
+"@redux-devtools/serialize@^0.4.1":
+  "integrity" "sha512-Bfy2ka6OJiBwAYifADVZ8kUf9FPBPB4aIMqVtT3gR13Gzv8MvdESzp9IQp9v3dp0UsMurMGnb/AYS1DS8C8p7w=="
+  "resolved" "https://registry.npmjs.org/@redux-devtools/serialize/-/serialize-0.4.1.tgz"
+  "version" "0.4.1"
+  dependencies:
+    "@babel/runtime" "^7.16.7"
+    "jsan" "^3.1.14"
+
 "@redux-devtools/slider-monitor@^4.0.0":
   "integrity" "sha512-pjHPYLG91GLRQVcNAIu3Colc6nIqR4mSQYN1MWUqP8nTAlkP1ihEN44KXxcnTUEzuSLRYm1YW3jsI5p4q3aXZA=="
   "resolved" "https://registry.npmjs.org/@redux-devtools/slider-monitor/-/slider-monitor-4.0.1.tgz"
@@ -7126,7 +7134,7 @@
   "resolved" "https://registry.npmjs.org/immer/-/immer-9.0.16.tgz"
   "version" "9.0.16"
 
-"immutable@^4.1.0":
+"immutable@^4.0.0", "immutable@^4.1.0":
   "integrity" "sha512-oNkuqVTA8jqG1Q6c+UglTOD1xhC1BtjKI7XkCXRkZHrN5m18/XsnUp8Q89GkQO/z+0WjonSvl0FLhDYftp46nQ=="
   "resolved" "https://registry.npmjs.org/immutable/-/immutable-4.1.0.tgz"
   "version" "4.1.0"
