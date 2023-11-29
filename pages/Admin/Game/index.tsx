@@ -35,8 +35,10 @@ import { current } from '@reduxjs/toolkit';
 import { getSport } from 'redux/athlete/athleteSlice';
 import Modal from 'components/modals/Modal';
 import AdminGameFilter from './components/AdminGameFilter';
+import client from 'apollo-client';
+import { MERGE_INTO_LEADERBOARD } from 'utils/queries';
 TimeAgo.addDefaultLocale(en);
-  
+
 export default function Index(props) {
   const [createNewGame, { data, error }] = useMutation(CREATE_GAME);
   const { selector, accountId } = useWalletSelector();
@@ -71,6 +73,10 @@ export default function Index(props) {
     },
     {
       name: 'CREATE',
+      isActive: false,
+    },
+    {
+      name: 'MERGE',
       isActive: false,
     },
   ]);
@@ -239,6 +245,12 @@ export default function Index(props) {
   const [remountDropdown, setRemountDropdown] = useState(0);
   const [positionList, setPositionList] = useState(SPORT_TYPES[0].positionList);
   const sportObj = SPORT_TYPES.map((x) => ({ name: x.sport, isActive: false }));
+  const [mergeGameInfo, setMergeGameInfo] = useState({
+    nearGameId: 0,
+    polygonGameId: 0,
+    sport: 'nfl', //default
+    auth: '',
+  });
   sportObj[0].isActive = true;
   const [sportList, setSportList] = useState([...sportObj]);
   const [currentSport, setCurrentSport] = useState(sportObj[0].name);
@@ -503,6 +515,67 @@ export default function Index(props) {
         });
       }
     }
+  };
+
+  const onNearGameIdChange = (e) => {
+    if (e.target.value !== 0) {
+      const nearGameId = e.target.value;
+      setMergeGameInfo({ ...mergeGameInfo, [e.target.name]: e.target.value });
+    }
+  };
+  const onPolygonGameIdChange = (e) => {
+    if (e.target.value !== 0) {
+      const polygonGameId = e.target.value;
+      setMergeGameInfo({ ...mergeGameInfo, [e.target.name]: e.target.value });
+    }
+  };
+  const onAuthChange = (e) => {
+    const auth = e.target.value;
+    setMergeGameInfo({ ...mergeGameInfo, [e.target.name]: e.target.value });
+  };
+
+  const submitMerge = async () => {
+    //add checking for gameIds if they exist
+    // console.log({
+    //   nearGameId: mergeGameInfo.nearGameId,
+    //   polygonGameId: mergeGameInfo.polygonGameId,
+    //   auth: mergeGameInfo.auth,
+    // });
+    console.log(mergeGameInfo.polygonGameId);
+    try {
+      const { data, errors } = await client.mutate({
+        mutation: MERGE_INTO_LEADERBOARD,
+        variables: {
+          sport: 'nfl',
+          polygonGameId: parseFloat(mergeGameInfo.polygonGameId.toString()),
+          nearGameId: parseFloat(mergeGameInfo.nearGameId.toString()),
+        },
+        context: {
+          headers: {
+            Authorization: mergeGameInfo.auth,
+          },
+        },
+        errorPolicy: 'all',
+      });
+      if (data !== null) {
+        alert(
+          `Multi-chain leaderboard for polygon game ID ${mergeGameInfo.polygonGameId} and NEAR game ID ${mergeGameInfo.nearGameId} created`
+        );
+      } else {
+        alert(
+          `Encountered an error creating multi-chain leaderboard for polygon game ID ${mergeGameInfo.polygonGameId} and NEAR game ID ${mergeGameInfo.nearGameId}`
+        );
+      }
+    } catch (e) {
+      console.error(e);
+    }
+    // const { data } = await client.query({
+    //   query: GET_GAME,
+    //   variables: {
+    //     getGameByIdId: 8,
+    //   },
+    // });
+    // console.log(data);
   };
 
   const handlePageClick = (event) => {
@@ -963,16 +1036,16 @@ export default function Index(props) {
   const [selectedPromo, setSelectedPromo] = useState(true);
   const [selectedSoulbound, setSelectedSoulbound] = useState(true);
 
-  let tokenTypeWhitelist = []
-    if(selectedRegular){
-      tokenTypeWhitelist.push('regular');
-      }
-    if(selectedPromo){
-      tokenTypeWhitelist.push('promo');
-      }
-    if(selectedSoulbound){
-      tokenTypeWhitelist.push('soulbound');
-      }
+  let tokenTypeWhitelist = [];
+  if (selectedRegular) {
+    tokenTypeWhitelist.push('regular');
+  }
+  if (selectedPromo) {
+    tokenTypeWhitelist.push('promo');
+  }
+  if (selectedSoulbound) {
+    tokenTypeWhitelist.push('soulbound');
+  }
 
   useEffect(() => {
     currentTotal !== 0 ? setPageCount(Math.ceil(currentTotal / gamesLimit)) : setPageCount(1);
@@ -1129,17 +1202,17 @@ export default function Index(props) {
                     </div>
                   </div>
                 </div>
-              ) : (
+              ) : tabs[1].isActive ? (
                 <>
                   <div>
-                    <AdminGameFilter 
+                    <AdminGameFilter
                       onChangeFn={(selectedRegular, selectedPromo, selectedSoulbound) => {
                         setSelectedRegular(selectedRegular);
                         setSelectedPromo(selectedPromo);
                         setSelectedSoulbound(selectedSoulbound);
                         setRemountComponent(Math.random());
                         //execute_add_game(selectedRegular);
-                        }}
+                      }}
                     />
                     {/* GAME ID */}
                     <div className="flex flex-col lg:w-1/2">
@@ -1459,6 +1532,58 @@ export default function Index(props) {
                     </button>
                   </div>
                 </>
+              ) : (
+                <>
+                  <div className="flex mt-8">
+                    <div className="flex flex-col lg:w-1/4">
+                      <label className="font-monument">NEAR GAME ID</label>
+                      <input
+                        className="border outline-none rounded-lg px-3 p-2 w-5/6"
+                        id="nearGameId"
+                        type="number"
+                        min="1"
+                        name="nearGameId"
+                        onChange={(e) => onNearGameIdChange(e)}
+                        value={mergeGameInfo.nearGameId}
+                      ></input>
+                    </div>
+                    <div className="flex flex-col lg:w-1/4 ml-10">
+                      <label className="font-monument">POLYGON GAME ID</label>
+                      <input
+                        className="border outline-none rounded-lg px-3 p-2 w-5/6"
+                        id="polygonGameId"
+                        type="number"
+                        min="1"
+                        name="polygonGameId"
+                        onChange={(e) => onPolygonGameIdChange(e)}
+                        value={mergeGameInfo.polygonGameId}
+                      ></input>
+                    </div>
+                  </div>
+                  <div className="flex mt-8">
+                    <div className="flex flex-col lg:w-1/4">
+                      <label className="font-monument">AUTHORIZATION</label>
+                      <input
+                        className="border outline-none rounded-lg px-3 p-2 w-5/6"
+                        id="auth"
+                        type="text"
+                        name="auth"
+                        onChange={(e) => onAuthChange(e)}
+                        value={mergeGameInfo.auth}
+                      ></input>
+                    </div>
+                    <div className="flex flex-col ml-10 lg:w-1/4">
+                      <button
+                        className="mt-6 bg-indigo-buttonblue h-10 w-48 text-indigo-white"
+                        id="image"
+                        name="image"
+                        onClick={submitMerge}
+                      >
+                        CONFIRM
+                      </button>
+                    </div>
+                  </div>
+                </>
               )}
             </div>
           </div>
@@ -1483,10 +1608,14 @@ export default function Index(props) {
         <p className="font-bold">GAME DETAILS:</p>
         <p className="font-bold">Start Date:</p> {startFormattedTimestamp}
         <p className="font-bold">End Date:</p> {endFormattedTimestamp}
-        <p className="font-bold">Whitelist: </p>{}
+        <p className="font-bold">Whitelist: </p>
+        {}
         {whitelistInfo === null ? '' : whitelistInfo.join(', ')}
-        <p className="font-bold">NFT Token Type: </p>{tokenTypeWhitelist.map((type, index) => (
-          <span key={index}>{index > 0 ? ', ' : ''}"{type.charAt(0).toUpperCase() + type.slice(1)}"</span>
+        <p className="font-bold">NFT Token Type: </p>
+        {tokenTypeWhitelist.map((type, index) => (
+          <span key={index}>
+            {index > 0 ? ', ' : ''}"{type.charAt(0).toUpperCase() + type.slice(1)}"
+          </span>
         ))}
         <p className="font-bold">Game Description: </p>
         {gameDescription}
