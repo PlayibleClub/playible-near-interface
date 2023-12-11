@@ -42,7 +42,15 @@ async function getGameInfoById(accountId, item, status, currentSport) {
   return returningData;
 }
 
-export async function buildLeaderboard(playerTeams, currentSport, gameId, id, isMulti) {
+export async function buildLeaderboard(
+  playerTeams,
+  currentSport,
+  startTime,
+  endTime,
+  gameId,
+  id,
+  isMulti
+) {
   let leaderboardResults;
   if (isMulti) {
     //TODO make into one function, rename else contract to chain
@@ -52,6 +60,8 @@ export async function buildLeaderboard(playerTeams, currentSport, gameId, id, is
         sport: getSportType(currentSport).key.toLowerCase(),
         gameId: parseFloat(id),
         chain: 'near',
+        startTime: startTime,
+        endTime: endTime,
       },
     });
     leaderboardResults = data.getMultiChainLeaderboardResult;
@@ -62,6 +72,8 @@ export async function buildLeaderboard(playerTeams, currentSport, gameId, id, is
         sport: getSportType(currentSport).key.toLowerCase(),
         gameId: parseFloat(gameId),
         chain: 'near',
+        startTime: startTime,
+        endTime: endTime,
       },
     });
     leaderboardResults = data.getLeaderboardResult;
