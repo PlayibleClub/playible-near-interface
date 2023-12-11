@@ -520,8 +520,20 @@ export const GET_LEADERBOARD_TEAMS = gql`
   }
 `;
 export const GET_LEADERBOARD_RESULT = gql`
-  query GetLeaderboardResult($sport: String!, $gameId: Float!, $chain: String!) {
-    getLeaderboardResult(sport: $sport, gameId: $gameId, chain: $chain) {
+  query GetLeaderboardResult(
+    $sport: String!
+    $gameId: Float!
+    $chain: String!
+    $startTime: DateTime!
+    $endTime: DateTime!
+  ) {
+    getLeaderboardResult(
+      sport: $sport
+      gameId: $gameId
+      chain: $chain
+      startTime: $startTime
+      endTime: $endTime
+    ) {
       game_team_id
       wallet_address
       team_name
@@ -555,8 +567,20 @@ export const GET_MULTI_CHAIN_LEADERBOARD_TEAMS = gql`
   }
 `;
 export const GET_MULTI_CHAIN_LEADERBOARD_RESULT = gql`
-  query GetMultiChainLeaderboardResult($chain: String!, $sport: String!, $gameId: Float!) {
-    getMultiChainLeaderboardResult(chain: $chain, sport: $sport, gameId: $gameId) {
+  query GetMultiChainLeaderboardResult(
+    $chain: String!
+    $sport: String!
+    $gameId: Float!
+    $startTime: DateTime!
+    $endTime: DateTime!
+  ) {
+    getMultiChainLeaderboardResult(
+      chain: $chain
+      sport: $sport
+      gameId: $gameId
+      startTime: $startTime
+      endTime: $endTime
+    ) {
       game_team_id
       team_name
       wallet_address

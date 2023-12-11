@@ -229,8 +229,17 @@ const Games = (props) => {
 
       dbArray = data.getLeaderboardTeams;
     }
-
-    const playerLineups = await buildLeaderboard(dbArray, currentSport, gameId, id, isMulti);
+    const startTimeFormatted = formatToUTCDate(gameData.start_time);
+    const endTimeFormatted = formatToUTCDate(gameData.end_time);
+    const playerLineups = await buildLeaderboard(
+      dbArray,
+      currentSport,
+      startTimeFormatted,
+      endTimeFormatted,
+      gameId,
+      id,
+      isMulti
+    );
     console.log(playerLineups);
     setPlayerLineups(playerLineups);
   }
