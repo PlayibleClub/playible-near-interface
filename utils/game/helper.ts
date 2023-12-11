@@ -81,36 +81,20 @@ export async function buildLeaderboard(
   //   }),
   // }));
   // console.log(leaderboardResults);
-  if (leaderboardResults.length === 0) {
-    const arrayToReturn = await Promise.all(
-      playerTeams.map(async (item) => {
-        return {
-          accountId: item.wallet_address,
-          teamName: item.team_name,
-          lineup: [],
-          total: item.total,
-          scoresChecked: false,
-          chain: item.chain_name,
-        };
-      })
-    );
-    return arrayToReturn;
-  } else {
-    const arrayToReturn = await Promise.all(
-      leaderboardResults.map(async (item) => {
-        return {
-          accountId: item.wallet_address,
-          teamName: item.team_name,
-          lineup: [],
-          total: item.total,
-          scoresChecked: false,
-          chain: item.chain_name,
-        };
-      })
-    );
-    console.log(arrayToReturn);
-    return arrayToReturn;
-  }
+  const arrayToReturn = await Promise.all(
+    leaderboardResults.map(async (item) => {
+      return {
+        accountId: item.wallet_address,
+        teamName: item.team_name,
+        lineup: [],
+        total: item.total,
+        scoresChecked: false,
+        chain: item.chain_name,
+      };
+    })
+  );
+  console.log(arrayToReturn);
+  return arrayToReturn;
 }
 
 export async function getScores(chain, gameId, address, teamName) {
