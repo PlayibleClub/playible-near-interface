@@ -97,12 +97,14 @@ export async function buildLeaderboard(
   return arrayToReturn;
 }
 
-export async function getScores(chain, gameId, address, teamName) {
+export async function getScores(chain, gameId, address, teamName, from, to) {
   console.log({
     chain: chain,
     //gameId: parseFloat(gameId.toString()),
     address: address,
     teamName: teamName,
+    from: from,
+    to: to,
   });
   const { data } = await client.query({
     query: GET_ENTRY_SUMMARY_ATHLETES,
@@ -111,6 +113,8 @@ export async function getScores(chain, gameId, address, teamName) {
       gameId: gameId,
       address: address,
       teamName: teamName,
+      from: from,
+      to: to,
     },
   });
   let athletes = data.getEntrySummaryAthletes;

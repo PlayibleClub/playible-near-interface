@@ -476,12 +476,16 @@ export const GET_ENTRY_SUMMARY_ATHLETES = gql`
     $gameId: Float!
     $address: String!
     $teamName: String!
+    $from: DateTime!
+    $to: DateTime!
   ) {
     getEntrySummaryAthletes(
       chain: $chain
       gameId: $gameId
       address: $address
       teamName: $teamName
+      from: $from
+      to: $to
     ) {
       athlete {
         apiId

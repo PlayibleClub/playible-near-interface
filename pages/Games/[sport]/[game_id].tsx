@@ -117,7 +117,9 @@ const Games = (props) => {
         playerLineups[item.index].chain,
         playerLineups[item.index].chain === 'near' ? nearGameId : polygonGameId,
         playerLineups[item.index].accountId,
-        playerLineups[item.index].teamName
+        playerLineups[item.index].teamName,
+        startTimeFormatted,
+        endTimeFormatted
       );
       newLineups[item.index].scoresChecked = true;
       console.log(newLineups[item.index]);
@@ -144,7 +146,9 @@ const Games = (props) => {
         'near',
         gameId,
         playerLineups[currentIndex].accountId,
-        playerLineups[currentIndex].teamName
+        playerLineups[currentIndex].teamName,
+        startTimeFormatted,
+        endTimeFormatted
       );
       newLineups[currentIndex].scoresChecked = true;
       setPlayerLineups(newLineups);
