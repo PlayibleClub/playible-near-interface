@@ -42,14 +42,22 @@ async function getGameInfoById(accountId, item, status, currentSport) {
   return returningData;
 }
 
-export async function buildLeaderboard(playerTeams, currentSport, gameId, id, isMulti) {
+export async function buildLeaderboard(
+  playerTeams,
+  currentSport,
+  startTime,
+  endTime,
+  gameId,
+  id,
+  isMulti
+) {
   let leaderboardResults;
   if (isMulti) {
     //TODO make into one function, rename else contract to chain
     const { data } = await client.query({
       query: GET_MULTI_CHAIN_LEADERBOARD_RESULT,
       variables: {
-        sport: getSportType(currentSport).key.toLowerCase(),
+        sport: 'nfl',
         gameId: parseFloat(id),
         chain: 'near',
       },
@@ -59,7 +67,7 @@ export async function buildLeaderboard(playerTeams, currentSport, gameId, id, is
     const { data } = await client.query({
       query: GET_LEADERBOARD_RESULT,
       variables: {
-        sport: getSportType(currentSport).key.toLowerCase(),
+        sport: 'nfl',
         gameId: parseFloat(gameId),
         chain: 'near',
       },

@@ -110,6 +110,8 @@ const Games = (props) => {
     if (playerLineups[item.index].scoresChecked === false) {
       //lineup is from polygon, show entrysummary
       let newLineups = [...playerLineups];
+      const startTimeFormatted = formatToUTCDate(1699326000 * 1000);
+      const endTimeFormatted = formatToUTCDate(gameData.end_time);
 
       newLineups[item.index].lineup = await getScores(
         playerLineups[item.index].chain,
@@ -135,6 +137,8 @@ const Games = (props) => {
     console.log(`account id: ${accountId} teamName: ${teamName}`);
     if (playerLineups[currentIndex].scoresChecked === false) {
       //lineup is from near, show entrysummary
+      const startTimeFormatted = formatToUTCDate(1699326000 * 1000);
+      const endTimeFormatted = formatToUTCDate(gameData.end_time);
       let newLineups = [...playerLineups];
       newLineups[currentIndex].lineup = await getScores(
         'near',
@@ -210,7 +214,7 @@ const Games = (props) => {
         query: GET_MULTI_CHAIN_LEADERBOARD_TEAMS,
         variables: {
           chain: 'near',
-          sport: getSportType(currentSport).key.toLowerCase(),
+          sport: 'nfl',
           gameId: parseFloat(id),
         },
       });
@@ -222,15 +226,31 @@ const Games = (props) => {
         query: GET_LEADERBOARD_TEAMS,
         variables: {
           chain: 'near',
-          sport: getSportType(currentSport).key.toLowerCase(),
+          sport: 'nfl',
           gameId: parseFloat(gameId),
         },
       });
 
       dbArray = data.getLeaderboardTeams;
     }
+    console.log({
+      startTime: gameData.start_time,
+      endTime: gameData.end_time,
+    });
+    const startTimeFormatted = formatToUTCDate(1699326000);
+    const endTimeFormatted = formatToUTCDate(gameData.end_time);
 
-    const playerLineups = await buildLeaderboard(dbArray, currentSport, gameId, id, isMulti);
+    console.log(startTimeFormatted);
+    console.log(endTimeFormatted);
+    const playerLineups = await buildLeaderboard(
+      dbArray,
+      currentSport,
+      startTimeFormatted,
+      endTimeFormatted,
+      gameId,
+      id,
+      isMulti
+    );
     console.log(playerLineups);
     setPlayerLineups(playerLineups);
   }
