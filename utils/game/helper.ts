@@ -156,7 +156,7 @@ export async function getScores(chain, gameId, gameIdFallback, address, teamName
           : item.athlete.nftImage,
       stats_breakdown:
         item.athlete.stats
-          .filter((type) => type.type === 'weekly' && type.played === 1)
+          .filter((type) => (type.type === 'weekly' || type.type === 'daily') && type.played === 1)
           .reduce((accumulator, item) => {
             return accumulator + item.fantasyScore;
           }, 0) || 0,
