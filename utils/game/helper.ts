@@ -117,7 +117,7 @@ export async function buildLeaderboard(
   }
 }
 
-export async function getScores(chain, gameId, address, teamName) {
+export async function getScores(chain, gameId, gameIdFallback, address, teamName) {
   console.log({
     chain: chain,
     //gameId: parseFloat(gameId.toString()),
@@ -128,7 +128,7 @@ export async function getScores(chain, gameId, address, teamName) {
     query: GET_ENTRY_SUMMARY_ATHLETES,
     variables: {
       chain: chain,
-      gameId: gameId,
+      gameId: gameId !== 0 ? parseFloat(gameId.toString()) : parseFloat(gameIdFallback.toString()),
       address: address,
       teamName: teamName,
     },
