@@ -7,6 +7,7 @@ import {
   GET_MULTI_CHAIN_LEADERBOARD_RESULT,
   GET_LEADERBOARD_RESULT,
   GET_ENTRY_SUMMARY_ATHLETES,
+  GET_ENTRY_SUMMARY_ATHLETES_WITH_SCORE,
 } from 'utils/queries';
 async function getGameInfoById(accountId, item, status, currentSport) {
   // let game_id = item[0];
@@ -117,7 +118,16 @@ export async function buildLeaderboard(
   }
 }
 
-export async function getScores(chain, gameId, gameIdFallback, sport, address, teamName) {
+export async function getScores(
+  chain,
+  gameId,
+  gameIdFallback,
+  sport,
+  startTime,
+  endTime,
+  address,
+  teamName
+) {
   console.log({
     chain: chain,
     //gameId: parseFloat(gameId.toString()),
@@ -155,15 +165,38 @@ export async function getScores(chain, gameId, gameIdFallback, sport, address, t
           : isSoul === true
           ? item.athlete.nftImageLocked
           : item.athlete.nftImage,
-      stats_breakdown:
-        item.athlete.stats
-          .filter((type) => (type.type === 'weekly' || type.type === 'daily') && type.played === 1)
-          .reduce((accumulator, item) => {
-            return accumulator + item.fantasyScore;
-          }, 0) || 0,
+      stats_breakdown: 0,
     };
     return returnAthlete;
   });
+
+  console.log({
+    startTime: startTime,
+    endTime: endTime,
+  });
+  const resultQuery = await client.query({
+    query: GET_ENTRY_SUMMARY_ATHLETES_WITH_SCORE,
+    variables: {
+      chain: chain,
+      gameId: gameId !== 0 ? parseFloat(gameId.toString()) : parseFloat(gameIdFallback.toString()),
+      address: address,
+      teamName: teamName,
+      sport: sport,
+      startTime: startTime,
+      endTime: endTime,
+    },
+  });
+  let results = resultQuery.data.getEntrySummaryAthletesWithScore;
+  console.log(results);
+  const arrayWithResults = arrayToReturn.map((item) => {
+    let tempResult = results.find((x) => x.athlete_id.toString() === item.athlete_id);
+    if (tempResult !== undefined) {
+      item.stats_breakdown = tempResult.total;
+    }
+
+    return item;
+  });
+  console.log(arrayWithResults);
   return arrayToReturn;
 }
 

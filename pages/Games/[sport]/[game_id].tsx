@@ -110,12 +110,15 @@ const Games = (props) => {
     if (playerLineups[item.index].scoresChecked === false) {
       //lineup is from polygon, show entrysummary
       let newLineups = [...playerLineups];
-
+      const startTimeFormatted = formatToUTCDate(gameData.start_time);
+      const endTimeFormatted = formatToUTCDate(gameData.end_time);
       newLineups[item.index].lineup = await getScores(
         playerLineups[item.index].chain,
         playerLineups[item.index].chain === 'near' ? nearGameId : polygonGameId,
         gameId,
         getSportType(currentSport).key.toLowerCase(),
+        startTimeFormatted,
+        endTimeFormatted,
         playerLineups[item.index].accountId,
         playerLineups[item.index].teamName
       );
@@ -138,11 +141,15 @@ const Games = (props) => {
     if (playerLineups[currentIndex].scoresChecked === false) {
       //lineup is from near, show entrysummary
       let newLineups = [...playerLineups];
+      const startTimeFormatted = formatToUTCDate(gameData.start_Time);
+      const endTimeFormatted = formatToUTCDate(gameData.end_time);
       newLineups[currentIndex].lineup = await getScores(
         'near',
         gameId,
         gameId,
         getSportType(currentSport).key.toLowerCase(),
+        startTimeFormatted,
+        endTimeFormatted,
         playerLineups[currentIndex].accountId,
         playerLineups[currentIndex].teamName
       );
