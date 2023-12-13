@@ -38,6 +38,7 @@ const DesktopHeaderBase = () => {
     modal.show();
   };
 
+  const [selectedOption, setSelectedOption] = useState('');
   const logOut = async () => {
     const wallet = await selector.wallet();
 
@@ -75,24 +76,54 @@ const DesktopHeaderBase = () => {
         );
       } else {
         return (
-          <Button
-            rounded="rounded-sm "
-            textColor="white-light"
-            color="indigo-buttonblue"
-            onClick={logIn}
-            size="py-1 px-1 h-full"
-          >
+          <>
             <div className="flex flex-row text-sm h-12 items-center">
-              <div className="text-xs text-light">Connect Wallet</div>
-              <img className="ml-3 h-4 w-4" src="/images/wallet.png" alt="Img" />
+              <select
+                className="bg-indigo-white iphone5:w-36 w-36 md:w-42 lg:w-36
+                ring-2 ring-offset-4 ring-indigo-black ring-opacity-25 focus:ring-2 focus:ring-indigo-black 
+                focus:outline-none cursor-pointer text-xs md:text-base mr-4"
+                value={selectedOption}
+              >
+                <option className="text-sm text-light">Select Network</option>
+                <option className="text-sm text-light">Near Protocol</option>
+                <option className="text-sm text-light">Polygon Mainnet</option>
+              </select>
             </div>
-          </Button>
+            <Button
+              rounded="rounded-sm"
+              textColor="white-light"
+              color="indigo-buttonblue"
+              onClick={logIn}
+              size="py-1 px-1 h-full"
+            >
+              <div className="flex flex-row text-sm h-12 items-center">
+                <div className="text-xs text-light">Connect Wallet</div>
+                <img className="ml-3 h-4 w-4" src="/images/wallet.png" alt="Img" />
+              </div>
+            </Button>
+          </>
         );
       }
     }
   };
 
-  return <DesktopHeader>{renderWallet()}</DesktopHeader>;
+  return (
+    <DesktopHeader>
+      <div className="flex flex-row text-sm h-12 items-center">
+        <select
+          className="bg-indigo-white iphone5:w-36 w-36 md:w-42 lg:w-36
+          ring-2 ring-offset-4 ring-indigo-black ring-opacity-25 focus:ring-2 focus:ring-indigo-black 
+          focus:outline-none cursor-pointer text-xs md:text-base mr-4 ring-offset-9 font-medium"
+          value={selectedOption}
+        >
+          <option className="ring-offset-9 font-medium px-4 p-1">Select Network</option>
+          <option className="ring-offset-9 font-medium px-4 p-1">Near Protocol</option>
+          <option className="ring-offset-9 font-medium px-4 p-1">Polygon Mainnet</option>
+        </select>
+      </div>
+      {renderWallet()}
+    </DesktopHeader>
+  );
 };
 
 DesktopHeaderBase.propTypes = {
