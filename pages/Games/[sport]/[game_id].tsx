@@ -115,6 +115,7 @@ const Games = (props) => {
         playerLineups[item.index].chain,
         playerLineups[item.index].chain === 'near' ? nearGameId : polygonGameId,
         gameId,
+        getSportType(currentSport).key.toLowerCase(),
         playerLineups[item.index].accountId,
         playerLineups[item.index].teamName
       );
@@ -141,6 +142,7 @@ const Games = (props) => {
         'near',
         gameId,
         gameId,
+        getSportType(currentSport).key.toLowerCase(),
         playerLineups[currentIndex].accountId,
         playerLineups[currentIndex].teamName
       );
