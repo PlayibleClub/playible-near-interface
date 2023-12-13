@@ -101,33 +101,18 @@ const DesktopHeaderBase = () => {
         );
       } else {
         return (
-          <>
+          <Button
+            rounded="rounded-sm"
+            textColor="white-light"
+            color="indigo-buttonblue"
+            onClick={logIn}
+            size="py-1 px-1 h-full"
+          >
             <div className="flex flex-row text-sm h-12 items-center">
-              <select
-                className="bg-indigo-white iphone5:w-36 w-36 md:w-42 lg:w-36
-                ring-2 ring-offset-4 ring-indigo-black ring-opacity-25 focus:ring-2 focus:ring-indigo-black 
-                focus:outline-none cursor-pointer text-xs md:text-base mr-4"
-                value={selectedOption}
-                onChange={handleOptionChange}
-              >
-                <option className="text-sm text-light">Select Network</option>
-                <option className="text-sm text-light">Near Protocol</option>
-                <option className="text-sm text-light">Polygon Mainnet</option>
-              </select>
+              <div className="text-xs text-light">Connect Wallet</div>
+              <img className="ml-3 h-4 w-4" src="/images/wallet.png" alt="Img" />
             </div>
-            <Button
-              rounded="rounded-sm"
-              textColor="white-light"
-              color="indigo-buttonblue"
-              onClick={logIn}
-              size="py-1 px-1 h-full"
-            >
-              <div className="flex flex-row text-sm h-12 items-center">
-                <div className="text-xs text-light">Connect Wallet</div>
-                <img className="ml-3 h-4 w-4" src="/images/wallet.png" alt="Img" />
-              </div>
-            </Button>
-          </>
+          </Button>
         );
       }
     }
