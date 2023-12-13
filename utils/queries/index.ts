@@ -493,12 +493,6 @@ export const GET_ENTRY_SUMMARY_ATHLETES = gql`
           key
         }
         position
-        stats {
-          type
-          fantasyScore
-          gameDate
-          played
-        }
         nftImage
         nftImageLocked
         nftImagePromo
@@ -507,6 +501,33 @@ export const GET_ENTRY_SUMMARY_ATHLETES = gql`
       }
       type
       token_id
+    }
+  }
+`;
+export const GET_ENTRY_SUMMARY_ATHLETES_WITH_SCORE = gql`
+  query GetEntrySummaryAthletesWithScore(
+    $endTime: DateTime!
+    $startTime: DateTime!
+    $sport: String!
+    $chain: String!
+    $gameId: Float!
+    $address: String!
+    $teamName: String!
+  ) {
+    getEntrySummaryAthletesWithScore(
+      endTime: $endTime
+      startTime: $startTime
+      sport: $sport
+      chain: $chain
+      gameId: $gameId
+      address: $address
+      teamName: $teamName
+    ) {
+      game_team_athlete_id
+      athlete_id
+      first_name
+      last_name
+      total
     }
   }
 `;
