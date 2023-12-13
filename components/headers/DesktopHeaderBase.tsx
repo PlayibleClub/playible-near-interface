@@ -39,6 +39,31 @@ const DesktopHeaderBase = () => {
   };
 
   const [selectedOption, setSelectedOption] = useState('');
+
+  const handleOptionChange = (event) => {
+    const selectedValue = event.target.value;
+    setSelectedOption(selectedValue);
+
+    const env = process.env.NEAR_ENV;
+    let url;
+    switch (env) {
+      case 'production':
+        url = 'mainnet';
+        break;
+      case 'development':
+        url = 'testnet';
+        break;
+    }
+
+    if (selectedValue === 'Near Protocol') {
+      window.location.href =
+        url === 'mainnet' ? 'https://app.playible.io/' : 'https://dev.app.playible.io/';
+    } else if (selectedValue === 'Polygon Mainnet') {
+      window.location.href =
+        url === 'mainnet' ? 'https://polygon.playible.io/' : 'https://dev.polygon.playible.io/';
+    }
+  };
+
   const logOut = async () => {
     const wallet = await selector.wallet();
 
@@ -83,6 +108,7 @@ const DesktopHeaderBase = () => {
                 ring-2 ring-offset-4 ring-indigo-black ring-opacity-25 focus:ring-2 focus:ring-indigo-black 
                 focus:outline-none cursor-pointer text-xs md:text-base mr-4"
                 value={selectedOption}
+                onChange={handleOptionChange}
               >
                 <option className="text-sm text-light">Select Network</option>
                 <option className="text-sm text-light">Near Protocol</option>
@@ -115,6 +141,7 @@ const DesktopHeaderBase = () => {
           ring-2 ring-offset-4 ring-indigo-black ring-opacity-25 focus:ring-2 focus:ring-indigo-black 
           focus:outline-none cursor-pointer text-xs md:text-base mr-4 ring-offset-9 font-medium"
           value={selectedOption}
+          onChange={handleOptionChange}
         >
           <option className="ring-offset-9 font-medium px-4 p-1">Select Network</option>
           <option className="ring-offset-9 font-medium px-4 p-1">Near Protocol</option>
