@@ -141,7 +141,7 @@ const Games = (props) => {
     if (playerLineups[currentIndex].scoresChecked === false) {
       //lineup is from near, show entrysummary
       let newLineups = [...playerLineups];
-      const startTimeFormatted = formatToUTCDate(gameData.start_Time);
+      const startTimeFormatted = formatToUTCDate(gameData.start_time);
       const endTimeFormatted = formatToUTCDate(gameData.end_time);
       newLineups[currentIndex].lineup = await getScores(
         'near',
