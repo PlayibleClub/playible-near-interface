@@ -7,12 +7,14 @@ import type { Account, Message } from '../../interfaces';
 import type { AccountView } from 'near-api-js/lib/providers/provider';
 import { getRPCProvider } from 'utils/near';
 import { useWalletSelector } from '../../contexts/WalletSelectorContext';
+import Modal from 'components/modals/Modal';
 
 const DesktopHeaderBase = () => {
   const { selector, modal, accounts, accountId } = useWalletSelector();
   const [account, setAccount] = useState<Account | null>(null);
   const [messages, setMessages] = useState<Array<Message>>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [selectNetwork, setSelectNetwork] = useState(false);
 
   const getAccount = useCallback(async () => {
     if (!accountId) {
@@ -40,8 +42,7 @@ const DesktopHeaderBase = () => {
 
   const [selectedOption, setSelectedOption] = useState('');
 
-  const handleOptionChange = (event) => {
-    const selectedValue = event.target.value;
+  const handleOptionChange = (selectedValue) => {
     setSelectedOption(selectedValue);
 
     const env = process.env.NEAR_ENV;
@@ -58,10 +59,14 @@ const DesktopHeaderBase = () => {
     if (selectedValue === 'Near Protocol') {
       window.location.href =
         url === 'mainnet' ? 'https://app.playible.io/' : 'https://dev.app.playible.io/';
-    } else if (selectedValue === 'Polygon Mainnet') {
+    } else if (selectedValue === 'Polygon Matic') {
       window.location.href =
         url === 'mainnet' ? 'https://polygon.playible.io/' : 'https://dev.polygon.playible.io/';
     }
+  };
+
+  const handleClick = () => {
+    setSelectNetwork(true);
   };
 
   const logOut = async () => {
@@ -120,18 +125,49 @@ const DesktopHeaderBase = () => {
 
   return (
     <DesktopHeader>
-      <div className="flex flex-row text-sm h-12 items-center">
-        <select
-          className="bg-indigo-white iphone5:w-36 w-36 md:w-42 lg:w-36
-          ring-2 ring-offset-4 ring-indigo-black ring-opacity-25 focus:ring-2 focus:ring-indigo-black 
-          focus:outline-none cursor-pointer text-xs md:text-base mr-4 ring-offset-9 font-medium"
-          value={selectedOption}
-          onChange={handleOptionChange}
+      <div>
+        <button
+          className="bg-indigo-buttonblue hover:bg-indigo-light text-white font-bold py-1 px-2 rounded border mr-2 mt-2"
+          onClick={handleClick}
         >
-          <option className="ring-offset-9 font-medium px-4 p-1">Select Network</option>
-          <option className="ring-offset-9 font-medium px-4 p-1">Near Protocol</option>
-          <option className="ring-offset-9 font-medium px-4 p-1">Polygon Mainnet</option>
-        </select>
+          <div className="text-white-light">Select Network</div>
+        </button>
+        <Modal title={'Select Network'} visible={selectNetwork}>
+          <div className="flex items-center justify-center h-full">
+            <div className="fixed top-4 right-4 transform scale-100">
+              <button onClick={() => setSelectNetwork(false)}>
+                <img src="/images/x.png" />
+              </button>
+            </div>
+            <div className="flex flex-col items-start justify-center mr-8">
+              <a
+                href="#"
+                onClick={() => handleOptionChange('Near Protocol')}
+                className="hover:bg-indigo-slate p-2 rounded-md text-center mb-2 border-2"
+              >
+                <div className="flex items-center">
+                  <button className="p-2">
+                    <img src="/images/near.png" width="50" height="50" />
+                  </button>
+                  <div className="mr-8 mb-1 text-lg">Near Protocol</div>
+                </div>
+              </a>
+
+              <a
+                href="#"
+                onClick={() => handleOptionChange('Polygon Matic')}
+                className="hover:bg-indigo-slate p-2 rounded-md text-center mb-2 border-2"
+              >
+                <div className="flex items-center">
+                  <button className="p-2 ml-2">
+                    <img src="/images/polygon.png" width="40" height="40" />
+                  </button>
+                  <div className="mr-8 text-lg">Polygon Matic</div>
+                </div>
+              </a>
+            </div>
+          </div>
+        </Modal>
       </div>
       {renderWallet()}
     </DesktopHeader>
