@@ -35,6 +35,7 @@ import { current } from '@reduxjs/toolkit';
 import { getSport } from 'redux/athlete/athleteSlice';
 import Modal from 'components/modals/Modal';
 import AdminGameFilter from './components/AdminGameFilter';
+import { getIsAdmin } from 'redux/admin/adminSlice';
 import client from 'apollo-client';
 import { MERGE_INTO_LEADERBOARD } from 'utils/queries';
 TimeAgo.addDefaultLocale(en);
@@ -45,6 +46,7 @@ export default function Index(props) {
   const connectedWallet = {};
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const isAdmin = useSelector(getIsAdmin);
   const [contentLoading, setContentLoading] = useState(true);
   const [gameType, setGameType] = useState('new');
   const [content, setContent] = useState(false);
@@ -1046,6 +1048,12 @@ export default function Index(props) {
   if (selectedSoulbound) {
     tokenTypeWhitelist.push('soulbound');
   }
+
+  useEffect(() => {
+    if (!isAdmin) {
+      router.push('/Admin/Login');
+    }
+  });
 
   useEffect(() => {
     currentTotal !== 0 ? setPageCount(Math.ceil(currentTotal / gamesLimit)) : setPageCount(1);
