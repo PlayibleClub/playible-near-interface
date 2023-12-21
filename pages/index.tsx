@@ -21,7 +21,7 @@ export default function Home(props) {
   const [sportList, setSportList] = useState(
     SPORT_TYPES.map((x) => ({ name: x.sport, key: x.key }))
   );
-  const [currentSport, setCurrentSport] = useState('mlb'.toLocaleLowerCase());
+  const [currentSport, setCurrentSport] = useState('nfl'.toLocaleLowerCase());
   const [getAthletes, { loading, error, data }] = useLazyQuery(GET_ATHLETES_TOP);
   const [getCricketAthletes] = useLazyQuery(GET_CRICKET_ATHLETES_TOP);
   const [athletes, setAthletes] = useState([]);
