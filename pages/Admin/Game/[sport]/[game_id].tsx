@@ -158,7 +158,7 @@ export default function AdminPlayerLineup(props) {
                   Account Id: <b>{item.accountId}</b>
                 </div>
                 <div>Team Name: {item.teamName}</div>
-                <div>Overall Fantasy Score: {item.sumScore}</div>
+                <div>Overall Fantasy Score: {item.total}</div>
                 {currentSport === SPORT_NAME_LOOKUP.football ? <div>Week: {week}</div> : null}
                 <div>
                   Lineup:{' '}
