@@ -15,7 +15,7 @@ const Container = (props) => {
   const isAdmin = isAdminChecker(accountId);
 
   return (
-    <div className="font-montserrat h-full md:h-screen relative hide-scroll bg-indigo-white flex overflow-x-hidden overflow-y-hidden">
+    <div className="font-montserrat h-min md:h-screen relative hide-scroll bg-indigo-white flex overflow-x-hidden overflow-y-hidden">
       <Head>
         <script
           type="text/javascript"
