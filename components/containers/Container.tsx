@@ -15,9 +15,8 @@ const Container = (props) => {
   const isAdmin = isAdminChecker(accountId);
 
   return (
-    <div className="font-montserrat h-min md:h-screen relative hide-scroll bg-indigo-white flex overflow-x-hidden overflow-y-hidden">
+    <div className="font-montserrat h-full md:h-screen relative hide-scroll bg-indigo-white flex overflow-x-hidden overflow-y-hidden">
       <Head>
-
         <script
           type="text/javascript"
           async
@@ -33,14 +32,21 @@ const Container = (props) => {
                 j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl
                 f.parentNode.insertBefore(j, f)
               })(window,document,'script','dataLayer',"GTM-KQBL75W")`,
-          }}/>
+          }}
+        />
 
         <title>Playible - Next Generation of Fantasy Sports</title>
         <link rel="icon" type="image/png" sizes="16x16" href="images/favicon.png" />
       </Head>
 
-      <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KQBL75W"
-      height="0" width="0" className="hidden"></iframe></noscript>
+      <noscript>
+        <iframe
+          src="https://www.googletagmanager.com/ns.html?id=GTM-KQBL75W"
+          height="0"
+          width="0"
+          className="hidden"
+        ></iframe>
+      </noscript>
 
       <div className="invisible w-0 md:visible md:w-full">
         <div className="flex bg-indigo-white">
