@@ -122,18 +122,20 @@ const DesktopHeaderBase = () => {
       }
     }
   };
-
-  return (
-    <DesktopHeader>
+  const renderNetwork = () => {
+    return (
       <div>
         <button
-          className="bg-indigo-buttonblue hover:bg-indigo-light text-white font-bold py-1 px-2 rounded border mr-2 mt-2"
+          className="bg-indigo-buttonblue hover:bg-indigo-light text-white font-bold py-1 px-2 rounded mr-2 mt-2 flex items-center"
           onClick={handleClick}
         >
-          <div className="text-white-light">Select Network</div>
+          <img src="/images/near.png" width="25" height="25" className="mr-1" />
+
+          <div className="text-white-light mr-2  text-sm">Near Protocol</div>
+          <img src="/images/arrowNE.png" width="15" height="15" />
         </button>
         <Modal title={'Select Network'} visible={selectNetwork}>
-          <div className="flex items-center justify-center h-full">
+          <div className="flex items-center justify-center ml-6">
             <div className="fixed top-4 right-4 transform scale-100">
               <button onClick={() => setSelectNetwork(false)}>
                 <img src="/images/x.png" />
@@ -143,13 +145,13 @@ const DesktopHeaderBase = () => {
               <a
                 href="#"
                 onClick={() => handleOptionChange('Near Protocol')}
-                className="hover:bg-indigo-slate p-2 rounded-md text-center mb-2 border-2"
+                className="hover:bg-indigo-slate p-2 rounded-md text-center mb-2 border-2 border-indigo-navbargrad2"
               >
                 <div className="flex items-center">
-                  <button className="p-2">
-                    <img src="/images/near.png" width="50" height="50" />
+                  <button>
+                    <img src="/images/near.png" width="45" height="40" className="ml-1 mr-2.5" />
                   </button>
-                  <div className="mr-8 mb-1 text-lg">Near Protocol</div>
+                  <div className="mr-28 text-lg">Near Protocol</div>
                 </div>
               </a>
 
@@ -159,16 +161,21 @@ const DesktopHeaderBase = () => {
                 className="hover:bg-indigo-slate p-2 rounded-md text-center mb-2 border-2"
               >
                 <div className="flex items-center">
-                  <button className="p-2 ml-2">
-                    <img src="/images/polygon.png" width="40" height="40" />
+                  <button>
+                    <img src="/images/polygon.png" width="40" height="40" className="ml-2 mr-2" />
                   </button>
-                  <div className="mr-8 text-lg">Polygon Matic</div>
+                  <div className="mr-28 text-lg">Polygon Matic</div>
                 </div>
               </a>
             </div>
           </div>
         </Modal>
       </div>
+    );
+  };
+  return (
+    <DesktopHeader>
+      {renderNetwork()}
       {renderWallet()}
     </DesktopHeader>
   );
