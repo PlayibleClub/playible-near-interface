@@ -1,31 +1,18 @@
 import { utils, providers } from 'near-api-js';
 import Container from '../../components/containers/Container';
 import Main from '../../components/Main';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import 'regenerator-runtime/runtime';
-import Head from 'next/head';
 import Select from 'react-select';
-import ProgressBar from '@ramonak/react-progress-bar';
-import Usdt from '../../public/images/SVG/usdt';
-import Usdc from '../../public/images/SVG/usdc';
-import USN from '../../public/images/SVG/usn';
 import NEAR from '../../public/images/SVG/near';
 import { useWalletSelector } from '../../contexts/WalletSelectorContext';
 import BigNumber from 'bignumber.js';
-import { getConfig, getContract, getRPCProvider, get_near_connection } from '../../utils/near';
+import { getRPCProvider, get_near_connection } from '../../utils/near';
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
 import Modal from 'components/modals/Modal';
-import PortfolioContainer from '../../components/containers/PortfolioContainer';
-import {
-  MINTER_NFL,
-  NEP141USDC,
-  NEP141USDT,
-  NEP141USN,
-  NEP141NEAR,
-  PACK_PROMO_NFL,
-} from '../../data/constants/nearContracts';
+import { NEP141NEAR } from '../../data/constants/nearContracts';
 
 import { MINT_STORAGE_COST, DEFAULT_MAX_FEES } from 'data/constants/gasFees';
 import { execute_claim_soulbound_pack, query_claim_status } from 'utils/near/helper';
@@ -41,39 +28,29 @@ import {
 import { persistor } from 'redux/athlete/store';
 import { getUTCDateFromLocal } from 'utils/date/helper';
 import moment from 'moment';
-import Button from 'components/buttons/Button';
-import { number } from 'prop-types';
 const DECIMALS_NEAR = 1000000000000000000000000;
-const RESERVED_AMOUNT = 200;
 const NANO_TO_SECONDS_DENOMINATOR = 1000000;
 
-// const discountDate = 0;
-// const launchDate = 0;
 export default function Home(props) {
-  const { selector, modal, accounts, accountId } = useWalletSelector();
+  const { selector, modal, accountId } = useWalletSelector();
 
   //const { network } = selector.options;
   const provider = new providers.JsonRpcProvider({
     url: getRPCProvider(),
   });
-  const { contract } = selector.store.getState();
+
   const dispatch = useDispatch();
-  const [positionList, setPositionList] = useState(SPORT_TYPES[0].positionList);
-  const sportObj = SPORT_TYPES.filter(
-    (x) => x.sport !== SPORT_NAME_LOOKUP.cricket && x.sport
-  ).map((x) => ({
-    name: x.sport,
-    isActive: false,
-  }));
+  const sportObj = SPORT_TYPES.filter((x) => x.sport !== SPORT_NAME_LOOKUP.cricket && x.sport).map(
+    (x) => ({
+      name: x.sport,
+      isActive: false,
+    })
+  );
   const [sportFromRedux, setSportFromRedux] = useState(useSelector(getSportTypeRedux));
   const [isPromoFromRedux, setIsPromoFromRedux] = useState(useSelector(getIsPromoRedux));
   const [categoryList, setCategoryList] = useState([...sportObj]);
   const [currentSport, setCurrentSport] = useState(sportObj[0].name);
-  const options = [
-    { value: 'national', label: 'National Football League' },
-    { value: 'local', label: 'Local Football League' },
-    { value: 'international', label: 'International Football League' },
-  ];
+
   // Re-use this data to display the state
   const [minterConfig, setMinterConfig] = useState({
     minting_price_in_near: '',
@@ -192,29 +169,6 @@ export default function Home(props) {
     }
   }
 
-  async function query_storage_deposit_account_id() {
-    try {
-      if (selector.isSignedIn()) {
-        // Get storage deposit on minter contract
-        const query = JSON.stringify({ account: accountId });
-
-        const storage_balance = await provider.query({
-          request_type: 'call_function',
-          finality: 'optimistic',
-          account_id: getSportType(currentSport).mintContract,
-          method_name: 'get_storage_balance_of',
-          args_base64: Buffer.from(query).toString('base64'),
-        });
-        // @ts-ignore:next-line
-        const storageDeposit = JSON.parse(Buffer.from(storage_balance.result).toString());
-        setStorageDepositAccountBalance(storageDeposit);
-      }
-    } catch (e) {
-      // No account storage deposit found
-      setStorageDepositAccountBalance(0);
-    }
-  }
-
   async function get_near_account_balance(account_id) {
     // gets account balance
 
@@ -317,212 +271,6 @@ export default function Home(props) {
     });
   }
 
-  async function execute_batch_transaction_storage_deposit_and_mint_token() {
-    const amount_to_deposit_near = new BigNumber(selectedMintAmount)
-      .multipliedBy(new BigNumber(MINT_STORAGE_COST))
-      .toFixed();
-
-    const data_one = Buffer.from(JSON.stringify({}));
-    const action_deposit_storage_near_token = {
-      type: 'FunctionCall',
-      params: {
-        methodName: 'storage_deposit',
-        args: data_one,
-        gas: DEFAULT_MAX_FEES,
-        deposit: amount_to_deposit_near,
-      },
-    };
-
-    // FT amount to deposit for minting NFT
-    const mint_cost =
-      selectedMintAmount *
-      Number(
-        useNEP141.decimals == 1000000
-          ? minterConfig.minting_price_decimals_6
-          : minterConfig.minting_price_in_near
-      );
-
-    try {
-      const query = JSON.stringify({ account_id: accountId });
-      const ft_balance_of = await provider.query({
-        request_type: 'call_function',
-        finality: 'optimistic',
-        account_id: getContract(useNEP141),
-        method_name: 'ft_balance_of',
-        args_base64: Buffer.from(query).toString('base64'),
-      });
-      // @ts-ignore:next-line
-
-      const balance = JSON.parse(Buffer.from(ft_balance_of.result).toString());
-      if (balance < mint_cost && currentSport === 'FOOTBALL') {
-        setBalanceErrorMsg(
-          'Error you need ' +
-            selectedMintAmount * 85 +
-            ' ' +
-            useNEP141.title +
-            ', You have ' +
-            balance +
-            ' ' +
-            useNEP141.title
-        );
-        return;
-      } else if (balance < mint_cost && currentSport === 'BASKETBALL') {
-        setBalanceErrorMsg(
-          'Error you need ' +
-            selectedMintAmount * 50 +
-            ' ' +
-            useNEP141.title +
-            ', You have ' +
-            balance +
-            ' ' +
-            useNEP141.title
-        );
-        return;
-      }
-      setBalanceErrorMsg('');
-    } catch (e) {
-      console.log(e);
-      return;
-    }
-
-    if (selectedMintAmount == 0) {
-      return;
-    }
-
-    dispatch(setSportTypeRedux(currentSport));
-    const data_two = Buffer.from(
-      JSON.stringify({
-        receiver_id: getSportType(currentSport).mintContract,
-        amount: Math.floor(mint_cost).toString(),
-        msg: JSON.stringify({ mint_amount: selectedMintAmount }),
-      })
-    );
-    //const register = Buffer.from(JSON.stringify({account_id:  _minter.contractList[0].contractId}))
-
-    const action_transfer_call = {
-      type: 'FunctionCall',
-      params: {
-        methodName: 'ft_transfer_call',
-        args: data_two,
-        gas: DEFAULT_MAX_FEES,
-        deposit: '1',
-      },
-    };
-
-    const wallet = await selector.wallet();
-    // @ts-ignore:next-line
-    const tx = wallet.signAndSendTransactions({
-      transactions: [
-        {
-          receiverId: getSportType(currentSport).mintContract,
-          // @ts-ignore:next-line
-          actions: [action_deposit_storage_near_token],
-        },
-        {
-          receiverId: getContract(useNEP141),
-          // @ts-ignore:next-line
-          actions: [action_transfer_call],
-        },
-      ],
-    });
-  }
-
-  async function execute_mint_token() {
-    // Init minter contract
-    //const _minter = await initNear([MINTER, useNEP141]);
-
-    // FT amount to deposit for minting NFT
-    const mint_cost =
-      selectedMintAmount *
-      Number(
-        useNEP141.decimals == 1000000
-          ? minterConfig.minting_price_decimals_6
-          : minterConfig.minting_price_in_near
-      );
-
-    if (selectedMintAmount == 0) {
-      return;
-    }
-
-    const data = Buffer.from(
-      JSON.stringify({
-        receiver_id: selector.store.getState().contract.contractId,
-        amount: Math.floor(mint_cost).toString(),
-        msg: JSON.stringify({ mint_amount: selectedMintAmount }),
-      })
-    );
-    //const register = Buffer.from(JSON.stringify({account_id:  _minter.contractList[0].contractId}))
-
-    const action_transfer_call = {
-      functionCall: 'FunctionCall',
-      params: {
-        methodName: 'ft_transfer_call',
-        args: data,
-        gas: DEFAULT_MAX_FEES,
-        deposit: '1',
-      },
-    };
-
-    const wallet = await selector.wallet();
-    const tx = wallet
-      .signAndSendTransaction({
-        signerId: accountId,
-        receiverId: getContract(useNEP141),
-        actions: [
-          // @ts-ignore:next-line
-          action_transfer_call,
-        ],
-      })
-      .catch((e) => {
-        console.log('error');
-        console.log(e);
-      });
-  }
-
-  const changeCategoryList = (name) => {
-    const tabList = [...categoryList];
-    tabList.forEach((item) => {
-      if (item.name === name) {
-        item.isActive = true;
-      } else {
-        item.isActive = false;
-      }
-    });
-    setCategoryList([...tabList]);
-    setCurrentSport(name);
-  };
-
-  async function execute_storage_deposit() {
-    // Calculate amount to deposit for minting process
-    const amount_to_deposit_near = BigInt(selectedMintAmount * MINT_STORAGE_COST).toString();
-
-    const _data = Buffer.from(JSON.stringify({}));
-    const action_deposit_storage_near_token = {
-      type: 'FunctionCall',
-      params: {
-        methodName: 'storage_deposit',
-        args: _data,
-        gas: DEFAULT_MAX_FEES,
-        deposit: amount_to_deposit_near,
-      },
-    };
-
-    const wallet = await selector.wallet();
-    const tx = wallet
-      .signAndSendTransaction({
-        signerId: accountId,
-        receiverId: getSportType(currentSport).mintContract,
-        actions: [
-          // @ts-ignore:next-line
-          action_deposit_storage_near_token,
-        ],
-      })
-      .catch((e) => {
-        console.log('error');
-        console.log(e);
-      });
-  }
-
   function selectMint() {
     let optionMint = [];
     for (let x = 1; x < 11; x++) {
@@ -617,19 +365,14 @@ export default function Home(props) {
 
   const handleButtonClick = (e, sport) => {
     e.preventDefault();
-    // new Promise(() => setTimeout(() => persistor.purge(), 200)).then(() => {
-    //   dispatch(setSportTypeRedux(sport));
-    // });
+
     dispatch(setSportTypeRedux(sport));
     dispatch(setIsPromoRedux(true));
     execute_claim_soulbound_pack(selector, getSportType(sport).packPromoContract);
   };
 
-  async function get_soulbound_pack(selector) {}
-
   useEffect(() => {
     query_config_contract();
-    query_storage_deposit_account_id();
     query_minting_of();
     if (currentSport === 'BASKETBALL') {
       setUseNEP141(NEP141NEAR);
@@ -830,33 +573,9 @@ export default function Home(props) {
                   </select>
                 </form>
               </div>
-              {/* <div className="flex font-bold max-w-full ml-5 md:ml-6 font-monument overflow-y-auto no-scrollbar">
-                {categoryList.map(({ name, isActive }) => (
-                  <div
-                    className={`cursor-pointer mr-6 ${
-                      isActive ? 'border-b-8 border-indigo-buttonblue' : ''
-                    }`}
-                    onClick={() => {
-                      changeCategoryList(name);
-                    }}
-                  >
-                    {name}
-                  </div>
-                ))}
-                
-              </div>
-              <hr className="opacity-10 iphone5:w-screen md:w-auto" /> */}
             </div>
             <div className="flex flex-col md:flex-row md:ml-12">
               <div className="md:w-full overflow-x-hidden">
-                {/* <div className="flex-col flex w-full mt-8">
-                  <div className="align-center justify-center border-2 p-8 iphone5:ml-2 iphone5:mr-2 md:mr-8 rounded-lg">
-                    <div className="text-m">
-                      Early Bird Offer: The first 500 minted will receive an additional free
-                      promotional pack.
-                    </div>
-                  </div>
-                </div> */}
                 <div className="flex md:flex-row flex-col md:ml-2 mt-12">
                   {currentSport === SPORT_NAME_LOOKUP.football ? (
                     <div className="md:w-1/2 w-full ">
@@ -902,55 +621,14 @@ export default function Home(props) {
                         textcolor="text-indigo-black"
                       />
                     </div>
-                    {currentSport === SPORT_NAME_LOOKUP.basketball ? '' : ''}
 
                     <div className="flex justify-between w-4/5 md:w-1/2 mt-5">
                       <div>
                         <div className="text-xs">PRICE</div>
-
-                        {useNEP141 === NEP141NEAR ? (
-                          <div className="font-black text-xl"> {format_price()}N</div>
-                        ) : useNEP141 === NEP141USDT ? (
-                          <div className="font-black"> {format_price()}USDT</div>
-                        ) : (
-                          <div className="font-black"> {format_price()}USDC</div>
-                        )}
+                        <div className="font-black text-xl"> {format_price()}N</div>
                       </div>
 
                       <div className="border">
-                        {/* {currentSport === SPORT_NAME_LOOKUP.basketball ||
-                        SPORT_NAME_LOOKUP.baseball ? (
-                          ''
-                        ) : (
-                          <div>
-                            <button
-                              onClick={() => setUseNEP141(NEP141USDT)}
-                              className={
-                                'p-3 ' +
-                                (useNEP141.title == NEP141USDT.title
-                                  ? 'bg-indigo-black'
-                                  : 'hover:bg-indigo-slate')
-                              }
-                            >
-                              <Usdt
-                                hardCodeMode={useNEP141.title == NEP141USDT.title ? '#fff' : '#000'}
-                              ></Usdt>
-                            </button>
-                            <button
-                              onClick={() => setUseNEP141(NEP141USDC)}
-                              className={
-                                'p-3 ' +
-                                (useNEP141.title == NEP141USDC.title
-                                  ? 'bg-indigo-black'
-                                  : 'hover:bg-indigo-slate')
-                              }
-                            >
-                              <Usdc
-                                hardCodeMode={useNEP141.title == NEP141USDC.title ? '#fff' : '#000'}
-                              ></Usdc>
-                            </button>
-                          </div>
-                        )} */}
                         <button
                           onClick={() => setUseNEP141(NEP141NEAR)}
                           className={
@@ -967,27 +645,6 @@ export default function Home(props) {
                       </div>
                     </div>
 
-                    {(counter().days > 0 ||
-                      counter().hours > 0 ||
-                      counter().minute > 0 ||
-                      counter().seconds > 0) && (
-                      <>
-                        <div className="text-xs mt-8">MINT STARTS IN</div>
-                        <div className="flex mt-3">
-                          <div className="p-3 rounded-lg bg-indigo-black text-indigo-white">
-                            {counter().hours}
-                          </div>
-                          <div className="p-3 ">:</div>
-                          <div className="p-3 rounded-lg  bg-indigo-black text-indigo-white">
-                            {counter().minute}
-                          </div>
-                          <div className="p-3 ">:</div>
-                          <div className="p-3  rounded-lg bg-indigo-black text-indigo-white">
-                            {counter().seconds}
-                          </div>
-                        </div>
-                      </>
-                    )}
                     <div className="flex gap-16">
                       <div className="border border-indigo-lightgray rounded-2xl text-center p-4 w-40 flex flex-col justify-center  mt-8">
                         <div className="text-2xl font-black font-monument ">
@@ -1002,28 +659,7 @@ export default function Home(props) {
                         <div className="text-xs">YOU HAVE MINTED</div>
                       </div>
                     </div>
-                    <div className="mt-8 mb-0 p-0 w-9/12">
-                      {/* <ProgressBar
-                        completed={parseInt(
-                          (
-                            ((minterConfig.nft_pack_max_sale_supply -
-                              minterConfig.nft_pack_mint_counter -
-                              262) *
-                              100) /
-                            (minterConfig.nft_pack_max_sale_supply + RESERVED_AMOUNT)
-                          ).toFixed(2)
-                        )}
-                        maxCompleted={100}
-                        bgColor={'#3B62F6'}
-                      /> */}
-                    </div>
-                    <div className="text-xs ">
-                      {/* {' '}
-                      {minterConfig.nft_pack_max_sale_supply -
-                        minterConfig.nft_pack_mint_counter -
-                        262}
-                      /{minterConfig.nft_pack_max_sale_supply + RESERVED_AMOUNT} packs remaining */}
-                    </div>
+                    <div className="mt-8 mb-0 p-0 w-9/12"></div>
                     <div>
                       {currentSport === 'FOOTBALL'
                         ? selectMint()
@@ -1033,16 +669,7 @@ export default function Home(props) {
                         ? selectMintMlb()
                         : selectMintIpl()}
                     </div>
-                    {currentSport === 'FOOTBALL' ? (
-                      <div className="ml-3"></div>
-                    ) : (
-                      <div>{/* <div className="mt-4">Limit: 10 packs per wallet</div> */}</div>
-                    )}
-                    {/*TODO: start styling */}
-                    {/*<div>*/}
-                    {/*  <p>Receipt total price ${Math.floor((selectedMintAmount * parseInt(minterConfig.minting_price)) / STABLE_DECIMAL)}</p>*/}
-                    {/*  <p>Gas price {utils.format.formatNearAmount(BigInt(selectedMintAmount * MINT_STORAGE_COST).toString()).toString()}N</p>*/}
-                    {/*</div>*/}
+
                     {Math.floor(minterConfig.public_sale_start / NANO_TO_SECONDS_DENOMINATOR) <=
                       Date.now() && selector.isSignedIn() ? (
                       {
@@ -1065,11 +692,7 @@ export default function Home(props) {
                           ) : launchDate > 0 ? (
                             <button
                               className="w-9/12 flex text-center justify-center items-center bg-indigo-buttonblue font-montserrat text-indigo-white p-4 text-xs mt-8 "
-                              onClick={() =>
-                                useNEP141.title === 'NEAR'
-                                  ? execute_near_storage_deposit_and_mint_token()
-                                  : execute_batch_transaction_storage_deposit_and_mint_token()
-                              }
+                              onClick={() => execute_near_storage_deposit_and_mint_token()}
                             >
                               Mint {Math.floor(selectedMintAmount * format_price())}N + fee{' '}
                               {utils.format.formatNearAmount(
@@ -1082,11 +705,7 @@ export default function Home(props) {
                           ) : (
                             <button
                               className="w-9/12 hidden text-center justify-center items-center bg-indigo-buttonblue font-montserrat text-indigo-white p-4 text-xs mt-8 "
-                              onClick={() =>
-                                useNEP141.title === 'NEAR'
-                                  ? execute_near_storage_deposit_and_mint_token()
-                                  : execute_batch_transaction_storage_deposit_and_mint_token()
-                              }
+                              onClick={() => execute_near_storage_deposit_and_mint_token()}
                             >
                               Mint {Math.floor(selectedMintAmount * format_price())}N + fee{' '}
                               {utils.format.formatNearAmount(
@@ -1169,22 +788,9 @@ export default function Home(props) {
                           )}
                         </>
                       ) : (
-                        // {minted > "10" }
-                        <button
-                          className="w-9/12 flex text-center justify-center items-center bg-indigo-buttonblue font-montserrat text-indigo-white p-4 text-xs mt-8 "
-                          onClick={() => execute_storage_deposit()}
-                        >
-                          Storage deposit required{' '}
-                          {utils.format.formatNearAmount(
-                            BigInt(
-                              selectedMintAmount * MINT_STORAGE_COST - storageDepositAccountBalance
-                            ).toString()
-                          )}
-                          N
-                        </button>
+                        ''
                       )
                     ) : selector.isSignedIn() ? (
-                      //Change "MINT BASKETBALL STARTER PACK SOON" based on new sport that will be added
                       <div className="w-9/12 flex text-center justify-center items-center bg-indigo-buttonblue font-montserrat text-indigo-white p-4 text-xs mt-8 ">
                         MINT {currentSport} STARTER PACK SOON
                       </div>
@@ -1197,7 +803,6 @@ export default function Home(props) {
                       </button>
                     )}
                     <p className="text-xs text-indigo-red font-bold">{balanceErrorMsg}</p>
-                    {/*TODO: end */}
                   </div>
                 </div>
                 <div className="iphone5:mt-5 md:mt-0 ml-8 md:ml-2">
