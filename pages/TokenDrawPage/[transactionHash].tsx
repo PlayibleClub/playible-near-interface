@@ -401,8 +401,8 @@ const TokenDrawPage = (props) => {
     <>
       <Container activeName="SQUAD">
         <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
-          <Main color="indigo-white">
-            {videoPlaying ? (
+          <Main color="indigo-white" key={remountComponent}>
+            {videoPlaying && !loading ? (
               <div key={remountComponent} className="player-wrapper">
                 <video className="open-pack-video" autoPlay muted onEnded={onVideoEnded}>
                   <source src={videoFile} type="video/mp4" />
@@ -412,7 +412,7 @@ const TokenDrawPage = (props) => {
             ) : (
               <>
                 {loading ? (
-                  <LoadingPageDark />
+                  <LoadingPageDark message="If loading is taking a long time, please reload the page" />
                 ) : (
                   <>
                     {!result ? (

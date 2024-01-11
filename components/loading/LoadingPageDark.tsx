@@ -3,10 +3,10 @@ import React from 'react';
 
 const LoadingPageDark = (props) => {
   const { message } = props;
-
+  console.log(`message from props ${message}`);
   return (
     <div className="p-4 max-w-sm w-full md:m-8">
-      <div className="text-white-light text-1xl">{message}</div>
+      <div className="text-indigo-black text-1xl">{message}</div>
       <div className="animate-pulse flex space-x-4">
         <div className="flex-1 space-y-4 py-1">
           <div className="space-y-3">
