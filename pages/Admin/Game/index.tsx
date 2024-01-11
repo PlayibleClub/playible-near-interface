@@ -2,37 +2,24 @@ import React, { useEffect, useState } from 'react';
 import Container from '../../../components/containers/Container';
 import LoadingPageDark from '../../../components/loading/LoadingPageDark';
 import Main from '../../../components/Main';
-import Distribution from './components/distribution';
-import { axiosInstance } from '../../../utils/playible';
 import BaseModal from '../../../components/modals/BaseModal';
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en.json';
-import ReactTimeAgo from 'react-time-ago';
-import { GAME_NFL, ORACLE } from '../../../data/constants/nearContracts';
 import { SPORT_TYPES, getSportType } from 'data/constants/sportConstants';
 import 'regenerator-runtime/runtime';
-import { format } from 'prettier';
-import { ADMIN } from '../../../data/constants/address';
 import { useRouter } from 'next/router';
 import { useSelector } from 'react-redux';
-import { useMutation } from '@apollo/client';
-import { CREATE_GAME } from '../../../utils/mutations';
+
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
-import { getContract, getRPCProvider } from 'utils/near';
-import { DEFAULT_MAX_FEES, MINT_STORAGE_COST } from 'data/constants/gasFees';
-import { transactions, utils, WalletConnection, providers } from 'near-api-js';
+import { DEFAULT_MAX_FEES } from 'data/constants/gasFees';
 import { getGameInfoById } from 'utils/game/helper';
 import AdminGameComponent from './components/AdminGameComponent';
-import moment, { utc } from 'moment';
-import { getUTCDateFromLocal, getUTCTimestampFromLocal } from 'utils/date/helper';
+import moment from 'moment';
+import { getUTCTimestampFromLocal } from 'utils/date/helper';
 import ReactPaginate from 'react-paginate';
 import { query_games_list, query_game_supply } from 'utils/near/helper';
-import { position } from 'utils/athlete/position';
 import ReactS3Client from 'react-aws-s3-typescript';
 import secretKeys from 's3config';
-import { ErrorResponse } from '@remix-run/router';
-import { current } from '@reduxjs/toolkit';
-import { getSport } from 'redux/athlete/athleteSlice';
 import Modal from 'components/modals/Modal';
 import AdminGameFilter from './components/AdminGameFilter';
 import { getIsAdmin } from 'redux/admin/adminSlice';
@@ -41,24 +28,15 @@ import { MERGE_INTO_LEADERBOARD } from 'utils/queries';
 TimeAgo.addDefaultLocale(en);
 
 export default function Index(props) {
-  const [createNewGame, { data, error }] = useMutation(CREATE_GAME);
   const { selector, accountId } = useWalletSelector();
-  const connectedWallet = {};
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const isAdmin = useSelector(getIsAdmin);
-  const [contentLoading, setContentLoading] = useState(true);
-  const [gameType, setGameType] = useState('new');
-  const [content, setContent] = useState(false);
-  const [gameDuration, setGameDuration] = useState(0);
   const [totalGames, setTotalGames] = useState(0);
-  const [gameIdToAdd, setGameIdToAdd] = useState(0);
   //gameinfo
-  const [gameInfo, setGameInfo] = useState({});
   const [whitelistInfo, setWhitelistInfo] = useState(null);
   const [gameDescription, setGameDescription] = useState(null);
   const [prizeDescription, setPrizeDescription] = useState(null);
-  const [lineupLength, setLineupLength] = useState(0);
   const [gameImage, setGameImage] = useState(null);
   const [imageList, setImageList] = useState([]);
   const [radioSelected, setRadioSelected] = useState(null);
@@ -97,67 +75,19 @@ export default function Index(props) {
     },
   ]);
 
-  const [distribution, setDistribution] = useState([
-    {
-      rank: 1,
-      percentage: 50,
-    },
-    {
-      rank: 2,
-      percentage: 30,
-    },
-    {
-      rank: 3,
-      percentage: 16,
-    },
-    {
-      rank: 4,
-      percentage: 2,
-    },
-    {
-      rank: 5,
-      percentage: 2,
-    },
-    {
-      rank: 6,
-      percentage: 2,
-    },
-    {
-      rank: 7,
-      percentage: 2,
-    },
-    {
-      rank: 8,
-      percentage: 2,
-    },
-    {
-      rank: 9,
-      percentage: 2,
-    },
-    {
-      rank: 10,
-      percentage: 2,
-    },
-  ]);
-  const [games, setGames] = useState([]);
   const [newGames, setNewGames] = useState([]);
   const [completedGames, setCompletedGames] = useState([]);
   const [ongoingGames, setOngoingGames] = useState([]);
-  const [gameId, setGameId] = useState(null);
   const [gamesLimit, setGamesLimit] = useState(10);
   const [pageCount, setPageCount] = useState(0);
   const [gamesOffset, setGamesOffset] = useState(0);
   const [currentTotal, setCurrentTotal] = useState(0);
-  const [err, setErr] = useState(null);
   const [endLoading, setEndLoading] = useState(false);
   const [confirmModal, setConfirmModal] = useState(false);
   const [endModal, setEndModal] = useState(false);
   const [imageModal, setImageModal] = useState(false);
   const [radioValue, setRadioValue] = useState('');
-  const [msg, setMsg] = useState({
-    title: '',
-    content: '',
-  });
+
   const [positionsInfo, setPositionsInfo] = useState([
     { positions: ['QB'], amount: 1 },
     { positions: ['RB'], amount: 2 },
@@ -234,9 +164,6 @@ export default function Index(props) {
     'Enter a team into the The Blitz tournament to compete for cash prizes. Create a lineup by selecting 8 Playible Football Athlete Tokens now.';
   const defaultPrizeDescription = '$100 + 2 Championship Tickets';
   const defaultGameImage = 'https://playible-game-image.s3.ap-southeast-1.amazonaws.com/game.png';
-  const provider = new providers.JsonRpcProvider({
-    url: getRPCProvider(),
-  });
   const [endMsg, setEndMsg] = useState({
     title: '',
     content: '',
@@ -335,41 +262,6 @@ export default function Index(props) {
     });
 
     setGameTabs([...tabList]);
-  };
-
-  const modifyRankList = (type, rankNum, percentVal) => {
-    let tempList = [...distribution];
-
-    if (type === 'add') {
-      const newDist = {
-        rank: distribution.length + 1,
-        percentage: 0,
-      };
-      setDistribution([...distribution, newDist]);
-    }
-
-    if (type === 'update') {
-      tempList.forEach((item) => {
-        if (item.rank === rankNum) {
-          item.percentage = percentVal;
-        }
-      });
-
-      setDistribution(tempList);
-    }
-
-    if (type === 'delete') {
-      let newList = tempList.filter((item) => item.rank !== rankNum);
-
-      setDistribution(newList);
-    }
-  };
-
-  const getTotalPercent = () => {
-    let total = 0;
-    distribution.forEach((item) => (total += item.percentage));
-
-    setPercentTotal(total);
   };
 
   const onChange = (e) => {
@@ -586,26 +478,13 @@ export default function Index(props) {
   };
   const checkValidity = () => {
     let errors = [];
-    let sortPercentage = [...distribution].sort((a, b) => b.percentage - a.percentage);
 
     if (details.gameId == '') {
       errors.push('Game ID cannot be empty');
     }
 
-    if (distribution.length === 1 && percentTotal === 0) {
-      errors.push('Invalid Distribution values');
-    }
-
     if (percentTotal < 100) {
       errors.push('Total percent distribution must be equal to 100');
-    }
-
-    if (distribution.length < 10) {
-      errors.push(
-        'Exactly 10 rank distribution must be provided. (Only ' +
-          distribution.length +
-          ' was provided)'
-      );
     }
 
     if (dateEnd < dateStart) {
@@ -628,19 +507,8 @@ export default function Index(props) {
       errors.push('Positions can not be empty');
     }
 
-    if (distribution.filter((item) => item.percentage === 0 || item.percentage < 0).length > 0) {
-      errors.push('A distribution percentage of 0% is not allowed');
-    }
-
     if (!selectedRegular && !selectedPromo && !selectedSoulbound) {
       errors.push('NFT Type cannot be empty');
-    }
-
-    for (let i = 0; i < distribution.length; i++) {
-      if (distribution[i].rank !== sortPercentage[i].rank) {
-        errors.push('Higher rank must have a higher percentage than the rest below');
-        break;
-      }
     }
 
     return errors;
@@ -847,9 +715,6 @@ export default function Index(props) {
     setRemountPositionArea(Math.random());
   };
 
-  const NFL_POSITIONS = ['QB', 'RB', 'WR', 'TE', 'FLEX', 'SUPERFLEX'];
-  const BASKETBALL_POSITIONS = ['PG', 'SG', 'SF', 'PF', 'C', 'G', 'F', 'ANY'];
-
   const [details, setDetails] = useState({
     // name: '',
     gameId: '',
@@ -995,9 +860,6 @@ export default function Index(props) {
     });
   }
 
-  useEffect(() => {
-    getTotalPercent();
-  }, [distribution]);
   useEffect(() => {
     setRemountPositionArea(Math.random());
   }, [
@@ -1147,50 +1009,6 @@ export default function Index(props) {
                             </div>
                           );
                         })}
-                    {/* {(gameTabs[0].isActive ? upcomingGames: completedGames).length > 0 &&
-                          (gameTabs[0].isActive ? upcomingGames : completedGames).map(function (data, i) {
-                            return(
-                              
-                            )
-                            // return (
-                            //   <div className="flex flex-col w-full overflow-y-auto h-screen justify-center self-center md:pb-12">
-                            //     {data.whitelist}
-                            //   </div>
-                            //   // <div className="border-b p-5 py-8">
-                            //   //   <div className="flex justify-between">
-                            //   //     <div>
-                            //   //       <p className="font-bold text-lg">{data.name}</p>
-                            //   //       {gameTabs[0].isActive ? (
-                            //   //         <ReactTimeAgo
-                            //   //           future
-                            //   //           timeStyle="round-minute"
-                            //   //           date={data.startTime}
-                            //   //           locale="en-US"
-                            //   //         />
-                            //   //       ) : (
-                            //   //         ''
-                            //   //       )}
-                            //   //       <p>Prize: $ {data.prize}</p>
-                            //   //     </div>
-                            //   //     {gameTabs[0].isActive ? (
-                            //   //       ''
-                            //   //     ) : (
-                            //   //       <div>
-                            //   //         <button
-                            //   //           className="bg-indigo-green font-monument tracking-widest  text-indigo-white w-5/6 md:w-64 h-16 text-center text-sm"
-                            //   //           onClick={() => {
-                            //   //             setGameId(data.id);
-                            //   //             setEndModal(true);
-                            //   //           }}
-                            //   //         >
-                            //   //           END GAME
-                            //   //         </button>
-                            //   //       </div>
-                            //   //     )}
-                            //   //   </div>
-                            //   // </div>
-                            // );
-                          })} */}
                   </div>
                   <div className="absolute bottom-10 right-10 iphone5:bottom-4 iphone5:right-2 iphoneX:bottom-4 iphoneX:right-4 iphoneX-fixed">
                     <div key={remountComponent}>
@@ -1219,10 +1037,8 @@ export default function Index(props) {
                         setSelectedPromo(selectedPromo);
                         setSelectedSoulbound(selectedSoulbound);
                         setRemountComponent(Math.random());
-                        //execute_add_game(selectedRegular);
                       }}
                     />
-                    {/* GAME ID */}
                     <div className="flex flex-col lg:w-1/2">
                       <label className="font-monument" htmlFor="gameid">
                         GAME ID (Suggested ID: {totalGames + 1})
@@ -1240,22 +1056,6 @@ export default function Index(props) {
                   </div>
 
                   <div className="flex mt-8">
-                    {/* GAME TITLE */}
-                    {/* <div className="flex flex-col lg:w-1/2 lg:mr-10">
-                          <label className="font-monument" htmlFor="title">
-                            TITLE
-                          </label>
-                          <input
-                            className="border outline-none rounded-lg px-3 p-2"
-                            id="title"
-                            name="name"
-                            placeholder="Enter title"
-                            onChange={(e) => onChange(e)}
-                            value={details.name}
-                          />
-                        </div> */}
-
-                    {/* DATE & TIME */}
                     <div className="flex flex-col lg:w-1/2">
                       <label className="font-monument" htmlFor="datetime">
                         START TIME
@@ -1284,27 +1084,6 @@ export default function Index(props) {
                     </div>
                   </div>
 
-                  <div className="flex">
-                    {/* DURATION */}
-
-                    {/* PRIZE */}
-                    {/* <div className="flex flex-col lg:w-1/2">
-                      <label className="font-monument" htmlFor="prize">
-                        PRIZE
-                      </label>
-                      <input
-                        className="border outline-none rounded-lg px-3 p-2"
-                        id="prize"
-                        type="number"
-                        name="prize"
-                        min={1}
-                        placeholder="Enter amount"
-                        onChange={(e) => onChange(e)}
-                        value={details.prize}
-                      />
-                    </div> */}
-                  </div>
-
                   <div className="flex mt-8">
                     {/* DESCRIPTION */}
                     <div className="flex flex-col w-1/2">
@@ -1318,7 +1097,6 @@ export default function Index(props) {
                         // type="text"
                         placeholder="Enter accounts to whitelist. One account per line. Leave empty for no whitelist."
                         onChange={(e) => onChangeWhitelist(e)}
-                        // value={details.description}
                         style={{
                           minHeight: '120px',
                         }}
@@ -1333,10 +1111,8 @@ export default function Index(props) {
                         className="border outline-none rounded-lg px-3 p-2"
                         id="game_description"
                         name="game_description"
-                        // type="text"
                         placeholder="Game Description Enter text up to 160 text."
                         onChange={(e) => onGameDescriptionChange(e)}
-                        // value={details.description}
                         style={{
                           minHeight: '120px',
                         }}
@@ -1354,10 +1130,8 @@ export default function Index(props) {
                         className="border outline-none rounded-lg px-3 p-2"
                         id="prize_description"
                         name="prize_description"
-                        // type="text"
                         placeholder="Prize Description Enter text up to 50 text."
                         onChange={(e) => onPrizeDescriptionChange(e)}
-                        // value={details.description}
                         style={{
                           minHeight: '120px',
                         }}
@@ -1366,9 +1140,6 @@ export default function Index(props) {
                     <div className="flex flex-col w-1/2 ml-10">
                       <label className="font-monument">GAME IMAGE</label>
                       <div className="flex flex-col mb-4">
-                        {/* <div>
-                          <label className="font-monument">GAME IMAGE PREVIEW</label>
-                        </div> */}
                         <div className="border outline-none rounded-lg px-3 p-2 self-center">
                           <img
                             src={
@@ -1498,33 +1269,6 @@ export default function Index(props) {
                       )}
                     </div>
                   </div>
-
-                  {/* DISTRIBUTION FORM */}
-                  {/* <div className="mt-8">
-                        <p className="font-monument">DISTRIBUTION</p>
-                        {distribution.map(({ rank, percentage }) => (
-                          <Distribution
-                            rank={rank}
-                            value={percentage}
-                            handleChange={modifyRankList}
-                            showDelete={rank === distribution.length && distribution.length > 1}
-                            percentTotal={percentTotal}
-                          />
-                        ))}
-
-                        {distribution.length < 10 ? (
-                          <div className="flex justify-start">
-                            <button
-                              className="bg-indigo-darkgray text-indigo-white w-5/6 md:w-48 h-10 text-center font-bold text-sm mt-4"
-                              // onClick={}
-                            >
-                              Add New Rank
-                            </button>
-                          </div>
-                        ) : (
-                          ''
-                        )}
-                      </div> */}
 
                   <div className="flex mt-4 mb-10">
                     <button
@@ -1751,12 +1495,3 @@ export default function Index(props) {
     </Container>
   );
 }
-
-// export async function getServerSideProps(ctx) {
-//   return {
-//     redirect: {
-//       destination: '/Portfolio',
-//       permanent: false,
-//     },
-//   };
-// }
