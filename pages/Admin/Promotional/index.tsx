@@ -1,12 +1,12 @@
 import Container from 'components/containers/Container';
 import { useState } from 'react';
-import { SPORT_TYPES, getSportType, SPORT_NAME_LOOKUP } from 'data/constants/sportConstants';
+import { getSportType, SPORT_NAME_LOOKUP } from 'data/constants/sportConstants';
 import { useWalletSelector } from 'contexts/WalletSelectorContext';
 import { DEFAULT_MAX_FEES, MINT_STORAGE_COST } from 'data/constants/gasFees';
 import BigNumber from 'bignumber.js';
 
 export default function Promotional(props) {
-  const { selector, modal, accounts, accountId } = useWalletSelector();
+  const { selector } = useWalletSelector();
   const [whitelistInfoNFL, setWhitelistInfoNFL] = useState(null);
   const [whitelistInfoNBA, setWhitelistInfoNBA] = useState(null);
   const [whitelistInfoMLB, setWhitelistInfoMLB] = useState(null);
