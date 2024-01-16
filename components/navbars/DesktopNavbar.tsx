@@ -33,7 +33,7 @@ const DesktopNavbar = (props) => {
           ))}
         </div>
       </div>
-      <div className="flex flex-row fixed bottom-10 w-1/6 justify-center gap-10">
+      <div className="flex flex-row fixed bottom-16 w-1/6 justify-center gap-10">
         <div>
           <button>
             <Link href="https://twitter.com/playible/">
@@ -92,6 +92,14 @@ const DesktopNavbar = (props) => {
               </svg>
             </Link>
           </button>
+        </div>
+        <div className="flex flex-col fixed bottom-6 w-1/6 justify-center items-center gap-10">
+          <a href="https://sportsdata.io" target="_blank">
+            <img
+              src="https://sportsdata.io/assets/images/badges/sportsdataio_light_100.png?v=1"
+              alt="Sports Data Provider"
+            ></img>
+          </a>
         </div>
       </div>
     </div>
