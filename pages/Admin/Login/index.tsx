@@ -9,9 +9,6 @@ const AdminLogin = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   const userLogin = async () => {
-    console.log('test');
-    console.log(process.env.ADMIN);
-    console.log(process.env.ADMIN2);
     if (userName === process.env.ADMIN && password === process.env.ADMIN2) {
       console.log('test');
       dispatch(setIsAdmin(true));
