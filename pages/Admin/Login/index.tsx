@@ -10,7 +10,6 @@ const AdminLogin = () => {
   const router = useRouter();
   const userLogin = async () => {
     if (userName === process.env.ADMIN && password === process.env.ADMIN2) {
-      console.log('test');
       dispatch(setIsAdmin(true));
       router.push('/Admin/Game');
     }
