@@ -59,7 +59,7 @@ const Navbar = (props) => {
             {name}
           </a>
         ))}
-        <div className="mt-20">
+        <div className="mt-20 mb-10">
           <div className="cursor-pointer">
             <Link href="https://twitter.com/playible?s=21&t=NSaPA2EQtw_5_WlcS3q53Q">
               <svg
@@ -107,6 +107,14 @@ const Navbar = (props) => {
               </svg>
             </Link>
           </div>
+        </div>
+        <div>
+          <a href="https://sportsdata.io" target="_blank">
+            <img
+              src="https://sportsdata.io/assets/images/badges/sportsdataio_dark_100.png?v=1"
+              alt="Sports Data Provider"
+            ></img>
+          </a>
         </div>
       </Menu>
     </div>
