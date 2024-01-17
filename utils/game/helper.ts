@@ -79,13 +79,7 @@ export async function buildLeaderboard(
     });
     leaderboardResults = data.getLeaderboardResult;
   }
-  // const merge = playerTeams.map((item) => ({
-  //   ...item,
-  //   ...leaderboardResults.find((newItem) => {
-  //     newItem.team_name === item.team_name && newItem.wallet_address === item.wallet_address;
-  //   }),
-  // }));
-  // console.log(leaderboardResults);
+  //console.log(leaderboardResults);
   if (leaderboardResults.length === 0) {
     const arrayToReturn = await Promise.all(
       playerTeams.map(async (item) => {
@@ -101,7 +95,7 @@ export async function buildLeaderboard(
     );
     return arrayToReturn;
   } else {
-    const arrayToReturn = await Promise.all(
+    const results = await Promise.all(
       leaderboardResults.map(async (item) => {
         return {
           accountId: item.wallet_address,
@@ -113,8 +107,42 @@ export async function buildLeaderboard(
         };
       })
     );
-    console.log(arrayToReturn);
-    return arrayToReturn;
+    const returnArray = await Promise.all(
+      playerTeams.map(async (item) => {
+        return {
+          accountId: item.wallet_address,
+          teamName: item.team_name,
+          lineup: [],
+          total: item.total,
+          scoresChecked: false,
+          chain: item.chain_name,
+        };
+      })
+    );
+    returnArray.forEach((item) => {
+      const tempArray = results.find(
+        (x) => x.accountId === item.accountId && x.teamName === item.teamName
+      );
+      item.total = tempArray !== undefined ? tempArray.total : 0;
+    });
+    // const arrayToReturn2 = initialArray.map(
+    //   (item) =>
+    //     (item.total = arrayToReturn.find(
+    //       (find) => item.accountId === find.wallet_address && item.teamName === find.team_name
+    //     ).total)
+    // );
+    // const merge = playerTeams.map((item) => ({
+    //   ...item,
+    //   ...arrayToReturn.find((newItem) => {
+    //     newItem.teamName === item.team_name && newItem.accountId === item.wallet_address;
+    //   }),
+    // }));
+    console.log(returnArray);
+    returnArray.sort((a, b) => {
+      return b.total - a.total;
+    });
+    //console.log(arrayToReturn);
+    return returnArray;
   }
 }
 
