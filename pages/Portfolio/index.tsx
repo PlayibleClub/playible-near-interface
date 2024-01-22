@@ -43,11 +43,9 @@ const Portfolio = () => {
   const [filter, setFilter] = useState(null);
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(false);
-  const [playerList, setPlayerList] = useState(null);
   const [athletes, setAthletes] = useState([]);
   const [selectedRegular, setSelectedRegular] = useState(false);
   const [selectedPromo, setSelectedPromo] = useState(false);
-  const [athleteCount, setAthleteCount] = useState(0);
   const [athleteOffset, setAthleteOffset] = useState(0);
   const [athleteLimit, setAthleteLimit] = useState(10);
   const [totalRegularSupply, setTotalRegularSupply] = useState(0);
@@ -56,14 +54,7 @@ const Portfolio = () => {
   const [promoOffset, setPromoOffset] = useState(0);
   const [isPromoPage, setIsPromoPage] = useState(false);
   const [totalPromoSupply, setTotalPromoSupply] = useState(0);
-  const index = useSelector(getIndex);
   const [currentPage, setCurrentPage] = useState(0);
-
-  const [filteredTotal, setFilteredTotal] = useState(30);
-  const [isFiltered, setIsFiltered] = useState(false);
-  const [filterOption, setFilterOption] = useState('');
-  const [athleteList, setAthleteList] = useState([]);
-  const [currPosition, setCurrPosition] = useState('');
   const [position, setPosition] = useState(['allPos']);
   const [team, setTeam] = useState(['allTeams']);
   const [name, setName] = useState(['allNames']);
@@ -84,18 +75,6 @@ const Portfolio = () => {
   const [categoryList, setCategoryList] = useState([...sportObj]);
   const [currentSport, setCurrentSport] = useState(sportObj[0].name);
   const whitelist = ['regular', 'promo', 'soulbound'];
-  // const [contractList, setContractList] = useState([
-  //   {
-  //     name: 'FOOTBALL',
-  //     regContract: getContract(ATHLETE),
-  //     promoContract: getContract(ATHLETE_PROMO),
-  //   },
-  //   {
-  //     name: 'BASKETBALL',
-  //     regContract: getContract(ATHLETE),
-  //     promoContract: getContract(ATHLETE_PROMO),
-  //   },
-  // ]);
 
   const changeCategoryList = (name) => {
     const tabList = [...categoryList];
@@ -181,6 +160,7 @@ const Portfolio = () => {
       whitelist
     ).then((result) => {
       setAthletes(result);
+      setLoading(false);
     });
   }
 
@@ -198,6 +178,7 @@ const Portfolio = () => {
         whitelist
       )
     );
+    setLoading(false);
   }
 
   const mixedPaginationHandling = (e) => {
@@ -248,14 +229,8 @@ const Portfolio = () => {
     setAthleteOffset(newOffset);
     setCurrentPage(event.selected);
   };
-  // const startCountdown = (value) => {
-  //   setSearch(value);
-  //   setCountdown(1);
-  //   //setIsTyping(true);
-  // }
   useEffect(() => {
     setAthleteOffset(0);
-    //setCurrentPage(0);
     setRemountComponent(Math.random());
   }, [selectedRegular, selectedPromo, currentSport]);
 
@@ -269,6 +244,7 @@ const Portfolio = () => {
   }, [athletes]);
   useEffect(() => {
     setIsPromoPage(false);
+    setLoading(true);
     if (selectedRegular !== false && selectedPromo === false) {
       get_filter_supply_for_owner();
       setTotalPromoSupply(0);
@@ -297,10 +273,6 @@ const Portfolio = () => {
   ]);
 
   useEffect(() => {
-    console.log('total reg sply: ' + totalRegularSupply);
-    console.log('total promo supply: ' + totalPromoSupply);
-  }, [totalRegularSupply, totalPromoSupply]);
-  useEffect(() => {
     const delay = setTimeout(() => {
       setName([search]);
     }, 1000);
@@ -321,75 +293,7 @@ const Portfolio = () => {
     <Container activeName="SQUAD">
       <div className="flex flex-col w-full overflow-y-auto h-screen">
         <Main color="indigo-white">
-          <div className="flex flex-row h-8 mt-24 justify-end md:mt-0">
-            {/* <div className="h-8 flex justify-between mt-3 ml-4 md:ml-12">
-              <form>
-                <select
-                  onChange={(e) => {
-                    handleDropdownChange();
-                    setTeam([e.target.value]);
-                  }}
-                  className="bg-filter-icon bg-no-repeat bg-right bg-indigo-white iphone5:w-28 w-36 md:w-42 lg:w-60
-                      ring-2 ring-offset-4 ring-indigo-black ring-opacity-25 focus:ring-2 focus:ring-indigo-black 
-                      focus:outline-none cursor-pointer text-xs md:text-base"
-                >
-                  <option value="allTeams">ALL TEAMS</option>
-                  {teams.map((x) => {
-                    return <option value={x.key}>{x.key}</option>;
-                  })}
-                </select>
-              </form>
-            </div> */}
-            {/* <div className="h-8 flex mt-3">
-              <SportType sportTypes={SPORT_TYPES} />
-            </div> */}
-            {/* <div className="flex mt-15 md:mr-20">
-              <SearchComponent
-                onChangeFn={(search) => handleSearchDynamic(search)}
-                onSubmitFn={(search) => handleSearchSubmit(search)}
-              />
-            </div> */}
-
-            {/* <div className="h-8 flex justify-between mt-3 md:ml-24 lg:ml-80">
-              <form
-                onSubmit={(e) => {
-                  handleDropdownChange();
-                  search == '' ? setName(['allNames']) : setName([search]);
-                  e.preventDefault();
-                }}
-              >
-                <label className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-gray-300 lg:w-80">
-                  Search
-                </label>
-                <div className="relative lg:ml-72">
-                  <input
-                    type="search"
-                    id="default-search"
-                    onChange={(e) => setSearch(e.target.value !== "" ? e.target.value : "allNames")}
-                    className=" bg-indigo-white w-36 ml-4 pl-2 iphone5:w-36 md:w-60 lg:w-72 text-xs md:text-base
-                            ring-2 ring-offset-4 ring-indigo-black ring-opacity-25 focus:ring-2 focus:ring-indigo-black 
-                            focus:outline-none"
-                    placeholder="Search Athlete"
-                  />
-                  <button
-                    type="submit"
-                    className="invisible md:visible bg-search-icon bg-no-repeat bg-center absolute -right-12 bottom-0 h-full
-                            pl-6 py-2 ring-2 ring-offset-4 ring-indigo-black ring-opacity-25
-                            focus:ring-2 focus:ring-indigo-black"
-                  ></button>
-                </div>
-              </form>
-            </div> */}
-          </div>
-          {/* <div className="md:pt-20 z-0">
-                <NftTypeComponent
-                  onChangeFn={(selectedRegular, selectedPromo) => {
-                    setSelectedRegular(selectedRegular);
-                    setSelectedPromo(selectedPromo);
-                    setRemountComponent(Math.random());
-                  }}
-                />
-          </div> */}
+          <div className="flex flex-row h-8 mt-24 justify-end md:mt-0"></div>
           <div className="md:ml-6 overflow-x-hidden">
             <PortfolioContainer
               textcolor="indigo-black"
@@ -401,14 +305,6 @@ const Portfolio = () => {
                 />
               }
             >
-              {/* <div className="flex justify-end">
-                <div className="flex md:mr-20">
-                  <SearchComponent
-                    onChangeFn={(search) => handleSearchDynamic(search)}
-                    onSubmitFn={(search) => handleSearchSubmit(search)}
-                  />
-                </div>
-              </div> */}
               <div className="flex font-bold max-w-full ml-5 md:ml-6 font-monument overflow-y-auto no-scrollbar">
                 {categoryList.map(({ name, isActive }) => (
                   <div
@@ -437,10 +333,6 @@ const Portfolio = () => {
                       focus:outline-none cursor-pointer text-xs md:text-base"
                     >
                       <option value="allPos">ALL POSITIONS</option>
-                      {/* <option value="QB">QUARTER BACK</option>
-                      <option value="RB">RUNNING BACK</option>
-                      <option value="WR">WIDE RECEIVER</option>
-                      <option value="TE">TIGHT END</option> */}
                       {positionList.map((x) => {
                         return <option value={x.key}>{x.name}</option>;
                       })}

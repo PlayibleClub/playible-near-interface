@@ -1,7 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import Modal from 'components/modals/Modal';
-import { providers } from 'near-api-js';
-import { getRPCProvider } from 'utils/near';
 import BackFunction from 'components/buttons/BackFunction';
 import Container from 'components/containers/Container';
 import PortfolioContainer from 'components/containers/PortfolioContainer';
@@ -63,10 +61,6 @@ const AthleteSelect = (props) => {
   const [name, setName] = useState(['allNames']);
   const [lineup, setLineup] = useState([]);
   const [selectedAthlete, setSelectedAthlete] = useState(null);
-  const [nearPosition, setNearPosition] = useState('');
-  const [nearTeam, setNearTeam] = useState('');
-  const [backendPosition, setBackendPosition] = useState('');
-  const [backendTeam, setBackendTeam] = useState('');
   const { accountId } = useWalletSelector();
   const [pageCount, setPageCount] = useState(0);
   const [regPageCount, setRegPageCount] = useState(0);
@@ -164,17 +158,6 @@ const AthleteSelect = (props) => {
       }
       setAthletes(athletes);
     });
-    //   setAthletes(
-    //     await query_filter_tokens_for_owner(
-    //       accountId,
-    //       athleteOffset,
-    //       athleteLimit,
-    //       position,
-    //       team,
-    //       name,
-    //       contract
-    //     )
-    //   );
   }
   async function get_mixed_tokens_for_pagination() {
     await query_mixed_tokens_pagination(
@@ -285,14 +268,6 @@ const AthleteSelect = (props) => {
         query: { sport: currentSport, game_id: game_id },
       });
     }
-    //if there is difference,
-
-    // dispatch(setGameId(game_id));
-    // dispatch(setAthleteLineup(lineup));
-    // router.push({
-    //   pathname: '/CreateTeam/[sport]/[game_id]',
-    //   query: { sport: currentSport, game_id: game_id },
-    // });
   };
 
   const handleUpdateConfirm = async (game_id, lineup) => {
