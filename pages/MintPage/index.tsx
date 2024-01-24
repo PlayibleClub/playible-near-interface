@@ -86,10 +86,6 @@ export default function Home(props) {
   const [hour, setHour] = useState(0);
   const [minute, setMinute] = useState(0);
   const [second, setSecond] = useState(0);
-  const [discountDay, setDiscountDay] = useState(0);
-  const [discountHour, setDiscountHour] = useState(0);
-  const [discountMinute, setDiscountMinute] = useState(0);
-  const [discountSecond, setDiscountSecond] = useState(0);
   const [editModal, setEditModal] = useState(false);
   const nflRegImage = '/images/packimages/nflStarterPack.png';
   const nbaRegImage = '/images/packimages/nbaStarterPack.png';
@@ -130,7 +126,6 @@ export default function Home(props) {
         setMinterConfig({ ...config });
       });
   }
-
   async function query_minting_of() {
     try {
       if (selector.isSignedIn()) {
@@ -339,6 +334,7 @@ export default function Home(props) {
   }
   const launchTimer = 1675296000000;
   // 1675296000000
+  // 1708599584000 for testing
   const launchDate = moment().unix() - launchTimer / 1000;
   // const launchDate = 1;
   const discountTimer = 1677715200000;
@@ -362,6 +358,81 @@ export default function Home(props) {
       days: format_days,
     };
   }
+
+  function showClaimButton(claimed, sport, label, isSignedIn) {
+    return isSignedIn ? (
+      claimed ? null : (
+        <button
+          className="w-60 flex text-center justify-center items-center iphone5:w-64 bg-indigo-buttonblue font-montserrat text-indigo-white p-3 mb-4 md:mr-4 text-xs"
+          onClick={(e) => handleButtonClick(e, sport)}
+        >
+          {label}
+        </button>
+      )
+    ) : (
+      <button
+        className="w-60 flex text-center justify-center items-center iphone5:w-64 bg-indigo-buttonblue font-montserrat text-indigo-white p-3 mb-4 md:mr-4 text-xs"
+        onClick={logIn}
+      >
+        {label}
+      </button>
+    );
+  }
+
+  const getImage = (sport) => {
+    const imageSources = {
+      FOOTBALL: '/images/mintpage.png',
+      BASKETBALL: '/images/mintpagebasketball.png',
+      BASEBALL: '/images/mintpagebasketballupdated.jpg',
+    };
+
+    return imageSources[sport];
+  };
+
+  const sportBanner = (sport) => (
+    <div className="md:w-1/2 w-full">
+      <Image src={getImage(sport)} width={400} height={400} alt="pack-image" />
+    </div>
+  );
+
+  const mintButton = () => (
+    <button
+      className={`w-9/12 flex text-center justify-center items-center bg-indigo-buttonblue font-montserrat text-indigo-white p-4 text-xs mt-8 ${
+        currentSport !== 'sport' && launchDate <= 0 ? 'hidden' : ''
+      }`}
+      onClick={() => execute_near_storage_deposit_and_mint_token()}
+    >
+      Mint {Math.floor(selectedMintAmount * format_price())}N + fee{' '}
+      {utils.format.formatNearAmount(
+        new BigNumber(selectedMintAmount).multipliedBy(new BigNumber(MINT_STORAGE_COST)).toFixed()
+      )}
+      N
+    </button>
+  );
+
+  const countdownTimer = () => (
+    <div
+      className={`flex-col mt-10 ${currentSport === 'sport' && launchDate <= 0 ? '' : 'hidden'}`}
+    >
+      <div>Launching: 12am UTC {moment.utc(launchTimer).local().format('MMMM D')}</div>
+      <div>
+        <div className="flex space-x-2 mt-2">
+          <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
+            {day || ''}
+          </div>
+          <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
+            {hour || ''}
+          </div>
+          <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
+            {minute || ''}
+          </div>
+          <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
+            {second || ''}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 
   const handleButtonClick = (e, sport) => {
     e.preventDefault();
@@ -446,23 +517,6 @@ export default function Home(props) {
     return () => clearInterval(id);
   }, []);
 
-  useEffect(() => {
-    setDay(0);
-    setHour(0);
-    setMinute(0);
-    setSecond(0);
-    const id = setInterval(() => {
-      const currentDate = getUTCDateFromLocal();
-      // const end = moment.utc(1674144000000);
-      const end = moment.utc(discountTimer);
-      setDiscountDay(formatTime(Math.floor(end.diff(currentDate, 'second') / 3600 / 24)));
-      setDiscountHour(formatTime(Math.floor((end.diff(currentDate, 'second') / 3600) % 24)));
-      setDiscountMinute(formatTime(Math.floor((end.diff(currentDate, 'second') / 60) % 60)));
-      setDiscountSecond(formatTime(Math.floor(end.diff(currentDate, 'second') % 60)));
-    }, 1000);
-    return () => clearInterval(id);
-  }, []);
-
   return (
     <>
       <Container activeName="MINT">
@@ -490,73 +544,26 @@ export default function Home(props) {
               <div className="ml-8">
                 <ModalPortfolioContainer title="MINT PACKS" textcolor="text-indigo-black" />
               </div>
-              {selector.isSignedIn() ? (
-                <div className="ml-12 mt-4 md:flex md:flex-row md:ml-8">
-                  {isClaimedFootball ? (
-                    ''
-                  ) : (
-                    <button
-                      className="w-60 flex text-center justify-center items-center iphone5:w-64 bg-indigo-buttonblue font-montserrat text-indigo-white p-3 mb-4 md:mr-4 text-xs "
-                      onClick={(e) => handleButtonClick(e, 'FOOTBALL')}
-                    >
-                      CLAIM FOOTBALL PACK
-                    </button>
-                  )}
-                  {isClaimedBaseball ? (
-                    ''
-                  ) : (
-                    <button
-                      className="w-60 flex text-center justify-center items-center iphone5:w-64 bg-indigo-buttonblue font-montserrat text-indigo-white p-3 mb-4 md:mr-4 text-xs "
-                      onClick={(e) => handleButtonClick(e, 'BASEBALL')}
-                    >
-                      CLAIM BASEBALL PACK
-                    </button>
-                  )}
-                  {isClaimedBasketball ? (
-                    ''
-                  ) : (
-                    <button
-                      className="w-60 flex text-center justify-center items-center iphone5:w-64 bg-indigo-buttonblue font-montserrat text-indigo-white p-3 mb-4 md:mr-4 text-xs "
-                      onClick={(e) => handleButtonClick(e, 'BASKETBALL')}
-                    >
-                      CLAIM BASKETBALL PACK
-                    </button>
-                  )}
-                </div>
-              ) : (
-                <div className="ml-12 mt-4 md:flex md:flex-row md:ml-8">
-                  {isClaimedFootball ? (
-                    ''
-                  ) : (
-                    <button
-                      className="w-60 flex text-center justify-center items-center iphone5:w-64 bg-indigo-buttonblue font-montserrat text-indigo-white p-3 mb-4 md:mr-4 text-xs "
-                      onClick={logIn}
-                    >
-                      CLAIM FOOTBALL PACK
-                    </button>
-                  )}
-                  {isClaimedBaseball ? (
-                    ''
-                  ) : (
-                    <button
-                      className="w-60 flex text-center justify-center items-center iphone5:w-64 bg-indigo-buttonblue font-montserrat text-indigo-white p-3 mb-4 md:mr-4 text-xs "
-                      onClick={logIn}
-                    >
-                      CLAIM BASEBALL PACK
-                    </button>
-                  )}
-                  {isClaimedBasketball ? (
-                    ''
-                  ) : (
-                    <button
-                      className="w-60 flex text-center justify-center items-center iphone5:w-64 bg-indigo-buttonblue font-montserrat text-indigo-white p-3 mb-4 md:mr-4 text-xs "
-                      onClick={logIn}
-                    >
-                      CLAIM BASKETBALL PACK
-                    </button>
-                  )}
-                </div>
-              )}
+              <div className="ml-12 mt-4 md:flex md:flex-row md:ml-8">
+                {showClaimButton(
+                  isClaimedFootball,
+                  'FOOTBALL',
+                  'CLAIM FOOTBALL PACK',
+                  selector.isSignedIn()
+                )}
+                {showClaimButton(
+                  isClaimedBaseball,
+                  'BASEBALL',
+                  'CLAIM BASEBALL PACK',
+                  selector.isSignedIn()
+                )}
+                {showClaimButton(
+                  isClaimedBasketball,
+                  'BASKETBALL',
+                  'CLAIM BASKETBALL PACK',
+                  selector.isSignedIn()
+                )}
+              </div>
 
               <div className="md:mr- md:mt-0 ml-6 mt-4">
                 <form>
@@ -577,43 +584,7 @@ export default function Home(props) {
             <div className="flex flex-col md:flex-row md:ml-12">
               <div className="md:w-full overflow-x-hidden">
                 <div className="flex md:flex-row flex-col md:ml-2 mt-12">
-                  {currentSport === SPORT_NAME_LOOKUP.football ? (
-                    <div className="md:w-1/2 w-full ">
-                      <Image
-                        src={'/images/mintpage.png'}
-                        width={400}
-                        height={400}
-                        alt="pack-image"
-                      />
-                    </div>
-                  ) : currentSport === SPORT_NAME_LOOKUP.basketball ? (
-                    <div className="md:w-1/2 w-full ">
-                      <Image
-                        src={'/images/mintpagebasketball.png'}
-                        width={400}
-                        height={400}
-                        alt="pack-image"
-                      />
-                    </div>
-                  ) : currentSport === SPORT_NAME_LOOKUP.baseball ? (
-                    <div className="md:w-1/2 w-full ">
-                      <Image
-                        src={'/images/mintpagebasketballupdated.jpg'}
-                        width={400}
-                        height={400}
-                        alt="pack-image"
-                      />
-                    </div>
-                  ) : (
-                    <div className="md:w-1/2 w-full ">
-                      <Image
-                        src={'/images/mintpagecricket.png'}
-                        width={400}
-                        height={400}
-                        alt="pack-image"
-                      />
-                    </div>
-                  )}
+                  {sportBanner(currentSport)}
                   <div className="md:w-1/2 w-full md:mt-0 mt-5 ml-8 ">
                     <div className="text-xl font-bold font-monument ml-0">
                       <ModalPortfolioContainer
@@ -676,116 +647,8 @@ export default function Home(props) {
                         /*parseInt(String(storageDepositAccountBalance)) >= selectedMintAmount * MINT_STORAGE_COST*/
                       } ? (
                         <>
-                          {currentSport === 'FOOTBALL' ? (
-                            <button
-                              className="w-9/12 flex text-center justify-center items-center bg-indigo-buttonblue font-montserrat text-indigo-white p-4 text-xs mt-8 "
-                              onClick={() => execute_near_storage_deposit_and_mint_token()}
-                            >
-                              Mint {Math.floor(selectedMintAmount * format_price())}N + fee{' '}
-                              {utils.format.formatNearAmount(
-                                new BigNumber(selectedMintAmount)
-                                  .multipliedBy(new BigNumber(MINT_STORAGE_COST))
-                                  .toFixed()
-                              )}
-                              N
-                            </button>
-                          ) : launchDate > 0 ? (
-                            <button
-                              className="w-9/12 flex text-center justify-center items-center bg-indigo-buttonblue font-montserrat text-indigo-white p-4 text-xs mt-8 "
-                              onClick={() => execute_near_storage_deposit_and_mint_token()}
-                            >
-                              Mint {Math.floor(selectedMintAmount * format_price())}N + fee{' '}
-                              {utils.format.formatNearAmount(
-                                new BigNumber(selectedMintAmount)
-                                  .multipliedBy(new BigNumber(MINT_STORAGE_COST))
-                                  .toFixed()
-                              )}
-                              N
-                            </button>
-                          ) : (
-                            <button
-                              className="w-9/12 hidden text-center justify-center items-center bg-indigo-buttonblue font-montserrat text-indigo-white p-4 text-xs mt-8 "
-                              onClick={() => execute_near_storage_deposit_and_mint_token()}
-                            >
-                              Mint {Math.floor(selectedMintAmount * format_price())}N + fee{' '}
-                              {utils.format.formatNearAmount(
-                                new BigNumber(selectedMintAmount)
-                                  .multipliedBy(new BigNumber(MINT_STORAGE_COST))
-                                  .toFixed()
-                              )}
-                              N
-                            </button>
-                          )}
-                          {currentSport === 'FOOTBALL' ? (
-                            <div className="flex-col mt-10 hidden">
-                              <div>
-                                Launching: 12am UTC{' '}
-                                {moment.utc(launchTimer).local().format('MMMM D')}
-                              </div>
-                              <div>
-                                <div className="flex space-x-2 mt-2">
-                                  <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
-                                    {day || ''}
-                                  </div>
-                                  <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
-                                    {hour || ''}
-                                  </div>
-                                  <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
-                                    {minute || ''}
-                                  </div>
-                                  <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
-                                    {second || ''}
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          ) : launchDate > 0 ? (
-                            <div className="flex-col mt-10 hidden">
-                              <div>
-                                Launching: 12am UTC{' '}
-                                {moment.utc(launchTimer).local().format('MMMM D')}
-                              </div>
-                              <div>
-                                <div className="flex space-x-2 mt-2">
-                                  <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
-                                    {day || ''}
-                                  </div>
-                                  <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
-                                    {hour || ''}
-                                  </div>
-                                  <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
-                                    {minute || ''}
-                                  </div>
-                                  <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
-                                    {second || ''}
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          ) : (
-                            <div className="flex flex-col mt-10">
-                              <div>
-                                Launching: 12am UTC{' '}
-                                {moment.utc(launchTimer).local().format('MMMM D')}
-                              </div>
-                              <div>
-                                <div className="flex space-x-2 mt-2">
-                                  <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
-                                    {day || ''}
-                                  </div>
-                                  <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
-                                    {hour || ''}
-                                  </div>
-                                  <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
-                                    {minute || ''}
-                                  </div>
-                                  <div className="bg-indigo-darkgray text-indigo-white w-9 h-9 rounded justify-center flex pt-2">
-                                    {second || ''}
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          )}
+                          {mintButton()}
+                          {/* {countdownTimer()} */}
                         </>
                       ) : (
                         ''
