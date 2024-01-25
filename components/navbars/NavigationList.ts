@@ -32,7 +32,7 @@ const play = {
 
 const learn = {
   name: 'LEARN',
-  path: 'http://playible.club',
+  path: 'https://www.playible.io/learn',
   img: '/images/icons/Clubhouse.svg',
 };
 
