@@ -6,13 +6,41 @@ import {
   getPortfolioAssetDetailsById,
   getCricketAthleteInfoById,
 } from 'utils/athlete/helper';
+import { actionCreators, encodeSignedDelegate } from '@near-js/transactions';
 import { DEFAULT_MAX_FEES, MINT_STORAGE_COST } from 'data/constants/gasFees';
 import BigNumber from 'bignumber.js';
+import { useWalletSelector } from 'contexts/WalletSelectorContext';
+import { JsonRpcProvider } from '@near-js/providers';
 import { getSportType, SPORT_NAME_LOOKUP } from 'data/constants/sportConstants';
+import { Account } from '@near-js/accounts';
 const provider = new providers.JsonRpcProvider({
   url: getRPCProvider(),
 });
+const { selector } = useWalletSelector();
+async function sendNearViaMetaTransaction({}) {
+  //setup accounts
+  const networkId = 'testnet';
+  const provider = new JsonRpcProvider({ url: 'https://rpc.testnet.near.org' });
+  const wallet = selector.wallet();
+  const senderAccount = new Account(
+    {
+      networkId,
+      provider,
+    },
+    'kishidev.testnet'
+  );
 
+  const delegate = await senderAccount.signedDelegate({
+    actions: [actionCreators.transfer(amount)],
+    blockHeightTtl: 60,
+    receiverId,
+  });
+
+  return signingAccount.signAndSendTransaction({
+    actions: [actionCreators.signedDelegate(delegate)],
+    receiverId: delegate.delegateAction.senderId,
+  });
+}
 async function query_game_data(game_id, contract) {
   const query = JSON.stringify({
     game_id: game_id,
