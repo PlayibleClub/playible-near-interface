@@ -5,7 +5,7 @@ const MarketplaceButtonContainer = (props) => {
   const { imagesrc, Title } = props;
 
   return (
-    <div className={'border-l-4'}>
+    <div>
       <div
         data-test="MarketplaceButtonContainer"
         className="text-sm font-thin flex flex-row justify-left mt-4 ml-12 py-2"
