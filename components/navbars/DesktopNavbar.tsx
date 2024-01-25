@@ -1,12 +1,51 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import NavButtonContainer from '../containers/NavButtonContainer';
 import { getNavigation } from './NavigationList';
 import { BrowserRouter as Router, NavLink } from 'react-router-dom';
+import Modal from 'components/modals/Modal';
+import MarketplaceButtonContainer from '../containers/MarketplaceButtonContainer';
+import { SPORT_NAME_LOOKUP, SPORT_TYPES } from 'data/constants/sportConstants';
+import router from 'next/router';
 const DesktopNavbar = (props) => {
+  const [viewModal, setViewModal] = useState(false);
+  const sportObj = SPORT_TYPES.filter((x) => x.sport).map((x) => ({
+    name: x.sport,
+    isActive: false,
+  }));
+
+  const [categoryList, setCategoryList] = useState([...sportObj]);
+  const [selectedSport, setSelectedSport] = useState('');
+
   const { children, color, secondcolor, isAdmin, activeName, isLoggedIn } = props;
 
+  const handleMarketplaceButtonClick = () => {
+    setViewModal(true);
+  };
+
+  const handleSportSelection = (e) => {
+    const selectedSport = e.target.value;
+    setViewModal(false);
+    setSelectedSport(selectedSport);
+
+    switch (selectedSport) {
+      case 'FOOTBALL':
+        router.push('https://paras.id/collection/athlete.nfl.playible.near');
+        break;
+      case 'BASKETBALL':
+        router.push('https://paras.id/collection/athlete.basketball.playible.near');
+        break;
+      case 'BASEBALL':
+        router.push('https://paras.id/collection/athlete.baseball.playible.near');
+        break;
+      case 'CRICKET':
+        router.push('https://paras.id/collection/athlete.cricket.playible.near');
+        break;
+    }
+  };
+
+  console.log(selectedSport, 'sport selected');
   return (
     <div
       data-test="DesktopNavbar"
@@ -31,8 +70,39 @@ const DesktopNavbar = (props) => {
               ></NavButtonContainer>
             </button>
           ))}
+          <button onClick={handleMarketplaceButtonClick}>
+            <MarketplaceButtonContainer
+              imagesrc="/images/navicons/icon_marketplace.png"
+              Title="MARKETPLACE"
+            />
+          </button>
         </div>
       </div>
+      <Modal title={'SELECT SPORT'} visible={viewModal} isMarketplaceModalOpen={true}>
+        <button
+          className="fixed top-7 right-6 "
+          onClick={() => {
+            setViewModal(false);
+          }}
+        >
+          <img src="/images/x.png" />
+        </button>
+        <form>
+          <select
+            onChange={(e) => {
+              handleSportSelection(e);
+            }}
+            className="bg-filter-icon bg-no-repeat bg-right bg-indigo-white ring-2 ring-offset-8 ring-indigo-black ring-opacity-25 focus:ring-2 focus:ring-indigo-black 
+                focus:outline-none cursor-pointer text-xs iphone5:ml-8 iphone5:w-4/6 md:text-base md:ml-10 md:w-60 md:p-2 md:block lg:block"
+          >
+            {categoryList.map((x) => (
+              <option key={x.name} value={x.name}>
+                {x.name}
+              </option>
+            ))}
+          </select>
+        </form>
+      </Modal>
       <div className="flex flex-row fixed bottom-16 w-1/6 justify-center gap-10">
         <div>
           <button>
