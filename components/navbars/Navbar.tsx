@@ -1,7 +1,9 @@
 import Link from 'next/link';
 import { slide as Menu } from 'react-burger-menu';
 import { getNavigation } from './NavigationList';
-import React from 'react';
+import React, { useState } from 'react';
+import { SPORT_NAME_LOOKUP, SPORT_TYPES } from 'data/constants/sportConstants';
+import router from 'next/router';
 
 var styles = {
   bmBurgerButton: {
@@ -50,6 +52,35 @@ var styles = {
 };
 
 const Navbar = (props) => {
+  const [isDropdownVisible, setDropdownVisibility] = useState(false);
+  const sportObj = SPORT_TYPES.filter((x) => x.sport !== SPORT_NAME_LOOKUP.cricket && x.sport).map(
+    (x) => ({
+      name: x.sport,
+      isActive: false,
+    })
+  );
+  const handleMarketplaceButtonClick = () => {
+    setDropdownVisibility(!isDropdownVisible);
+  };
+
+  const handleSportSelection = (selectedSport) => {
+    setDropdownVisibility(false);
+
+    switch (selectedSport) {
+      case 'FOOTBALL':
+        router.push('https://paras.id/collection/athlete.nfl.playible.near');
+        break;
+      case 'BASKETBALL':
+        router.push('https://paras.id/collection/athlete.basketball.playible.near');
+        break;
+      case 'BASEBALL':
+        router.push('https://paras.id/collection/athlete.baseball.playible.near');
+        break;
+      case 'CRICKET':
+        router.push('https://paras.id/collection/athlete.cricket.playible.near');
+        break;
+    }
+  };
   const { isAdmin, isLoggedIn } = props;
   return (
     <div className="font-monument">
@@ -59,6 +90,24 @@ const Navbar = (props) => {
             {name}
           </a>
         ))}
+        <button onClick={handleMarketplaceButtonClick}>
+          <div>{'MARKETPLACE'}</div>
+        </button>
+        {isDropdownVisible && (
+          <div className="absolute mt-2 w-48 bg-white overflow-hidden shadow-xl border-2 z-50">
+            <div className="py-1">
+              {sportObj.map((sport, index) => (
+                <button
+                  key={index}
+                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-300 w-full text-left hover:bg-indigo-white hover:text-indigo-navbargrad1 "
+                  onClick={() => handleSportSelection(sport.name)}
+                >
+                  {sport.name}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
         <div className="mt-20 mb-10">
           <div className="cursor-pointer">
             <Link href="https://twitter.com/playible?s=21&t=NSaPA2EQtw_5_WlcS3q53Q">

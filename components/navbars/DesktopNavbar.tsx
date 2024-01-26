@@ -1,11 +1,42 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import NavButtonContainer from '../containers/NavButtonContainer';
 import { getNavigation } from './NavigationList';
-import { BrowserRouter as Router, NavLink } from 'react-router-dom';
+import MarketplaceButtonContainer from '../containers/MarketplaceButtonContainer';
+import { SPORT_NAME_LOOKUP, SPORT_TYPES } from 'data/constants/sportConstants';
+import router from 'next/router';
+
 const DesktopNavbar = (props) => {
-  const { children, color, secondcolor, isAdmin, activeName, isLoggedIn } = props;
+  const [isDropdownVisible, setDropdownVisibility] = useState(false);
+  const sportObj = SPORT_TYPES.filter((x) => x.sport !== SPORT_NAME_LOOKUP.cricket && x.sport).map(
+    (x) => ({
+      name: x.sport,
+      isActive: false,
+    })
+  );
+
+  const { color, secondcolor, isAdmin, activeName, isLoggedIn } = props;
+
+  const handleMarketplaceButtonClick = () => {
+    setDropdownVisibility(!isDropdownVisible);
+  };
+
+  const handleSportSelection = (selectedSport) => {
+    setDropdownVisibility(false);
+
+    switch (selectedSport) {
+      case 'FOOTBALL':
+        router.push('https://paras.id/collection/athlete.nfl.playible.near');
+        break;
+      case 'BASKETBALL':
+        router.push('https://paras.id/collection/athlete.basketball.playible.near');
+        break;
+      case 'BASEBALL':
+        router.push('https://paras.id/collection/athlete.baseball.playible.near');
+        break;
+    }
+  };
 
   return (
     <div
@@ -31,6 +62,29 @@ const DesktopNavbar = (props) => {
               ></NavButtonContainer>
             </button>
           ))}
+          <div className="relative inline-block text-left">
+            <button onClick={handleMarketplaceButtonClick}>
+              <MarketplaceButtonContainer
+                imagesrc="/images/navicons/icon_marketplace.png"
+                Title="MARKETPLACE"
+              />
+            </button>
+            {isDropdownVisible && (
+              <div className="absolute left-16 mt-2 w-48 bg-white overflow-hidden shadow-xl border-2 z-10">
+                <div className="py-1">
+                  {sportObj.map((sport, index) => (
+                    <button
+                      key={index}
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-300 w-full text-left hover:bg-indigo-white hover:text-indigo-navbargrad1 "
+                      onClick={() => handleSportSelection(sport.name)}
+                    >
+                      {sport.name}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
       <div className="flex flex-row fixed bottom-16 w-1/6 justify-center gap-10">
@@ -109,7 +163,6 @@ const DesktopNavbar = (props) => {
 DesktopNavbar.propTypes = {
   color: PropTypes.string,
   secondcolor: PropTypes.string,
-  children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
   isAdmin: PropTypes.bool,
   activeName: PropTypes.string,
   isLoggedIn: PropTypes.bool,
@@ -118,8 +171,6 @@ DesktopNavbar.propTypes = {
 DesktopNavbar.defaultProps = {
   color: 'indigo-light',
   secondcolor: 'indigo-light',
-  // children: <div>Fantasy investr</div>
-  children: <div />,
   isAdmin: false,
   isLoggedIn: false,
 };

@@ -15,6 +15,7 @@ const Modal = (props) => {
     AdminGame,
     isEntrySummary,
     isUpdateWarning,
+    isMarketplaceModalOpen,
   } = props;
 
   // TODO: Make the modal more presentable
@@ -53,20 +54,24 @@ const Modal = (props) => {
               leaveTo="opacity-0 scale-95"
             >
               <div
-                className={`bg-indigo-white inline-block p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl  ${
+                className={`bg-indigo-white inline-block p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl ${
                   AdminGame === true
                     ? 'w-full'
                     : isEntrySummary
                     ? 'w-3/5'
                     : isUpdateWarning
                     ? 'md:w-2/5 w-full'
+                    : isMarketplaceModalOpen
+                    ? 'md:h-40 w-1/5' // Adjust the width and height as needed
                     : 'w-full max-w-md'
                 }`}
               >
                 {console.log(isEntrySummary, 'test')}
                 <Dialog.Title
                   as="h3"
-                  className="text-lg font-medium leading-6 text-gray-900 pb-4 font-monument uppercase"
+                  className={`text-lg font-medium leading-6 text-gray-900 pb-4 font-monument uppercase ${
+                    isMarketplaceModalOpen === true ? 'mb-2' : 'mb-0'
+                  }`}
                 >
                   {title}
                   <div className="underlineBig" />
