@@ -4,12 +4,17 @@ import Link from 'next/link';
 import NavButtonContainer from '../containers/NavButtonContainer';
 import { getNavigation } from './NavigationList';
 import MarketplaceButtonContainer from '../containers/MarketplaceButtonContainer';
-import { SPORT_TYPES } from 'data/constants/sportConstants';
+import { SPORT_NAME_LOOKUP, SPORT_TYPES } from 'data/constants/sportConstants';
 import router from 'next/router';
 
 const DesktopNavbar = (props) => {
   const [isDropdownVisible, setDropdownVisibility] = useState(false);
-  const sportObj = SPORT_TYPES.map((x) => ({ name: x.sport }));
+  const sportObj = SPORT_TYPES.filter((x) => x.sport !== SPORT_NAME_LOOKUP.cricket && x.sport).map(
+    (x) => ({
+      name: x.sport,
+      isActive: false,
+    })
+  );
 
   const { color, secondcolor, isAdmin, activeName, isLoggedIn } = props;
 
@@ -29,9 +34,6 @@ const DesktopNavbar = (props) => {
         break;
       case 'BASEBALL':
         router.push('https://paras.id/collection/athlete.baseball.playible.near');
-        break;
-      case 'CRICKET':
-        router.push('https://paras.id/collection/athlete.cricket.playible.near');
         break;
     }
   };
