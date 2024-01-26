@@ -3,31 +3,22 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import NavButtonContainer from '../containers/NavButtonContainer';
 import { getNavigation } from './NavigationList';
-import { BrowserRouter as Router, NavLink } from 'react-router-dom';
-import Modal from 'components/modals/Modal';
 import MarketplaceButtonContainer from '../containers/MarketplaceButtonContainer';
-import { SPORT_NAME_LOOKUP, SPORT_TYPES } from 'data/constants/sportConstants';
+import { SPORT_TYPES } from 'data/constants/sportConstants';
 import router from 'next/router';
+
 const DesktopNavbar = (props) => {
-  const [viewModal, setViewModal] = useState(false);
-  const sportObj = SPORT_TYPES.filter((x) => x.sport).map((x) => ({
-    name: x.sport,
-    isActive: false,
-  }));
+  const [isDropdownVisible, setDropdownVisibility] = useState(false);
+  const sportObj = SPORT_TYPES.map((x) => ({ name: x.sport }));
 
-  const [categoryList, setCategoryList] = useState([...sportObj]);
-  const [selectedSport, setSelectedSport] = useState('');
-
-  const { children, color, secondcolor, isAdmin, activeName, isLoggedIn } = props;
+  const { color, secondcolor, isAdmin, activeName, isLoggedIn } = props;
 
   const handleMarketplaceButtonClick = () => {
-    setViewModal(true);
+    setDropdownVisibility(!isDropdownVisible);
   };
 
-  const handleSportSelection = (e) => {
-    const selectedSport = e.target.value;
-    setViewModal(false);
-    setSelectedSport(selectedSport);
+  const handleSportSelection = (selectedSport) => {
+    setDropdownVisibility(false);
 
     switch (selectedSport) {
       case 'FOOTBALL':
@@ -45,7 +36,6 @@ const DesktopNavbar = (props) => {
     }
   };
 
-  console.log(selectedSport, 'sport selected');
   return (
     <div
       data-test="DesktopNavbar"
@@ -70,39 +60,31 @@ const DesktopNavbar = (props) => {
               ></NavButtonContainer>
             </button>
           ))}
-          <button onClick={handleMarketplaceButtonClick}>
-            <MarketplaceButtonContainer
-              imagesrc="/images/navicons/icon_marketplace.png"
-              Title="MARKETPLACE"
-            />
-          </button>
+          <div className="relative inline-block text-left">
+            <button onClick={handleMarketplaceButtonClick}>
+              <MarketplaceButtonContainer
+                imagesrc="/images/navicons/icon_marketplace.png"
+                Title="MARKETPLACE"
+              />
+            </button>
+            {isDropdownVisible && (
+              <div className="absolute left-20 mt-2 w-48 bg-white overflow-hidden shadow-xl border-2 z-10">
+                <div className="py-1">
+                  {sportObj.map((sport, index) => (
+                    <button
+                      key={index}
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-300 w-full text-left hover:bg-indigo-white hover:text-indigo-navbargrad1 "
+                      onClick={() => handleSportSelection(sport.name)}
+                    >
+                      {sport.name}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
-      <Modal title={'SELECT SPORT'} visible={viewModal} isMarketplaceModalOpen={true}>
-        <button
-          className="fixed top-7 right-6 "
-          onClick={() => {
-            setViewModal(false);
-          }}
-        >
-          <img src="/images/x.png" />
-        </button>
-        <form>
-          <select
-            onChange={(e) => {
-              handleSportSelection(e);
-            }}
-            className="bg-filter-icon bg-no-repeat bg-right bg-indigo-white ring-2 ring-offset-8 ring-indigo-black ring-opacity-25 focus:ring-2 focus:ring-indigo-black 
-                focus:outline-none cursor-pointer text-xs iphone5:ml-8 iphone5:w-4/6 md:text-base md:ml-10 md:w-60 md:p-2 md:block lg:block"
-          >
-            {categoryList.map((x) => (
-              <option key={x.name} value={x.name}>
-                {x.name}
-              </option>
-            ))}
-          </select>
-        </form>
-      </Modal>
       <div className="flex flex-row fixed bottom-16 w-1/6 justify-center gap-10">
         <div>
           <button>
@@ -179,7 +161,6 @@ const DesktopNavbar = (props) => {
 DesktopNavbar.propTypes = {
   color: PropTypes.string,
   secondcolor: PropTypes.string,
-  children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
   isAdmin: PropTypes.bool,
   activeName: PropTypes.string,
   isLoggedIn: PropTypes.bool,
@@ -188,8 +169,6 @@ DesktopNavbar.propTypes = {
 DesktopNavbar.defaultProps = {
   color: 'indigo-light',
   secondcolor: 'indigo-light',
-  // children: <div>Fantasy investr</div>
-  children: <div />,
   isAdmin: false,
   isLoggedIn: false,
 };
