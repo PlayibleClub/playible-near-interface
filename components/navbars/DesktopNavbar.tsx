@@ -68,7 +68,7 @@ const DesktopNavbar = (props) => {
               />
             </button>
             {isDropdownVisible && (
-              <div className="absolute left-20 mt-2 w-40 bg-white overflow-hidden shadow-xl border-2 z-10">
+              <div className="absolute left-16 mt-2 w-48 bg-white overflow-hidden shadow-xl border-2 z-10">
                 <div className="py-1">
                   {sportObj.map((sport, index) => (
                     <button
