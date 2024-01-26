@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { slide as Menu } from 'react-burger-menu';
 import { getNavigation } from './NavigationList';
 import React, { useState } from 'react';
-import { SPORT_TYPES } from 'data/constants/sportConstants';
+import { SPORT_NAME_LOOKUP, SPORT_TYPES } from 'data/constants/sportConstants';
 import router from 'next/router';
 
 var styles = {
@@ -53,8 +53,12 @@ var styles = {
 
 const Navbar = (props) => {
   const [isDropdownVisible, setDropdownVisibility] = useState(false);
-  const sportObj = SPORT_TYPES.map((x) => ({ name: x.sport }));
-
+  const sportObj = SPORT_TYPES.filter((x) => x.sport !== SPORT_NAME_LOOKUP.cricket && x.sport).map(
+    (x) => ({
+      name: x.sport,
+      isActive: false,
+    })
+  );
   const handleMarketplaceButtonClick = () => {
     setDropdownVisibility(!isDropdownVisible);
   };
