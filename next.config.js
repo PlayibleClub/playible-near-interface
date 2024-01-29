@@ -15,6 +15,7 @@ nextConfig = {
     GRAPHQL_URL: process.env.GRAPHQL_URL,
     ADMIN: process.env.ADMIN,
     ADMIN2: process.env.ADMIN2,
+    NEAR_RELAYER_PRIVATE_KEY: process.env.NEAR_RELAYER_PRIVATE_KEY,
     AWS_ACCESS_KEY: process.env.AWS_ACCESS_KEY,
     AWS_SECRET_KEY: process.env.AWS_SECRET_KEY,
   },

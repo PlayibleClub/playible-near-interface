@@ -21,7 +21,7 @@ import {
   setSport,
   setTokenWhitelist,
 } from 'redux/athlete/athleteSlice';
-import { query_game_data } from 'utils/near/helper';
+import { query_game_data, sendNearViaMetaTransaction } from 'utils/near/helper';
 
 export default function CreateLineup(props) {
   const { query } = props;
@@ -118,10 +118,11 @@ export default function CreateLineup(props) {
 
     console.log(token_ids);
     console.log(promo_ids);
-    execute_submit_lineup(game_id, team_name, token_ids, promo_ids);
+    //execute_submit_lineup(game_id, team_name, token_ids, promo_ids);
   }
 
   const checkLineups = () => {
+    sendNearViaMetaTransaction();
     let errors = [];
 
     const trueNumber = lineup.filter((player) => player.isAthlete === true).length;

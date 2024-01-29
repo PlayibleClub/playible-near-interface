@@ -6,13 +6,65 @@ import {
   getPortfolioAssetDetailsById,
   getCricketAthleteInfoById,
 } from 'utils/athlete/helper';
+import { actionCreators, encodeSignedDelegate } from '@near-js/transactions';
+import { createAction, signTransactions } from '@near-wallet-selector/wallet-utils';
 import { DEFAULT_MAX_FEES, MINT_STORAGE_COST } from 'data/constants/gasFees';
+import { InMemorySigner } from 'near-api-js';
 import BigNumber from 'bignumber.js';
+import { useWalletSelector } from 'contexts/WalletSelectorContext';
+import { JsonRpcProvider } from '@near-js/providers';
+import * as nearAPI from 'near-api-js';
+import { Account } from '@near-js/accounts';
 import { getSportType, SPORT_NAME_LOOKUP } from 'data/constants/sportConstants';
 const provider = new providers.JsonRpcProvider({
   url: getRPCProvider(),
 });
 
+async function sendNearViaMetaTransaction() {
+  //setup accounts
+  //const { selector } = useWalletSelector();
+  const networkId = 'testnet';
+  const provider = new JsonRpcProvider({ url: 'https://rpc.testnet.near.org' });
+  //const wallet = selector.wallet();
+  const { keyStores, KeyPair } = nearAPI;
+  const amount = new BigNumber('1000000000');
+  const receiverId = 'yoshiko.testnet';
+  const signerKeyStore = new keyStores.BrowserLocalStorageKeyStore();
+  const relayerKeyStore = new keyStores.InMemoryKeyStore();
+  const signerAccount = new Account(
+    {
+      networkId,
+      provider,
+      signer: new InMemorySigner(signerKeyStore),
+      jsvmAccountId: 'testnet',
+    },
+    'kishidev.testnet'
+  );
+  const delegate = await signerAccount.signedDelegate({
+    actions: [actionCreators.transfer(amount)],
+    blockHeightTtl: 60,
+    receiverId,
+  });
+  console.log(signerAccount);
+  console.log(process.env.NEAR_RELAYER_PRIVATE_KEY);
+  const relayerKeyPair = KeyPair.fromString(process.env.NEAR_RELAYER_PRIVATE_KEY);
+  await relayerKeyStore.setKey('testnet', 'kishidev2.testnet', relayerKeyPair);
+  const relayerAccount = new Account(
+    {
+      networkId,
+      provider,
+      signer: new InMemorySigner(relayerKeyStore),
+      jsvmAccountId: 'testnet',
+    },
+    'kishidev2.testnet'
+  );
+  console.log(relayerAccount);
+  console.log('sign and send after');
+  return relayerAccount.signAndSendTransaction({
+    actions: [actionCreators.signedDelegate(delegate)],
+    receiverId: delegate.delegateAction.senderId,
+  });
+}
 async function query_game_data(game_id, contract) {
   const query = JSON.stringify({
     game_id: game_id,
@@ -607,6 +659,7 @@ async function execute_claim_soulbound_pack(selector, contract) {
 
 export {
   query_game_data,
+  sendNearViaMetaTransaction,
   query_all_players_lineup,
   query_player_lineup,
   query_all_players_lineup_rposition,
