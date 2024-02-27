@@ -452,3 +452,7 @@ export const PACK_PROMO_CRICKET = {
     ],
   },
 };
+export const REFERRAL = {
+  mainnet: '',
+  testnet: 'referral.kishidev.testnet',
+};
