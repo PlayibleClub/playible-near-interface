@@ -33,6 +33,7 @@
     "graphql": "^16.6.0",
     "javascript-time-ago": "^2.5.9",
     "js-base64": "^3.7.3",
+    "keypom-js": "^1.5.0-rc.1",
     "moment": "^2.29.4",
     "moment-timezone": "^0.5.41",
     "next": "13.0.4",
