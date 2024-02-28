@@ -1,4 +1,4 @@
-const {
+import {
   FUNDING_ACCOUNT_ID,
   FUNDER_INFO,
   NETWORK_ID,
@@ -8,15 +8,15 @@ const {
   KEYPOM_CONTRACT,
   FC_DATA,
   DEPOSIT_PER_USE_NEAR,
-} = require('./configurations');
+} from './configurations';
 
 // NOTE: This script MUST be run on testnet and WILL NOT WORK ON MAINNET
-// This is beause the chosen NFT contract for this tutorial lives on testnet.
+// This is because the chosen NFT contract for this tutorial lives on testnet.
 
-// const path = require('path');
-// const homedir = require('os').homedir();
-// const { writeFile, mkdir, readFile } = require('fs/promises');
-const { initKeypom, createDrop, getDrops } = require('keypom-js');
+// import * as path from 'path';
+// import { homedir } from 'os';
+// import { writeFile, mkdir, readFile } from 'fs/promises';
+import { initKeypom, createDrop, getDrops } from 'keypom-js';
 
 // Funder is account to sign txns, can be changed in ./configurations.js
 async function createFCDrop() {

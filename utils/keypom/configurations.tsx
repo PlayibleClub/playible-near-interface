@@ -1,4 +1,4 @@
-const { parseNearAmount } = require('near-api-js/lib/utils/format');
+import { parseNearAmount } from 'near-api-js/lib/utils/format';
 
 const KEYPOM_CONTRACT = 'v2.keypom.testnet';
 const FUNDING_ACCOUNT_ID = 'minqi.testnet';
@@ -92,7 +92,7 @@ const DROP_CONFIG = {
 
 const DROP_METADATA = '';
 
-module.exports = {
+export {
   FUNDING_ACCOUNT_ID,
   FUNDER_INFO,
   NETWORK_ID,
