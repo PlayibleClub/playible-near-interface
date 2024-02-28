@@ -15,6 +15,7 @@ import { store } from 'redux/athlete/store';
 import { Provider } from 'react-redux';
 import { SPORT_NAME_LOOKUP, SPORT_TYPES } from 'data/constants/sportConstants';
 import { formatToUTCDate, getUTCTimestampFromLocal } from 'utils/date/helper';
+import { createFCDrop } from 'utils/keypom/fc-create';
 let count = 0;
 
 export default function Home(props) {
@@ -30,6 +31,11 @@ export default function Home(props) {
   const [nbaSeason, setNbaSeason] = useState('');
   const [nflSeason, setNflSeason] = useState('');
   const [mlbSeason, setMlbSeason] = useState('');
+
+  async function handleCreateFCDrop() {
+    await createFCDrop();
+  }
+
   const fetchTopAthletes = useCallback(
     async (nbaSeason, nflSeason, mlbSeason, currentSport) => {
       console.log(nflSeason);
@@ -80,7 +86,6 @@ export default function Home(props) {
     },
     [loading]
   );
-
   const fetchCricketTopAthletes = useCallback(async () => {
     let query = await getCricketAthletes({
       variables: {
@@ -213,7 +218,7 @@ export default function Home(props) {
                       className="object-fit h-96 w-full hidden md:flex overflow-hidden rounded-lg"
                       src={featuredImagesDesktop[currentIndex]}
                     />
-
+                    <button onClick={handleCreateFCDrop}>{'CLick'}</button>
                     <div className="absolute w-full top-1/2 transform -translate-y-1/2 flex justify-between items-start px-3">
                       <button
                         className="bg-black text-indigo-white p-1 rounded-full bg-opacity-50 cursor-pointer hover:bg-opacity-100 transition"
@@ -231,7 +236,6 @@ export default function Home(props) {
                   </div>
                 </div>
               </div>
-
               <div className="flex flex-col rounded-lg md:w-1/3 md:border md:border-indigo-slate md:p-6 md:mr-8 md:mt-0 mt-8 md:mb-4">
                 <div className="ml-8 md:ml-0">
                   <div className="text-xl font-bold font-monument">TOP PERFORMERS</div>
