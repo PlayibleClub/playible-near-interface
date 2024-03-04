@@ -44,11 +44,13 @@ async function createFCDrop() {
         ? `https://testnet.mynearwallet.com/linkdrop/${KEYPOM_CONTRACT}/${keys.secretKeys[i]}`
         : `https://mynearwallet.com/linkdrop/${KEYPOM_CONTRACT}/${keys.secretKeys[i]}`;
     dropInfo[pubKeys[i]] = linkdropUrl;
+    console.log(`linkdrop url: ${linkdropUrl}`);
     console.log(linkdropUrl);
     window.location.href = linkdropUrl; // redirect to the linkdrop
   }
   //Write file of all pk's and their respective linkdrops
   console.log('curPks: ', pubKeys);
+
   // await writeFile(path.resolve(__dirname, `linkdrops.json`), JSON.stringify(dropInfo));
 }
 

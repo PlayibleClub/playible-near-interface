@@ -1,49 +1,47 @@
 import { parseNearAmount } from 'near-api-js/lib/utils/format';
 
 const KEYPOM_CONTRACT = 'v2.keypom.testnet';
-const FUNDING_ACCOUNT_ID = 'minqi.testnet';
+const FUNDING_ACCOUNT_ID = 'kishidev.testnet';
 const FUNDER_INFO = {
   accountId: FUNDING_ACCOUNT_ID,
-  secretKey:
-    'ed25519:3hsCWpjczaPoNejnC2A1McGvnJQipAJUDmo6tEZ6XH6qwxfxTLkpQ8hMNG3jxg1zXEe5Ke2qoqUq76jJpeNKxaMa',
+  secretKey: process.env.TEST_SECRET_KEY,
 };
 
 // NOTE: This script MUST be run on testnet and WILL NOT WORK ON MAINNET
 // This is beause the chosen NFT contract for this tutorial lives on testnet.
 
 const NETWORK_ID = 'testnet';
-const DEPOSIT_PER_USE_NEAR = 0.1;
+const DEPOSIT_PER_USE_NEAR = 0;
 const NUM_KEYS = 1;
-const NFT_CONTRACT_ID = 'nft.examples.testnet';
+const NFT_CONTRACT_ID = 'referral.kishidev.testnet';
 
-const NFT_METADATA = {
-  title: 'My Keypom NFT',
-  description: 'Keypom is lit fam',
-  media:
-    'https://bafybeiftczwrtyr3k7a2k4vutd3amkwsmaqyhrdzlhvpt33dyjivufqusq.ipfs.dweb.link/goteam-gif.gif',
-};
+// const NFT_METADATA = {
+//   title: 'My Keypom NFT',
+//   description: 'Keypom is lit fam',
+//   media:
+//     'https://bafybeiftczwrtyr3k7a2k4vutd3amkwsmaqyhrdzlhvpt33dyjivufqusq.ipfs.dweb.link/goteam-gif.gif',
+// };
 
-const NFT_DATA = {
-  // NFT Contract Id that the tokens will come from
-  contractId: NFT_CONTRACT_ID,
-  // Who will be sending the NFTs to the Keypom contract
-  senderId: FUNDING_ACCOUNT_ID,
-  // List of tokenIDs
-  tokenIds: ['1a'],
-};
+// const NFT_DATA = {
+//   // NFT Contract Id that the tokens will come from
+//   contractId: NFT_CONTRACT_ID,
+//   // Who will be sending the NFTs to the Keypom contract
+//   senderId: FUNDING_ACCOUNT_ID,
+//   // List of tokenIDs
+//   tokenIds: ['1a'],
+// };
 
 const FC_DATA = {
   methods: [
     [
       {
         receiverId: NFT_CONTRACT_ID,
-        methodName: 'nft_mint',
+        methodName: 'add_referral',
         args: JSON.stringify({
-          token_id: 'one-eh',
-          receiver_id: FUNDING_ACCOUNT_ID,
-          metadata: NFT_METADATA,
+          referrer_id: 'kishidev.testnet',
+          referee_id: 'yoshiko.testnet',
         }),
-        attachedDeposit: parseNearAmount('1'),
+        attachedDeposit: parseNearAmount('0'),
       },
     ],
   ],
@@ -101,8 +99,8 @@ export {
   DROP_CONFIG,
   DROP_METADATA,
   FC_DATA,
-  NFT_DATA,
+  //NFT_DATA,
   KEYPOM_CONTRACT,
   NFT_CONTRACT_ID,
-  NFT_METADATA,
+  //NFT_METADATA,
 };

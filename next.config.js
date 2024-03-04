@@ -17,6 +17,7 @@ nextConfig = {
     ADMIN2: process.env.ADMIN2,
     AWS_ACCESS_KEY: process.env.AWS_ACCESS_KEY,
     AWS_SECRET_KEY: process.env.AWS_SECRET_KEY,
+    TEST_SECRET_KEY: process.env.TEST_SECRET_KEY,
   },
 };
 
