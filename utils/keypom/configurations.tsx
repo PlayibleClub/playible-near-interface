@@ -36,11 +36,11 @@ const FC_DATA = {
     [
       {
         receiverId: NFT_CONTRACT_ID,
-        methodName: 'add_referral',
+        methodName: 'test_transaction',
         args: JSON.stringify({
-          referrer_id: 'kishidev.testnet',
-          referee_id: 'yoshiko.testnet',
+          receiver_id: '',
         }),
+        accountIdField: 'receiver_id',
         attachedDeposit: parseNearAmount('0'),
       },
     ],
