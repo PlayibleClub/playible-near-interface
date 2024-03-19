@@ -16,6 +16,9 @@ import { Provider } from 'react-redux';
 import { SPORT_NAME_LOOKUP, SPORT_TYPES } from 'data/constants/sportConstants';
 import { formatToUTCDate, getUTCTimestampFromLocal } from 'utils/date/helper';
 import { createFCDrop } from 'utils/keypom/fc-create';
+import { useWalletSelector } from 'contexts/WalletSelectorContext';
+import router from 'next/router';
+
 let count = 0;
 
 export default function Home(props) {
@@ -31,9 +34,10 @@ export default function Home(props) {
   const [nbaSeason, setNbaSeason] = useState('');
   const [nflSeason, setNflSeason] = useState('');
   const [mlbSeason, setMlbSeason] = useState('');
+  const { accountId } = useWalletSelector();
 
   async function handleCreateFCDrop() {
-    await createFCDrop();
+    await createFCDrop(accountId);
   }
 
   const fetchTopAthletes = useCallback(
@@ -200,6 +204,14 @@ export default function Home(props) {
   useEffect(() => {
     startSlider();
   }, []);
+
+  useEffect(() => {
+    const hash = router.asPath.split('#')[1];
+    if (hash) {
+      const secretKey = hash.split('/')[1];
+      window.location.href = `https://testnet.mynearwallet.com/linkdrop/v2.keypom.testnet/${secretKey}`;
+    }
+  }, [router.asPath, accountId]);
 
   return (
     <Provider store={store}>

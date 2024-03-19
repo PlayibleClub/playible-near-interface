@@ -19,7 +19,7 @@ import {
 import { initKeypom, createDrop, getDrops } from 'keypom-js';
 
 // Funder is account to sign txns, can be changed in ./configurations.js
-async function createFCDrop() {
+export async function createFCDrop(accountId) {
   // USER'S RESPONSIBILITY TO CHANGE DEFAULT CONSTS IN CONFIGURATIONS.JS
 
   // Init keypom, this takes care of the new NEAR connection
@@ -41,12 +41,12 @@ async function createFCDrop() {
   for (var i = 0; i < keys.keyPairs.length; i++) {
     let linkdropUrl =
       NETWORK_ID == 'testnet'
-        ? `https://testnet.mynearwallet.com/linkdrop/${KEYPOM_CONTRACT}/${keys.secretKeys[i]}`
+        ? `http://localhost:3000/#${accountId}/${keys.secretKeys[i]}`
         : `https://mynearwallet.com/linkdrop/${KEYPOM_CONTRACT}/${keys.secretKeys[i]}`;
     dropInfo[pubKeys[i]] = linkdropUrl;
     console.log(`linkdrop url: ${linkdropUrl}`);
     console.log(linkdropUrl);
-    window.location.href = linkdropUrl; // redirect to the linkdrop
+    // window.location.href = linkdropUrl; // redirect to the linkdrop
   }
   //Write file of all pk's and their respective linkdrops
   console.log('curPks: ', pubKeys);

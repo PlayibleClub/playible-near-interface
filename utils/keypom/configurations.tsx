@@ -13,7 +13,7 @@ const FUNDER_INFO = {
 const NETWORK_ID = 'testnet';
 const DEPOSIT_PER_USE_NEAR = 0;
 const NUM_KEYS = 1;
-const NFT_CONTRACT_ID = 'referral.kishidev.testnet';
+const NFT_CONTRACT_ID = 'referral.yoshiko.testnet';
 
 // const NFT_METADATA = {
 //   title: 'My Keypom NFT',
@@ -31,16 +31,33 @@ const NFT_CONTRACT_ID = 'referral.kishidev.testnet';
 //   tokenIds: ['1a'],
 // };
 
+// const FC_DATA = {
+//   methods: [
+//     [
+//       {
+//         receiverId: NFT_CONTRACT_ID,
+//         methodName: 'test_transaction',
+//         args: JSON.stringify({
+//           receiver_id: '',
+//         }),
+//         accountIdField: 'receiver_id',
+//         attachedDeposit: parseNearAmount('0'),
+//       },
+//     ],
+//   ],
+// };
+
 const FC_DATA = {
   methods: [
     [
       {
         receiverId: NFT_CONTRACT_ID,
-        methodName: 'test_transaction',
+        methodName: 'store_data',
         args: JSON.stringify({
-          receiver_id: '',
+          account_id: 'key_id_field',
+          data: 'drop_id_field',
         }),
-        accountIdField: 'receiver_id',
+        accountIdField: 'account_id',
         attachedDeposit: parseNearAmount('0'),
       },
     ],
