@@ -63,13 +63,20 @@ const PerformerContainer = (props) => {
               <div className="absolute z-50" style={{ width: '120px', height: '160px' }}></div>
             )}
 
-            <object
+            {/* <object
               className="absolute z-10"
               type="image/svg+xml"
               data={uri}
               width={120}
               height={160}
-            />
+            /> */}
+            <Image
+              src={uri}
+              width={120}
+              height={160}
+              className="absolute z-10"
+              alt={'An image of an athlete NFT'}
+            ></Image>
           </div>
         ) : (
           <Image src={'/images/tokensMLB/SP.png'} width={120} height={160} alt="token-bare" />
