@@ -226,6 +226,59 @@ export const EXTRA_NBA = [
     key: ['PG', 'SG', 'SF', 'PF', 'C'],
   },
 ];
+
+export const baseballStatCategories = [
+  { label: 'ALL', value: 'ALL' },
+  { label: 'BASEBALLPLACEHOLDER1', value: 'BP1' },
+  { label: 'BASEBALLPLACEHOLDER2', value: 'BP2' },
+  { label: 'BASEBALLPLACEHOLDER3', value: 'BP3' },
+  { label: 'BASEBALLPLACEHOLDER4', value: 'BP4' },
+  { label: 'BASEBALLPLACEHOLDER5', value: 'BP5' },
+  { label: 'BASEBALLPLACEHOLDER6', value: 'BP6' },
+  { label: 'BASEBALLPLACEHOLDER7', value: 'BP7' },
+  { label: 'BASEBALLPLACEHOLDER8', value: 'BP8' },
+  { label: 'BASEBALLPLACEHOLDER9', value: 'BP9' },
+];
+
+export const footballStatCategories = [
+  { label: 'ALL', value: 'ALL' },
+  { label: 'FOOTBALLPLACEHOLDER1', value: 'FP1' },
+  { label: 'FOOTBALLPLACEHOLDER2', value: 'FP2' },
+  { label: 'FOOTBALLPLACEHOLDER3', value: 'FP3' },
+  { label: 'FOOTBALLPLACEHOLDER4', value: 'FP4' },
+  { label: 'FOOTBALLPLACEHOLDER5', value: 'FP5' },
+  { label: 'FOOTBALLPLACEHOLDER6', value: 'FP6' },
+  { label: 'FOOTBALLPLACEHOLDER7', value: 'FP7' },
+  { label: 'FOOTBALLPLACEHOLDER8', value: 'FP8' },
+  { label: 'FOOTBALLPLACEHOLDER9', value: 'FP9' },
+];
+
+export const basketballStatCategories = [
+  { label: 'ALL', value: 'ALL' },
+  { label: 'BASKETBALLPLACEHOLDER1', value: 'BBP1' },
+  { label: 'BASKETBALLPLACEHOLDER2', value: 'BBP2' },
+  { label: 'BASKETBALLPLACEHOLDER3', value: 'BBP3' },
+  { label: 'BASKETBALLPLACEHOLDER4', value: 'BBP4' },
+  { label: 'BASKETBALLPLACEHOLDER5', value: 'BBP5' },
+  { label: 'BASKETBALLPLACEHOLDER6', value: 'BBP6' },
+  { label: 'BASKETBALLPLACEHOLDER7', value: 'BBP7' },
+  { label: 'BASKETBALLPLACEHOLDER8', value: 'BBP8' },
+  { label: 'BASKETBALLPLACEHOLDER9', value: 'BBP9' },
+];
+
+export const cricketStatCategories = [
+  { label: 'ALL', value: 'ALL' },
+  { label: 'CRICKETPLACEHOLDER1', value: 'CP1' },
+  { label: 'CRICKETPLACEHOLDER2', value: 'CP2' },
+  { label: 'CRICKETPLACEHOLDER3', value: 'CP3' },
+  { label: 'CRICKETPLACEHOLDER4', value: 'CP4' },
+  { label: 'CRICKETPLACEHOLDER5', value: 'CP5' },
+  { label: 'CRICKETPLACEHOLDER6', value: 'CP6' },
+  { label: 'CRICKETPLACEHOLDER7', value: 'CP7' },
+  { label: 'CRICKETPLACEHOLDER8', value: 'CP8' },
+  { label: 'CRICKETPLACEHOLDER9', value: 'CP9' },
+];
+
 export const SPORT_CONTRACT_LOOKUP = {
   basketball: '.basketball.',
   football: '.nfl.',
@@ -258,6 +311,7 @@ export const SPORT_TYPES = [
     positionList: MLB_POSITIONS,
     assetPositionList: MLB_ASSET_POSITIONS,
     extra: EXTRA_MLB,
+    statCategories: baseballStatCategories,
   },
   {
     key: 'NFL',
@@ -273,6 +327,7 @@ export const SPORT_TYPES = [
     gameContract: getContract(GAME_NFL),
     positionList: NFL_POSITIONS,
     extra: EXTRA_NFL,
+    statCategories: footballStatCategories,
   },
   {
     key: 'NBA',
@@ -288,6 +343,7 @@ export const SPORT_TYPES = [
     gameContract: getContract(GAME_BASKETBALL),
     positionList: NBA_POSITIONS,
     extra: EXTRA_NBA,
+    statCategories: basketballStatCategories,
   },
   {
     key: 'CRICKET',
@@ -302,6 +358,7 @@ export const SPORT_TYPES = [
     gameContract: getContract(GAME_CRICKET),
     positionList: CRICKET_POSITIONS,
     extra: EXTRA_CRICKET,
+    statCategories: cricketStatCategories,
   },
 ];
 
