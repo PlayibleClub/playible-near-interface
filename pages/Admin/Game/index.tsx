@@ -35,6 +35,7 @@ import { current } from '@reduxjs/toolkit';
 import { getSport } from 'redux/athlete/athleteSlice';
 import Modal from 'components/modals/Modal';
 import AdminGameFilter from './components/AdminGameFilter';
+import StatsCategoryComponent from './components/StatsCategoryComponent';
 import { getIsAdmin } from 'redux/admin/adminSlice';
 import client from 'apollo-client';
 import { MERGE_INTO_LEADERBOARD } from 'utils/queries';
@@ -154,6 +155,7 @@ export default function Index(props) {
   const [endModal, setEndModal] = useState(false);
   const [imageModal, setImageModal] = useState(false);
   const [radioValue, setRadioValue] = useState('');
+  const [selectedStatCategory, setSelectedStatCategory] = useState(['ALL']);
   const [msg, setMsg] = useState({
     title: '',
     content: '',
@@ -500,6 +502,10 @@ export default function Index(props) {
     }
   };
 
+  const onStatCategoryChange = (selectedStat) => {
+    setSelectedStatCategory(selectedStat);
+  };
+
   const onPrizeDescriptionChange = (e) => {
     if (e.target.name === 'prize_description') {
       if (e.target.value !== '') {
@@ -606,6 +612,10 @@ export default function Index(props) {
           distribution.length +
           ' was provided)'
       );
+    }
+
+    if (selectedStatCategory.length === 0) {
+      errors.push('Stat categories cannot be empty');
     }
 
     if (dateEnd < dateStart) {
@@ -935,6 +945,7 @@ export default function Index(props) {
         game_time_end: dateEnd,
         whitelist: whitelistInfo,
         token_type_whitelist: tokenTypeWhitelist,
+        stat_categories: selectedStatCategory,
         //token_type_whitelist: ['regular', 'soulbound', 'promo'],
         positions:
           currentSport === 'FOOTBALL'
@@ -1451,6 +1462,12 @@ export default function Index(props) {
                         </button>
                       </form>
                     </div>
+                    <div className="w-1/2 -mb-72">
+                      <StatsCategoryComponent
+                        onChangeFn={onStatCategoryChange}
+                        currentSport={currentSport}
+                      />
+                    </div>
                   </div>
 
                   <div className="flex mt-8">
@@ -1629,6 +1646,12 @@ export default function Index(props) {
         {gameDescription}
         <p className="font-bold">Prize Description: </p>
         {prizeDescription}
+        <p className="font-bold">Stat Category: </p>
+        {selectedStatCategory.map((type, index) => (
+          <span key={index}>
+            {index > 0 ? ', ' : ''}"{type.charAt(0).toUpperCase() + type.slice(1)}"
+          </span>
+        ))}
         <p className="font-bold">Positions:</p>
         {currentSport === 'FOOTBALL'
           ? positionsDisplay.map((position) => (
