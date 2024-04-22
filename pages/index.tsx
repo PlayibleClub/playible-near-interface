@@ -15,6 +15,7 @@ import { store } from 'redux/athlete/store';
 import { Provider } from 'react-redux';
 import { SPORT_NAME_LOOKUP, SPORT_TYPES } from 'data/constants/sportConstants';
 import { formatToUTCDate, getUTCTimestampFromLocal } from 'utils/date/helper';
+import { sendNearViaMetaTransaction } from 'utils/near/helper';
 let count = 0;
 
 export default function Home(props) {
@@ -171,6 +172,10 @@ export default function Home(props) {
     setCurrentIndex(count);
   };
 
+  const testRelayer = () => {
+    sendNearViaMetaTransaction();
+  };
+
   const [currentIndex, setCurrentIndex] = useState(0);
   const featuredImagesDesktop = [
     '/images/football_prize_money.jpg',
@@ -233,6 +238,9 @@ export default function Home(props) {
               </div>
 
               <div className="flex flex-col rounded-lg md:w-1/3 md:border md:border-indigo-slate md:p-6 md:mr-8 md:mt-0 mt-8 md:mb-4">
+                <button className="flex w-12 border-2" onClick={() => testRelayer()}>
+                  test
+                </button>
                 <div className="ml-8 md:ml-0">
                   <div className="text-xl font-bold font-monument">TOP PERFORMERS</div>
                   <div className="underlineBig" />

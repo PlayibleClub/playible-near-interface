@@ -18,6 +18,7 @@ nextConfig = {
     NEAR_RELAYER_PRIVATE_KEY: process.env.NEAR_RELAYER_PRIVATE_KEY,
     AWS_ACCESS_KEY: process.env.AWS_ACCESS_KEY,
     AWS_SECRET_KEY: process.env.AWS_SECRET_KEY,
+    NEAR_SENDER_PRIVATE_KEY: process.env.NEAR_SENDER_ACCESS_KEY,
   },
 };
 
