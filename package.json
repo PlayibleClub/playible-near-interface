@@ -14,7 +14,7 @@
     "@babel/core": "^7.20.2",
     "@headlessui/react": "^1.7.4",
     "@heroicons/react": "^2.0.13",
-    "@near-js/accounts": "^1.0.2",
+    "@near-js/accounts": "^1.1.0",
     "@near-js/providers": "^0.0.10",
     "@near-js/transactions": "^1.2.0",
     "@near-wallet-selector/core": "^8.9.7",
