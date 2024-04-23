@@ -12,7 +12,7 @@ import BigNumber from 'bignumber.js';
 import { JsonRpcProvider } from '@near-js/providers';
 import { KeyPair, keyStores, InMemorySigner, providers, connect } from 'near-api-js';
 import { Account, Connection } from '@near-js/accounts';
-import { InMemoryKeyStore } from 'near-api-js/lib/key_stores';
+import { BrowserLocalStorageKeyStore, InMemoryKeyStore } from 'near-api-js/lib/key_stores';
 import { getSportType, SPORT_NAME_LOOKUP } from 'data/constants/sportConstants';
 const provider = new providers.JsonRpcProvider({
   url: getRPCProvider(),
@@ -28,24 +28,29 @@ async function sendNearViaMetaTransaction() {
   const amount = BigInt(100000000);
   const SERVER_URL = 'http://localhost:5000/';
   const receiverId = 'referral.kishidev.testnet';
+
   const keyStore = new keyStores.BrowserLocalStorageKeyStore();
-  const memory = new keyStores.InMemoryKeyStore();
-  console.log(keyStore);
-  //const keyPair = await keyStore.getKey('testnet', 'kishidev.testnet');
-  //console.log(keyPair);
-  memory.setKey(
-    'testnet',
-    'kishidev.testnet',
-    KeyPair.fromString(process.env.NEAR_SENDER_PRIVATE_KEY)
-  );
-  console.log(memory);
+  // await keyStore.setKey(
+  //   networkId,
+  //   'kishidev.testnet',
+  //   KeyPair.fromString(process.env.NEAR_SENDER_PRIVATE_KEY)
+  // );
+  const key = await keyStore.getKey('testnet', 'kishidev.testnet');
+  const memory = new InMemoryKeyStore();
+  await memory.setKey('testnet', 'kishidev.testnet', key);
+  const signer = new InMemorySigner(memory);
+  // const signerAccount = new Account(
+  //   {
+  //     networkId,
+  //     provider,
+  //     signer: new InMemorySigner(keyStore),
+  //     jsvmAccountId: 'testnet',
+  //   },
+  //   'kishidev.testnet'
+  // );
+
   const signerAccount = new Account(
-    {
-      networkId,
-      provider,
-      signer: new InMemorySigner(memory),
-      jsvmAccountId: 'testnet',
-    },
+    new Connection(networkId, provider, signer, 'testnet'),
     'kishidev.testnet'
   );
 
@@ -60,7 +65,7 @@ async function sendNearViaMetaTransaction() {
   const delegate = await signerAccount.signedDelegate({
     actions: [action],
     //actions: [actionCreators.functionCall('test_transaction', { receiver_id: 'kishidev.testnet' })],
-    blockHeightTtl: 60,
+    blockHeightTtl: 240,
     receiverId,
   });
   console.log(delegate);
@@ -92,12 +97,8 @@ async function sendNearViaMetaTransaction() {
   // });
 }
 
-// async function getAccount(
-//   network: string,
-//   accountId: string,
-//   privateKey: string
-// ): Promise<Account> {
-//   const keyStore: InMemoryKeyStore = new InMemoryKeyStore();
+// async function getAccount(network: string, accountId: string, privateKey: string): Promise<any> {
+//   const keyStore: BrowserLocalStorageKeyStore = new BrowserLocalStorageKeyStore();
 //   await keyStore.setKey(network, accountId, KeyPair.fromString(privateKey));
 
 //   const config = {

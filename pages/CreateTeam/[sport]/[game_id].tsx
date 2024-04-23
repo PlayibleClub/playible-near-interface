@@ -122,7 +122,6 @@ export default function CreateLineup(props) {
   }
 
   const checkLineups = () => {
-    sendNearViaMetaTransaction();
     let errors = [];
 
     const trueNumber = lineup.filter((player) => player.isAthlete === true).length;
