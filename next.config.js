@@ -4,10 +4,14 @@ nextConfig = {
   images: {
     domains: [
       'playible-api-production.s3.ap-southeast-1.amazonaws.com',
+      'playible-api-production.s3.amazonaws.com',
       'playible-game-image.s3-ap-southeast-1.amazonaws.com',
       'playible-game-image.s3.ap-southeast-1.amazonaws.com',
       'playible-api-dev.s3.ap-southeast-1.amazonaws.com',
+      'playible-api-dev.s3.amazonaws.com',
       's3-us-west-2.amazonaws.com',
+      'dev-images.playible.io',
+      'images.playible.io',
     ],
   },
   env: {
