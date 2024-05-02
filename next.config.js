@@ -20,6 +20,11 @@ nextConfig = {
     AWS_SECRET_KEY: process.env.AWS_SECRET_KEY,
     NEAR_SENDER_PRIVATE_KEY: process.env.NEAR_SENDER_ACCESS_KEY,
   },
+  webpack: (config) => {
+    config.resolve.fallback = { fs: false };
+
+    return config;
+  },
 };
 
 module.exports = withImages(nextConfig);
