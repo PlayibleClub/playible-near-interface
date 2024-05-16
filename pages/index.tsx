@@ -15,7 +15,7 @@ import { store } from 'redux/athlete/store';
 import { Provider } from 'react-redux';
 import { SPORT_NAME_LOOKUP, SPORT_TYPES } from 'data/constants/sportConstants';
 import { formatToUTCDate, getUTCTimestampFromLocal } from 'utils/date/helper';
-import { sendNearViaMetaTransaction } from 'utils/near/helper';
+import { nearCreateAccount } from 'utils/near/helper';
 let count = 0;
 
 export default function Home(props) {
@@ -173,7 +173,7 @@ export default function Home(props) {
   };
 
   const testRelayer = () => {
-    sendNearViaMetaTransaction();
+    nearCreateAccount();
   };
 
   const [currentIndex, setCurrentIndex] = useState(0);

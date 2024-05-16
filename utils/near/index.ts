@@ -1,6 +1,6 @@
 import * as contracts from '../../data/constants/nearContracts';
 import { setupWalletSelector, NetworkId } from '@near-wallet-selector/core';
-import { transactions, utils, WalletConnection, providers, connect, keyStores } from 'near-api-js';
+import { connect, keyStores } from 'near-api-js';
 
 const CONTRACT_NAME = undefined;
 
@@ -26,7 +26,7 @@ export async function get_near_connection() {
     helperUrl: getHelperURL(),
     explorerUrl: getExplorerURL(),
   };
-  const nearConnection = await connect({ headers: {}, ...connectionConfig });
+  const nearConnection = await connect({ ...connectionConfig });
 
   return nearConnection;
 }

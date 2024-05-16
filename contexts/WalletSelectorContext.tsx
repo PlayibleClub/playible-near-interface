@@ -48,8 +48,8 @@ export const WalletSelectorContextProvider: React.FC = ({ children }) => {
       ],
     });
     const _modal = setupModal(_selector, {
-      contractId: getContract(MINTER_NFL),
-      methodNames: [...MINTER_NFL.interface.viewMethods, ...MINTER_NFL.interface.changeMethods],
+      contractId: 'referral.kishidev.testnet',
+      //methodNames: [...MINTER_NFL.interface.viewMethods, ...MINTER_NFL.interface.changeMethods],
     });
     const state = _selector.store.getState();
 

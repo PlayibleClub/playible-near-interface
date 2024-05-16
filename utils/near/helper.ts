@@ -1,101 +1,128 @@
-import { getContract, getRPCProvider } from 'utils/near';
+import { getContract, getRPCProvider, get_near_connection } from 'utils/near';
 import {
   convertNftToAthlete,
   getAthleteInfoById,
   getPortfolioAssetDetailsById,
   getCricketAthleteInfoById,
 } from 'utils/athlete/helper';
-import { actionCreators, encodeSignedDelegate } from '@near-js/transactions';
 import { DEFAULT_MAX_FEES, MINT_STORAGE_COST } from 'data/constants/gasFees';
 import BigNumber from 'bignumber.js';
 //import { useWalletSelector } from 'contexts/WalletSelectorContext';
-import { JsonRpcProvider } from '@near-js/providers';
-import { KeyPair, keyStores, InMemorySigner, providers, connect } from 'near-api-js';
-import { Account, Connection } from '@near-js/accounts';
-import { BrowserLocalStorageKeyStore, InMemoryKeyStore } from 'near-api-js/lib/key_stores';
+import {
+  KeyPair,
+  keyStores,
+  InMemorySigner,
+  providers,
+  connect,
+  WalletConnection,
+} from 'near-api-js';
+//import { BrowserLocalStorageKeyStore, InMemoryKeyStore } from 'near-api-js/lib/key_stores';
 import { getSportType, SPORT_NAME_LOOKUP } from 'data/constants/sportConstants';
 const provider = new providers.JsonRpcProvider({
   url: getRPCProvider(),
 });
 
-async function sendNearViaMetaTransaction() {
-  //setup accounts
-  //const { selector } = useWalletSelector();
-  console.log('hello test world');
-  const networkId = 'testnet';
-  const provider = new JsonRpcProvider({ url: 'https://rpc.testnet.near.org' });
-  //const wallet = selector.wallet();
-  const amount = BigInt(100000000);
-  const SERVER_URL = 'http://localhost:5000/';
-  const receiverId = 'referral.kishidev.testnet';
+async function nearLogin() {
+  const nearConnection = await get_near_connection();
+  const walletConnection = new WalletConnection(nearConnection, 'playible');
 
-  const keyStore = new keyStores.BrowserLocalStorageKeyStore();
-  // await keyStore.setKey(
-  //   networkId,
-  //   'kishidev.testnet',
-  //   KeyPair.fromString(process.env.NEAR_SENDER_PRIVATE_KEY)
-  // );
-  const key = await keyStore.getKey('testnet', 'kishidev.testnet');
-  const memory = new InMemoryKeyStore();
-  await memory.setKey('testnet', 'kishidev.testnet', key);
-  const signer = new InMemorySigner(memory);
-  // const signerAccount = new Account(
-  //   {
-  //     networkId,
-  //     provider,
-  //     signer: new InMemorySigner(keyStore),
-  //     jsvmAccountId: 'testnet',
-  //   },
-  //   'kishidev.testnet'
-  // );
-
-  const signerAccount = new Account(
-    new Connection(networkId, provider, signer, 'testnet'),
-    'kishidev.testnet'
-  );
-
-  const action = actionCreators.functionCall(
-    'test_transaction',
-    {
-      receiver_id: 'testnet.testnet',
-    },
-    BigInt(3000000000000)
-  );
-
-  const delegate = await signerAccount.signedDelegate({
-    actions: [action],
-    //actions: [actionCreators.functionCall('test_transaction', { receiver_id: 'kishidev.testnet' })],
-    blockHeightTtl: 240,
-    receiverId,
-  });
-  console.log(delegate);
-  //console.log(process.env.NEAR_RELAYER_PRIVATE_KEY);
-  // console.log(delegate);
-  // const relayerKeyPair = KeyPair.fromString(process.env.NEAR_RELAYER_PRIVATE_KEY);
-  // await relayerKeyStore.setKey('testnet', 'kishidev2.testnet', relayerKeyPair);
-  // const relayerAccount = new Account(
-  //   {
-  //     networkId,
-  //     provider,
-  //     signer: new InMemorySigner(relayerKeyStore),
-  //     jsvmAccountId: 'testnet',
-  //   },
-  //   'kishidev2.testnet'
-  // );
-  // console.log(relayerAccount);
-  // console.log('sign and send after');
-
-  const res = await fetch(SERVER_URL, {
-    method: 'POST',
-    mode: 'cors',
-    body: JSON.stringify(Array.from(encodeSignedDelegate(delegate))),
-    headers: new Headers({ 'Content-Type': 'application/json' }),
-  });
-  // return await relayerAccount.signAndSendTransaction({
-  //   actions: [actionCreators.signedDelegate(delegate)],
-  //   receiverId: receiverId,
-  // });
+  let currentUser;
+  if (walletConnection.getAccountId()) {
+    currentUser = walletConnection.getAccountId();
+  }
+  //const signIn = await walletConnection.requestSign
 }
+
+async function nearCreateAccount() {
+  console.log('Start NEAR Account creation');
+  const keyStore = new keyStores.BrowserLocalStorageKeyStore();
+  const connectionConfig = {
+    networkId: 'testnet',
+    keyStore: keyStore,
+    nodeUrl: 'https://rpc.testnet.near.org',
+    walletUrl: 'https://wallet.testnet.near.org',
+    helperUrl: 'https://wallet.testnet.near.org',
+    explorerUrl: 'https://wallet.testnet.near.org',
+  };
+  const nearConnection = await connect({ ...connectionConfig });
+  //const nearConnection = await get_near_connection();
+  const test = await nearConnection.account('kishidev.testnet');
+  const amount = BigInt(10000000000000000000);
+  //const walletConnection = new WalletConnection(nearConnection, 'kishidev');
+  //const account = await test.account();
+  const newKeyPair = KeyPair.fromRandom('ed25519');
+  const total = await (await test.getAccountBalance()).total;
+  console.log(`Total: ${total}`);
+  console.log(newKeyPair.getPublicKey().toString());
+  const transaction = await test.createAccount(
+    'testaccount1.kishidev.testnet',
+    newKeyPair.getPublicKey(),
+    amount
+  );
+  console.log(transaction.receipts_outcome);
+}
+// async function sendNearViaMetaTransaction(args, accountId, receiverId) {
+//   const networkId = 'testnet';
+
+//   const provider = new JsonRpcProvider({ url: 'https://rpc.testnet.near.org' });
+//   const amount = BigInt(100000000);
+//   const SERVER_URL = 'http://localhost:5000/';
+//   //const receiverId = 'referral.kishidev.testnet';
+
+//   const keyStore = new keyStores.BrowserLocalStorageKeyStore();
+//   // await keyStore.setKey(
+//   //   networkId,
+//   //   'kishidev.testnet',
+//   //   KeyPair.fromString(process.env.NEAR_SENDER_PRIVATE_KEY)
+//   // );
+//   console.log(keyStore);
+//   const key = await keyStore.getKey('testnet', accountId);
+
+//   const memory = new InMemoryKeyStore();
+//   await memory.setKey('testnet', accountId, key);
+//   const signer = new InMemorySigner(memory);
+//   // const signerAccount = new Account(
+//   //   {
+//   //     networkId,
+//   //     provider,
+//   //     signer: new InMemorySigner(keyStore),
+//   //     jsvmAccountId: 'testnet',
+//   //   },
+//   //   'kishidev.testnet'
+//   // );
+
+//   // const signerAccount = new Account(
+//   //   new Connection(networkId, provider, signer, 'testnet'),
+//   //   accountId
+//   // );
+
+//   // const action = actionCreators.functionCall(
+//   //   'test_transaction',
+//   //   {
+//   //     receiver_id: 'testnet.testnet',
+//   //   },
+//   //   BigInt(3000000000000)
+//   // );
+
+//   // const delegate = await signerAccount.signedDelegate({
+//   //   actions: [action],
+//   //   //actions: [actionCreators.functionCall('test_transaction', { receiver_id: 'kishidev.testnet' })],
+//   //   blockHeightTtl: 240,
+//   //   receiverId,
+//   // });
+//   // console.log(delegate);
+
+//   // const res = await fetch(SERVER_URL, {
+//   //   method: 'POST',
+//   //   mode: 'cors',
+//   //   body: JSON.stringify(Array.from(encodeSignedDelegate(delegate))),
+//   //   headers: new Headers({ 'Content-Type': 'application/json' }),
+//   // });
+//   // return await relayerAccount.signAndSendTransaction({
+//   //   actions: [actionCreators.signedDelegate(delegate)],
+//   //   receiverId: receiverId,
+//   // });
+// }
 
 // async function getAccount(network: string, accountId: string, privateKey: string): Promise<any> {
 //   const keyStore: BrowserLocalStorageKeyStore = new BrowserLocalStorageKeyStore();
@@ -704,7 +731,8 @@ async function execute_claim_soulbound_pack(selector, contract) {
 
 export {
   query_game_data,
-  sendNearViaMetaTransaction,
+  nearCreateAccount,
+  //sendNearViaMetaTransaction,
   query_all_players_lineup,
   query_player_lineup,
   query_all_players_lineup_rposition,

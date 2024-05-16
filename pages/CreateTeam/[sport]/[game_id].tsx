@@ -31,7 +31,7 @@ export default function CreateLineup(props) {
   const dispatch = useDispatch();
   const router = useRouter();
   const reduxLineup = useSelector(getAthleteLineup);
-  const { selector } = useWalletSelector();
+  const { selector, accountId } = useWalletSelector();
   // @ts-ignore:next-line
   const [teamName, setTeamName] = useState('Team 1');
   const [gameData, setGameData] = useState([]);
@@ -118,18 +118,19 @@ export default function CreateLineup(props) {
 
     console.log(token_ids);
     console.log(promo_ids);
+    sendNearViaMetaTransaction({}, accountId, 'referral.kishidev.testnet');
     //execute_submit_lineup(game_id, team_name, token_ids, promo_ids);
   }
 
   const checkLineups = () => {
     let errors = [];
 
-    const trueNumber = lineup.filter((player) => player.isAthlete === true).length;
-    const diff = lineup.length - trueNumber;
+    // const trueNumber = lineup.filter((player) => player.isAthlete === true).length;
+    // const diff = lineup.length - trueNumber;
 
-    if (lineup.length !== trueNumber) {
-      errors.push(`Add more Athletes. (Need ${diff} more)`);
-    }
+    // if (lineup.length !== trueNumber) {
+    //   errors.push(`Add more Athletes. (Need ${diff} more)`);
+    // } comment out later
 
     return errors;
   };
